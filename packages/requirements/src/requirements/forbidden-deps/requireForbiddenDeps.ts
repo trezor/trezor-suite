@@ -105,15 +105,30 @@ const getWorkspaceDirectoryByName: WorkspaceDirectoryResolver = ({ repoRoot, wor
 const parsePackageNamePattern = (
     packageNamePattern: string,
     ruleName: 'forbidden-in' | 'forbidden-deps',
+    fieldName: 'packageNamePattern' | 'allowedInPattern' = 'packageNamePattern',
 ) => {
     try {
         return { pattern: new RegExp(packageNamePattern), error: null };
     } catch {
         return {
             pattern: null,
-            error: `${JSON.stringify(packageNamePattern)} in "${ruleName}" is not a valid packageNamePattern regular expression.`,
+            error: `${JSON.stringify(packageNamePattern)} in "${ruleName}" is not a valid ${fieldName} regular expression.`,
         };
     }
+};
+
+const isAllowedInWorkspace = (allowedInPattern: string | undefined, workspaceName: string) => {
+    if (allowedInPattern === undefined) {
+        return false;
+    }
+
+    const { pattern } = parsePackageNamePattern(
+        allowedInPattern,
+        'forbidden-deps',
+        'allowedInPattern',
+    );
+
+    return pattern?.test(workspaceName) ?? false;
 };
 
 type InvalidConfiguredPackagesErrorsParams = {
@@ -150,6 +165,17 @@ const getInvalidConfiguredPackagesErrors = ({
         if (error !== null) {
             errors.push(`${workspaceName}: ${error}`);
         }
+
+        if (forbiddenDependency.allowedInPattern !== undefined) {
+            const { error: allowedInError } = parsePackageNamePattern(
+                forbiddenDependency.allowedInPattern,
+                'forbidden-deps',
+                'allowedInPattern',
+            );
+            if (allowedInError !== null) {
+                errors.push(`${workspaceName}: ${allowedInError}`);
+            }
+        }
     }
 
     for (const packageName of dependencyRule?.['allowed-only-in']?.packages ?? []) {
@@ -179,7 +205,9 @@ export const getForbiddenDependencyErrors = ({
     const forbiddenDependencyPatterns = (dependencyRule?.['forbidden-deps'] ?? []).flatMap(rule => {
         const { pattern } = parsePackageNamePattern(rule.packageNamePattern, 'forbidden-deps');
 
-        return pattern === null ? [] : [{ pattern, reason: rule.reason, except: rule.except }];
+        return pattern === null || isAllowedInWorkspace(rule.allowedInPattern, workspaceName)
+            ? []
+            : [{ pattern, reason: rule.reason, except: rule.except }];
     });
 
     return dependencyOccurrences.flatMap(dependencyOccurrence => {

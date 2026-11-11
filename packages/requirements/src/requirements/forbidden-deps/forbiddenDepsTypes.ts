@@ -4,6 +4,8 @@ export type ForbiddenDependency = {
     readonly reason: string;
     /** Matching packages that are allowed anyway. */
     readonly except?: ReadonlyArray<string>;
+    /** Regular expression matching consumer workspace names that may depend on matching packages anyway. */
+    readonly allowedInPattern?: string;
 };
 
 export type AllowedOnlyInRule = {

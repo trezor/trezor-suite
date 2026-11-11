@@ -300,6 +300,63 @@ describe('forbidden package-name pattern exceptions', () => {
             '@trezor/network-bitcoin-suite-common: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Below the apps.',
         ]);
     });
+
+    it.each([
+        { workspaceName: '@trezor/network-bitcoin-suite', expectedErrors: [] },
+        {
+            workspaceName: '@trezor/network-bitcoin-suite-common',
+            expectedErrors: [
+                '@trezor/network-bitcoin-suite-common: "@suite/sign-verify" is forbidden in dependencies. Reason: Desktop and web lego only.',
+            ],
+        },
+    ])(
+        'lets $workspaceName through only when it matches allowedInPattern',
+        ({ workspaceName, expectedErrors }) => {
+            expect(
+                getForbiddenDependencyErrors({
+                    dependencyOccurrences: [{ field: 'dependencies', name: '@suite/sign-verify' }],
+                    dependencyRule: {
+                        'forbidden-deps': [
+                            {
+                                packageNamePattern: '^@suite/',
+                                allowedInPattern: '^@trezor/network-[a-z0-9]+-suite$',
+                                reason: 'Desktop and web lego only.',
+                            },
+                        ],
+                    },
+                    workspaceName,
+                }),
+            ).toEqual(expectedErrors);
+        },
+    );
+
+    it('reports an invalid allowedInPattern', async () => {
+        const workspaceDir = mkdtempSync(join(tmpdir(), 'forbidden-deps-'));
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({ name: '@trezor/network-example' }),
+        );
+        writeConfig(workspaceDir, {
+            'forbidden-deps': [
+                { packageNamePattern: '^@suite/', allowedInPattern: '[', reason: 'Invalid.' },
+            ],
+        });
+        jest.mocked(getWorkspaceDirectoryMap).mockReturnValue(new Map());
+
+        try {
+            expect(
+                await requireForbiddenDeps.verify({
+                    repoRoot: workspaceDir,
+                    workspaceDir,
+                    workspaceName: '@trezor/network-example',
+                }),
+            ).toEqual([
+                '@trezor/network-example: "[" in "forbidden-deps" is not a valid allowedInPattern regular expression.',
+            ]);
+        } finally {
+            rmSync(workspaceDir, { recursive: true, force: true });
+        }
+    });
 });
 
 describe(getDependencyConsumerErrors.name, () => {
