@@ -126,6 +126,8 @@ export const AssetsView = () => {
         dispatch(
             tradingThunks.loadInitialDataThunk({
                 activeSection: tradingActiveSection,
+                // The Buy buttons need only the buy catalog, never the multi-megabyte swap one.
+                catalogSection: 'buy',
                 forceReload: !isBuyCatalogLoaded,
             }),
         );

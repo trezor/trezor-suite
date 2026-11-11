@@ -150,6 +150,7 @@ const tradingCommonSlice = createSlice({
         },
         invalidateCatalog(state: TradingState) {
             state.lastLoadedTimestamp = 0;
+            state.exchange.exchangeInfoLoadedTimestamp = 0;
         },
         setTradingActiveSection(state: TradingState, action: PayloadAction<TradingType>) {
             state.activeSection = action.payload;
