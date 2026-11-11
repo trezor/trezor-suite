@@ -87,11 +87,13 @@ module.exports = {
     mac: {
         sign: {
             identity: isCodesignBuild ? undefined : '-',
-            entitlements: 'entitlements.mac.inherit.plist',
+            entitlements: isCodesignBuild
+                ? 'entitlements.mac.webauthn.plist'
+                : 'entitlements.mac.inherit.plist',
             entitlementsInherit: 'entitlements.mac.inherit.plist',
             hardenedRuntime: isCodesignBuild,
         },
-        files: ['entitlements.mac.inherit.plist'],
+        files: ['entitlements.mac.inherit.plist', 'entitlements.mac.webauthn.plist'],
         extraResources: [
             {
                 // macOS 26+ reads the Dock icon from this catalog. The legacy icns has no
