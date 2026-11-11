@@ -5,6 +5,7 @@ import { CoinsIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
 import { TxSimulationAssetRow } from '../../../common';
+import { TxSimulationMaskedText } from '../../../common/components/TxSimulationMaskedText';
 
 type CrossChainTransfer = CrossChainAssetDiff['in'][number];
 
@@ -39,7 +40,10 @@ export function TxSimulationCrossChainAsset({ assetDiff }: TxSimulationCrossChai
             >
                 <Translation
                     id="TR_SIMULATION_CROSS_CHAIN_ASSET"
-                    values={{ amount: summary(transfer), chain: network?.name ?? chain }}
+                    values={{
+                        amount: <TxSimulationMaskedText text={summary(transfer)} />,
+                        chain: network?.name ?? chain,
+                    }}
                 />
             </TxSimulationAssetRow>
         ));
@@ -51,7 +55,9 @@ export function TxSimulationCrossChainAsset({ assetDiff }: TxSimulationCrossChai
                     symbol={network.symbol}
                     contractAddress={'address' in asset ? asset.address : undefined}
                     size={32}
-                    placeholder={asset.name ?? asset.symbol}
+                    // The tooltip and image alt would show the whole name unmasked.
+                    placeholder={(asset.name ?? asset.symbol).charAt(0)}
+                    placeholderWithTooltip={false}
                     customLogoUrl={asset.logo_url}
                 />
             ) : (
