@@ -1,26 +1,27 @@
 ### 🚀 New features
 
-- Passphrases can now be up to 128 characters long
-- Arc EVM network now supported in Suite
-- Trade form can be used with sats as the BTC unit
-- Trade history can be exported in CSV format, including trade ID, date, type, amounts, networks, provider, status, and transaction IDs
-- You can now swap Bitcoin to EVM chains (Ethereum, Avalanche, BNB Smart Chain) through LI.FI in Suite’s trading flow
-- You can now sign Tron resource (un)delegation transactions (Bandwidth and Energy) on your Trezor through WalletConnect, in dApps such as TronScan
+- Suite now warns you before you send funds to an address you’ve never transacted with, helping you catch addresses copied from phishing transactions.
+- You can now sign Solana v1 format transactions with your Trezor (running firmware 2.13.1 or later).
+- The asset screen now charts the asset’s price history, with a range picker from 1D to All.
+- The asset screen now has an activity feed showing recent transactions for that asset across every account that holds it.
+- Selecting an asset on desktop now opens a new asset screen showing its total balance and fiat value, which network it’s on, and a per-account breakdown.
+- The asset table now has a “Show small balances” switch to hide holdings under $1 without changing your portfolio total.
+- Home’s asset table now lists one row per asset per network, with tokens as their own rows. Each row shows the price with 7-day change and your balance, and there’s an option to group by network.
+- You can now switch the “You pay” and “You get” input fields in the Swap form with a single click. Suite switches the accounts too.
+- New “Earning balance” component added to the top of the Earn dashboard.
+- Home now shows your NFTs grouped by collection in a new section below your assets.
 
 ### 🎨 Improvements
 
-- Trade form has a refreshed layout and improved performance
-- Improved support for Soroban-based (SEP-41) tokens: you can receive them, see their transactions, attach a memo, and track custom tokens
-- Improved custom Electrum server setup in Trezor Suite
-- Receive flow now starts with an asset search, rather than an account list
-- Yield deposits have a dynamic minimum fee reserve instead of a fixed one
+- Added security checks during device setup to help verify packaging and confirm it hasn't been tampered with.
+- TRX staking transaction history added to the staking detail screen.
+- Earn signing flow improvements on Model One, with the contract address now shown in the first step.
+- Tron unstaking counter is now dynamic, instead of showing an approximate fixed value.
+- Cardano DRep IDs in the legacy format are now converted automatically to the newer CIP-129 format.
+- Zcash transactions now use the standard ZIP 317 fee formula.
 
 ### 🔧 Bug fixes
 
-- Suite Sync label export behavior fixed
-- Startup issues fixed
-- Stellar USDC added to Inactive tokens list by default, and can be activated during trading
-- Fixed Solana reconnect issue when using many accounts
-- Fiat rate tickers fixed for when rates are filtered out
-- Solana staking instructions unified between device and app
-- Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience
+- Stellar transaction signing supports smart contract creation and delegated authorization.
+- Signing EIP-712 messages (for example, logging in to OpenSea) with an empty account no longer shows a “minimum balance” warning, since signing a message costs nothing.
+- Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience.
