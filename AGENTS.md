@@ -173,8 +173,8 @@ them.
   change pull request or issue descriptions, unless the user explicitly tasks them with that action.
   Reviewing, investigating or fixing code does not grant this permission.
 - Every comment, review, review comment and pull request or issue description an agent writes MUST
-  start with `🤖 Agent <Model> <Version> (reasoning: <Reasoning>):` using the actual model, version and
-  reasoning level. In descriptions, put the prefix on the first line.
+  start with `🤖 Agent <Model> <Version>:` using the actual model and version. In descriptions, put
+  the prefix on the first line.
 
 Follow the [PR review](skills/pr-review/SKILL.md) skill for reviews and leave review outcomes as comments.
 When the user explicitly asks to create an issue, follow [GitHub issues](skills/github-issues/SKILL.md).

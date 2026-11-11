@@ -14,7 +14,7 @@ In TypeScript changes, flag `as` casts on native API results and suggest the typ
 Start every review comment, including summaries and inline comments, with the agent attribution prefix:
 
 ```text
-🤖 Agent <Model> <Version> (reasoning: <Reasoning>):
+🤖 Agent <Model> <Version>:
 ```
 
-Use the actual model, version, and reasoning level. Example: `🤖 Agent Fable 5.1 (reasoning: High):`
+Use the actual model and version. Example: `🤖 Agent Fable 5.1:`
