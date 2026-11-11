@@ -24,7 +24,7 @@ import {
     ensureHistoryRates,
     isNetworkWithGraphFeature,
     mergeAccountBalanceHistory,
-} from '#src/utils/wallet/graph';
+} from '#src/utils/wallet/graph/utils';
 
 import {
     ACCOUNT_GRAPH_FAIL,

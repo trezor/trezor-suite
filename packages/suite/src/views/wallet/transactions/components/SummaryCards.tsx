@@ -15,7 +15,8 @@ import { BigNumber } from '@trezor/utils';
 import { FormattedDate } from '#src/components/suite/FormattedDate';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { type AggregatedAccountHistory, type GraphRange } from '#src/types/wallet/graph';
-import { type FiatValueMap, sumFiatValueMap } from '#src/utils/wallet/graph';
+import { type FiatValueMap } from '#src/utils/wallet/graph/types';
+import { sumFiatValueMap } from '#src/utils/wallet/graph/utils';
 
 import { InfoCard } from './InfoCard';
 
