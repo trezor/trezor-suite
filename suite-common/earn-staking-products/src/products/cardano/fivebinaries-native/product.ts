@@ -10,27 +10,27 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
 import { getCardanoProductPosition } from '../position';
-import { getCardanoFivebinariesRetiredProductAmountBounds } from './amountBounds';
-import { createCardanoFivebinariesRetiredProductDescriptor } from './descriptor';
+import { getCardanoFivebinariesNativeProductAmountBounds } from './amountBounds';
+import { createCardanoFivebinariesNativeProductDescriptor } from './descriptor';
 
-export type CreateCardanoFivebinariesRetiredProductParams = {
+export type CreateCardanoFivebinariesNativeProductParams = {
     networkSymbol: NetworkSymbol;
     provider: StakingProvider;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createCardanoFivebinariesRetiredProduct = ({
+export const createCardanoFivebinariesNativeProduct = ({
     networkSymbol,
     provider,
     messageSystemFeatures,
-}: CreateCardanoFivebinariesRetiredProductParams): StakingProductAdapter => {
+}: CreateCardanoFivebinariesNativeProductParams): StakingProductAdapter => {
     const poolIds = provider.status === 'retired' ? (provider.identities[networkSymbol] ?? []) : [];
 
     if (poolIds.length === 0) {
         throw new Error(`${provider.id} has no retired ${networkSymbol} pool`);
     }
 
-    const descriptor = createCardanoFivebinariesRetiredProductDescriptor({
+    const descriptor = createCardanoFivebinariesNativeProductDescriptor({
         networkSymbol,
         provider,
         messageSystemFeatures,
@@ -48,7 +48,7 @@ export const createCardanoFivebinariesRetiredProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getCardanoFivebinariesRetiredProductAmountBounds(params);
+        getCardanoFivebinariesNativeProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

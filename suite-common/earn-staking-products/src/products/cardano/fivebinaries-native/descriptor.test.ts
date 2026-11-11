@@ -3,11 +3,11 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
 import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
-import { createCardanoFivebinariesRetiredProductDescriptor } from './descriptor';
+import { createCardanoFivebinariesNativeProductDescriptor } from './descriptor';
 
-describe('createCardanoFivebinariesRetiredProductDescriptor', () => {
+describe('createCardanoFivebinariesNativeProductDescriptor', () => {
     it('builds the ada:ada:fivebinaries:native product without staking', () => {
-        const descriptor = createCardanoFivebinariesRetiredProductDescriptor({
+        const descriptor = createCardanoFivebinariesNativeProductDescriptor({
             networkSymbol: asNetworkSymbol('ada'),
             provider: fivebinariesProvider,
             messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,

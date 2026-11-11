@@ -9,9 +9,9 @@ export {
     type CreateCardanoExternalNativeProductParams,
 } from './products/cardano/external-native/product';
 export {
-    createCardanoFivebinariesRetiredProduct,
-    type CreateCardanoFivebinariesRetiredProductParams,
-} from './products/cardano/fivebinaries-retired/product';
+    createCardanoFivebinariesNativeProduct,
+    type CreateCardanoFivebinariesNativeProductParams,
+} from './products/cardano/fivebinaries-native/product';
 export {
     createEthereumEverstakePooledProduct,
     type CreateEthereumEverstakePooledProductParams,

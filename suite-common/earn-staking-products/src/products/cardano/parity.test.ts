@@ -30,7 +30,7 @@ import {
     createCardanoEverstakeNativeProduct,
 } from './everstake-native/product';
 import { createCardanoExternalNativeProduct } from './external-native/product';
-import { createCardanoFivebinariesRetiredProduct } from './fivebinaries-retired/product';
+import { createCardanoFivebinariesNativeProduct } from './fivebinaries-native/product';
 import {
     CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
     CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
@@ -65,7 +65,7 @@ const products: Record<CardanoProductKey, StakingProductAdapter> = {
             getCardanoPools: () => Promise.resolve(adaPools),
         }),
     }),
-    fiveBinaries: createCardanoFivebinariesRetiredProduct({
+    fiveBinaries: createCardanoFivebinariesNativeProduct({
         networkSymbol: asNetworkSymbol('ada'),
         provider: fivebinariesProvider,
         messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
