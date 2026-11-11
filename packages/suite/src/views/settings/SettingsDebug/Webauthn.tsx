@@ -8,6 +8,9 @@ import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 const RELYING_PARTY_NAME = 'Trezor Suite debug';
 const PRF_SALT = new TextEncoder().encode('trezor-suite-webauthn-debug');
+const REQUEST_TIMEOUT_MS = 60_000;
+const WAITING_MESSAGE =
+    'Waiting for the authenticator, touch the security key if one is plugged in...';
 
 const bytesToHex = (bytes: Uint8Array<ArrayBuffer>): string =>
     Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
@@ -41,6 +44,7 @@ export const Webauthn = () => {
     const isBelowLaptop = useIsContentBelowBreakpoint(breakpoints.laptop);
     const [credentialId, setCredentialId] = useState<Uint8Array<ArrayBuffer>>();
     const [output, setOutput] = useState('');
+    const [isPending, setIsPending] = useState(false);
 
     useEffect(() => {
         getEnvironmentReport().then(setOutput);
@@ -53,9 +57,12 @@ export const Webauthn = () => {
             return;
         }
 
+        setIsPending(true);
+        setOutput(WAITING_MESSAGE);
         try {
             const credential = await navigator.credentials.create({
                 publicKey: {
+                    timeout: REQUEST_TIMEOUT_MS,
                     rp: { id: window.location.hostname, name: RELYING_PARTY_NAME },
                     user: {
                         id: getRandomBytes(16),
@@ -92,6 +99,8 @@ export const Webauthn = () => {
             );
         } catch (error) {
             setOutput(`create failed: ${describeError(error)}`);
+        } finally {
+            setIsPending(false);
         }
     };
 
@@ -102,9 +111,12 @@ export const Webauthn = () => {
             return;
         }
 
+        setIsPending(true);
+        setOutput(WAITING_MESSAGE);
         try {
             const assertion = await navigator.credentials.get({
                 publicKey: {
+                    timeout: REQUEST_TIMEOUT_MS,
                     rpId: window.location.hostname,
                     challenge: getRandomBytes(32),
                     allowCredentials: credentialId
@@ -130,6 +142,8 @@ export const Webauthn = () => {
             );
         } catch (error) {
             setOutput(`get failed: ${describeError(error)}`);
+        } finally {
+            setIsPending(false);
         }
     };
 
@@ -139,8 +153,16 @@ export const Webauthn = () => {
                 <Column gap={16} flex="1">
                     <Textarea label="Result" value={output} rows={4} isDisabled />
                     <ButtonGroup>
-                        <Button onClick={createCredential}>Create credential with PRF</Button>
-                        <Button onClick={getAssertion}>Get assertion with PRF</Button>
+                        <Button
+                            onClick={createCredential}
+                            isLoading={isPending}
+                            isDisabled={isPending}
+                        >
+                            Create credential with PRF
+                        </Button>
+                        <Button onClick={getAssertion} isLoading={isPending} isDisabled={isPending}>
+                            Get assertion with PRF
+                        </Button>
                     </ButtonGroup>
                 </Column>
             </SectionItem>

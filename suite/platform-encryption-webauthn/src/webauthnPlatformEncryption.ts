@@ -18,6 +18,7 @@ const USER_NAME = 'Trezor Suite';
 const PRF_SALT_LENGTH = 32;
 const IV_LENGTH = 12;
 const CHALLENGE_LENGTH = 32;
+const REQUEST_TIMEOUT_MS = 60_000;
 const USER_ID_LENGTH = 16;
 const HKDF_INFO = 'trezor-suite-platform-encryption';
 
@@ -57,6 +58,7 @@ const createCredential = async (): Promise<
     try {
         credential = await navigator.credentials.create({
             publicKey: {
+                timeout: REQUEST_TIMEOUT_MS,
                 rp: { id: window.location.hostname, name: RELYING_PARTY_NAME },
                 user: {
                     id: getRandomBytes(USER_ID_LENGTH),
@@ -103,6 +105,7 @@ const deriveKey = async ({
     try {
         assertion = await navigator.credentials.get({
             publicKey: {
+                timeout: REQUEST_TIMEOUT_MS,
                 rpId: window.location.hostname,
                 challenge: getRandomBytes(CHALLENGE_LENGTH),
                 allowCredentials: [{ type: 'public-key', id: credentialId }],
