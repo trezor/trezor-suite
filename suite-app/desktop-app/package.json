@@ -34,7 +34,7 @@
         "usb-legacy": "npm:usb@2.19.1"
     },
     "devDependencies": {
-        "electron": "44.9.3",
+        "electron": "45.1.0",
         "electron-builder": "27.0.0-alpha.10"
     }
 }

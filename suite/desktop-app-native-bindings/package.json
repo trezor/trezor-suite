@@ -15,7 +15,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "electron": "44.9.3",
+        "electron": "45.1.0",
         "node-addon-api": "8.9.2"
     },
     "devDependencies": {
