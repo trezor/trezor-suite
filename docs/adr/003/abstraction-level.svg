@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720" role="img" aria-labelledby="title description">
+  <title id="title">Where the network abstraction sits</title>
+  <desc id="description">Left, rejected: network modules describe themselves with flags, a Suite engine interprets the flags, and a generic UI is rendered, so a new network quirk changes the contract and the engine. Right, chosen: each network implements its own Sign and Verify component, the module returns that feature for the account's context or null, and the Sign and Verify page renders what it gets, so a new network adds a module without changing the contract. Both sides read top to bottom: networks, common network code, app.</desc>
+  <style>
+ text { font-family: Inter, "Segoe UI", Arial, sans-serif; }
+ .pkg { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size:16px; font-weight:500; fill:#283443; }
+ .code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size:14px; fill:#5e6977; }
+ .detail { font-size:16px; fill:#5e6977; }
+ .layer { font-size:19px; font-weight:650; letter-spacing:.3px; }
+ .layer-detail { font-size:16px; fill:#647080; }
+ .note { font-size:17px; font-weight:650; }
+</style>
+  <defs>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8a939e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+    <marker id="arrow-network" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#b89446" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+    <marker id="arrow-contract" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8b75b5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+  </defs>
+  <rect width="1600" height="720" fill="#ffffff" />
+
+  <!-- Rejected -->
+  <text x="60" y="50" class="layer" fill="#c2554d">REJECTED</text>
+  <text x="190" y="49" class="layer-detail">Fine-grained network API interpreted by a Suite engine</text>
+  <rect x="60" y="70" width="710" height="580" rx="20" fill="#f6f6f7" stroke="#9aa3ad" />
+
+  <rect x="110" y="100" width="610" height="150" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <rect x="110" y="118" width="3" height="114" rx="1.5" fill="#b89446" />
+  <circle cx="132" cy="128" r="3" fill="#b89446" />
+  <text x="146" y="133" class="pkg">Network modules</text>
+  <text x="134" y="159" class="detail">Describe their behavior as flags and data</text>
+  <text x="134" y="187" class="code">signatureFormats: ['legacy', 'bip322']</text>
+  <text x="134" y="209" class="code">supportsTypedData: true</text>
+  <text x="134" y="231" class="code">addressPicker: 'derived' | 'manual'</text>
+
+  <path d="M 415 250 V 300" fill="none" stroke="#8a939e" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-gray)" />
+
+  <rect x="110" y="300" width="610" height="120" rx="14" fill="#ffffff" stroke="#9aa3ad" />
+  <rect x="110" y="318" width="3" height="84" rx="1.5" fill="#9aa3ad" />
+  <circle cx="132" cy="328" r="3" fill="#9aa3ad" />
+  <text x="146" y="333" class="pkg">Suite engine</text>
+  <text x="134" y="359" class="detail">Interprets every flag of every network into UI</text>
+  <text x="134" y="389" class="code">if (config.supportsTypedData) { … }</text>
+
+  <path d="M 415 420 V 470" fill="none" stroke="#8a939e" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-gray)" />
+
+  <rect x="110" y="470" width="610" height="110" rx="14" fill="#ffffff" stroke="#9aa3ad" />
+  <rect x="110" y="488" width="3" height="74" rx="1.5" fill="#9aa3ad" />
+  <circle cx="132" cy="498" r="3" fill="#9aa3ad" />
+  <text x="146" y="503" class="pkg">Generic Sign &amp; Verify UI</text>
+  <text x="134" y="529" class="detail">One shape that every network must fit</text>
+
+  <text x="110" y="622" class="note" fill="#c2554d">New network quirk → new flag → contract and engine change</text>
+
+  <!-- Chosen -->
+  <text x="830" y="50" class="layer" fill="#6484b4">CHOSEN</text>
+  <text x="935" y="49" class="layer-detail">Feature-level React boundary</text>
+  <rect x="830" y="70" width="710" height="580" rx="20" fill="#edf3ff" stroke="#6484b4" />
+
+  <rect x="880" y="100" width="190" height="150" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <text x="975" y="150" text-anchor="middle" class="pkg">Bitcoin</text>
+  <text x="975" y="180" text-anchor="middle" class="detail">Signature format</text>
+  <text x="975" y="204" text-anchor="middle" class="detail">picker</text>
+
+  <rect x="1090" y="100" width="190" height="150" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <text x="1185" y="150" text-anchor="middle" class="pkg">Ethereum</text>
+  <text x="1185" y="180" text-anchor="middle" class="detail">Typed data</text>
+  <text x="1185" y="204" text-anchor="middle" class="detail">for all EVM networks</text>
+
+  <rect x="1300" y="100" width="190" height="150" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <text x="1395" y="150" text-anchor="middle" class="pkg">Cardano</text>
+  <text x="1395" y="180" text-anchor="middle" class="detail">Own UI</text>
+  <text x="1395" y="204" text-anchor="middle" class="detail">without lego</text>
+
+  <path d="M 975 250 C 975 290 1185 260 1185 300" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-network)" />
+  <path d="M 1185 250 V 300" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-network)" />
+  <path d="M 1395 250 C 1395 290 1185 260 1185 300" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-network)" />
+
+  <rect x="880" y="300" width="610" height="120" rx="14" fill="#ffffff" stroke="#8b75b5" stroke-opacity=".65" />
+  <rect x="880" y="318" width="3" height="84" rx="1.5" fill="#8b75b5" />
+  <circle cx="902" cy="328" r="3" fill="#8b75b5" />
+  <text x="916" y="333" class="pkg">getSignVerify(account) → SignVerifyFeature | null</text>
+  <text x="904" y="359" class="detail">One feature per context · unchanged when networks are added</text>
+  <text x="904" y="389" class="code">@trezor/network-module-suite-types</text>
+
+  <path d="M 1185 420 V 470" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-contract)" />
+
+  <rect x="880" y="470" width="610" height="110" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="880" y="488" width="3" height="74" rx="1.5" fill="#6484b4" />
+  <circle cx="902" cy="498" r="3" fill="#6484b4" />
+  <text x="916" y="503" class="pkg">@suite-app/sign-verify-page</text>
+  <text x="904" y="529" class="detail">Owns the route, page layout and account selection</text>
+  <text x="904" y="557" class="code">getSignVerify(account) → &lt;Component account={account} /&gt;</text>
+
+  <text x="880" y="622" class="note" fill="#3f8a4f">New network → new module → no contract change</text>
+
+  <text x="60" y="694" class="layer-detail">Both sides read top to bottom: networks, common network code, app. Arrows point from the code that is used to the code that uses it.</text>
+</svg>
