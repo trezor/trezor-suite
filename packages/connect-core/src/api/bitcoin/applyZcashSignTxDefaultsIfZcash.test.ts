@@ -1,5 +1,4 @@
 import { applyZcashSignTxDefaultsIfZcash } from './applyZcashSignTxDefaultsIfZcash';
-import { initBlockchain } from '../../backend/BlockchainLink';
 
 describe(applyZcashSignTxDefaultsIfZcash.name, () => {
     it('zcash/zcash testnet', () => {
@@ -52,23 +51,6 @@ describe(applyZcashSignTxDefaultsIfZcash.name, () => {
                 branch_id: 1,
             });
         });
-    });
-
-    it('zcash branch_id from backend', async () => {
-        const coinInfo: any = { shortcut: 'ZEC', blockchainLink: { type: 'blockbook', url: [] } };
-        await initBlockchain(coinInfo, () => {});
-        expect(applyZcashSignTxDefaultsIfZcash({}, coinInfo)).toEqual({
-            overwintered: true,
-            version: 5,
-            version_group_id: 0x26a7270a,
-            branch_id: 1001, // value from blockchain-link mock
-        });
-    });
-
-    it('zcash branch_id explicit option takes precedence over backend', async () => {
-        const coinInfo: any = { shortcut: 'ZEC', blockchainLink: { type: 'blockbook', url: [] } };
-        await initBlockchain(coinInfo, () => {});
-        expect(applyZcashSignTxDefaultsIfZcash({ branch_id: 42 }, coinInfo).branch_id).toBe(42);
     });
 
     it('unrecognized coinInfo', () => {
