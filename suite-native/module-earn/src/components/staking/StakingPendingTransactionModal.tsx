@@ -54,6 +54,7 @@ export const StakingPendingTransactionModal = ({
                     symbol={account.symbol}
                     color="contentPrimary"
                     isBalance={false}
+                    withSymbol={false}
                     // The user must be able to review the staking transaction amount.
                     discreetMode="disabled"
                 />
