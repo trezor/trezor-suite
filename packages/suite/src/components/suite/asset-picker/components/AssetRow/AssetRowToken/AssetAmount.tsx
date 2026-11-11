@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -11,6 +12,8 @@ export type AssetAmountProps = {
     symbol: string;
     amount: string;
     contractAddress?: string | null;
+    /** The token's network, for an account token shown with its metadata. */
+    networkSymbol?: NetworkSymbol;
     /** The token's decimals, so a stablecoin balance is shown the way money is. */
     decimals?: number;
     fiatAmount?: BaseCurrencyAmount;
@@ -24,6 +27,7 @@ export function AssetAmount({
     symbol,
     fiatAmount,
     contractAddress,
+    networkSymbol,
     decimals,
     showNoTradingPairText = false,
     isFiatPrimary = false,
@@ -43,6 +47,7 @@ export function AssetAmount({
                 value={amount}
                 symbol={symbol}
                 contractAddress={contractAddress}
+                networkSymbol={networkSymbol}
                 isCompact
                 tokenDecimals={decimals}
             />

@@ -1,9 +1,8 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
-import { TokenName } from '@suite/token';
+import { TokenIcon, TokenName } from '@suite/token';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetName,
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
@@ -11,7 +10,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
+import { TokenIcon as NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite';
@@ -44,7 +43,6 @@ export const AssetDetailName = () => {
     const { NetworkNameFormatter } = useFormatters();
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
     const name = useSelector(state => selectWalletAssetName(state, assetKey));
 
     return (
@@ -52,13 +50,16 @@ export const AssetDetailName = () => {
             <AssetDetailBackButton />
             {symbol !== undefined && (
                 <Row gap={12} minWidth={0}>
-                    <TokenIcon
-                        symbol={symbol}
-                        contractAddress={contractAddress}
-                        size={32}
-                        showNetworkIcon
-                        placeholder={displaySymbol ?? ''}
-                    />
+                    {contractAddress ? (
+                        <TokenIcon
+                            symbol={symbol}
+                            contractAddress={contractAddress}
+                            size={32}
+                            showNetworkIcon
+                        />
+                    ) : (
+                        <NetworkIcon symbol={symbol} size={32} showNetworkIcon />
+                    )}
                     <Column alignItems="flex-start" minWidth={0}>
                         <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
                             {contractAddress ? (

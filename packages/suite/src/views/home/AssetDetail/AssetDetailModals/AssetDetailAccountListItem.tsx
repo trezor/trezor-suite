@@ -44,6 +44,7 @@ export const AssetDetailAccountListItem = ({
                         value={cryptoBalance}
                         symbol={tokenSymbol ?? symbol}
                         contractAddress={contractAddress}
+                        networkSymbol={symbol}
                         tokenDecimals={tokenDecimals}
                         isCompact
                     />
