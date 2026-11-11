@@ -2,6 +2,8 @@ import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { TokenSymbol } from '@suite/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type AllowanceLimitType,
     type AllowanceStepState,
@@ -110,7 +112,19 @@ export const AllowanceStepCard = ({
                 <Translation id="TR_STEP_OF_TOTAL" values={{ index: step, total: totalSteps }} />
             }
             title={<Translation id={textIds.title} />}
-            description={<Translation id={textIds.description} values={{ symbol: token.symbol }} />}
+            description={
+                <Translation
+                    id={textIds.description}
+                    values={{
+                        symbol: (
+                            <TokenSymbol
+                                networkSymbol={token.networkSymbol}
+                                tokenContract={toTokenAddress(token.contractAddress)}
+                            />
+                        ),
+                    }}
+                />
+            }
             data-testid={dataTest}
         >
             <Column gap={12}>
