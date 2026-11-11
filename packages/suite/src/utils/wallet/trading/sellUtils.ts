@@ -28,7 +28,11 @@ export const createQuoteLink = async (
 
     // fees info
     if (composedInfo.composed) {
-        hash += account.networkType === 'solana' ? '/normal' : '/custom'; // manually set fee type
+        const isNormalFee =
+            account.networkType === 'solana' ||
+            (account.networkType === 'tron' && composedInfo.selectedFee !== 'custom');
+
+        hash += isNormalFee ? '/normal' : '/custom'; // manually set fee type
         hash += `/${composedInfo.composed.feePerByte}`;
         hash += `/${composedInfo.composed.maxFeePerGas}`;
         hash += `/${composedInfo.composed.maxPriorityFeePerGas}`;

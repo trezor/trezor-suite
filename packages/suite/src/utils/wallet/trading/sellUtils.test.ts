@@ -96,5 +96,33 @@ describe('sellUtils', () => {
                 `${window.location.origin}/coinmarket-redirect#sell-offers/sol/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/normal/1/2/3/4`,
             );
         });
+
+        it('should keep the normal fee level for tron when the fee limit was not edited', async () => {
+            expect(
+                await createQuoteLink(
+                    deps,
+                    QUOTE_REQUEST_CRYPTO,
+                    { ...mockAccount, symbol: 'trx', networkType: 'tron' } as Account,
+                    { ...mockComposedInfo, selectedFee: 'normal' },
+                    mockQuoteId,
+                ),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#sell-offers/trx/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/normal/1/2/3/4`,
+            );
+        });
+
+        it('should keep the custom fee level for tron when the fee limit was edited', async () => {
+            expect(
+                await createQuoteLink(
+                    deps,
+                    QUOTE_REQUEST_CRYPTO,
+                    { ...mockAccount, symbol: 'trx', networkType: 'tron' } as Account,
+                    { ...mockComposedInfo, selectedFee: 'custom' },
+                    mockQuoteId,
+                ),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#sell-offers/trx/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/custom/1/2/3/4`,
+            );
+        });
     });
 });
