@@ -9,6 +9,7 @@ export {
 export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
 export { getGasLimitFromGasEstimation } from './utils/getGasLimitFromGasEstimation';
 export {
+    getEvmAssetDiffValue,
     getSolanaAssetDiffValue,
     getStellarAssetDiffValue,
     getTxSimulationTokenSources,

@@ -1,22 +1,77 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
+    type EvmAssetDiff,
     type NetworkTxSimulationResult,
     type SolanaAssetDiff,
     type StellarAssetDiff,
 } from '../types';
 import {
+    getEvmAssetDiffValue,
     getSolanaAssetDiffValue,
     getStellarAssetDiffValue,
     getTxSimulationTokenSources,
 } from './getAssetDiffTransferLabel';
 
+const asEvmDiff = (diff: unknown) => diff as EvmAssetDiff;
 const asSolanaDiff = (diff: unknown) => diff as SolanaAssetDiff;
 const asStellarDiff = (diff: unknown) => diff as StellarAssetDiff;
 
 const toPlain = ({ amount, contractAddress }: ReturnType<typeof getSolanaAssetDiffValue>) => ({
     amount: amount.toFixed(),
     contractAddress,
+});
+
+describe('getEvmAssetDiffValue', () => {
+    it('converts the raw value of a token transfer with the asset decimals', () => {
+        const diff = asEvmDiff({
+            asset_type: 'ERC20',
+            asset: { type: 'ERC20', address: '0xA0b8', symbol: 'USDC', decimals: 6 },
+            in: [{ raw_value: '0x989680', value: '10.0', summary: 'Receiving 10 USDC' }],
+            out: [],
+        });
+
+        expect(toPlain(getEvmAssetDiffValue(diff.asset, diff.in[0]!)!)).toEqual({
+            amount: '10',
+            contractAddress: '0xA0b8',
+        });
+    });
+
+    it('returns no contract for the network coin', () => {
+        const diff = asEvmDiff({
+            asset_type: 'NATIVE',
+            asset: { type: 'NATIVE', symbol: 'ETH', decimals: 18 },
+            in: [],
+            out: [{ raw_value: '0x8ac7230489e80000', value: '10.0' }],
+        });
+
+        expect(toPlain(getEvmAssetDiffValue(diff.asset, diff.out[0]!)!)).toEqual({
+            amount: '10',
+            contractAddress: undefined,
+        });
+    });
+
+    it('leaves an NFT transfer to the provider summary', () => {
+        const diff = asEvmDiff({
+            asset_type: 'ERC721',
+            asset: { type: 'ERC721', address: '0xBC4C', symbol: 'BAYC' },
+            in: [{ token_id: '0x1', summary: 'Receiving BAYC #1' }],
+            out: [],
+        });
+
+        expect(getEvmAssetDiffValue(diff.asset, diff.in[0]!)).toBeNull();
+    });
+
+    it('leaves a token without a symbol to the provider summary', () => {
+        const diff = asEvmDiff({
+            asset_type: 'ERC20',
+            asset: { type: 'ERC20', address: '0xDEAD', decimals: 18 },
+            in: [{ raw_value: '0x1', value: '0.000000000000000001' }],
+            out: [],
+        });
+
+        expect(getEvmAssetDiffValue(diff.asset, diff.in[0]!)).toBeNull();
+    });
 });
 
 describe('getSolanaAssetDiffValue', () => {

@@ -39,7 +39,12 @@ export const EvmTxSimulationAsset = ({
                     }
                     dataTestId={`@sign-message-modal/tx-simulation-in-${inIndex}`}
                 >
-                    <TxSimulationSummary amount={inAmount} assetDiff={assetDiff} />
+                    <TxSimulationSummary
+                        amount={inAmount}
+                        assetDiff={assetDiff}
+                        networkSymbol={network.symbol}
+                        direction="in"
+                    />
                 </TxSimulationAssetRow>
             ))}
             {assetDiff?.out.map((outAmount, outIndex) => (
@@ -57,7 +62,12 @@ export const EvmTxSimulationAsset = ({
                     }
                     dataTestId={`@sign-message-modal/tx-simulation-out-${outIndex}`}
                 >
-                    <TxSimulationSummary amount={outAmount} assetDiff={assetDiff} />
+                    <TxSimulationSummary
+                        amount={outAmount}
+                        assetDiff={assetDiff}
+                        networkSymbol={network.symbol}
+                        direction="out"
+                    />
                 </TxSimulationAssetRow>
             ))}
             {assetExposure?.spenders &&
@@ -76,7 +86,11 @@ export const EvmTxSimulationAsset = ({
                         }
                         dataTestId={`@sign-message-modal/tx-simulation-spender-${index}`}
                     >
-                        <TxSimulationSummary amount={spender} assetDiff={assetDiff} />
+                        <TxSimulationSummary
+                            amount={spender}
+                            assetDiff={assetDiff}
+                            networkSymbol={network.symbol}
+                        />
                     </TxSimulationAssetRow>
                 ))}
         </Row>

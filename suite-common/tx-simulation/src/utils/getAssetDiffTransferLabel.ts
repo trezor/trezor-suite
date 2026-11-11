@@ -5,17 +5,32 @@ import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { getAssetDiffTransferAmount } from './getAssetDiffTransferAmount';
-import { getSolanaAssetDiffs, getStellarAssetDiffs } from './getSimulationAssetDiffs';
+import { type CrossChainAssetDiff, getCrossChainAssetDiffs } from './getCrossChainAssetDiffs';
 import {
+    getEvmSimulationSummary,
+    getSolanaAssetDiffs,
+    getStellarAssetDiffs,
+} from './getSimulationAssetDiffs';
+import { getNetworkByBlockaidChain } from '../chains';
+import {
+    type EvmAssetDiff,
+    type EvmAssetExposure,
     type NetworkTxSimulationResult,
     type SolanaAssetDiff,
     type StellarAssetDiff,
 } from '../types';
 
+type EvmAsset = EvmAssetDiff['asset'] | EvmAssetExposure['asset'] | CrossChainAssetDiff['asset'];
+type EvmTransfer = EvmAssetDiff['in'][number] | CrossChainAssetDiff['in'][number];
 type SolanaTransfer = NonNullable<SolanaAssetDiff['in'] | SolanaAssetDiff['out']>;
 type StellarTransfer = NonNullable<StellarAssetDiff['in'] | StellarAssetDiff['out']>;
 // `undefined` stands for the network's coin and for an asset without a symbol to show.
 type SimulatedToken = { contract: TokenAddress; symbol: string } | undefined;
+
+const getEvmToken = (asset: EvmAsset): SimulatedToken =>
+    'address' in asset && asset.symbol
+        ? { contract: toTokenAddress(asset.address), symbol: asset.symbol }
+        : undefined;
 
 const getSolanaToken = ({ asset }: SolanaAssetDiff): SimulatedToken =>
     'address' in asset && 'symbol' in asset && asset.symbol
@@ -44,6 +59,26 @@ const composeValue = (
 };
 
 /**
+ * Amount of an EVM transfer and the token it is in, or `null` when only the provider's summary
+ * can describe the transfer: an NFT has no fungible amount, and a token without a symbol must not
+ * be shown as the network's coin.
+ */
+export const getEvmAssetDiffValue = (asset: EvmAsset, transfer: EvmTransfer) => {
+    const token = getEvmToken(asset);
+
+    if (!('raw_value' in transfer) || ('address' in asset && !token)) {
+        return null;
+    }
+
+    const decimals = 'decimals' in asset ? asset.decimals : undefined;
+    const amount = getAssetDiffTransferAmount(transfer, decimals);
+
+    return amount === null || amount.isNaN()
+        ? null
+        : { amount: asAmountUnit(amount), contractAddress: token?.contract };
+};
+
+/**
  * Amount of a Solana asset-diff transfer, e.g. `37.191885 fone`.
  *
  * Blockaid's own `summary` is unusable here: unlike EVM ("Sending 0.01 ETH") the Solana endpoint
@@ -67,6 +102,13 @@ export const getStellarAssetDiffValue = (assetDiff: StellarAssetDiff, transfer: 
 
 const getSimulatedTokens = (result: NetworkTxSimulationResult): SimulatedToken[] => {
     switch (result.method) {
+        case 'ethereumSignTransaction':
+        case 'ethereumSignTypedData': {
+            const summary = getEvmSimulationSummary(result.payload);
+            const assets = summary ? [...summary.assetsDiffs, ...summary.exposures] : [];
+
+            return assets.map(({ asset }) => getEvmToken(asset));
+        }
         case 'solanaSignTransaction':
             return (getSolanaAssetDiffs(result.payload) ?? []).map(getSolanaToken);
         case 'stellarSignTransaction':
@@ -76,8 +118,30 @@ const getSimulatedTokens = (result: NetworkTxSimulationResult): SimulatedToken[]
     }
 };
 
+// A bridge moves tokens on other networks than the one the transaction is signed on.
+const getCrossChainTokenSources = (result: NetworkTxSimulationResult) => {
+    if (result.method !== 'ethereumSignTransaction' && result.method !== 'ethereumSignTypedData') {
+        return [];
+    }
+
+    const summary = getEvmSimulationSummary(result.payload);
+    const crossChainDiffs = summary
+        ? getCrossChainAssetDiffs(summary.simulation, result.payload.account_address)
+        : [];
+
+    return crossChainDiffs.flatMap(({ asset, chain }) => {
+        const network = getNetworkByBlockaidChain(chain);
+        const token = getEvmToken(asset);
+
+        return network && token ? [{ networkSymbol: network.symbol, tokens: [token] }] : [];
+    });
+};
+
 /** The simulated tokens as token metadata, so that one the account does not hold still resolves. */
 export const getTxSimulationTokenSources = (
     result: NetworkTxSimulationResult,
     networkSymbol: NetworkSymbol,
-) => [{ networkSymbol, tokens: getSimulatedTokens(result).flatMap(token => token ?? []) }];
+) => [
+    { networkSymbol, tokens: getSimulatedTokens(result).flatMap(token => token ?? []) },
+    ...getCrossChainTokenSources(result),
+];

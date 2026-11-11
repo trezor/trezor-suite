@@ -1,5 +1,10 @@
+import { AssetValue } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { type CrossChainAssetDiff, getNetworkByBlockaidChain } from '@suite-common/tx-simulation';
+import {
+    type CrossChainAssetDiff,
+    getEvmAssetDiffValue,
+    getNetworkByBlockaidChain,
+} from '@suite-common/tx-simulation';
 import { IconCircle, Row } from '@trezor/components';
 import { CoinsIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
@@ -17,8 +22,19 @@ export function TxSimulationCrossChainAsset({ assetDiff }: TxSimulationCrossChai
     // Blockaid reports on more chains than Suite holds, so fall back to its own chain name.
     const network = getNetworkByBlockaidChain(chain);
 
-    const summary = (transfer: CrossChainTransfer) =>
-        transfer.summary ?? `${transfer.value ?? transfer.raw_value} ${asset.symbol ?? ''}`.trim();
+    const summary = (transfer: CrossChainTransfer) => {
+        const value = network ? getEvmAssetDiffValue(asset, transfer) : null;
+
+        if (network && value) {
+            return <AssetValue {...value} networkSymbol={network.symbol} />;
+        }
+
+        // Without a Suite network there is no token metadata to render the symbol from.
+        return (
+            transfer.summary ??
+            `${transfer.value ?? transfer.raw_value} ${asset.symbol ?? ''}`.trim()
+        );
+    };
 
     const renderTransfers = (
         transfers: ReadonlyArray<CrossChainTransfer>,
