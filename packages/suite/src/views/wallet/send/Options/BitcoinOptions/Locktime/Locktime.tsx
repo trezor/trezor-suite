@@ -8,7 +8,7 @@ import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 import { LocktimeBlockHeight, inputName as blockHeightInputName } from './LocktimeBlockHeight';
 import { LocktimeDatetime, inputName as datetimeInputName } from './LocktimeDatetime';

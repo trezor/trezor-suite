@@ -6,7 +6,7 @@ import { type AccountWithNetworkType, type FormOptions } from '@suite-common/wal
 import { Column } from '@trezor/components';
 import { ETHEREUM_DATA_MAX_BYTES } from '@trezor/network-ethereum/constants';
 
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 import { EthereumNonce } from './EthereumNonce';
 import { TransactionData } from '../shared/TransactionData';

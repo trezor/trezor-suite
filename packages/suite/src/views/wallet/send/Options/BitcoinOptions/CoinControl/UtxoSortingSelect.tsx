@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { type UtxoSorting } from '@suite-common/wallet-types';
 import { type Option, Select } from '@trezor/components';
 
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 const sortingOptions: { value: UtxoSorting; label: ReactNode }[] = [
     { value: 'newestFirst', label: <Translation id="TR_NEWEST_FIRST" /> },

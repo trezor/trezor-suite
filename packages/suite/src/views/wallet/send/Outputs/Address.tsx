@@ -58,8 +58,8 @@ import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/Accoun
 import { InputError } from '#src/components/wallet/InputError';
 import { type InputErrorProps } from '#src/components/wallet/InputError';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useSendFormContext } from '#src/hooks/wallet';
 import { useReportEnsResolutionToAnalytics } from '#src/hooks/wallet/useReportEnsResolutionToAnalytics';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
 import { captureSentryMessage } from '#src/utils/suite/sentry';
 

@@ -26,8 +26,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { Pagination } from '#src/components/wallet/Pagination';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useSendFormContext } from '#src/hooks/wallet';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { selectAccountLabelsForSearch } from '#src/selectors/suite/selectAccountLabelsForSearch';
 
 import { UtxoSearch } from './UtxoSearch';

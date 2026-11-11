@@ -14,7 +14,7 @@ import type { AccountUtxo } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 import { UtxoSelection } from './UtxoSelection/UtxoSelection';
 
