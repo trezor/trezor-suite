@@ -35,7 +35,10 @@ export const TronClaimSummaryCard = () => {
                                 typographyStyle="body-md-strong"
                                 data-testid="@staking/tron-complete/claimed-amount"
                             >
-                                <FormattedCryptoAmount value={amount} symbol={account.symbol} />
+                                <FormattedCryptoAmount
+                                    value={amount}
+                                    networkSymbol={account.symbol}
+                                />
                             </Text>
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <BaseCurrencyValue

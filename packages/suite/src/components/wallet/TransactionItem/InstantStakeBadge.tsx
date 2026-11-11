@@ -55,7 +55,7 @@ export const InstantStakeBadge = memo(
         return (
             <Badge size="small" iconLeft={LightningIcon}>
                 <Row gap={4}>
-                    <FormattedCryptoAmount value={amount} symbol={symbol} />
+                    <FormattedCryptoAmount value={amount} networkSymbol={symbol} />
                     <Translation id={translationId} />
                 </Row>
             </Badge>

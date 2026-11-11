@@ -34,7 +34,7 @@ export const YieldTokenValue = ({
         <Text typographyStyle="body-md-strong">
             <FormattedCryptoAmount
                 value={amount}
-                symbol={token.symbol}
+                networkSymbol={token.symbol}
                 tokenDecimals={token.decimals}
                 data-testid={dataTestId}
             />

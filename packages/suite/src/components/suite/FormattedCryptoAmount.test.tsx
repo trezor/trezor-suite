@@ -44,7 +44,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value={value}
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     isCompact
                     data-testid="@amount"
                 />,
@@ -57,7 +57,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.009"
-                    symbol="USDC"
+                    networkSymbol="USDC"
                     contractAddress="0xa0b8"
                     isCompact
                     tokenDecimals={6}
@@ -72,7 +72,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1234.5678"
-                    symbol="USDT"
+                    networkSymbol="USDT"
                     isCompact
                     tokenDecimals={6}
                     data-testid="@amount"
@@ -88,7 +88,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.000009"
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     showApproximation
                     data-testid="@amount"
                 />,
@@ -101,7 +101,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.000009"
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     showApproximation
                     data-testid="@amount"
                 />,
@@ -118,7 +118,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.001005309106970022"
-                    symbol={asNetworkSymbol('eth')}
+                    networkSymbol={asNetworkSymbol('eth')}
                     data-testid="@amount"
                 />,
             );
@@ -130,7 +130,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.234567891234"
-                    symbol="DAI"
+                    networkSymbol="DAI"
                     tokenDecimals={18}
                     data-testid="@amount"
                 />,
@@ -143,7 +143,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.234567891234567"
-                    symbol="WETH"
+                    networkSymbol="WETH"
                     tokenDecimals={6}
                     data-testid="@amount"
                 />,
@@ -156,7 +156,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.234567891234567"
-                    symbol="WETH"
+                    networkSymbol="WETH"
                     data-testid="@amount"
                 />,
             );
@@ -171,7 +171,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="1.2345678901234"
-                    symbol={symbol}
+                    networkSymbol={symbol}
                     contractAddress="0xdead"
                     tokenDecimals={6}
                     data-testid="@amount"
@@ -185,7 +185,7 @@ describe('FormattedCryptoAmount', () => {
             renderAmount(
                 <FormattedCryptoAmount
                     value="0.123456789"
-                    symbol={bitcoin}
+                    networkSymbol={bitcoin}
                     data-testid="@amount"
                 />,
             );

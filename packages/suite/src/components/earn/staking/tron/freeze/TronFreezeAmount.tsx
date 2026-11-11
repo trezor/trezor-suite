@@ -269,7 +269,10 @@ export const TronFreezeAmount = () => {
                     >
                         <Translation id="TR_STAKE_AVAILABLE" />
                         {': '}
-                        <FormattedCryptoAmount value={availableBalance} symbol={account.symbol} />
+                        <FormattedCryptoAmount
+                            value={availableBalance}
+                            networkSymbol={account.symbol}
+                        />
                     </Text>
                     <Button
                         type="button"

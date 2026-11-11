@@ -83,7 +83,7 @@ export const CoinjoinBatchItem = ({
                                     transactionAmount.abs().toString(),
                                     transaction.symbol,
                                 )}
-                                symbol={transaction.symbol}
+                                networkSymbol={transaction.symbol}
                                 signValue={transactionAmount}
                             />
                         }

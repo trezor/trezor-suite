@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { AssetIcon } from '@suite/assets';
 import { TokenName } from '@suite/token';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
@@ -18,7 +19,6 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
@@ -112,10 +112,9 @@ export const TokenRow = ({
                             contractAddress={toTokenAddress(token.contract)}
                             gap={8}
                         >
-                            <TokenIcon
-                                placeholder={token.name || token.symbol || 'token'}
+                            <AssetIcon
                                 networkSymbol={account.symbol}
-                                contractAddress={token.contract}
+                                contractAddress={toTokenAddress(token.contract)}
                                 size={24}
                                 shouldTryToFetch={isTokenKnown}
                             />
@@ -153,10 +152,9 @@ export const TokenRow = ({
                             <FormattedCryptoAmount
                                 data-testid={`@token-row/${token.name}/crypto-amount`}
                                 value={token.balance}
-                                symbol={token.symbol}
-                                contractAddress={token.contract}
+                                networkSymbol={account.symbol}
+                                contractAddress={toTokenAddress(token.contract)}
                                 isCompact
-                                tokenDecimals={token.decimals}
                             />
                         </Text>
                     </Column>

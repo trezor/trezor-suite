@@ -1,26 +1,31 @@
+import { type CryptoId } from 'invity-api';
+
 import { Translation } from '@suite/intl';
+import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { InfoItem, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from '#src/components/suite';
 
 type TradingExchangeMinimumReceivedInfoItemProps = {
-    contractAddress?: string;
+    cryptoId: CryptoId;
     minimumYouGetAmount: string;
-    symbol?: string;
 };
 
 export const TradingExchangeMinimumReceivedInfoItem = ({
-    contractAddress,
+    cryptoId,
     minimumYouGetAmount,
-    symbol,
-}: TradingExchangeMinimumReceivedInfoItemProps) => (
-    <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />} direction="row">
-        <Text typographyStyle="body-sm" data-testid="@trading/offer/info/minimum-received">
-            <FormattedCryptoAmount
-                value={minimumYouGetAmount}
-                symbol={symbol}
-                contractAddress={contractAddress}
-            />
-        </Text>
-    </InfoItem>
-);
+}: TradingExchangeMinimumReceivedInfoItemProps) => {
+    const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+
+    return (
+        <InfoItem label={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM" />} direction="row">
+            <Text typographyStyle="body-sm" data-testid="@trading/offer/info/minimum-received">
+                <FormattedCryptoAmount
+                    value={minimumYouGetAmount}
+                    networkSymbol={networkSymbol}
+                    contractAddress={contractAddress}
+                />
+            </Text>
+        </InfoItem>
+    );
+};

@@ -46,7 +46,7 @@ export const CustomRow = ({
             amount={
                 <FormattedCryptoAmount
                     value={amount}
-                    symbol={transaction.symbol}
+                    networkSymbol={transaction.symbol}
                     signValue={sign}
                 />
             }
@@ -143,7 +143,7 @@ export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) =>
             amount={
                 <FormattedCryptoAmount
                     value={formattedAmount}
-                    symbol={transaction.symbol}
+                    networkSymbol={transaction.symbol}
                     signValue={transactionAmount}
                 />
             }

@@ -56,7 +56,7 @@ export const CancelTransaction = ({ tx, account }: CancelTransactionProps) => {
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={amount}
-                        symbol={symbol}
+                        networkSymbol={symbol}
                     />
                 </Row>
                 <Text intent="neutral" priority="secondary" typographyStyle="body-xs">

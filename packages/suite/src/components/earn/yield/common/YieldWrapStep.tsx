@@ -62,7 +62,7 @@ export const YieldWrapStep = ({
                 value: (
                     <FormattedCryptoAmount
                         value={availableAmount}
-                        symbol={nativeSymbol}
+                        networkSymbol={nativeSymbol}
                         tokenDecimals={token.decimals}
                     />
                 ),
@@ -95,7 +95,7 @@ export const YieldWrapStep = ({
                                 <Text typographyStyle="body-md" ellipsisLineCount={1}>
                                     <FormattedCryptoAmount
                                         value={receivingAmount}
-                                        symbol={token.symbol}
+                                        networkSymbol={token.symbol}
                                     />
                                 </Text>
                             </TruncatedAmount>

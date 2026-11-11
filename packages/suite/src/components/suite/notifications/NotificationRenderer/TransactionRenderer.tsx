@@ -141,10 +141,8 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                             notificationAmount !== undefined ? (
                                 <FormattedCryptoAmount
                                     value={notificationAmount}
-                                    symbol={
-                                        isSymbolRenderedBesideAmount
-                                            ? undefined
-                                            : (transactionToken?.symbol ?? symbol)
+                                    networkSymbol={
+                                        isSymbolRenderedBesideAmount ? undefined : symbol
                                     }
                                     contractAddress={transactionToken?.contract}
                                     tokenDecimals={transactionToken?.decimals}

@@ -18,7 +18,7 @@ export const EarnAvailableBalance = ({ formattedBalance, symbol }: EarnAvailable
             <FormattedCryptoAmount
                 data-testid="@staking/available-balance"
                 value={formattedBalance}
-                symbol={symbol}
+                networkSymbol={symbol}
             />{' '}
             <BaseCurrencyValue
                 data-testid="@staking/base-currency-value"

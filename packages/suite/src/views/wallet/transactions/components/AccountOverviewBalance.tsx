@@ -103,7 +103,7 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
                             <FormattedCryptoAmount
                                 data-testid="@wallet/account/crypto-balance"
                                 value={formattedBalance}
-                                symbol={symbol}
+                                networkSymbol={symbol}
                             />
                         </Text>
                     )}

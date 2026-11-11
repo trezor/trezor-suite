@@ -158,15 +158,15 @@ export const cryptoIdToNetworkSymbol = (
 export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | undefined) => {
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
     if (!network || !cryptoId) {
-        return { symbol: undefined, contractAddress: undefined };
+        return { networkSymbol: undefined, contractAddress: undefined };
     }
-    const { symbol } = network;
+    const networkSymbol = network.symbol;
 
     if (isCryptoIdForNativeToken(cryptoId)) {
-        return { symbol, contractAddress: undefined };
+        return { networkSymbol, contractAddress: undefined };
     }
 
-    return { symbol, contractAddress };
+    return { networkSymbol, contractAddress };
 };
 
 export const toTokenCryptoId = (symbol: NetworkSymbol, contractAddress: string): CryptoId =>

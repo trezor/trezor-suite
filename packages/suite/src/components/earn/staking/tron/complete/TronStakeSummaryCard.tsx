@@ -58,7 +58,7 @@ export const TronStakeSummaryCard = () => {
                                     >
                                         <FormattedCryptoAmount
                                             value={freeze.amount}
-                                            symbol={account.symbol}
+                                            networkSymbol={account.symbol}
                                         />
                                     </Text>
                                     <Text

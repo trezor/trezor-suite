@@ -80,7 +80,7 @@ export const TradingNetworkFeeInfoItem = ({
                             <FormattedCryptoAmount
                                 disableHiddenPlaceholder
                                 value={amount}
-                                symbol={symbol}
+                                networkSymbol={symbol}
                             />
                         }
                     >

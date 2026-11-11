@@ -233,7 +233,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                                         <FormattedCryptoAmount
                                                             data-testid="@modal/claim/rewards-amount"
                                                             value={restakedReward}
-                                                            symbol={account.symbol}
+                                                            networkSymbol={account.symbol}
                                                         />
                                                     </Paragraph>
                                                 </Row>
@@ -277,7 +277,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                     <FormattedCryptoAmount
                                         data-testid="@staking/claim-modal/amount"
                                         value={claimableAmount}
-                                        symbol={account.symbol}
+                                        networkSymbol={account.symbol}
                                     />
                                 </Paragraph>
                                 <Paragraph

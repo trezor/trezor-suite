@@ -120,7 +120,7 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
                                 <Text>
                                     <FormattedCryptoAmount
                                         value={crypto.toString()}
-                                        symbol={symbol}
+                                        networkSymbol={symbol}
                                         contractAddress={contractAddress}
                                         tokenDecimals={decimals}
                                         isCompact
