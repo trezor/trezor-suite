@@ -186,6 +186,7 @@ export const events = (api: TrezorConnect) => {
     });
     api.on(UI_REQUESTS.REQUEST_PASSPHRASE, event => {
         event.requestId.toLowerCase();
+        event.callId?.toLowerCase();
         event.device.path.toLowerCase();
     });
     api.off(UI_EVENT, () => {});
