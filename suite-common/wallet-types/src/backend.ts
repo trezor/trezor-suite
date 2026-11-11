@@ -38,6 +38,7 @@ export interface Blockchain extends ConnectionStatus {
     blockHeight: number;
     version: string;
     cardanoProtocolParameters?: CardanoProtocolParameters;
+    consensusBranchId?: number;
     syncTimeout?: TimerId;
     backends: BackendSettings;
     identityConnections?: {
