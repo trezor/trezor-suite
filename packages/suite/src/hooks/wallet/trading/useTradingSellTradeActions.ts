@@ -20,8 +20,6 @@ import { selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useTradingErrorToast } from './useTradingErrorToast';
-
 import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
 import { requestSellTradeThunk } from '#src/actions/wallet/trading/sell/requestSellTradeThunk';
 import { submitRequestFormThunk } from '#src/actions/wallet/trading/tradingCommonActions';
@@ -30,6 +28,8 @@ import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/u
 import { useTradingFormAccount } from '#src/hooks/wallet/trading/form/useTradingFormAccount';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import { buildSellReturnUrl } from '#src/utils/wallet/trading/buildSellReturnUrl';
+
+import { useTradingErrorToast } from './useTradingErrorToast';
 
 export const useTradingSellTradeActions = () => {
     const { desktopApi, analytics, dispatch } = useServices(
