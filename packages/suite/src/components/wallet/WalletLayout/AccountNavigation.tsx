@@ -9,8 +9,11 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type NavigationItem, SubpageNavigation } from '#src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from '#src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
+import {
+    type NavigationItem,
+    SubpageNavigation,
+} from '#src/components/suite/layouts/SuiteLayout/SubpageNavigation';
 import { useSelector } from '#src/hooks/suite';
 import { type WalletParams } from '#src/types/wallet';
 
