@@ -1,6 +1,5 @@
 import type { CoinInfo, CryptoId } from 'invity-api';
 
-import { truncateTokenSymbol } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     cryptoIdToNetworkSymbol,
@@ -21,7 +20,7 @@ export const coinInfoToTradeableAsset = (
 
     return {
         cryptoId,
-        symbol: truncateTokenSymbol(symbol.toUpperCase()),
+        symbol: symbol.toUpperCase(),
         contractAddress: tokenContractAddress,
         networkId,
         ...info,
