@@ -3,6 +3,7 @@ import React from 'react';
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
 import { toTokenAddress } from '@suite-common/tokens';
 import { AccountsListItemBase } from '@suite-native/accounts';
+import { AssetSymbol } from '@suite-native/assets';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -10,7 +11,7 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type PositionedAssetListItem = GlobalReceiveAssetListItem & {
@@ -79,16 +80,16 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                 badges={
                     <HStack alignItems="center">
                         <Text variant="body-sm" priority="secondary">
-                            {asset.isNativeToken ? (
-                                asset.displaySymbol
-                            ) : (
-                                <TokenSymbol
-                                    networkSymbol={asset.networkSymbol}
-                                    contractAddress={toTokenAddress(asset.contractAddress)}
-                                    variant="body-sm"
-                                    priority="secondary"
-                                />
-                            )}
+                            <AssetSymbol
+                                networkSymbol={asset.networkSymbol}
+                                contractAddress={
+                                    asset.contractAddress
+                                        ? toTokenAddress(asset.contractAddress)
+                                        : undefined
+                                }
+                                variant="body-sm"
+                                priority="secondary"
+                            />
                         </Text>
                         {title != asset.networkName && <Badge label={asset.networkName} />}
                     </HStack>
