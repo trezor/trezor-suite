@@ -30,7 +30,7 @@ export const TradeableAssetListItem = ({
 }: TradeableAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
-    const { symbol, name, contractAddress, cryptoId } = asset;
+    const { name, contractAddress, cryptoId } = asset;
 
     const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
     invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
@@ -78,8 +78,6 @@ export const TradeableAssetListItem = ({
             <Box paddingHorizontal="sp8" paddingVertical="sp12">
                 <TradingAsset
                     assetType="crypto"
-                    name={name}
-                    symbol={symbol}
                     contractAddress={contractAddress}
                     networkSymbol={networkSymbol}
                     rightContent={balanceContent}

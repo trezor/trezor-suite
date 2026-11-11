@@ -28,8 +28,8 @@ export const TradingExchangeApprovalPage = () => {
         return null;
     }
 
-    const { contractAddress: tokenContractAddress } = parseCryptoId(quote.send);
-    const sendSymbol = formValues?.sendCryptoSelect?.displaySymbol ?? '';
+    const sendCryptoId = quote.send;
+    const { contractAddress: tokenContractAddress } = parseCryptoId(sendCryptoId);
 
     const getCryptoInfo = () =>
         getTradingExchangeCryptoInfo({
@@ -65,7 +65,9 @@ export const TradingExchangeApprovalPage = () => {
                                     />
                                 }
                                 addon={
-                                    type === 'swap' && <ApprovalRequiredBadge symbol={sendSymbol} />
+                                    type === 'swap' && (
+                                        <ApprovalRequiredBadge cryptoId={sendCryptoId} />
+                                    )
                                 }
                                 data-testid={`@approval-step/${type}`}
                             />
