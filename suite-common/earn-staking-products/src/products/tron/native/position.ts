@@ -21,17 +21,17 @@ import { isPositiveStakingAmount } from '../../../utils/stakingAmounts';
 // Blockbook truncates the unlock and withdraw times to seconds.
 const TRON_REVALIDATE_BUFFER_MS = 1000;
 
-export type GetTronCuratedProductPositionParams = GetPositionParams & {
+export type GetTronNativeProductPositionParams = GetPositionParams & {
     descriptor: StakingProductDescriptor;
     representatives: readonly TronRepresentative[];
 };
 
-export const getTronCuratedProductPosition = ({
+export const getTronNativeProductPosition = ({
     descriptor,
     representatives,
     account,
     transactions,
-}: GetTronCuratedProductPositionParams): StakingPosition | null => {
+}: GetTronNativeProductPositionParams): StakingPosition | null => {
     const stakingInfo = getParsedTronStakingInfo({ account });
 
     if (stakingInfo === null) {

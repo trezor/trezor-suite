@@ -7,7 +7,7 @@ import {
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { type TronCuratedProductInfoDeps, fetchTronCuratedProductInfo } from './info';
+import { type TronNativeProductInfoDeps, fetchTronNativeProductInfo } from './info';
 import { getTronRepresentatives } from './utils';
 import { luganodesProvider } from '../../../providers/luganodes';
 import { p2pProvider } from '../../../providers/p2p';
@@ -28,14 +28,14 @@ const trxStats: TrxStats = [
 ];
 
 const createDeps = (stats: TrxStats = trxStats) =>
-    createMockDeps<TronCuratedProductInfoDeps>({
+    createMockDeps<TronNativeProductInfoDeps>({
         getTronStakingStats: () => Promise.resolve(stats),
     });
 
-describe('fetchTronCuratedProductInfo', () => {
+describe('fetchTronNativeProductInfo', () => {
     it('lists the offered representatives and promotes the highest APR', async () => {
         await expect(
-            fetchTronCuratedProductInfo(createDeps(), { representatives }),
+            fetchTronNativeProductInfo(createDeps(), { representatives }),
         ).resolves.toEqual({
             rate: 3.266833,
             entryPeriodDays: null,
@@ -61,7 +61,7 @@ describe('fetchTronCuratedProductInfo', () => {
     });
 
     it('names a target after its provider, not after the stats', async () => {
-        const info = await fetchTronCuratedProductInfo(
+        const info = await fetchTronNativeProductInfo(
             createDeps(trxStats.map(sr => ({ ...sr, name: 'Official Trezor SR' }))),
             { representatives },
         );
@@ -70,7 +70,7 @@ describe('fetchTronCuratedProductInfo', () => {
     });
 
     it('leaves out a representative no provider offers', async () => {
-        const info = await fetchTronCuratedProductInfo(
+        const info = await fetchTronNativeProductInfo(
             createDeps([
                 ...trxStats,
                 {
@@ -91,7 +91,7 @@ describe('fetchTronCuratedProductInfo', () => {
     });
 
     it('keeps the first entry of a representative the stats repeat', async () => {
-        const info = await fetchTronCuratedProductInfo(
+        const info = await fetchTronNativeProductInfo(
             createDeps([...trxStats, { ...trxStats[1]!, apr: 9 }]),
             { representatives },
         );
@@ -105,7 +105,7 @@ describe('fetchTronCuratedProductInfo', () => {
 
     it('has no rate without an offered representative', async () => {
         await expect(
-            fetchTronCuratedProductInfo(createDeps([]), { representatives }),
+            fetchTronNativeProductInfo(createDeps([]), { representatives }),
         ).resolves.toMatchObject({ rate: null, targets: [] });
     });
 
@@ -113,17 +113,17 @@ describe('fetchTronCuratedProductInfo', () => {
         const deps = createDeps();
         const abortSignal = new AbortController().signal;
 
-        await fetchTronCuratedProductInfo(deps, { abortSignal, representatives });
+        await fetchTronNativeProductInfo(deps, { abortSignal, representatives });
 
         expect(deps.getTronStakingStats).toHaveBeenCalledWith({ signal: abortSignal });
     });
 
     it('rejects when the stats request fails', async () => {
-        const deps = createMockDeps<TronCuratedProductInfoDeps>({
+        const deps = createMockDeps<TronNativeProductInfoDeps>({
             getTronStakingStats: () => Promise.reject(new Error('Request failed')),
         });
 
-        await expect(fetchTronCuratedProductInfo(deps, { representatives })).rejects.toThrow(
+        await expect(fetchTronNativeProductInfo(deps, { representatives })).rejects.toThrow(
             'Request failed',
         );
     });

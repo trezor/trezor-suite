@@ -1,6 +1,6 @@
 import { type StakingProductDescriptor } from '@suite-common/earn-staking-common';
 
-export const TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES: StakingProductDescriptor['messageSystemFeatures'] =
+export const TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES: StakingProductDescriptor['messageSystemFeatures'] =
     {
         stake: 'trx.staking.stake',
         unstake: 'trx.staking.unstake',

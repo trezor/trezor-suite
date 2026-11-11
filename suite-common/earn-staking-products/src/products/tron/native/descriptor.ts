@@ -5,18 +5,18 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { TRON_CURATED_PRODUCT_LIMITS } from './limits';
+import { TRON_NATIVE_PRODUCT_LIMITS } from './limits';
 import { curatedProvider } from '../../../providers/curated';
 
-export type CreateTronCuratedProductDescriptorParams = {
+export type CreateTronNativeProductDescriptorParams = {
     networkSymbol: NetworkSymbol;
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createTronCuratedProductDescriptor = ({
+export const createTronNativeProductDescriptor = ({
     networkSymbol,
     messageSystemFeatures,
-}: CreateTronCuratedProductDescriptorParams): StakingProductDescriptor => {
+}: CreateTronNativeProductDescriptorParams): StakingProductDescriptor => {
     const product = {
         networkSymbol,
         asset: { kind: 'native' },
@@ -30,7 +30,7 @@ export const createTronCuratedProductDescriptor = ({
         operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
         exclusivity: 'none',
         rateKind: 'apr',
-        limits: TRON_CURATED_PRODUCT_LIMITS,
+        limits: TRON_NATIVE_PRODUCT_LIMITS,
         options: [{ key: 'resource', kind: 'choice' }],
         consentKey: `staking:${curatedProvider.id}`,
         platforms: {

@@ -8,43 +8,43 @@ import type {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import { getTronCuratedProductAmountBounds } from './amountBounds';
-import { createTronCuratedProductDescriptor } from './descriptor';
-import { type TronCuratedProductInfoDeps, fetchTronCuratedProductInfo } from './info';
-import { getTronCuratedProductPosition } from './position';
+import { getTronNativeProductAmountBounds } from './amountBounds';
+import { createTronNativeProductDescriptor } from './descriptor';
+import { type TronNativeProductInfoDeps, fetchTronNativeProductInfo } from './info';
+import { getTronNativeProductPosition } from './position';
 import { getTronRepresentatives } from './utils';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 
-export type TronCuratedProductDeps = TronCuratedProductInfoDeps;
+export type TronNativeProductDeps = TronNativeProductInfoDeps;
 
-export type CreateTronCuratedProductParams = TronCuratedProductDeps & {
+export type CreateTronNativeProductParams = TronNativeProductDeps & {
     networkSymbol: NetworkSymbol;
     providers: readonly StakingProvider[];
     messageSystemFeatures: StakingProductDescriptor['messageSystemFeatures'];
 };
 
-export const createTronCuratedProduct = ({
+export const createTronNativeProduct = ({
     networkSymbol,
     providers,
     messageSystemFeatures,
     ...deps
-}: CreateTronCuratedProductParams): StakingProductAdapter => {
+}: CreateTronNativeProductParams): StakingProductAdapter => {
     const representatives = getTronRepresentatives({ networkSymbol, providers });
 
     if (representatives.length === 0) {
         throw new Error(`no ${networkSymbol} representative to vote for`);
     }
 
-    const descriptor = createTronCuratedProductDescriptor({ networkSymbol, messageSystemFeatures });
+    const descriptor = createTronNativeProductDescriptor({ networkSymbol, messageSystemFeatures });
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchTronCuratedProductInfo(deps, { ...params, representatives });
+        fetchTronNativeProductInfo(deps, { ...params, representatives });
 
     const getPosition = (params: GetPositionParams) =>
-        getTronCuratedProductPosition({ ...params, descriptor, representatives });
+        getTronNativeProductPosition({ ...params, descriptor, representatives });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getTronCuratedProductAmountBounds(params);
+        getTronNativeProductAmountBounds(params);
 
     const operations = createUnimplementedStakingOperations();
 

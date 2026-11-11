@@ -11,7 +11,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRON_RESOURCES, TRON_STAKE_RESERVE } from './constants';
-import { TRON_CURATED_PRODUCT_LIMITS } from './limits';
+import { TRON_NATIVE_PRODUCT_LIMITS } from './limits';
 import { isTronResource } from './utils';
 import {
     NO_STAKING_AMOUNT_BOUNDS,
@@ -53,7 +53,7 @@ const getMaxStakeAmount = (availableBalance: string): StakingAmount =>
     toStakingAmount(
         BigNumber.min(
             BigNumber.max(new BigNumber(availableBalance).minus(TRON_STAKE_RESERVE), 0),
-            TRON_CURATED_PRODUCT_LIMITS.maxStakeAmount,
+            TRON_NATIVE_PRODUCT_LIMITS.maxStakeAmount,
         ),
     );
 
@@ -63,7 +63,7 @@ const getExactBounds = (amount: StakingAmount | undefined): StakingAmountBounds 
     return { min: exactAmount, max: exactAmount };
 };
 
-export const getTronCuratedProductAmountBounds = ({
+export const getTronNativeProductAmountBounds = ({
     account,
     position,
     operation,
@@ -78,7 +78,7 @@ export const getTronCuratedProductAmountBounds = ({
     switch (operation) {
         case 'stake':
             return {
-                min: TRON_CURATED_PRODUCT_LIMITS.minStakeAmount,
+                min: TRON_NATIVE_PRODUCT_LIMITS.minStakeAmount,
                 max: getMaxStakeAmount(account.availableBalance),
             };
         case 'unstake':
