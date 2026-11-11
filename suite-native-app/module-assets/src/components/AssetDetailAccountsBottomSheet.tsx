@@ -7,9 +7,10 @@ import {
     selectWalletAssetHoldings,
     selectWalletAssetKey,
 } from '@suite-common/assets';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { BottomSheetModal, type BottomSheetModalRef, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,7 +20,6 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { TokenSymbol } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
@@ -71,16 +71,14 @@ export const AssetDetailAccountsBottomSheet = ({ ref }: AssetDetailAccountsBotto
                 <Translation
                     id="moduleAssets.assetDetailScreen.accountsSheet.subtitle"
                     values={{
-                        assetName: tokenContract ? (
-                            <TokenSymbol
+                        assetName: (
+                            <AssetSymbol
                                 isTruncated
                                 networkSymbol={networkSymbol}
                                 contractAddress={tokenContract}
                                 variant="body-sm"
                                 color="contentSecondary"
                             />
-                        ) : (
-                            getNetworkDisplaySymbol(networkSymbol)
                         ),
                         networkName: getNetwork(networkSymbol).name,
                     }}
