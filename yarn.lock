@@ -16897,11 +16897,15 @@ __metadata:
   resolution: "@suite/assets@workspace:suite/assets"
   dependencies:
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/networks": "workspace:*"
+    "@suite-common/token": "workspace:*"
     "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/token": "workspace:*"
+    "@trezor/product-components": "workspace:*"
     react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -20084,6 +20088,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/token": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/tokens": "workspace:*"
     "@suite-common/trading": "workspace:*"

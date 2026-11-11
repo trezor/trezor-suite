@@ -1,6 +1,7 @@
 import { getGlobalReceiveAssetDescriptionValues } from '@suite-common/receive';
 import type { TradingAssetOption } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetName } from '@suite-native/assets';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -19,7 +20,13 @@ export const ReceiveAccountsHeader = ({ asset, closeActionType }: ReceiveAccount
     const { analytics } = useServices(injectNativeAnalytics);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
-    const { assetName, networkName } = getGlobalReceiveAssetDescriptionValues(asset);
+    const { networkName } = getGlobalReceiveAssetDescriptionValues(asset);
+    const assetName = (
+        <AssetName
+            networkSymbol={asset.networkSymbol}
+            contractAddress={asset.isNativeToken ? undefined : asset.contractAddress}
+        />
+    );
 
     const closeAction = () => {
         analytics.report({

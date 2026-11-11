@@ -13,10 +13,14 @@
     },
     "dependencies": {
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/networks": "workspace:*",
+        "@suite-common/token": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/token": "workspace:*",
-        "react": "19.3.0"
+        "@trezor/product-components": "workspace:*",
+        "react": "19.3.0",
+        "react-redux": "9.3.0"
     }
 }
