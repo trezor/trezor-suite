@@ -734,6 +734,7 @@ type SignTransactionThunkParams = {
 };
 
 export type SignTransactionThunkState = AccountsRootState &
+    BlockchainRootState &
     DeviceRootState &
     TransactionsRootState &
     WalletSettingsRootState;
