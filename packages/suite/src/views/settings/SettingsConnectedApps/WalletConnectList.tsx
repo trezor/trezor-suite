@@ -18,6 +18,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
 import { useSelector } from '#src/hooks/suite';
 
+import { ConnectAppName } from './ConnectAppName';
+
 export const WalletConnectList = () => {
     const { dispatch } = useServices(injectDispatch);
     const sessions = useSelector(selectSessions);
@@ -51,10 +53,10 @@ export const WalletConnectList = () => {
                         />
                         <Column flex="1">
                             <Row columnGap={12} rowGap={2} flexWrap="wrap">
-                                <Text>{session.peer.metadata.name}</Text>
-                                <Text intent="neutral" priority="secondary">
-                                    {session.peer.metadata.url}
-                                </Text>
+                                <ConnectAppName
+                                    appName={session.peer.metadata.name}
+                                    origin={session.peer.metadata.url}
+                                />
                                 {session.validation === 'VALID' && (
                                     <Badge intent="info" iconLeft={ShieldCheckFilledIcon}>
                                         <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />

@@ -29,6 +29,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { sanitizeName } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
@@ -125,6 +126,10 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
 
     if (!pendingProposal) return null;
 
+    // The url stands in for a name with nothing visible left.
+    const proposerName = sanitizeName(pendingProposal.params.proposer.metadata.name);
+    const proposerUrl = pendingProposal.params.proposer.metadata.url;
+
     const requiredNetworksNotActivated = pendingProposal.networks.some(
         network => network.required && network.status !== 'active',
     );
@@ -177,10 +182,12 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
 
                         <Column gap={4}>
                             <Row gap={12}>
-                                <Text>{pendingProposal.params.proposer.metadata.name}</Text>
-                                <Text intent="neutral" priority="secondary">
-                                    {pendingProposal.params.proposer.metadata.url}
-                                </Text>
+                                <Text>{proposerName || proposerUrl}</Text>
+                                {proposerName && (
+                                    <Text intent="neutral" priority="secondary">
+                                        {proposerUrl}
+                                    </Text>
+                                )}
                             </Row>
                             <Row gap={12}>
                                 {!pendingProposal.isScam &&

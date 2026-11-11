@@ -27,6 +27,7 @@ import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { TxSimulationRiskBanner } from '@suite-native/tx-simulation';
+import { sanitizeName } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -96,6 +97,9 @@ export const WalletConnectSessionPopupScreen = () => {
     const firstAccount: (typeof accounts)[number] = accounts[0];
     const accountToShow = selectedDefaultAccount ?? firstAccount;
     const [ignoreWarning, setIgnoreWarning] = useState(false);
+    // The url stands in for a name with nothing visible left.
+    const proposerName = sanitizeName(pendingProposal?.params.proposer.metadata.name);
+    const proposerUrl = pendingProposal?.params.proposer.metadata.url;
     const isDisabled =
         !pendingProposal ||
         pendingProposal.expired ||
@@ -123,7 +127,7 @@ export const WalletConnectSessionPopupScreen = () => {
                             />
                             <VStack flex={1} spacing="sp4">
                                 <HStack flexWrap="wrap">
-                                    <Text>{pendingProposal?.params.proposer.metadata.name}</Text>
+                                    <Text>{proposerName || proposerUrl}</Text>
                                     {!pendingProposal?.isScam &&
                                         pendingProposal?.validation === 'VALID' && (
                                             <Badge
@@ -155,9 +159,9 @@ export const WalletConnectSessionPopupScreen = () => {
                                         />
                                     )}
                                 </HStack>
-                                <Text color="contentSecondary">
-                                    {pendingProposal?.params.proposer.metadata.url}
-                                </Text>
+                                {proposerName && (
+                                    <Text color="contentSecondary">{proposerUrl}</Text>
+                                )}
                             </VStack>
                         </HStack>
                     </Card>
