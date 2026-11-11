@@ -16892,6 +16892,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/assets@workspace:*, @suite/assets@workspace:suite/assets":
+  version: 0.0.0-use.local
+  resolution: "@suite/assets@workspace:suite/assets"
+  dependencies:
+    "@suite-common/tokens": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite/token": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/authenticity-checks@workspace:*, @suite/authenticity-checks@workspace:suite/authenticity-checks":
   version: 0.0.0-use.local
   resolution: "@suite/authenticity-checks@workspace:suite/authenticity-checks"
@@ -20088,6 +20101,7 @@ __metadata:
     "@suite/address": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/app-assets": "workspace:*"
+    "@suite/assets": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/bluetooth": "workspace:*"

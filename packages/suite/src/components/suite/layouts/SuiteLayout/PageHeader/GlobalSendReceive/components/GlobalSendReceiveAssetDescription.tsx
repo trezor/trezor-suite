@@ -1,5 +1,5 @@
+import { AssetLabel } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { TokenName } from '@suite/token';
 import { getGlobalReceiveAssetDescriptionValues } from '@suite-common/receive';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type TradingAssetOption } from '@suite-common/trading';
@@ -16,13 +16,12 @@ export const GlobalSendReceiveAssetDescription = ({
     }
 
     const { assetName, networkName } = getGlobalReceiveAssetDescriptionValues(asset);
-    // An account token's name can carry a URL, so it is masked; a catalog name is shown as is.
-    const assetLabel = asset.isNativeToken ? (
-        assetName
-    ) : (
-        <TokenName
+    const contractAddress = asset.isNativeToken ? undefined : toTokenAddress(asset.contractAddress);
+    // A catalog token the user does not hold has no metadata, so its catalog name is shown instead.
+    const assetLabel = (
+        <AssetLabel
             networkSymbol={asset.networkSymbol}
-            tokenContract={toTokenAddress(asset.contractAddress)}
+            contractAddress={contractAddress}
             fallback={assetName}
         />
     );
