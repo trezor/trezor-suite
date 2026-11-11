@@ -20,6 +20,9 @@
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../networks/stellar/network-stellar"

@@ -4,15 +4,22 @@ import type { ProposalTypes } from '@walletconnect/types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type BlockchainRootState,
+    selectAccounts,
+    selectNetworkBackendType,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { asGetter } from '@trezor/dependency-injection';
 import { createThunk } from '@trezor/redux-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
+import { signWalletConnectMessage } from '../walletConnectMessageSigning';
 import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
@@ -37,7 +44,8 @@ const findAccount = (accounts: Account[], firstAddress: string) =>
 
 export type BitcoinRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     AccountsRootState &
-    WalletConnectStateRootState;
+    WalletConnectStateRootState &
+    BlockchainRootState;
 
 export type BitcoinRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
@@ -94,27 +102,25 @@ const bitcoinRequestThunk = createThunk<
                 ...account.addresses.unused,
             ].find(a => a.address === address || !address);
             if (!addressInfo) throw new Error('Address not found');
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    method: 'signMessage',
-                    payload: {
-                        path: addressInfo.path,
-                        coin: asCoinSymbol(account.symbol),
-                        message,
-                        hex: true,
-                        device,
-                    },
+            const signed = await signWalletConnectMessage(
+                { device, account, path: addressInfo.path, message, isHex: true },
+                {
                     ...popupCallCommonParams,
-                }),
+                    dispatch,
+                    getNetworkBackend: asGetter(symbol =>
+                        selectNetworkBackendType(getState(), symbol),
+                    ),
+                },
             );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-            if (!response.success) {
-                console.error('signMessage error', response);
+            if (!signed.success) {
+                console.error('signMessage error', signed);
                 throw new Error('signMessage error');
             }
-            const typedPayload = response.payload as CallMethodResponse<'signMessage'>;
 
-            return { signature: typedPayload.signature, address: typedPayload.address };
+            return {
+                signature: signed.payload.signature,
+                address: signed.payload.address ?? addressInfo.address,
+            };
         }
         case 'sendTransfer': {
             const {

@@ -4,5 +4,7 @@ export * from './connectPopupThunks';
 export * from './connectPopupReducer';
 export * from './connectPopupTypes';
 export * from './connectPopupPromiseManager';
+export * from './createPopupConnect';
+export * from './createPopupGetNetwork';
 export * from './permissions';
 export * from './hooks/useTxSimulationPopupCall';

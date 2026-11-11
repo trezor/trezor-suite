@@ -9,11 +9,13 @@ import {
 } from '@suite-common/mev';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import {
+    type BlockchainRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
     ethereumGetCurrentNonceThunk,
     selectAccounts,
     selectIsMevProtectionEnabled,
+    selectNetworkBackendType,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -29,10 +31,12 @@ import TrezorConnect, {
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { asGetter } from '@trezor/dependency-injection';
 import { createThunk } from '@trezor/redux-utils';
 import { isAscii, isHex, throwError } from '@trezor/utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
+import { signWalletConnectMessage } from '../walletConnectMessageSigning';
 import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
@@ -61,7 +65,8 @@ export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCa
     WalletConnectStateRootState &
     MevProtectionRootState &
     WalletSettingsRootState &
-    TransactionsRootState;
+    TransactionsRootState &
+    BlockchainRootState;
 
 export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
@@ -110,25 +115,28 @@ const ethereumRequestThunk = createThunk<
                 ? sanitizeHex(message)
                 : Buffer.from(message, 'utf8').toString('hex');
             const isReadable = isAscii(messageDecoded);
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
+            const signed = await signWalletConnectMessage(
+                {
+                    device,
+                    account,
+                    path: account.path,
+                    message: isReadable ? messageDecoded : messageHex,
+                    isHex: !isReadable,
+                },
+                {
                     ...popupCallCommonParams,
-                    method: 'ethereumSignMessage',
-                    payload: {
-                        path: account.path,
-                        message: isReadable ? messageDecoded : messageHex,
-                        hex: !isReadable,
-                    },
-                }),
+                    dispatch,
+                    getNetworkBackend: asGetter(symbol =>
+                        selectNetworkBackendType(getState(), symbol),
+                    ),
+                },
             );
-            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-            if (!response.success) {
-                console.error('personal_sign error', response);
+            if (!signed.success) {
+                console.error('personal_sign error', signed);
                 throw new Error('personal_sign error');
             }
-            const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
 
-            return sanitizeHex(typedPayload.signature);
+            return sanitizeHex(signed.payload.signature);
         }
         case 'eth_signTypedData_v4': {
             const [address, data] = event.params.request.params;

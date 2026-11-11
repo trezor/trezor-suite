@@ -29,6 +29,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
