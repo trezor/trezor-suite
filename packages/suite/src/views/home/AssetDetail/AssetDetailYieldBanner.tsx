@@ -2,6 +2,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { closeTokenYieldBanner, selectIsTokenYieldBannerClosed } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { TokenSymbol } from '@suite/token';
 import { events as sharedEvents } from '@suite-common/analytics';
 import {
     selectWalletAssetContractAddress,
@@ -67,6 +68,12 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
         reportYieldNavigate('cancel');
     };
 
+    const symbolLabel = symbol ? (
+        <TokenSymbol networkSymbol={symbol} tokenContract={contractAddress} isTruncated />
+    ) : (
+        displaySymbol
+    );
+
     return (
         <Banner
             icon={PiggyBankIcon}
@@ -74,11 +81,14 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
             title={
                 <Translation
                     id="TR_STAKING_BANNER_ETH_EARN_TITLE"
-                    values={{ apy: formatApy(apy), displaySymbol }}
+                    values={{ apy: formatApy(apy), displaySymbol: symbolLabel }}
                 />
             }
             description={
-                <Translation id="TR_EARN_TOKEN_YIELD_BANNER_TEXT" values={{ displaySymbol }} />
+                <Translation
+                    id="TR_EARN_TOKEN_YIELD_BANNER_TEXT"
+                    values={{ displaySymbol: symbolLabel }}
+                />
             }
             rightContent={
                 <>

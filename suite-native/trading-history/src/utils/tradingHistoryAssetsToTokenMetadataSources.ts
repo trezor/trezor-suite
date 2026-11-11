@@ -15,8 +15,6 @@ export const tradingHistoryAssetsToTokenMetadataSources = (
                           {
                               contract: toTokenAddress(asset.contractAddress),
                               name: asset.name,
-                              // The raw symbol, not `displaySymbol`: the display symbol is
-                              // truncated, which would hide a URL from masking.
                               symbol: asset.symbol,
                           },
                       ],

@@ -188,7 +188,7 @@ describe(getDisplaySymbol.name, () => {
         expect(getDisplaySymbol('USDC', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')).toBe('USDC');
     });
 
-    it('truncates symbols longer than the maximum length', () => {
-        expect(getDisplaySymbol('SUPERLONGTOKEN')).toBe('SUPERLONGT...');
+    it('returns long token symbols whole', () => {
+        expect(getDisplaySymbol('SUPERLONGTOKEN')).toBe('SUPERLONGTOKEN');
     });
 });
