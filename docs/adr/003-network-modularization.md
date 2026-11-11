@@ -306,27 +306,6 @@ suite-app/sign-verify-page/                 # Renders the SignVerify feature
 suite-native-app/module-sign-verify/        # Renders the native SignVerify feature
 ```
 
-### 8. The abstraction can be lowered later but not raised
-
-> [!CAUTION]
-> **A wrong, premature abstraction is hell to refactor.** The feature-level abstraction can be
-> lowered at any time by replacing a component with a fine-grained API and an engine. The way back
-> does not exist in practice: once an engine is built, replacing it with components again is an
-> extremely expensive refactoring.
-
-This is the crucial argument of this ADR. The reasons:
-
-- **Lowering is local.** Every network's feature is complete, working and isolated in its own
-  module. If the modules of a feature turn out to be alike, we see it in real code and read the
-  common shape from it instead of guessing it up front. We can then move that one feature to a
-  finer API with a shared implementation. The other features, and the networks that do not fit,
-  stay as they are.
-- **Raising touches every network.** Each network's behavior is split between its description and
-  the shared engine, and the engine's conditions mix the rules of all networks. Taking one network
-  out means untangling what the engine does for it from what it does for the others.
-
-We therefore start at the high level, which keeps both options open.
-
 ## Practical steps
 
 > [!NOTE]
@@ -359,8 +338,26 @@ interprets into UI:
 - **It forces a common shape.** Product and design cannot give a network a different flow without
   extending the engine first.
 
-An engine is also the choice that is hard to undo, see
-[The abstraction can be lowered later but not raised](#8-the-abstraction-can-be-lowered-later-but-not-raised).
+#### The abstraction can be lowered later but not raised
+
+> [!CAUTION]
+> **A wrong, premature abstraction is hell to refactor.** The feature-level abstraction can be
+> lowered at any time by replacing a component with a fine-grained API and an engine. The way back
+> does not exist in practice: once an engine is built, replacing it with components again is an
+> extremely expensive refactoring.
+
+This is the crucial argument of this ADR. The reasons:
+
+- **Lowering is local.** Every network's feature is complete, working and isolated in its own
+  module. If the modules of a feature turn out to be alike, we see it in real code and read the
+  common shape from it instead of guessing it up front. We can then move that one feature to a
+  finer API with a shared implementation. The other features, and the networks that do not fit,
+  stay as they are.
+- **Raising touches every network.** Each network's behavior is split between its description and
+  the shared engine, and the engine's conditions mix the rules of all networks. Taking one network
+  out means untangling what the engine does for it from what it does for the others.
+
+We therefore start at the high level, which keeps both options open.
 
 #### Example: a Sign & Verify engine
 
