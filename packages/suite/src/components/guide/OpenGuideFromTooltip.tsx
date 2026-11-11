@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { TextButton } from '@trezor/components';
 import { LightbulbIcon } from '@trezor/icons';
 
-import { useGuideOpenNode } from '#src/hooks/guide';
+import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
 
 type OpenGuideFromTooltipProps = {
     id: string;
