@@ -23,6 +23,43 @@ describe('getTokens visibility', () => {
     const mixedCaseContract = '0x' + 'aB'.repeat(20);
     const lowercaseContract = mixedCaseContract.toLowerCase();
 
+    describe.each(['xlm', 'txlm'])('activated Stellar tokens on %s', networkSymbol => {
+        const symbol = asNetworkSymbol(networkSymbol);
+        const token = mockAccountToken({
+            contract: 'USDC-GIssuer',
+            standard: 'STELLAR-CLASSIC',
+            balance: '5',
+        });
+
+        it.each([undefined, { ...ethDefinitions, data: [], hide: [] }])(
+            'shows trustlines independently of token definitions (%j)',
+            tokenDefinitions => {
+                const zeroBalanceToken = { ...token, contract: 'ZERO-GIssuer', balance: '0' };
+                const result = getTokens({
+                    symbol,
+                    tokens: [token, zeroBalanceToken],
+                    tokenDefinitions,
+                });
+
+                expect(result.shownWithBalance).toEqual([token]);
+                expect(result.shownWithoutBalance).toEqual([zeroBalanceToken]);
+                expect(result.unverifiedWithBalance).toEqual([]);
+                expect(result.unverifiedWithoutBalance).toEqual([]);
+            },
+        );
+
+        it('respects manually hidden trustlines outside token definitions', () => {
+            const result = getTokens({
+                symbol,
+                tokens: [token],
+                tokenDefinitions: { ...ethDefinitions, data: [], hide: [token.contract] },
+            });
+
+            expect(result.shownWithBalance).toEqual([]);
+            expect(result.hiddenWithBalance).toEqual([token]);
+        });
+    });
+
     describe.each(['eth', 'base'])('%s', networkSymbol => {
         const symbol = asNetworkSymbol(networkSymbol);
 

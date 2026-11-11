@@ -14,6 +14,7 @@ import {
     mockAccountKey,
     mockAccountToken,
     mockEthereumStakingAccount,
+    mockWalletAccount,
 } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
@@ -457,6 +458,85 @@ describe('selectIsAccountDiscoveryFailed', () => {
                 ),
             ).toBe(false);
         });
+    });
+});
+
+describe.each(['xlm', 'txlm'])('activated Stellar tokens on %s', networkSymbol => {
+    const symbol = asNetworkSymbol(networkSymbol);
+    const visibleToken = mockAccountToken({
+        contract: 'USDC-GIssuer',
+        standard: 'STELLAR-CLASSIC',
+        balance: '5',
+    });
+    const hiddenToken = { ...visibleToken, contract: 'HIDDEN-GIssuer', balance: '900' };
+    const zeroBalanceToken = { ...visibleToken, contract: 'ZERO-GIssuer', balance: '0' };
+    const account = mockWalletAccount({
+        symbol,
+        balance: '100000000',
+        formattedBalance: '10',
+        tokens: [visibleToken, hiddenToken, zeroBalanceToken],
+    });
+    const createRate = (rate: number): CurrentRate => ({
+        ticker: { symbol },
+        rate,
+        usdRate: rate,
+        lastTickerTimestamp: 1700000000000 as Timestamp,
+        lastSuccessfulFetchTimestamp: 1700000000000 as Timestamp,
+        isLoading: false,
+        error: null,
+    });
+    const createState = (hide = [hiddenToken.contract]): NativeAccountsRootState => {
+        const state = mockStakeRootState({ accounts: [account] });
+
+        return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+                fiat: {
+                    ...fiatRatesInitialState,
+                    current: {
+                        [getFiatRateKey(symbol, 'usd')]: createRate(2),
+                        [getFiatRateKey(symbol, 'usd', toTokenAddress(visibleToken.contract))]:
+                            createRate(3),
+                        [getFiatRateKey(symbol, 'usd', toTokenAddress(hiddenToken.contract))]:
+                            createRate(1),
+                    },
+                },
+            },
+            suiteSyncData: { wallets: {} },
+            tokenDefinitions: {
+                [symbol]: {
+                    coin: { data: [], hide, show: [], error: false, isLoading: false },
+                },
+            },
+        };
+    };
+
+    it('keeps trustlines outside token definitions in the active list, count and total', () => {
+        const state = createState();
+        const sections = selectAccountListSectionsWithZeroBalanceGroup(state, account.key);
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(1);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('35');
+        expect(
+            sections.filter(section => section.type === 'token').map(section => section.token),
+        ).toEqual([visibleToken]);
+        expect(sections.find(section => section.type === 'zeroBalance')?.tokens).toEqual([
+            zeroBalanceToken,
+        ]);
+    });
+
+    it('excludes a manually hidden trustline from the active list, count and total', () => {
+        const state = createState([visibleToken.contract, hiddenToken.contract]);
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(0);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('20');
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key).filter(
+                section => section.type === 'token',
+            ),
+        ).toHaveLength(0);
     });
 });
 
