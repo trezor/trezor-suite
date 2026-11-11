@@ -47,6 +47,7 @@ import {
     selectAccountTransactionsFetchStatus,
     selectAccountsByDeviceState,
     selectAccountsTransactions,
+    selectNetworkBackendType,
 } from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
@@ -140,6 +141,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
+        getNetworkBackend: toGetter(deps.getState, selectNetworkBackendType),
     });
 
     const staking = createStakingCompositionRoot({

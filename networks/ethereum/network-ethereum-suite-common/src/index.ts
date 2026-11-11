@@ -1,4 +1,5 @@
 export { createEthereumSuiteCommonNetworkModule } from './createEthereumSuiteCommonNetworkModule';
+export { ethereumFamily, type EthereumFamilyDeps } from './ethereumFamily';
 
 // These exports are temporary migration aids. Once network modularization is complete,
 // wrapped-native token configuration shall remain private to the Ethereum network module.

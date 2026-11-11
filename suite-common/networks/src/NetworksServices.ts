@@ -4,6 +4,7 @@ import type { AddressValidatorDep } from './createAddressValidator';
 import type { GetAccountSyncIntervalDep } from './createGetAccountSyncInterval';
 import type { GetIconPathsDep } from './createGetIconPaths';
 import type { GetNamedAddressSupportDep } from './createGetNamedAddressSupport';
+import type { GetNetworkDep } from './createGetNetwork';
 import type { GetNetworkByCoingeckoIdDep } from './createGetNetworkByCoingeckoId';
 import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 import type { IsWrappedNativeTokenDep } from './createIsWrappedNativeToken';
@@ -19,6 +20,7 @@ export type NetworksServices = NetworkIconDep &
     GetAccountSyncIntervalDep &
     GetNamedAddressSupportDep &
     GetNetworkConfigDep &
+    GetNetworkDep &
     GetNetworkByCoingeckoIdDep &
     LoadNetworkModulesDep;
 

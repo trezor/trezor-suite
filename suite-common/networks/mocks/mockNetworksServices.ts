@@ -37,6 +37,7 @@ export const mockNetworksServices = (
             }),
         networkModuleRepository,
         getNetworkConfig: overrides.getNetworkConfig ?? getMockNetworkMetadata,
+        getNetwork: overrides.getNetwork ?? null,
         isSupportedNetwork:
             overrides.isSupportedNetwork ?? networkModuleRepository.isSupportedNetwork,
         isWrappedNativeToken: overrides.isWrappedNativeToken ?? (() => false),

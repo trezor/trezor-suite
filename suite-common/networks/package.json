@@ -15,6 +15,7 @@
         "@reduxjs/toolkit": "2.13.0",
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/legacy-network-config": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-assets-types": "workspace:*",
         "@trezor/network-bitcoin-suite-common": "workspace:*",
         "@trezor/network-cardano-suite-common": "workspace:*",
@@ -27,8 +28,5 @@
         "@trezor/network-tron-suite-common": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
-    },
-    "devDependencies": {
-        "@trezor/dependency-injection": "workspace:*"
     }
 }

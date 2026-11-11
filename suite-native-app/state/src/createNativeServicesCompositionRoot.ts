@@ -13,6 +13,7 @@ import { createNativePlatformEncryption } from '@suite-common/platform-encryptio
 import { createQueryClient } from '@suite-common/react-query';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { selectNetworkBackendType } from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -87,6 +88,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
+        getNetworkBackend: toGetter(deps.getState, selectNetworkBackendType),
     });
 
     const staking = createStakingCompositionRoot({
