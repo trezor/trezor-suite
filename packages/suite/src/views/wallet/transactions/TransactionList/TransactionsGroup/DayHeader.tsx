@@ -1,5 +1,6 @@
 import { FormattedDate } from 'react-intl';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -8,7 +9,8 @@ import { parseTransactionDateKey } from '@suite-common/wallet-utils';
 import { Grid, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { Sign } from '#src/components/suite/Sign';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 type DayHeaderProps = {

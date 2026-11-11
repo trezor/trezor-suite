@@ -13,7 +13,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typographyStylesBase } from '@trezor/theme';
 
-import { PriceTicker, TrendTicker } from '#src/components/suite';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { useSelector } from '#src/hooks/suite';
 import { HomeAssetBalance } from '#src/views/home/HomeAssetsTable/HomeAssetBalance';
 import { HomeAssetIdentity } from '#src/views/home/HomeAssetsTable/HomeAssetIdentity';

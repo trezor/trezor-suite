@@ -12,7 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { changePinThunk } from '#src/actions/settings/deviceSettingsActions';
 import { SkipStepConfirmation } from '#src/components/onboarding/SkipStepConfirmation';
-import { PinMatrix } from '#src/components/suite';
+import { PinMatrix } from '#src/components/suite/PinMatrix/PinMatrix';
 import { useOnboarding, useSelector } from '#src/hooks/suite';
 
 export const PinStep = () => {

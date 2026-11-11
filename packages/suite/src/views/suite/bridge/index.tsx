@@ -5,7 +5,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { Metadata } from '#src/components/suite';
+import { Metadata } from '#src/components/suite/Metadata';
 import { useSelector } from '#src/hooks/suite';
 import { useOpenSuiteDesktop } from '#src/hooks/suite/useOpenSuiteDesktop';
 import {

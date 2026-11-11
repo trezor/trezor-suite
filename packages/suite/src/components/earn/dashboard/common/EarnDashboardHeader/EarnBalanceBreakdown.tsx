@@ -1,3 +1,4 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import {
     selectEarnTotalFiatAmount,
@@ -12,7 +13,6 @@ import { Card, Column, SegmentedBar, Text } from '@trezor/components';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from '#src/components/suite';
 import { useSelector } from '#src/hooks/suite';
 
 import { EarnBalanceBreakdownRow } from './EarnBalanceBreakdownRow';

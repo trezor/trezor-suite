@@ -23,7 +23,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { Pagination } from '#src/components/wallet';
 import { useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet';

@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from '#src/components/suite';
 import { TrendBadge } from '#src/components/suite/Ticker/TrendBadge';
 
 import { FiatChangeAmount } from './FiatChangeAmount';

@@ -11,7 +11,7 @@ import { SectionItem, TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
-import { StatusLight } from '#src/components/suite';
+import { StatusLight } from '#src/components/suite/StatusLight';
 import { useBackendReconnection } from '#src/hooks/settings/backends';
 import { useSelector } from '#src/hooks/suite';
 

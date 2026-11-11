@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
@@ -10,7 +11,7 @@ import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedDate, HiddenPlaceholder } from '#src/components/suite';
+import { FormattedDate } from '#src/components/suite/FormattedDate';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { type Account } from '#src/types/wallet';
 import { type AggregatedAccountHistory, type GraphRange } from '#src/types/wallet/graph';

@@ -1,10 +1,11 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
 import { Flag, Row } from '@trezor/components';
 import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FormattedCryptoAmount, HiddenPlaceholder } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite';
 import { TradingCoinLogo } from '#src/views/wallet/trading/common/TradingCoinLogo';
 
