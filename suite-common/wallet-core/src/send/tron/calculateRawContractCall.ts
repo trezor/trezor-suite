@@ -4,6 +4,7 @@ import { calculateTotal } from '@suite-common/wallet-utils';
 import { TRON_MEMO_FEE_SUN } from '@trezor/network-tron/constants';
 import { BigNumber } from '@trezor/utils';
 
+import { getContractCallFeeFields } from './getContractCallFeeFields';
 import { type EstimateFeeLevel } from './types';
 
 export const calculateRawContractCall = (
@@ -14,7 +15,8 @@ export const calculateRawContractCall = (
     bytes: number,
     hasMemo: boolean,
 ): PrecomposedTransaction => {
-    const baseFeeInSun = feeLevel.feePerTx || '0';
+    const feeFields = getContractCallFeeFields(feeLevel);
+    const baseFeeInSun = feeFields.fee;
     const memoFeeInSun = hasMemo ? TRON_MEMO_FEE_SUN : 0;
     const totalFeeInSun = new BigNumber(baseFeeInSun).plus(memoFeeInSun).toString();
     const amount = 'amount' in output ? (output.amount ?? '0') : '0';
@@ -32,19 +34,12 @@ export const calculateRawContractCall = (
         } as const;
     }
 
-    const energyConsumed =
-        feeLevel.feePerTx && feeLevel.feePerUnit && !new BigNumber(feeLevel.feePerUnit).isZero()
-            ? new BigNumber(feeLevel.feePerTx).dividedToIntegerBy(feeLevel.feePerUnit).toNumber()
-            : 0;
     const payloadData = {
         type: 'nonfinal' as const,
         totalSpent: amount,
         max: undefined,
-        fee: baseFeeInSun,
         memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
-        feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit,
-        energyConsumed,
+        ...feeFields,
         bytes,
         inputs: [],
     };
