@@ -33,7 +33,7 @@ import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountM
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
-import { useMerklRewards } from '../../yield/claim/hooks';
+import { useMerklRewards } from '../../yield/claim/hooks/useMerklRewards';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
