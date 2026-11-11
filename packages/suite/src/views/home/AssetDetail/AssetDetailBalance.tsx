@@ -109,6 +109,7 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
                             value={amount}
                             symbol={tokenSymbol ?? symbol}
                             contractAddress={contractAddress}
+                            networkSymbol={symbol}
                             tokenDecimals={tokenDecimals}
                             isSymbolSecondary
                         />

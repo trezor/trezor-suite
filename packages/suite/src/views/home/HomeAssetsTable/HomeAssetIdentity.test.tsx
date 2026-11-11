@@ -6,6 +6,7 @@ import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
@@ -30,6 +31,19 @@ const state: MockSuiteState = {
         [ETH]: {
             coin: { data: [USDC_ON_ETH], error: false, isLoading: false, hide: [], show: [] },
         },
+    },
+    // Home assets come from accounts, which supply the token metadata the icon is named from.
+    wallet: {
+        ...mockInitialAppState.wallet,
+        accounts: [
+            mockWalletAccount({
+                symbol: ETH,
+                tokens: [
+                    mockAccountToken({ name: 'USD Coin', symbol: 'USDC', contract: USDC_ON_ETH }),
+                    mockAccountToken({ name: 'Unknown', symbol: 'UNK', contract: UNKNOWN_ON_ETH }),
+                ],
+            }),
+        ],
     },
 };
 

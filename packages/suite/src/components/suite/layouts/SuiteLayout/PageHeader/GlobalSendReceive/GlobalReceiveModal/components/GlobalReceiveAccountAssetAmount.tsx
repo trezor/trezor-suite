@@ -38,6 +38,8 @@ export const GlobalReceiveAccountAssetAmount = ({
                     value={amount}
                     symbol={token?.symbol ?? asset.displaySymbol}
                     contractAddress={tokenAddress}
+                    // Only an account token has metadata; a catalog token keeps the masked symbol.
+                    networkSymbol={token ? account.symbol : undefined}
                     tokenDecimals={token?.decimals}
                     isCompact
                 />

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { TokenName } from '@suite/token';
+import { TokenIcon, TokenName, TokenSymbol } from '@suite/token';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import {
@@ -22,7 +22,7 @@ import {
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
+import { TokenIcon as NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
@@ -129,14 +129,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         {selectedToken ? (
                             <TokenIcon
                                 symbol={account.symbol}
-                                contractAddress={selectedToken?.contract}
+                                contractAddress={toTokenAddress(selectedToken.contract)}
                                 size={24}
-                                placeholder={selectedToken?.symbol || account.symbol}
-                                placeholderWithTooltip={false}
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
+                            <NetworkIcon symbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
@@ -168,6 +166,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             }
                                             symbol={selectedToken?.symbol ?? account.symbol}
                                             contractAddress={selectedToken?.contract}
+                                            networkSymbol={account.symbol}
                                             tokenDecimals={selectedToken?.decimals}
                                             isCompact
                                             data-testid={tokenInputName}
@@ -248,7 +247,14 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             <Translation
                                 id="TR_DEFI_YIELD_TOKEN_BANNER_TITLE"
                                 values={{
-                                    token: selectedToken?.symbol ?? account.symbol,
+                                    token: selectedToken ? (
+                                        <TokenSymbol
+                                            networkSymbol={account.symbol}
+                                            tokenContract={toTokenAddress(selectedToken.contract)}
+                                        />
+                                    ) : (
+                                        account.symbol
+                                    ),
                                 }}
                             />
                         }
