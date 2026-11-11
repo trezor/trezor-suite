@@ -6,7 +6,7 @@ import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-t
 import { type GuideState } from '#src/reducers/suite/guideState';
 import { selectGuideView, selectIsGuideOpen } from '#src/selectors/suite/guideSelectors';
 
-import { GUIDE } from './constants';
+import * as GUIDE from './constants/guideConstants';
 
 export const open = createAction(GUIDE.OPEN);
 export const close = createAction(GUIDE.CLOSE);

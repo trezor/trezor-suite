@@ -1,6 +1,6 @@
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 
-import { PROTOCOL } from '#src/actions/suite/constants';
+import * as PROTOCOL from '#src/actions/suite/constants/protocolConstants';
 import { initialState } from '#src/reducers/suite/protocolReducer';
 
 const protocol = {
