@@ -92,7 +92,7 @@ export const TradingFormApproval = ({
 
     const status = selectedQuote?.status;
 
-    const reportFormAction = (action: 'swap' | 'revoke' | 'refresh') => {
+    const reportFormAction = (action: 'approve' | 'swap' | 'revoke' | 'refresh') => {
         analytics.report({
             type: events.tradeApprovalEvent.name,
             payload: { type: 'exchange-form', action, ...getCryptoInfo() },
@@ -104,7 +104,7 @@ export const TradingFormApproval = ({
             return;
         }
 
-        reportFormAction('swap');
+        reportFormAction('approve');
         onStartApprovalFlow(selectedQuote);
     };
 
