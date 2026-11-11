@@ -9,7 +9,7 @@ import {
 import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     isTradingBuyContext,

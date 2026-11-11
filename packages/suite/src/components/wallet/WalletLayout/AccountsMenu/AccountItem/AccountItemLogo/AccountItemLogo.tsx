@@ -1,10 +1,11 @@
+import { type Account } from '@suite-common/wallet-types';
 import { Column, Icon } from '@trezor/components';
 import { PiggyBankFilledIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { TokenIconSetWrapper } from '#src/components/wallet/TokenIconSetWrapper';
-import { type Account, type AccountItemType } from '#src/types/wallet';
+import { type AccountItemType } from '#src/types/wallet/wallet';
 
 type AccountItemLogoProps = {
     type: AccountItemType;

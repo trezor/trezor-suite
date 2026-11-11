@@ -1,10 +1,9 @@
 import { rescanCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
+import type { Account } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import type { Account } from '#src/types/wallet';
 
 type RescanAccountProps = {
     account: Extract<Account, { backendType: 'coinjoin' }>;

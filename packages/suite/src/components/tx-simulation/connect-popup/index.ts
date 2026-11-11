@@ -1,1 +1,0 @@
-export { ConnectPopupTxSimulationModal } from './ConnectPopupTxSimulationModal';

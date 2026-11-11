@@ -13,19 +13,17 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import {
-    EarnClaimModal,
-    EarnInANutshellModal,
-    EarnProviderConsentModal,
-    StakeModal,
-    TronStakeInANutshellModal,
-    TronVoteConsentModal,
-    UnstakeModal,
-} from '#src/components/earn';
+import { EarnClaimModal } from '#src/components/earn/modals/EarnClaimModal/EarnClaimModal';
+import { EarnInANutshellModal } from '#src/components/earn/modals/EarnInANutshell/EarnInANutshellModal';
+import { TronStakeInANutshellModal } from '#src/components/earn/modals/EarnInANutshell/TronStakeInANutshellModal';
+import { EarnProviderConsentModal } from '#src/components/earn/modals/EarnProviderConsent/EarnProviderConsentModal';
+import { StakeModal } from '#src/components/earn/modals/StakeModal/StakeModal';
+import { UnstakeModal } from '#src/components/earn/modals/UnstakeModal/UnstakeModal';
 import { TronStakeConsentModal } from '#src/components/earn/staking/tron/TronStakeConsentModal';
-import { ConnectPopupTxSimulationModal } from '#src/components/tx-simulation/connect-popup';
-import { EarnYieldTxSimulationModal } from '#src/components/tx-simulation/earn-stablecoin';
-import { useSelector } from '#src/hooks/suite';
+import { TronVoteConsentModal } from '#src/components/earn/staking/tron/vote/TronVoteConsentModal';
+import { ConnectPopupTxSimulationModal } from '#src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModal';
+import { EarnYieldTxSimulationModal } from '#src/components/tx-simulation/earn-stablecoin/EarnYieldTxSimulationModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import { CopyAddressModal } from '../CopyAddressModal';

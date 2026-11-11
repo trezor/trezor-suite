@@ -20,7 +20,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
 import { WalletLabeling } from '#src/components/suite/labeling/WalletLabeling';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();

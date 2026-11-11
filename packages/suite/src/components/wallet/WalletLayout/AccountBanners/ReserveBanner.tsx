@@ -1,11 +1,10 @@
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { HELP_CENTER_XLM_URL, HELP_CENTER_XRP_URL } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
-
-import type { Account } from '#src/types/wallet/index';
 
 interface ReserveBannerProps {
     account: Account | undefined;

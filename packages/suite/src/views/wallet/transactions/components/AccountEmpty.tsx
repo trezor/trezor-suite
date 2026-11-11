@@ -8,14 +8,14 @@ import {
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { type ButtonProps } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AccountExceptionLayout } from '#src/components/wallet';
-import { useSelector } from '#src/hooks/suite';
-import { type Account } from '#src/types/wallet';
+import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AccountExceptionAction = { key: string } & ButtonProps;
 

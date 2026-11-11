@@ -3,8 +3,9 @@ import { type AssetAccount, selectAccountByKey } from '@suite-common/wallet-core
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Text } from '@trezor/components';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
-import { useSelector } from '#src/hooks/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { HOME_ASSET_LINE_GAP } from '#src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
 import { AssetDetailAccountIdentity } from './AssetDetailAccountIdentity';

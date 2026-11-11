@@ -3,7 +3,7 @@ import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getTokens } from '#src/utils/wallet/tokenUtils';
 
 export const useTotalFiatBalance = (

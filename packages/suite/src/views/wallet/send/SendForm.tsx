@@ -15,8 +15,8 @@ import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 import { ConfirmEvmExplanationModal } from '#src/components/suite/modals/ConfirmEvmExplanationModal';
-import { WalletLayout } from '#src/components/wallet';
-import { useSelector } from '#src/hooks/suite';
+import { WalletLayout } from '#src/components/wallet/WalletLayout/WalletLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { SendContext, type UseSendFormProps, useSendForm } from '#src/hooks/wallet/useSendForm';
 import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
 

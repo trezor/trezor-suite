@@ -12,7 +12,7 @@ import { Banner } from '@trezor/components';
 import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@trezor/connect';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const revisionCheckMessages: Record<
     Exclude<FirmwareRevisionCheckError, SkippedRevisionCheckError>,

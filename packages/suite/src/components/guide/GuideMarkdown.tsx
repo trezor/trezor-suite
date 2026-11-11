@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { TrezorLink } from '@suite/external-links';
 import { Markdown } from '@trezor/components';
 
-import { useGuideOpenNode } from '#src/hooks/guide';
+import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
 
 import { GuideHint } from './GuideHint';
 import { GuideImage } from './GuideImage';

@@ -7,7 +7,7 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { WebUsbButton } from '#src/components/suite/WebUsbButton';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
 import { AcquireDeviceButton } from '../suite/AcquireDeviceButton';

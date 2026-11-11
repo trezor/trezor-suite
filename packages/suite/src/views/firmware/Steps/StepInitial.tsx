@@ -7,8 +7,8 @@ import { Modal, Tooltip } from '@trezor/components';
 import { unique } from '@trezor/utils';
 
 import { updateAnalytics } from '#src/actions/onboarding/onboardingActions';
-import { PrerequisitesGuide } from '#src/components/suite';
-import { useSelector } from '#src/hooks/suite';
+import { PrerequisitesGuide } from '#src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type StepInitialProps = {
     onClose: () => void;

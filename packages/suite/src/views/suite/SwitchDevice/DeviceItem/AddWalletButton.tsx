@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectDeviceThunk } from '@suite-common/device';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import { selectIsAnyNetworkEnabled, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
@@ -11,8 +12,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
-import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from '#src/types/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { type ForegroundAppProps } from '#src/types/suite';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;

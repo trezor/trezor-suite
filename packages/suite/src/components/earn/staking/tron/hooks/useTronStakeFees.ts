@@ -15,7 +15,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type useTronStakeForm } from './useTronStakeForm';
 import { parseVoteAllocations } from '../utils/voteUtils';

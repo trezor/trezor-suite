@@ -4,14 +4,13 @@ import {
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { Icon, Link, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretRightIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
-import { type Account } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type TradingDetailTxIdProps = {
     value: string;

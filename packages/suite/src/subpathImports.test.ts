@@ -4,10 +4,10 @@ import path from 'path';
 /**
  * TypeScript resolves `#src/...` through the `types` condition of the `imports` field in
  * package.json and, unlike the bundlers, adds no extensions and looks for no index files there.
- * So `types` lists every candidate explicitly, in an order (index before file, `.tsx` before
- * `.ts`) that keeps editor auto-imports as short as they were with the old `src/` alias.
- * Webpack, Jest and Vite resolve the `default` target with their own order instead.
- * Both orders pick the same file only while no specifier matches more than one file.
+ * So `types` lists every candidate explicitly (`.tsx` before `.ts`).
+ * Webpack, Jest and Vite resolve the `default` target with their own order instead, including
+ * directory index files. Both orders pick the same file only while no specifier matches more
+ * than one file and `src` has no index files.
  */
 const packageRoot = path.resolve(__dirname, '..');
 
@@ -47,5 +47,13 @@ describe('#src subpath imports', () => {
         const ambiguousSpecifiers = [...filesBySpecifier].filter(([, files]) => files.length > 1);
 
         expect(ambiguousSpecifiers).toEqual([]);
+    });
+
+    it('have no directory index files to resolve to', () => {
+        const indexFiles = getSourceFiles().filter(file =>
+            /^index\.tsx?$/.test(path.basename(file)),
+        );
+
+        expect(indexFiles).toEqual([]);
     });
 });

@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { InfoItem, Text } from '@trezor/components';
 
-import { FormattedCryptoAmount } from '#src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type TradingExchangeMinimumReceivedInfoItemProps = {
     contractAddress?: string;

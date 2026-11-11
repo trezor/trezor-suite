@@ -9,7 +9,8 @@ import { Column, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { useDiscovery, useSelector } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { NetworkCard } from './NetworkCard';
 import { getBackendStatus } from './getBackendStatus';

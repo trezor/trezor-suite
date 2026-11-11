@@ -19,8 +19,9 @@ import { Column, Flex, Grid } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from '#src/components/dashboard';
-import { useLayoutSize, useSelector } from '#src/hooks/suite';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';

@@ -20,15 +20,14 @@ import {
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
-import { type SendContextValues, type UseSendFormState } from '#src/types/wallet/sendForm';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import {
+    type GetCurrentRateParams,
+    type SendContextValues,
+    type UseSendFormState,
+} from '#src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-
-export type GetCurrentRateParams = {
-    currencyCode: BaseCurrencyCode;
-    tokenAddress: TokenAddress;
-};
 
 type UseSendFormFieldsParams = UseFormReturn<FormState> & {
     network: UseSendFormState['network'];

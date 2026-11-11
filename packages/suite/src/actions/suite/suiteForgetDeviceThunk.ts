@@ -8,7 +8,7 @@ import {
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import * as storageActions from '#src/actions/suite/storageActions';
-import { type DbDep } from '#src/storage/createDb';
+import { type DbDep } from '#src/storage/Db';
 
 import { SUITE_FORGET_DEVICE } from './constants/suiteConstants';
 

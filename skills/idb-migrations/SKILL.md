@@ -24,7 +24,7 @@ yarn workspace @trezor/suite make:migration 26.5.0
 yarn workspace @trezor/suite make:migration 26.5.0.1
 ```
 
-This creates the migration file and updates the auto-generated index at `packages/suite/src/storage/migrations/versions/index.ts`.
+This creates the migration file and updates the auto-generated registry at `packages/suite/src/storage/migrations/versions/migrationRegistry.ts`.
 
 ### Step 2: Implement
 
@@ -130,7 +130,7 @@ IndexedDB version is a 32-bit integer encoding SemVer: `(major << 24) | (minor <
 ## Important Notes
 
 - Migration files must **default-export** the `createMigration` result
-- The `versions/index.ts` file is **auto-generated** — use the scaffold command, don't edit manually
+- The `versions/migrationRegistry.ts` file is **auto-generated** — use the scaffold command, don't edit manually
 - Use `@ts-expect-error` for accessing stores/fields that no longer exist in the current schema
 - Always guard with `if` checks before accessing potentially missing data
 - The `updateAll` utility handles cursor iteration — just provide the transform function

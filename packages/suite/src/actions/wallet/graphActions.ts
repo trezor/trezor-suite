@@ -7,25 +7,24 @@ import {
     selectBaseCurrency,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 
-import { type GraphState } from '#src/reducers/wallet/graphReducer';
-import { type Account } from '#src/types/wallet';
 import {
     type AccountHistoryWithBalance,
     type GraphData,
     type GraphRange,
+    type GraphState,
 } from '#src/types/wallet/graph';
 import {
     enhanceBlockchainAccountHistory,
     ensureHistoryRates,
     isNetworkWithGraphFeature,
     mergeAccountBalanceHistory,
-} from '#src/utils/wallet/graph';
+} from '#src/utils/wallet/graph/utils';
 
 import {
     ACCOUNT_GRAPH_FAIL,

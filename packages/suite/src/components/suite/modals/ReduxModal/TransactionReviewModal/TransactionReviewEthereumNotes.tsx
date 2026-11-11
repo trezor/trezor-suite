@@ -10,14 +10,13 @@ import {
     selectTronStakeTxReview,
     selectYieldTxReview,
 } from '@suite-common/wallet-core';
-import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account, type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Note, Text } from '@trezor/components';
 import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
 
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
-import { useSelector } from '#src/hooks/suite';
-import { type Account } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type TransactionReviewEthereumState = SendRootState &
     StakeRootState &

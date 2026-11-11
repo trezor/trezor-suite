@@ -6,7 +6,7 @@ import { type ExcludedUtxos, type FormState, type UtxoSorting } from '@suite-com
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     type SendContextValues,
     type UseSendFormState,

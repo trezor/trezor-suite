@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { TokenIconSet } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     type TokensWithRates,
     enhanceTokensWithRates,

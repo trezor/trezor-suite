@@ -2,12 +2,11 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { Badge, Icon, Row, Text, type TextProps } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 import { type TypographyStyle } from '@trezor/theme';
-
-import { HiddenPlaceholder } from '#src/components/suite';
 
 const IconWrapper = styled.div<{ $isActive: boolean }>`
     transition: transform 0.2s ease-in-out;

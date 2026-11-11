@@ -4,6 +4,7 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     type PendingEvmNonceStatus,
     fromWei,
@@ -48,7 +49,6 @@ import { FormattedDateWithBullet } from '#src/components/suite/FormattedDateWith
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
 import { TransactionHeader } from '#src/components/wallet/TransactionItem/TransactionHeader';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 import { getTransactionIcon } from '#src/utils/wallet/transactionIconUtils';
 
 const IconWrapper = styled.div`

@@ -45,7 +45,7 @@ jest.mock('@trezor/components', () => {
         }),
     };
 });
-jest.mock('#src/hooks/suite', () => ({
+jest.mock('#src/hooks/suite/useSelector', () => ({
     useSelector: (selector: (state: object) => unknown) =>
         selector({ modal: { context: MODAL_CONTEXT_NONE } }),
 }));
@@ -68,7 +68,7 @@ jest.mock('#src/hooks/wallet/useChangeDelegateForm', () => ({
         signTx: mockSignTx,
     }),
 }));
-jest.mock('#src/components/earn', () => ({
+jest.mock('#src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard', () => ({
     BASE_VOTING_PREFERENCE_OPTIONS: [],
     VotingPreferenceCard: () => null,
 }));

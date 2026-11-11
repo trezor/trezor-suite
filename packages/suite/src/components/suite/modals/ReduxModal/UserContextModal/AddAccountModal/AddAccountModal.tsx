@@ -8,6 +8,7 @@ import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -22,6 +23,7 @@ import {
     selectAccounts,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
 import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -33,9 +35,7 @@ import { NetworkSettingsSearchInput } from '#src/components/suite/NetworkList/Ne
 import { AddAccountBannerAboutNetworks } from '#src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
 import { useAvailableNetworkSymbols } from '#src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
-import { useAccountSearch } from '#src/hooks/suite';
-import { type TrezorDevice } from '#src/types/suite';
-import { type Account } from '#src/types/wallet';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
 import { NoNetworkSearchResults } from '#src/views/settings/SettingsCoins/NoNetworkSearchResults';
 import { useNetworkSettingsSearch } from '#src/views/settings/SettingsCoins/useNetworkSettingsSearch';
 

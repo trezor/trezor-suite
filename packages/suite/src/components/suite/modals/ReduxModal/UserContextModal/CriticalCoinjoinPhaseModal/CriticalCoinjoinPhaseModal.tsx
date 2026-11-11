@@ -5,8 +5,8 @@ import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/co
 import { WarningIcon } from '@trezor/icons';
 
 import { SESSION_PHASE_MESSAGES } from '#src/constants/suite/coinjoin';
-import { useCoinjoinSessionPhase } from '#src/hooks/coinjoin';
-import { useSelector } from '#src/hooks/suite';
+import { useCoinjoinSessionPhase } from '#src/hooks/coinjoin/useCoinjoinSessionPhase';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AutoStopButton } from './AutoStopButton';
 import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';

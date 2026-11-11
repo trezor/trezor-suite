@@ -68,7 +68,7 @@ yarn workspace @trezor/suite make:migration
 The script will:
 
 - create `src/storage/migrations/versions/<versionString>.ts` in `suite` package (e.g. `25.11.0.ts` or `25.11.0.1.ts`)
-- append `export { default as m25_11_0_1 } from './25.11.0.1';` to `.../versions/index.ts`
+- append `export { default as m25_11_0_1 } from './25.11.0.1';` to `.../versions/migrationRegistry.ts`
 - for base migrations (rev = 0), prepend `## x.y.z` to `src/storage/CHANGELOG.md`
 - for revisions (rev > 0), skip changelog updates
 

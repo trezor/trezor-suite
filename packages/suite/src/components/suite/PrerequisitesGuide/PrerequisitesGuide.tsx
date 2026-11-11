@@ -10,7 +10,7 @@ import {
 import { Column, Illustration, Paragraph, Text, motionEasing } from '@trezor/components';
 
 import { getMessageId } from '#src/components/suite/getMessageId';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectPrerequisite } from '#src/selectors/suite/suiteSelectors';
 
 import { BannerAndTroubleshooting } from './BannerAndTroubleshooting';

@@ -14,7 +14,7 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type ArrayElement } from '@trezor/type-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectActiveTransports } from '#src/selectors/suite/suiteSelectors';
 
 type Transport = ArrayElement<NonNullable<DebugModeOptions['transports']>>;

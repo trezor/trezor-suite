@@ -12,8 +12,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { changePinThunk } from '#src/actions/settings/deviceSettingsActions';
 import { SkipStepConfirmation } from '#src/components/onboarding/SkipStepConfirmation';
-import { PinMatrix } from '#src/components/suite';
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { PinMatrix } from '#src/components/suite/PinMatrix/PinMatrix';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const PinStep = () => {
     const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);

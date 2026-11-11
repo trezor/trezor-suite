@@ -20,7 +20,7 @@ import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;

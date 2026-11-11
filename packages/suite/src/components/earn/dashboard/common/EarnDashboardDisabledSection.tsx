@@ -2,12 +2,12 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, isEarnYieldRowAnchor, selectRouterAnchor, useAnchor } from '@suite/router';
 import { Banner } from '@trezor/components';
 
-import { DashboardSection } from '#src/components/dashboard';
-import { useSelector } from '#src/hooks/suite';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import {
     type EarnDashboardType,
     useMessageSystemEarnDashboard,
 } from '#src/hooks/suite/useMessageSystemEarnDashboard';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type EarnDashboardDisabledSectionProps = {
     type: EarnDashboardType;

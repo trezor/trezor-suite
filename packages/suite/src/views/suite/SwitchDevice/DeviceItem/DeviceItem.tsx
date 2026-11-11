@@ -4,6 +4,7 @@ import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import type { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
     Button,
@@ -25,9 +26,9 @@ import {
     addDeviceIdToSeenDisconnectNotification,
     setRecentlyDisconnectedDevice,
 } from '#src/actions/suite/suiteActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectRecentlyDisconnectedDevice } from '#src/selectors/suite/suiteSelectors';
-import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from '#src/types/suite';
+import type { ForegroundAppProps } from '#src/types/suite';
 
 import { CardWithDevice } from '../CardWithDevice';
 import { AddWalletButton } from './AddWalletButton';

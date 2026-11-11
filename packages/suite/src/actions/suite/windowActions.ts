@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { type BreakpointFlags } from '@trezor/theme';
 
-import { WINDOW } from './constants';
+import * as WINDOW from './constants/windowConstants';
 
 export const updateWindowVisibility = createAction(
     WINDOW.UPDATE_WINDOW_VISIBILITY,

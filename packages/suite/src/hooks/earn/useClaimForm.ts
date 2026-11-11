@@ -14,7 +14,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { signTransactionThunk } from '#src/actions/wallet/stakeActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { type ClaimContextValues, type ClaimFormState } from '#src/types/earn/claimForm';
 import { CRYPTO_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
 

@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectScanStatus } from '@suite-common/bluetooth';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { BluetoothDeviceList } from './BluetoothDeviceList';
 import { BluetoothTips } from './BluetoothTips';

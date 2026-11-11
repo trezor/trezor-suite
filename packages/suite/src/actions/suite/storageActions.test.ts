@@ -19,6 +19,7 @@ import { prepareReceiveReducer } from '@suite-common/receive';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type WithSuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     createTestCompositionRoot,
@@ -50,16 +51,15 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
 import { prepareSuiteSyncQuotaManagerReducer } from '#src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import { SETTINGS } from '#src/config/suite';
+import SETTINGS from '#src/config/suite/settings';
 import {
     type StorageMiddlewareState,
     prepareStorageMiddleware,
 } from '#src/middlewares/wallet/storageMiddleware';
 import suiteReducer, { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
 import graphReducer from '#src/reducers/wallet/graphReducer';
-import { type Db, type DbDep } from '#src/storage/createDb';
+import { type Db, type DbDep } from '#src/storage/Db';
 import { type PreloadStore, createPreloadStore } from '#src/support/suite/createPreloadStore';
-import { type AcquiredDevice } from '#src/types/suite';
 
 import * as storageActions from './storageActions';
 import {

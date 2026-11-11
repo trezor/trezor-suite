@@ -18,7 +18,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { NetworkList } from '#src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useSelector } from '#src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 

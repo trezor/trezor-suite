@@ -21,7 +21,7 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { openNode } from '#src/actions/suite/guideActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { getNodeTitle } from '#src/utils/suite/guide';
 
 import { GuideItem } from './GuideItem';

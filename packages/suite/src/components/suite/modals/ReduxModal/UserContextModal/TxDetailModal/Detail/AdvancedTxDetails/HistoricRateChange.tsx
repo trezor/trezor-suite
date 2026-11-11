@@ -12,7 +12,7 @@ import { BigNumber } from '@trezor/utils';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { FormattedDate } from '#src/components/suite/FormattedDate';
 import { TrendBadge, calculatePercentageDifference } from '#src/components/suite/Ticker/TrendBadge';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 // Unit prices are rendered with the same precision as PriceTicker so that
 // low-value assets do not round to zero.
 const UNIT_PRICE_FORMATTER_OPTIONS = {

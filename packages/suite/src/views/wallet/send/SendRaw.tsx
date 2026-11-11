@@ -8,15 +8,15 @@ import {
     selectIsMevProtectionEnabled,
     sendFormActions,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { OpenGuideFromTooltip } from '#src/components/guide';
-import { useSelector } from '#src/hooks/suite';
-import { type Account } from '#src/types/wallet';
+import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const INPUT_NAME = 'rawTx';
 

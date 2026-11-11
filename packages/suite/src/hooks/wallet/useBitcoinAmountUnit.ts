@@ -8,7 +8,7 @@ import { PROTO } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);

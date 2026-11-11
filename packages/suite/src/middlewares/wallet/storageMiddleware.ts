@@ -95,8 +95,8 @@ import {
 import { accountGraphFail, accountGraphSuccess } from '#src/actions/wallet/graphActions';
 import { type SuiteState } from '#src/reducers/suite/suiteReducer';
 import { selectGraph } from '#src/reducers/wallet/graphReducer';
-import { type GraphState } from '#src/reducers/wallet/graphReducer';
-import { type DbDep } from '#src/storage/createDb';
+import { type DbDep } from '#src/storage/Db';
+import { type GraphState } from '#src/types/wallet/graph';
 
 type StorageMiddlewareDeps = WithServices<DbDep>;
 

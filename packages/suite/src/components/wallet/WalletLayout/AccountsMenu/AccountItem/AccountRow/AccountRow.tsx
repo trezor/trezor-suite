@@ -1,12 +1,12 @@
 import styled, { css } from 'styled-components';
 
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Row } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 
-import { type Account, type AccountItemType } from '#src/types/wallet';
+import { type AccountItemType } from '#src/types/wallet/wallet';
 
-import { AccountItemContent } from './AccountItemContent';
+import { AccountItemContent } from './AccountItemContent/AccountItemContent';
 import { AccountItemLogo } from '../AccountItemLogo/AccountItemLogo';
 
 const Container = styled.button<{ $isActive?: boolean; $isCollapsed?: boolean }>`

@@ -9,12 +9,14 @@ import { Box, Column, motionEasing } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
 import {
     type NavigationItem,
-    PageHeader,
     SubpageNavigation,
-} from '#src/components/suite/layouts/SuiteLayout';
-import { useDiscovery, useLayout, useSelector } from '#src/hooks/suite';
+} from '#src/components/suite/layouts/SuiteLayout/SubpageNavigation';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useLayout } from '#src/hooks/suite/useLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { AccountHeaderProvider } from '#src/support/suite/AccountHeaderProvider';
 import { SettingsLoading } from '#src/views/settings/SettingsLoader';
 

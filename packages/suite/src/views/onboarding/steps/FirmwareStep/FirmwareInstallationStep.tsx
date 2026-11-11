@@ -7,8 +7,8 @@ import { CircuitryIcon } from '@trezor/icons';
 import { FirmwareOffer } from '#src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from '#src/components/firmware/ReconnectDevicePrompt';
 import { RotatingPhrases } from '#src/components/firmware/RotatingPhrases';
-import { WebUsbButton } from '#src/components/suite';
-import { useSelector } from '#src/hooks/suite';
+import { WebUsbButton } from '#src/components/suite/WebUsbButton';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
 type FirmwareInstallationStepProps = {

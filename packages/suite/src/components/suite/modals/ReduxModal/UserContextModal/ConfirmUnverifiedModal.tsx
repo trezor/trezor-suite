@@ -14,7 +14,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
 import { type ShowXpubThunkState } from '#src/actions/wallet/publicKeyActions';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface ConfirmUnverifiedModalProps {
     action: {

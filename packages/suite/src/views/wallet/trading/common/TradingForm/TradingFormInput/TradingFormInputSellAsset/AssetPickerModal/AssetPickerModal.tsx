@@ -4,16 +4,15 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column } from '@trezor/components';
 
-import {
-    AssetGroupLabel,
-    AssetGroupSpace,
-    AssetGroupsCard,
-    AssetRowAccountWithBalance,
-    AssetRowToken,
-    AssetsModal,
-    ExpandableAssetRowGroup,
-} from '#src/components/suite/asset-picker/components';
-import { useExpandableGroups, useSearchFilter } from '#src/components/suite/asset-picker/hooks';
+import { AssetGroupLabel } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupLabel';
+import { AssetGroupSpace } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupSpace';
+import { AssetGroupsCard } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupsCard';
+import { AssetRowAccountWithBalance } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAccount/AssetRowAccountWithBalance';
+import { AssetRowToken } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowToken/AssetRowToken';
+import { ExpandableAssetRowGroup } from '#src/components/suite/asset-picker/components/AssetRow/ExpandableAssetRowGroup/ExpandableAssetRowGroup';
+import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
+import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/useExpandableGroups';
+import { useSearchFilter } from '#src/components/suite/asset-picker/hooks/useSearchFilter';
 import {
     type AccountWithOptionalLabel,
     type AssetGroupOption,
@@ -28,7 +27,8 @@ import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/uti
 
 import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions';
 import { type UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
-import { AssetListWrapper, AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker';
+import { AssetListWrapper } from '../../TradingFormInputAssetPicker/AssetListWrapper/AssetListWrapper';
+import { AssetPickerSearchHeader } from '../../TradingFormInputAssetPicker/AssetPickerSearchHeader/AssetPickerSearchHeader';
 
 const MODAL_WIDTH = 480;
 

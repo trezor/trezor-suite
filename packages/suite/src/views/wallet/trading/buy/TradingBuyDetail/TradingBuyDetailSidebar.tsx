@@ -3,10 +3,10 @@ import type {
     TradingProviderInfo,
     TradingTradeType,
 } from '@suite-common/trading';
+import type { Account } from '@suite-common/wallet-types';
 import { Card, Column, Divider } from '@trezor/components';
 
 import type { TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
-import type { Account } from '#src/types/wallet';
 import { TradingDetailAssetRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailAssetRow';
 import { TradingDetailFiatRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailFiatRow';
 import { TradingDetailSidebarSection } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailSidebarSection';

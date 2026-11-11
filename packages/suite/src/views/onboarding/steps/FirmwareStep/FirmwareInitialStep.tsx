@@ -20,8 +20,9 @@ import { unique } from '@trezor/utils';
 import { FirmwareLowBatteryModal } from '#src/components/firmware/FirmwareLowBatteryModal';
 import { FirmwareOffer } from '#src/components/firmware/FirmwareOffer';
 import { SkipStepConfirmation } from '#src/components/onboarding/SkipStepConfirmation';
-import { PrerequisitesGuide } from '#src/components/suite';
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { PrerequisitesGuide } from '#src/components/suite/PrerequisitesGuide/PrerequisitesGuide';
+import { useOnboarding } from '#src/hooks/suite/useOnboarding';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const InstallButton = ({ children, ...rest }: ButtonProps) => (
     <Tooltip

@@ -10,24 +10,20 @@ import { useServices } from '@trezor/dependency-injection';
 import { SearchAsset } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    AssetGroupsCard,
-    AssetRowAccountWithBalance,
-    AssetRowToken,
-    AssetsList,
-    AssetsListEmpty,
-    AssetsModal,
-    ExpandableAssetRowGroup,
-} from '#src/components/suite/asset-picker/components';
-import {
-    useExpandableGroups,
-    useFilterAccountsWithTokens,
-    useListScrollReset,
-} from '#src/components/suite/asset-picker/hooks';
+import { AssetGroupsCard } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupsCard';
+import { AssetRowAccountWithBalance } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAccount/AssetRowAccountWithBalance';
+import { AssetRowToken } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowToken/AssetRowToken';
+import { ExpandableAssetRowGroup } from '#src/components/suite/asset-picker/components/AssetRow/ExpandableAssetRowGroup/ExpandableAssetRowGroup';
+import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
+import { AssetsListEmpty } from '#src/components/suite/asset-picker/components/AssetsListEmpty/AssetsListEmpty';
+import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
+import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/useExpandableGroups';
+import { useFilterAccountsWithTokens } from '#src/components/suite/asset-picker/hooks/useFilterAccountsWithTokens';
+import { useListScrollReset } from '#src/components/suite/asset-picker/hooks/useListScrollReset';
 import { type AssetPickerListItem } from '#src/components/suite/asset-picker/types';
-import { createTokenOption } from '#src/components/suite/asset-picker/utils';
+import { createTokenOption } from '#src/components/suite/asset-picker/utils/assetOptions';
 import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { useBuildTokenOptions } from './hooks/useBuildTokenOptions';

@@ -6,6 +6,7 @@ import { type SuiteSettingsState } from '@suite/settings';
 import { type DeviceReducerState } from '@suite-common/device';
 import { type PersistentDeviceDataState } from '@suite-common/persistent-device-data';
 import { type ReceiveState } from '@suite-common/receive';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -29,8 +30,7 @@ import { type StaticSessionId } from '@trezor/connect';
 
 import { type StorageLoadAction } from '#src/actions/suite/storageLifecycleActions';
 
-import type { BioAuthState } from '../reducers/bioAuth';
-import { type TrezorDevice } from '../types/suite';
+import type { BioAuthState } from '../reducers/bioAuth/bioAuthReducer';
 
 export const storageLoadReducers = {
     storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {

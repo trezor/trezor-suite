@@ -6,8 +6,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, Skeleton } from '@trezor/components';
 import { type PrimitiveType, exhaustive } from '@trezor/type-utils';
 
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
-import { useLayout } from '#src/hooks/suite';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
+import { useLayout } from '#src/hooks/suite/useLayout';
 import { AccountHeaderProvider } from '#src/support/suite/AccountHeaderProvider';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';

@@ -10,6 +10,8 @@ import {
     useEvmNonceInfo,
 } from '@suite-common/wallet-core';
 import {
+    type Account,
+    type WalletAccountTransaction,
     type WalletAccountTransactionWithRequiredRbfParams,
     createAccountKey,
 } from '@suite-common/wallet-types';
@@ -23,8 +25,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { useSelector } from '#src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
 import { BumpFeeModal } from './ChangeFee/BumpFeeModal';

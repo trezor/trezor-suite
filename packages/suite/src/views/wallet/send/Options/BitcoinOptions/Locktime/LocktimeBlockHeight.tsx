@@ -9,8 +9,8 @@ import { Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 export const inputName = 'bitcoinLocktimeBlockHeight';
 

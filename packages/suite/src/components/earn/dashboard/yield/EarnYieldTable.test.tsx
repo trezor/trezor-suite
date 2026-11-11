@@ -51,10 +51,10 @@ jest.mock('@suite/router', () => ({
     useAnchor: () => ({ anchorRef: undefined }),
     selectRouterAnchor: () => undefined,
 }));
-jest.mock('#src/components/dashboard', () => ({
+jest.mock('#src/components/dashboard/DashboardSection', () => ({
     DashboardSection: ({ children }: PropsWithChildren) => children,
 }));
-jest.mock('#src/hooks/suite', () => ({
+jest.mock('#src/hooks/suite/useSelector', () => ({
     useSelector: (selector: (state: MockSuiteState) => unknown) => selector(mockInitialAppState),
 }));
 jest.mock('#src/hooks/suite/useLayoutSize', () => ({

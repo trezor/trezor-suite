@@ -1,9 +1,11 @@
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';
@@ -12,16 +14,12 @@ import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
-import { GraphRangeSelector, HiddenPlaceholder } from '#src/components/suite';
+import { GraphRangeSelector } from '#src/components/suite/graph/GraphRangeSelector';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
-import { type Account } from '#src/types/wallet';
-import {
-    aggregateBalanceHistory,
-    getGraphDataForInterval,
-    getMinMaxValueFromData,
-} from '#src/utils/wallet/graph';
+import { getGraphDataForInterval, getMinMaxValueFromData } from '#src/utils/wallet/graph/utils';
+import { aggregateBalanceHistory } from '#src/utils/wallet/graph/utilsWorker';
 
 import { SummaryCards } from './SummaryCards';
 

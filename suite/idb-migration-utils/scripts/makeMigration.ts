@@ -9,7 +9,7 @@ import { VersionInfo, parseIdbVersion } from '../src/parseIdbVersion';
 const SUITE_ROOT = path.resolve(__dirname, '..', '..', '..', 'packages', 'suite');
 const MIGRATIONS_DIR = path.join(SUITE_ROOT, 'src', 'storage', 'migrations', 'versions');
 const CHANGELOG_PATH = path.join(SUITE_ROOT, 'src', 'storage', 'CHANGELOG.md');
-const EXPORT_PATH = path.join(MIGRATIONS_DIR, 'index.ts');
+const EXPORT_PATH = path.join(MIGRATIONS_DIR, 'migrationRegistry.ts');
 
 function exit(msg: string): never {
     console.error(msg);

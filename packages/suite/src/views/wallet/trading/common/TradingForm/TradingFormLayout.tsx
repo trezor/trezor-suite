@@ -9,7 +9,7 @@ import { type TradingType } from '@suite-common/trading';
 import { Column } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingFormOfferBuyActions } from '#src/views/wallet/trading/buy/TradingFormOfferBuyActions';
 import { TradingUtilsTorWarning } from '#src/views/wallet/trading/common/TradingUtils/TradingUtilsTorWarning';
@@ -18,7 +18,7 @@ import { TradingFormOfferExchangeActions } from '#src/views/wallet/trading/excha
 import { TradingFormOfferSellActions } from '#src/views/wallet/trading/sell/TradingFormOfferSellActions';
 
 import { TradingFormOfferWarnings } from './TradingFormOffer/components/TradingFormOffersWarnings';
-import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { ReceiveAddressModalControlsProvider } from '../TradingSelectedOffer/TradingReceiveAddress/ReceiveAddressModalControlsProvider';
 
 type TradingFormLayoutProps = {
     children: ReactNode;

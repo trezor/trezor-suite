@@ -22,15 +22,13 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
-import {
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    PriceTicker,
-    TrendTicker,
-} from '#src/components/suite';
 import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { StellarManageTokenModal } from '#src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useSelector } from '#src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TokenRowActions } from './TokenRowActions';
 import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';
