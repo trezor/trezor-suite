@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import {
     type HydrateReduxStoreDep,
+    type ReduxLoggerControlDep,
     type SuiteReduxStoreDep,
     type SuiteServices,
 } from '@suite-app/app';
@@ -24,7 +25,7 @@ import { initSentry } from './sentry';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
 type DesktopAppDeps = DesktopApiDep & {
-    services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
+    services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep & ReduxLoggerControlDep;
 };
 
 export type DesktopApp = (container: HTMLElement) => Promise<void>;

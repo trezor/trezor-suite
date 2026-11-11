@@ -16,6 +16,7 @@ import {
     isCodesignBuild,
     isDev,
     isTanstackReactQueryDevTools,
+    reduxLoggerEnabled,
     sentryAuthToken,
     transportBrowserPing,
 } from './env';
@@ -324,6 +325,7 @@ export const createBaseConfig = ({
                     isTanstackReactQueryDevTools,
                 ),
                 'process.env.TRANSPORT_BROWSER_PING': JSON.stringify(transportBrowserPing),
+                'process.env.REDUX_LOGGER_ENABLED': JSON.stringify(reduxLoggerEnabled),
                 __SENTRY_DEBUG__: isDev,
                 // Keeps Sentry tracing/performance code in the bundle. Must stay truthy for
                 // browserTracingIntegration (transactions, Web Vitals) and trace-lifecycle profiling

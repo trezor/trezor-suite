@@ -14,6 +14,7 @@ import wasm from 'vite-plugin-wasm';
 import {
     assetPrefix,
     isTanstackReactQueryDevTools,
+    reduxLoggerEnabled,
     transportBrowserPing,
 } from '@suite-app/app/webpack/env';
 import {
@@ -496,6 +497,7 @@ export default defineConfig({
         'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
         'process.env.TANSTACK_REACT_QUERY_DEV_TOOLS': JSON.stringify(isTanstackReactQueryDevTools),
         'process.env.TRANSPORT_BROWSER_PING': JSON.stringify(transportBrowserPing),
+        'process.env.REDUX_LOGGER_ENABLED': JSON.stringify(reduxLoggerEnabled),
         global: 'globalThis',
         __DEV__: true,
         ENABLE_REDUX_LOGGER: true,

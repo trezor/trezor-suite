@@ -53,6 +53,8 @@ import {
 } from '@trezor/suite';
 import { breakpoints } from '@trezor/theme';
 
+import { ReduxLogger } from '../SettingsDebug/ReduxLogger';
+
 export const SettingsDebugPage = () => {
     const { dispatch } = useServices(injectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
@@ -83,6 +85,7 @@ export const SettingsDebugPage = () => {
                 <DebugTriggerHighlight />
                 <DebugTriggerToast />
                 <TriggerActivityNotification />
+                <ReduxLogger />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Analytics">
                 <DebugAnalyticsLogging />
