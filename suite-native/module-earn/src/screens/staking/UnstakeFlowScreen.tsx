@@ -144,7 +144,8 @@ export const UnstakeFlowScreen = () => {
             }
             footerHorizontalPadding="sp16"
         >
-            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+            {/* Keep the native parent stable when pointerEvents changes during navigation. */}
+            <Box collapsable={false} pointerEvents={isPending ? 'none' : 'auto'}>
                 <EarnAmountCard
                     accountKey={accountKey}
                     label={<Translation id="earn.earnFormScreen.staked" />}

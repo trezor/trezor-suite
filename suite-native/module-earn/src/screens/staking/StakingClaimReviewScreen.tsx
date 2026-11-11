@@ -168,7 +168,8 @@ export const StakingClaimReviewScreen = () => {
                 </Box>
             }
         >
-            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+            {/* Keep the native parent stable when pointerEvents changes during navigation. */}
+            <Box collapsable={false} pointerEvents={isPending ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
                     <EarnAmountCard
                         accountKey={accountKey}

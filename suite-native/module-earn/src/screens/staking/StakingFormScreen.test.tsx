@@ -14,6 +14,7 @@ import { StakingFormScreen } from './StakingFormScreen';
 import { useStakingForm } from '../../hooks/staking/useStakingForm';
 import { useStakingPendingTransaction } from '../../hooks/staking/useStakingPendingTransaction';
 import { type StakingPendingModal } from '../../types';
+import { isBalanceBelowStakingMinimum } from '../../utils/staking/isBalanceBelowStakingMinimum';
 
 type BeforeRemoveEvent = { data: { action: { type: string } } };
 type MockRouteParams = { accountKey: string; pendingTransaction?: StakingPendingTxParams };
@@ -70,7 +71,14 @@ jest.mock('../../components/staking/StakingPendingTransactionModal', () => ({
 jest.mock('../../hooks/staking/useStakingForm');
 jest.mock('../../hooks/staking/useStakingPendingTransaction');
 jest.mock('../../utils/staking/isBalanceBelowStakingMinimum', () => ({
-    isBalanceBelowStakingMinimum: () => false,
+    isBalanceBelowStakingMinimum: jest.fn(() => false),
+}));
+jest.mock('../../components/staking/StakingNoBalanceContent', () => ({
+    StakingNoBalanceContent: () => {
+        const { View } = jest.requireActual('react-native');
+
+        return <View testID="staking-no-balance" />;
+    },
 }));
 jest.mock('../../components/earn/EarnAmountCard', () => ({ EarnAmountCard: () => null }));
 jest.mock('../../components/earn/EarnOutputFields', () => ({
@@ -118,6 +126,7 @@ const renderStakingForm = async (isDeviceConnected = true) => {
 
 beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(isBalanceBelowStakingMinimum).mockReturnValue(false);
     mockRouteParams = { accountKey: 'account-key' };
     mockNavigation.addListener.mockReturnValue(jest.fn());
     jest.mocked(useStakingForm).mockReturnValue({
@@ -175,6 +184,15 @@ describe('StakingFormScreen analytics', () => {
     );
 });
 
+it('shows the low-balance screen when no transaction was submitted', async () => {
+    jest.mocked(isBalanceBelowStakingMinimum).mockReturnValue(true);
+    const view = await renderStakingForm();
+
+    expect(view.getByTestId('staking-no-balance')).toBeTruthy();
+    expect(view.queryByText('Fiat input')).toBeNull();
+    expect(view.queryByTestId('pending-transaction-modal')).toBeNull();
+});
+
 describe('StakingFormScreen pending transaction', () => {
     const pendingTransaction: StakingPendingTxParams = {
         amountInBaseUnits: '1000000000000000000',
@@ -217,6 +235,23 @@ describe('StakingFormScreen pending transaction', () => {
         expect(mockFieldPress).not.toHaveBeenCalled();
         expect(view.analytics.report).not.toHaveBeenCalled();
     });
+
+    it.each([true, false])(
+        'keeps the submitted flow below the staking minimum (pending=%s)',
+        async isPending => {
+            jest.mocked(isBalanceBelowStakingMinimum).mockReturnValue(true);
+            jest.mocked(useStakingPendingTransaction).mockReturnValue({
+                isPending,
+                pendingModal: isPending ? pendingModal : null,
+            });
+            const view = await renderStakingForm();
+
+            expect(view.getByText('Fiat input')).toBeTruthy();
+            if (isPending) {
+                expect(view.getByTestId('pending-transaction-modal')).toBeTruthy();
+            }
+        },
+    );
 
     it('does not report leaving the form as a cancellation', async () => {
         const view = await renderStakingForm();
