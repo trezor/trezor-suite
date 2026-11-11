@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 
 import { type RouteProp, StackActions, useNavigation, useRoute } from '@react-navigation/native';
 
-import { events } from '@suite-common/analytics';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type YieldDepositErrorReason,
@@ -22,7 +21,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { isYieldApprovalAllowanceUnlimited } from '../../../utils/yield/yieldApprovalUtils';
 import { getYieldFeeReserveAlert } from '../../../utils/yield/yieldFeeReserveUtils';
-import { useNavigateBackAnalytics } from '../../earn/useNavigateBackAnalytics';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../useRefreshYieldDepositAllowanceOnIdle';
 import { useReturnToYieldDepositWrapStep } from '../useReturnToYieldDepositWrapStep';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
@@ -30,7 +28,7 @@ import { useYieldDepositFees } from '../useYieldDepositFees';
 import { useYieldDepositForm } from '../useYieldDepositForm';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldDepositSubmit } from '../useYieldDepositSubmit';
-import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
+import { useYieldFlowAnalytics, useYieldFormExitAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
@@ -56,15 +54,12 @@ export const useYieldDepositController = () => {
         vaultId: yieldFlowData.vault?.id,
     });
 
-    useNavigateBackAnalytics({
-        type: events.yieldNavigateEvent.name,
-        payload: {
-            action: 'cancel',
-            from: 'deposit-form',
-            to: 'earn-dashboard',
-            networkSymbol: account?.symbol,
-            vaultId: yieldFlowData.vault?.id,
-        },
+    useYieldFormExitAnalytics({
+        flowType: 'deposit',
+        networkSymbol: account?.symbol,
+        vaultId: yieldFlowData.vault?.id,
+        isEnabled: yieldFlowData.resolutionStatus === 'resolved',
+        isCompleted: session?.step === 'complete',
     });
 
     const allowanceAmount = session?.approval.allowanceAmount;

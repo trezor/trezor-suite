@@ -150,6 +150,7 @@ export const useYieldDepositApprovalController = () => {
         networkSymbol: account?.symbol,
         vaultId: yieldFlowData.vault?.id,
         isEnabled: yieldFlowData.resolutionStatus === 'resolved',
+        isCompleted: session?.step === 'complete',
     });
 
     const isApprovalSessionReady = session?.step === 'approve';
