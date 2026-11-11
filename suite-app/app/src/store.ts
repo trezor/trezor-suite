@@ -1,6 +1,5 @@
 // fixes bindActionCreators() https://github.com/reduxjs/redux-thunk/blob/e3d452948d5562b9ce871cc9391403219f83b4ff/extend-redux.d.ts#L11
 import {
-    type DevToolsEnhancerOptions,
     type Dispatch,
     type Middleware,
     type Reducer,
@@ -15,7 +14,6 @@ import { type RecoveryState, recoveryReducer } from '@suite/recovery';
 import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
-import { addLog } from '@suite-common/logger';
 import { type NetworksState, networksReducer } from '@suite-common/networks';
 import {
     type PersistentDeviceDataState,
@@ -108,8 +106,6 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     persistentDeviceData: persistentDeviceDataReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
-export const loggerExcludedActions = [addLog.type];
-
 type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
 
 export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
@@ -123,12 +119,3 @@ export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | nu
 
     return middleware as Middleware<Dispatch, AppState>[];
 };
-
-export const devTools: DevToolsEnhancerOptions | false =
-    typeof window === 'object' &&
-    '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__' in window &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        ? {
-              actionsDenylist: loggerExcludedActions,
-          }
-        : false;
