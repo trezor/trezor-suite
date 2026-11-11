@@ -1,17 +1,17 @@
 import { useSelector } from 'react-redux';
 
 import { type TokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountNetworkSymbol,
     selectAccountNetworkType,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { TokenSymbol, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 type ReceiveDestinationTagInfoProps = {
@@ -58,16 +58,14 @@ export const ReceiveDestinationTagInfo = ({
                                 textPressedColor="contentSecondary"
                             />
                         ),
-                        coinSymbol: token?.symbol ? (
+                        coinSymbol: (
                             // Nested Text does not inherit the banner title's typography.
-                            <TokenSymbol
+                            <AssetSymbol
                                 networkSymbol={accountSymbol}
-                                contractAddress={token.contract}
+                                contractAddress={token?.symbol ? token.contract : undefined}
                                 variant="body-sm"
                                 color="contentInfo"
                             />
-                        ) : (
-                            getNetworkDisplaySymbol(accountSymbol)
                         ),
                     }}
                 />

@@ -45,6 +45,7 @@
         {
             "path": "../../suite-native/analytics"
         },
+        { "path": "../../suite-native/assets" },
         { "path": "../../suite-native/atoms" },
         { "path": "../../suite-native/config" },
         {
