@@ -1,11 +1,15 @@
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type Account,
     AddressDisplayOptions,
+    type FormState,
     type PrecomposedTransaction,
     type PrecomposedTransactionError,
 } from '@suite-common/wallet-types';
+import { mockAccountToken } from '@suite-common/wallet-types/mocks';
+import { getDefaultValues } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import {
@@ -106,6 +110,150 @@ describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee
         assertComposed(normal);
         expect(normal.accountActivationFee).toBe('1000000');
         expect(normal.fee).toBe('1100000');
+    });
+});
+
+describe('composeTronTransactionFeeLevelsThunk – custom fee limit level', () => {
+    const USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+    const ESTIMATED_FEE = '6428500';
+    const ESTIMATED_ENERGY = 64285;
+
+    const tokenAccount: Account = {
+        ...account,
+        tokens: [
+            mockAccountToken({
+                contract: USDT_CONTRACT,
+                symbol: 'usdt',
+                standard: 'TRC20',
+                decimals: 6,
+                balance: '50',
+            }),
+        ],
+    };
+
+    const buildFormState = (overrides: Partial<FormState> = {}): FormState => ({
+        ...getDefaultValues(DEFAULT_PAYMENT.currency, 'tron'),
+        outputs: [
+            { ...DEFAULT_PAYMENT, address: COLD_RECIPIENT, amount: '1', token: USDT_CONTRACT },
+        ],
+        ...overrides,
+    });
+
+    const dispatchTokenCompose = (tokenFormState: FormState) => {
+        const { store } = createTestCompositionRoot<void, unknown>({}).services;
+
+        return store
+            .dispatch(
+                composeTronTransactionFeeLevelsThunk({
+                    formState: tokenFormState,
+                    composeContext: { ...composeContext(), account: tokenAccount },
+                }),
+            )
+            .unwrap();
+    };
+
+    beforeEach(() => {
+        jest.spyOn(TrezorConnect, 'tronComposeTransaction').mockResolvedValue({
+            success: true,
+            payload: {
+                rawDataHex: '',
+                ref_block_bytes: '0001',
+                ref_block_hash: '0000000000000000',
+                expiration: 1,
+                timestamp: 0,
+                bandwidth: 345,
+            },
+        });
+        jest.spyOn(TrezorConnect, 'blockchainEstimateFee').mockResolvedValue({
+            success: true,
+            payload: {
+                blockTime: 3,
+                minFee: 0,
+                maxFee: 0,
+                minPriorityFee: 0,
+                levels: [
+                    {
+                        label: 'normal',
+                        blocks: 1,
+                        feePerUnit: '100',
+                        feePerTx: ESTIMATED_FEE,
+                        feeLimit: '64285',
+                    },
+                ],
+            },
+        });
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it('returns only the normal level until the limit is edited', async () => {
+        const levels = await dispatchTokenCompose(buildFormState({ selectedFee: 'normal' }));
+
+        expect(levels.custom).toBeUndefined();
+        assertComposed(levels.normal);
+        expect(levels.normal.fee).toBe(ESTIMATED_FEE);
+        expect(levels.normal.feeLimit).toBe(ESTIMATED_FEE);
+    });
+
+    it('composes the custom level from the typed limit and keeps the estimate fields', async () => {
+        const { normal, custom } = await dispatchTokenCompose(
+            buildFormState({ selectedFee: 'custom', feeLimit: '12000000' }),
+        );
+
+        assertComposed(normal);
+        assertComposed(custom);
+        expect(custom.fee).toBe('12000000');
+        expect(custom.feeLimit).toBe('12000000');
+        expect(custom.estimatedFeeLimit).toBe(ESTIMATED_FEE);
+        expect(custom.energyConsumed).toBe(ESTIMATED_ENERGY);
+        expect(normal.fee).toBe(ESTIMATED_FEE);
+    });
+
+    it('keeps the send-max amount in token units on the custom level', async () => {
+        const { normal, custom } = await dispatchTokenCompose(
+            buildFormState({ selectedFee: 'custom', feeLimit: '12000000', setMaxOutputId: 0 }),
+        );
+
+        assertComposed(normal);
+        assertComposed(custom);
+        expect(normal.max).toBe('50');
+        expect(custom.max).toBe('50');
+    });
+
+    it('rejects a limit with memo fee above the available balance and keeps the normal level', async () => {
+        const { normal, custom } = await dispatchTokenCompose(
+            buildFormState({
+                selectedFee: 'custom',
+                feeLimit: '999500000',
+                destinationTag: 'memo',
+            }),
+        );
+
+        assertComposed(normal);
+        expect(normal.type).toBe('final');
+        expect(custom).toMatchObject({ type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' });
+    });
+
+    it('falls back to the estimate when the typed limit is empty', async () => {
+        const { custom } = await dispatchTokenCompose(
+            buildFormState({ selectedFee: 'custom', feeLimit: '' }),
+        );
+
+        assertComposed(custom);
+        expect(custom.fee).toBe(ESTIMATED_FEE);
+    });
+
+    it('mirrors the normal level for a native transfer left on the custom level', async () => {
+        const { normal, custom } = await dispatchTokenCompose(
+            buildFormState({
+                selectedFee: 'custom',
+                feeLimit: '12000000',
+                outputs: [{ ...DEFAULT_PAYMENT, address: OWNER, amount: '1' }],
+            }),
+        );
+
+        assertComposed(normal);
+        expect(custom).toEqual(normal);
     });
 });
 
