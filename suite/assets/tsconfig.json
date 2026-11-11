@@ -5,6 +5,8 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/networks" },
+        { "path": "../../suite-common/token" },
         { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"
@@ -12,6 +14,9 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../token" }
+        { "path": "../token" },
+        {
+            "path": "../../packages/product-components"
+        }
     ]
 }

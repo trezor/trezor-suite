@@ -1,3 +1,5 @@
+export * from './components/AssetIcon';
+export * from './components/AssetName';
 export * from './components/Assets';
 export * from './components/AssetTransactionList';
 export * from './components/AssetPriceChange';
