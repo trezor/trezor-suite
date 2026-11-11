@@ -72,8 +72,13 @@
                 "{workspaceRoot}/eslint.config.mjs",
                 "{workspaceRoot}/eslint-local-rules/**/*",
                 "{workspaceRoot}/packages/eslint/**/*",
+                // Type-aware rules resolve each package's tsconfig, which extends this base config.
+                "{workspaceRoot}/tsconfig.base.json",
                 {
                     "env": "ESLINT_RULE_SET"
+                },
+                {
+                    "externalDependencies": ["eslint", "typescript-eslint", "typescript"]
                 }
             ],
             "outputs": [
@@ -84,12 +89,16 @@
             "cache": true
         },
         "lint:styles": {
-            "inputs": ["default", "{workspaceRoot}/.stylelintrc"],
+            "inputs": [
+                "default",
+                "{workspaceRoot}/.stylelintrc",
+                "{workspaceRoot}/stylelint-local-rules/**/*"
+            ],
             "outputs": ["{projectRoot}/.stylelintcache"],
             "cache": true
         },
         "depcheck": {
-            "inputs": ["default"],
+            "inputs": ["default", "{workspaceRoot}/.depcheckrc.json"],
             "cache": true
         }
     },
