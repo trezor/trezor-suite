@@ -3,7 +3,6 @@ import { type Eip1559Fees, type EthereumGasData } from './blockbook-api';
 import type {
     AccountBalanceHistory,
     AccountInfo,
-    CardanoProtocolParameters,
     ChannelMessage,
     FiatRatesBySymbol,
     ServerInfo,
@@ -172,11 +171,6 @@ export interface GetContractInfo {
     payload: ContractInfoResponse;
 }
 
-export interface GetCardanoProtocolParameters {
-    type: typeof RESPONSES.GET_CARDANO_PROTOCOL_PARAMETERS;
-    payload: CardanoProtocolParameters;
-}
-
 interface WithoutPayload {
     id: number;
     type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED;
@@ -207,5 +201,4 @@ export type Response =
     | ChannelMessage<Notification>
     | ChannelMessage<PushTransaction>
     | ChannelMessage<GetEvmChainId>
-    | ChannelMessage<GetContractInfo>
-    | ChannelMessage<GetCardanoProtocolParameters>;
+    | ChannelMessage<GetContractInfo>;

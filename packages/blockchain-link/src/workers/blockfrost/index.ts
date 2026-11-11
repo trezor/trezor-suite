@@ -89,18 +89,6 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     } as const;
 };
 
-const getCardanoProtocolParameters = async (
-    request: Request<MessageTypes.GetCardanoProtocolParameters>,
-) => {
-    const api = await request.connect();
-    const parameters = await api.getProtocolParameters();
-
-    return {
-        type: RESPONSES.GET_CARDANO_PROTOCOL_PARAMETERS,
-        payload: transformProtocolParameters(parameters),
-    } as const;
-};
-
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const api = await request.connect();
     const payload = await api.pushTransaction(request.payload.hex);
@@ -305,8 +293,6 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getTransaction(request);
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
-        case MESSAGES.GET_CARDANO_PROTOCOL_PARAMETERS:
-            return getCardanoProtocolParameters(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:
