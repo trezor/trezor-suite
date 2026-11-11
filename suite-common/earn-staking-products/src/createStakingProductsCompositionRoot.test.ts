@@ -14,7 +14,7 @@ import {
     type SolanaEverstakeNativeProductDeps,
     createSolanaEverstakeNativeProduct,
 } from './products/solana/everstake-native/product';
-import { createSolanaExternalProduct } from './products/solana/external/product';
+import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
 import { everstakeProvider } from './providers/everstake';
 
 describe('createStakingProductsCompositionRoot', () => {
@@ -56,7 +56,7 @@ const createProducts = (symbol: string) => [
             getStakingStats: () => Promise.resolve(stats),
         }),
     }),
-    createSolanaExternalProduct({
+    createSolanaExternalNativeProduct({
         networkSymbol: asNetworkSymbol(symbol),
         managedProviders: [everstakeProvider],
     }),

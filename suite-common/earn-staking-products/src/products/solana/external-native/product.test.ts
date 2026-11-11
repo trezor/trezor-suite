@@ -12,17 +12,17 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { everstakeProvider } from '../../../providers/everstake';
 import { SOLANA_EXTERNAL_PRODUCT_INFO } from '../info';
-import { createSolanaExternalProduct } from './product';
+import { createSolanaExternalNativeProduct } from './product';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('sol') });
 
 const createExternalProduct = (symbol = 'sol') =>
-    createSolanaExternalProduct({
+    createSolanaExternalNativeProduct({
         networkSymbol: asNetworkSymbol(symbol),
         managedProviders: [everstakeProvider],
     });
 
-describe('createSolanaExternalProduct', () => {
+describe('createSolanaExternalNativeProduct', () => {
     it.each(['sol', 'dsol'])('builds the external product for %s', symbol => {
         expect(createExternalProduct(symbol).descriptor.id).toBe(
             `${symbol}:${symbol}:external:native`,
@@ -60,7 +60,7 @@ describe('createSolanaExternalProduct', () => {
     });
 
     it('owns every stake account when no provider is managed', () => {
-        const product = createSolanaExternalProduct({
+        const product = createSolanaExternalNativeProduct({
             networkSymbol: asNetworkSymbol('sol'),
             managedProviders: [],
         });
