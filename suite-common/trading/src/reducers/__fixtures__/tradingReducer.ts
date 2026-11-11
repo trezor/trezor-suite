@@ -88,11 +88,6 @@ const composedTransactionInfo: TradingComposedTransactionInfo = {
     },
 };
 
-const loadingStatus = {
-    isLoading: true,
-    lastLoadedTimestamp: 1,
-};
-
 export const tradingFixtures = [
     {
         description: 'should set initial state',
@@ -290,20 +285,6 @@ export const tradingFixtures = [
         result: {
             ...initialState,
             composedTransactionInfo,
-        },
-    },
-    {
-        description: 'should set loading status',
-        initialState,
-        actions: [
-            {
-                type: tradingActions.setLoading.type,
-                payload: loadingStatus,
-            },
-        ],
-        result: {
-            ...initialState,
-            ...loadingStatus,
         },
     },
     {

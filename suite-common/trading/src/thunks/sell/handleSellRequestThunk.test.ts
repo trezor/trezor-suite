@@ -159,7 +159,7 @@ describe('handleSellRequestThunk', () => {
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
         expect(state.quoteRefetchingState.status).toBe('running');
         expect(state.quoteRefetchingState.lastFetchTimestamp).toBeGreaterThan(0);
     });
@@ -204,7 +204,7 @@ describe('handleSellRequestThunk', () => {
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
     });
 
     it('should successfully request sell quotes and save them when there is not currency in coins', async () => {
@@ -250,7 +250,7 @@ describe('handleSellRequestThunk', () => {
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(1);
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
     });
 
     it('should request sell quotes and include subdivision when country has subdivisions and subdivision is selected', async () => {
@@ -300,7 +300,7 @@ describe('handleSellRequestThunk', () => {
             fiatStringAmount: '50',
             flows: ['BANK_ACCOUNT', 'PAYMENT_GATE'],
         });
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
     });
 
     it('should not save quotes when country has subdivisions but no subdivision is selected', async () => {
@@ -331,7 +331,7 @@ describe('handleSellRequestThunk', () => {
         expect(tradeApi.getSellQuotes).not.toHaveBeenCalled();
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(0);
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
         await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
     });
 
@@ -350,7 +350,7 @@ describe('handleSellRequestThunk', () => {
 
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.sell.quotesRequest).toBeUndefined();
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
         expect(state.quoteRefetchingState.status).toBe('stopped');
         expect(state.quoteRefetchingState.lastFetchTimestamp).toBeUndefined();
     });
@@ -379,7 +379,7 @@ describe('handleSellRequestThunk', () => {
         expect(tradeApi.getSellQuotes).not.toHaveBeenCalled();
         expect(state.sell.quotesRequest).toBeUndefined();
         expect(state.sell.quotes.length).toEqual(0);
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
         await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
     });
 
@@ -410,7 +410,7 @@ describe('handleSellRequestThunk', () => {
 
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.sell.quotesRequest).toBeUndefined();
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
         await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
     });
 
@@ -425,7 +425,7 @@ describe('handleSellRequestThunk', () => {
 
         expect(state.sell.quotes.length).toEqual(0);
         expect(state.sell.quotesRequest).toBeDefined();
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
         expect(quotesResponse).toEqual([]);
         expect(state.quoteRefetchingState.status).toBe('stopped');
         expect(state.quoteRefetchingState.lastFetchTimestamp).toBeUndefined();
@@ -457,7 +457,7 @@ describe('handleSellRequestThunk', () => {
         expect(state.sell.quotes.length).toEqual(1);
         expect(quotesResponse?.length).toEqual(1);
         expect(input.composeRequestCallback).toHaveBeenCalledTimes(0);
-        expect(state.isLoading).toBe(false);
+        expect(state.sell.isLoading).toBe(false);
     });
 
     it('should set refetch timestamp and decrement remaining refetches on success when refetch is running', async () => {

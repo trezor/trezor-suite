@@ -10,8 +10,8 @@ import { openModal } from '@suite/modal';
 import { selectIsRegionRestricted } from '@suite/regions';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import {
+    selectHasTradingBuyProviders,
     selectTradingActiveSection,
-    selectTradingBuyLoadingTimestampAndStatus,
     tradingThunks,
 } from '@suite-common/trading';
 import {
@@ -114,22 +114,21 @@ export const AssetsView = () => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const tradingActiveSection = useSelector(selectTradingActiveSection);
-    const { isFullyLoaded: isBuyCatalogLoaded } = useSelector(
-        selectTradingBuyLoadingTimestampAndStatus,
-    );
+    const hasBuyProviders = useSelector(selectHasTradingBuyProviders);
 
     useEffect(() => {
         if (isRegionRestricted) return;
 
-        // A failed catalog request leaves an empty provider list in the cache and the Buy buttons
-        // would stay hidden until it expires, so reload it on every visit until it is usable.
+        // A failed request caches the catalog without providers, so reload it until it lists some.
         dispatch(
             tradingThunks.loadInitialDataThunk({
                 activeSection: tradingActiveSection,
-                forceReload: !isBuyCatalogLoaded,
+                // The Buy buttons read only the buy catalog, not the coin info or the swap catalog.
+                catalogs: ['buy'],
+                forceReload: !hasBuyProviders,
             }),
         );
-    }, [dispatch, isBuyCatalogLoaded, isRegionRestricted, tradingActiveSection]);
+    }, [dispatch, hasBuyProviders, isRegionRestricted, tradingActiveSection]);
 
     const hasMainnetNetworksToEnable = supportedMainnets.some(
         network => !enabledNetworks.includes(network.symbol),

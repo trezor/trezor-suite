@@ -186,29 +186,13 @@ export const bestSellQuotePerPaymentMethodProjection = (quotes: SellFiatTrade[])
         (aRate, bRate) => bRate - aRate,
     );
 
-export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
+export const selectIsTradingBuyFullyLoaded = createMemoizedSelector(
     [
-        (state: TradingRootState) => state.wallet.trading.isLoading,
-        (state: TradingRootState) => state.wallet.trading.lastLoadedTimestamp,
-    ],
-    (isLoading, lastLoadedTimestamp) => ({
-        isLoading,
-        lastLoadedTimestamp,
-    }),
-);
-
-export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
-    [
-        selectTradingLoadingAndTimestamp,
         (state: TradingRootState) => state.wallet.trading.info,
         (state: TradingRootState) => state.wallet.trading.buy.buyInfo,
     ],
-    (loadingAndTimestamp, info, buyInfo) => ({
-        isLoading: loadingAndTimestamp.isLoading,
-        lastLoadedTimestamp: loadingAndTimestamp.lastLoadedTimestamp,
-        isFullyLoaded:
-            !!(info?.coins && info?.platforms && buyInfo) && buyInfo.buyInfo?.providers.length > 0,
-    }),
+    (info, buyInfo) =>
+        !!(info?.coins && info?.platforms && buyInfo) && buyInfo.buyInfo?.providers.length > 0,
 );
 
 export const selectTradingInfo = (state: TradingRootState) => state.wallet?.trading?.info;
@@ -326,34 +310,18 @@ export const selectTradingSell = createMemoizedSelector(
     }),
 );
 
-export const selectTradingExchangeLoadingTimestampAndStatus = createMemoizedSelector(
-    [
-        selectTradingLoadingAndTimestamp,
-        (state: TradingRootState) => state.wallet.trading.info,
-        selectTradingExchangeInfo,
-    ],
-    (loadingAndTimestamp, info, exchangeInfo) => ({
-        isLoading: loadingAndTimestamp.isLoading,
-        lastLoadedTimestamp: loadingAndTimestamp.lastLoadedTimestamp,
-        isFullyLoaded:
-            !!(info?.coins && info?.platforms && exchangeInfo) &&
-            Object.keys(exchangeInfo.providerInfos).length > 0,
-    }),
+export const selectIsTradingExchangeFullyLoaded = createMemoizedSelector(
+    [(state: TradingRootState) => state.wallet.trading.info, selectTradingExchangeInfo],
+    (info, exchangeInfo) =>
+        !!(info?.coins && info?.platforms && exchangeInfo) &&
+        Object.keys(exchangeInfo.providerInfos).length > 0,
 );
 
-export const selectTradingSellLoadingTimestampAndStatus = createMemoizedSelector(
-    [
-        selectTradingLoadingAndTimestamp,
-        (state: TradingRootState) => state.wallet.trading.info,
-        selectTradingSellInfo,
-    ],
-    (loadingAndTimestamp, info, sellInfo) => ({
-        isLoading: loadingAndTimestamp.isLoading,
-        lastLoadedTimestamp: loadingAndTimestamp.lastLoadedTimestamp,
-        isFullyLoaded:
-            !!(info?.coins && info?.platforms && sellInfo) &&
-            Object.keys(sellInfo.providerInfos).length > 0,
-    }),
+export const selectIsTradingSellFullyLoaded = createMemoizedSelector(
+    [(state: TradingRootState) => state.wallet.trading.info, selectTradingSellInfo],
+    (info, sellInfo) =>
+        !!(info?.coins && info?.platforms && sellInfo) &&
+        Object.keys(sellInfo.providerInfos).length > 0,
 );
 
 export const selectTradingBuyProviders = (state: TradingRootState) =>
@@ -618,12 +586,28 @@ export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
+/**
+ * Whether the buy catalog lists any provider; one that failed to load lists none.
+ */
+export const selectHasTradingBuyProviders = (state: TradingRootState) =>
+    !!state.wallet.trading.buy.buyInfo?.buyInfo.providers.length;
+
+const selectTradingBuyCryptoIdSet = createMemoizedSelector(
+    [(state: TradingRootState) => state.wallet.trading.buy.buyInfo?.supportedCryptoCurrencies],
+    (supportedCryptoIds): ReadonlySet<CryptoId> => new Set(supportedCryptoIds),
+);
+
+/**
+ * The Buy buttons outside the trading section read the buy catalog alone,
+ * because the multi-megabyte coin info would only confirm that it lists the network's coin too.
+ * Buying stays available until the buy catalog lists its providers.
+ */
 export const selectIsTradingBuyAvailableForNetworkSymbol = (
-    state: TradingRootState & NetworksRootState,
+    state: TradingRootState,
     networkSymbol: NetworkSymbol,
 ): boolean =>
-    !selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded ||
-    selectTradingBuySupportedCryptoIds(state).includes(getCryptoId(networkSymbol));
+    !selectHasTradingBuyProviders(state) ||
+    selectTradingBuyCryptoIdSet(state).has(getCryptoId(networkSymbol));
 
 export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [

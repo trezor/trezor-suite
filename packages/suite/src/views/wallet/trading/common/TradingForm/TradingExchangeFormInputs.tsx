@@ -15,8 +15,8 @@ import {
     type TradingFormAccountRootState,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeSellCryptoIds,
-    selectTradingLoadingAndTimestamp,
     selectTradingSendAccount,
+    useTradingCatalogStatus,
 } from '@suite-common/trading';
 import { useFetchFees } from '@suite-common/wallet-core';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
@@ -54,7 +54,7 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
 
-    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const { isLoading } = useTradingCatalogStatus();
 
     const {
         type,

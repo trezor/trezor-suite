@@ -64,8 +64,6 @@ export type TradingState = {
     trades: TradingTransaction[];
     modalCryptoId: CryptoId | undefined;
     modalAccountKey: AccountKey | undefined;
-    isLoading: boolean;
-    lastLoadedTimestamp: number;
     activeSection: TradingType;
     prefilledFromAccount: TradingPrefilledFromAccount;
     verifiedAddress: TradingVerifiedAddress;
@@ -90,10 +88,8 @@ export const initialState: TradingState = {
     sell: sellInitialState,
     composedTransactionInfo: {},
     trades: [],
-    isLoading: false,
     modalAccountKey: undefined,
     modalCryptoId: undefined,
-    lastLoadedTimestamp: 0,
     activeSection: 'buy',
     prefilledFromAccount: {
         cryptoId: undefined,
@@ -140,16 +136,6 @@ const tradingCommonSlice = createSlice({
         },
         setModalAccountKey(state: TradingState, action: PayloadAction<AccountKey | undefined>) {
             state.modalAccountKey = action.payload;
-        },
-        setLoading(
-            state: TradingState,
-            action: PayloadAction<{ isLoading: boolean; lastLoadedTimestamp?: number }>,
-        ) {
-            state.isLoading = action.payload.isLoading;
-            state.lastLoadedTimestamp = action.payload.lastLoadedTimestamp ?? 0;
-        },
-        invalidateCatalog(state: TradingState) {
-            state.lastLoadedTimestamp = 0;
         },
         setTradingActiveSection(state: TradingState, action: PayloadAction<TradingType>) {
             state.activeSection = action.payload;
