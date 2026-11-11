@@ -535,6 +535,7 @@ describe('composeTransactionThunk', () => {
                     votingDelegation: { accountKey: account.key, option },
                     data: { data: {} },
                 },
+                blockchain: {},
             },
         } as unknown as ThunkState;
 
