@@ -20,6 +20,15 @@ class AccountReceiveActions {
         await waitForVisible(receiveAddressLabel);
         await detoxExpect(receiveAddressLabel).toHaveText(label);
     }
+
+    async verifyHeaderTokenSymbol(symbol: string) {
+        const headerTokenSymbol = element(
+            by.id('@receive/header-token-symbol').withAncestor(by.id('@screen/ReceiveAddress')),
+        );
+
+        await waitForVisible(headerTokenSymbol);
+        await detoxExpect(headerTokenSymbol).toHaveText(symbol);
+    }
 }
 
 export const onAccountReceive = new AccountReceiveActions();

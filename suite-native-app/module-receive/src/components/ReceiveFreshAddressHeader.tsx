@@ -74,6 +74,7 @@ export const ReceiveFreshAddressHeader = ({
                                     networkSymbol={networkSymbol}
                                     contractAddress={token.contract}
                                     variant="body-md-strong"
+                                    testID="@receive/header-token-symbol"
                                 />
                             </HStack>
                         )}
