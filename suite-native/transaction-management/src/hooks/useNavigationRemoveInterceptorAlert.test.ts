@@ -63,6 +63,7 @@ describe('useNavigationRemoveInterceptorAlert', () => {
         getGuardProps()?.onBlocked?.({
             action: { type: 'GO_BACK' },
             continueNavigation: jest.fn(),
+            forceNavigation: jest.fn(),
         });
 
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledTimes(1);

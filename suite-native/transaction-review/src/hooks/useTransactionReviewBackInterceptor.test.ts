@@ -32,18 +32,24 @@ describe('useTransactionReviewBackInterceptor', () => {
     });
 
     it.each([true, false])(
-        'only calls onReviewCanceled when the cancellation is confirmed: %s',
+        'only calls onReviewCanceled without the guard when the cancellation is confirmed: %s',
         async wasReviewCanceled => {
             const onReviewCanceled = jest.fn();
             const continueNavigation = jest.fn();
+            const forceNavigation = jest.fn((navigate: () => void) => navigate());
             mockShowCancellationAlert.mockResolvedValue({ wasReviewCanceled });
 
             const options = await renderInterceptor({ onReviewCanceled });
 
-            await options?.onBlocked?.({ action: { type: 'POP' }, continueNavigation });
+            await options?.onBlocked?.({
+                action: { type: 'POP' },
+                continueNavigation,
+                forceNavigation,
+            });
 
             expect(mockShowCancellationAlert).toHaveBeenCalledTimes(1);
             expect(onReviewCanceled).toHaveBeenCalledTimes(wasReviewCanceled ? 1 : 0);
+            expect(forceNavigation).toHaveBeenCalledTimes(wasReviewCanceled ? 1 : 0);
             expect(continueNavigation).not.toHaveBeenCalled();
         },
     );

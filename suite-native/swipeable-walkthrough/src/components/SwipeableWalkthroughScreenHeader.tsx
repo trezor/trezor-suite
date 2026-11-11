@@ -81,8 +81,9 @@ export const SwipeableWalkthroughScreenHeader = ({
         }
     }, [currentStepIndex, onPressBack]);
 
-    useNavigationRemoveGuard({
-        onBlocked: handlePressBackButton,
+    // Bypass the guard, otherwise it blocks the back navigation that onPressBack itself dispatches.
+    const { forceNavigation } = useNavigationRemoveGuard({
+        onBlocked: params => params.forceNavigation(handlePressBackButton),
     });
 
     return (
@@ -94,7 +95,7 @@ export const SwipeableWalkthroughScreenHeader = ({
                     leftIcon={
                         <BackButton
                             currentStepIndex={currentStepIndex}
-                            onPressBack={handlePressBackButton}
+                            onPressBack={() => forceNavigation(handlePressBackButton)}
                         />
                     }
                 />

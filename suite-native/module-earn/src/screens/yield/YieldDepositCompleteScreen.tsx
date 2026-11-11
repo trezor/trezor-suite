@@ -76,8 +76,8 @@ export const YieldDepositCompleteScreen = () => {
         navigateToInitialScreen();
     }, [account?.symbol, analytics, dispatch, flowKey, navigateToInitialScreen, vault?.id]);
 
-    useNavigationRemoveGuard({
-        onBlocked: handleExit,
+    const { forceNavigation } = useNavigationRemoveGuard({
+        onBlocked: params => params.forceNavigation(handleExit),
     });
 
     useEffect(() => {
@@ -86,7 +86,7 @@ export const YieldDepositCompleteScreen = () => {
         }
 
         if (!session) {
-            navigateToInitialScreen();
+            forceNavigation(navigateToInitialScreen);
 
             return;
         }
@@ -94,7 +94,14 @@ export const YieldDepositCompleteScreen = () => {
         if (session.step !== 'complete') {
             navigation.replace(YieldStackRoutes.YieldDeposit, route.params);
         }
-    }, [navigation, navigateToInitialScreen, resolutionStatus, route.params, session]);
+    }, [
+        forceNavigation,
+        navigation,
+        navigateToInitialScreen,
+        resolutionStatus,
+        route.params,
+        session,
+    ]);
 
     const rows = useMemo(() => {
         if (resolutionStatus !== 'resolved' || !session) {
@@ -133,7 +140,7 @@ export const YieldDepositCompleteScreen = () => {
                 type="deposit"
                 vaultId={vault.id}
                 buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
-                onButtonPress={handleExit}
+                onButtonPress={() => forceNavigation(handleExit)}
                 rows={rows}
                 title={<Translation id="earn.yieldDepositCompleteScreen.title" />}
                 subtitle={<Translation id="earn.yieldDepositCompleteScreen.subtitle" />}

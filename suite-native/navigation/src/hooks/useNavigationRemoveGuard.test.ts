@@ -49,6 +49,7 @@ describe('useNavigationRemoveGuard', () => {
             expect(onBlocked).toHaveBeenCalledWith({
                 action,
                 continueNavigation: expect.any(Function),
+                forceNavigation: expect.any(Function),
             });
 
             const { continueNavigation } = onBlocked.mock.calls[0][0];
@@ -128,6 +129,95 @@ describe('useNavigationRemoveGuard', () => {
         confirm?.();
         await confirmation;
         expect(mockDispatch).toHaveBeenCalledTimes(1);
+    });
+
+    it('lets navigation dispatched inside forceNavigation through without calling onBlocked', async () => {
+        const onBlocked = jest.fn();
+        const action = { type: 'GO_BACK' };
+        const { result } = await renderHookWithBasicProvider(() =>
+            useNavigationRemoveGuard({ onBlocked }),
+        );
+
+        result.current.forceNavigation(() => triggerRemoval(action));
+
+        expect(onBlocked).not.toHaveBeenCalled();
+        expect(mockDispatch).toHaveBeenCalledTimes(1);
+        expect(mockDispatch.mock.calls[0][0]).toBe(action);
+    });
+
+    it('lets onBlocked bypass the guard for the navigation it dispatches', async () => {
+        const followUpAction = { type: 'GO_BACK' };
+        const onBlocked = jest.fn<void, [{ forceNavigation: (navigate: () => void) => void }]>(
+            ({ forceNavigation }) => forceNavigation(() => triggerRemoval(followUpAction)),
+        );
+        await renderHookWithBasicProvider(() => useNavigationRemoveGuard({ onBlocked }));
+
+        triggerRemoval({ type: 'POP' });
+
+        expect(onBlocked).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).toHaveBeenCalledTimes(1);
+        expect(mockDispatch.mock.calls[0][0]).toBe(followUpAction);
+    });
+
+    it('blocks again after forceNavigation returns', async () => {
+        const onBlocked = jest.fn();
+        const { result } = await renderHookWithBasicProvider(() =>
+            useNavigationRemoveGuard({ onBlocked }),
+        );
+
+        result.current.forceNavigation(() => {});
+        triggerRemoval({ type: 'GO_BACK' });
+
+        expect(onBlocked).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    it('blocks again after forceNavigation throws', async () => {
+        const onBlocked = jest.fn();
+        const { result } = await renderHookWithBasicProvider(() =>
+            useNavigationRemoveGuard({ onBlocked }),
+        );
+
+        expect(() =>
+            result.current.forceNavigation(() => {
+                throw new Error('navigation failed');
+            }),
+        ).toThrow('navigation failed');
+        triggerRemoval({ type: 'GO_BACK' });
+
+        expect(onBlocked).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    it('keeps bypassing after a nested forceNavigation returns', async () => {
+        const onBlocked = jest.fn();
+        const { result } = await renderHookWithBasicProvider(() =>
+            useNavigationRemoveGuard({ onBlocked }),
+        );
+
+        result.current.forceNavigation(() => {
+            result.current.forceNavigation(() => {});
+            triggerRemoval({ type: 'POP' });
+        });
+
+        expect(onBlocked).not.toHaveBeenCalled();
+        expect(mockDispatch).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not bypass navigation dispatched after forceNavigation awaits', async () => {
+        const onBlocked = jest.fn();
+        const { result } = await renderHookWithBasicProvider(() =>
+            useNavigationRemoveGuard({ onBlocked }),
+        );
+
+        let delayedNavigation: Promise<void> | undefined;
+        result.current.forceNavigation(() => {
+            delayedNavigation = Promise.resolve().then(() => triggerRemoval({ type: 'GO_BACK' }));
+        });
+        await delayedNavigation;
+
+        expect(onBlocked).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).not.toHaveBeenCalled();
     });
 
     it('does not continue when an asynchronous callback resolves without continuing', async () => {
