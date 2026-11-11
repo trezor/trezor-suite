@@ -1,12 +1,11 @@
-// p2tr showOnTrezor: FW renders the descriptor in `h`-notation, while
-// `displayablePublicKey` mirrors `xpubSegwit` in `'`-notation. They differ in
-// path-notation, so deviceScreen and displayablePublicKey are declared
-// separately to make the divergence visible.
-const p2trDisplayablePublicKey = `tr([95d8f670/86'/0'/0']xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)`;
-const p2trDeviceScreen = /tr\(\[95d8f670\/86h\/0h\/0h\]xpub6D1saVFSZYg/;
+// showOnTrezor: FW renders the same string returned in `displayablePublicKey`, for p2tr its
+// descriptor in `h`-notation with the checksum. deviceScreen is a stable prefix.
+const p2trXpub =
+    'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7';
+const p2trXpubSegwit = `tr([95d8f670/86'/0'/0']${p2trXpub}/<0;1>/*)`;
+const p2trDisplayablePublicKey = `tr([95d8f670/86h/0h/0h]${p2trXpub}/<0;1>/*)#htg5lhe3`;
+const p2trDeviceScreen = p2trDisplayablePublicKey.slice(0, 37);
 
-// bech32 / p2pkh showOnTrezor: FW renders the same string returned in
-// `displayablePublicKey`. deviceScreen is a stable prefix.
 const bech32DisplayablePublicKey =
     'zpub6qSSRL9wLd6LNee7qjDEuULWccP5Vbm5nuX4geBu8zMCQBWsF5Jo5UswLVxFzcbCMr2yQPG27ZhDs1cUGKVH1RmqkG1PFHkEXyHG7EV3ogY';
 const bech32DeviceScreen = bech32DisplayablePublicKey.slice(0, 37);
@@ -28,17 +27,21 @@ const getPublicKey: TestCase = {
                 coin: 'btc',
             },
             result: {
-                xpub: 'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7',
-                xpubSegwit: `tr([95d8f670/86'/0'/0']xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)`,
-                descriptor: `tr([95d8f670/86h/0h/0h]xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)#htg5lhe3`,
-                displayablePublicKey: `tr([95d8f670/86'/0'/0']xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)`,
+                xpub: p2trXpub,
+                xpubSegwit: p2trXpubSegwit,
+                descriptor: p2trDisplayablePublicKey,
+                displayablePublicKey: p2trDisplayablePublicKey,
             },
             get legacyResults() {
                 const { descriptor, ...payload } = this.result;
 
                 return [
                     { rules: ['<1.10.4', '<2.4.3'], success: false },
-                    { rules: ['2.4.3-2.6.9'], payload },
+                    // Without the descriptor FW shows the bare xpub.
+                    {
+                        rules: ['1.10.4-1.13.9', '2.4.3-2.6.9'],
+                        payload: { ...payload, displayablePublicKey: p2trXpub },
+                    },
                 ];
             },
         },
@@ -125,6 +128,29 @@ const getPublicKey: TestCase = {
             },
         },
         {
+            // FW picks what to show by the script type, not by the path.
+            description: 'Bitcoin bech32 path with the taproot script type',
+            params: {
+                path: "m/84'/0'/0'",
+                coin: 'btc',
+                scriptType: 'SPENDTAPROOT',
+            },
+            result: {
+                displayablePublicKey:
+                    'tr([95d8f670/84h/0h/0h]xpub6Bmuozp73G1Ng4FtB1dzVJ9WGg6BcMn5xgUd7rQ8NybSHytQjkyfqMZfJ635zoHMYZoMuS4uCEz86SPLpvfFQxQe1acY5U7FzX9yL5DyRAe/<0;1>/*)#qxgd7cx3',
+            },
+            legacyResults: [
+                { rules: ['<1.10.4', '<2.4.3'], success: false },
+                {
+                    rules: ['1.10.4-1.13.9', '2.4.3-2.6.9'],
+                    payload: {
+                        displayablePublicKey:
+                            'xpub6Bmuozp73G1Ng4FtB1dzVJ9WGg6BcMn5xgUd7rQ8NybSHytQjkyfqMZfJ635zoHMYZoMuS4uCEz86SPLpvfFQxQe1acY5U7FzX9yL5DyRAe',
+                    },
+                },
+            ],
+        },
+        {
             description: 'Bitcoin p2tr first account (showOnTrezor)',
             params: {
                 path: "m/86'/0'/0'",
@@ -132,9 +158,9 @@ const getPublicKey: TestCase = {
                 showOnTrezor: true,
             },
             result: {
-                xpub: 'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7',
-                xpubSegwit: p2trDisplayablePublicKey,
-                descriptor: `tr([95d8f670/86h/0h/0h]xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7/<0;1>/*)#htg5lhe3`,
+                xpub: p2trXpub,
+                xpubSegwit: p2trXpubSegwit,
+                descriptor: p2trDisplayablePublicKey,
                 displayablePublicKey: p2trDisplayablePublicKey,
             },
             deviceScreen: p2trDeviceScreen,
@@ -146,7 +172,11 @@ const getPublicKey: TestCase = {
 
                 return [
                     { rules: ['<1.10.4', '<2.4.3'], success: false },
-                    { rules: ['2.4.3-2.6.9'], payload },
+                    // Without the descriptor FW shows the bare xpub.
+                    {
+                        rules: ['1.10.4-1.13.9', '2.4.3-2.6.9'],
+                        payload: { ...payload, displayablePublicKey: p2trXpub },
+                    },
                 ];
             },
         },
