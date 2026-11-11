@@ -5,7 +5,6 @@ import * as bootloaderProto from '@trezor/protobuf/src/definitions/messages-boot
 import * as cardanoProto from '@trezor/protobuf/src/definitions/messages-cardano_pb';
 import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
 import * as cryptoProto from '@trezor/protobuf/src/definitions/messages-crypto_pb';
-import * as debugProto from '@trezor/protobuf/src/definitions/messages-debug_pb';
 import * as definitionsProto from '@trezor/protobuf/src/definitions/messages-definitions_pb';
 import * as eosProto from '@trezor/protobuf/src/definitions/messages-eos_pb';
 import * as ethereumEip712Proto from '@trezor/protobuf/src/definitions/messages-ethereum-eip712_pb';
@@ -32,7 +31,6 @@ export const loadProtobufModules = () => {
         cardanoProto,
         commonProto,
         cryptoProto,
-        debugProto,
         definitionsProto,
         eosProto,
         ethereumEip712Proto,
