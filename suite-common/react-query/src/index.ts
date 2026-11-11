@@ -7,12 +7,16 @@ export {
     useQueryClient,
     queryOptions,
     type MutationOptions,
+    type Query,
+    type QueryCacheNotifyEvent,
+    type QueryKey,
     type QueryOptions,
     type UseQueryOptions,
     type UseQueryResult,
     type UseInfiniteQueryResult,
     type InfiniteData,
     keepPreviousData,
+    partialMatchKey,
     skipToken,
 } from '@tanstack/react-query';
 export {

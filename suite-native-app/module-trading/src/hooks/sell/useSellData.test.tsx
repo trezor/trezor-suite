@@ -6,7 +6,11 @@ import {
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
-import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
+import {
+    mockGetSelectedAccount,
+    mockGetTradingEnvironment,
+    mockTradingQueryClient,
+} from '@suite-common/trading/mocks';
 import {
     type AccountsRootState,
     type WalletSettingsRootState,
@@ -22,7 +26,6 @@ import {
 } from '@suite-native/test-utils-store';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
-import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useSellData } from './useSellData';
@@ -52,35 +55,33 @@ describe('useSellData', () => {
         }),
     } as const;
 
-    const createSellDataStore = (preloadedState?: PreloadedStatePartial<State>) =>
+    // The hook reads the catalog status from the query client that the thunk loads the catalogs into.
+    const createSellDataServices = (preloadedState?: PreloadedStatePartial<State>) =>
         createTestCompositionRoot<LoadInitialDataThunkDeps, State>({
             reducer,
             preloadedState,
             services: () => ({
                 getSelectedAccount: mockGetSelectedAccount(),
                 getTradingEnvironment: mockGetTradingEnvironment(),
+                queryClient: mockTradingQueryClient(),
             }),
-        }).services.store;
+        }).services;
 
-    const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
+    type TestServices = ReturnType<typeof createSellDataServices>;
+
+    const getInitializedServices = (tradingAccountKey: AccountKey | undefined) => {
         const tradingState = getInitializedTradingState('sell');
         tradingState.sell!.tradingAccountKey = tradingAccountKey;
 
-        return createSellDataStore({
+        return createSellDataServices({
             wallet: {
                 trading: tradingState,
             },
         });
     };
 
-    const getDefaultStore = () => createSellDataStore();
-
-    const renderUseSellData = async (
-        store?: ReduxStoreWithThunk<State, LoadInitialDataThunkDeps>,
-    ) => {
-        const ret = await renderHookWithStoreProvider(useSellData, {
-            services: { store: store ?? getDefaultStore() },
-        });
+    const renderUseSellData = async (services: TestServices = createSellDataServices()) => {
+        const ret = await renderHookWithStoreProvider(useSellData, { services });
 
         await act(() => Promise.resolve()); // Wait for all effects to run
 
@@ -139,8 +140,8 @@ describe('useSellData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const store = createSellDataStore();
-        const { result } = await renderUseSellData(store);
+        const services = createSellDataServices();
+        const { result } = await renderUseSellData(services);
         await act(async () => {
             await result.current.refetch();
         });
@@ -156,7 +157,7 @@ describe('useSellData', () => {
         });
 
         await act(() => {
-            store.dispatch(tradingSellActions.setTradingAccountKey(btc2Account.key));
+            services.store.dispatch(tradingSellActions.setTradingAccountKey(btc2Account.key));
         });
         expect(initialThunkLoadActionSpy).toHaveBeenLastCalledWith({
             activeSection: 'sell',
@@ -174,14 +175,14 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk when account is changed with descriptor', async () => {
-            const store = getInitializedStore(undefined);
-            await renderUseSellData(store);
+            const services = getInitializedServices(undefined);
+            await renderUseSellData(services);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             await act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey(btc2Account.key));
+                services.store.dispatch(tradingSellActions.setTradingAccountKey(btc2Account.key));
             });
 
             // Wait for the effect to run
@@ -196,14 +197,14 @@ describe('useSellData', () => {
         });
 
         it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
-            const store = getInitializedStore(btc2Account.key);
-            await renderUseSellData(store);
+            const services = getInitializedServices(btc2Account.key);
+            await renderUseSellData(services);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             await act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey(btc2Account.key));
+                services.store.dispatch(tradingSellActions.setTradingAccountKey(btc2Account.key));
             });
 
             // Wait for effects to run
@@ -215,14 +216,14 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk without a forced API key when descriptor is empty string', async () => {
-            const store = getInitializedStore(btc1Account.key);
-            await renderUseSellData(store);
+            const services = getInitializedServices(btc1Account.key);
+            await renderUseSellData(services);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             await act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey(btc3Account.key));
+                services.store.dispatch(tradingSellActions.setTradingAccountKey(btc3Account.key));
             });
 
             // Wait for the effect to run
@@ -238,14 +239,14 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk without a forced API key when descriptor is undefined', async () => {
-            const store = getInitializedStore(btc1Account.key);
-            await renderUseSellData(store);
+            const services = getInitializedServices(btc1Account.key);
+            await renderUseSellData(services);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             await act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
+                services.store.dispatch(tradingSellActions.setTradingAccountKey(undefined));
             });
 
             // Wait for the effect to run

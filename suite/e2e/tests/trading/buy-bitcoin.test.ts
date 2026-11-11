@@ -72,9 +72,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ page, tradingPage, tradingMock, tradingResponses }) => {
             await test.step('Base currency amount converts to the crypto the buy requests', async () => {
-                await page.expectReduxObjectNotToBeEmpty('wallet.trading.buy.buyInfo', {
-                    timeout: 30_000,
-                });
+                await tradingPage.waitForFormReset('wallet.trading.buy.buyInfo');
                 const quotesRequest = page.waitForRequest(tradeEndpoint.buyQuotes);
                 await tradingPage.inputs.baseCurrencyAmount.fill(baseCurrencyAmount);
 

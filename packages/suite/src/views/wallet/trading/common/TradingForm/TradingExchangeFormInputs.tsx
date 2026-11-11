@@ -10,13 +10,14 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TRADING_SECTION_CATALOGS,
     type TradingExchangeFormProps,
     type TradingExchangeType,
     type TradingFormAccountRootState,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeSellCryptoIds,
-    selectTradingLoadingAndTimestamp,
     selectTradingSendAccount,
+    useTradingCatalogStatus,
 } from '@suite-common/trading';
 import { useFetchFees } from '@suite-common/wallet-core';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
@@ -55,7 +56,7 @@ import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAdd
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
 
-    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const { isLoading } = useTradingCatalogStatus(TRADING_SECTION_CATALOGS[context.type]);
 
     const {
         type,

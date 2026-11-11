@@ -31,6 +31,7 @@ import { type TradingBuyFormContextProps } from '#src/types/trading/tradingForm'
 
 import { useBuyQuotes } from './useBuyQuotes';
 import { useTradingBuyFormDefaultValues } from './useTradingBuyFormDefaultValues';
+import { useIsTradingCoinInfoSettled } from '../common/useIsTradingCoinInfoSettled';
 import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFiatValues } from '../common/useTradingFiatValues';
 import { useTradingFormReset } from '../common/useTradingFormReset';
@@ -50,6 +51,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const { dispatch } = useServices(injectDispatch);
 
     const buyInfo = useSelector(selectTradingBuyInfo);
+    const isCoinInfoSettled = useIsTradingCoinInfoSettled();
     const quotesRequest = useSelector(selectTradingBuyQuotesRequest);
     const savedFormValues = useSelector(selectTradingBuyFormValues);
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
@@ -138,7 +140,8 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
-        isInfoReady: !!buyInfo,
+        // The default asset is built from the coin info, which can arrive after the buy catalog.
+        isInfoReady: !!buyInfo && isCoinInfoSettled,
         reset,
         defaultValues: initialValues,
         getPreservedValues: () => ({ receiveAddress: getValues('receiveAddress') }),
