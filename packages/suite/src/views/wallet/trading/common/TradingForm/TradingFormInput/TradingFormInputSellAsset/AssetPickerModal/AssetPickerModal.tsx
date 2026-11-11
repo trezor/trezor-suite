@@ -4,15 +4,13 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column } from '@trezor/components';
 
-import {
-    AssetGroupLabel,
-    AssetGroupSpace,
-    AssetGroupsCard,
-    AssetRowAccountWithBalance,
-    AssetRowToken,
-    AssetsModal,
-    ExpandableAssetRowGroup,
-} from '#src/components/suite/asset-picker/components';
+import { AssetGroupLabel } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupLabel';
+import { AssetGroupSpace } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupSpace';
+import { AssetGroupsCard } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupsCard';
+import { AssetRowAccountWithBalance } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAccount/AssetRowAccountWithBalance';
+import { AssetRowToken } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowToken/AssetRowToken';
+import { ExpandableAssetRowGroup } from '#src/components/suite/asset-picker/components/AssetRow/ExpandableAssetRowGroup/ExpandableAssetRowGroup';
+import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
 import { useExpandableGroups, useSearchFilter } from '#src/components/suite/asset-picker/hooks';
 import {
     type AccountWithOptionalLabel,
