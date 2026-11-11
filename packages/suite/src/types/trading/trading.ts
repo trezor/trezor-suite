@@ -89,7 +89,6 @@ export interface TradingGetCryptoQuoteAmountProps {
     sendCurrency: CryptoId | string | undefined;
     receiveAmount: string;
     receiveCurrency: CryptoId | undefined;
-    networkFee?: string | undefined;
 }
 
 export interface TradingCryptoAmountProps {

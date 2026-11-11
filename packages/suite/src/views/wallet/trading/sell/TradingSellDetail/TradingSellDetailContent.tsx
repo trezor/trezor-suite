@@ -55,7 +55,6 @@ export const TradingSellDetailContent = () => {
         sendCurrency: trade.data.fiatCurrency,
         receiveAmount: trade.data.cryptoStringAmount ?? '',
         receiveCurrency: trade.data.cryptoCurrency,
-        networkFee: composedTransaction?.composed?.fee,
     };
 
     const getContent = () => {
