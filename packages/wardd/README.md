@@ -6,8 +6,9 @@ local WebSocket endpoint.
 
 ## Dedicated device service interface
 
-The matching firmware branch `petrsusil/ward-poc-encrypted` supports
-`--enable-ward-service-channel`. Its private codec-v1 interface uses a 64-byte
+The matching firmware branch `petrsusil/ward-service-channel` supports
+`--enable-ward-service-channel` on hardware. Universal emulators include it without
+an extra build flag or emulator parameter. Its private codec-v1 interface uses a 64-byte
 report buffer, independent of the wallet's THP/codec buffers. The streaming parser
 handles proofs larger than the former 8,704-byte shared buffer.
 
@@ -25,8 +26,11 @@ yarn workspace @trezor/wardd start --memory --service-channel udp:127.0.0.1:3790
 ```
 
 The option also works with the usual `--wm-url`, `--data-dir`, `--token-file` and
-other daemon options. Without it, wardd starts with its existing wallet relay
-behavior. USB discovery uses class `FF`, subclass `57`, protocol `01`, and claims
+other daemon options. In this mode wardd opens no WebSocket adapter relay port;
+wallet callers send operations directly to Trezor. Add `--wallet-relay` explicitly
+if a caller also needs the legacy adapter relay alongside the service connection.
+Without `--service-channel`, wardd starts with its existing wallet relay behavior.
+USB discovery uses class `FF`, subclass `57`, protocol `01`, and claims
 only that interface. It does not open the wallet session or reset an already
 active USB configuration. Startup fails if the service cannot be opened or its
 protocol is incompatible. A later connection failure stops wardd with a nonzero
