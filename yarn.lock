@@ -16890,7 +16890,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/assets@workspace:suite/assets":
+"@suite/assets@workspace:*, @suite/assets@workspace:suite/assets":
   version: 0.0.0-use.local
   resolution: "@suite/assets@workspace:suite/assets"
   dependencies:
@@ -20098,6 +20098,7 @@ __metadata:
     "@suite/address": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/app-assets": "workspace:*"
+    "@suite/assets": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/bluetooth": "workspace:*"

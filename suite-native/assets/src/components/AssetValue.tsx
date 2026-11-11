@@ -1,9 +1,10 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
-import { TokenSymbol } from '@suite-native/tokens';
+
+import { AssetSymbol } from './AssetSymbol';
 
 type AssetValueProps = Omit<TextProps, 'children'> & {
     amount: AmountUnit;
@@ -28,15 +29,11 @@ export const AssetValue = ({
                 smallestUnitsOverride={false}
                 withSymbol={false}
             />{' '}
-            {contractAddress ? (
-                <TokenSymbol
-                    {...textProps}
-                    networkSymbol={networkSymbol}
-                    contractAddress={contractAddress}
-                />
-            ) : (
-                getNetworkDisplaySymbol(networkSymbol)
-            )}
+            <AssetSymbol
+                {...textProps}
+                networkSymbol={networkSymbol}
+                contractAddress={contractAddress}
+            />
         </Text>
     );
 };

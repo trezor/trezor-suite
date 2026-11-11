@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { TokenSymbol } from '@suite/token';
+import { AssetSymbol } from '@suite/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -51,14 +51,7 @@ export const HomeAssetIdentity = ({
                         data-testid="@dashboard/home-asset/name"
                     >
                         <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                            {contractAddress ? (
-                                <TokenSymbol
-                                    networkSymbol={symbol}
-                                    tokenContract={contractAddress}
-                                />
-                            ) : (
-                                displaySymbol
-                            )}
+                            <AssetSymbol networkSymbol={symbol} contractAddress={contractAddress} />
                         </TruncateWithTooltip>
                     </Text>
                     {badge}
