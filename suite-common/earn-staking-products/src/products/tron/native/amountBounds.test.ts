@@ -7,7 +7,7 @@ import {
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { getTronCuratedProductAmountBounds } from './amountBounds';
+import { getTronNativeProductAmountBounds } from './amountBounds';
 
 const TRX = '000000';
 
@@ -34,7 +34,7 @@ const position: StakingPosition = mockStakingPosition({
     operations: ['stake', 'unstake', 'vote', 'withdraw', 'claim'],
 });
 
-describe('getTronCuratedProductAmountBounds', () => {
+describe('getTronNativeProductAmountBounds', () => {
     it.each([
         { balance: '0', max: '0' },
         { balance: '500000', max: '0' },
@@ -45,7 +45,7 @@ describe('getTronCuratedProductAmountBounds', () => {
         { balance: `2000000000${TRX}`, max: `1000000000${TRX}` },
     ])('keeps 0.5 TRX of an available balance of $balance sun', ({ balance, max }) => {
         expect(
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account: mockStakingAccount({
                     symbol: asNetworkSymbol('trx'),
                     balance,
@@ -60,7 +60,7 @@ describe('getTronCuratedProductAmountBounds', () => {
 
     it('stakes from the available balance', () => {
         expect(
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account: mockStakingAccount({
                     symbol: asNetworkSymbol('trx'),
                     balance: `100${TRX}`,
@@ -78,7 +78,7 @@ describe('getTronCuratedProductAmountBounds', () => {
         { resource: 'bandwidth', max: `100${TRX}` },
     ])('unstakes the $resource frozen in the account, not the delegated', ({ resource, max }) => {
         expect(
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account,
                 position,
                 operation: 'unstake',
@@ -89,7 +89,7 @@ describe('getTronCuratedProductAmountBounds', () => {
 
     it('unstakes both resources without a resource option', () => {
         expect(
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account,
                 position,
                 operation: 'unstake',
@@ -100,7 +100,7 @@ describe('getTronCuratedProductAmountBounds', () => {
 
     it('unstakes nothing for an unknown resource', () => {
         expect(
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account,
                 position,
                 operation: 'unstake',
@@ -111,7 +111,7 @@ describe('getTronCuratedProductAmountBounds', () => {
 
     it('votes with up to the whole voting power', () => {
         expect(
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account,
                 position,
                 operation: 'vote',
@@ -122,7 +122,7 @@ describe('getTronCuratedProductAmountBounds', () => {
 
     it('votes with the voting power, not the staked amount', () => {
         expect(
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account,
                 position: {
                     ...position,
@@ -139,7 +139,7 @@ describe('getTronCuratedProductAmountBounds', () => {
         { operation: 'claim', amount: '1500000' },
     ] as const)('takes the whole amount for a $operation', ({ operation, amount: expected }) => {
         expect(
-            getTronCuratedProductAmountBounds({ account, position, operation, options: {} }),
+            getTronNativeProductAmountBounds({ account, position, operation, options: {} }),
         ).toEqual({ min: expected, max: expected });
     });
 
@@ -147,7 +147,7 @@ describe('getTronCuratedProductAmountBounds', () => {
         'has no valid amount to %s without a position',
         operation => {
             expect(
-                getTronCuratedProductAmountBounds({
+                getTronNativeProductAmountBounds({
                     account,
                     position: null,
                     operation,
@@ -161,7 +161,7 @@ describe('getTronCuratedProductAmountBounds', () => {
         'has no valid amount to %s while the position does not offer it',
         operation => {
             expect(
-                getTronCuratedProductAmountBounds({
+                getTronNativeProductAmountBounds({
                     account,
                     position: { ...position, operations: ['stake'] },
                     operation,
@@ -173,7 +173,7 @@ describe('getTronCuratedProductAmountBounds', () => {
 
     it('does not support redelegate', () => {
         expect(() =>
-            getTronCuratedProductAmountBounds({
+            getTronNativeProductAmountBounds({
                 account,
                 position,
                 operation: 'redelegate',

@@ -16,8 +16,8 @@ import {
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
-import { type TronCuratedProductDeps, createTronCuratedProduct } from './product';
+import { TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { type TronNativeProductDeps, createTronNativeProduct } from './product';
 import { everstakeProvider } from '../../../providers/everstake';
 import { luganodesProvider } from '../../../providers/luganodes';
 import { p2pProvider } from '../../../providers/p2p';
@@ -32,19 +32,19 @@ const trxStats: TrxStats = [
 ];
 
 const createDeps = () =>
-    createMockDeps<TronCuratedProductDeps>({
+    createMockDeps<TronNativeProductDeps>({
         getTronStakingStats: () => Promise.resolve(trxStats),
     });
 
 const createCuratedProduct = (deps = createDeps()) =>
-    createTronCuratedProduct({
+    createTronNativeProduct({
         networkSymbol: asNetworkSymbol('trx'),
         providers: [luganodesProvider, p2pProvider],
-        messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
+        messageSystemFeatures: TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
         ...deps,
     });
 
-describe('createTronCuratedProduct', () => {
+describe('createTronNativeProduct', () => {
     beforeAll(() => {
         jest.useFakeTimers().setSystemTime(MOCK_STAKING_NOW_SECONDS * 1000);
     });
@@ -59,7 +59,7 @@ describe('createTronCuratedProduct', () => {
 
     it('refuses providers without a Tron representative', () => {
         expect(() =>
-            createTronCuratedProduct({
+            createTronNativeProduct({
                 networkSymbol: asNetworkSymbol('trx'),
                 providers: [everstakeProvider],
                 messageSystemFeatures: {},

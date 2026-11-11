@@ -5,22 +5,20 @@ import {
     stakingProductInfoSchema,
 } from '@suite-common/earn-staking-common';
 
+import { TRON_UNFREEZE_DELAY_DAYS } from './constants';
 import { type TronRepresentative } from './types';
 
-// Copied from wallet-core tronStakingConstants.ts.
-export const TRON_UNFREEZE_DELAY_DAYS = 14;
-
-export type TronCuratedProductInfoDeps = {
+export type TronNativeProductInfoDeps = {
     getTronStakingStats: typeof getTronStakingStats;
 };
 
-export type FetchTronCuratedProductInfoParams = FetchProductInfoParams & {
+export type FetchTronNativeProductInfoParams = FetchProductInfoParams & {
     representatives: readonly TronRepresentative[];
 };
 
-export const fetchTronCuratedProductInfo = async (
-    deps: TronCuratedProductInfoDeps,
-    { abortSignal, representatives }: FetchTronCuratedProductInfoParams,
+export const fetchTronNativeProductInfo = async (
+    deps: TronNativeProductInfoDeps,
+    { abortSignal, representatives }: FetchTronNativeProductInfoParams,
 ): Promise<StakingProductInfo> => {
     const stats = await deps.getTronStakingStats({ signal: abortSignal });
 

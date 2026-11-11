@@ -16,7 +16,7 @@ import { type NetworkSymbol } from '@trezor/network-module-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { TRON_RESOURCES, TRON_STAKING_OPERATIONS_BY_TRON_CONTRACT_TYPE } from './constants';
+import { TRON_RESOURCES, TRON_STAKING_OPERATIONS_BY_CONTRACT_TYPE } from './constants';
 import {
     type ParsedTronStakingInfo,
     type ParsedTronUnstakingBatch,
@@ -257,7 +257,7 @@ export const getTronPendingTransactions = ({
         const operation =
             contractType === undefined
                 ? undefined
-                : TRON_STAKING_OPERATIONS_BY_TRON_CONTRACT_TYPE[contractType];
+                : TRON_STAKING_OPERATIONS_BY_CONTRACT_TYPE[contractType];
 
         return operation === undefined ? [] : [{ txid, operation }];
     });

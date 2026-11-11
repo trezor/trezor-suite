@@ -18,8 +18,8 @@ import { createEthereumEverstakePooledProduct } from './products/ethereum/everst
 import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/solana/everstake-native/messageSystemFeatures';
 import { createSolanaEverstakeNativeProduct } from './products/solana/everstake-native/product';
 import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
-import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/tron/curated/messageSystemFeatures';
-import { createTronCuratedProduct } from './products/tron/curated/product';
+import { TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/tron/native/messageSystemFeatures';
+import { createTronNativeProduct } from './products/tron/native/product';
 import { everstakeProvider } from './providers/everstake';
 import { fivebinariesProvider } from './providers/fivebinaries';
 import { luganodesProvider } from './providers/luganodes';
@@ -103,10 +103,10 @@ const createTronStakingProducts = (): readonly StakingProductAdapter[] => {
     const tronStakingApi = { getTronStakingStats };
 
     return [
-        createTronCuratedProduct({
+        createTronNativeProduct({
             networkSymbol: asNetworkSymbol('trx'),
             providers: [luganodesProvider, p2pProvider],
-            messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
             ...tronStakingApi,
         }),
     ];

@@ -1,15 +1,15 @@
 import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createTronCuratedProductDescriptor } from './descriptor';
-import { TRON_CURATED_PRODUCT_LIMITS } from './limits';
-import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { createTronNativeProductDescriptor } from './descriptor';
+import { TRON_NATIVE_PRODUCT_LIMITS } from './limits';
+import { TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 
-describe('createTronCuratedProductDescriptor', () => {
+describe('createTronNativeProductDescriptor', () => {
     it('builds the trx:trx:curated:native product', () => {
-        const descriptor = createTronCuratedProductDescriptor({
+        const descriptor = createTronNativeProductDescriptor({
             networkSymbol: asNetworkSymbol('trx'),
-            messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
         });
 
         expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
@@ -22,7 +22,7 @@ describe('createTronCuratedProductDescriptor', () => {
             operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
             exclusivity: 'none',
             rateKind: 'apr',
-            limits: TRON_CURATED_PRODUCT_LIMITS,
+            limits: TRON_NATIVE_PRODUCT_LIMITS,
             options: [{ key: 'resource', kind: 'choice' }],
             consentKey: 'staking:curated',
             platforms: {
@@ -41,7 +41,7 @@ describe('createTronCuratedProductDescriptor', () => {
     });
 
     it('keeps the legacy limits in sun', () => {
-        expect(TRON_CURATED_PRODUCT_LIMITS).toEqual({
+        expect(TRON_NATIVE_PRODUCT_LIMITS).toEqual({
             minStakeAmount: '1000000',
             maxStakeAmount: '1000000000000000',
             minWithdrawalAmount: '10000',

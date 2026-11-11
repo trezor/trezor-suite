@@ -15,9 +15,9 @@ import {
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createTronCuratedProductDescriptor } from './descriptor';
-import { TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
-import { getTronCuratedProductPosition } from './position';
+import { createTronNativeProductDescriptor } from './descriptor';
+import { TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+import { getTronNativeProductPosition } from './position';
 import { getTronRepresentatives } from './utils';
 import { luganodesProvider } from '../../../providers/luganodes';
 import { p2pProvider } from '../../../providers/p2p';
@@ -31,9 +31,9 @@ type TronStakingInfo = NonNullable<
 >;
 
 const networkSymbol = asNetworkSymbol('trx');
-const descriptor = createTronCuratedProductDescriptor({
+const descriptor = createTronNativeProductDescriptor({
     networkSymbol,
-    messageSystemFeatures: TRON_CURATED_PRODUCT_MESSAGE_SYSTEM_FEATURES,
+    messageSystemFeatures: TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
 });
 const representatives = getTronRepresentatives({
     networkSymbol,
@@ -43,7 +43,7 @@ const representatives = getTronRepresentatives({
 type TestPositionParams = Pick<GetPositionParams, 'account'> & Partial<GetPositionParams>;
 
 const getPosition = (params: TestPositionParams) =>
-    getTronCuratedProductPosition({
+    getTronNativeProductPosition({
         productInfo: null,
         transactions: [],
         ...params,
@@ -85,7 +85,7 @@ const balances = (values: Partial<ExpectedBalances>): ExpectedBalances => ({
     ...values,
 });
 
-describe('getTronCuratedProductPosition', () => {
+describe('getTronNativeProductPosition', () => {
     beforeAll(() => {
         jest.useFakeTimers().setSystemTime(NOW_MS);
     });

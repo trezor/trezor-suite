@@ -27,10 +27,10 @@ export {
     type CreateSolanaExternalNativeProductParams,
 } from './products/solana/external-native/product';
 export {
-    createTronCuratedProduct,
-    type CreateTronCuratedProductParams,
-    type TronCuratedProductDeps,
-} from './products/tron/curated/product';
+    createTronNativeProduct,
+    type CreateTronNativeProductParams,
+    type TronNativeProductDeps,
+} from './products/tron/native/product';
 export { curatedProvider } from './providers/curated';
 export { everstakeProvider } from './providers/everstake';
 export { externalProvider } from './providers/external';
