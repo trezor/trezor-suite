@@ -22,7 +22,7 @@ import { DeviceTutorialStep } from '#src/views/onboarding/steps/DeviceTutorialSt
 import { FinalStep } from '#src/views/onboarding/steps/FinalStep';
 import { FirmwareStep } from '#src/views/onboarding/steps/FirmwareStep/FirmwareStep';
 import { PinStep } from '#src/views/onboarding/steps/PinStep';
-import { RecoveryStep } from '#src/views/onboarding/steps/RecoveryStep';
+import { RecoveryStep } from '#src/views/onboarding/steps/RecoveryStep/RecoveryStep';
 import { SecurityStep } from '#src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
