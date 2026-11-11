@@ -16890,6 +16890,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/assets@workspace:suite/assets":
+  version: 0.0.0-use.local
+  resolution: "@suite/assets@workspace:suite/assets"
+  dependencies:
+    "@suite-common/formatters": "workspace:*"
+    "@suite-common/tokens": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/token": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/authenticity-checks@workspace:*, @suite/authenticity-checks@workspace:suite/authenticity-checks":
   version: 0.0.0-use.local
   resolution: "@suite/authenticity-checks@workspace:suite/authenticity-checks"
