@@ -1,3 +1,8 @@
+// Nx parses this file as JSONC, so comments are allowed even though strict JSON forbids them.
+// See https://github.com/nrwl/nx/blob/23.2.1/packages/nx/src/utils/json.ts#L33-L62
+// Nx only recognizes the `nx.json` name, so it cannot be renamed to `.jsonc`/`.json5`. If your IDE
+// reports syntax errors, map `nx.json` to the JSON5/JSONC file type. Nx migrations and generators
+// rewrite this file without comments, so check their diffs.
 {
     "extends": "nx/presets/npm.json",
     "namedInputs": {
@@ -7,6 +12,7 @@
             "{workspaceRoot}/package.json"
         ],
         "default": ["{projectRoot}/**/*", "sharedGlobals"],
+        // Standard Nx name for a project's runtime files, i.e. everything except tests.
         "production": ["{projectRoot}/**/*", "!{projectRoot}/**/*.test.{ts,tsx}"]
     },
     "tui": {
@@ -14,6 +20,8 @@
     },
     "targetDefaults": {
         "build:lib": {
+            // Compiling a package reads the type declarations (`libDev`) of the packages it imports,
+            // so their `type-check` must run first to produce their type declarations.
             "dependsOn": ["^type-check"],
             "inputs": [
                 "^production",
@@ -55,6 +63,11 @@
         },
         "lint:js": {
             "inputs": [
+                // Intentionally omits "^production". Basic ESLint rules don't need it, but type-aware rules formally do:
+                // a type change in package `foo` may pass type-check in dependent package `bar`, but break
+                // type-aware ESLint in `bar`. If `bar` stays cached, can be false negative → we merge with broken eslint.
+                // However, this is very rare in practice. Not invalidating the cache of every downstream package
+                // saves a **lot** of CI time, so we accept this formally incorrect shortcut.
                 "{projectRoot}/**/*",
                 "{workspaceRoot}/eslint.config.mjs",
                 "{workspaceRoot}/eslint-local-rules/**/*",
@@ -82,6 +95,7 @@
     },
     "defaultBase": "origin/develop",
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    // Read-only token: it can download from the remote cache, but not upload to it.
     "nxCloudAccessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
     "analytics": false,
     "parallel": 3
