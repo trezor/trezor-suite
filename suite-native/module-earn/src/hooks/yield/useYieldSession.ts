@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import {
     type YieldFlowType,
     type YieldRootState,
     selectYieldSessionByFlowKey,
     yieldActions,
 } from '@suite-common/wallet-core';
+import { useOnNavigationRemove } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -26,7 +25,6 @@ export const useYieldSession = ({
     shouldDisposeOnGoBack = false,
 }: UseYieldSessionParams) => {
     const { dispatch } = useServices(injectDispatch);
-    const navigation = useNavigation();
     const session = useSelector((state: YieldRootState) =>
         selectYieldSessionByFlowKey(state, flowType, flowKey),
     );
@@ -39,19 +37,13 @@ export const useYieldSession = ({
         }
     }, [dispatch, flowKey, flowType, hasSession, isWrappedNativeVault]);
 
-    useEffect(() => {
-        if (!shouldDisposeOnGoBack || !flowKey || hasPendingTransaction) {
-            return;
-        }
-
-        const sessionParams = { flowType, flowKey };
-
-        return navigation.addListener('beforeRemove', event => {
-            if (event.data.action.type === 'GO_BACK') {
-                dispatch(yieldActions.disposeSession(sessionParams));
-            }
-        });
-    }, [dispatch, flowKey, flowType, hasPendingTransaction, navigation, shouldDisposeOnGoBack]);
+    useOnNavigationRemove({
+        isEnabled: shouldDisposeOnGoBack && !hasPendingTransaction,
+        actionTypes: ['GO_BACK'],
+        onRemoveAttempt: () => {
+            if (flowKey) dispatch(yieldActions.disposeSession({ flowType, flowKey }));
+        },
+    });
 
     return session;
 };
