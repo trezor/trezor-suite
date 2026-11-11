@@ -144,7 +144,11 @@ export const TradingExchangeApprovalStepCard = ({
                 approvalSendTxHash: undefined,
             },
             receiveAddress: quote.receiveAddress,
-        }).catch(() => undefined);
+        }).catch(error => {
+            console.error('Failed to prepare approval:', error);
+
+            return undefined;
+        });
 
         if (response?.status === 'APPROVAL_REQ') {
             await confirmAndSend();

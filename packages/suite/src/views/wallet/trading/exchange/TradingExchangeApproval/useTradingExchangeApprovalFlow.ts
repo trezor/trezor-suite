@@ -61,12 +61,12 @@ export const useTradingExchangeApprovalFlow = () => {
             !isApprovalDone ||
             !quote?.receiveAddress ||
             !quote.orderId ||
-            handledApprovalOrderRef.current === quote.orderId
+            handledApprovalOrderRef.current === `${quote.orderId}:${quote.status}`
         ) {
             return;
         }
 
-        handledApprovalOrderRef.current = quote.orderId;
+        handledApprovalOrderRef.current = `${quote.orderId}:${quote.status}`;
         const { receiveAddress } = quote;
 
         const proceedToSwap = async () => {
