@@ -52,15 +52,17 @@ describe('Markdown', () => {
     it('shows the source as plain text when react-markdown fails to load, and loads it again on the next mount', async () => {
         mockChunkLoad.shouldFail = true;
         const { unmount } = renderMarkdown('## Release notes');
+        await settleLoad();
 
-        expect(await screen.findByText('## Release notes')).toBeInTheDocument();
+        expect(screen.getByText('## Release notes')).toBeInTheDocument();
         unmount();
 
         mockChunkLoad.shouldFail = false;
         renderMarkdown('## Release notes');
+        await settleLoad();
 
         expect(
-            await screen.findByRole('heading', { level: 2, name: 'Release notes' }),
+            screen.getByRole('heading', { level: 2, name: 'Release notes' }),
         ).toBeInTheDocument();
     });
 
