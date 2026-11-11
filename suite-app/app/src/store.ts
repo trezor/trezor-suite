@@ -8,7 +8,6 @@ import {
     type UnknownAction,
     combineReducers,
 } from '@reduxjs/toolkit';
-import { createLogger } from 'redux-logger';
 
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
 import { type DesktopBluetoothState, prepareDesktopBluetoothReducer } from '@suite/bluetooth';
@@ -30,7 +29,6 @@ import {
     type TokenDefinitionsState,
     prepareTokenDefinitionsReducer,
 } from '@suite-common/token-definitions';
-import { isCodesignBuild } from '@trezor/env-utils';
 import {
     type BioAuthState,
     type DesktopState,
@@ -110,7 +108,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     persistentDeviceData: persistentDeviceDataReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
-const loggerExcludedActions = [addLog.type];
+export const loggerExcludedActions = [addLog.type];
 
 type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
 
@@ -122,22 +120,6 @@ export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | nu
         onboardingMiddleware,
         backupMiddleware,
     ];
-
-    if (!isCodesignBuild()) {
-        const excludeLogger = (_getState: any, action: any): boolean =>
-            // exclude generated lifecycle actions
-            // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
-            !action?.meta?.requestId &&
-            // explicitly excluded actions
-            !loggerExcludedActions.includes(action.type);
-
-        const logger = createLogger({
-            level: 'info',
-            predicate: excludeLogger,
-            collapsed: true,
-        });
-        middleware.push(logger);
-    }
 
     return middleware as Middleware<Dispatch, AppState>[];
 };

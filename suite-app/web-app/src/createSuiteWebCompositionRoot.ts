@@ -48,10 +48,14 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         };
     };
 
-    const { store, injectServicesIntoReduxExtra } = createReduxStore({
+    const { store, injectServicesIntoReduxExtra, reduxLoggerControl } = createReduxStore({
         reducer: rootReducer,
         extraDependencies,
+        reduxLoggerStorage: window.localStorage,
     });
+    if (reduxLoggerControl) {
+        window.reduxLogger = reduxLoggerControl;
+    }
     const db = createDb({ dispatch: store.dispatch, reloadApp });
     const suiteServices = createSuiteServicesCompositionRoot({
         db,
@@ -74,7 +78,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         preloadStore,
         getStatePatch: () => Promise.resolve(undefined),
     });
-    const services = { ...suiteServices, store, hydrateReduxStore };
+    const services = { ...suiteServices, store, hydrateReduxStore, reduxLoggerControl };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
