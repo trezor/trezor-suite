@@ -38,10 +38,8 @@ describe('Token Receive [@noDevice]', () => {
 
         await onAccountDetail.openReceive();
         await onAccountReceive.waitForScreen();
+        await onAccountReceive.verifyHeaderTokenSymbol(tokenReceiveTokenUSDC.symbol);
         const receiveScreen = by.id('@screen/ReceiveAddress');
-        await detoxExpect(
-            element(by.text(` - ${tokenReceiveTokenUSDC.symbol}`).withAncestor(receiveScreen)),
-        ).toBeVisible();
         await detoxExpect(
             element(
                 by
