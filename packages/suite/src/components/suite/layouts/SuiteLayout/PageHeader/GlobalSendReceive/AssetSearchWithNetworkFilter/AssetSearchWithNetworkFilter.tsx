@@ -8,7 +8,7 @@ import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
 
-import { useListScrollReset } from '#src/components/suite/asset-picker/hooks';
+import { useListScrollReset } from '#src/components/suite/asset-picker/hooks/useListScrollReset';
 import { useSelector } from '#src/hooks/suite';
 import { selectProtocolSendFormScheme } from '#src/selectors/suite/protocolSelectors';
 

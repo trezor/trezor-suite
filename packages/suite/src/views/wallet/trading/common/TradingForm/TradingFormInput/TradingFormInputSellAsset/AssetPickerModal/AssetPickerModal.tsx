@@ -11,7 +11,8 @@ import { AssetRowAccountWithBalance } from '#src/components/suite/asset-picker/c
 import { AssetRowToken } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowToken/AssetRowToken';
 import { ExpandableAssetRowGroup } from '#src/components/suite/asset-picker/components/AssetRow/ExpandableAssetRowGroup/ExpandableAssetRowGroup';
 import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
-import { useExpandableGroups, useSearchFilter } from '#src/components/suite/asset-picker/hooks';
+import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/useExpandableGroups';
+import { useSearchFilter } from '#src/components/suite/asset-picker/hooks/useSearchFilter';
 import {
     type AccountWithOptionalLabel,
     type AssetGroupOption,

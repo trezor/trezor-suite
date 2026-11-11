@@ -8,7 +8,7 @@ import { Column } from '@trezor/components';
 import { AssetRowAsset } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAsset/AssetRowAsset';
 import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
 import { ASSET_ROW_HEIGHT } from '#src/components/suite/asset-picker/constants';
-import { useSearchFilter } from '#src/components/suite/asset-picker/hooks';
+import { useSearchFilter } from '#src/components/suite/asset-picker/hooks/useSearchFilter';
 
 import {
     type TradingAssetListItem,

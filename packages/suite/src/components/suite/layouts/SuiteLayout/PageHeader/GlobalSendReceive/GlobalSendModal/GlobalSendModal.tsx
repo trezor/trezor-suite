@@ -18,11 +18,9 @@ import { ExpandableAssetRowGroup } from '#src/components/suite/asset-picker/comp
 import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
 import { AssetsListEmpty } from '#src/components/suite/asset-picker/components/AssetsListEmpty/AssetsListEmpty';
 import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
-import {
-    useExpandableGroups,
-    useFilterAccountsWithTokens,
-    useInsertGroupLabelsAndSpaces,
-} from '#src/components/suite/asset-picker/hooks';
+import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/useExpandableGroups';
+import { useFilterAccountsWithTokens } from '#src/components/suite/asset-picker/hooks/useFilterAccountsWithTokens';
+import { useInsertGroupLabelsAndSpaces } from '#src/components/suite/asset-picker/hooks/useInsertGroupLabelsAndSpaces';
 import { type AssetPickerListItem } from '#src/components/suite/asset-picker/types';
 import { createTokenOption } from '#src/components/suite/asset-picker/utils';
 import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
