@@ -334,7 +334,7 @@ export { MultiShareBackupModal } from './src/components/suite/modals/ReduxModal/
 export { Backup } from './src/views/backup/Backup';
 export { FirmwareCustom } from './src/views/firmware/FirmwareCustom';
 export { FirmwareUpdate } from './src/views/firmware/FirmwareUpdate';
-export { Recovery } from './src/views/recovery';
+export { Recovery } from './src/views/recovery/Recovery';
 export { BridgeUnavailable } from './src/views/suite/bridge';
 export { BridgeDeprecated } from './src/views/suite/bridge-deprecated';
 export { BridgeRequested } from './src/views/suite/bridge-requested';
