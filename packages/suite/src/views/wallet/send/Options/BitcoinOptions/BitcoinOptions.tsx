@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 import { CircleDashedIcon, PlusIcon } from '@trezor/icons';
 
-import { OpenGuideFromTooltip } from '#src/components/guide';
+import { OpenGuideFromTooltip } from '#src/components/guide/OpenGuideFromTooltip';
 import { useSendFormContext } from '#src/hooks/wallet';
 
 import { OnOffSwitcher } from '../OnOffSwitcher';
