@@ -32,6 +32,7 @@ const DEFAULT_PROTOCOL_PARAMS = {
 };
 
 const liveProtocolParams = { ...DEFAULT_PROTOCOL_PARAMS, keyDeposit: '3000000' };
+const protocolParameters = { ...liveProtocolParams, epoch: 700 };
 
 const payload = {
     method: 'cardanoComposeTransaction',
@@ -42,7 +43,6 @@ const payload = {
 };
 
 const coinSelection = jest.fn();
-const sendCoreMessage = jest.fn();
 
 const createMethod = (params: Record<string, unknown> = {}) =>
     new CardanoComposeTransaction({ payload: { ...payload, ...params } } as any);
@@ -55,7 +55,7 @@ describe('cardanoComposeTransaction', () => {
             asCoinSelectionError: () => undefined,
             DEFAULT_PROTOCOL_PARAMS,
         } as any);
-        jest.mocked(getCardanoProtocolParams).mockResolvedValue(liveProtocolParams);
+        jest.mocked(getCardanoProtocolParams).mockReturnValue(liveProtocolParams);
         coinSelection.mockReturnValue({
             type: 'nonfinal',
             fee: '170000',
@@ -69,17 +69,17 @@ describe('cardanoComposeTransaction', () => {
         jest.clearAllMocks();
     });
 
-    it('composes with live protocol params for every fee level', async () => {
+    it('composes with the given protocol params for every fee level', async () => {
         const result = await createMethod({
             feeLevels: [{ feePerUnit: '44' }, {}],
-        }).run({ sendCoreMessage } as any);
+            protocolParameters,
+        }).run();
 
         expect(getCardanoProtocolParams).toHaveBeenCalledTimes(1);
-        expect(getCardanoProtocolParams).toHaveBeenCalledWith({
-            testnet: false,
-            postMessage: sendCoreMessage,
-            defaults: DEFAULT_PROTOCOL_PARAMS,
-        });
+        expect(getCardanoProtocolParams).toHaveBeenCalledWith(
+            protocolParameters,
+            DEFAULT_PROTOCOL_PARAMS,
+        );
         expect(coinSelection).toHaveBeenCalledTimes(2);
         expect(coinSelection).toHaveBeenNthCalledWith(1, expect.anything(), {
             feeParams: { a: '44' },
@@ -93,13 +93,5 @@ describe('cardanoComposeTransaction', () => {
             expect.objectContaining({ type: 'nonfinal', deposit: '3000000', feePerByte: '44' }),
             expect.objectContaining({ type: 'nonfinal', deposit: '3000000', feePerByte: '0' }),
         ]);
-    });
-
-    it('requests testnet protocol params for testnet accounts', async () => {
-        await createMethod({ testnet: true }).run({ sendCoreMessage } as any);
-
-        expect(getCardanoProtocolParams).toHaveBeenCalledWith(
-            expect.objectContaining({ testnet: true }),
-        );
     });
 });
