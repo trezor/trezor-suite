@@ -1,7 +1,10 @@
 export * from './AssetsList/AssetsList';
 export * from './AssetsListEmpty/AssetsListEmpty';
 export * from './AssetsModal/AssetsModal';
-export * from './AssetRow/AssetRowAccount';
+export {
+    type AssetRowAccountWithBalanceProps,
+    AssetRowAccountWithBalance,
+} from './AssetRow/AssetRowAccount/AssetRowAccountWithBalance';
 export * from './AssetRow/AssetGroupLabel';
 export * from './AssetRow/AssetGroupsCard';
 export * from './AssetRow/AssetGroupSpace';
