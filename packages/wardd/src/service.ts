@@ -37,6 +37,7 @@ export type WarddOptions = {
 
 export class Wardd implements WardRelay {
     private queue: Promise<unknown> = Promise.resolve();
+    private serviceQueue: Promise<unknown> = Promise.resolve();
     private readonly storage: WardProvider;
     private readonly wm: WmClient;
     private readonly log: Log;
@@ -58,6 +59,15 @@ export class Wardd implements WardRelay {
     private exclusive<T>(fn: () => Promise<T>): Promise<T> {
         const run = this.queue.then(fn, fn);
         this.queue = run.catch(() => {});
+
+        return run;
+    }
+
+    // A wallet conversation can be waiting for this same daemon through the device's
+    // service interface. Sharing its outer lock would deadlock that reverse RPC.
+    private serviceExclusive<T>(fn: () => Promise<T>): Promise<T> {
+        const run = this.serviceQueue.then(fn, fn);
+        this.serviceQueue = run.catch(() => {});
 
         return run;
     }
@@ -146,6 +156,10 @@ export class Wardd implements WardRelay {
                 throw new RelayFailure('bad_request', `${method} needs the device`);
             }
             switch (method) {
+                case 'serviceSync':
+                    return this.serviceExclusive(() => host.serviceSync(device!, params));
+                case 'servicePublish':
+                    return this.serviceExclusive(() => host.servicePublish(device!, params));
                 case 'sync':
                     return this.exclusive(() => host.syncAndValidate(device!, params));
                 case 'lookup':

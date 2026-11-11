@@ -393,6 +393,7 @@ export const WARDPerformBatchAck = Type.Object(
         auth_commit: Type.String(),
         sig_commit: Type.Optional(Type.String()),
         leaves: Type.Array(WARDBatchLeaf),
+        service_applied: Type.Optional(Type.Boolean()),
     },
     { $id: 'WARDPerformBatchAck' },
 );
@@ -419,6 +420,7 @@ export const WARDPerformRevertAck = Type.Object(
         head_mac: Type.String(),
         auth_revert: Type.String(),
         sig_commit: Type.Optional(Type.String()),
+        service_applied: Type.Optional(Type.Boolean()),
     },
     { $id: 'WARDPerformRevertAck' },
 );
@@ -441,6 +443,7 @@ export const WARDPerformUpdateAck = Type.Object(
         entry_key: Type.Optional(Type.String()),
         content: Type.Optional(LeafContent),
         identity: Type.Optional(LeafIdentity),
+        service_applied: Type.Optional(Type.Boolean()),
     },
     { $id: 'WARDPerformUpdateAck' },
 );
@@ -508,6 +511,46 @@ export const WARDReconcileAck = Type.Object(
     { $id: 'WARDReconcileAck' },
 );
 
+export type WARDServiceDone = Static<typeof WARDServiceDone>;
+export const WARDServiceDone = Type.Object(
+    {
+        error: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDServiceDone' },
+);
+
+export type WARDServiceOpen = Static<typeof WARDServiceOpen>;
+export const WARDServiceOpen = Type.Object(
+    {
+        protocol_version: Type.Number(),
+        close: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'WARDServiceOpen' },
+);
+
+export type WARDServiceOpenAck = Static<typeof WARDServiceOpenAck>;
+export const WARDServiceOpenAck = Type.Object(
+    {
+        protocol_version: Type.Number(),
+        buffer_size: Type.Number(),
+    },
+    { $id: 'WARDServiceOpenAck' },
+);
+
+export type WARDServiceSync = Static<typeof WARDServiceSync>;
+export const WARDServiceSync = Type.Record(Type.Never(), Type.Never(), { $id: 'WARDServiceSync' });
+
+export type WARDServiceSyncAck = Static<typeof WARDServiceSyncAck>;
+export const WARDServiceSyncAck = Type.Object(
+    {
+        used_service: Type.Boolean(),
+        counter: Type.Optional(Type.Number()),
+        root: Type.Optional(Type.String()),
+        ward_id: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDServiceSyncAck' },
+);
+
 export type WARDSync = Static<typeof WARDSync>;
 export const WARDSync = Type.Record(Type.Never(), Type.Never(), { $id: 'WARDSync' });
 
@@ -520,6 +563,7 @@ export const WARDSyncAck = Type.Object(
         counter: Type.Number(),
         root: Type.Optional(Type.String()),
         root_known: Type.Boolean(),
+        service_bound: Type.Optional(Type.Boolean()),
     },
     { $id: 'WARDSyncAck' },
 );

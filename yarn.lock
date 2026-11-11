@@ -20518,9 +20518,12 @@ __metadata:
     "@evolu/nodejs": "npm:3.0.0-next.3"
     "@noble/curves": "npm:^2.2.0"
     "@noble/hashes": "npm:^2.0.1"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/ward": "workspace:*"
+    "@types/w3c-web-usb": "npm:^1.0.14"
     "@types/ws": "npm:^8.5.13"
     tsx: "npm:^4.21.0"
+    usb: "npm:^3.2.1"
     ws: "npm:^8.20.0"
   languageName: unknown
   linkType: soft
