@@ -28,6 +28,7 @@ import {
     connectPopupLoadSelectAccountPageThunk,
     connectPopupSelectManualAccountThunk,
 } from './connectPopupThunks';
+import { CALL_SOURCE_DESKTOP_WS } from './connectPopupTypes';
 import {
     CommonPopupFlow,
     type PopupFlowParams,
@@ -449,5 +450,26 @@ describe('connectPopupCallInnerThunk', () => {
             error: expect.objectContaining({ code: 'Method_Unsupported' }),
         });
         expect(lockDevice).toHaveBeenCalledWith(false);
+    });
+
+    it('sanitizes the names a caller picked before the flow sees them', async () => {
+        const run = jest
+            .spyOn(CommonPopupFlow.prototype, 'run')
+            .mockResolvedValue({ success: true, payload: {} } as never);
+
+        await runCallThunk({
+            method: 'verifyMessage',
+            payload: {} as never,
+            source: {
+                type: CALL_SOURCE_DESKTOP_WS,
+                origin: 'ws://localhost',
+                manifest: { appName: 'Clau\u0000de Code' },
+                process: { name: '\u200b\u200b', fullPath: '/usr/bin/app', warning: false },
+            },
+        });
+
+        const { source } = run.mock.contexts[0] as PopupFlowParams<CallMethodKeys>;
+        expect(source.manifest.appName).toBe('Clau de Code');
+        expect(source.process).toEqual({ name: '', fullPath: '/usr/bin/app', warning: false });
     });
 });
