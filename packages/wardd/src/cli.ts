@@ -1,7 +1,7 @@
 /**
  * wardd [--port 21329] [--data-dir ~/.trezor-ward] [--memory] [--token-file F]
  *       [--wm-url URL] [--evolu-node HEX] [--relay URL] [--origin O]... [--verbose]
- *       [--label-freshness] [--service-channel usb|usb:SERIAL|udp:HOST:WALLET_PORT]
+ *       [--label-freshness] [--service-channel usb|usb:SERIAL|udp:HOST:WALLET_PORT] [--wallet-relay]
  *
  * Serves the relay over a WebSocket for host libraries in another process (HWI). With no
  * --token-file, a token is generated into `<data-dir>/token` (mode 0600) and reused. With no
@@ -86,14 +86,17 @@ const main = async () => {
     });
     const origins = values('origin');
     const token = await readOrCreateToken(dataDir, value('token-file'));
-    const server = await startServer({
-        wardd,
-        token,
-        port: Number(value('port') ?? process.env.WARDD_PORT ?? DEFAULT_PORT),
-        allowedOrigins: origins.length ? origins : DEFAULT_ORIGINS,
-        delays,
-        log,
-    });
+    const server =
+        servicePath === undefined || flag('wallet-relay')
+            ? await startServer({
+                  wardd,
+                  token,
+                  port: Number(value('port') ?? process.env.WARDD_PORT ?? DEFAULT_PORT),
+                  allowedOrigins: origins.length ? origins : DEFAULT_ORIGINS,
+                  delays,
+                  log,
+              })
+            : undefined;
     const debug =
         debugPort === undefined
             ? undefined
@@ -110,7 +113,7 @@ const main = async () => {
             exitCode = 1;
         } finally {
             await debug?.close();
-            await server.close();
+            await server?.close();
             await wardd.dispose();
         }
         process.exit(exitCode);
@@ -135,7 +138,9 @@ const main = async () => {
         }
     }
     log(
-        `wardd listening on ws://127.0.0.1:${server.port} ` +
+        (server
+            ? `wardd listening on ws://127.0.0.1:${server.port} `
+            : 'wardd service connected ') +
             `(storage: ${memory ? 'memory' : dataDir}, WM: ${wmUrl ?? 'debug mock'}` +
             `${deviceService ? ', WARD service connected' : ''})`,
     );
