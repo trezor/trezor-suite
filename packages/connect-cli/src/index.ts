@@ -41,14 +41,7 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
         if (!state?.success) {
             throw new Error('DebugLinkState missing: ' + state.error);
         }
-        const { payload } = state;
-        if (payload.type !== 'DebugLinkPairingInfo') {
-            throw new Error(
-                'DebugLinkState missing, received ' + state.payload.type,
-                // state.payload.message,
-            );
-        }
-        const { code_entry_code, code_qr_code, nfc_secret_trezor } = payload.message;
+        const { code_entry_code, code_qr_code, nfc_secret_trezor } = state.payload.message;
         if (selectedMethod === ThpPairingMethod.CodeEntry && code_entry_code) {
             return Number(code_entry_code).toString().padStart(6, '0');
         }
