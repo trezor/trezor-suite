@@ -6,7 +6,7 @@ type ConnectAppNameProps = {
     origin: string;
 };
 
-// A grant remembered by an earlier version carries the name unsanitized.
+// A grant stored by an earlier version or a WalletConnect peer passes the name unsanitized.
 export const ConnectAppName = ({ appName, origin }: ConnectAppNameProps) => {
     const name = sanitizeName(appName);
 
