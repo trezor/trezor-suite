@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -16,6 +18,7 @@ type TradingExchangeNetworkFeeModalLayoutProps = {
     isConfirmDisabled: boolean;
     onConfirm: () => void;
     onClose: () => void;
+    feeLevels?: ReactNode;
 };
 
 export const TradingExchangeNetworkFeeModalLayout = ({
@@ -24,8 +27,9 @@ export const TradingExchangeNetworkFeeModalLayout = ({
     isConfirmDisabled,
     onConfirm,
     onClose,
+    feeLevels,
 }: TradingExchangeNetworkFeeModalLayoutProps) => {
-    const { isTrc20Transfer, txMaxFee } = useFeeLevels(fees);
+    const { txMaxFee } = useFeeLevels(fees);
     const composedLevel = fees.composedLevels?.[fees.selectedFee];
 
     return (
@@ -56,14 +60,14 @@ export const TradingExchangeNetworkFeeModalLayout = ({
         >
             <FeesContext.Provider value={fees}>
                 <Column gap={16} overflow="unset">
-                    <FeeLevels
-                        showCurrentFee
-                        feeCardAppearance={{ minWidth: '100%', cardType: 'raised' }}
-                    />
-
-                    {!isTrc20Transfer && (
-                        <TradingExchangeNetworkFeeModalTotal txMaxFee={txMaxFee} />
+                    {feeLevels ?? (
+                        <FeeLevels
+                            showCurrentFee
+                            feeCardAppearance={{ minWidth: '100%', cardType: 'raised' }}
+                        />
                     )}
+
+                    <TradingExchangeNetworkFeeModalTotal txMaxFee={txMaxFee} />
 
                     {composedLevel?.type === 'error' && (
                         <Banner
