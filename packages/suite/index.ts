@@ -1,4 +1,4 @@
-export { type WalletState, createWalletReducer } from './src/reducers/wallet';
+export { type WalletState, createWalletReducer } from './src/reducers/wallet/walletReducer';
 export { default as guideReducer } from './src/reducers/suite/guideReducer';
 export { type GuideState } from './src/reducers/suite/guideState';
 export { default as protocolReducer } from './src/reducers/suite/protocolReducer';
