@@ -8,7 +8,8 @@ import {
 } from '@suite-common/toast-notifications';
 
 import { PROTOCOL } from '#src/actions/suite/constants';
-import protocolReducer, { type ProtocolState } from '#src/reducers/suite/protocolReducer';
+import protocolReducer from '#src/reducers/suite/protocolReducer';
+import { type ProtocolState } from '#src/reducers/suite/protocolState';
 
 import protocolMiddleware from './protocolMiddleware';
 

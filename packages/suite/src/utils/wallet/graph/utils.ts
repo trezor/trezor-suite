@@ -14,12 +14,12 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber, arrayToDictionary } from '@trezor/utils';
 
-import { type GraphState } from '#src/reducers/wallet/graphReducer';
 import {
     type AccountHistoryWithBalance,
     type CommonAggregatedHistory,
     type GraphData,
     type GraphRange,
+    type GraphState,
 } from '#src/types/wallet/graph';
 
 import { type FiatValueMap, type GraphDataPoint, type TypeName } from './types';

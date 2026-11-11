@@ -1,9 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { type OnboardingAnalytics } from '@suite/analytics';
 import { deviceActions } from '@suite-common/device';
-import { type BackupType } from '@suite-common/suite-types';
 
 import {
     addPath,
@@ -16,21 +14,9 @@ import {
     updateBackupType,
 } from '#src/actions/onboarding/onboardingActions';
 import * as STEP from '#src/constants/onboarding/steps';
-import type { AnyPath, AnyStepId, BackupMedium } from '#src/types/onboarding';
+import type { AnyPath } from '#src/types/onboarding';
 
-export interface OnboardingRootState {
-    onboarding: OnboardingState;
-}
-
-export interface OnboardingState {
-    backupType: BackupType;
-    backupMedium: BackupMedium | null;
-    isActive: boolean;
-    prevDeviceId: string | null;
-    activeStepId: AnyStepId;
-    path: AnyPath[];
-    onboardingAnalytics: Partial<OnboardingAnalytics>;
-}
+import { type OnboardingState } from './onboardingState';
 
 const initialState: OnboardingState = {
     isActive: false,

@@ -14,20 +14,7 @@ import {
 } from '#src/actions/wallet/graphActions';
 import { SETTINGS } from '#src/config/suite';
 import { type Account } from '#src/types/wallet';
-import { type AccountIdentifier, type GraphData, type GraphRange } from '#src/types/wallet/graph';
-
-export interface GraphState {
-    data: GraphData[];
-    error: null | AccountIdentifier[];
-    isLoading: boolean;
-    selectedRange: GraphRange;
-}
-
-export type GraphRootState = {
-    wallet: {
-        graph: GraphState;
-    };
-};
+import { type GraphRootState, type GraphState } from '#src/types/wallet/graph';
 
 export const selectGraph = (state: GraphRootState) => state.wallet.graph;
 export const selectGraphSelectedRange = (state: GraphRootState) => state.wallet.graph.selectedRange;
