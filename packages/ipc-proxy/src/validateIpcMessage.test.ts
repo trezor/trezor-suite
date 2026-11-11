@@ -18,6 +18,34 @@ describe(validateIpcMessage.name, () => {
         });
     });
 
+    it('passes in PROD when the sender is the renderer origin', () => {
+        validateIpcMessage({
+            ipcEvent: createSenderFrame('http://localhost:21345/#/accounts'),
+            rendererOrigin: 'http://localhost:21345',
+            dirnameProvider: appImageDirnameProvider,
+        });
+    });
+
+    it('errors in PROD when the sender is a different port, path or protocol than the renderer origin', () => {
+        const rendererOrigin = 'http://localhost:21345';
+        const senderUrls = [
+            'http://localhost:21346/',
+            'http://localhost:21345/index.html',
+            'https://localhost:21345/',
+            'http://127.0.0.1:21345/',
+        ];
+
+        senderUrls.forEach(senderUrl => {
+            expect(() =>
+                validateIpcMessage({
+                    ipcEvent: createSenderFrame(senderUrl),
+                    rendererOrigin,
+                    dirnameProvider: appImageDirnameProvider,
+                }),
+            ).toThrow('found, must be empty');
+        });
+    });
+
     it('passes in PROD: AppImage Linux example', () => {
         const senderUrl = 'file:///tmp/.mount_TrezorXsQUqQ/resources/app.asar/build/index.html';
 
