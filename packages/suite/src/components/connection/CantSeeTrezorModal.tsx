@@ -16,7 +16,7 @@ import {
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
     TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_UDEV,
-} from '#src/components/suite/troubleshooting/tips';
+} from '#src/components/suite/troubleshooting/tips/troubleshootingTipItems';
 import { useSelector } from '#src/hooks/suite';
 import { selectHasTransportOfType } from '#src/selectors/suite/suiteSelectors';
 
