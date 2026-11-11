@@ -134,6 +134,25 @@ export default {
             },
         },
         {
+            description: 'Success without protocol parameters',
+            serverFixtures: [
+                {
+                    method: 'GET_PROTOCOL_PARAMETERS',
+                    response: { data: { error: { message: 'BlockfrostError Error msg' } } },
+                },
+            ],
+            response: {
+                blockHeight: 1,
+                blockHash: 'test_block_hash-hash',
+                decimals: 6,
+                name: 'BlockfrostMock',
+                shortcut: 'ada',
+                network: 'ada',
+                testnet: false,
+                version: '1.4.0',
+            },
+        },
+        {
             description: 'Error',
             serverFixtures: [
                 {
