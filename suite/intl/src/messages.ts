@@ -12540,6 +12540,11 @@ export const messages = defineMessages({
         defaultMessage:
             'The fee charged by the Tron network to process your transaction. This also covers a 1 {networkDisplaySymbol} charge to activate an unused receiving address.',
     },
+    TR_TRON_MAX_FEE_DESC: {
+        id: 'TR_TRON_MAX_FEE_DESC',
+        defaultMessage:
+            "The maximum fee you're willing to pay the Tron network for energy. You'll only pay what the transaction actually uses.",
+    },
     TR_STELLAR_LIMIT_HISTORY_TITLE: {
         id: 'TR_STELLAR_LIMIT_HISTORY_TITLE',
         defaultMessage: 'Transaction history is limited to 12 months',
