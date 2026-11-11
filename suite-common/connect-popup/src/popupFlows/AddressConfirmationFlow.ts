@@ -43,9 +43,8 @@ export class AddressConfirmationFlow extends CommonPopupFlow<AddressConfirmation
             Array.isArray(response.payload) ? response.payload : [response.payload]
         ) as (Address | PublicKey)[];
         const addresses = bundledResponse.map((item, index) => ({
-            // `displayablePublicKey` is the per-coin canonical user-facing
-            // representation populated by `@trezor/connect` (xpubSegwit/xpub for
-            // Bitcoin, base58 for Solana, hex for Tezos, etc.).
+            // `displayablePublicKey` is the string the device shows for the key, so the user
+            // can compare it as is.
             address: 'address' in item ? item.address : item.displayablePublicKey,
             validated: 'not-started' as const,
             loading: false,

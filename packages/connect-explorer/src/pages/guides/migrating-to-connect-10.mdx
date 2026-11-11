@@ -105,9 +105,9 @@ Skip any item whose API you do not use.
 - [ ] **`getPublicKey` no longer falls back to Bitcoin for other networks.** In v9, `getPublicKey({ coin: 'eth', … })` silently returned a Bitcoin xpub. Now the network must resolve to a bitcoin-like coin — from `coin`, or failing that from the derivation `path` — otherwise the call throws `Method_UnknownCoin`. Use the per-coin methods (`ethereumGetPublicKey`, `cardanoGetPublicKey`, …) for non-bitcoin networks.
 
 - [ ] **`getAccountDescriptor` is removed.** Call the per-coin `*GetPublicKey` instead.
-    - `payload.descriptor` → Bitcoin: `result.descriptor`. Non-Bitcoin coins: `result.displayablePublicKey`.
+    - `payload.descriptor` → Bitcoin: `result.xpubSegwit ?? result.xpub`. Cardano: `result.xpub`. Ethereum, Ripple, Solana, Stellar and Tron: the account address, from the coin's `*GetAddress` method.
     - `payload.path` → `result.serializedPath` on every `*GetPublicKey`.
-    - Coin-agnostic consumers: read `result.displayablePublicKey`.
+    - Coin-agnostic consumers that show the key to the user: read `result.displayablePublicKey`, the string the device displays.
 
 - [ ] **`getAccountInfo` called without `path` or `descriptor` now throws** `Method_InvalidParameter`. Pass `path` (derive on device, then query backend) or `descriptor` (backend only). For the old discovery behaviour use `discoverAccounts`, or [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) for user-facing selection.
 
@@ -123,7 +123,7 @@ Skip any item whose API you do not use.
 
 ### Cardano
 
-- [ ] `cardanoGetPublicKey`: `publicKey` is now the raw 32-byte key in hex. Read the new `xpub` field, or `displayablePublicKey`, for the extended key.
+- [ ] `cardanoGetPublicKey`: `publicKey` is now the raw 32-byte key in hex. Read the new `xpub` field for the extended key.
 
 - [ ] Remove the per-call `useCardanoDerivation` parameter. Declare `TrezorConnect.init({ enabledNetworks: [{ coin: 'ada' }] })` instead. Note: on thin packages, `enabledNetworks` is not honored — Cardano availability follows the host Suite wallet's enabled coins.
 
