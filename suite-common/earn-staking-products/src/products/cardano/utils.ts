@@ -14,7 +14,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { CARDANO_STAKING_OPERATIONS_BY_CARDANO_SUBTYPE } from './constants';
+import { CARDANO_STAKING_OPERATIONS_BY_SUBTYPE } from './constants';
 import { ZERO_STAKING_AMOUNT, isPositiveStakingAmount } from '../../utils/stakingAmounts';
 
 export const isCardanoStakeKeyRegistered = ({ misc }: StakingAccount) =>
@@ -69,13 +69,13 @@ export const getParsedCardanoStakingInfo = ({
     };
 };
 
-type GetCardanoPendingTransactionsParams = {
+type GetCardanoStakingPendingTransactionsParams = {
     transactions: readonly StakingTransaction[];
 };
 
-export const getCardanoPendingTransactions = ({
+export const getCardanoStakingPendingTransactions = ({
     transactions,
-}: GetCardanoPendingTransactionsParams): StakingPositionPendingTransaction[] => {
+}: GetCardanoStakingPendingTransactionsParams): StakingPositionPendingTransaction[] => {
     const pendingStakingTransactions = transactions.filter(isPendingStakingTransaction);
 
     return pendingStakingTransactions.flatMap(({ txid, cardanoSpecific }) => {
@@ -85,7 +85,7 @@ export const getCardanoPendingTransactions = ({
             return [];
         }
 
-        return [{ txid, operation: CARDANO_STAKING_OPERATIONS_BY_CARDANO_SUBTYPE[subtype] }];
+        return [{ txid, operation: CARDANO_STAKING_OPERATIONS_BY_SUBTYPE[subtype] }];
     });
 };
 

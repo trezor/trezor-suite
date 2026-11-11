@@ -7,7 +7,7 @@ type CardanoStakingSubtype = NonNullable<
     NonNullable<StakingTransaction['cardanoSpecific']>['subtype']
 >;
 
-export const CARDANO_STAKING_OPERATIONS_BY_CARDANO_SUBTYPE: Record<
+export const CARDANO_STAKING_OPERATIONS_BY_SUBTYPE: Record<
     CardanoStakingSubtype,
     StakingOperation
 > = {

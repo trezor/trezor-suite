@@ -4,7 +4,7 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import {
     type EthereumEverstakePooledProductInfoDeps,
     fetchEthereumEverstakePooledProductInfo,
-} from './info';
+} from './productInfo';
 
 const SECONDS_IN_DAY = 24 * 60 * 60;
 const NOW = 1_800_000_000_000;

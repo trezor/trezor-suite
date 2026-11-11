@@ -9,8 +9,8 @@ import type {
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { type SolanaProductInfoDeps, fetchSolanaProductInfo } from '../info';
 import { getSolanaProductPosition } from '../position';
+import { type SolanaProductInfoDeps, fetchSolanaProductInfo } from '../productInfo';
 import { getSolanaEverstakeNativeProductAmountBounds } from './amountBounds';
 import { createSolanaEverstakeNativeProductDescriptor } from './descriptor';
 

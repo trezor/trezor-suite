@@ -14,7 +14,7 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { SOLANA_EPOCH_DAYS, SOLANA_STAKING_OPERATIONS_BY_SOLANA_STAKE_TYPE } from './constants';
+import { SOLANA_EPOCH_DAYS, SOLANA_STAKING_OPERATIONS_BY_STAKE_TYPE } from './constants';
 import { type ParsedSolanaStakeAccount } from './types';
 import {
     ZERO_STAKING_AMOUNT,
@@ -228,13 +228,13 @@ export const getPositionTargets = ({
     })).filter(({ amount }) => isPositiveStakingAmount(amount));
 };
 
-type GetSolanaPendingTransactionsParams = {
+type GetSolanaStakingPendingTransactionsParams = {
     transactions: readonly StakingTransaction[];
 };
 
-export const getSolanaPendingTransactions = ({
+export const getSolanaStakingPendingTransactions = ({
     transactions,
-}: GetSolanaPendingTransactionsParams) => {
+}: GetSolanaStakingPendingTransactionsParams) => {
     const pendingStakingTransactions = transactions.filter(isPendingStakingTransaction);
 
     return pendingStakingTransactions.flatMap(({ txid, solanaSpecific }) => {
@@ -244,7 +244,7 @@ export const getSolanaPendingTransactions = ({
             return [];
         }
 
-        const operation = SOLANA_STAKING_OPERATIONS_BY_SOLANA_STAKE_TYPE[stakeType];
+        const operation = SOLANA_STAKING_OPERATIONS_BY_STAKE_TYPE[stakeType];
 
         if (operation === undefined) {
             return [];

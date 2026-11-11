@@ -85,18 +85,19 @@ const createCardanoStakingProducts = (): readonly StakingProductAdapter[] => {
         }),
     ];
 
+    const managedProviders = managedProducts.map(({ descriptor }) =>
+        getStakingProvider(descriptor.providerId),
+    );
+
     // A stake key delegates to one pool, so the external product
     // owns exactly the pools the products above do not.
-    return [
-        ...managedProducts,
-        createCardanoExternalNativeProduct({
-            networkSymbol: asNetworkSymbol('ada'),
-            managedProviders: managedProducts.map(({ descriptor }) =>
-                getStakingProvider(descriptor.providerId),
-            ),
-            messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
-        }),
-    ];
+    const externalProduct = createCardanoExternalNativeProduct({
+        networkSymbol: asNetworkSymbol('ada'),
+        managedProviders,
+        messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
+    });
+
+    return [...managedProducts, externalProduct];
 };
 
 const createTronStakingProducts = (): readonly StakingProductAdapter[] => {

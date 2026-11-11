@@ -9,8 +9,8 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { externalProvider } from '../../../providers/external';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
 import { getCardanoProductPosition } from '../position';
+import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../productInfo';
 import { getCardanoExternalNativeProductAmountBounds } from './amountBounds';
 import { createCardanoExternalNativeProductDescriptor } from './descriptor';
 

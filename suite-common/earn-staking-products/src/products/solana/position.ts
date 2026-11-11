@@ -11,7 +11,7 @@ import {
     getPositionOperations,
     getPositionTargets,
     getPositionUnlocks,
-    getSolanaPendingTransactions,
+    getSolanaStakingPendingTransactions,
     parseSolanaStakeAccounts,
 } from './utils';
 import { getStakingPositionStatus } from '../../utils/getStakingPositionStatus';
@@ -54,7 +54,9 @@ export const getSolanaProductPosition = ({
 
     // Only a product Suite operates on owns the stake operations Suite broadcasts.
     const pendingTransactions =
-        descriptor.operations.length === 0 ? [] : getSolanaPendingTransactions({ transactions });
+        descriptor.operations.length === 0
+            ? []
+            : getSolanaStakingPendingTransactions({ transactions });
 
     const details: StakingPositionDetails = {
         kind: 'solana-stake-accounts',
