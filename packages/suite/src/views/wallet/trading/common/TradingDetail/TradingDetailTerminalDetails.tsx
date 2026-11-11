@@ -3,10 +3,9 @@ import {
     type TradingTradeType,
     getStatusUrl,
 } from '@suite-common/trading';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { Box, Column, Divider, Text } from '@trezor/components';
 
-import { type Account } from '#src/types/wallet';
 import { TradingDetailProviderStatusLink } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProviderStatusLink';
 import { TradingDetailTransactionIdRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
 

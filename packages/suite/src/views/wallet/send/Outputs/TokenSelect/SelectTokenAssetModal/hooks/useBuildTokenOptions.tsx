@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { type TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { type AccountWithTokensOption } from '#src/components/suite/asset-picker/types';
 import {
@@ -11,7 +11,6 @@ import {
     createTokenOption,
 } from '#src/components/suite/asset-picker/utils/assetOptions';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account } from '#src/types/wallet';
 import {
     type EnahncedTokenInfoWithFiat,
     enhanceTokensWithRates,

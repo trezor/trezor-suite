@@ -7,10 +7,10 @@ import {
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account } from '#src/types/wallet';
 
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';

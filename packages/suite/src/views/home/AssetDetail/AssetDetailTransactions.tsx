@@ -7,10 +7,10 @@ import {
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 import { MultiAccountTransactionList } from '#src/views/wallet/transactions/TransactionList/MultiAccountTransactionList';
 
 type AssetDetailTransactionsProps = {

@@ -5,6 +5,7 @@ import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -13,7 +14,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { Pagination } from '#src/components/wallet/Pagination';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { LoadOlderHistory } from './LoadOlderHistory';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';

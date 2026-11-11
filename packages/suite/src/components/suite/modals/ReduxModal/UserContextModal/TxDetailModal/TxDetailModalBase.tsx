@@ -15,6 +15,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -22,7 +23,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
 

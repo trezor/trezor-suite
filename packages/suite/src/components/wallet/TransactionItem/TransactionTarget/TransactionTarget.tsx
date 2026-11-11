@@ -17,7 +17,11 @@ import {
     selectIsSuspiciousTransactionsBlurringEnabled,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type Timestamp } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type Timestamp,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
@@ -36,7 +40,6 @@ import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmou
 import { Sign } from '#src/components/suite/Sign';
 import { AccountLabelForOwnAddress } from '#src/components/suite/labeling/AccountLabelForOwnAddress';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type WalletAccountTransaction } from '#src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';

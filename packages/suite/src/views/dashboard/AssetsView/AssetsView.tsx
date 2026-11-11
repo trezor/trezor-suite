@@ -29,7 +29,7 @@ import {
     selectCurrentFiatRates,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { type RatesByKey } from '@suite-common/wallet-types';
+import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
     BASE_CURRENCY_ZERO,
@@ -59,7 +59,6 @@ import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
 import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { type Account } from '#src/types/wallet';
 import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { selectRouteName } from '@suite/router';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
     areTokenFiatRatesLoading,
@@ -14,7 +15,6 @@ import { Column } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
-import { type Account } from '#src/types/wallet';
 
 import { AccountItem, type AccountItemProps } from './AccountItem/AccountItem';
 

@@ -8,6 +8,7 @@ import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Box, Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -19,7 +20,6 @@ import { updateGraphDataThunk } from '#src/actions/wallet/graphActions';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { selectGraph } from '#src/reducers/wallet/graphReducer';
-import { type Account } from '#src/types/wallet';
 import { type AggregatedDashboardHistory } from '#src/types/wallet/graph';
 import { getMinMaxValueFromData, prepareGraphDataAsync } from '#src/utils/wallet/graph';
 

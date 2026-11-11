@@ -6,6 +6,7 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { type TradingType, cryptoIdToNetwork } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
+    type Account,
     type Output,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
@@ -20,7 +21,6 @@ import {
     type TradingGetAmountLabelsProps,
     type TradingGetAmountLabelsReturnProps,
 } from '#src/types/trading/trading';
-import { type Account } from '#src/types/wallet';
 
 export const translationKeys: Record<
     TradingType,

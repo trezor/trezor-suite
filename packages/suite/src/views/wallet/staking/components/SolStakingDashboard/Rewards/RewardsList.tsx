@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
+import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
 import { PiggyBankIcon } from '@trezor/icons';
@@ -14,7 +15,6 @@ import { Pagination } from '#src/components/wallet/Pagination';
 import { TransactionTargetLayout } from '#src/components/wallet/TransactionItem/TransactionTargetLayout';
 import { type UsePagination } from '#src/hooks/general/usePagination';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { type Account } from '#src/types/wallet';
 import SkeletonTransactionItem from '#src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
 import { RewardsEmpty } from './RewardsEmpty';

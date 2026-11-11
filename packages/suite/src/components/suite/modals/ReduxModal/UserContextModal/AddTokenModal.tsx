@@ -4,6 +4,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { injectAddressValidator } from '@suite-common/networks';
+import { type Account } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
@@ -13,7 +14,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { addToken } from '#src/actions/wallet/tokenActions';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type Account } from '#src/types/wallet';
 
 type AddTokenModalProps = {
     onCancel: () => void;

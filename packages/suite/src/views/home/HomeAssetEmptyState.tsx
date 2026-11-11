@@ -9,7 +9,7 @@ import { Card, Column } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type DiscoveryStatusType } from '#src/types/wallet';
+import { type DiscoveryStatusType } from '#src/types/wallet/wallet';
 
 import { type HomeAssetEmptyStateKind } from './homeAssetEmptyStateKind';
 import { EmptyWallet } from '../dashboard/PortfolioCard/EmptyWallet';

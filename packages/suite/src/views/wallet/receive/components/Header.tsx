@@ -2,9 +2,8 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { H2, Paragraph } from '@trezor/components';
-
-import { type Account } from '#src/types/wallet';
 
 const Content = styled.div`
     margin: 0 0 24px;
