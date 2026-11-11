@@ -28,6 +28,8 @@ export type RelayDevice = (message: RelayMessage) => Promise<RelayMessage>;
 export type RelayMethod =
     /** Handshake, WebSocket only: `{ version, token }` -> `{ version, wardd }`. First frame. */
     | 'hello'
+    | 'serviceSync'
+    | 'servicePublish'
     /** Conversation: `{ wardId? }` -> `{ wardId, counter, root }`. Adopts the WM head on the device. */
     | 'sync'
     /** Conversation: `{ appId, address, networkSymbol, wardId? }` -> `RelayLookupResult`. */
@@ -60,6 +62,8 @@ export type RelayMethod =
 /** The methods that are conversations: wardd drives the device through `RelayDevice`. */
 export const RELAY_CONVERSATIONS: readonly RelayMethod[] = [
     'sync',
+    'serviceSync',
+    'servicePublish',
     'lookup',
     'update',
     'listEntries',

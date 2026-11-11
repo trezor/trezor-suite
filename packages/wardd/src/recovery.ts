@@ -122,6 +122,11 @@ export const recoverWard = async ({
     );
     if (candidate.ward_id !== wardId || counter !== head.counter + 1 || root !== rebuilt.root)
         throw new RelayFailure('device_failure', 'device returned an unexpected rollback target');
+    if (candidate.service_applied === true) {
+        log('recovery.complete', { counter, root, restoredCounter: rebuilt.counter });
+
+        return;
+    }
     const record: WardTransition = {
         kind: 'revert',
         headNonce: head.headNonce,

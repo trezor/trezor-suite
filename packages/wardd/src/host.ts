@@ -68,8 +68,16 @@ export type WardHostDeps = {
     labelFreshness?: boolean;
 };
 
+type PublishCandidateParams = {
+    device: RelayDevice;
+    candidate: Body;
+    pendingId: number;
+    kind: 'commit' | 'revert';
+};
+
 export class WardHost {
     private wardId?: string;
+    private usesService = false;
     private syncedHead?: TreeState;
     private deviceHead?: TreeState;
     private syncedHistory?: SignedTransition[];
@@ -130,6 +138,25 @@ export class WardHost {
         }
         this.wardId = wardId;
         this.deviceHead = { counter: ack.counter, root: ack.root ?? '' };
+        this.usesService = ack.service_bound === true;
+        if (this.usesService) {
+            const applied = await this.ask(
+                device,
+                { name: 'WARDServiceSync', message: {} },
+                'WARDServiceSyncAck',
+            );
+            if (applied.used_service !== true || applied.ward_id !== wardId) {
+                throw new RelayFailure(
+                    'device_failure',
+                    'WARD service binding changed during sync',
+                );
+            }
+            this.deviceHead = { counter: applied.counter, root: applied.root ?? '' };
+            this.syncedHead = this.deviceHead;
+            this.syncedHistory = undefined;
+
+            return { wardId, counter: applied.counter, root: applied.root ?? '' };
+        }
 
         const attestation = await this.deps.wm.current(wardId, ack.nonce);
         this.headNonce = attestation.headNonce;
@@ -333,7 +360,6 @@ export class WardHost {
         wardId: string,
         pendingId: number,
     ): Promise<RelayUpdateResult> {
-        const { storage, wm, log } = this.deps;
         const candidate = await this.ask(
             device,
             {
@@ -342,6 +368,30 @@ export class WardHost {
             },
             'WARDPerformBatchAck',
         );
+        if (candidate.service_applied === true) {
+            if (candidate.ward_id !== wardId) {
+                throw new RelayFailure(
+                    'ward_id_mismatch',
+                    'service candidate names another wallet',
+                );
+            }
+            this.deviceHead = { counter: candidate.counter, root: candidate.new_root ?? '' };
+            this.syncedHead = this.deviceHead;
+
+            return { wardId, ...this.deviceHead };
+        }
+
+        return this.publishCandidate({ device, candidate, pendingId, kind: 'commit' });
+    }
+
+    private async publishCandidate({
+        device,
+        candidate,
+        pendingId,
+        kind,
+    }: PublishCandidateParams): Promise<RelayUpdateResult> {
+        const wardId = this.requireWardId();
+        const { storage, wm, log } = this.deps;
         if (candidate.ward_id !== undefined && candidate.ward_id !== wardId) {
             throw new RelayFailure(
                 'ward_id_mismatch',
@@ -354,26 +404,28 @@ export class WardHost {
                 'no_store',
                 'durable transition storage is required before publication',
             );
-        if (!Array.isArray(candidate.leaves) || candidate.leaves.length !== 1)
+        if (!Array.isArray(candidate.leaves) && kind === 'commit')
             throw new RelayFailure('device_failure', 'expected one device-produced leaf');
-        const output = candidate.leaves[0];
-        const identity = readLeafIdentity(output.identity);
-        const content = readLeafContent(output.content);
-        const leaf = {
-            entryKey: output.entry_key,
-            keyType: identity.keyType,
-            identity: identity.part ?? EMPTY_PART,
-            content: content ?? EMPTY_PART,
-        };
+        const leaves = (kind === 'revert' ? [] : candidate.leaves).map((output: Body) => {
+            const identity = readLeafIdentity(output.identity);
+            const content = readLeafContent(output.content);
+
+            return {
+                entryKey: output.entry_key,
+                keyType: identity.keyType,
+                identity: identity.part ?? EMPTY_PART,
+                content: content ?? EMPTY_PART,
+            };
+        });
         const transition: WardTransition = {
-            kind: 'commit',
+            kind,
             headNonce: this.headNonce,
             counter: candidate.counter,
             prevRoot: normalizeRoot(candidate.from_root),
             targetRoot: normalizeRoot(candidate.new_root),
             targetRootMac: candidate.mac,
-            leaves: [leaf],
-            authCommit: candidate.auth_commit,
+            leaves,
+            authCommit: kind === 'revert' ? candidate.auth_revert : candidate.auth_commit,
             headMac: candidate.head_mac,
             sigCommit: candidate.sig_commit,
         };
@@ -384,9 +436,9 @@ export class WardHost {
             counter: candidate.counter,
             root: transition.targetRoot,
             mac: candidate.mac,
-            authCommit: candidate.auth_commit,
+            authCommit: kind === 'revert' ? candidate.auth_revert : candidate.auth_commit,
             signature: candidate.sig_commit,
-            kind: 'commit',
+            kind,
             headNonce: this.headNonce!,
         };
         const previewHistory = [...(this.syncedHistory ?? []), publication];
@@ -431,10 +483,10 @@ export class WardHost {
         const installed = await this.ask(
             device,
             {
-                name: 'WARDConfirmBatchByWM',
+                name: kind === 'revert' ? 'WARDConfirmRevertByWM' : 'WARDConfirmBatchByWM',
                 message: { counter: candidate.counter, mac: candidate.mac, wm_signature: finalSig },
             },
-            'WARDConfirmBatchByWMAck',
+            kind === 'revert' ? 'WARDConfirmRevertByWMAck' : 'WARDConfirmBatchByWMAck',
         );
         this.syncedHistory = previewHistory;
         this.syncedHead = {
@@ -460,6 +512,48 @@ export class WardHost {
             root: installed.new_root ?? '',
             ...(localCacheError !== undefined && { localCacheError }),
         };
+    }
+
+    serviceSync(device: RelayDevice, params: Body): Promise<RelaySyncResult> {
+        if (!params.initialAck || typeof params.initialAck !== 'object') {
+            throw new RelayFailure('bad_request', 'initialAck is required');
+        }
+        let initial = true;
+        const backendDevice: RelayDevice = request => {
+            if (initial && request.name === 'WARDSync') {
+                initial = false;
+
+                return Promise.resolve({
+                    name: 'WARDSyncAck',
+                    message: { ...params.initialAck, service_bound: false },
+                });
+            }
+
+            return device(request);
+        };
+
+        return this.sync(backendDevice);
+    }
+
+    async servicePublish(device: RelayDevice, params: Body): Promise<RelayUpdateResult> {
+        if (
+            !params.candidate ||
+            typeof params.candidate !== 'object' ||
+            (params.kind !== 'commit' && params.kind !== 'revert')
+        ) {
+            throw new RelayFailure('bad_request', 'candidate and kind are required');
+        }
+        const result = await this.publishCandidate({
+            device,
+            candidate: params.candidate,
+            pendingId: 0,
+            kind: params.kind,
+        });
+        if (result.queued || result.conflict) {
+            throw new RelayFailure('device_failure', 'service publication was not confirmed');
+        }
+
+        return result;
     }
 
     /** Answer one device pull (WARDProofRequest body) from the wallet this endpoint last synced. */
@@ -738,7 +832,11 @@ export class WardHost {
             );
             this.listingRows = { key, rows };
         }
-        const ack = buildNodeAck(this.listingRows.rows, request.node_hash.toLowerCase());
+        const ack = buildNodeAck(
+            this.listingRows.rows,
+            request.node_hash.toLowerCase(),
+            params.maxNodes === 1 ? 1 : 16,
+        );
         this.deps.log(
             `NODES served node_hash=${request.node_hash} count=${ack.nodes.length}` +
                 ` entries=${this.listingRows.rows.length}`,
@@ -749,7 +847,9 @@ export class WardHost {
 
     async status(): Promise<RelaySyncResult> {
         const wardId = this.requireWardId();
-        const tree = await this.deps.storage.getTreeState(wardId);
+        const tree = this.usesService
+            ? this.syncedHead
+            : await this.deps.storage.getTreeState(wardId);
 
         return { wardId, counter: tree?.counter ?? 0, root: tree?.root ?? '' };
     }

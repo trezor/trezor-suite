@@ -1,5 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
-    "references": [{ "path": "../ward" }]
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["jest", "node", "w3c-web-usb"]
+    },
+    "references": [
+        { "path": "../protobuf" },
+        { "path": "../ward" }
+    ]
 }
