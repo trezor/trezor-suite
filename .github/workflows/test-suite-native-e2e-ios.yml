@@ -207,6 +207,14 @@ jobs:
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
         run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --headless --quarantine "$PWD/e2e/tests/tokenReceive.test.ts"
 
+      - name: Upload Detox artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: detox-artifacts-ios
+          path: suite-native-app/app/artifacts
+          retention-days: 3
+
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest
     if: ${{ failure() && github.event_name == 'schedule' }}
