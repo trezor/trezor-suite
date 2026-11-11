@@ -1,5 +1,6 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryForRestartThunk,
     startAddWalletDiscoveryThunk,
@@ -10,7 +11,6 @@ import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type TrezorDevice } from '#src/types/suite';
 import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 

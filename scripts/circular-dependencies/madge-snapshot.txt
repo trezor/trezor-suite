@@ -1,3 +1,2 @@
 
 
-packages/suite/src/types/suite/index.ts > packages/suite/src/utils/suite/prerequisites.ts

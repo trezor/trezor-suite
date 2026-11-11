@@ -1,5 +1,6 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -22,7 +23,6 @@ import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { type TrezorDevice } from '#src/types/suite';
 
 import {
     type OutputElementLine,
