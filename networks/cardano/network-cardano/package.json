@@ -59,5 +59,9 @@
         "@emurgo/cardano-serialization-lib-browser": "13.2.0",
         "@emurgo/cardano-serialization-lib-nodejs": "13.2.0",
         "binaryen": "132.0.0"
-    }
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "author": "Trezor <info@trezor.io>"
 }

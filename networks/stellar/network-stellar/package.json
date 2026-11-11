@@ -54,5 +54,9 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/network-stellar-types": "workspace:*",
         "@trezor/utils": "workspace:*"
-    }
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "author": "Trezor <info@trezor.io>"
 }
