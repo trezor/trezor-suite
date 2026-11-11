@@ -21,7 +21,7 @@ import { StakeModal } from '#src/components/earn/modals/StakeModal/StakeModal';
 import { UnstakeModal } from '#src/components/earn/modals/UnstakeModal/UnstakeModal';
 import { TronStakeConsentModal } from '#src/components/earn/staking/tron/TronStakeConsentModal';
 import { TronVoteConsentModal } from '#src/components/earn/staking/tron/vote/TronVoteConsentModal';
-import { ConnectPopupTxSimulationModal } from '#src/components/tx-simulation/connect-popup';
+import { ConnectPopupTxSimulationModal } from '#src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModal';
 import { EarnYieldTxSimulationModal } from '#src/components/tx-simulation/earn-stablecoin';
 import { useSelector } from '#src/hooks/suite';
 
