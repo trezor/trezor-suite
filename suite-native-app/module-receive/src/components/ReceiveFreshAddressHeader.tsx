@@ -58,7 +58,8 @@ export const ReceiveFreshAddressHeader = ({
                             <Translation id="moduleReceive.receiveTitle" />
                         )}
                     </Text>
-                    <HStack spacing="sp8" alignItems="center">
+                    {/* No gap: the ' - ' separator carries its own spaces. */}
+                    <HStack spacing={0} alignItems="center">
                         <AccountLabel
                             variant="body-md-strong"
                             accountDescriptor={accountDescriptor}
