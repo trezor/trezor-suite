@@ -18,7 +18,7 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { GuideButton } from '#src/components/guide/GuideButton';
 import { GuideRouter } from '#src/components/guide/GuideRouter';
 import { OnboardingProgressBar } from '#src/components/onboarding/OnboardingProgressBar';
-import { SuiteBanners } from '#src/components/suite/banners';
+import { SuiteBanners } from '#src/components/suite/banners/SuiteBanners/SuiteBanners';
 import { ReduxModal } from '#src/components/suite/modals/ReduxModal/ReduxModal';
 import { MAX_ONBOARDING_WIDTH } from '#src/constants/suite/layout';
 import { useFilteredModal } from '#src/hooks/suite';
