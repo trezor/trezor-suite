@@ -36,10 +36,8 @@ import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    submitYieldDepositThunk,
-    submitYieldWithdrawThunk,
-} from '#src/actions/wallet/stablecoin-yield';
+import { submitYieldDepositThunk } from '#src/actions/wallet/stablecoin-yield/submitYieldDepositThunk';
+import { submitYieldWithdrawThunk } from '#src/actions/wallet/stablecoin-yield/submitYieldWithdrawThunk';
 import { submitUnwrapNativeTokenThunk } from '#src/actions/wallet/unwrapNativeTokenThunks';
 import { submitWrapNativeTokenThunk } from '#src/actions/wallet/wrapNativeTokenThunks';
 import { useSelector } from '#src/hooks/suite';
