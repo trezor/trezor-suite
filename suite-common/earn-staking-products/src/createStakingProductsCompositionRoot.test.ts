@@ -35,6 +35,17 @@ describe('createStakingProductsCompositionRoot', () => {
         ]);
     });
 
+    it('gives each Everstake pool the minimum stake of its own deployment', () => {
+        expect(
+            adapters
+                .filter(({ descriptor }) => descriptor.type === 'pooled')
+                .map(({ descriptor }) => [descriptor.id, descriptor.limits.minStakeAmount]),
+        ).toEqual([
+            ['eth:eth:everstake:pooled', '10000000000000000'],
+            ['thod:thod:everstake:pooled', '100000000000000000'],
+        ]);
+    });
+
     it('registers descriptors that match the contract', () => {
         adapters.forEach(adapter => {
             expect(stakingProductDescriptorSchema.safeParse(adapter.descriptor).success).toBe(true);

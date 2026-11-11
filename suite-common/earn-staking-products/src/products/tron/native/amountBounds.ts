@@ -6,12 +6,12 @@ import {
     type StakingAmountBounds,
     type StakingOptionValue,
     type StakingPosition,
+    type StakingProductLimits,
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRON_RESOURCES, TRON_STAKE_RESERVE } from './constants';
-import { TRON_NATIVE_PRODUCT_LIMITS } from './limits';
 import { isTronResource } from './utils';
 import {
     NO_STAKING_AMOUNT_BOUNDS,
@@ -49,11 +49,11 @@ const getUnstakeableAmount = ({
 };
 
 // The legacy freeze form's Max; the fee is checked when the transaction is composed.
-const getMaxStakeAmount = (availableBalance: string): StakingAmount =>
+const getMaxStakeAmount = (availableBalance: string, limits: StakingProductLimits): StakingAmount =>
     toStakingAmount(
         BigNumber.min(
             BigNumber.max(new BigNumber(availableBalance).minus(TRON_STAKE_RESERVE), 0),
-            TRON_NATIVE_PRODUCT_LIMITS.maxStakeAmount,
+            limits.maxStakeAmount,
         ),
     );
 
@@ -63,12 +63,17 @@ const getExactBounds = (amount: StakingAmount | undefined): StakingAmountBounds 
     return { min: exactAmount, max: exactAmount };
 };
 
+export type GetTronNativeProductAmountBoundsParams = GetAmountBoundsParams & {
+    limits: StakingProductLimits;
+};
+
 export const getTronNativeProductAmountBounds = ({
     account,
     position,
     operation,
     options,
-}: GetAmountBoundsParams): StakingAmountBounds => {
+    limits,
+}: GetTronNativeProductAmountBoundsParams): StakingAmountBounds => {
     const isIndependentOfPosition = operation === 'stake' || operation === 'redelegate';
 
     if (!isIndependentOfPosition && !position?.operations.includes(operation)) {
@@ -78,8 +83,8 @@ export const getTronNativeProductAmountBounds = ({
     switch (operation) {
         case 'stake':
             return {
-                min: TRON_NATIVE_PRODUCT_LIMITS.minStakeAmount,
-                max: getMaxStakeAmount(account.availableBalance),
+                min: limits.minStakeAmount,
+                max: getMaxStakeAmount(account.availableBalance, limits),
             };
         case 'unstake':
             return {

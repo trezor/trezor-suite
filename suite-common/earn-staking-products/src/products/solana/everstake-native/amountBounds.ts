@@ -3,23 +3,28 @@ import {
     STAKING_OPERATION_ERROR_CODES,
     StakingAdapterError,
     type StakingAmountBounds,
+    type StakingProductLimits,
 } from '@suite-common/earn-staking-common';
 import { exhaustive } from '@trezor/type-utils';
 
-import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS } from './limits';
 import { getMaxStakeAmount } from '../../../utils/getMaxStakeAmount';
 import { NO_STAKING_AMOUNT_BOUNDS, SMALLEST_STAKING_AMOUNT } from '../../../utils/stakingAmounts';
+
+export type GetSolanaEverstakeNativeProductAmountBoundsParams = GetAmountBoundsParams & {
+    limits: StakingProductLimits;
+};
 
 export const getSolanaEverstakeNativeProductAmountBounds = ({
     account,
     position,
     operation,
-}: GetAmountBoundsParams): StakingAmountBounds => {
+    limits,
+}: GetSolanaEverstakeNativeProductAmountBoundsParams): StakingAmountBounds => {
     switch (operation) {
         case 'stake':
             return {
-                min: SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS.minStakeAmount,
-                max: getMaxStakeAmount(account.balance, SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS),
+                min: limits.minStakeAmount,
+                max: getMaxStakeAmount(account.balance, limits),
             };
         case 'unstake':
             return position?.operations.includes('unstake')

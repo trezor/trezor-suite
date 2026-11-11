@@ -44,7 +44,7 @@ export const createTronNativeProduct = ({
         getTronNativeProductPosition({ ...params, descriptor, superRepresentatives });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getTronNativeProductAmountBounds(params);
+        getTronNativeProductAmountBounds({ ...params, limits: descriptor.limits });
 
     const operations = createUnimplementedStakingOperations();
 

@@ -1,10 +1,4 @@
 import { type StakingOperation } from '@suite-common/earn-staking-common';
-import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
-
-export const EVERSTAKE_POOL_ADDRESSES: Partial<Record<NetworkSymbol, string>> = {
-    [asNetworkSymbol('eth')]: '0xD523794C879D9eC028960a231F866758e405bE34',
-    [asNetworkSymbol('thod')]: '0x7967AcFc9EB46cA2d20076B61B05e224F2d0B8b3',
-};
 
 export const ETHEREUM_EVERSTAKE_OPERATIONS_BY_METHOD_ID: Partial<Record<string, StakingOperation>> =
     {

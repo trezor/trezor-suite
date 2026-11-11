@@ -86,9 +86,12 @@ describe('createEthereumEverstakePooledProduct', () => {
         ).toBeNull();
     });
 
-    it('bounds a stake by the product limits', () => {
+    it.each([
+        { symbol: 'eth', min: '10000000000000000' },
+        { symbol: 'thod', min: '100000000000000000' },
+    ])('bounds a %s stake by the minimum of its own pool', ({ symbol, min }) => {
         const product = createEthereumEverstakePooledProduct({
-            networkSymbol: asNetworkSymbol('eth'),
+            networkSymbol: asNetworkSymbol(symbol),
             ...createDeps(),
         });
 
@@ -99,7 +102,7 @@ describe('createEthereumEverstakePooledProduct', () => {
                 operation: 'stake',
                 options: {},
             }),
-        ).toEqual({ min: '10000000000000000', max: '995000000000000000' });
+        ).toEqual({ min, max: '995000000000000000' });
     });
 
     it('has no operations yet', async () => {

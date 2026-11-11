@@ -122,11 +122,11 @@ describe('createSolanaEverstakeNativeProduct', () => {
         ).toBe('2000000000');
     });
 
-    it('bounds a stake by the product limits', () => {
+    it.each(['sol', 'dsol'])('bounds a %s stake by the limits of its own network', symbol => {
         expect(
-            createEverstakeProduct().getAmountBounds({
+            createEverstakeProduct(symbol).getAmountBounds({
                 account: mockStakingAccount({
-                    symbol: asNetworkSymbol('sol'),
+                    symbol: asNetworkSymbol(symbol),
                     balance: '1000000000',
                 }),
                 position: null,

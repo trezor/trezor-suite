@@ -54,7 +54,7 @@ export const createSolanaEverstakeNativeProduct = ({
         });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
-        getSolanaEverstakeNativeProductAmountBounds(params);
+        getSolanaEverstakeNativeProductAmountBounds({ ...params, limits: descriptor.limits });
 
     const operations = createUnimplementedStakingOperations();
 

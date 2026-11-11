@@ -4,10 +4,18 @@ import {
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import { mockStakingAccount, mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { getEthereumEverstakePooledProductAmountBounds } from './amountBounds';
+import { getEverstakePoolDeployment } from './deployments';
+import { createEthereumEverstakePooledProductLimits } from './limits';
 
 const ETHER = '000000000000000000';
+
+const createLimits = (symbol: string) =>
+    createEthereumEverstakePooledProductLimits(getEverstakePoolDeployment(asNetworkSymbol(symbol)));
+
+const limits = createLimits('eth');
 
 const position = mockStakingPosition({
     balances: {
@@ -37,8 +45,21 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                 position: null,
                 operation: 'stake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '10000000000000000', max });
+    });
+
+    it('takes the minimum stake from the limits it is given', () => {
+        expect(
+            getEthereumEverstakePooledProductAmountBounds({
+                account: mockStakingAccount({ balance: `1${ETHER}` }),
+                position: null,
+                operation: 'stake',
+                options: {},
+                limits: createLimits('thod'),
+            }),
+        ).toEqual({ min: '100000000000000000', max: '995000000000000000' });
     });
 
     it('has no valid stake amount when the balance leaves less than the minimum', () => {
@@ -48,6 +69,7 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                 position: null,
                 operation: 'stake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '10000000000000000', max: '7000000000000000' });
     });
@@ -59,6 +81,7 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                 position,
                 operation: 'unstake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '1', max: `2${ETHER}` });
     });
@@ -70,6 +93,7 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                 position,
                 operation: 'withdraw',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: `5${ETHER.slice(1)}`, max: `5${ETHER.slice(1)}` });
     });
@@ -83,6 +107,7 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                 position: null,
                 operation: 'unstake',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '1', max: '0' });
         expect(
@@ -91,6 +116,7 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                 position: null,
                 operation: 'withdraw',
                 options: {},
+                limits,
             }),
         ).toEqual({ min: '1', max: '0' });
     });
@@ -104,6 +130,7 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                     position: { ...position, operations: ['stake'] },
                     operation,
                     options: {},
+                    limits,
                 }),
             ).toEqual({ min: '1', max: '0' });
         },
@@ -116,6 +143,7 @@ describe('getEthereumEverstakePooledProductAmountBounds', () => {
                 position,
                 operation,
                 options: {},
+                limits,
             }),
         ).toThrow(new StakingAdapterError(STAKING_OPERATION_ERROR_CODES.notSupported));
     });
