@@ -6,7 +6,7 @@ import {
     SOLANA_EXTERNAL_PRODUCT_INFO,
     type SolanaProductInfoDeps,
     fetchSolanaProductInfo,
-} from './info';
+} from './productInfo';
 
 const solStats: EthOrSolStats = { symbol: 'sol', apy: 6.24 };
 

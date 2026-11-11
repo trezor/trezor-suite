@@ -7,12 +7,12 @@ import {
 import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { type TronNativeProductInfoDeps, fetchTronNativeProductInfo } from './info';
-import { getTronRepresentatives } from './utils';
+import { type TronNativeProductInfoDeps, fetchTronNativeProductInfo } from './productInfo';
+import { getTronSuperRepresentatives } from './utils';
 import { luganodesProvider } from '../../../providers/luganodes';
 import { p2pProvider } from '../../../providers/p2p';
 
-const representatives = getTronRepresentatives({
+const superRepresentatives = getTronSuperRepresentatives({
     networkSymbol: asNetworkSymbol('trx'),
     providers: [luganodesProvider, p2pProvider],
 });
@@ -35,7 +35,7 @@ const createDeps = (stats: TrxStats = trxStats) =>
 describe('fetchTronNativeProductInfo', () => {
     it('lists the offered representatives and promotes the highest APR', async () => {
         await expect(
-            fetchTronNativeProductInfo(createDeps(), { representatives }),
+            fetchTronNativeProductInfo(createDeps(), { superRepresentatives }),
         ).resolves.toEqual({
             rate: 3.266833,
             entryPeriodDays: null,
@@ -63,7 +63,7 @@ describe('fetchTronNativeProductInfo', () => {
     it('names a target after its provider, not after the stats', async () => {
         const info = await fetchTronNativeProductInfo(
             createDeps(trxStats.map(sr => ({ ...sr, name: 'Official Trezor SR' }))),
-            { representatives },
+            { superRepresentatives },
         );
 
         expect(info.targets.map(({ name }) => name)).toEqual(['P2P.org', 'Luganodes']);
@@ -80,7 +80,7 @@ describe('fetchTronNativeProductInfo', () => {
                     apr: 9,
                 },
             ]),
-            { representatives },
+            { superRepresentatives },
         );
 
         expect(info.rate).toBe(3.266833);
@@ -93,7 +93,7 @@ describe('fetchTronNativeProductInfo', () => {
     it('keeps the first entry of a representative the stats repeat', async () => {
         const info = await fetchTronNativeProductInfo(
             createDeps([...trxStats, { ...trxStats[1]!, apr: 9 }]),
-            { representatives },
+            { superRepresentatives },
         );
 
         expect(info.rate).toBe(3.266833);
@@ -105,7 +105,7 @@ describe('fetchTronNativeProductInfo', () => {
 
     it('has no rate without an offered representative', async () => {
         await expect(
-            fetchTronNativeProductInfo(createDeps([]), { representatives }),
+            fetchTronNativeProductInfo(createDeps([]), { superRepresentatives }),
         ).resolves.toMatchObject({ rate: null, targets: [] });
     });
 
@@ -113,7 +113,7 @@ describe('fetchTronNativeProductInfo', () => {
         const deps = createDeps();
         const abortSignal = new AbortController().signal;
 
-        await fetchTronNativeProductInfo(deps, { abortSignal, representatives });
+        await fetchTronNativeProductInfo(deps, { abortSignal, superRepresentatives });
 
         expect(deps.getTronStakingStats).toHaveBeenCalledWith({ signal: abortSignal });
     });
@@ -123,7 +123,7 @@ describe('fetchTronNativeProductInfo', () => {
             getTronStakingStats: () => Promise.reject(new Error('Request failed')),
         });
 
-        await expect(fetchTronNativeProductInfo(deps, { representatives })).rejects.toThrow(
+        await expect(fetchTronNativeProductInfo(deps, { superRepresentatives })).rejects.toThrow(
             'Request failed',
         );
     });

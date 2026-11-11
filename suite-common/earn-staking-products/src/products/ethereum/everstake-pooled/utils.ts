@@ -11,7 +11,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import { BigNumber } from '@trezor/utils';
 
-import { EVERSTAKE_OPERATIONS_BY_METHOD_ID } from './constants';
+import { ETHEREUM_EVERSTAKE_OPERATIONS_BY_METHOD_ID } from './constants';
 import { type EverstakePool, everstakePoolSchema } from './types';
 import { everstakeProvider } from '../../../providers/everstake';
 import { getStakingPositionStatus } from '../../../utils/getStakingPositionStatus';
@@ -38,7 +38,7 @@ export const getEverstakePendingTransactions = (
 
     return pendingStakingTransactions.flatMap(({ txid, ethereumSpecific }) => {
         const methodId = ethereumSpecific?.parsedData?.methodId?.toLowerCase() ?? '';
-        const operation = EVERSTAKE_OPERATIONS_BY_METHOD_ID[methodId];
+        const operation = ETHEREUM_EVERSTAKE_OPERATIONS_BY_METHOD_ID[methodId];
 
         if (operation === undefined) return [];
 

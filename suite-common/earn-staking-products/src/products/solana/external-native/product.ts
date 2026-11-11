@@ -8,8 +8,8 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { externalProvider } from '../../../providers/external';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
-import { SOLANA_EXTERNAL_PRODUCT_INFO } from '../info';
 import { getSolanaProductPosition } from '../position';
+import { SOLANA_EXTERNAL_PRODUCT_INFO } from '../productInfo';
 import { getSolanaExternalNativeProductAmountBounds } from './amountBounds';
 import { createSolanaExternalNativeProductDescriptor } from './descriptor';
 

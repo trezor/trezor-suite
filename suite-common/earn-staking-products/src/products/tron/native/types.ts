@@ -11,7 +11,7 @@ import { type TRON_RESOURCES } from './constants';
 
 export type TronResource = (typeof TRON_RESOURCES)[number];
 
-export type TronRepresentative = {
+export type TronSuperRepresentative = {
     address: string;
     provider: StakingProvider;
 };

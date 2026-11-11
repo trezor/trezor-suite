@@ -10,9 +10,9 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { getTronNativeProductAmountBounds } from './amountBounds';
 import { createTronNativeProductDescriptor } from './descriptor';
-import { type TronNativeProductInfoDeps, fetchTronNativeProductInfo } from './info';
 import { getTronNativeProductPosition } from './position';
-import { getTronRepresentatives } from './utils';
+import { type TronNativeProductInfoDeps, fetchTronNativeProductInfo } from './productInfo';
+import { getTronSuperRepresentatives } from './utils';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 
 export type TronNativeProductDeps = TronNativeProductInfoDeps;
@@ -29,19 +29,19 @@ export const createTronNativeProduct = ({
     messageSystemFeatures,
     ...deps
 }: CreateTronNativeProductParams): StakingProductAdapter => {
-    const representatives = getTronRepresentatives({ networkSymbol, providers });
+    const superRepresentatives = getTronSuperRepresentatives({ networkSymbol, providers });
 
-    if (representatives.length === 0) {
-        throw new Error(`no ${networkSymbol} representative to vote for`);
+    if (superRepresentatives.length === 0) {
+        throw new Error(`no ${networkSymbol} super representative to vote for`);
     }
 
     const descriptor = createTronNativeProductDescriptor({ networkSymbol, messageSystemFeatures });
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchTronNativeProductInfo(deps, { ...params, representatives });
+        fetchTronNativeProductInfo(deps, { ...params, superRepresentatives });
 
     const getPosition = (params: GetPositionParams) =>
-        getTronNativeProductPosition({ ...params, descriptor, representatives });
+        getTronNativeProductPosition({ ...params, descriptor, superRepresentatives });
 
     const getAmountBounds = (params: GetAmountBoundsParams) =>
         getTronNativeProductAmountBounds(params);

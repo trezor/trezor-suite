@@ -7,13 +7,13 @@ import type {
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { getEthereumEverstakePooledProductAmountBounds } from './amountBounds';
-import { ETHEREUM_EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES } from './constants';
+import { EVERSTAKE_POOL_ADDRESSES } from './constants';
 import { createEthereumEverstakePooledProductDescriptor } from './descriptor';
+import { getEthereumEverstakePooledProductPosition } from './position';
 import {
     type EthereumEverstakePooledProductInfoDeps,
     fetchEthereumEverstakePooledProductInfo,
-} from './info';
-import { getEthereumEverstakePooledProductPosition } from './position';
+} from './productInfo';
 import { createUnimplementedStakingOperations } from '../../unimplementedStakingOperations';
 
 export type EthereumEverstakePooledProductDeps = EthereumEverstakePooledProductInfoDeps;
@@ -28,7 +28,7 @@ export const createEthereumEverstakePooledProduct = ({
 }: CreateEthereumEverstakePooledProductParams): StakingProductAdapter => {
     const descriptor = createEthereumEverstakePooledProductDescriptor(networkSymbol);
 
-    const poolAddress = ETHEREUM_EVERSTAKE_POOLED_PRODUCT_POOL_ADDRESSES[networkSymbol];
+    const poolAddress = EVERSTAKE_POOL_ADDRESSES[networkSymbol];
 
     if (poolAddress === undefined) {
         throw new Error(`Everstake has no pool contract on ${networkSymbol}`);

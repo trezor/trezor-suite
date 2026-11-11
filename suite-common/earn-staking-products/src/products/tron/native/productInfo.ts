@@ -6,26 +6,26 @@ import {
 } from '@suite-common/earn-staking-common';
 
 import { TRON_UNFREEZE_DELAY_DAYS } from './constants';
-import { type TronRepresentative } from './types';
+import { type TronSuperRepresentative } from './types';
 
 export type TronNativeProductInfoDeps = {
     getTronStakingStats: typeof getTronStakingStats;
 };
 
 export type FetchTronNativeProductInfoParams = FetchProductInfoParams & {
-    representatives: readonly TronRepresentative[];
+    superRepresentatives: readonly TronSuperRepresentative[];
 };
 
 export const fetchTronNativeProductInfo = async (
     deps: TronNativeProductInfoDeps,
-    { abortSignal, representatives }: FetchTronNativeProductInfoParams,
+    { abortSignal, superRepresentatives }: FetchTronNativeProductInfoParams,
 ): Promise<StakingProductInfo> => {
     const stats = await deps.getTronStakingStats({ signal: abortSignal });
 
     const targets = stats
         .filter(({ address }, index) => stats.findIndex(sr => sr.address === address) === index)
         .flatMap(({ address, apr }) => {
-            const provider = representatives.find(
+            const provider = superRepresentatives.find(
                 candidate => candidate.address === address,
             )?.provider;
 

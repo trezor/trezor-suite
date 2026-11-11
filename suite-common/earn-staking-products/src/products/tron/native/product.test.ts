@@ -65,7 +65,7 @@ describe('createTronNativeProduct', () => {
                 messageSystemFeatures: {},
                 ...createDeps(),
             }),
-        ).toThrow('no trx representative to vote for');
+        ).toThrow('no trx super representative to vote for');
     });
 
     it('fetches the product info through the injected client', async () => {

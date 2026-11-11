@@ -18,7 +18,7 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 import { createTronNativeProductDescriptor } from './descriptor';
 import { TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
 import { getTronNativeProductPosition } from './position';
-import { getTronRepresentatives } from './utils';
+import { getTronSuperRepresentatives } from './utils';
 import { luganodesProvider } from '../../../providers/luganodes';
 import { p2pProvider } from '../../../providers/p2p';
 
@@ -35,7 +35,7 @@ const descriptor = createTronNativeProductDescriptor({
     networkSymbol,
     messageSystemFeatures: TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
 });
-const representatives = getTronRepresentatives({
+const superRepresentatives = getTronSuperRepresentatives({
     networkSymbol,
     providers: [luganodesProvider, p2pProvider],
 });
@@ -48,7 +48,7 @@ const getPosition = (params: TestPositionParams) =>
         transactions: [],
         ...params,
         descriptor,
-        representatives,
+        superRepresentatives,
     });
 
 const getScenarioPosition = (scenario: TronStakingScenario) =>

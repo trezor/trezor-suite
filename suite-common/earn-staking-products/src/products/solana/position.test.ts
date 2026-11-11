@@ -19,8 +19,8 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createSolanaEverstakeNativeProductDescriptor } from './everstake-native/descriptor';
 import { createSolanaExternalNativeProductDescriptor } from './external-native/descriptor';
-import { SOLANA_EXTERNAL_PRODUCT_INFO } from './info';
 import { getSolanaProductPosition } from './position';
+import { SOLANA_EXTERNAL_PRODUCT_INFO } from './productInfo';
 import { everstakeProvider } from '../../providers/everstake';
 import { externalProvider } from '../../providers/external';
 

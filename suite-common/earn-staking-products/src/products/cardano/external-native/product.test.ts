@@ -16,8 +16,8 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { everstakeProvider } from '../../../providers/everstake';
 import { fivebinariesProvider } from '../../../providers/fivebinaries';
-import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../info';
 import { CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES } from '../messageSystemFeatures';
+import { CARDANO_UNMANAGED_PRODUCT_INFO } from '../productInfo';
 import { createCardanoExternalNativeProduct } from './product';
 
 const account = mockStakingAccount({ symbol: asNetworkSymbol('ada') });

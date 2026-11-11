@@ -7,7 +7,7 @@ type SolanaStakeType = NonNullable<
     NonNullable<StakingTransaction['solanaSpecific']>['stakeOperation']
 >['type'];
 
-export const SOLANA_STAKING_OPERATIONS_BY_SOLANA_STAKE_TYPE: Partial<
+export const SOLANA_STAKING_OPERATIONS_BY_STAKE_TYPE: Partial<
     Record<SolanaStakeType, StakingOperation>
 > = {
     stake: 'stake',

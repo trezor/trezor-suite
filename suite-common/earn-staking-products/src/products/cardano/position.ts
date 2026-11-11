@@ -11,7 +11,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import {
-    getCardanoPendingTransactions,
+    getCardanoStakingPendingTransactions,
     getParsedCardanoAccountBalance,
     getParsedCardanoStakingInfo,
     getPositionBalances,
@@ -81,7 +81,7 @@ export const getCardanoProductPosition = ({
     ownsPool,
     ownsPendingFirstStake,
 }: GetCardanoProductPositionParams): StakingPosition | null => {
-    const pendingTransactions = getCardanoPendingTransactions({ transactions });
+    const pendingTransactions = getCardanoStakingPendingTransactions({ transactions });
 
     if (!isCardanoStakeKeyRegistered(account)) {
         if (!ownsPendingFirstStake) {

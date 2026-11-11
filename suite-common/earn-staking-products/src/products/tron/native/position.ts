@@ -5,14 +5,14 @@ import {
     type StakingProductDescriptor,
 } from '@suite-common/earn-staking-common';
 
-import { type TronRepresentative } from './types';
+import { type TronSuperRepresentative } from './types';
 import {
     getParsedTronStakingInfo,
     getPositionBalances,
     getPositionOperations,
     getPositionTargets,
     getPositionUnlocks,
-    getTronPendingTransactions,
+    getTronStakingPendingTransactions,
 } from './utils';
 import { getStakingPositionStatus } from '../../../utils/getStakingPositionStatus';
 import { isPositiveStakingAmount } from '../../../utils/stakingAmounts';
@@ -23,12 +23,12 @@ const TRON_REVALIDATE_BUFFER_MS = 1000;
 
 export type GetTronNativeProductPositionParams = GetPositionParams & {
     descriptor: StakingProductDescriptor;
-    representatives: readonly TronRepresentative[];
+    superRepresentatives: readonly TronSuperRepresentative[];
 };
 
 export const getTronNativeProductPosition = ({
     descriptor,
-    representatives,
+    superRepresentatives,
     account,
     transactions,
 }: GetTronNativeProductPositionParams): StakingPosition | null => {
@@ -67,10 +67,10 @@ export const getTronNativeProductPosition = ({
         nowMs,
     });
 
-    const targets = getPositionTargets({ votes: stakingInfo.votes, representatives });
+    const targets = getPositionTargets({ votes: stakingInfo.votes, superRepresentatives });
     const unlocks = getPositionUnlocks({ pendingBatches });
 
-    const pendingTransactions = getTronPendingTransactions({ transactions });
+    const pendingTransactions = getTronStakingPendingTransactions({ transactions });
 
     const { rewardClaimAvailableAt } = stakingInfo;
 

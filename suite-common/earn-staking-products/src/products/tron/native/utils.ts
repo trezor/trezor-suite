@@ -21,8 +21,8 @@ import {
     type ParsedTronStakingInfo,
     type ParsedTronUnstakingBatch,
     type ParsedTronVote,
-    type TronRepresentative,
     type TronResource,
+    type TronSuperRepresentative,
     tronStakingListsSchema,
     tronUnstakingBatchSchema,
     tronVoteSchema,
@@ -37,15 +37,15 @@ import {
 export const isTronResource = (value: StakingOptionValue): value is TronResource =>
     TRON_RESOURCES.some(resource => resource === value);
 
-export type GetTronRepresentativesParams = {
+type GetTronSuperRepresentativesParams = {
     networkSymbol: NetworkSymbol;
     providers: readonly StakingProvider[];
 };
 
-export const getTronRepresentatives = ({
+export const getTronSuperRepresentatives = ({
     networkSymbol,
     providers,
-}: GetTronRepresentativesParams): readonly TronRepresentative[] =>
+}: GetTronSuperRepresentativesParams): readonly TronSuperRepresentative[] =>
     providers.flatMap(provider => {
         if (provider.status !== 'active') return [];
 
@@ -243,13 +243,13 @@ export const getPositionOperations = ({
         }),
     );
 
-type GetTronPendingTransactionsParams = {
+type GetTronStakingPendingTransactionsParams = {
     transactions: readonly StakingTransaction[];
 };
 
-export const getTronPendingTransactions = ({
+export const getTronStakingPendingTransactions = ({
     transactions,
-}: GetTronPendingTransactionsParams): StakingPositionPendingTransaction[] => {
+}: GetTronStakingPendingTransactionsParams): StakingPositionPendingTransaction[] => {
     const pendingStakingTransactions = transactions.filter(isPendingStakingTransaction);
 
     return pendingStakingTransactions.flatMap(({ txid, tronSpecific }) => {
@@ -265,18 +265,18 @@ export const getTronPendingTransactions = ({
 
 type GetPositionTargetsParams = {
     votes: readonly ParsedTronVote[];
-    representatives: readonly TronRepresentative[];
+    superRepresentatives: readonly TronSuperRepresentative[];
 };
 
 export const getPositionTargets = ({
     votes,
-    representatives,
+    superRepresentatives,
 }: GetPositionTargetsParams): StakingPositionTarget[] =>
     votes
         .filter(({ amount }) => isPositiveStakingAmount(amount))
         .map(({ address, amount }) => {
             const provider =
-                representatives.find(candidate => candidate.address === address)?.provider ??
+                superRepresentatives.find(candidate => candidate.address === address)?.provider ??
                 externalProvider;
 
             return {
