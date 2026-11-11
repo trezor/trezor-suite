@@ -19,8 +19,6 @@
     "imports": {
         "#src/*": {
             "types": [
-                "./src/*/index.tsx",
-                "./src/*/index.ts",
                 "./src/*.tsx",
                 "./src/*.ts"
             ],
