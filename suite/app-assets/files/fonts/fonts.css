@@ -1,13 +1,13 @@
 @font-face {
     font-family: 'TT Satoshi';
-    src: url('./TTSatoshi/TTSatoshi-Medium.otf') format('opentype');
+    src: url('./TTSatoshi/TTSatoshi-Medium.woff2') format('woff2');
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'TT Satoshi';
-    src: url('./TTSatoshi/TTSatoshi-DemiBold.otf') format('opentype');
+    src: url('./TTSatoshi/TTSatoshi-DemiBold.woff2') format('woff2');
     font-weight: 600;
     font-style: normal;
 }
