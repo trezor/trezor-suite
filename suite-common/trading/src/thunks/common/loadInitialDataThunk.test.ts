@@ -73,19 +73,31 @@ const initTestServices = (tradingState: Partial<TradingState> = {}) => {
     return { services, getSelectedAccount };
 };
 
-const expectCatalogCalls = (count: number) => {
-    expect(tradeApi.getInfo).toHaveBeenCalledTimes(count);
-    expect(tradeApi.getBuyList).toHaveBeenCalledTimes(count);
-    expect(tradeApi.getExchangeList).toHaveBeenCalledTimes(count);
-    expect(tradeApi.getSellList).toHaveBeenCalledTimes(count);
+type CatalogCallCounts = {
+    shared: number;
+    exchange: number;
+};
+
+const expectCatalogCalls = ({ shared, exchange }: CatalogCallCounts) => {
+    expect(tradeApi.getInfo).toHaveBeenCalledTimes(shared);
+    expect(tradeApi.getBuyList).toHaveBeenCalledTimes(shared);
+    expect(tradeApi.getSellList).toHaveBeenCalledTimes(shared);
+    expect(tradeApi.getExchangeList).toHaveBeenCalledTimes(exchange);
 };
 
 const initLoadedTestServices = async () => {
     const { services, getSelectedAccount } = initTestServices();
-    await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
+    await services.store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' })).unwrap();
     jest.clearAllMocks();
 
     return { services, getSelectedAccount };
+};
+
+const selectExchangeCatalog = (services: ReturnType<typeof initTestServices>['services']) => {
+    const { exchangeInfo, isExchangeInfoLoading, exchangeInfoLoadedTimestamp } =
+        services.store.getState().wallet.trading.exchange;
+
+    return { exchangeInfo, isExchangeInfoLoading, exchangeInfoLoadedTimestamp };
 };
 
 describe('loadInitialDataThunk catalog cache', () => {
@@ -101,19 +113,77 @@ describe('loadInitialDataThunk catalog cache', () => {
         jest.restoreAllMocks();
     });
 
-    it('loads the complete catalog on first use', async () => {
+    it('loads the coin info and the buy and sell catalogs on first use', async () => {
         const { services } = initTestServices();
 
         await services.store.dispatch(loadInitialDataThunk({ activeSection: 'sell' })).unwrap();
 
-        expectCatalogCalls(1);
+        expectCatalogCalls({ shared: 1, exchange: 0 });
         expect(services.store.getState().wallet.trading).toMatchObject({
             isLoading: false,
             lastLoadedTimestamp: Date.now(),
         });
+        expect(selectExchangeCatalog(services)).toEqual({
+            exchangeInfo: undefined,
+            isExchangeInfoLoading: false,
+            exchangeInfoLoadedTimestamp: 0,
+        });
         expect(tradeApi.setServersEnvironment).toHaveBeenCalledWith('localhost');
         expect(tradeApi.createAnonymousApiKey).toHaveBeenCalledWith(TRADING_ANONYMOUS_ID);
         expect(tradeApi.setApiKey).not.toHaveBeenCalled();
+    });
+
+    it.each([
+        { activeSection: 'buy', catalogSection: undefined, exchange: 0 },
+        { activeSection: 'sell', catalogSection: undefined, exchange: 0 },
+        { activeSection: 'exchange', catalogSection: undefined, exchange: 1 },
+        { activeSection: 'exchange', catalogSection: 'buy', exchange: 0 },
+        { activeSection: 'buy', catalogSection: 'exchange', exchange: 1 },
+    ] as const)(
+        'loads the swap catalog only for the swap section (active $activeSection, catalog $catalogSection)',
+        async ({ activeSection, catalogSection, exchange }) => {
+            const { services } = initTestServices();
+
+            await services.store
+                .dispatch(loadInitialDataThunk({ activeSection, catalogSection }))
+                .unwrap();
+
+            expectCatalogCalls({ shared: 1, exchange });
+            expect(services.store.getState().wallet.trading.activeSection).toBe(activeSection);
+            expect(selectExchangeCatalog(services)).toEqual({
+                exchangeInfo: exchange
+                    ? { providerInfos: {}, buyCryptoIds: [], sellCryptoIds: [] }
+                    : undefined,
+                isExchangeInfoLoading: false,
+                exchangeInfoLoadedTimestamp: exchange ? Date.now() : 0,
+            });
+        },
+    );
+
+    it('keeps the swap catalog on its own lifetime', async () => {
+        const { services } = initTestServices();
+        const start = Date.now();
+        const loadAt = async (age: number, activeSection: 'buy' | 'exchange') => {
+            jest.spyOn(Date, 'now').mockReturnValue(start + age);
+            jest.clearAllMocks();
+            await services.store.dispatch(loadInitialDataThunk({ activeSection })).unwrap();
+        };
+        const halfLife = TRADE_API_RELOAD_DATA_AFTER_MS / 2;
+
+        await loadAt(0, 'buy');
+        await loadAt(halfLife, 'exchange');
+        expectCatalogCalls({ shared: 0, exchange: 1 });
+        expect(services.store.getState().wallet.trading.lastLoadedTimestamp).toBe(start);
+
+        await loadAt(TRADE_API_RELOAD_DATA_AFTER_MS, 'buy');
+        expectCatalogCalls({ shared: 1, exchange: 0 });
+
+        await loadAt(TRADE_API_RELOAD_DATA_AFTER_MS + halfLife - 1, 'exchange');
+        expectCatalogCalls({ shared: 0, exchange: 0 });
+
+        await loadAt(TRADE_API_RELOAD_DATA_AFTER_MS + halfLife, 'exchange');
+        expectCatalogCalls({ shared: 0, exchange: 1 });
+        expect(selectExchangeCatalog(services).exchangeInfoLoadedTimestamp).toBe(Date.now());
     });
 
     it.each(['exchange', 'sell', 'buy'] as const)(
@@ -126,7 +196,7 @@ describe('loadInitialDataThunk catalog cache', () => {
             await services.store.dispatch(loadInitialDataThunk({ activeSection })).unwrap();
 
             expect(services.store.getState().wallet.trading.activeSection).toBe(activeSection);
-            expectCatalogCalls(0);
+            expectCatalogCalls({ shared: 0, exchange: 0 });
             expect(services.store.getState().wallet.trading.lastLoadedTimestamp).toBe(timestamp);
             expect(
                 services.store.getActions().filter(tradingActions.setLoading.match),
@@ -166,7 +236,7 @@ describe('loadInitialDataThunk catalog cache', () => {
             expect(jest.mocked(tradeApi.createAnonymousApiKey).mock.calls).toEqual(
                 selectedAccount ? [] : [[TRADING_ANONYMOUS_ID]],
             );
-            expectCatalogCalls(0);
+            expectCatalogCalls({ shared: 0, exchange: 0 });
         },
     );
 
@@ -234,7 +304,7 @@ describe('loadInitialDataThunk catalog cache', () => {
             .dispatch(loadInitialDataThunk({ activeSection: 'sell', forcedAnonymousId: '' }))
             .unwrap();
         expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith(TRADING_ANONYMOUS_ID);
-        expectCatalogCalls(0);
+        expectCatalogCalls({ shared: 0, exchange: 0 });
     });
 
     it.each([
@@ -246,16 +316,19 @@ describe('loadInitialDataThunk catalog cache', () => {
         const timestamp = services.store.getState().wallet.trading.lastLoadedTimestamp;
         jest.spyOn(Date, 'now').mockReturnValue(timestamp + age);
 
-        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
+        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' })).unwrap();
 
         const isExpired = age >= TRADE_API_RELOAD_DATA_AFTER_MS;
-        expectCatalogCalls(isExpired ? 1 : 0);
+        expectCatalogCalls({ shared: isExpired ? 1 : 0, exchange: isExpired ? 1 : 0 });
         expect(services.store.getState().wallet.trading.lastLoadedTimestamp).toBe(
+            isExpired ? Date.now() : timestamp,
+        );
+        expect(selectExchangeCatalog(services).exchangeInfoLoadedTimestamp).toBe(
             isExpired ? Date.now() : timestamp,
         );
     });
 
-    it.each(['info', 'buy', 'exchange', 'sell'] as const)(
+    it.each(['info', 'buy', 'sell'] as const)(
         'fetches only missing %s data without extending the shared lifetime',
         async missing => {
             const loaded = await initLoadedTestServices();
@@ -264,10 +337,6 @@ describe('loadInitialDataThunk catalog cache', () => {
                 ...cached,
                 info: missing === 'info' ? {} : cached.info,
                 buy: { ...cached.buy, buyInfo: missing === 'buy' ? undefined : cached.buy.buyInfo },
-                exchange: {
-                    ...cached.exchange,
-                    exchangeInfo: missing === 'exchange' ? undefined : cached.exchange.exchangeInfo,
-                },
                 sell: {
                     ...cached.sell,
                     sellInfo: missing === 'sell' ? undefined : cached.sell.sellInfo,
@@ -279,7 +348,7 @@ describe('loadInitialDataThunk catalog cache', () => {
 
             expect(tradeApi.getInfo).toHaveBeenCalledTimes(missing === 'info' ? 1 : 0);
             expect(tradeApi.getBuyList).toHaveBeenCalledTimes(missing === 'buy' ? 1 : 0);
-            expect(tradeApi.getExchangeList).toHaveBeenCalledTimes(missing === 'exchange' ? 1 : 0);
+            expect(tradeApi.getExchangeList).not.toHaveBeenCalled();
             expect(tradeApi.getSellList).toHaveBeenCalledTimes(missing === 'sell' ? 1 : 0);
             expect(services.store.getState().wallet.trading.lastLoadedTimestamp).toBe(
                 cached.lastLoadedTimestamp,
@@ -287,17 +356,27 @@ describe('loadInitialDataThunk catalog cache', () => {
         },
     );
 
-    it('explicit Retry refreshes all fresh entries, including empty fallback results', async () => {
-        const { services } = await initLoadedTestServices();
-        jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 100);
+    it.each([
+        { activeSection: 'sell', exchange: 0 },
+        { activeSection: 'exchange', exchange: 1 },
+    ] as const)(
+        'explicit Retry in $activeSection refreshes its fresh entries, including empty fallback results',
+        async ({ activeSection, exchange }) => {
+            const { services } = await initLoadedTestServices();
+            const timestamp = Date.now();
+            jest.spyOn(Date, 'now').mockReturnValue(timestamp + 100);
 
-        await services.store
-            .dispatch(loadInitialDataThunk({ activeSection: 'sell', forceReload: true }))
-            .unwrap();
+            await services.store
+                .dispatch(loadInitialDataThunk({ activeSection, forceReload: true }))
+                .unwrap();
 
-        expectCatalogCalls(1);
-        expect(services.store.getState().wallet.trading.lastLoadedTimestamp).toBe(Date.now());
-    });
+            expectCatalogCalls({ shared: 1, exchange });
+            expect(services.store.getState().wallet.trading.lastLoadedTimestamp).toBe(Date.now());
+            expect(selectExchangeCatalog(services).exchangeInfoLoadedTimestamp).toBe(
+                exchange ? Date.now() : timestamp,
+            );
+        },
+    );
 
     it.each(['first use', 'expiry', 'retry'] as const)(
         'loads all catalog resources in parallel on %s',
@@ -312,11 +391,14 @@ describe('loadInitialDataThunk catalog cache', () => {
             jest.mocked(tradeApi.getInfo).mockReturnValueOnce(pendingInfo.promise);
 
             const load = services.store.dispatch(
-                loadInitialDataThunk({ activeSection: 'buy', forceReload: scenario === 'retry' }),
+                loadInitialDataThunk({
+                    activeSection: 'exchange',
+                    forceReload: scenario === 'retry',
+                }),
             );
 
             try {
-                expectCatalogCalls(1);
+                expectCatalogCalls({ shared: 1, exchange: 1 });
                 expect(services.store.getState().wallet.trading).toMatchObject({
                     isLoading: true,
                     lastLoadedTimestamp: timestamp,
@@ -333,7 +415,7 @@ describe('loadInitialDataThunk catalog cache', () => {
         },
     );
 
-    it('deduplicates overlapping loads while updating the latest section and API identity', async () => {
+    it('deduplicates the overlapping shared load but still loads the swap catalog, updating the latest section and API identity', async () => {
         const { services } = initTestServices();
         const pendingInfo = createDeferred<typeof info>();
         jest.mocked(tradeApi.getInfo).mockReturnValueOnce(pendingInfo.promise);
@@ -353,12 +435,40 @@ describe('loadInitialDataThunk catalog cache', () => {
             }),
         );
         expect(tradeApi.getInfo).toHaveBeenCalledTimes(1);
+        expect(selectExchangeCatalog(services).exchangeInfoLoadedTimestamp).toBe(Date.now());
         pendingInfo.resolve(info);
         await firstLoad.unwrap();
-        expectCatalogCalls(1);
+        expectCatalogCalls({ shared: 1, exchange: 1 });
     });
 
-    it.each(['getInfo', 'getBuyList', 'getExchangeList', 'getSellList'] as const)(
+    it('deduplicates overlapping swap catalog loads', async () => {
+        const { services } = initTestServices();
+        const pendingExchangeList = createDeferred<[]>();
+        jest.mocked(tradeApi.getExchangeList).mockReturnValueOnce(pendingExchangeList.promise);
+
+        const firstLoad = services.store.dispatch(
+            loadInitialDataThunk({ activeSection: 'exchange' }),
+        );
+        const secondLoad = services.store.dispatch(
+            loadInitialDataThunk({ activeSection: 'exchange', forceReload: true }),
+        );
+
+        try {
+            expect(selectExchangeCatalog(services).isExchangeInfoLoading).toBe(true);
+            expect(services.store.getState().wallet.trading.isLoading).toBe(true);
+        } finally {
+            pendingExchangeList.resolve([]);
+            await Promise.all([firstLoad.unwrap(), secondLoad.unwrap()]);
+        }
+
+        expect(tradeApi.getExchangeList).toHaveBeenCalledTimes(1);
+        expect(selectExchangeCatalog(services)).toMatchObject({
+            isExchangeInfoLoading: false,
+            exchangeInfoLoadedTimestamp: Date.now(),
+        });
+    });
+
+    it.each(['getInfo', 'getBuyList', 'getSellList'] as const)(
         'releases loading after an unexpected %s rejection without advancing freshness',
         async request => {
             const { services } = await initLoadedTestServices();
@@ -383,14 +493,43 @@ describe('loadInitialDataThunk catalog cache', () => {
         },
     );
 
+    it('releases swap catalog loading after an unexpected rejection without advancing freshness', async () => {
+        const { services } = await initLoadedTestServices();
+        const timestamp = selectExchangeCatalog(services).exchangeInfoLoadedTimestamp;
+        jest.spyOn(Date, 'now').mockReturnValue(timestamp + 100);
+        jest.mocked(tradeApi.getExchangeList).mockRejectedValueOnce(
+            new Error('Unexpected failure'),
+        );
+
+        await expect(
+            services.store
+                .dispatch(loadInitialDataThunk({ activeSection: 'exchange', forceReload: true }))
+                .unwrap(),
+        ).rejects.toMatchObject({ message: 'Unexpected failure' });
+
+        expect(selectExchangeCatalog(services)).toMatchObject({
+            isExchangeInfoLoading: false,
+            exchangeInfoLoadedTimestamp: timestamp,
+        });
+        expect(services.store.getState().wallet.trading).toMatchObject({
+            isLoading: false,
+            lastLoadedTimestamp: Date.now(),
+        });
+        await services.store
+            .dispatch(loadInitialDataThunk({ activeSection: 'exchange', forceReload: true }))
+            .unwrap();
+        expect(selectExchangeCatalog(services).exchangeInfoLoadedTimestamp).toBe(Date.now());
+    });
+
     it('refreshes the catalog after debug server invalidation', async () => {
         const { services } = await initLoadedTestServices();
         services.store.dispatch(tradingActions.invalidateCatalog());
         expect(services.store.getState().wallet.trading.lastLoadedTimestamp).toBe(0);
+        expect(selectExchangeCatalog(services).exchangeInfoLoadedTimestamp).toBe(0);
 
-        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'sell' })).unwrap();
+        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'exchange' })).unwrap();
 
-        expectCatalogCalls(1);
+        expectCatalogCalls({ shared: 1, exchange: 1 });
     });
 
     it('does not mark a load fresh if the debug server changes while it is running', async () => {
@@ -398,7 +537,7 @@ describe('loadInitialDataThunk catalog cache', () => {
         const pendingInfo = createDeferred<typeof info>();
         jest.mocked(tradeApi.getInfo).mockReturnValueOnce(pendingInfo.promise);
         const load = services.store.dispatch(
-            loadInitialDataThunk({ activeSection: 'buy', forceReload: true }),
+            loadInitialDataThunk({ activeSection: 'exchange', forceReload: true }),
         );
         services.store.dispatch(tradingActions.invalidateCatalog());
         jest.mocked(tradeApi.getApiServerUrl).mockReturnValue('https://staging-exchange.trezor.io');
@@ -408,6 +547,10 @@ describe('loadInitialDataThunk catalog cache', () => {
         expect(services.store.getState().wallet.trading).toMatchObject({
             isLoading: false,
             lastLoadedTimestamp: 0,
+        });
+        expect(selectExchangeCatalog(services)).toMatchObject({
+            isExchangeInfoLoading: false,
+            exchangeInfoLoadedTimestamp: 0,
         });
     });
 

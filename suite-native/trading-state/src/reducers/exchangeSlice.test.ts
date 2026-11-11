@@ -20,6 +20,8 @@ describe('exchangeSlice', () => {
             isFromRedirect: false,
             isLoading: false,
             formStep: 'RECEIVING_ADDRESS',
+            isExchangeInfoLoading: false,
+            exchangeInfoLoadedTimestamp: 0,
         });
     });
 
@@ -51,6 +53,8 @@ describe('exchangeSlice', () => {
                 formStep: 'RECEIVING_ADDRESS',
                 isFromRedirect: false,
                 isLoading: false,
+                isExchangeInfoLoading: false,
+                exchangeInfoLoadedTimestamp: 0,
             });
         });
     });

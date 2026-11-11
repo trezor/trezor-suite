@@ -79,6 +79,7 @@ import {
     selectTradingIsSlip24Allowed,
     selectTradingIsSlip24SellAllowed,
     selectTradingLastErrorMessageByTradeType,
+    selectTradingLoadingAndTimestamp,
     selectTradingModalAccountKey,
     selectTradingPaymentMethodsByType,
     selectTradingPlatformByCryptoId,
@@ -2281,6 +2282,12 @@ describe('tradingSelectors', () => {
             );
         });
 
+        it('should not wait for the swap catalog', () => {
+            state.wallet.trading.exchange.isExchangeInfoLoading = true;
+
+            expect(selectTradingBuyLoadingTimestampAndStatus(state).isLoading).toBe(false);
+        });
+
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {
                 state.wallet.trading.info = {};
@@ -2307,21 +2314,67 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe('selectTradingExchangeLoadingTimestampAndStatus', () => {
-        it.each<[boolean, number]>([
-            [true, 0],
-            [false, 123456789],
-        ])('should return values from trading state, case %#', (isLoading, lastLoadedTimestamp) => {
-            state.wallet.trading.isLoading = isLoading;
-            state.wallet.trading.lastLoadedTimestamp = lastLoadedTimestamp;
+    describe('selectTradingLoadingAndTimestamp', () => {
+        it('should be loading while only the swap catalog loads, with the shared timestamp', () => {
+            state.wallet.trading.lastLoadedTimestamp = 123456789;
+            state.wallet.trading.exchange.isExchangeInfoLoading = true;
 
-            expect(selectTradingExchangeLoadingTimestampAndStatus(state)).toEqual(
-                expect.objectContaining({
-                    isLoading,
-                    lastLoadedTimestamp,
-                }),
-            );
+            expect(selectTradingLoadingAndTimestamp(state)).toEqual({
+                isLoading: true,
+                lastLoadedTimestamp: 123456789,
+            });
         });
+    });
+
+    describe('selectTradingExchangeLoadingTimestampAndStatus', () => {
+        it.each([
+            {
+                isSharedLoading: true,
+                isExchangeLoading: false,
+                sharedTimestamp: 0,
+                exchangeTimestamp: 0,
+                isLoading: true,
+                lastLoadedTimestamp: 0,
+            },
+            {
+                isSharedLoading: false,
+                isExchangeLoading: true,
+                sharedTimestamp: 123456789,
+                exchangeTimestamp: 0,
+                isLoading: true,
+                lastLoadedTimestamp: 0,
+            },
+            {
+                isSharedLoading: false,
+                isExchangeLoading: false,
+                sharedTimestamp: 123456789,
+                exchangeTimestamp: 123456000,
+                isLoading: false,
+                lastLoadedTimestamp: 123456000,
+            },
+        ])(
+            'should combine the shared and swap catalog states, case %#',
+            ({
+                isSharedLoading,
+                isExchangeLoading,
+                sharedTimestamp,
+                exchangeTimestamp,
+                isLoading,
+                lastLoadedTimestamp,
+            }) => {
+                state.wallet.trading.isLoading = isSharedLoading;
+                state.wallet.trading.lastLoadedTimestamp = sharedTimestamp;
+                state.wallet.trading.exchange.isExchangeInfoLoading = isExchangeLoading;
+                state.wallet.trading.exchange.exchangeInfoLoadedTimestamp = exchangeTimestamp;
+
+                expect(selectTradingExchangeLoadingTimestampAndStatus(state)).toEqual(
+                    expect.objectContaining({
+                        isLoading,
+                        lastLoadedTimestamp,
+                    }),
+                );
+            },
+        );
 
         describe('isFullyLoaded', () => {
             it('should be false when trading info is empty', () => {

@@ -15,10 +15,11 @@ import {
     type TradingRootStateWithAccounts,
     selectTradeApiKeyAccount,
     selectTradingBuyInfo,
+    selectTradingExchangeCatalogLoadingAndTimestamp,
     selectTradingExchangeInfo,
     selectTradingInfo,
-    selectTradingLoadingAndTimestamp,
     selectTradingSellInfo,
+    selectTradingSharedCatalogLoadingAndTimestamp,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import { type TradeServerEnvironment, type TradingType } from '../../types';
@@ -28,6 +29,12 @@ import { loadSellInfoThunk } from '../sell/loadSellInfoThunk';
 
 export interface LoadInitialDataThunkProps {
     activeSection: TradingType;
+    /**
+     * The section whose catalog the caller reads, when it differs from `activeSection`.
+     * The coin info and the buy and sell catalogs always load.
+     * The swap catalog is several megabytes, so it loads only for `exchange`.
+     */
+    catalogSection?: TradingType;
     forcedAnonymousId?: string;
     forceReload?: boolean;
 }
@@ -48,7 +55,7 @@ export const loadInitialDataThunk = createThunk<
 >(
     `${TRADING_THUNK_PREFIX}/loadInitialData`,
     async (
-        { activeSection, forcedAnonymousId, forceReload = false },
+        { activeSection, catalogSection = activeSection, forcedAnonymousId, forceReload = false },
         { dispatch, getState, extra },
     ) => {
         const account = selectTradeApiKeyAccount(
@@ -57,9 +64,9 @@ export const loadInitialDataThunk = createThunk<
             extra.services.getSelectedAccount(),
         );
         const buyInfo = selectTradingBuyInfo(getState());
-        const exchangeInfo = selectTradingExchangeInfo(getState());
         const sellInfo = selectTradingSellInfo(getState());
-        const { isLoading, lastLoadedTimestamp } = selectTradingLoadingAndTimestamp(getState());
+        const { isLoading, lastLoadedTimestamp } =
+            selectTradingSharedCatalogLoadingAndTimestamp(getState());
         const { platforms, coins } = selectTradingInfo(getState());
 
         dispatch(tradingActions.setTradingActiveSection(activeSection));
@@ -75,79 +82,124 @@ export const loadInitialDataThunk = createThunk<
             tradeApi.setServersEnvironment(tradeServerEnvironment);
         }
 
-        const areDataOutdated =
-            lastLoadedTimestamp === 0 ||
-            Date.now() - lastLoadedTimestamp >= TRADE_API_RELOAD_DATA_AFTER_MS;
-        const shouldReloadAll = forceReload || areDataOutdated;
-        const isInfoMissing = !platforms || !coins;
-        const isAnythingMissing = isInfoMissing || !buyInfo || !exchangeInfo || !sellInfo;
-
-        if (isLoading || (!shouldReloadAll && !isAnythingMissing)) {
-            return;
-        }
-
         const serverUrl = tradeApi.getApiServerUrl();
-        let updatedTimestamp = lastLoadedTimestamp;
-        dispatch(tradingActions.setLoading({ isLoading: true, lastLoadedTimestamp }));
+        const isOutdated = (timestamp: number) =>
+            forceReload ||
+            timestamp === 0 ||
+            Date.now() - timestamp >= TRADE_API_RELOAD_DATA_AFTER_MS;
+        // A load that raced a debug server switch must not be kept as fresh.
+        const isStaleLoad = (startTimestamp: number, currentTimestamp: number) =>
+            currentTimestamp !== startTimestamp || tradeApi.getApiServerUrl() !== serverUrl;
 
-        try {
-            if (shouldReloadAll) {
-                const [info, buyInfoData, exchangeInfoData, sellInfoData] = await Promise.all([
-                    tradeApi.getInfo(),
-                    dispatch(loadBuyInfoThunk()).unwrap(),
-                    dispatch(loadExchangeInfoThunk()).unwrap(),
-                    dispatch(loadSellInfoThunk()).unwrap(),
-                ]);
+        const loadExchangeCatalog = async () => {
+            const exchangeCatalog = selectTradingExchangeCatalogLoadingAndTimestamp(getState());
+            const isExchangeInfoMissing = !selectTradingExchangeInfo(getState());
 
-                if (info) {
-                    dispatch(tradingActions.saveInfo(info));
-                }
-                dispatch(tradingBuyActions.saveBuyInfo(buyInfoData));
-                dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfoData));
-                dispatch(tradingSellActions.saveSellInfo(sellInfoData));
-                updatedTimestamp = Date.now();
-
+            if (
+                exchangeCatalog.isLoading ||
+                (!isExchangeInfoMissing && !isOutdated(exchangeCatalog.lastLoadedTimestamp))
+            ) {
                 return;
             }
 
-            if (isInfoMissing) {
-                const info = await tradeApi.getInfo();
+            let updatedTimestamp = exchangeCatalog.lastLoadedTimestamp;
+            dispatch(
+                tradingExchangeActions.setExchangeInfoLoading({
+                    isLoading: true,
+                    lastLoadedTimestamp: exchangeCatalog.lastLoadedTimestamp,
+                }),
+            );
 
-                // Skip saveInfo on failure so we never replace an existing catalog with empty data.
-                if (info) {
-                    dispatch(tradingActions.saveInfo(info));
-                }
-            }
-
-            if (!buyInfo) {
-                const buyInfoData = await dispatch(loadBuyInfoThunk()).unwrap();
-                dispatch(tradingBuyActions.saveBuyInfo(buyInfoData));
-            }
-
-            if (!exchangeInfo) {
+            try {
                 const exchangeInfoData = await dispatch(loadExchangeInfoThunk()).unwrap();
 
                 dispatch(tradingExchangeActions.saveExchangeInfo(exchangeInfoData));
+                updatedTimestamp = Date.now();
+            } finally {
+                const { lastLoadedTimestamp: currentTimestamp } =
+                    selectTradingExchangeCatalogLoadingAndTimestamp(getState());
+
+                dispatch(
+                    tradingExchangeActions.setExchangeInfoLoading({
+                        isLoading: false,
+                        lastLoadedTimestamp: isStaleLoad(
+                            exchangeCatalog.lastLoadedTimestamp,
+                            currentTimestamp,
+                        )
+                            ? 0
+                            : updatedTimestamp,
+                    }),
+                );
+            }
+        };
+
+        const loadSharedCatalog = async () => {
+            const shouldReloadAll = isOutdated(lastLoadedTimestamp);
+            const isInfoMissing = !platforms || !coins;
+            const isAnythingMissing = isInfoMissing || !buyInfo || !sellInfo;
+
+            if (isLoading || (!shouldReloadAll && !isAnythingMissing)) {
+                return;
             }
 
-            if (!sellInfo) {
-                const sellInfoData = await dispatch(loadSellInfoThunk()).unwrap();
+            let updatedTimestamp = lastLoadedTimestamp;
+            dispatch(tradingActions.setLoading({ isLoading: true, lastLoadedTimestamp }));
 
-                dispatch(tradingSellActions.saveSellInfo(sellInfoData));
+            try {
+                if (shouldReloadAll) {
+                    const [info, buyInfoData, sellInfoData] = await Promise.all([
+                        tradeApi.getInfo(),
+                        dispatch(loadBuyInfoThunk()).unwrap(),
+                        dispatch(loadSellInfoThunk()).unwrap(),
+                    ]);
+
+                    if (info) {
+                        dispatch(tradingActions.saveInfo(info));
+                    }
+                    dispatch(tradingBuyActions.saveBuyInfo(buyInfoData));
+                    dispatch(tradingSellActions.saveSellInfo(sellInfoData));
+                    updatedTimestamp = Date.now();
+
+                    return;
+                }
+
+                if (isInfoMissing) {
+                    const info = await tradeApi.getInfo();
+
+                    // Skip saveInfo on failure so we never replace an existing catalog with empty data.
+                    if (info) {
+                        dispatch(tradingActions.saveInfo(info));
+                    }
+                }
+
+                if (!buyInfo) {
+                    const buyInfoData = await dispatch(loadBuyInfoThunk()).unwrap();
+                    dispatch(tradingBuyActions.saveBuyInfo(buyInfoData));
+                }
+
+                if (!sellInfo) {
+                    const sellInfoData = await dispatch(loadSellInfoThunk()).unwrap();
+
+                    dispatch(tradingSellActions.saveSellInfo(sellInfoData));
+                }
+            } finally {
+                const { lastLoadedTimestamp: currentTimestamp } =
+                    selectTradingSharedCatalogLoadingAndTimestamp(getState());
+
+                dispatch(
+                    tradingActions.setLoading({
+                        isLoading: false,
+                        lastLoadedTimestamp: isStaleLoad(lastLoadedTimestamp, currentTimestamp)
+                            ? 0
+                            : updatedTimestamp,
+                    }),
+                );
             }
-        } finally {
-            const currentTimestamp =
-                selectTradingLoadingAndTimestamp(getState()).lastLoadedTimestamp;
-            const wasInvalidated =
-                currentTimestamp !== lastLoadedTimestamp ||
-                tradeApi.getApiServerUrl() !== serverUrl;
+        };
 
-            dispatch(
-                tradingActions.setLoading({
-                    isLoading: false,
-                    lastLoadedTimestamp: wasInvalidated ? 0 : updatedTimestamp,
-                }),
-            );
-        }
+        await Promise.all([
+            loadSharedCatalog(),
+            catalogSection === 'exchange' ? loadExchangeCatalog() : undefined,
+        ]);
     },
 );
