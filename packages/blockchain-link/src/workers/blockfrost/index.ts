@@ -21,7 +21,11 @@ type Request<T> = T & Context;
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     const api = await request.connect();
-    const info = await api.getServerInfo();
+    // The backend stays usable without protocol parameters; composing falls back to defaults.
+    const [info, cardanoProtocolParameters] = await Promise.all([
+        api.getServerInfo(),
+        api.getProtocolParameters().then(transformProtocolParameters, () => undefined),
+    ]);
 
     return {
         type: RESPONSES.GET_INFO,
@@ -29,6 +33,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
             url: api.options.url,
             network: info.shortcut,
             ...info,
+            cardanoProtocolParameters,
         },
     } as const;
 };
@@ -136,6 +141,7 @@ const onNewBlock = ({ post }: Context, event: BlockContent) => {
             payload: {
                 blockHeight: event.height || 0,
                 blockHash: event.hash,
+                epoch: event.epoch ?? undefined,
             },
         },
     });

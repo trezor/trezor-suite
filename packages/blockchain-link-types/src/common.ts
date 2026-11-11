@@ -180,6 +180,7 @@ export interface ServerInfo {
     blockHash: string;
     consensusBranchId?: number; // zcash current branch id
     network: string;
+    cardanoProtocolParameters?: CardanoProtocolParameters; // cardano only, when the backend reports them
 }
 
 /**

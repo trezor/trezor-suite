@@ -121,6 +121,16 @@ export default {
                 network: 'ada',
                 testnet: false,
                 version: '1.4.0',
+                cardanoProtocolParameters: {
+                    epoch: 656,
+                    minFeeA: '44',
+                    minFeeB: '155381',
+                    maxTxSize: 16384,
+                    maxValueSize: 5000,
+                    keyDeposit: '2000000',
+                    poolDeposit: '500000000',
+                    coinsPerUtxoByte: '4310',
+                },
             },
         },
         {
