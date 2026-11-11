@@ -165,7 +165,6 @@ export const TransactionListItemContainer = ({
                         <TransactionIcon
                             symbol={coinSymbol}
                             contractAddress={contractAddress}
-                            tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
                             transactionType={transactionType}
                             stakeOperationType={stakeOperationType}
                             isAnimated={isTransactionPending}
