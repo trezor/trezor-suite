@@ -61,8 +61,8 @@ export const Webauthn = () => {
         setOutput(WAITING_MESSAGE);
         try {
             const credential = await navigator.credentials.create({
+                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
                 publicKey: {
-                    timeout: REQUEST_TIMEOUT_MS,
                     rp: { id: window.location.hostname, name: RELYING_PARTY_NAME },
                     user: {
                         id: getRandomBytes(16),
@@ -115,8 +115,8 @@ export const Webauthn = () => {
         setOutput(WAITING_MESSAGE);
         try {
             const assertion = await navigator.credentials.get({
+                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
                 publicKey: {
-                    timeout: REQUEST_TIMEOUT_MS,
                     rpId: window.location.hostname,
                     challenge: getRandomBytes(32),
                     allowCredentials: credentialId

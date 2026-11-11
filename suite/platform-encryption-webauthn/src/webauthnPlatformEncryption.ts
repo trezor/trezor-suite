@@ -57,8 +57,8 @@ const createCredential = async (): Promise<
     let credential: Credential | null;
     try {
         credential = await navigator.credentials.create({
+            signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
             publicKey: {
-                timeout: REQUEST_TIMEOUT_MS,
                 rp: { id: window.location.hostname, name: RELYING_PARTY_NAME },
                 user: {
                     id: getRandomBytes(USER_ID_LENGTH),
@@ -104,8 +104,8 @@ const deriveKey = async ({
     let assertion: Credential | null;
     try {
         assertion = await navigator.credentials.get({
+            signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
             publicKey: {
-                timeout: REQUEST_TIMEOUT_MS,
                 rpId: window.location.hostname,
                 challenge: getRandomBytes(CHALLENGE_LENGTH),
                 allowCredentials: [{ type: 'public-key', id: credentialId }],
