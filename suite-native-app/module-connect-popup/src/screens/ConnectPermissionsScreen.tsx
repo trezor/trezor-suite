@@ -21,6 +21,7 @@ import { AccordionContent } from '@suite-native/atoms/src/Accordion/AccordionCon
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { sanitizeName } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -29,6 +30,8 @@ import { GroupedPermissionsList } from '../components/GroupedPermissionsList';
 
 const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
     const { dispatch } = useServices(injectDispatch);
+    // A grant remembered by an earlier version carries the name unsanitized.
+    const appName = sanitizeName(app.manifest?.appName);
     const handleDisconnect = () => {
         dispatch(connectPopupActions.forgetAppPermissions(app));
     };
@@ -54,9 +57,8 @@ const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
                             size="medium"
                         />
                         <VStack flex={1} spacing="sp1">
-                            {/* `??` would show an empty name, not the origin. */}
-                            <Text numberOfLines={1}>{app.manifest?.appName || app.origin}</Text>
-                            {app.manifest?.appName && (
+                            <Text numberOfLines={1}>{appName || app.origin}</Text>
+                            {appName && (
                                 <Text color="contentSecondary" numberOfLines={1}>
                                     {app.origin}
                                 </Text>

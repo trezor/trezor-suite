@@ -54,6 +54,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from '#src/components/suite/ConnectProcessLabel';
 import { useSelector } from '#src/hooks/suite';
+
+import { ConnectAppName } from './ConnectAppName';
+
 // The remove button sits next to the permission text and is only revealed when
 // the row is hovered or a child receives keyboard focus, to reduce clutter.
 // Mirrors the reveal styling of EditableText's ActionsContainer.
@@ -312,22 +315,10 @@ export const ConnectPermissions = () => {
 
                         <Column flex="1" minWidth={0}>
                             <Row columnGap={12} rowGap={2} flexWrap="wrap">
-                                {app.manifest?.appName ? (
-                                    <>
-                                        <Text ellipsisLineCount={2} overflowWrap="anywhere">
-                                            {app.manifest.appName}
-                                        </Text>
-                                        <Text
-                                            intent="neutral"
-                                            priority="secondary"
-                                            overflowWrap="anywhere"
-                                        >
-                                            {app.origin}
-                                        </Text>
-                                    </>
-                                ) : (
-                                    <Text overflowWrap="anywhere">{app.origin}</Text>
-                                )}
+                                <ConnectAppName
+                                    appName={app.manifest?.appName}
+                                    origin={app.origin}
+                                />
 
                                 {app.process && <ConnectProcessLabel process={app.process} />}
                             </Row>
