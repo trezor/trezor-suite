@@ -10,7 +10,6 @@ import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
 import {
     buildGlobalReceiveAssetOptions,
-    getGlobalReceiveAssetDescriptionValues,
     getGlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
 
@@ -99,21 +98,6 @@ const bridgedEthereum = createAsset({
     contractAddress: '0x-bridged-eth',
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
-});
-
-describe(getGlobalReceiveAssetDescriptionValues.name, () => {
-    it('omits the network for a native asset', () => {
-        expect(getGlobalReceiveAssetDescriptionValues(bitcoin)).toEqual({
-            assetName: 'Bitcoin',
-        });
-    });
-
-    it('includes the network for a token', () => {
-        expect(getGlobalReceiveAssetDescriptionValues(ethereumUSDC)).toEqual({
-            assetName: 'USD Coin',
-            networkName: 'Ethereum',
-        });
-    });
 });
 
 describe(getGlobalReceiveAssetSections.name, () => {

@@ -79,14 +79,6 @@ export type GlobalReceiveAssetSections = {
     hasMoreOtherAssets: boolean;
 };
 
-export const getGlobalReceiveAssetDescriptionValues = (
-    asset: TradingAssetOption,
-): { assetName: string; networkName?: string } => {
-    const assetName = asset.displaySymbolName ?? asset.name;
-
-    return asset.isNativeToken ? { assetName } : { assetName, networkName: asset.networkName };
-};
-
 type GetGlobalReceiveAssetSectionsParams = {
     assets: readonly TradingAssetOption[];
     balances: TradeableAssetBalances;
