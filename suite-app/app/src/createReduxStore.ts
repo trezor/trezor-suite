@@ -1,7 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { type DevToolsEnhancerOptions, configureStore } from '@reduxjs/toolkit';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
+import { addLog } from '@suite-common/logger';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { type ReduxStoreWithThunk, createReduxExtra } from '@trezor/redux-utils';
@@ -12,13 +13,7 @@ import {
     createReduxLogger,
 } from './createReduxLogger';
 import { type ExtraDependenciesSuite } from './extraDependencies';
-import {
-    type AppState,
-    type SuiteRootReducer,
-    devTools,
-    getCustomMiddleware,
-    loggerExcludedActions,
-} from './store';
+import { type AppState, type SuiteRootReducer, getCustomMiddleware } from './store';
 import { type SuiteServices } from './suiteServices';
 
 export type ReduxStoreDeps = {
@@ -39,6 +34,18 @@ export type ReduxStore = {
 };
 
 export type ReduxStoreDep = { reduxStore: ReduxStore };
+
+/** Log entries are too frequent for the logger and the Redux DevTools extension. */
+const loggerExcludedActions = [addLog.type];
+
+const devTools: DevToolsEnhancerOptions | false =
+    typeof window === 'object' &&
+    '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__' in window &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+        ? {
+              actionsDenylist: loggerExcludedActions,
+          }
+        : false;
 
 /** The build inlines `REDUX_LOGGER_ENABLED` as "true", "false" or "" (not set). */
 const getReduxLoggerOverride = () => {
