@@ -93,6 +93,9 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
         version: info.version,
+        cardanoProtocolParameters:
+            info.cardanoProtocolParameters ??
+            draft[network.symbol as LegacyNetworkSymbol].cardanoProtocolParameters,
         backends: draft[network.symbol as LegacyNetworkSymbol].backends,
         identityConnections: draft[network.symbol as LegacyNetworkSymbol].identityConnections,
     };
@@ -172,6 +175,13 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(blockchainActions.setCardanoProtocolParameters, (state, action) => {
+                const { symbol, cardanoProtocolParameters } = action.payload;
+                if (cardanoProtocolParameters) {
+                    state[symbol as LegacyNetworkSymbol].cardanoProtocolParameters =
+                        cardanoProtocolParameters;
+                }
+            })
             .addCase(blockchainActions.setBackendGapLimit, (state, action) => {
                 const { symbol, gapLimit } = action.payload;
                 if (gapLimit === undefined) {
@@ -245,6 +255,11 @@ export const selectIsCustomBackendConfigured = createMemoizedSelector(
 
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
     state.wallet.blockchain[symbol as LegacyNetworkSymbol]?.backends.gapLimit;
+
+export const selectCardanoProtocolParameters = (
+    state: BlockchainRootState,
+    symbol: NetworkSymbol,
+) => selectNetworkBlockchainInfo(state, symbol)?.cardanoProtocolParameters;
 
 const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
     BlockchainRootState & WalletSettingsRootState & NetworksRootState

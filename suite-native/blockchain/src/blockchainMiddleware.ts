@@ -5,6 +5,7 @@ import {
     onBlockchainDisconnectThunk,
     selectNetworksWithPendingTxs,
     setCustomBackendThunk,
+    updateCardanoProtocolParametersThunk,
 } from '@suite-common/wallet-core';
 import {
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
@@ -30,6 +31,7 @@ export const blockchainMiddleware = createMiddleware((action, { dispatch, next, 
         if (isNetworkSymbol(symbol) && networksWithPendingTransactions.has(symbol)) {
             dispatch(syncAccountsWithBlockchainThunk({ symbol }));
         }
+        dispatch(updateCardanoProtocolParametersThunk(action.payload));
     } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION)) {
         dispatch(onBlockchainNotificationThunk(action.payload));
     } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR)) {

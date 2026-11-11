@@ -1,5 +1,6 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
+import type { CardanoProtocolParameters } from '@trezor/blockchain-link-types';
 import { type TimerId } from '@trezor/type-utils';
 
 /**
@@ -36,6 +37,7 @@ export interface Blockchain extends ConnectionStatus {
     blockHash: string;
     blockHeight: number;
     version: string;
+    cardanoProtocolParameters?: CardanoProtocolParameters;
     syncTimeout?: TimerId;
     backends: BackendSettings;
     identityConnections?: {
