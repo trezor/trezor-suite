@@ -11,7 +11,7 @@ import { FADE_IN } from '@trezor/components/src/config/animations';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { WalletSubpageHeading } from '#src/components/wallet';
+import { WalletSubpageHeading } from '#src/components/wallet/WalletLayout/WalletSubpageHeading';
 import { useSendFormContext } from '#src/hooks/wallet';
 
 const BROADCAST_SUPPORTED_NETWORK_TYPES: NetworkType[] = [

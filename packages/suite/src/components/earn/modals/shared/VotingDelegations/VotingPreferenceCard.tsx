@@ -32,7 +32,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
-import { InputError } from '#src/components/wallet';
+import { InputError } from '#src/components/wallet/InputError';
 import { useSelector } from '#src/hooks/suite';
 
 export type VotingPreferenceOption = {
