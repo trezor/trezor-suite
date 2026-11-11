@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
-import { useTradingUtils } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
@@ -27,6 +27,7 @@ export const TradingCryptoAmount = ({
 }: TradingCryptoAmountProps) => {
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
+    const { networkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
 
     if (!amount || amount === '') {
         return (
@@ -50,7 +51,7 @@ export const TradingCryptoAmount = ({
             )}
             <FormattedCryptoAmount
                 value={amount}
-                symbol={coinSymbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
                 data-testid={testId ?? '@trading/offers/quote/crypto-amount'}
             />

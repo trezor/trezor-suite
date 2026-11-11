@@ -132,7 +132,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
                         data-testid="@modal/crypto-amount"
                         disableHiddenPlaceholder
                         value={formattedValue}
-                        symbol={token?.symbol ?? symbol}
+                        networkSymbol={symbol}
                         contractAddress={token?.contract}
                         isTabular={false}
                     />

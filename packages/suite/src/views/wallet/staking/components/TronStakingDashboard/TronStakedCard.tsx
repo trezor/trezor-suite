@@ -113,7 +113,10 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                         typographyStyle="headline-sm"
                         data-testid="@staking/tron-staked-card/staked-amount"
                     >
-                        <FormattedCryptoAmount value={stakedBalance} symbol={account.symbol} />
+                        <FormattedCryptoAmount
+                            value={stakedBalance}
+                            networkSymbol={account.symbol}
+                        />
                     </Text>
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         <BaseCurrencyValue

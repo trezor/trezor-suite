@@ -63,7 +63,7 @@ export const UnecoCoinjoinModal = () => {
                                         UNECONOMICAL_COINJOIN_THRESHOLD,
                                         decimals,
                                     )}
-                                    symbol={symbol}
+                                    networkSymbol={symbol}
                                     isRawString
                                     disableHiddenPlaceholder
                                 />

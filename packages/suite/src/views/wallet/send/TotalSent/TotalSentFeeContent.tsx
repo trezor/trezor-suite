@@ -59,7 +59,7 @@ export function TotalSentFeeContent({
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={tronFees.trxBurned.toString()}
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                     />
                 )}
                 {tronFees?.coveredEnergy.gt(0) && (
@@ -91,7 +91,7 @@ export function TotalSentFeeContent({
                 <FormattedCryptoAmount
                     disableHiddenPlaceholder
                     value={feeAmount}
-                    symbol={networkSymbol}
+                    networkSymbol={networkSymbol}
                 />
                 {totalFiatIncludingFee !== null && (
                     <BaseCurrencyValue

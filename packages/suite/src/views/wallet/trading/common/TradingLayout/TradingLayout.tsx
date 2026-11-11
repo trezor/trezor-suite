@@ -1,6 +1,7 @@
 import { type PropsWithChildren } from 'react';
 
 import { selectRouteName } from '@suite/router';
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column, Row } from '@trezor/components';
 
@@ -16,12 +17,14 @@ export const TradingLayout = ({ children }: PropsWithChildren) => {
     useTradingPageHeader();
 
     return (
-        <Column data-testid="@trading" gap={16}>
-            {isDiscoveryRunning && <DiscoveryWarning />}
-            <Row justifyContent="center">
-                <TradingLayoutNavigation route={routeName} />
-            </Row>
-            {children}
-        </Column>
+        <TradingTokenMetadataProvider>
+            <Column data-testid="@trading" gap={16}>
+                {isDiscoveryRunning && <DiscoveryWarning />}
+                <Row justifyContent="center">
+                    <TradingLayoutNavigation route={routeName} />
+                </Row>
+                {children}
+            </Column>
+        </TradingTokenMetadataProvider>
     );
 };

@@ -1,8 +1,4 @@
-import {
-    type AssetAccount,
-    selectWalletAssetTokenDecimals,
-    selectWalletAssetTokenSymbol,
-} from '@suite-common/assets';
+import { type AssetAccount } from '@suite-common/assets';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Text } from '@trezor/components';
@@ -22,10 +18,8 @@ export const AssetDetailAccountListItem = ({
     assetAccount,
     onClick,
 }: AssetDetailAccountListItemProps) => {
-    const { accountKey, assetKey, networkSymbol, contractAddress, cryptoBalance } = assetAccount;
+    const { accountKey, networkSymbol, contractAddress, cryptoBalance } = assetAccount;
     const account = useSelector(state => selectAccountByKey(state, accountKey));
-    const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
-    const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
 
     if (account === null) {
         return null;
@@ -46,9 +40,8 @@ export const AssetDetailAccountListItem = ({
                 <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <FormattedCryptoAmount
                         value={cryptoBalance}
-                        symbol={tokenSymbol ?? networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
-                        tokenDecimals={tokenDecimals}
                         isCompact
                     />
                 </Text>

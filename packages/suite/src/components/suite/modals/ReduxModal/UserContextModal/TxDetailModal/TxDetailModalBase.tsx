@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { TransactionTokenMetadataProvider } from '@suite-common/token';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
@@ -191,7 +192,9 @@ export const TxDetailModalBase = ({
                     />
                 )}
 
-                {children}
+                <TransactionTokenMetadataProvider transaction={tx}>
+                    {children}
+                </TransactionTokenMetadataProvider>
             </Column>
         </Modal>
     );

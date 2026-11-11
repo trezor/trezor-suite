@@ -122,7 +122,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                                     <FormattedCryptoAmount
                                         data-testid="@wallet/account/crypto-balance"
                                         value={formattedBalance}
-                                        symbol={symbol}
+                                        networkSymbol={symbol}
                                     />
                                 </AmountUnitSwitchWrapper>
                                 {shallDisplayBaseCurrency && (

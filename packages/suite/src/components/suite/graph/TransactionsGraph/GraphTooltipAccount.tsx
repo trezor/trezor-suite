@@ -28,7 +28,7 @@ const formatAmount = (
                 <Row margin={{ right: 4 }}>
                     <FormattedCryptoAmount
                         value={amount}
-                        symbol={symbol}
+                        networkSymbol={symbol}
                         signValue={sign}
                         disableHiddenPlaceholder
                     />
@@ -110,7 +110,11 @@ export const GraphTooltipAccount = ({
                 formatters,
             )}
             balance={
-                <FormattedCryptoAmount disableHiddenPlaceholder value={balance} symbol={symbol} />
+                <FormattedCryptoAmount
+                    disableHiddenPlaceholder
+                    value={balance}
+                    networkSymbol={symbol}
+                />
             }
         />
     );

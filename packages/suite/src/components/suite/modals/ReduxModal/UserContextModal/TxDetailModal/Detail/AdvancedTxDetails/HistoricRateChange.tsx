@@ -2,7 +2,7 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type Timestamp, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -25,8 +25,6 @@ type HistoricRateChangeProps = {
     historicRate: number | undefined;
     historicTimestamp: Timestamp;
     tokenAddress?: TokenAddress;
-    // Symbol shown in the tooltip heading; the rate lookup always uses `symbol` + `tokenAddress`.
-    displaySymbol?: NetworkSymbolExtended;
 };
 
 const isValidRate = (rate: number | undefined): rate is number =>
@@ -37,7 +35,6 @@ export const HistoricRateChange = ({
     historicRate,
     historicTimestamp,
     tokenAddress,
-    displaySymbol,
 }: HistoricRateChangeProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
@@ -74,7 +71,7 @@ export const HistoricRateChange = ({
                     <Text typographyStyle="body-sm-strong">
                         <FormattedCryptoAmount
                             value="1"
-                            symbol={displaySymbol ?? symbol}
+                            networkSymbol={symbol}
                             contractAddress={tokenAddress}
                         />
                     </Text>

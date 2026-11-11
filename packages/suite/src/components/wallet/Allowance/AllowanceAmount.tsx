@@ -46,7 +46,7 @@ export const AllowanceAmount = ({
         <Text typographyStyle={typographyStyle}>
             <FormattedCryptoAmount
                 value={amount}
-                symbol={symbol}
+                networkSymbol={symbol}
                 contractAddress={contractAddress}
                 tokenDecimals={decimals}
                 data-testid={dataTest}

@@ -114,7 +114,7 @@ export const TransactionTarget = ({
                 return amount && transaction.type !== 'self' ? (
                     <FormattedCryptoAmount
                         value={amount}
-                        symbol={transaction.symbol}
+                        networkSymbol={transaction.symbol}
                         signValue={operation}
                     />
                 ) : undefined;

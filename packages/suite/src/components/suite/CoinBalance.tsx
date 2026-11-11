@@ -18,7 +18,7 @@ export const CoinBalance = ({
 }: CoinBalanceProps) => (
     <FormattedCryptoAmount
         value={value}
-        symbol={symbol}
+        networkSymbol={symbol}
         isCompact
         showApproximation={showApproximation}
         data-testid={`${dataTestId}/coin-balance/value-${symbol}`}

@@ -235,7 +235,7 @@ export const YieldPageHeader = ({
                                 >
                                     <FormattedCryptoAmount
                                         value={account.formattedBalance}
-                                        symbol={account.symbol}
+                                        networkSymbol={account.symbol}
                                         data-testid="@yield/page-header/balance"
                                     />
                                 </Text>

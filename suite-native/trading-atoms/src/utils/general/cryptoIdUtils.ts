@@ -12,12 +12,15 @@ export const toCaseAwareCryptoId = (cryptoId: CryptoId): CryptoId => {
         return cryptoId;
     }
 
-    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
     if (!contractAddress) {
         return cryptoId;
     }
 
-    const adjustedContractAddress = getContractAddressForNetworkSymbol(symbol, contractAddress);
+    const adjustedContractAddress = getContractAddressForNetworkSymbol(
+        networkSymbol,
+        contractAddress,
+    );
 
-    return toTokenCryptoId(symbol, adjustedContractAddress);
+    return toTokenCryptoId(networkSymbol, adjustedContractAddress);
 };

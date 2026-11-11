@@ -86,7 +86,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
                             value={fee}
-                            symbol={tx.symbol}
+                            networkSymbol={tx.symbol}
                         />
                         <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                             <BaseCurrencyValue

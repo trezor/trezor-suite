@@ -278,7 +278,7 @@ export const YieldWithdrawForm = () => {
                                     summaryValue={
                                         <FormattedCryptoAmount
                                             value={maxAmount}
-                                            symbol={inputTokenSymbol}
+                                            networkSymbol={inputTokenSymbol}
                                         />
                                     }
                                     warning={getWithdrawWarning()}

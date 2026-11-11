@@ -8,7 +8,6 @@ import {
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
     selectTradingExchangeReceiveAccountKey,
-    useTradingUtils,
 } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
@@ -53,7 +52,6 @@ export const TradingOfferExchangeDetails = ({
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -67,9 +65,6 @@ export const TradingOfferExchangeDetails = ({
         .map(network => network.name);
     const sendNetwork = exchangeQuote.send ? cryptoIdToNetwork(exchangeQuote.send) : undefined;
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
-
-    const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
-        cryptoIdToSymbolAndContractAddress(exchangeQuote.receive);
 
     const provider =
         providers && exchangeQuote.exchange ? providers[exchangeQuote.exchange] : undefined;
@@ -101,8 +96,7 @@ export const TradingOfferExchangeDetails = ({
                         />
                         <TradingExchangeMinimumReceivedInfoItem
                             minimumYouGetAmount={minimumYouGetAmount}
-                            symbol={receiveCoinSymbol}
-                            contractAddress={receiveContractAddress}
+                            cryptoId={exchangeQuote.receive}
                         />
                     </>
                 )}
