@@ -4,7 +4,6 @@ import { useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
-    selectTradingDisplayComposedFee,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 
@@ -46,10 +45,6 @@ export const TradingExchangeDetailContent = () => {
     const exchange = trade?.data?.exchange;
     const provider = exchange ? info?.providerInfos?.[exchange] : undefined;
 
-    const networkFee = useSelector(reduxState =>
-        selectTradingDisplayComposedFee(reduxState, trade?.data),
-    );
-
     const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
     const receiveAccount = accounts.find(account => account.key === trade?.receiveAccountKey);
 
@@ -64,7 +59,6 @@ export const TradingExchangeDetailContent = () => {
         sendCurrency: trade.data.send,
         receiveAmount: trade.data.receiveStringAmount ?? '',
         receiveCurrency: trade.data.receive,
-        networkFee,
     };
 
     const getContent = () => {

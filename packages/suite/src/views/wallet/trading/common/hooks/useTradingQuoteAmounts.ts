@@ -4,7 +4,6 @@ import {
     type TradingTradeType,
     type TradingType,
     selectTradingBuyQuotesRequest,
-    selectTradingComposedTransactionInfo,
     selectTradingSellQuotesRequest,
 } from '@suite-common/trading';
 import { exhaustive } from '@trezor/type-utils';
@@ -18,13 +17,10 @@ export const useTradingQuoteAmounts = (
 ): TradingGetCryptoQuoteAmountProps | null => {
     const buyQuotesRequest = useSelector(selectTradingBuyQuotesRequest);
     const sellQuotesRequest = useSelector(selectTradingSellQuotesRequest);
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
     if (!quote) {
         return null;
     }
-
-    const networkFee = composedTransactionInfo?.composed?.fee;
 
     switch (type) {
         case 'buy': {
@@ -56,7 +52,6 @@ export const useTradingQuoteAmounts = (
                 sendCurrency: sellQuote.fiatCurrency,
                 receiveAmount: sellQuote.cryptoStringAmount ?? '',
                 receiveCurrency: sellQuote.cryptoCurrency,
-                networkFee,
             };
         }
 
@@ -69,7 +64,6 @@ export const useTradingQuoteAmounts = (
                 sendCurrency: exchangeQuote.send,
                 receiveAmount: exchangeQuote.receiveStringAmount ?? '',
                 receiveCurrency: exchangeQuote.receive,
-                networkFee,
             };
         }
 

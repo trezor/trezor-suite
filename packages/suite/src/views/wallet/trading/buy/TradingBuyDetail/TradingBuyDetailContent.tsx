@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
+import { type TradingBuyType } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
@@ -30,7 +30,6 @@ import {
 
 export const TradingBuyDetailContent = () => {
     const accounts = useSelector(selectAccounts);
-    const composedTransaction = useSelector(selectTradingComposedTransactionInfo);
     const { trade, info } = useTradingDetailContext<TradingBuyType>();
     const { translationString } = useTranslation();
 
@@ -55,7 +54,6 @@ export const TradingBuyDetailContent = () => {
         sendCurrency: trade.data.fiatCurrency,
         receiveAmount: trade.data.receiveStringAmount ?? '',
         receiveCurrency: trade.data.receiveCurrency,
-        networkFee: composedTransaction?.composed?.fee,
     };
 
     const getContent = () => {
