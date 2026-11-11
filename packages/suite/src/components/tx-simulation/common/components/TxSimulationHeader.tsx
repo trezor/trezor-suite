@@ -15,7 +15,7 @@ export function TxSimulationHeader({ account, children }: TxSimulationHeaderProp
         <Row columnGap={16} rowGap={4} flexWrap="wrap" margin={{ top: 8 }}>
             {account && (
                 <Row gap={4}>
-                    <TokenIcon size={16} symbol={account.symbol} />
+                    <TokenIcon size={16} networkSymbol={account.symbol} />
                     <AccountLabel
                         account={account}
                         showAccountTypeBadge

@@ -35,7 +35,7 @@ const meta: Meta<TokenIconProps> = {
     component: TokenIconComponent,
     argTypes: {
         ...getFramePropsStory(allowedTokenIconFrameProps).argTypes,
-        symbol: {
+        networkSymbol: {
             options: NETWORK_SYMBOLS,
             control: { type: 'select' },
         },
@@ -69,7 +69,7 @@ export default meta;
 export const NativeCoin: StoryObj<TokenIconProps> = {
     args: {
         size: 24,
-        symbol: asNetworkSymbol('eth'),
+        networkSymbol: asNetworkSymbol('eth'),
         placeholder: 'ETH',
         shouldTryToFetch: true,
         showNetworkIcon: false,
@@ -81,7 +81,7 @@ export const NativeCoin: StoryObj<TokenIconProps> = {
 export const Token: StoryObj<TokenIconProps> = {
     args: {
         size: 24,
-        symbol: asNetworkSymbol('eth'),
+        networkSymbol: asNetworkSymbol('eth'),
         contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC on Ethereum
         placeholder: 'USDC',
         shouldTryToFetch: true,

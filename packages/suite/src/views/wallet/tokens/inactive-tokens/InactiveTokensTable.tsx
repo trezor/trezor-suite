@@ -134,7 +134,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                 <Row gap={8}>
                                     <TokenIcon
                                         placeholder={token.name || token.symbol || ''}
-                                        symbol={account.symbol}
+                                        networkSymbol={account.symbol}
                                         contractAddress={token.contract}
                                         size={24}
                                         shouldTryToFetch={true}

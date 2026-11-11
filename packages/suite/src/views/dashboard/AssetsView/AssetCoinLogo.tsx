@@ -39,7 +39,7 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLo
                 cursor="pointer"
             >
                 <AssetShareIndicator
-                    symbol={symbol}
+                    networkSymbol={symbol}
                     networkColor={networkColor ?? 'transparent'}
                     size={24}
                     percentageShare={assetPercentage}

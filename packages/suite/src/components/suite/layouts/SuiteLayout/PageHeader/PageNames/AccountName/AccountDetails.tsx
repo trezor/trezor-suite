@@ -103,7 +103,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     return (
         <DetailsContainer initial={false} animate={controls}>
             <Row gap={4} overflow="hidden">
-                <TokenIcon size={40} symbol={symbol} />
+                <TokenIcon size={40} networkSymbol={symbol} />
                 <Column
                     overflow="hidden"
                     // To accommodate the labeling component

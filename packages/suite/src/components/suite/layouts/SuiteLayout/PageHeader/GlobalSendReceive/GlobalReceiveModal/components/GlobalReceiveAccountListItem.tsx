@@ -32,7 +32,7 @@ export const GlobalReceiveAccountListItem = ({
     const content = (
         <>
             <Row data-testid={dataTestId} gap={12} alignItems="center" overflow="hidden" flex="1">
-                <TokenIcon symbol={account.symbol} size={iconSize} />
+                <TokenIcon networkSymbol={account.symbol} size={iconSize} />
                 <Column overflow="hidden" alignItems="flex-start">
                     <Text typographyStyle="body-md" as="div" maxWidth="100%">
                         <AccountLabel

@@ -5,7 +5,7 @@ import { TokenIcon, type TokenIconProps } from '@trezor/product-components';
 
 type AssetIconProps = Omit<
     TokenIconProps,
-    'symbol' | 'contractAddress' | 'placeholder' | 'placeholderWithTooltip'
+    'networkSymbol' | 'contractAddress' | 'placeholder' | 'placeholderWithTooltip'
 > & {
     networkSymbol: NetworkSymbol;
     contractAddress?: TokenAddress;
@@ -18,7 +18,7 @@ export const AssetIcon = ({ networkSymbol, contractAddress, ...props }: AssetIco
     return (
         <TokenIcon
             {...props}
-            symbol={networkSymbol}
+            networkSymbol={networkSymbol}
             contractAddress={contractAddress}
             // Only the first letter, and no tooltip: the whole symbol could carry a URL unmasked.
             placeholder={token?.symbol?.charAt(0)}

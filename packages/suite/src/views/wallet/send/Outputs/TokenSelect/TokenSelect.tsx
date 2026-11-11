@@ -124,7 +124,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     <Row justifyContent="flex-start" gap={12}>
                         {selectedToken ? (
                             <TokenIcon
-                                symbol={account.symbol}
+                                networkSymbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}
                                 placeholder={selectedToken?.symbol || account.symbol}
@@ -132,7 +132,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
+                            <TokenIcon networkSymbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">

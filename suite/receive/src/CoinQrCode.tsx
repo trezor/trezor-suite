@@ -13,7 +13,7 @@ type CoinQrCodeProps = {
 export const CoinQrCode = ({ value, symbol }: CoinQrCodeProps) => (
     <QrCode
         value={value}
-        centerIcon={<TokenIcon symbol={symbol} size={COIN_LOGO_SIZE} />}
+        centerIcon={<TokenIcon networkSymbol={symbol} size={COIN_LOGO_SIZE} />}
         data-testid="@wallet/receive/qr-code"
     />
 );

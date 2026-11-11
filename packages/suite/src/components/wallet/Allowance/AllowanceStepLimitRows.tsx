@@ -31,7 +31,7 @@ export const AllowanceStepLimitRows = ({
                 label="TR_APPROVAL_LIMIT"
                 icon={
                     <TokenIcon
-                        symbol={token.networkSymbol}
+                        networkSymbol={token.networkSymbol}
                         contractAddress={token.contractAddress}
                         size={20}
                         placeholder={token.symbol}
@@ -61,7 +61,7 @@ export const AllowanceStepLimitRows = ({
                     label="TR_APPROVAL_CURRENT_LIMIT"
                     icon={
                         <TokenIcon
-                            symbol={token.networkSymbol}
+                            networkSymbol={token.networkSymbol}
                             contractAddress={token.contractAddress}
                             size={20}
                             placeholder={token.symbol}
@@ -82,7 +82,7 @@ export const AllowanceStepLimitRows = ({
                 label={hasCurrentLimit ? 'TR_APPROVAL_NEW_LIMIT' : 'TR_APPROVAL_LIMIT'}
                 icon={
                     <TokenIcon
-                        symbol={token.networkSymbol}
+                        networkSymbol={token.networkSymbol}
                         contractAddress={token.contractAddress}
                         size={20}
                         placeholder={token.symbol}

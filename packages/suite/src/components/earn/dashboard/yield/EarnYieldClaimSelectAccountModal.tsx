@@ -200,7 +200,10 @@ export const EarnYieldClaimSelectAccountModal = ({
                             data-testid={`@earn/claim-select-account/account/${accountRewards.account.symbol}-${accountRewards.account.accountType}-${accountRewards.account.index}`}
                         >
                             <Row flex="1" overflow="hidden">
-                                <TokenIcon symbol={accountRewards.account.symbol} size={32} />
+                                <TokenIcon
+                                    networkSymbol={accountRewards.account.symbol}
+                                    size={32}
+                                />
 
                                 <Column
                                     flex="1"

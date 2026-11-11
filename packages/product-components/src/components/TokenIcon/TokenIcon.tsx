@@ -12,7 +12,7 @@ import { injectHasNetworkIcon, injectIsWrappedNativeToken } from '../../services
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 export const TokenIcon = ({
-    symbol,
+    networkSymbol,
     contractAddress,
     size = 32,
     showNetworkIcon = false,
@@ -25,12 +25,14 @@ export const TokenIcon = ({
     wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
-    const network = useSelector((state: NetworkConfigState) => selectNetworkConfig(state, symbol));
+    const network = useSelector((state: NetworkConfigState) =>
+        selectNetworkConfig(state, networkSymbol),
+    );
     const { hasNetworkIcon, isWrappedNativeToken } = useServices(
         injectHasNetworkIcon,
         injectIsWrappedNativeToken,
     );
-    if (wrappedTokenIcon === 'network' && isWrappedNativeToken(symbol, contractAddress)) {
+    if (wrappedTokenIcon === 'network' && isWrappedNativeToken(networkSymbol, contractAddress)) {
         contractAddress = null;
     }
 
@@ -41,19 +43,20 @@ export const TokenIcon = ({
 
     if (!contractAddress) {
         if (showNetworkIcon) {
-            const networkSymbol = network?.settlementLayer ?? symbol;
-            const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
+            const settlementSymbol = network?.settlementLayer ?? networkSymbol;
+            const displaySymbol =
+                settlementSymbol !== networkSymbol ? settlementSymbol : networkSymbol;
             const tokenIcon = (
                 <NativeTokenIcon symbol={displaySymbol} size={size} data-testid={dataTestId} />
             );
 
             if (
-                (networkSymbol !== symbol || wrappedTokenIcon === 'network') &&
-                hasNetworkIcon(symbol)
+                (settlementSymbol !== networkSymbol || wrappedTokenIcon === 'network') &&
+                hasNetworkIcon(networkSymbol)
             ) {
                 return (
                     <NetworkIconBadge
-                        networkSymbol={symbol}
+                        networkSymbol={networkSymbol}
                         parentSize={size}
                         data-testid={dataTestId}
                     >
@@ -65,18 +68,18 @@ export const TokenIcon = ({
             return tokenIcon;
         }
 
-        return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
+        return <NativeTokenIcon symbol={networkSymbol} size={size} data-testid={dataTestId} />;
     }
 
     const coingeckoId = network?.coingeckoId;
 
     if (!coingeckoId) {
-        return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
+        return <NativeTokenIcon symbol={networkSymbol} size={size} data-testid={dataTestId} />;
     }
 
     return (
         <NonNativeTokenIcon
-            symbol={symbol}
+            networkSymbol={networkSymbol}
             contractAddress={contractAddress}
             size={size}
             showNetworkIcon={showNetworkIcon}

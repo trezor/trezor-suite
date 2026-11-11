@@ -25,7 +25,7 @@ const BackendRow = ({ backend: { symbol, type }, blockchain }: BackendRowProps) 
             width={260}
         >
             <Row gap={12}>
-                <TokenIcon symbol={symbol} />
+                <TokenIcon networkSymbol={symbol} />
                 <Column flex="1" overflow="hidden">
                     <Text typographyStyle="body-sm" ellipsisLineCount={1}>
                         {chain?.url ?? <Translation id="TR_BACKEND_DISCONNECTED" />}

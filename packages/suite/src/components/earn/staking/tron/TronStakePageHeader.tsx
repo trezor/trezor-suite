@@ -99,7 +99,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                 />
                 {account ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
-                        <TokenIcon symbol={account.symbol} size={32} />
+                        <TokenIcon networkSymbol={account.symbol} size={32} />
                         <Column gap={2} overflow="hidden">
                             <Text
                                 typographyStyle="body-md-strong"

@@ -634,7 +634,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
 
         if (isAddressWithLabel) {
-            return <TokenIcon symbol={symbol} size={16} />;
+            return <TokenIcon networkSymbol={symbol} size={16} />;
         }
 
         return undefined;

@@ -65,7 +65,7 @@ export const WrappedNativePageHeader = ({
                 <Row alignItems="center" gap={12} overflow="hidden">
                     {account && (
                         <TokenIcon
-                            symbol={account.symbol}
+                            networkSymbol={account.symbol}
                             contractAddress={contractAddress}
                             showNetworkIcon
                             size={32}

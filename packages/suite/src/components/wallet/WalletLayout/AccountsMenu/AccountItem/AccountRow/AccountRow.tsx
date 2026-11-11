@@ -91,7 +91,7 @@ export const AccountRow = ({
     >
         <Row gap={8} width="100%">
             <Box position={{ type: 'relative' }} zIndex={0}>
-                <TokenIcon size={24} symbol={account.symbol} />
+                <TokenIcon size={24} networkSymbol={account.symbol} />
             </Box>
             {!isCollapsed && (
                 <AccountItemContent
