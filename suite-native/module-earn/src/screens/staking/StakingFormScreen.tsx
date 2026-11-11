@@ -98,7 +98,7 @@ export const StakingFormScreen = () => {
         formState: { isValid },
     } = form;
 
-    if (isBalanceBelowStakingMinimum(account)) {
+    if (!pendingTransaction && isBalanceBelowStakingMinimum(account)) {
         return <StakingNoBalanceContent accountKey={accountKey} />;
     }
 
@@ -152,7 +152,8 @@ export const StakingFormScreen = () => {
             }
             footerHorizontalPadding="sp16"
         >
-            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+            {/* Keep the native parent stable when pointerEvents changes during navigation. */}
+            <Box collapsable={false} pointerEvents={isPending ? 'none' : 'auto'}>
                 <EarnAmountCard accountKey={accountKey} />
                 <Box marginTop="sp16">
                     <Form form={form}>
