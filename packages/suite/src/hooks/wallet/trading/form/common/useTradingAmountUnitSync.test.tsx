@@ -30,7 +30,6 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     coingeckoId: 'bitcoin',
     contractAddress: null,
     symbol: btcSymbol,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,
     accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),

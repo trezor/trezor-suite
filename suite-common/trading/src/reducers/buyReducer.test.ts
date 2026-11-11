@@ -29,7 +29,6 @@ const FORM_VALUES: TradingBuyFormProps = {
         name: 'Bitcoin',
         symbol: btcSymbol,
         coingeckoId: 'bitcoin',
-        displaySymbol: 'BTC',
         contractAddress: null,
         networkName: 'Bitcoin',
         networkSymbol: btcSymbol,

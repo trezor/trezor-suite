@@ -50,7 +50,6 @@ const FORM_VALUES: TradingSellFormProps = {
         name: 'Bitcoin',
         symbol: btcSymbol,
         coingeckoId: 'bitcoin',
-        displaySymbol: 'BTC',
         contractAddress: null,
         networkName: 'Bitcoin',
         networkSymbol: btcSymbol,

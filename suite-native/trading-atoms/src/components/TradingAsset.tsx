@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
 
-import { toTokenAddress } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { AssetName, AssetSymbol } from '@suite-native/assets';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
@@ -15,18 +16,16 @@ export type TradingAssetNetworkDisplay = 'badge' | 'text';
 
 type TradingAssetBaseProps = {
     iconSize?: FiatCurrencyIconProps['size'];
-    name: string;
     primaryLabel?: TradingAssetPrimaryLabel;
     primaryTextVariant?: NativeTypographyStyle;
     rightContent?: ReactNode;
     spacing?: NativeSpacing | number;
-    symbol: string;
     testID?: string;
 };
 
 export type TradingCryptoAssetProps = TradingAssetBaseProps & {
     assetType: 'crypto';
-    contractAddress?: string;
+    contractAddress?: TokenAddress;
     networkDisplay?: TradingAssetNetworkDisplay;
     networkSymbol: NetworkSymbol;
 };
@@ -34,6 +33,8 @@ export type TradingCryptoAssetProps = TradingAssetBaseProps & {
 export type TradingFiatAssetProps = TradingAssetBaseProps & {
     assetType: 'fiat';
     fiatCurrency: NonNullable<FiatCurrencyIconProps['value']>;
+    name: string;
+    symbol: string;
 };
 
 export type TradingAssetProps = TradingCryptoAssetProps | TradingFiatAssetProps;
@@ -47,31 +48,26 @@ export const TradingAsset = (props: TradingAssetProps) => {
     const { applyStyle } = useNativeStyles();
     const {
         iconSize = 'medium',
-        name,
         primaryLabel = 'name',
         primaryTextVariant = 'body-md',
         rightContent,
         spacing = 'sp8',
-        symbol,
         testID,
         assetType,
     } = props;
 
-    // Token labels resolve from metadata so that URLs in unrecognized tokens are masked.
-    const token =
-        props.assetType === 'crypto' && props.contractAddress
-            ? {
-                  networkSymbol: props.networkSymbol,
-                  contractAddress: toTokenAddress(props.contractAddress),
-              }
-            : undefined;
     const getPrimaryText = () => {
-        if (!token) return primaryLabel === 'name' ? name : symbol;
+        if (props.assetType === 'fiat') return primaryLabel === 'name' ? props.name : props.symbol;
+
+        const asset = {
+            networkSymbol: props.networkSymbol,
+            contractAddress: props.contractAddress,
+        };
 
         return primaryLabel === 'name' ? (
-            <TokenName {...token} variant={primaryTextVariant} />
+            <AssetName {...asset} variant={primaryTextVariant} />
         ) : (
-            <TokenSymbol {...token} variant={primaryTextVariant} isTruncated />
+            <AssetSymbol {...asset} variant={primaryTextVariant} isTruncated />
         );
     };
     const shouldShowSymbolOnSecondaryLine = primaryLabel === 'name';
@@ -107,15 +103,16 @@ export const TradingAsset = (props: TradingAssetProps) => {
                                 testID={testID ? `${testID}/secondary-symbol` : undefined}
                                 variant="body-sm"
                             >
-                                {token ? (
-                                    <TokenSymbol
-                                        {...token}
+                                {props.assetType === 'fiat' ? (
+                                    props.symbol
+                                ) : (
+                                    <AssetSymbol
+                                        networkSymbol={props.networkSymbol}
+                                        contractAddress={props.contractAddress}
                                         variant="body-sm"
                                         color="contentSecondary"
                                         isTruncated
                                     />
-                                ) : (
-                                    symbol
                                 )}
                             </Text>
                         )}

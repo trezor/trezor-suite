@@ -10,7 +10,6 @@ import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
 import {
     buildGlobalReceiveAssetOptions,
-    getGlobalReceiveAssetDescriptionValues,
     getGlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
 
@@ -20,7 +19,7 @@ type CryptoId = TradingAssetOption['id'];
 type CreateAssetParams = {
     id: string;
     name: string;
-    displaySymbol: string;
+    symbol: string;
     contractAddress?: string;
     isNativeToken?: boolean;
     networkName?: string;
@@ -30,7 +29,7 @@ type CreateAssetParams = {
 const createAsset = ({
     id,
     name,
-    displaySymbol,
+    symbol,
     contractAddress,
     isNativeToken = false,
     networkName,
@@ -39,8 +38,7 @@ const createAsset = ({
     ({
         id: id as CryptoId,
         name,
-        displaySymbolName: name,
-        displaySymbol,
+        symbol,
         contractAddress,
         isNativeToken,
         networkSymbol,
@@ -55,7 +53,7 @@ const createBalance = (fiatAmount: string | null): TradeableAssetBalance => ({
 const bitcoin = createAsset({
     id: 'bitcoin',
     name: 'Bitcoin',
-    displaySymbol: 'BTC',
+    symbol: 'BTC',
     isNativeToken: true,
     networkName: 'Bitcoin',
     networkSymbol: 'btc',
@@ -63,7 +61,7 @@ const bitcoin = createAsset({
 const ethereum = createAsset({
     id: 'ethereum',
     name: 'Ethereum',
-    displaySymbol: 'ETH',
+    symbol: 'ETH',
     isNativeToken: true,
     networkName: 'Ethereum',
     networkSymbol: 'eth',
@@ -71,7 +69,7 @@ const ethereum = createAsset({
 const ethereumUSDC = createAsset({
     id: 'ethereum--usdc',
     name: 'USD Coin',
-    displaySymbol: 'USDC',
+    symbol: 'USDC',
     contractAddress: '0x-usdc',
     networkName: 'Ethereum',
     networkSymbol: 'eth',
@@ -79,7 +77,7 @@ const ethereumUSDC = createAsset({
 const arbitrumUSDC = createAsset({
     id: 'arbitrum--usdc',
     name: 'USD Coin',
-    displaySymbol: 'USDC',
+    symbol: 'USDC',
     contractAddress: '0x-arb-usdc',
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
@@ -87,7 +85,7 @@ const arbitrumUSDC = createAsset({
 const arbitrumEthereum = createAsset({
     id: 'arbitrum',
     name: 'Arbitrum One Ethereum',
-    displaySymbol: 'ETH',
+    symbol: 'ETH',
     isNativeToken: true,
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
@@ -95,25 +93,10 @@ const arbitrumEthereum = createAsset({
 const bridgedEthereum = createAsset({
     id: 'arbitrum--bridged-ethereum',
     name: 'Alpha Bridged Ethereum',
-    displaySymbol: 'ETH',
+    symbol: 'ETH',
     contractAddress: '0x-bridged-eth',
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
-});
-
-describe(getGlobalReceiveAssetDescriptionValues.name, () => {
-    it('omits the network for a native asset', () => {
-        expect(getGlobalReceiveAssetDescriptionValues(bitcoin)).toEqual({
-            assetName: 'Bitcoin',
-        });
-    });
-
-    it('includes the network for a token', () => {
-        expect(getGlobalReceiveAssetDescriptionValues(ethereumUSDC)).toEqual({
-            assetName: 'USD Coin',
-            networkName: 'Ethereum',
-        });
-    });
 });
 
 describe(getGlobalReceiveAssetSections.name, () => {
@@ -285,7 +268,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
         const highestRanked = createAsset({
             id: 'ethereum--highest',
             name: 'Zeta USD Coin',
-            displaySymbol: 'USDC',
+            symbol: 'USDC',
             networkSymbol: 'eth',
         });
         const result = getGlobalReceiveAssetSections({
@@ -442,13 +425,7 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
             `solana--${wrappedSolToken.address}`,
             `stellar--${stellarToken.address}`,
         ]);
-        expect(tokens.map(asset => asset.displaySymbol)).toEqual([
-            'USDC',
-            'USDT',
-            'USDC',
-            'WSOL',
-            'USDC',
-        ]);
+        expect(tokens.map(asset => asset.symbol)).toEqual(['USDC', 'USDT', 'USDC', 'WSOL', 'USDC']);
         expect(tokens[3]).toMatchObject({
             name: 'Wrapped SOL',
             isNativeToken: false,

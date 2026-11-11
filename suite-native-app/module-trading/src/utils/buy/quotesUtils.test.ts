@@ -112,12 +112,10 @@ describe('quotesUtils', () => {
                     cryptoSelect: {
                         id: 'bitcoin' as CryptoId,
                         isNativeToken: true,
-                        displaySymbolName: 'Bitcoin',
                         coingeckoId: 'bitcoin',
                         contractAddress: null,
                         name: 'Bitcoin',
-                        symbol: asNetworkSymbol('btc'),
-                        displaySymbol: 'BTC',
+                        symbol: 'BTC',
                         networkName: 'Bitcoin',
                         networkSymbol: asNetworkSymbol('btc'),
                     } satisfies TradingAssetOption,

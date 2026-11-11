@@ -39,7 +39,6 @@ const BITCOIN_ASSET: TradingAssetOption = {
     coingeckoId: 'bitcoin',
     contractAddress: null,
     symbol: BTC_SYMBOL,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: BTC_SYMBOL,
 };

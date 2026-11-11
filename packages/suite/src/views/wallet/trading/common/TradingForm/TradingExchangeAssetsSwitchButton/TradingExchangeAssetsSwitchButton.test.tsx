@@ -46,7 +46,6 @@ const BITCOIN_SELL_ASSET: TradingAssetSellOption = {
     coingeckoId: 'bitcoin',
     contractAddress: null,
     symbol: BTC_SYMBOL,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: BTC_SYMBOL,
     accountKey: BTC_ACCOUNT.key,
@@ -59,7 +58,6 @@ const XRP_ASSET: TradingAssetOption = {
     coingeckoId: 'ripple',
     contractAddress: null,
     symbol: XRP_SYMBOL,
-    displaySymbol: 'XRP',
     networkName: 'XRP',
     networkSymbol: XRP_SYMBOL,
 };

@@ -52,7 +52,6 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     coingeckoId: 'bitcoin',
     contractAddress: null,
     symbol: btcSymbol,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,
     accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
@@ -65,7 +64,6 @@ const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     coingeckoId: 'ethereum',
     contractAddress: null,
     symbol: ethSymbol,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
 };

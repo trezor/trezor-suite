@@ -66,7 +66,6 @@ const BITCOIN_ASSET: TradingAssetOption = {
     coingeckoId: 'bitcoin',
     contractAddress: null,
     symbol: BTC_SYMBOL,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: BTC_SYMBOL,
 };
@@ -78,7 +77,6 @@ const ETHEREUM_ASSET: TradingAssetOption = {
     coingeckoId: 'ethereum',
     contractAddress: null,
     symbol: ETH_SYMBOL,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ETH_SYMBOL,
 };
@@ -95,7 +93,6 @@ const XRP_ASSET: TradingAssetOption = {
     coingeckoId: 'ripple',
     contractAddress: null,
     symbol: XRP_SYMBOL,
-    displaySymbol: 'XRP',
     networkName: 'XRP',
     networkSymbol: XRP_SYMBOL,
 };

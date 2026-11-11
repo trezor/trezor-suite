@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import type { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { type TokenSymbol } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type TradingAssetOption,
     type TradingRootState,
@@ -24,12 +24,9 @@ export type TradingHistoryDetailCryptoAsset = {
     type: 'crypto';
     accountLabel?: string;
     amount: string;
-    contractAddress?: string;
+    contractAddress?: TokenAddress;
     cryptoId: CryptoId;
-    displaySymbol: string;
-    name: string;
     networkSymbol: NetworkSymbol;
-    symbol: NetworkSymbol | TokenSymbol;
 };
 
 export type TradingHistoryDetailAsset =
@@ -109,10 +106,7 @@ const getTradingHistoryDetailAsset = ({
         amount,
         contractAddress: cryptoAsset.isNativeToken ? undefined : cryptoAsset.contractAddress,
         cryptoId,
-        displaySymbol: cryptoAsset.displaySymbol,
-        name: cryptoAsset.name,
         networkSymbol: cryptoAsset.networkSymbol,
-        symbol: cryptoAsset.symbol as NetworkSymbol | TokenSymbol,
     };
 };
 

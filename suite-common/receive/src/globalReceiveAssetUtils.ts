@@ -4,12 +4,12 @@ import { type TokenAddress } from '@suite-common/tokens';
 import {
     type TradeableAssetBalance,
     type TradeableAssetBalances,
-    type TradeableAssetSearchFields,
     type TradeableAssetSearchIndex,
     type TradingAssetOption,
     buildTradeableAssetSearchIndex,
     createAssetNativeTokenOption,
     createAssetTokenOption,
+    getTradingAssetSearchFields,
 } from '@suite-common/trading';
 import {
     type Network,
@@ -79,14 +79,6 @@ export type GlobalReceiveAssetSections = {
     hasMoreOtherAssets: boolean;
 };
 
-export const getGlobalReceiveAssetDescriptionValues = (
-    asset: TradingAssetOption,
-): { assetName: string; networkName?: string } => {
-    const assetName = asset.displaySymbolName ?? asset.name;
-
-    return asset.isNativeToken ? { assetName } : { assetName, networkName: asset.networkName };
-};
-
 type GetGlobalReceiveAssetSectionsParams = {
     assets: readonly TradingAssetOption[];
     balances: TradeableAssetBalances;
@@ -103,16 +95,8 @@ const ZERO_ASSET_BALANCE: TradeableAssetBalance = {
     fiatAmount: asBaseCurrencyAmount(new BigNumber(0)),
 };
 
-const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFields => ({
-    name: asset.displaySymbolName ?? asset.name,
-    symbol: asset.displaySymbol,
-    networkName: asset.networkName,
-    networkSymbol: asset.networkSymbol,
-    contractAddress: asset.contractAddress ?? '',
-});
-
 export const buildGlobalReceiveAssetSearchIndex = (assets: readonly TradingAssetOption[]) =>
-    buildTradeableAssetSearchIndex({ assets, getSearchFields: getAssetSearchFields });
+    buildTradeableAssetSearchIndex({ assets, getSearchFields: getTradingAssetSearchFields });
 
 const compareHeldAssets = (
     balances: TradeableAssetBalances,

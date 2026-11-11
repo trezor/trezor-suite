@@ -182,7 +182,7 @@ describe('useGlobalReceiveAssets', () => {
         expect(first.result.current.catalogStatus).toBe('loading');
         await waitFor(() => expect(first.result.current.catalogStatus).toBe('ready'));
         expect(first.result.current.assets).toContainEqual(
-            expect.objectContaining({ name: 'Wrapped SOL', displaySymbol: 'WSOL' }),
+            expect.objectContaining({ name: 'Wrapped SOL', symbol: 'WSOL' }),
         );
         expect(first.services.store.getActions()).toEqual([]);
         first.unmount();
@@ -218,7 +218,7 @@ describe('useGlobalReceiveAssets', () => {
         expect(result.current.otherAssets).toEqual([]);
 
         rerender({ search: '', networkSymbols: [asNetworkSymbol('sol')] });
-        expect(result.current.otherAssets.map(({ asset }) => asset.displaySymbol)).toEqual([
+        expect(result.current.otherAssets.map(({ asset }) => asset.symbol)).toEqual([
             'SOL',
             'WSOL',
         ]);
