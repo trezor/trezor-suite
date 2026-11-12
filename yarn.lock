@@ -12506,6 +12506,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft

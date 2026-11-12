@@ -1,5 +1,12 @@
 export { isVerifySupported } from './isVerifySupported';
 export { MAX_LENGTH_MESSAGE, MAX_LENGTH_SIGNATURE } from './signVerifyConstants';
 export { getHasSelectableSignatureFormat } from './bitcoin/getHasSelectableSignatureFormat';
+export { signBitcoinMessageThunk } from './bitcoin/signBitcoinMessageThunk';
+export { verifyBitcoinMessageThunk } from './bitcoin/verifyBitcoinMessageThunk';
+export { signCardanoMessageThunk } from './cardano/signCardanoMessageThunk';
+export { signEthereumMessageThunk } from './ethereum/signEthereumMessageThunk';
+export { verifyEthereumMessageThunk } from './ethereum/verifyEthereumMessageThunk';
+export { type SignedMessage } from './signMessageThunk';
 export { signThunk } from './signThunk';
-export { type VerifyMessageResult, verifyThunk } from './verifyThunk';
+export { type VerifyMessageResult } from './verifyMessageThunk';
+export { verifyThunk } from './verifyThunk';

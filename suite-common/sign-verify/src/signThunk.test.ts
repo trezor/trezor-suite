@@ -208,4 +208,31 @@ describe(signThunk.name, () => {
             expect(reported).not.toContain(PATH);
         });
     });
+
+    describe('network routing', () => {
+        it('signs an Ethereum account with the Ethereum method', async () => {
+            testMocks.setTrezorConnectFixtures({
+                success: true,
+                payload: { address: ADDRESS, signature: SIGNATURE },
+            });
+
+            await signThunk(ETHEREUM_ACCOUNT, ETHEREUM_ACCOUNT.path, MESSAGE)(
+                dispatch,
+                getState,
+                deps,
+            );
+
+            expect(testMocks.getTrezorConnectMock().ethereumSignMessage).toHaveBeenLastCalledWith(
+                expect.objectContaining({ path: ETHEREUM_ACCOUNT.path, message: MESSAGE }),
+            );
+        });
+
+        it('fails to sign on a network without signing', async () => {
+            const account = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
+
+            expect(await signThunk(account, account.path, MESSAGE)(dispatch, getState, deps)).toBe(
+                false,
+            );
+        });
+    });
 });

@@ -177,4 +177,25 @@ describe(verifyThunk.name, () => {
             expect(reported).not.toContain(SIGNATURE);
         });
     });
+
+    describe('network routing', () => {
+        it('verifies an Ethereum account with the Ethereum method', async () => {
+            testMocks.setTrezorConnectFixtures({ success: true, payload: { message: MESSAGE } });
+            const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+
+            await verifyThunk(account, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+
+            expect(testMocks.getTrezorConnectMock().ethereumVerifyMessage).toHaveBeenLastCalledWith(
+                expect.objectContaining({ address: ADDRESS, signature: SIGNATURE }),
+            );
+        });
+
+        it('fails to verify on a network without verification', async () => {
+            const account = mockWalletAccount({ symbol: asNetworkSymbol('ada') });
+
+            expect(
+                await verifyThunk(account, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps),
+            ).toBe('failed');
+        });
+    });
 });

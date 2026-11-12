@@ -17,6 +17,7 @@
         {
             "path": "../../packages/connect-common"
         },
-        { "path": "../../packages/redux-utils" }
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/type-utils" }
     ]
 }
