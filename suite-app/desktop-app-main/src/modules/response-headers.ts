@@ -1,5 +1,6 @@
 /**
- * Adds HTTP response headers (Document-Policy, Content-Security-Policy) to renderer responses.
+ * Adds HTTP response headers (Document-Policy, Content-Security-Policy,
+ * Access-Control-Allow-Origin) to renderer responses.
  *
  * Electron's `session.webRequest.onHeadersReceived` allows only a single listener, so all
  * renderer response headers must be composed here rather than in separate modules.
@@ -10,6 +11,7 @@ import { session } from 'electron';
 import { isDevEnv } from '@suite-common/suite-utils';
 
 import type { ModuleInit } from './module';
+import { allowRendererOrigin } from '../libs/renderer-cors';
 
 export const SERVICE_NAME = 'response-headers';
 
@@ -47,7 +49,11 @@ export const init: ModuleInit = ({ cspNonce, logger }) => {
                               createCspRules({ nonce: cspNonce }).join(';'),
                           ],
                       }),
-                ...details.responseHeaders,
+                ...allowRendererOrigin({
+                    frameUrl: details.frame?.url,
+                    requestUrl: details.url,
+                    responseHeaders: details.responseHeaders,
+                }),
             },
         });
     });

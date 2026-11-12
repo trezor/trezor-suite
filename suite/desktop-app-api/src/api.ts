@@ -186,7 +186,7 @@ export interface InvokeChannels {
     'browser-window/reload': () => void;
 
     // Legacy-origin storage: the one-time move from `file://` to the renderer origin
-    'legacy-origin-storage/pull': () => LegacyOriginStorage | undefined;
+    'legacy-origin-storage/pull': () => InvokeResult<LegacyOriginStorage | undefined>;
     'legacy-origin-storage/report-import': (report: LegacyOriginStorageImportReport) => void;
 
     // In app browser (debug-only)

@@ -33,6 +33,7 @@ import {
     legacyOriginFile,
 } from '@suite/desktop-app-api';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { type Result, err, ok } from '@trezor/type-utils';
 import { createDeferred } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
@@ -47,6 +48,9 @@ const LEGACY_ORIGIN = 'file://';
 const LEGACY_INDEXED_DB_DIR = path.join('IndexedDB', 'file__0.indexeddb.leveldb');
 const EXPORT_PAGE = 'build/legacy-origin-storage.html';
 const EXPORT_TIMEOUT_MS = 120_000;
+const NOTHING_TO_MOVE = ok(undefined);
+
+type LegacyOriginStorageExport = Result<LegacyOriginStorage, string>;
 
 type ExportLegacyOriginStorageParams = {
     logger: ILogger;
@@ -54,11 +58,10 @@ type ExportLegacyOriginStorageParams = {
 
 /**
  * Loads the export page hidden, still on `file://`, and collects what its preload sends.
- * Resolves with nothing when the export fails, which leaves the legacy data in place for a retry
- * on the next start.
+ * A failed export leaves the legacy data as it is, for another try on the next start.
  */
 const exportLegacyOriginStorage = ({ logger }: ExportLegacyOriginStorageParams) => {
-    const result = createDeferred<LegacyOriginStorage | undefined>();
+    const result = createDeferred<LegacyOriginStorageExport>();
     const exportWindow = new BrowserWindow({
         show: false,
         webPreferences: {
@@ -74,14 +77,14 @@ const exportLegacyOriginStorage = ({ logger }: ExportLegacyOriginStorageParams) 
     const cleanups: Array<() => void> = [];
     let isSettled = false;
 
-    const settle = (storage: LegacyOriginStorage | undefined) => {
+    const settle = (storageExport: LegacyOriginStorageExport) => {
         if (isSettled) return;
         isSettled = true;
         cleanups.forEach(cleanup => cleanup());
         if (!exportWindow.isDestroyed()) {
             exportWindow.destroy();
         }
-        result.resolve(storage);
+        result.resolve(storageExport);
     };
 
     const fail = (reason: string) => {
@@ -89,7 +92,7 @@ const exportLegacyOriginStorage = ({ logger }: ExportLegacyOriginStorageParams) 
         if (isSettled) return;
         logger.error(SERVICE_NAME, `Export failed: ${reason}`);
         captureException(new Error(`${SERVICE_NAME}: export failed: ${reason}`));
-        settle(undefined);
+        settle(err(reason));
     };
 
     const isFromExportPage = (event: IpcMainInvokeEvent) =>
@@ -147,7 +150,7 @@ const exportLegacyOriginStorage = ({ logger }: ExportLegacyOriginStorageParams) 
                 }
                 databases.push({ name, version, objectStores });
             }
-            settle({ databases, localStorage: message.data.localStorage, files });
+            settle(ok({ databases, localStorage: message.data.localStorage, files }));
         },
         [LEGACY_ORIGIN_EXPORT_CHANNELS.failed]: payload => {
             const message = legacyOriginExportFailedMessage.safeParse(payload);
@@ -184,7 +187,8 @@ const exportLegacyOriginStorage = ({ logger }: ExportLegacyOriginStorageParams) 
 };
 
 export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
-    let pendingExport: Promise<LegacyOriginStorage | undefined> = Promise.resolve(undefined);
+    let pendingExport: Promise<Result<LegacyOriginStorage | undefined, string>> =
+        Promise.resolve(NOTHING_TO_MOVE);
 
     const markMigrated = () => store.setLegacyOriginStorageSettings({ isMigrated: true });
 
@@ -193,7 +197,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     );
 
     if (!isDevEnv && hasLegacyStorage && !store.getLegacyOriginStorageSettings().isMigrated) {
-        const exportResult = createDeferred<LegacyOriginStorage | undefined>();
+        const exportResult = createDeferred<LegacyOriginStorageExport>();
         pendingExport = exportResult.promise;
         // Only once the main window exists: the hidden export window must never be the first
         // window of the app, which is the one tooling such as Playwright's `firstWindow()` attaches to.
@@ -204,8 +208,16 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     }
 
     ipcMain.handle('legacy-origin-storage/pull', async () => {
-        const storage = await pendingExport;
-        if (!storage) return undefined;
+        const storageExport = await pendingExport;
+        /**
+         * The renderer must not start on its empty origin now:
+         * the database it would create there makes the next start skip the import,
+         * as if the user already lived on the new origin.
+         */
+        if (!storageExport.success) return { success: false, error: storageExport.error };
+
+        const storage = storageExport.payload;
+        if (!storage) return { success: true };
 
         const isEmpty =
             storage.databases.length === 0 &&
@@ -213,10 +225,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
             storage.files.length === 0;
         if (isEmpty) {
             logger.info(SERVICE_NAME, 'The legacy origin holds no data, nothing to move');
-            pendingExport = Promise.resolve(undefined);
+            pendingExport = Promise.resolve(NOTHING_TO_MOVE);
             markMigrated();
 
-            return undefined;
+            return { success: true };
         }
 
         logger.info(
@@ -224,7 +236,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
             `Handing ${storage.databases.length} database(s) and ${storage.files.length} file(s) to the renderer`,
         );
 
-        return storage;
+        return { success: true, payload: storage };
     });
 
     ipcMain.handle('legacy-origin-storage/report-import', async (_, report) => {
@@ -237,7 +249,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
         }
 
         // Free the export; a reload of the renderer must not import it a second time.
-        pendingExport = Promise.resolve(undefined);
+        pendingExport = Promise.resolve(NOTHING_TO_MOVE);
 
         if (report.isImported) {
             await session.defaultSession.clearStorageData({

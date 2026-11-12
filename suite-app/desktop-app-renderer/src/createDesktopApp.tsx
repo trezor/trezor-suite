@@ -44,7 +44,7 @@ export const createDesktopApp =
         // analytics consent from localStorage and before the preload store opens IndexedDB.
         const migration = await deps.migrateLegacyOriginStorage();
         if (!migration.success) {
-            // The partial import was rolled back; a reload or restart tries again.
+            // The app stops before it uses this origin, so a restart can move the storage again.
             root.render(
                 <ServicesProvider services={deps.services}>
                     <ErrorScreen error={`Moving the app storage failed: ${migration.error}`} />

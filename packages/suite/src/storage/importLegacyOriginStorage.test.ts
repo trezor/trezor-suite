@@ -82,6 +82,32 @@ const createStorage = (): LegacyOriginStorage => ({
     files: [],
 });
 
+const createStorageWithInvalidRecord = (): LegacyOriginStorage => {
+    const storage = createStorage();
+    const [database] = storage.databases;
+    const [suiteSettings] = database?.objectStores ?? [];
+    suiteSettings?.records.push({ key: { not: 'a valid key' }, value: {} });
+
+    return storage;
+};
+
+const createWalletConnectDatabase = (): LegacyOriginStorage['databases'][number] => ({
+    name: 'WALLET_CONNECT_V2_INDEXED_DB',
+    version: 1,
+    objectStores: [
+        {
+            name: 'keyvaluestorage',
+            keyPath: null,
+            autoIncrement: false,
+            indexes: [],
+            records: [{ key: 'wc@2:core:0.3:keychain', value: '{}' }],
+        },
+    ],
+});
+
+const getDatabaseNames = async () =>
+    (await indexedDB.databases()).map(database => database.name).toSorted();
+
 describe(importLegacyOriginStorage.name, () => {
     beforeEach(() => {
         installFakeIndexedDb();
@@ -142,15 +168,44 @@ describe(importLegacyOriginStorage.name, () => {
     });
 
     it('leaves no database behind when a record cannot be stored', async () => {
-        const storage = createStorage();
-        const invalidRecord = { key: { not: 'a valid key' }, value: {} };
-        const [database] = storage.databases;
-        const [suiteSettings] = database?.objectStores ?? [];
-        suiteSettings?.records.push(invalidRecord);
-
-        const result = await importLegacyOriginStorage(storage);
+        const result = await importLegacyOriginStorage(createStorageWithInvalidRecord());
 
         expect(result.success).toBe(false);
-        expect((await indexedDB.databases()).map(info => info.name)).toEqual([]);
+        expect(await getDatabaseNames()).not.toContain('trezor-suite');
+    });
+
+    it('keeps only the imported databases on this origin', async () => {
+        await importLegacyOriginStorage(createStorage());
+
+        expect(await getDatabaseNames()).toEqual(['trezor-suite']);
+    });
+
+    it('redoes an import that stopped after its first database', async () => {
+        const interrupted = createStorageWithInvalidRecord();
+        interrupted.databases.unshift(createWalletConnectDatabase());
+        const complete = createStorage();
+        complete.databases.unshift(createWalletConnectDatabase());
+
+        const firstResult = await importLegacyOriginStorage(interrupted);
+        const secondResult = await importLegacyOriginStorage(complete);
+
+        expect(firstResult.success).toBe(false);
+        expect(secondResult).toEqual({ success: true, payload: { isImported: true } });
+        expect(await getDatabaseNames()).toEqual(['WALLET_CONNECT_V2_INDEXED_DB', 'trezor-suite']);
+
+        const db = await openDatabase('trezor-suite');
+        expect(await readAll(db, 'suiteSettings')).toEqual({
+            keys: ['suite'],
+            values: [{ settings: { language: 'cs' } }],
+        });
+        db.close();
+    });
+
+    it('leaves a finished import untouched when the same storage arrives again', async () => {
+        await importLegacyOriginStorage(createStorage());
+
+        const result = await importLegacyOriginStorage(createStorage());
+
+        expect(result).toEqual({ success: true, payload: { isImported: false } });
     });
 });
