@@ -3,6 +3,17 @@
 Status and remaining work for encrypting local data with a key derived from a passkey, on web and
 desktop. The code is on the `feat/desktop-renderer-over-localhost` branch.
 
+## Scope
+
+The passkey is an at-rest encryption layer, not a root of trust. The Trezor stays the root. The
+Suite Sync owner and the delegated identity key are derived from the device, so a lost passkey only
+means reconnecting the Trezor. This mirrors how Bitwarden treats a passkey as an unlock layer rather
+than the master secret.
+
+The purpose is twofold: encrypt local data that is plaintext today, and replace Electron
+`safeStorage`, which is weak (see [Threat model](#threat-model-and-how-it-compares)). Because the
+bulk of the local database is unencrypted now, this is a net improvement, not a regression.
+
 ## How it works
 
 A passkey with the WebAuthn [PRF extension](https://w3c.github.io/webauthn/#prf-extension) returns
@@ -54,6 +65,61 @@ Every part takes its browser or Electron APIs as dependencies and has unit tests
 | Web, Chrome     | Google Password Manager, iCloud Keychain, Windows Hello, keys | Debug panel only, relying party is the page hostname      |
 | Web, Safari 18+ | iCloud Keychain passkeys                                      | Not tested                                                |
 | Web, Firefox    | Depends on version and authenticator                          | Not tested                                                |
+
+## Threat model and how it compares
+
+**What it protects.** Data at rest. A stolen disk or a lost, powered-off machine yields only
+ciphertext, because the passkey secret is not on the disk. That is the whole point.
+
+**What it does not protect.** A live session against local malware running as the user. Such malware
+can call WebAuthn itself with the public relying party, credential ID and fixed PRF input, show the
+user a lure, and derive the same root key from a single approval. It can also scrape the in-memory
+key while the session is unlocked. No local key store defeats this, and it is out of scope here, as
+it is for every OS keychain and for Bitwarden.
+
+**Why it still beats the status quo.** Today the bulk of the local database is plaintext, and the two
+encrypted secrets use `safeStorage`, which is weak at exactly this:
+
+- On Windows `safeStorage` is DPAPI, user-scoped. Any process running as the same user decrypts it
+  silently, with no prompt. This is the standard infostealer path.
+- On Linux without a keyring it falls back to `basic_text`, which is essentially plaintext.
+
+The passkey moves a Windows attacker from "silent background decrypt" to "must socially engineer an
+approval", and with `userVerification: 'required'` to "must pass a PIN or biometric". That is a large
+increase in cost. Setting `userVerification: 'required'` on the unlock path is the single most
+valuable knob in this design.
+
+**Who may request the passkey, per platform.** This is where the platforms differ most:
+
+- **macOS: strong.** The OS only lets apps listed in the domain's `apple-app-site-association` file
+  use its passkeys, so another local app cannot request Suite's passkey even if it hardcodes the
+  relying party.
+- **Windows: weak.** Any local app can request a Windows Hello passkey for any relying party; the
+  user's approval at the prompt is the only gate. `webauthn.dll` knows and can show the caller, but
+  SpecterOps' Pass-the-Passkey research (Black Hat 2026) showed that the shown caller identity is
+  spoofable, and Microsoft rated it a low-severity defense-in-depth issue.
+- **Linux: none at the OS level.** Only a real browser verifies, through the TLS origin, and only for
+  web pages. There is no app-to-domain mechanism.
+- **Browsers:** a page may only claim its own domain, anchored in TLS. A cross-site-scripting hole on
+  the domain is the exposure.
+
+**Does MSIX/AppX packaging fix Windows?** No. It gives the app a signed package identity and lets it
+register as a passkey provider plugin (Windows 11 24H2 WebAuthn Plugin APIs), but it provides no
+`apple-app-site-association` equivalent that binds the app to a relying party. Windows' only
+well-known file here, `/.well-known/webauthn` related origins, authorizes extra web origins, not
+native apps. The caller identity MSIX surfaces is the spoofable one above.
+
+**How Bitwarden does the same thing.** Its "log in with passkey (PRF)" uses the identical mechanism:
+a 32-byte PRF output plus a salt rebuilds a key that unwraps a chain ending at the vault key. Its
+desktop app bridges WebAuthn through an `https` iframe from its own domain, the same technique as
+this branch, because Electron `file://` cannot do WebAuthn. Two lessons it confirms: the passkey is
+an unlock layer, not the master (without PRF the master password still decrypts), and a compromised
+endpoint is scoped out rather than defended.
+
+References: [Pass-the-Passkey (SpecterOps)](https://specterops.io/wp-content/uploads/sites/3/2026/08/Pass-the-Passkey_A4_v2.pdf),
+[Related origins (passkeys.dev)](https://passkeys.dev/docs/advanced/related-origins/),
+[Passkeys for Windows apps (Microsoft)](https://learn.microsoft.com/en-us/windows/apps/develop/security/use-cases),
+[Bitwarden security whitepaper](https://bitwarden.com/help/bitwarden-security-white-paper/).
 
 ## Remaining work
 
@@ -140,6 +206,18 @@ in `/Applications`. Without `get-task-allow`, macOS ignored the app's associated
 - [x] The ciphertext starts with a format version byte and is bound to a `context` string
       (record type and id) as AES-GCM additional data, so blobs cannot be swapped between records.
 
+Extending from the two current secrets to the whole local database adds three decisions, because a
+lost passkey loses its ciphertext for good:
+
+- [ ] Encrypt only stores that can be re-synced or re-derived. Device-derived values are safe to
+      lose. Local-only data (un-synced labels, local settings) would be gone if the authenticator is
+      lost, so either leave it out or give it a fallback.
+- [ ] Decide what app launch does when the unlock prompt is declined, since the DB cannot be read
+      until the passkey answers. The `EncryptionLocked` result is the signal to branch on.
+- [ ] Make whole-database encryption opt-in and keep `safeStorage` as the desktop fallback for
+      environments with no PRF, rather than dropping it. It is the weaker store, but it must not
+      lock out users who cannot get a passkey PRF.
+
 ### 6. Losing the passkey or the credential ID
 
 - [ ] The credential ID lives in `localStorage`. If it is cleared, the passkey still exists but Suite
@@ -151,22 +229,18 @@ in `/Applications`. Without `get-task-allow`, macOS ignored the app's associated
 
 ### 7. Security properties and decisions
 
-- The passkey proves possession, not identity: requests use `userVerification: 'preferred'`
-  (native macOS) and `'discouraged'` (web, iframe). Platform authenticators verify the user
-  anyway; a security key releases the PRF secret on a touch. This is accepted for decrypting
-  local data. Anything that replaces bio auth must request `'required'`.
-- The root key stays in memory until `lock()` on the encryption service is called. Nothing calls
-  it yet; a bio-auth replacement must wire it to the blur and master timers.
+See [Threat model](#threat-model-and-how-it-compares) for the attacker model and the per-platform
+comparison. In the code:
+
+- [ ] The passkey proves possession, not identity: requests use `userVerification: 'preferred'`
+      (native macOS) and `'discouraged'` (web, iframe). Set `'required'` on the unlock path. Against
+      `safeStorage` on Windows this is the biggest single improvement, because it denies malware the
+      silent-decrypt and stray-touch shortcuts.
+- The root key stays in memory until `lock()` on the encryption service is called. Nothing calls it
+  yet; a bio-auth replacement must wire it to the blur and master timers.
 - After a refused or failed prompt no new prompt is shown for five seconds; callers get
-  `EncryptionLocked` and must keep stored data. Consumers of the Suite Sync owner and the
-  delegated identity key do.
-- Domain binding differs per platform. On macOS the OS only lets apps listed in the domain's
-  `apple-app-site-association` file use its passkeys, so another app cannot request Suite's
-  passkey even with the same relying party hardcoded. Browsers can, from pages on that domain,
-  which the web app needs. On Windows any local app may request a Windows Hello passkey for any
-  relying party, and security keys answer any client that claims the relying party. There the
-  user's attention at the prompt is the only check, and local malware running as the user can
-  ask for the key. The design protects data at rest, not a live session against local malware.
+  `EncryptionLocked` and must keep stored data. Consumers of the Suite Sync owner and the delegated
+  identity key do.
 - Only the app's own top frame may load the WebAuthn frame; the request filter cancels it for any
   other embedder.
 
