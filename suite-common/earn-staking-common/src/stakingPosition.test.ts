@@ -108,4 +108,32 @@ describe('stakingPositionSchema', () => {
         expect(result.success).toBe(false);
         expect(result.error?.issues[0]?.path).toEqual(['unlocks', 0, 'availableAt']);
     });
+
+    it('parses an activation without a known time', () => {
+        const position = mockStakingPosition({
+            activations: [
+                { amount: stakingAmountSchema.parse('750000000000000000'), availableAt: null },
+            ],
+        });
+
+        expect(stakingPositionSchema.parse(position)).toEqual(position);
+    });
+
+    it('rejects a position that leaves out its activations', () => {
+        const { activations: _activations, ...position } = mockStakingPosition();
+        const result = stakingPositionSchema.safeParse(position);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['activations']);
+    });
+
+    it('rejects a negative activation time', () => {
+        const result = stakingPositionSchema.safeParse({
+            ...mockStakingPosition(),
+            activations: [{ amount: stakingAmountSchema.parse('1'), availableAt: -1 }],
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['activations', 0, 'availableAt']);
+    });
 });

@@ -32,6 +32,7 @@ export const createEthereumEverstakePooledProductDescriptor = ({
         operations: ['stake', 'unstake', 'withdraw'],
         exclusivity: 'none',
         rateKind: 'apy',
+        rewardsKind: 'compounded',
         limits: createEthereumEverstakePooledProductLimits(deployment),
         options: [{ key: 'instant', kind: 'boolean' }],
         consentKey: 'staking:everstake',
@@ -44,6 +45,7 @@ export const createEthereumEverstakePooledProductDescriptor = ({
             networkSymbol === 'eth'
                 ? ETHEREUM_EVERSTAKE_POOLED_PRODUCT_MESSAGE_SYSTEM_FEATURES
                 : {},
+        minFirmware: {},
         isCountedInAccountTotals: true,
     });
 };

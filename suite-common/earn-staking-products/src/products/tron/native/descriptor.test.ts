@@ -22,6 +22,7 @@ describe('createTronNativeProductDescriptor', () => {
             operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
             exclusivity: 'none',
             rateKind: 'apr',
+            rewardsKind: 'claimable',
             limits: TRON_NATIVE_PRODUCT_LIMITS,
             options: [{ key: 'resource', kind: 'choice' }],
             consentKey: 'staking:curated',
@@ -36,6 +37,13 @@ describe('createTronNativeProductDescriptor', () => {
                 claim: 'trx.staking.claim',
                 vote: 'trx.staking.vote',
             },
+            minFirmware: {
+                stake: '2.12.2',
+                unstake: '2.12.2',
+                withdraw: '2.12.2',
+                claim: '2.12.2',
+                vote: '2.12.2',
+            },
             isCountedInAccountTotals: true,
         });
     });
@@ -48,6 +56,7 @@ describe('createTronNativeProductDescriptor', () => {
             feeBufferBalance: '5000000',
             minBalanceForStaking: '1010000',
             minStakeAmountForDashboard: '1000000',
+            registrationDeposit: '0',
         });
     });
 });
