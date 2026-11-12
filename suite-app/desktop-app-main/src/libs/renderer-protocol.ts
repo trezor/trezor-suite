@@ -18,6 +18,10 @@ export const RENDERER_HOST = 'app';
 export const RENDERER_ORIGIN = `${RENDERER_SCHEME}://${RENDERER_HOST}`;
 export const RENDERER_URL = `${RENDERER_ORIGIN}/index.html`;
 
+/** Whether the URL is one the renderer protocol serves, so a page of the packaged renderer. */
+export const isRendererUrl = (url: string | undefined) =>
+    url?.startsWith(`${RENDERER_ORIGIN}/`) === true;
+
 const SERVICE_NAME = 'renderer-protocol';
 
 /**
