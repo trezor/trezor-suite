@@ -17,7 +17,6 @@ import {
 import { type DiscoveryRootState } from './discoveryTypes';
 
 const discoveryReducer = prepareDiscoveryReducer(undefined);
-const emptyDeviceState = { devices: [], buttonRequestsByPath: {} };
 
 type InitStoreArgs = {
     preloadedState?: DiscoveryRootState;
@@ -27,14 +26,12 @@ const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
     createTestCompositionRoot<WithServices<AnalyticsDep>, UpdateDiscoveryThunkState>({
         services: () => ({ analytics: mockAnalytics<AnalyticsSharedEvents>() }),
         reducer: {
-            device: (state = emptyDeviceState) => state,
             wallet: combineReducers({
                 discovery: discoveryReducer,
                 accounts: (state: Account[] = []) => state,
             }),
         },
         preloadedState: preloadedState && {
-            device: emptyDeviceState,
             wallet: { ...preloadedState.wallet, accounts: [] },
         },
     }).services.store;
