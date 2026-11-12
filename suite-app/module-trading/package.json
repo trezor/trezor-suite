@@ -20,7 +20,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite/account": "workspace:*",
-        "@suite/authenticity-checks": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/message-system": "workspace:*",
