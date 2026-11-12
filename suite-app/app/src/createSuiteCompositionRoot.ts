@@ -58,6 +58,7 @@ import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEven
 import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
 import { type SuiteReduxStore } from './createReduxStore';
 import { type AppState } from './store';
+import { subscribeToWindowForeground } from './subscribeToWindowForeground';
 import { type SuiteServices } from './suiteServices';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -150,6 +151,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             runStakingDeviceCall: callback => callback(),
         }),
         dispatch: deps.dispatch,
+        subscribeToForeground: subscribeToWindowForeground,
     });
 
     const queryClient = createQueryClient({ shouldRefetchOnEvents: true });

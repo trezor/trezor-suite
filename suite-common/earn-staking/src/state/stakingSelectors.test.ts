@@ -8,8 +8,10 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { StakingRootState } from './stakingReducer';
 import {
+    selectEarliestStakingRevalidateAt,
     selectIsStakingSupportedSymbol,
     selectStakingAccountAmountOutsideBalance,
+    selectStakingAccountKeysToRevalidate,
     selectStakingAccountTotals,
     selectStakingPlatform,
     selectStakingPosition,
@@ -190,6 +192,50 @@ describe('staking selectors', () => {
             unstaking: '0',
             withdrawable: '0',
             rewards: '0',
+        });
+    });
+    describe('revalidation', () => {
+        const revalidating = (accountKeySuffix: string, revalidateAt: number | null) => ({
+            accountKey: mockAccountKey({
+                descriptor: accountKeySuffix,
+                symbol: asNetworkSymbol('trx'),
+            }),
+            position: mockStakingPosition({ productId: eth.id, revalidateAt }),
+        });
+
+        const soon = revalidating('soon', 1_800_000_000_000);
+        const later = revalidating('later', 1_800_000_600_000);
+        const never = revalidating('never', null);
+
+        const revalidationState: StakingRootState = {
+            earn: {
+                staking: mockStakingState({
+                    descriptors: [eth],
+                    positions: {
+                        [later.accountKey]: [later.position],
+                        [never.accountKey]: [never.position],
+                        [soon.accountKey]: [soon.position],
+                    },
+                }),
+            },
+        };
+
+        it('selects the earliest revalidation time of any position', () => {
+            expect(selectEarliestStakingRevalidateAt(revalidationState)).toBe(1_800_000_000_000);
+            expect(selectEarliestStakingRevalidateAt(state)).toBeNull();
+            expect(selectEarliestStakingRevalidateAt(empty)).toBeNull();
+        });
+
+        it('lists the accounts whose revalidation time has passed', () => {
+            expect(
+                selectStakingAccountKeysToRevalidate(revalidationState, 1_799_999_999_999),
+            ).toEqual([]);
+            expect(
+                selectStakingAccountKeysToRevalidate(revalidationState, 1_800_000_000_000),
+            ).toEqual([soon.accountKey]);
+            expect(
+                selectStakingAccountKeysToRevalidate(revalidationState, 1_800_000_600_000),
+            ).toEqual([later.accountKey, soon.accountKey]);
         });
     });
 });

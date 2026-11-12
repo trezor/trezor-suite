@@ -11,7 +11,7 @@ import {
 import { type QueryClient, commonQueryKeys } from '@suite-common/react-query';
 import { testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState, transactionsInitialState } from '@suite-common/wallet-core';
-import type { Account } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
@@ -25,6 +25,7 @@ import {
     type SyncStakingPositionsThunkDeps,
     type SyncStakingPositionsThunkState,
     refreshStakingProductInfoThunk,
+    revalidateStakingPositionsThunk,
     syncAllStakingPositionsThunk,
     syncStakingPositionsThunk,
 } from './stakingThunks';
@@ -408,5 +409,92 @@ describe('syncAllStakingPositionsThunk', () => {
 
     it('limits the sync to one network', async () => {
         expect(await run({ networkSymbol: asNetworkSymbol('sol') })).toEqual([solAccount.key]);
+    });
+});
+
+describe('revalidation', () => {
+    const NOW = 1_800_000_000_000;
+    const trx = mockStakingProductDescriptor({
+        networkSymbol: asNetworkSymbol('trx'),
+        providerId: stakingProviderIdSchema.parse('curated'),
+        type: 'native',
+        operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
+        rateKind: 'apr',
+        rewardsKind: 'claimable',
+    });
+    const dueAccount = mockWalletAccount({ symbol: asNetworkSymbol('trx') });
+    const laterAccount = mockWalletAccount({
+        symbol: asNetworkSymbol('trx'),
+        descriptor: asAccountDescriptor('later'),
+    });
+    const duePosition = mockStakingPosition({ productId: trx.id, revalidateAt: NOW });
+    const laterPosition = mockStakingPosition({ productId: trx.id, revalidateAt: NOW + 60_000 });
+
+    const state: SyncStakingPositionsThunkState = {
+        earn: {
+            staking: mockStakingState({
+                descriptors: [eth, trx],
+                positions: {
+                    [dueAccount.key]: [duePosition],
+                    [laterAccount.key]: [laterPosition],
+                },
+            }),
+        },
+        wallet: {
+            accounts: [ethAccount, dueAccount, laterAccount],
+            transactions: transactionsInitialState,
+        },
+    };
+
+    const createRevalidationDeps = () =>
+        createDeps([
+            createAdapter(eth),
+            createAdapter(trx, {
+                getPosition: mock<StakingProductAdapter['getPosition']>(({ account }) =>
+                    account.descriptor === dueAccount.descriptor ? duePosition : laterPosition,
+                ),
+            }),
+        ]);
+
+    it('re-arms the scheduler with the earliest revalidation after a sync', async () => {
+        const extra = createRevalidationDeps();
+        const getState = () => state;
+        const { dispatch } = createMockDispatch({ getState, extra });
+
+        await syncStakingPositionsThunk({ accountKey: ethAccount.key })(dispatch, getState, extra);
+
+        expect(extra.services.staking.stakingScheduler.scheduleRevalidation).toHaveBeenCalledWith(
+            NOW,
+        );
+    });
+
+    it('re-syncs the accounts whose revalidation is due, then re-arms the scheduler', async () => {
+        const extra = createRevalidationDeps();
+        const getState = () => state;
+        const { actions, dispatch } = createMockDispatch({ getState, extra });
+
+        await revalidateStakingPositionsThunk({ now: NOW })(dispatch, getState, extra);
+
+        expect(
+            actions
+                .filter(stakingActions.positionsSynced.match)
+                .map(action => action.payload.accountKey),
+        ).toEqual([dueAccount.key]);
+        expect(
+            extra.services.staking.stakingScheduler.scheduleRevalidation,
+        ).toHaveBeenLastCalledWith(NOW);
+    });
+
+    it('re-arms the scheduler even when nothing is due', async () => {
+        const extra = createRevalidationDeps();
+        const getState = () => state;
+        const { actions, dispatch } = createMockDispatch({ getState, extra });
+
+        await revalidateStakingPositionsThunk({ now: NOW - 1 })(dispatch, getState, extra);
+
+        expect(actions.filter(stakingActions.positionsSynced.match)).toEqual([]);
+        expect(extra.services.staking.stakingScheduler.scheduleRevalidation).toHaveBeenCalledWith(
+            NOW,
+        );
     });
 });

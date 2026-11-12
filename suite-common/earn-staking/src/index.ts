@@ -3,6 +3,15 @@ export {
     type StakingCompositionRootDeps,
 } from './createStakingCompositionRoot';
 export {
+    STAKING_PRODUCT_INFO_REFRESH_INTERVAL_MS,
+    createStakingScheduler,
+    type StakingScheduler,
+    type StakingSchedulerDep,
+    type StakingSchedulerDeps,
+    type StakingSchedulerTimers,
+    type SubscribeToForeground,
+} from './createStakingScheduler';
+export {
     STAKING_DEVICE_ACCESS_CANCEL_REASONS,
     createStakingDeviceAccess,
     type RunStakingDeviceCall,
@@ -126,6 +135,7 @@ export {
     type StakingState,
 } from './state/stakingReducer';
 export {
+    selectEarliestStakingRevalidateAt,
     selectIsStakingSupportedSymbol,
     selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
@@ -135,6 +145,7 @@ export {
     selectStakingProductDescriptor,
     selectStakingProductDescriptors,
     selectStakingProductDescriptorsBySymbol,
+    selectStakingAccountKeysToRevalidate,
 } from './state/stakingSelectors';
 export {
     getStakingSessionKey,
@@ -182,10 +193,13 @@ export {
 } from './state/stakingSessionsReducer';
 export {
     refreshStakingProductInfoThunk,
+    revalidateStakingPositionsThunk,
     syncAllStakingPositionsThunk,
     syncStakingPositionsThunk,
     type RefreshStakingProductInfoThunkDeps,
     type RefreshStakingProductInfoThunkState,
+    type RevalidateStakingPositionsThunkDeps,
+    type RevalidateStakingPositionsThunkState,
     type SyncAllStakingPositionsThunkDeps,
     type SyncAllStakingPositionsThunkState,
     type SyncStakingPositionsThunkDeps,

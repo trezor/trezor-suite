@@ -142,6 +142,7 @@ const initStore = (
                 adapters: [adapter],
                 deviceAccess: mockStakingDeviceAccess(),
                 dispatch: store.dispatch,
+                timers: { schedule: () => () => {} },
             });
             getExtra = () => ({ services: { staking, queryClient } });
 
@@ -171,6 +172,22 @@ const initStore = (
 };
 
 describe('prepareStakingMiddleware', () => {
+    // Remembered wallets are loaded from storage without any account action, so the positions of
+    // their accounts depend on the products registering after the store is hydrated.
+    it('gives an account loaded before the products register its positions', async () => {
+        const { store, staking, adapter } = initStore();
+
+        await flushThunks();
+        expect(adapter.getPosition).not.toHaveBeenCalled();
+        expect(selectStakingPositionsByAccount(store.getState(), ethAccount.key)).toEqual([]);
+
+        staking.loadStakingProducts();
+        await flushThunks();
+
+        expect(selectStakingPositionsByAccount(store.getState(), ethAccount.key)).toEqual([
+            position,
+        ]);
+    });
     it('syncs every account once the products are registered, then with their fetched info', async () => {
         const { store, staking, adapter, queryClient } = initStore();
 

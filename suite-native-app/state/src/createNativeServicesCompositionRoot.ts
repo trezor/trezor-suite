@@ -34,6 +34,7 @@ import { NativeUsbTransport } from '@trezor/transport-native-usb';
 import { type NativeServices } from './NativeServices';
 import { createNativeStakingDeviceAccess } from './createNativeStakingDeviceAccess';
 import { type NativeReduxStore } from './createReduxStore';
+import { subscribeToAppForeground } from './subscribeToAppForeground';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -96,6 +97,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             getTrezorConnect: deps.getTrezorConnect,
         }),
         dispatch: deps.dispatch,
+        subscribeToForeground: subscribeToAppForeground,
     });
 
     const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
