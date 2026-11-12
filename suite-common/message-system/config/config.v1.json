@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-11-12T15:12:20+00:00",
-    "sequence": 166,
+    "timestamp": "2026-11-12T15:41:13+00:00",
+    "sequence": 167,
     "actions": [
         {
             "conditions": [
@@ -2176,6 +2176,30 @@
                     {
                         "variant": "B",
                         "percentage": 100
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": "!",
+                        "web": ">=26.11.1"
+                    }
+                }
+            ],
+            "experiment": {
+                "id": "da21537c-d393-4292-9908-cba1eabdb651",
+                "groups": [
+                    {
+                        "variant": "A",
+                        "percentage": 100
+                    },
+                    {
+                        "variant": "B",
+                        "percentage": 0
                     }
                 ]
             }
