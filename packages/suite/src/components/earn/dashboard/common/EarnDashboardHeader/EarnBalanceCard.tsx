@@ -7,8 +7,8 @@ import {
     selectIsEarnFiatTotalIncomplete,
     selectIsEarnFiatTotalUnavailable,
     useEarnMissingRateTickersQuery,
-    useYieldOpportunities,
-} from '@suite-common/wallet-core';
+} from '@suite-common/earn';
+import { useYieldOpportunities } from '@suite-common/wallet-core';
 import { Card, Column, Skeleton, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

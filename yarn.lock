@@ -12217,6 +12217,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/earn@workspace:*, @suite-common/earn@workspace:suite-common/earn":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/earn@workspace:suite-common/earn"
+  dependencies:
+    "@suite-common/earn-stablecoin-api": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
+    "@suite-common/earn-staking-common": "workspace:*"
+    "@suite-common/networks": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/tokens": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/extra-dependencies@workspace:*, @suite-common/extra-dependencies@workspace:suite-common/extra-dependencies":
   version: 0.0.0-use.local
   resolution: "@suite-common/extra-dependencies@workspace:suite-common/extra-dependencies"
@@ -15948,8 +15969,10 @@ __metadata:
     "@shopify/flash-list": "npm:2.3.2"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/earn": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -20301,6 +20324,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
+    "@suite-common/earn": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking": "workspace:*"

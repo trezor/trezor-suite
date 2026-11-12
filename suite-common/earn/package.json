@@ -1,0 +1,33 @@
+{
+    "name": "@suite-common/earn",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index.ts",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/earn-staking": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-common/earn-stablecoin-api": "workspace:*",
+        "@suite-common/earn-staking-common": "workspace:*",
+        "@suite-common/networks": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
+        "@trezor/requirements": "workspace:*",
+        "@trezor/utils": "workspace:*"
+    }
+}

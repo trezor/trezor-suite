@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type EarnListRootState,
+    type EarnRootState,
     selectIsEarnFiatTotalIncomplete,
     useEarnMissingRateTickersQuery,
-    useYieldOpportunities,
-} from '@suite-common/wallet-core';
+} from '@suite-common/earn';
+import { useYieldOpportunities } from '@suite-common/wallet-core';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -13,7 +13,7 @@ export const EarnBalanceIncompleteFiatBanner = () => {
     const { yieldOpportunities } = useYieldOpportunities();
     const { isFiatRatesLoading, onRetry } = useEarnMissingRateTickersQuery();
 
-    const isFiatTotalIncomplete = useSelector((state: EarnListRootState) =>
+    const isFiatTotalIncomplete = useSelector((state: EarnRootState) =>
         selectIsEarnFiatTotalIncomplete(state, yieldOpportunities, isFiatRatesLoading),
     );
 

@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type EarnListRootState,
+    type EarnRootState,
     selectEarnTotalFiatAmount,
     selectIsEarnFiatTotalIncomplete,
     selectIsEarnFiatTotalUnavailable,
     useEarnMissingRateTickersQuery,
-    useYieldOpportunities,
-} from '@suite-common/wallet-core';
+} from '@suite-common/earn';
+import { useYieldOpportunities } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Discreet, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
@@ -18,15 +18,15 @@ export const EarnBalance = () => {
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();
     const { yieldOpportunities } = useYieldOpportunities();
 
-    const isFiatTotalIncomplete = useSelector((state: EarnListRootState) =>
+    const isFiatTotalIncomplete = useSelector((state: EarnRootState) =>
         selectIsEarnFiatTotalIncomplete(state, yieldOpportunities, isFiatRatesLoading),
     );
 
-    const isFiatTotalUnavailable = useSelector((state: EarnListRootState) =>
+    const isFiatTotalUnavailable = useSelector((state: EarnRootState) =>
         selectIsEarnFiatTotalUnavailable(state, yieldOpportunities, isFiatRatesLoading),
     );
 
-    const totalEarnFiatAmount = useSelector((state: EarnListRootState) =>
+    const totalEarnFiatAmount = useSelector((state: EarnRootState) =>
         selectEarnTotalFiatAmount(state, yieldOpportunities),
     );
 
