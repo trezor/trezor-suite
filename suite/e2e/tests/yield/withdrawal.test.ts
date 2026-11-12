@@ -1,4 +1,6 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { feedbackRatingSelectedEvent, feedbackSentEvent } from '@suite/analytics';
+import { events } from '@suite-common/analytics';
+import { PROD_STAKING_SYMBOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
@@ -33,6 +35,21 @@ const buildEthAccountTokens = ({ usdcBalance, shareBalance }: BuildEthAccountTok
     { ...YIELD_USDC_VAULT_SHARE_TOKEN, balance: shareBalance },
 ];
 
+const VAULT_CONTEXT = { networkSymbol: 'eth', vaultId: usdcPrime.id };
+const WITHDRAW_CONTEXT = { ...VAULT_CONTEXT, action: 'continue', operation: 'withdraw' };
+const APY_BREAKDOWN = usdcPrime.apyBreakdown.analyticsAttribute;
+const DASHBOARD_CONTEXT = {
+    hasYieldPosition: 'true',
+    hasStakingPosition: 'true',
+    hasClaimBanner: 'false',
+    availableVaultCount: String(Object.keys(YIELD_VAULTS).length),
+    availableStakingCount: String(PROD_STAKING_SYMBOLS.length),
+    hasShowMore: 'false',
+};
+
+const FEEDBACK_RATING = '5';
+const FEEDBACK_CONTEXT = { category: 'yield', context: 'withdraw', provider: usdcPrime.id };
+
 const WITHDRAW_TXID = '0x3333333333333333333333333333333333333333333333333333333333333333';
 
 test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -42,44 +59,62 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        blockbookMock.setBroadcastTxid(WITHDRAW_TXID);
-        blockbookMock.updateAccountState({
-            txs: 3,
-            nonce: '2',
-            transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            tokens: buildEthAccountTokens({
-                usdcBalance: '990000000',
-                shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
-            }),
-        });
-        await yieldMock.start();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await analytics.stubFeedback();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            blockbookMock.setBroadcastTxid(WITHDRAW_TXID);
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+                tokens: buildEthAccountTokens({
+                    usdcBalance: '990000000',
+                    shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
+                }),
+            });
+            await yieldMock.start();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can withdraw USDC from a yield vault',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
+            page,
             yieldSection,
             yieldFlowSection,
+            earnNutshellModal,
             txSimulationModal,
             devicePrompt,
             device,
             blockbookMock,
             yieldMock,
+            toastSection,
         }) => {
+            const earnEntryEvents = analytics.trackEvents(events.yieldEarnEntryEvent.name);
+            const dashboardReadyEvents = analytics.trackEvents(events.earnDashboardReadyEvent.name);
+            const navigateEvents = analytics.trackEvents(events.yieldNavigateEvent.name);
+            const interactionEvents = analytics.trackEvents(events.yieldInteractionEvent.name);
+            const withdrawEvents = analytics.trackEvents(events.yieldWithdrawEvent.name);
+            const ratingSelectedEvents = analytics.trackEvents(feedbackRatingSelectedEvent.name);
+            const feedbackSentEvents = analytics.trackEvents(feedbackSentEvent.name);
+
             await test.step('Deposited position is shown on the dashboard', async () => {
                 await yieldSection.earnMenuButton.click();
+                await earnEntryEvents.expectNext({ from: 'settings-coins' });
+                await dashboardReadyEvents.expectNext(DASHBOARD_CONTEXT);
 
                 await expect(yieldSection.depositedAmount(usdcPrime.id)).toHaveTranslation(
                     'TR_EARN_YIELD_DASHBOARD_DEPOSITED',
@@ -95,6 +130,48 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldSection.depositNowButton(usdcPrime.id)).toBeHidden();
 
                 await yieldSection.withdrawButton(usdcPrime.id).click();
+                await navigateEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    action: 'continue',
+                    from: 'earn-dashboard',
+                    to: 'withdraw-form',
+                });
+            });
+
+            await test.step('How it works opens the earn-in-a-nutshell modal', async () => {
+                await yieldFlowSection.howItWorksButton.click();
+                await interactionEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    element: 'how-it-works',
+                    value: 'yield-withdraw',
+                });
+                await expect(earnNutshellModal.heading).toHaveTranslation(
+                    'TR_EARN_DEFI_YIELD_IN_A_NUTSHELL',
+                );
+                await expect(earnNutshellModal.cancelButton).toBeHidden();
+
+                await earnNutshellModal.continueButton.click();
+                await expect(earnNutshellModal.modalContainer).toBeHidden();
+            });
+
+            await test.step('Amount can be entered in vault shares', async () => {
+                await yieldFlowSection.unitToggleButton.click();
+                await interactionEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    element: 'withdraw-unit-toggle',
+                    value: 'shares',
+                });
+                await expect(yieldFlowSection.amountUnit).toHaveText('trSHUSDCp');
+                await expect(yieldFlowSection.redeemButton).toBeVisible();
+
+                await yieldFlowSection.unitToggleButton.click();
+                await interactionEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    element: 'withdraw-unit-toggle',
+                    value: 'asset',
+                });
+                await expect(yieldFlowSection.amountUnit).toHaveText('USDC');
+                await expect(yieldFlowSection.withdrawButton).toBeVisible();
             });
 
             await test.step(`Withdraw ${WITHDRAW_AMOUNT} USDC`, async () => {
@@ -112,6 +189,13 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                     `${YIELD_USDC_DEPOSITED_AMOUNT} USDC`,
                 );
                 await yieldFlowSection.withdrawButton.click();
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'withdraw',
+                    deviceStatus: 'connected',
+                    wrappedNative: 'false',
+                    apyBreakdown: APY_BREAKDOWN,
+                });
 
                 await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 4.972 trSHUSDCp');
                 await expect(txSimulationModal.sentAssetFiat(0)).toHaveText(
@@ -126,6 +210,10 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(txSimulationModal.maxFeeAmount).toHaveText('0.000108403 ETH');
                 await expect(txSimulationModal.maxFeeFiat).toHaveText('≈ $0.00');
                 await txSimulationModal.confirmButton.click();
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'tx-simulation-modal',
+                });
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
@@ -186,6 +274,16 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await devicePrompt.sendButton.click();
 
                 await expect(yieldFlowSection.withdrawnToast).toBeVisible();
+
+                await yieldFlowSection.pendingTransactionId.click();
+                await interactionEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    element: 'pending-tx-open',
+                    value: 'withdraw',
+                });
+                await expect(yieldFlowSection.transactionDetailTxid).toHaveText(WITHDRAW_TXID);
+                await page.modalCloseButton.click();
+
                 blockbookMock.updateAccountState({
                     transactions: [
                         { ...ETH_STAKE_CONFIRMED_TX, txid: WITHDRAW_TXID },
@@ -204,10 +302,45 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
                     `${WITHDRAW_AMOUNT} USDC`,
                 );
+                await withdrawEvents.expectNext({
+                    ...WITHDRAW_CONTEXT,
+                    type: 'success',
+                    wrappedNative: 'false',
+                    apyBreakdown: APY_BREAKDOWN,
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
+            });
+
+            await test.step('Withdraw flow can be rated', async () => {
+                await yieldFlowSection.feedbackRating(FEEDBACK_RATING).click();
+                await ratingSelectedEvents.expectNext({
+                    ...FEEDBACK_CONTEXT,
+                    rating: FEEDBACK_RATING,
+                });
+                await yieldFlowSection.feedbackFormTextarea.fill('E2E test feedback');
+                await yieldFlowSection.feedbackFormSubmitButton.click();
+                await expect(yieldFlowSection.feedbackSuccessHeading).toHaveTranslation(
+                    'TR_FEEDBACK_CARD_SUCCESS_TITLE',
+                );
+                await expect(toastSection.feedbackSent).toBeVisible();
+                await interactionEvents.expectNext({
+                    element: 'feedback-submit',
+                    value: FEEDBACK_RATING,
+                    vaultId: usdcPrime.id,
+                });
+                await feedbackSentEvents.expectNext(FEEDBACK_CONTEXT);
             });
 
             await test.step('Dashboard shows the reduced position', async () => {
                 await yieldFlowSection.backToOverviewButton.click();
+                await navigateEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    action: 'continue',
+                    from: 'withdraw-form',
+                    to: 'earn-dashboard',
+                });
+                await earnEntryEvents.expectNext({ from: 'earn-yield-withdraw' });
+                await dashboardReadyEvents.expectNext(DASHBOARD_CONTEXT);
 
                 await expect(yieldSection.depositedAmount(usdcPrime.id)).toHaveTranslation(
                     'TR_EARN_YIELD_DASHBOARD_DEPOSITED',

@@ -1,4 +1,5 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { events } from '@suite-common/analytics';
+import { PROD_STAKING_SYMBOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
@@ -11,6 +12,7 @@ import {
     YIELD_MERKL_SMALL_CLAIM_REWARD,
     YIELD_NEW_BLOCK,
     YIELD_USDC_VAULT_SHARE_TOKEN,
+    YIELD_VAULTS,
 } from '../../support/mocks/yieldMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -32,6 +34,42 @@ const buildEthAccountTokens = ({ withClaimedMorpho }: BuildEthAccountTokensParam
 
 const CLAIM_TXID = '0x5555555555555555555555555555555555555555555555555555555555555555';
 
+type NavigateEvent = { action: string; from: string; to: string; networkSymbol?: string };
+
+const NAVIGATE_DASHBOARD_TO_MODAL: NavigateEvent = {
+    action: 'continue',
+    from: 'earn-dashboard',
+    to: 'claim-select-account-modal',
+};
+const NAVIGATE_MODAL_TO_FORM: NavigateEvent = {
+    action: 'continue',
+    from: 'claim-select-account-modal',
+    to: 'claim-form',
+    networkSymbol: 'eth',
+};
+const NAVIGATE_FORM_CANCELLED: NavigateEvent = {
+    action: 'cancel',
+    from: 'claim-form',
+    to: 'earn-dashboard',
+    networkSymbol: 'eth',
+};
+const NAVIGATE_FORM_COMPLETED: NavigateEvent = {
+    action: 'continue',
+    from: 'claim-form',
+    to: 'earn-dashboard',
+    networkSymbol: 'eth',
+};
+
+const CLAIM_CONTEXT = { action: 'continue', networkSymbol: 'eth' };
+const DASHBOARD_CONTEXT = {
+    hasYieldPosition: 'true',
+    hasStakingPosition: 'true',
+    hasClaimBanner: 'true',
+    availableVaultCount: String(Object.keys(YIELD_VAULTS).length),
+    availableStakingCount: String(PROD_STAKING_SYMBOLS.length),
+    hasShowMore: 'false',
+};
+
 test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
@@ -39,32 +77,36 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        blockbookMock.setBroadcastTxid(CLAIM_TXID);
-        blockbookMock.updateAccountState({
-            txs: 3,
-            nonce: '2',
-            transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            tokens: buildEthAccountTokens({ withClaimedMorpho: false }),
-        });
-        await yieldMock.start();
-        await yieldMock.mockMerklRewards(YIELD_MERKL_SMALL_CLAIM_REWARD);
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            blockbookMock.setBroadcastTxid(CLAIM_TXID);
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+                tokens: buildEthAccountTokens({ withClaimedMorpho: false }),
+            });
+            await yieldMock.start();
+            await yieldMock.mockMerklRewards(YIELD_MERKL_SMALL_CLAIM_REWARD);
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can claim yield rewards',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
             page,
             walletPage,
             yieldSection,
@@ -76,11 +118,21 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             yieldMock,
         }) => {
             const ethAccount = { symbol: 'eth', accountType: 'normal', index: 0 };
+            const earnEntryEvents = analytics.trackEvents(events.yieldEarnEntryEvent.name);
+            const dashboardReadyEvents = analytics.trackEvents(events.earnDashboardReadyEvent.name);
+            const navigateEvents = analytics.trackEvents(events.yieldNavigateEvent.name);
+            const interactionEvents = analytics.trackEvents(events.yieldInteractionEvent.name);
+            const claimEvents = analytics.trackEvents(events.yieldClaimEvent.name);
 
             await test.step('Claim page warns when the network fee exceeds the rewards', async () => {
                 await yieldSection.earnMenuButton.click();
+                await earnEntryEvents.expectNext({ from: 'settings-coins' });
+                await dashboardReadyEvents.expectNext(DASHBOARD_CONTEXT);
                 await yieldSection.claimRewardsButton.click();
+                await navigateEvents.expectNext(NAVIGATE_DASHBOARD_TO_MODAL);
+
                 await yieldSection.claimAccountButton(ethAccount).click();
+                await navigateEvents.expectNext(NAVIGATE_MODAL_TO_FORM);
 
                 await expect(yieldFlowSection.claimRewardAmount(CLAIM_REWARD_TOKEN)).toHaveText(
                     SMALL_CLAIM_REWARD_AMOUNT,
@@ -98,10 +150,15 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             });
 
             await test.step('Dashboard shows the claim rewards banner', async () => {
+                // Leaving the claim form without claiming is reported as a cancel.
                 await yieldSection.earnMenuButton.click();
+                await navigateEvents.expectNext(NAVIGATE_FORM_CANCELLED);
+                await earnEntryEvents.expectNext({ from: 'earn-yield-claim' });
+                await dashboardReadyEvents.expectNext(DASHBOARD_CONTEXT);
 
                 await expect(yieldSection.claimRewardsAmount).toHaveText(CLAIM_REWARD_FIAT_AMOUNT);
                 await yieldSection.claimRewardsButton.click();
+                await navigateEvents.expectNext(NAVIGATE_DASHBOARD_TO_MODAL);
             });
 
             await test.step('Select the account with claimable rewards', async () => {
@@ -113,6 +170,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 );
                 await expect(yieldSection.claimAccountFiatAmount(ethAccount)).toHaveText('$2.50');
                 await yieldSection.claimAccountButton(ethAccount).click();
+                await navigateEvents.expectNext(NAVIGATE_MODAL_TO_FORM);
             });
 
             await test.step('Claim page lists the claimable rewards', async () => {
@@ -132,6 +190,12 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(yieldFlowSection.claimButton).toBeEnabled();
                 await expect(yieldFlowSection.claimFeeWarning).toBeHidden();
                 await yieldFlowSection.claimButton.click();
+                await claimEvents.expectNext({
+                    ...CLAIM_CONTEXT,
+                    type: 'claim',
+                    deviceStatus: 'connected',
+                    rewardCount: '1',
+                });
 
                 await expect(txSimulationModal.receivedAsset(0)).toHaveText(
                     `Receiving ${CLAIM_REWARD_AMOUNT}`,
@@ -140,6 +204,11 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(txSimulationModal.maxFeeAmount).toHaveText('0.000108403 ETH');
                 await expect(txSimulationModal.maxFeeFiat).toHaveText('≈ $0.00');
                 await txSimulationModal.confirmButton.click();
+                await claimEvents.expectNext({
+                    ...CLAIM_CONTEXT,
+                    type: 'tx-simulation-modal',
+                    rewardCount: '1',
+                });
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
 
@@ -191,6 +260,16 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(yieldFlowSection.claimedToastMessage).toHaveTranslation(
                     'TOAST_TX_CLAIM_PENDING',
                 );
+
+                await yieldFlowSection.pendingTransactionId.click();
+                await interactionEvents.expectNext({
+                    networkSymbol: 'eth',
+                    element: 'pending-tx-open',
+                    value: 'claim',
+                });
+                await expect(yieldFlowSection.transactionDetailTxid).toHaveText(CLAIM_TXID);
+                await page.modalCloseButton.click();
+
                 blockbookMock.updateAccountState({
                     transactions: [
                         { ...ETH_STAKE_CONFIRMED_TX, txid: CLAIM_TXID },
@@ -212,11 +291,21 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(
                     yieldFlowSection.flowCompleteRewardFiatAmount(CLAIM_REWARD_TOKEN),
                 ).toHaveText(CLAIM_REWARD_FIAT_AMOUNT);
+
+                await claimEvents.expectNext({
+                    ...CLAIM_CONTEXT,
+                    type: 'success',
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
             });
 
             await test.step('Dashboard no longer offers rewards to claim', async () => {
                 await page.clock.fastForward('01:01');
                 await yieldFlowSection.backToOverviewButton.click();
+                // Leaving the completed claim form is reported as a continue.
+                await navigateEvents.expectNext(NAVIGATE_FORM_COMPLETED);
+                await earnEntryEvents.expectNext({ from: 'earn-yield-claim' });
+                await dashboardReadyEvents.expectNext(DASHBOARD_CONTEXT);
 
                 await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD');
                 await expect(yieldSection.claimRewardsAmount).toHaveText('$0.00');
