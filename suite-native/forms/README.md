@@ -47,4 +47,4 @@ As you may noticed usage is very similar to react-hook-form, but there are few d
 1. You need always wrap you form with `Form` component and pass `form` prop.
 2. You are allowed to use `Field` components only, if you don't find one you need, you can implement it using `useField` hook.
 3. `useForm` hook accepts `validation` arg, which is `yup` schema, you don't need to use `yupResolver` because this is handled automatically.
-4. Validation schema is considered as source truth for shape of you form and for also is used as source for types, because of that `validation` arg for `useForm` and is mandatory.
+4. The form values type comes from the generic or `defaultValues`. The third generic is the type `handleSubmit` receives, which is the output of the `validation` schema and is checked against it. When the schema transforms values (e.g. a `number` field over a `string` input) or validates only some fields, pass that output type, e.g. `useForm<FormValues, object, yup.InferType<typeof schema>>`. `validation` is optional only when the form values already satisfy the submitted type.

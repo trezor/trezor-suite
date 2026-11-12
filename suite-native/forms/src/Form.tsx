@@ -3,17 +3,25 @@ import { type FieldValues, type UseFormReturn } from 'react-hook-form';
 
 export type { FieldValues, Path, UseFormReturn, FieldPathValue, Control } from 'react-hook-form';
 
-export interface FormProps<TFieldValues extends FieldValues> {
+export interface FormProps<
+    TFieldValues extends FieldValues,
+    TContext = object,
+    TTransformedValues = TFieldValues,
+> {
     children?: ReactNode;
-    form: UseFormReturn<TFieldValues>;
+    form: UseFormReturn<TFieldValues, TContext, TTransformedValues>;
 }
 
 export const FormContext = createContext<UseFormReturn>({} as UseFormReturn);
 
-export const Form = <TFieldValues extends FieldValues>({
+export const Form = <
+    TFieldValues extends FieldValues,
+    TContext = object,
+    TTransformedValues = TFieldValues,
+>({
     children,
     form,
-}: FormProps<TFieldValues>) => {
+}: FormProps<TFieldValues, TContext, TTransformedValues>) => {
     const formContextValue = {
         ...form,
     };

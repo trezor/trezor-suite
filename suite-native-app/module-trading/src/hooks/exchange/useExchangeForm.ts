@@ -24,7 +24,11 @@ import {
     selectExchangeSelectedSendAccount,
     selectGroupedExchangeQuotes,
 } from '@suite-native/trading-state';
-import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
+import type {
+    ExchangeFormType,
+    ExchangeFormValidatedValues,
+    ExchangeFormValues,
+} from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -246,7 +250,7 @@ export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => 
     );
     const context = { ...tradingFormContext, maxSpendableAmount };
 
-    const form = useForm<ExchangeFormValues>({
+    const form = useForm<ExchangeFormValues, object, ExchangeFormValidatedValues>({
         validation: exchangeFormValidationSchema,
         context,
     });

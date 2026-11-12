@@ -25,4 +25,9 @@ export type SellFormValues = BaseFormValues<
     FormWithSendAccountValues &
     FormWithFiatCurrencyValues;
 
-export type SellFormType = UseFormReturn<SellFormValues>;
+export type SellFormValidatedValues = {
+    cryptoStringAmount: number | undefined;
+    fiatStringAmount: number | undefined;
+};
+
+export type SellFormType = UseFormReturn<SellFormValues, object, SellFormValidatedValues>;

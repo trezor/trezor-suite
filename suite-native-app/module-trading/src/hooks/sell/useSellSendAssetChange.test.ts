@@ -7,7 +7,7 @@ import { useForm } from '@suite-native/forms';
 import { act, renderHookWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
 import { type TradingRootState, sellActions } from '@suite-native/trading-state';
-import { type SellFormValues } from '@suite-native/trading-types';
+import { type SellFormValidatedValues, type SellFormValues } from '@suite-native/trading-types';
 
 import { useSellSendAssetChange } from './useSellSendAssetChange';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
@@ -27,7 +27,9 @@ describe('useSellSendAssetChange', () => {
     const renderSellSendAssetChange = () =>
         renderHookWithStoreProvider(
             () => {
-                const form = useForm<SellFormValues>({ validation: sellFormValidationSchema });
+                const form = useForm<SellFormValues, object, SellFormValidatedValues>({
+                    validation: sellFormValidationSchema,
+                });
 
                 return { form, ...useSellSendAssetChange(form) };
             },

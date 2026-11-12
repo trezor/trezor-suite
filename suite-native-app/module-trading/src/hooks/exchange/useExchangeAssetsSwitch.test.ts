@@ -6,17 +6,22 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { useForm, yup } from '@suite-native/forms';
+import { useForm } from '@suite-native/forms';
 import { act, screen } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { tradingActions } from '@suite-native/trading-state';
-import { type ExchangeFormValues } from '@suite-native/trading-types';
+import {
+    type ExchangeFormValidatedValues,
+    type ExchangeFormValues,
+} from '@suite-native/trading-types';
 
 import { useExchangeAssetsSwitch } from './useExchangeAssetsSwitch';
 import {
     createTradingTestStore,
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
+import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 
 const reportMock = jest.fn();
 const services: NativeAnalyticsDep = {
@@ -74,7 +79,11 @@ const renderAssetsSwitch = async ({
 
     const rendered = await renderHookWithTradingProvider(
         () => {
-            const form = useForm<ExchangeFormValues>({ validation: yup.object({}) });
+            const { context } = useContextForTradingForm(undefined);
+            const form = useForm<ExchangeFormValues, object, ExchangeFormValidatedValues>({
+                validation: exchangeFormValidationSchema,
+                context,
+            });
 
             return { form, ...useExchangeAssetsSwitch(form) };
         },

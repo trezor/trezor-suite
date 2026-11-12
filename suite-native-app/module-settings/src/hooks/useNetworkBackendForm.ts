@@ -75,6 +75,7 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
                 .required(),
             serverAddress: yup
                 .string()
+                .defined()
                 .test(
                     'format',
                     translate('moduleSettings.networkBackends.server.invalidFormat'),
