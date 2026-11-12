@@ -17,9 +17,10 @@ import { type Log } from '@trezor/logger';
 
 import { getEnv } from '../connectSettings';
 import { getSuiteWebUrl } from './getSuiteWebUrl';
+import { BootstrapError } from '../bootstrap/bootstrap-errors';
 import { type Popup } from '../popup/abstract';
 import { WebPopup } from '../popup/web';
-import { WebExtensionPopup } from '../popup/webextension';
+import { WebExtensionPopup, canSuiteWebReplyToExtension } from '../popup/webextension';
 
 /**
  * Base class for CoreInPopup methods for TrezorConnect factory.
@@ -72,6 +73,13 @@ export class CoreInSuiteWeb implements ConnectImpl {
 
             switch (resolvedEnv) {
                 case 'webextension':
+                    if (!canSuiteWebReplyToExtension()) {
+                        // Rejecting keeps TrezorConnectDynamic on Suite desktop, so the caller gets
+                        // Desktop_ConnectionMissing instead of a Suite Web tab that never answers.
+                        return Promise.reject(
+                            ERRORS.TypedError('Handshake_Error', BootstrapError.ENV_NOT_SUPPORTED),
+                        );
+                    }
                     this._popupManager = new WebExtensionPopup(params);
                     break;
                 case 'web':
