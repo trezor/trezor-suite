@@ -1,7 +1,8 @@
-import { default as GetAccountInfo } from './getAccountInfo';
-import { initBlockchain } from '../backend/BlockchainLink';
+import { initBlockchain } from '@trezor/blockchain-core';
 
-jest.mock('../backend/BlockchainLink', () => ({
+import { default as GetAccountInfo } from './getAccountInfo';
+
+jest.mock('@trezor/blockchain-core', () => ({
     assertBackendSupported: jest.fn(),
     initBlockchain: jest.fn(),
 }));
