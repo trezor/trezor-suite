@@ -1,18 +1,18 @@
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
+import * as ERRORS from '@trezor/connect-common/constants/errors';
 import {
     CORE_CALL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     createErrorMessage,
-} from '@trezor/connect-common/src/events';
-import type { ConnectImpl } from '@trezor/connect-common/src/impl/dynamic';
-import type { ConnectImplSettings } from '@trezor/connect-common/src/types/settings';
+} from '@trezor/connect-common/events';
+import type { ConnectImpl } from '@trezor/connect-common/impl/dynamic';
+import type { ConnectImplSettings } from '@trezor/connect-common/types/settings';
 import {
     type CancelParams,
     createCoreCallCancelMessage,
     normalizeCancelParams,
-} from '@trezor/connect-common/src/utils/cancelParams';
-import { initLog } from '@trezor/connect-common/src/utils/debug';
+} from '@trezor/connect-common/utils/cancelParams';
+import { initLog } from '@trezor/connect-common/utils/debug';
 import { type Log } from '@trezor/logger';
 
 import { getEnv } from '../connectSettings';

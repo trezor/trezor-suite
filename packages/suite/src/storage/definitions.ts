@@ -40,7 +40,7 @@ import type {
     WalletSettings,
 } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
-import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
+import { type FirmwareChannel } from '@trezor/connect-common/types/firmware';
 
 import type { BioAuthState } from '#src/reducers/bioAuth/bioAuthReducer';
 import type { EvmSettings } from '#src/reducers/suite/evmSettings';

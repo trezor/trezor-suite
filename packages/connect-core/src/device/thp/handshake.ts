@@ -1,6 +1,6 @@
 import { randomBytes } from '@noble/hashes/utils.js';
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { protobufManager } from '@trezor/protobuf';
 import type { ThpPairingMethod } from '@trezor/protocol';
 import { thp as protocolThp } from '@trezor/protocol';

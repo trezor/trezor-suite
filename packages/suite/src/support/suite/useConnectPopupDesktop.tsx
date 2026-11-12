@@ -23,7 +23,7 @@ import TrezorConnect, {
     UI_EVENTS,
     UI_REQUESTS,
 } from '@trezor/connect';
-import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError, serializeError } from '@trezor/connect-common/constants/errors';
 import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';

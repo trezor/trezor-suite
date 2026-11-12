@@ -13,7 +13,7 @@ import type {
     PermissionRequest,
     TokenInfo,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';

@@ -1,8 +1,8 @@
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
-import { type CoreEventMessage } from '@trezor/connect-common/src/events';
-import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
-import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
-import { getOrigin } from '@trezor/connect-common/src/utils/urlUtils';
+import * as ERRORS from '@trezor/connect-common/constants/errors';
+import { type CoreEventMessage } from '@trezor/connect-common/events';
+import { type AbstractMessageChannel } from '@trezor/connect-common/messageChannel/abstract';
+import { WindowWindowChannel } from '@trezor/connect-common/messageChannel/window-window';
+import { getOrigin } from '@trezor/connect-common/utils/urlUtils';
 import { getWeakRandomId } from '@trezor/utils/src/getWeakRandomId';
 
 import { Popup } from './abstract';

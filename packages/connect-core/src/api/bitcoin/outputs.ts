@@ -7,7 +7,7 @@ import type {
     PROTO,
     ProtoWithDerivationPath,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import type { ComposeOutput as ComposeOutputBase, Network } from '@trezor/utxo-lib';
 import { address as BitcoinJsAddress, payments as BitcoinJsPayments } from '@trezor/utxo-lib';
 

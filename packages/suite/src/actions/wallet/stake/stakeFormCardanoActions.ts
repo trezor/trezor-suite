@@ -58,7 +58,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { CardanoProtocolParameters } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
-import { type ErrorCode } from '@trezor/connect-common/src/constants/errors';
+import { type ErrorCode } from '@trezor/connect-common/constants/errors';
 import {
     getAddressParameters,
     getDerivationType,

@@ -8,7 +8,7 @@ import { persistentDeviceDataActions } from '@suite-common/persistent-device-dat
 import { type AcquiredDevice, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { UI_EVENTS, type UiEventWalletCreationEntropyCheck } from '@trezor/connect';
-import type { SerializedError } from '@trezor/connect-common/src/constants/errors';
+import type { SerializedError } from '@trezor/connect-common/constants/errors';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
