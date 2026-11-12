@@ -23,6 +23,9 @@
         { "path": "../../suite/github" },
         { "path": "../../suite/intl" },
         {
+            "path": "../../suite/platform-encryption-electron"
+        },
+        {
             "path": "../../suite/platform-encryption-webauthn"
         },
         { "path": "../../suite/router" },
@@ -35,6 +38,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/suite" },

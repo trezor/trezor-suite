@@ -1,4 +1,8 @@
-import { type DecryptionError, type EncryptionError } from '@suite-common/platform-encryption';
+import {
+    type DecryptionError,
+    type EncryptionError,
+    type WebauthnAuthenticator,
+} from '@suite-common/platform-encryption';
 import { type Result } from '@trezor/type-utils';
 
 import {
@@ -169,6 +173,12 @@ export interface InvokeChannels {
     'safe-storage/decrypt': (params: { value: string }) => Result<string, DecryptionError>;
     'safe-storage/encrypt': (params: { value: string }) => Result<string, EncryptionError>;
     'webauthn/activate-frame': () => boolean;
+    'webauthn/create-credential': () => Awaited<
+        ReturnType<WebauthnAuthenticator['createCredential']>
+    >;
+    'webauthn/evaluate-prf': (
+        params: Parameters<WebauthnAuthenticator['evaluatePrf']>[0],
+    ) => Awaited<ReturnType<WebauthnAuthenticator['evaluatePrf']>>;
 
     // MCP server
     'mcp/get-settings': () => {
@@ -280,6 +290,8 @@ export type DesktopApi = {
     safeStoreDecrypt: DesktopApiInvoke<'safe-storage/decrypt'>;
     // WebAuthn
     webauthnActivateFrame: DesktopApiInvoke<'webauthn/activate-frame'>;
+    webauthnCreateCredential: DesktopApiInvoke<'webauthn/create-credential'>;
+    webauthnEvaluatePrf: DesktopApiInvoke<'webauthn/evaluate-prf'>;
 
     // MCP server
     mcpGetSettings: DesktopApiInvoke<'mcp/get-settings'>;

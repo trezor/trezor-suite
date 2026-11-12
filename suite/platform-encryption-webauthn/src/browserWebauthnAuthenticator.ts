@@ -78,7 +78,7 @@ export const createBrowserWebauthnAuthenticator = (
 
         return ok({
             credentialIdHex: bytesToHex(new Uint8Array(credential.rawId)),
-            isPrfEnabled: credential.getClientExtensionResults().prf?.enabled === true,
+            isPrfEnabled: credential.getClientExtensionResults().prf?.enabled,
         });
     };
 

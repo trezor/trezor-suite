@@ -4,7 +4,8 @@ import { type EncryptionUnavailable } from './platformEncryption';
 
 export type WebauthnCredential = {
     credentialIdHex: string;
-    isPrfEnabled: boolean;
+    /** Undefined when the authenticator does not report PRF support at creation. */
+    isPrfEnabled: boolean | undefined;
 };
 
 export type EvaluateWebauthnPrfParams = {

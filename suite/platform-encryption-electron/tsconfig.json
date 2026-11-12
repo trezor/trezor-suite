@@ -6,6 +6,9 @@
             "path": "../../suite-common/platform-encryption"
         },
         { "path": "../desktop-app-api" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

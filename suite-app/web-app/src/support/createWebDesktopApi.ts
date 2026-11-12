@@ -69,6 +69,8 @@ export const createWebDesktopApi = (): DesktopApi => ({
     safeStoreEncrypt: unavailableAsync('safeStoreEncrypt'),
     safeStoreDecrypt: unavailableAsync('safeStoreDecrypt'),
     webauthnActivateFrame: unavailableAsync('webauthnActivateFrame'),
+    webauthnCreateCredential: unavailableAsync('webauthnCreateCredential'),
+    webauthnEvaluatePrf: unavailableAsync('webauthnEvaluatePrf'),
     mcpGetSettings: unavailableAsync('mcpGetSettings'),
     mcpSetEnabled: unavailableAsync('mcpSetEnabled'),
     mcpRegenerateToken: unavailableAsync('mcpRegenerateToken'),

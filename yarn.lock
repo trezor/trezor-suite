@@ -2692,6 +2692,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@electron-webauthn/macos@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@electron-webauthn/macos@npm:1.4.0"
+  dependencies:
+    "@electron-webauthn/types": "npm:^1.4.0"
+    "@oslojs/cbor": "npm:^1.0.0"
+    "@oslojs/webauthn": "npm:^1.0.0"
+    objc-js: "npm:^1.6.0"
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"@electron-webauthn/types@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@electron-webauthn/types@npm:1.4.0"
+  checksum: 10/11c6f0b3bc1e71f7351909dd68066d9c471fcaf7b08b4e78ba9764096883f78a2b37a862b6874421a9643172de3c19478845836ce95a706840892c0952cc228c
+  languageName: node
+  linkType: hard
+
 "@electron/asar@npm:4.1.1":
   version: 4.1.1
   resolution: "@electron/asar@npm:4.1.1"
@@ -6938,6 +6957,61 @@ __metadata:
     zod:
       optional: true
   checksum: 10/aa7698cae869e4e8c0f7baa9f9a061f098f4a253a09c72352341a26aa889ac0180ccaebfc8af1f7240cdc47540ce2e9763afff385e48d0c9d4a8a3e1918e62f8
+  languageName: node
+  linkType: hard
+
+"@oslojs/asn1@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/asn1@npm:1.0.0"
+  dependencies:
+    "@oslojs/binary": "npm:1.0.0"
+  checksum: 10/2f10519a0fd3163cd5cbce8f611b9ae542fcbf176915c9a343aa86a8e36621ff4a74083a63765dd95c82a9899aefbe0ea533e757686fc6bf97f4edd1fa1867d2
+  languageName: node
+  linkType: hard
+
+"@oslojs/binary@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/binary@npm:1.0.0"
+  checksum: 10/f53aed66591512f5837b9091fae71df3076101db6b58d7095d6177a2f0e3548a5ed0b31063936c25749700b0f3b0139f71283ec7d34d7b56b1dc2b9884c3b323
+  languageName: node
+  linkType: hard
+
+"@oslojs/cbor@npm:1.0.0, @oslojs/cbor@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/cbor@npm:1.0.0"
+  dependencies:
+    "@oslojs/binary": "npm:1.0.0"
+  checksum: 10/bb90fd42ea1ef68a02f132845f2dafaafe25c32fb6e3be0fd8a0520a47438af9f6073215b16fc4c2487f3b1086f7a7af5704855326d06b3842ab13d3675a212b
+  languageName: node
+  linkType: hard
+
+"@oslojs/crypto@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/crypto@npm:1.0.0"
+  dependencies:
+    "@oslojs/asn1": "npm:1.0.0"
+    "@oslojs/binary": "npm:1.0.0"
+  checksum: 10/b52fcf803897dff2943adf3d99303fe034d121e32e68ba6512af1315cc37fc131fddd4288281fff0ae989185b9077fe517d105c52efeeaddd131b3742d40e6d9
+  languageName: node
+  linkType: hard
+
+"@oslojs/encoding@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/encoding@npm:1.0.0"
+  checksum: 10/f133c2fa901c0386f618be3fcd2a71d400a432a668fa48e0c884c71ff800c44919dc010ec4e6f4a4ac763d4424e50970a9e68539ebd8dd82fdb4801381c7d606
+  languageName: node
+  linkType: hard
+
+"@oslojs/webauthn@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/webauthn@npm:1.0.0"
+  dependencies:
+    "@oslojs/asn1": "npm:1.0.0"
+    "@oslojs/binary": "npm:1.0.0"
+    "@oslojs/cbor": "npm:1.0.0"
+    "@oslojs/crypto": "npm:1.0.0"
+    "@oslojs/encoding": "npm:1.0.0"
+  checksum: 10/8eae4b0a91e7501bd80a449493990bc287e0583b1c68dc98d63aabbec7f4282de3fd9a671f5e31444b0201bd7c031bf545e3fc983f0a83f67c6a31f1d46e1ec3
   languageName: node
   linkType: hard
 
@@ -11388,6 +11462,7 @@ __metadata:
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:11.0.2"
     electron-updater: "npm:7.0.0-alpha.9"
+    electron-webauthn: "npm:1.4.0"
     glob: "npm:^13.0.1"
     lodash: "npm:^4.18.1"
     minimizer-webpack-plugin: "npm:5.13.0"
@@ -11416,6 +11491,7 @@ __metadata:
     "@suite/flags": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
@@ -11423,6 +11499,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/connect-electron": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/suite": "workspace:*"
@@ -11454,6 +11531,7 @@ __metadata:
   dependencies:
     electron: "npm:45.1.0"
     electron-builder: "npm:27.0.0-alpha.10"
+    electron-webauthn: "npm:1.4.0"
     node-hid: "npm:3.4.0"
     openpgp: "npm:^6.3.2"
     usb: "npm:^3.2.1"
@@ -17507,12 +17585,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/platform-encryption-electron@workspace:suite/platform-encryption-electron":
+"@suite/platform-encryption-electron@workspace:*, @suite/platform-encryption-electron@workspace:suite/platform-encryption-electron":
   version: 0.0.0-use.local
   resolution: "@suite/platform-encryption-electron@workspace:suite/platform-encryption-electron"
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -28271,6 +28350,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"electron-webauthn@npm:1.4.0":
+  version: 1.4.0
+  resolution: "electron-webauthn@npm:1.4.0"
+  dependencies:
+    "@electron-webauthn/macos": "npm:^1.4.0"
+    "@electron-webauthn/types": "npm:^1.4.0"
+  dependenciesMeta:
+    "@electron-webauthn/macos":
+      optional: true
+  checksum: 10/15fbc748fd29287737c676bdc090f9b186a988edd8052f75f5737fb22739e5de8eaeaa0c2e89781e699a36eee6f3f4b729d5602d8256120abe6f583ec77544a3
+  languageName: node
+  linkType: hard
+
 "electron@npm:45.1.0":
   version: 45.1.0
   resolution: "electron@npm:45.1.0"
@@ -38734,7 +38826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp-build@npm:^4.5.0":
+"node-gyp-build@npm:^4.5.0, node-gyp-build@npm:^4.8.4":
   version: 4.8.4
   resolution: "node-gyp-build@npm:4.8.4"
   bin:
@@ -39207,6 +39299,17 @@ __metadata:
   dependencies:
     flow-enums-runtime: "npm:^0.0.6"
   checksum: 10/006dfaca8be7128cbf98ead8006c0f530696fb11570f81fb26acd818826a9a7bb3d00f532289496eaf97133dab5bbb0a0067f679e64137a7e880d32ec2fe0df2
+  languageName: node
+  linkType: hard
+
+"objc-js@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "objc-js@npm:1.6.0"
+  dependencies:
+    node-addon-api: "npm:^8.9.2"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.8.4"
+  conditions: os=darwin
   languageName: node
   linkType: hard
 

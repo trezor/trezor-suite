@@ -17,12 +17,12 @@ const secret = 'top secret' as Secret;
 const CREDENTIAL_ID_HEX = 'abcd';
 const PRF_OUTPUT_HEX = '11'.repeat(32);
 
-const createDeps = (storedCredentialId: string | null) =>
+const createDeps = (storedCredentialId: string | null, prfOutputHex = PRF_OUTPUT_HEX) =>
     createMockDeps<WebauthnPlatformEncryptionDeps>({
         webauthnAuthenticator: {
             createCredential: () =>
                 Promise.resolve(ok({ credentialIdHex: CREDENTIAL_ID_HEX, isPrfEnabled: true })),
-            evaluatePrf: () => Promise.resolve(ok(PRF_OUTPUT_HEX)),
+            evaluatePrf: () => Promise.resolve(ok(prfOutputHex)),
         },
         credentialIdStorage: {
             getCredentialId: () => storedCredentialId,
@@ -30,65 +30,73 @@ const createDeps = (storedCredentialId: string | null) =>
         },
     });
 
+const encryptOrThrow = async (deps: WebauthnPlatformEncryptionDeps) => {
+    const result = await createWebauthnPlatformEncryption(deps).encrypt({ value: secret });
+    if (!result.success) {
+        throw new Error('encryption failed');
+    }
+
+    return result.payload;
+};
+
 describe(createWebauthnPlatformEncryption.name, () => {
-    it('creates and stores a credential on the first encryption', async () => {
+    it('creates a credential on the first encryption and stores it once it yields a key', async () => {
         const deps = createDeps(null);
-        const platformEncryption = createWebauthnPlatformEncryption(deps);
 
-        const result = await platformEncryption.encrypt({ value: secret });
+        await encryptOrThrow(deps);
 
-        expect(result.success).toBe(true);
         expect(deps.webauthnAuthenticator.createCredential).toHaveBeenCalledTimes(1);
+        expect(deps.webauthnAuthenticator.evaluatePrf).toHaveBeenCalledWith({
+            credentialIdHex: CREDENTIAL_ID_HEX,
+            saltHex: expect.stringMatching(/^[0-9a-f]+$/),
+        });
         expect(deps.credentialIdStorage.setCredentialId).toHaveBeenCalledWith(CREDENTIAL_ID_HEX);
     });
 
-    it('reuses the stored credential', async () => {
+    it('asks the authenticator once per session', async () => {
         const deps = createDeps(CREDENTIAL_ID_HEX);
         const platformEncryption = createWebauthnPlatformEncryption(deps);
 
-        await platformEncryption.encrypt({ value: secret });
-
-        expect(deps.webauthnAuthenticator.createCredential).not.toHaveBeenCalled();
-        expect(deps.webauthnAuthenticator.evaluatePrf).toHaveBeenCalledWith({
-            credentialIdHex: CREDENTIAL_ID_HEX,
-            saltHex: expect.stringMatching(/^[0-9a-f]{64}$/),
-        });
-    });
-
-    it('decrypts what it encrypted', async () => {
-        const platformEncryption = createWebauthnPlatformEncryption(createDeps(CREDENTIAL_ID_HEX));
-
-        const encrypted = await platformEncryption.encrypt({ value: secret });
-        if (!encrypted.success) {
+        const [first] = await Promise.all([
+            platformEncryption.encrypt({ value: secret }),
+            platformEncryption.encrypt({ value: secret }),
+        ]);
+        if (!first.success) {
             throw new Error('encryption failed');
         }
+        await platformEncryption.decrypt({ value: first.payload });
 
-        expect(await platformEncryption.decrypt({ value: encrypted.payload })).toEqual(ok(secret));
+        expect(deps.webauthnAuthenticator.createCredential).not.toHaveBeenCalled();
+        expect(deps.webauthnAuthenticator.evaluatePrf).toHaveBeenCalledTimes(1);
+    });
+
+    it('decrypts in a new session with the same passkey', async () => {
+        const encrypted = await encryptOrThrow(createDeps(CREDENTIAL_ID_HEX));
+
+        const result = await createWebauthnPlatformEncryption(
+            createDeps(CREDENTIAL_ID_HEX),
+        ).decrypt({ value: encrypted });
+
+        expect(result).toEqual(ok(secret));
     });
 
     it('fails to decrypt with a different PRF output', async () => {
-        const deps = createDeps(CREDENTIAL_ID_HEX);
-        const platformEncryption = createWebauthnPlatformEncryption(deps);
-        const encrypted = await platformEncryption.encrypt({ value: secret });
-        if (!encrypted.success) {
-            throw new Error('encryption failed');
-        }
+        const encrypted = await encryptOrThrow(createDeps(CREDENTIAL_ID_HEX));
 
-        deps.webauthnAuthenticator.evaluatePrf.mockResolvedValue(ok('22'.repeat(32)));
+        const result = await createWebauthnPlatformEncryption(
+            createDeps(CREDENTIAL_ID_HEX, '22'.repeat(32)),
+        ).decrypt({ value: encrypted });
 
-        expect(await platformEncryption.decrypt({ value: encrypted.payload })).toEqual(
-            err(DecryptionFailed()),
-        );
+        expect(result).toEqual(err(DecryptionFailed()));
     });
 
-    it('refuses an authenticator without the PRF extension', async () => {
+    it('refuses an authenticator that reports no PRF support', async () => {
         const deps = createDeps(null);
         deps.webauthnAuthenticator.createCredential.mockResolvedValue(
             ok({ credentialIdHex: CREDENTIAL_ID_HEX, isPrfEnabled: false }),
         );
-        const platformEncryption = createWebauthnPlatformEncryption(deps);
 
-        const result = await platformEncryption.encrypt({ value: secret });
+        const result = await createWebauthnPlatformEncryption(deps).encrypt({ value: secret });
 
         expect(result).toEqual(
             err(EncryptionUnavailable('The authenticator does not support the PRF extension')),
@@ -96,23 +104,40 @@ describe(createWebauthnPlatformEncryption.name, () => {
         expect(deps.credentialIdStorage.setCredentialId).not.toHaveBeenCalled();
     });
 
-    it('rejects malformed ciphertext without asking the authenticator', async () => {
-        const deps = createDeps(CREDENTIAL_ID_HEX);
+    it('does not store a new credential that yields no PRF output, and retries later', async () => {
+        const deps = createDeps(null);
+        deps.webauthnAuthenticator.evaluatePrf.mockResolvedValueOnce(
+            err(EncryptionUnavailable('The assertion carries no PRF output')),
+        );
         const platformEncryption = createWebauthnPlatformEncryption(deps);
 
-        const result = await platformEncryption.decrypt({ value: asEncryptedHex<Secret>('zz') });
+        const failed = await platformEncryption.encrypt({ value: secret });
+        const retried = await platformEncryption.encrypt({ value: secret });
+
+        expect(failed).toEqual(err(EncryptionUnavailable('The assertion carries no PRF output')));
+        expect(retried.success).toBe(true);
+        expect(deps.credentialIdStorage.setCredentialId).toHaveBeenCalledTimes(1);
+    });
+
+    it('rejects malformed ciphertext without asking the authenticator', async () => {
+        const deps = createDeps(CREDENTIAL_ID_HEX);
+
+        const result = await createWebauthnPlatformEncryption(deps).decrypt({
+            value: asEncryptedHex<Secret>('zz'),
+        });
 
         expect(result).toEqual(err(DecryptionFailed()));
         expect(deps.webauthnAuthenticator.evaluatePrf).not.toHaveBeenCalled();
     });
 
     it('cannot decrypt without a stored credential', async () => {
-        const platformEncryption = createWebauthnPlatformEncryption(createDeps(null));
+        const deps = createDeps(null);
 
-        const result = await platformEncryption.decrypt({
+        const result = await createWebauthnPlatformEncryption(deps).decrypt({
             value: asEncryptedHex<Secret>('00'.repeat(64)),
         });
 
         expect(result).toEqual(err(EncryptionUnavailable('No WebAuthn credential is registered')));
+        expect(deps.webauthnAuthenticator.createCredential).not.toHaveBeenCalled();
     });
 });

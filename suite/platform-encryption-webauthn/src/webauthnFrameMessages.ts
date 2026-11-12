@@ -29,7 +29,9 @@ export const isHex = (value: unknown): value is string =>
     typeof value === 'string' && /^(?:[0-9a-fA-F]{2})+$/.test(value);
 
 export const isWebauthnCredential = (value: unknown): value is WebauthnCredential =>
-    isRecord(value) && isHex(value.credentialIdHex) && typeof value.isPrfEnabled === 'boolean';
+    isRecord(value) &&
+    isHex(value.credentialIdHex) &&
+    (value.isPrfEnabled === undefined || typeof value.isPrfEnabled === 'boolean');
 
 export const isWebauthnFrameRequest = (value: unknown): value is WebauthnFrameRequest => {
     if (!isRecord(value) || value.type !== WEBAUTHN_FRAME_REQUEST) {
