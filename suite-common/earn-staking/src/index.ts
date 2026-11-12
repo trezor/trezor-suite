@@ -77,6 +77,20 @@ export {
     type StakingAccountFiatRootState,
     type StakingPositionEntry,
 } from './state/stakingAccountSelectors';
+export {
+    selectDeviceStakingEntryByWarning,
+    selectDeviceStakingPositionEntries,
+    selectDeviceStakingPositionEntriesBySymbol,
+    selectDeviceStakingPositionsCount,
+    selectDeviceStakingSymbols,
+    type StakingDeviceRootState,
+} from './state/stakingDeviceSelectors';
+export {
+    selectDeviceStakingFiatPositions,
+    selectDeviceStakingFiatValuations,
+    selectDeviceStakingTotalFiatAmount,
+    type StakingFiatRootState,
+} from './state/stakingFiatSelectors';
 export { prepareStakingMiddleware, type StakingMiddlewareDeps } from './state/stakingMiddleware';
 export {
     mergeAccountPositions,
