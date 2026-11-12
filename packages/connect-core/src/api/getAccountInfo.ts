@@ -99,7 +99,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Par
 
         let utxo: AccountUtxo[] | undefined;
         if (isUtxoBased(coinInfo) && typeof details === 'string' && details !== 'basic') {
-            utxo = await blockchain.getAccountUtxo(canonicalDescriptor);
+            utxo = info.empty ? [] : await blockchain.getAccountUtxo(canonicalDescriptor);
         }
 
         // EVM descriptors may be names (.eth and other TLDs) which the backend resolved to hex
