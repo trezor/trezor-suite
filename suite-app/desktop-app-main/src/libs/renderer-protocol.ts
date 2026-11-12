@@ -5,6 +5,7 @@ import { pathToFileURL } from 'url';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import type { ILogger } from './logger';
+import { strictUrlSchema } from './strict-url';
 
 /**
  * The packaged renderer is served from `build/` over this scheme instead of being loaded from
@@ -18,9 +19,21 @@ export const RENDERER_HOST = 'app';
 export const RENDERER_ORIGIN = `${RENDERER_SCHEME}://${RENDERER_HOST}`;
 export const RENDERER_URL = `${RENDERER_ORIGIN}/index.html`;
 
+/**
+ * A URL of the renderer origin, parsed into a `URL`:
+ * the renderer scheme and host, without a port or credentials.
+ */
+export const rendererUrlSchema = strictUrlSchema.refine(
+    url =>
+        url.protocol === `${RENDERER_SCHEME}:` &&
+        url.host === RENDERER_HOST &&
+        url.username === '' &&
+        url.password === '',
+    { message: 'Unexpected origin' },
+);
+
 /** Whether the URL is one the renderer protocol serves, so a page of the packaged renderer. */
-export const isRendererUrl = (url: string | undefined) =>
-    url?.startsWith(`${RENDERER_ORIGIN}/`) === true;
+export const isRendererUrl = (url: unknown) => rendererUrlSchema.safeParse(url).success;
 
 const SERVICE_NAME = 'renderer-protocol';
 
@@ -56,20 +69,16 @@ export const resolveRendererFile = ({
     buildDir,
     url,
 }: ResolveRendererFileParams): Result<string, string> => {
-    let parsedUrl: URL;
-    try {
-        parsedUrl = new URL(url);
-    } catch {
-        return err(`Malformed URL: ${url}`);
-    }
+    const parsedUrl = rendererUrlSchema.safeParse(url);
+    if (!parsedUrl.success) {
+        const [issue] = parsedUrl.error.issues;
 
-    if (parsedUrl.protocol !== `${RENDERER_SCHEME}:` || parsedUrl.host !== RENDERER_HOST) {
-        return err(`Unexpected origin: ${url}`);
+        return err(`${issue?.message ?? 'Malformed URL'}: ${url}`);
     }
 
     let pathname: string;
     try {
-        pathname = decodeURIComponent(parsedUrl.pathname);
+        pathname = decodeURIComponent(parsedUrl.data.pathname);
     } catch {
         return err(`Malformed path: ${url}`);
     }

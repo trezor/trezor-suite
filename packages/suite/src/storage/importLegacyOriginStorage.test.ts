@@ -86,7 +86,8 @@ const createStorageWithInvalidRecord = (): LegacyOriginStorage => {
     const storage = createStorage();
     const [database] = storage.databases;
     const [suiteSettings] = database?.objectStores ?? [];
-    suiteSettings?.records.push({ key: { not: 'a valid key' }, value: {} });
+    // NaN is a number, but not a valid IndexedDB key.
+    suiteSettings?.records.push({ key: Number.NaN, value: {} });
 
     return storage;
 };

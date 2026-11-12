@@ -62,13 +62,17 @@ describe(allowRendererOrigin.name, () => {
         );
     });
 
-    it("leaves the renderer's own resources as they are", () => {
+    it.each([
+        ["the renderer's own resources", 'suite://app/js/main.js'],
+        ['a WebSocket', 'wss://btc1.trezor.io/websocket'],
+        ['a URL that does not parse', 'https//earn.trezor.io/'],
+    ])('leaves a response to %s as it is', (_, nonHttpRequestUrl) => {
         const responseHeaders = { 'content-type': ['text/javascript'] };
 
         expect(
             allowRendererOrigin({
                 frameUrl: rendererFrameUrl,
-                requestUrl: 'suite://app/js/main.js',
+                requestUrl: nonHttpRequestUrl,
                 responseHeaders,
             }),
         ).toBe(responseHeaders);

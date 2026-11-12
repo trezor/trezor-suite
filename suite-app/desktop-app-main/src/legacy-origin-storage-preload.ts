@@ -8,6 +8,7 @@
 import { ipcRenderer } from 'electron';
 
 import {
+    LEGACY_ORIGIN_RECORDS_PER_MESSAGE,
     type LegacyOriginDatabaseDefinition,
     type LegacyOriginExportFailedMessage,
     type LegacyOriginExportFinishedMessage,
@@ -18,7 +19,6 @@ import {
 
 import { LEGACY_ORIGIN_EXPORT_CHANNELS } from './libs/legacy-origin-storage-export';
 
-const RECORDS_PER_MESSAGE = 2000;
 const EXPORT_PAGE_NAME = 'legacy-origin-storage.html';
 
 const toPromise = <T>(request: IDBRequest<T>) =>
@@ -65,8 +65,8 @@ const exportObjectStore = async (
         // round trip is awaited, and the page is the origin's only user, so the slices add up.
         const store = db.transaction(storeName, 'readonly').objectStore(storeName);
         const [keys, values] = await Promise.all([
-            toPromise(store.getAllKeys(afterLastKey, RECORDS_PER_MESSAGE)),
-            toPromise(store.getAll(afterLastKey, RECORDS_PER_MESSAGE)),
+            toPromise(store.getAllKeys(afterLastKey, LEGACY_ORIGIN_RECORDS_PER_MESSAGE)),
+            toPromise(store.getAll(afterLastKey, LEGACY_ORIGIN_RECORDS_PER_MESSAGE)),
         ]);
         const message: LegacyOriginExportObjectStoreMessage = {
             database,
@@ -76,7 +76,7 @@ const exportObjectStore = async (
         await ipcRenderer.invoke(LEGACY_ORIGIN_EXPORT_CHANNELS.objectStore, message);
 
         const lastKey = keys[keys.length - 1];
-        if (keys.length < RECORDS_PER_MESSAGE || lastKey === undefined) return;
+        if (keys.length < LEGACY_ORIGIN_RECORDS_PER_MESSAGE || lastKey === undefined) return;
         afterLastKey = IDBKeyRange.lowerBound(lastKey, true);
     }
 };

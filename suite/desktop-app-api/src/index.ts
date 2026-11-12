@@ -27,6 +27,7 @@ export type {
     LegacyOriginExportObjectStoreMessage,
     LegacyOriginFile,
     LegacyOriginIndexDefinition,
+    LegacyOriginKey,
     LegacyOriginObjectStore,
     LegacyOriginObjectStoreDefinition,
     LegacyOriginRecord,
@@ -40,6 +41,8 @@ export {
     legacyOriginExportFinishedMessage,
     legacyOriginExportObjectStoreMessage,
     legacyOriginFile,
+    legacyOriginStorageImportReport,
 } from './messages';
+export { LEGACY_ORIGIN_RECORDS_PER_MESSAGE } from './legacyOriginExportLimits';
 
 export { type DesktopApiDep, injectDesktopApi } from './desktopApiDependency';
