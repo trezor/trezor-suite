@@ -328,25 +328,19 @@ jobs:
           # Currents orchestration is a two-step process since @currents/playwright v2:
           #   1. discover: list/select the tests (all test-selection flags live here)
           #   2. run: orchestrate the selected tests across machines (execution flags + CURRENTS_* env)
-          DISCOVERY_FILE="$(mktemp)"
-
-          yarn workspace @trezor/suite-e2e test:orchestrated:e2e discover \
-            --pwc-discovery-file "$DISCOVERY_FILE" \
+          yarn workspace @trezor/suite-e2e test:orchestrated:discover \
             --config=$PW_CONFIG \
             $PASS_WITH_NO_TESTS \
             $SPEC_ARGS
 
-          if grep -qE "Total: 0 tests" "$DISCOVERY_FILE"; then
+          if grep -qE "Total: 0 tests" suite/e2e/pwc-discovery.txt; then
             echo "Discovery selected 0 tests for the focused spec list - skipping orchestration run."
             exit 0
           fi
 
-          yarn workspace @trezor/suite-e2e test:orchestrated:e2e run \
-            --pwc-discovery-file "$DISCOVERY_FILE" \
+          yarn workspace @trezor/suite-e2e test:orchestrated:run \
             --config=$PW_CONFIG \
             --pwc-cancel-after-failures "$FAIL_FAST" \
-            --pwc-disable-test-tags \
-            --pwc-skip-reporter-injection \
             $COVERAGE_OPT
 
       - name: Extract and Attach Logs to Currents
