@@ -96,13 +96,24 @@ type RenderEmbedParams = {
     type: TradingType;
     onTypeChange?: (type: TradingType) => void;
     isRegionRestricted?: boolean;
+    disabledTypes?: TradingType[];
 };
 
-const renderEmbed = ({ type, onTypeChange, isRegionRestricted = false }: RenderEmbedParams) => {
+const renderEmbed = ({
+    type,
+    onTypeChange,
+    isRegionRestricted = false,
+    disabledTypes = [],
+}: RenderEmbedParams) => {
     const preloadedState = {
         ...mockInitialAppState,
         messageSystem: mockMessageSystemStateWithFeatureFlags(
-            { [Feature.regions.presenceRestriction]: isRegionRestricted },
+            {
+                [Feature.regions.presenceRestriction]: isRegionRestricted,
+                ...Object.fromEntries(
+                    disabledTypes.map(disabledType => [Feature.trading[disabledType], false]),
+                ),
+            },
             { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
         ),
         wallet: {
@@ -171,17 +182,14 @@ describe('TradingFormEmbed', () => {
         },
     );
 
-    it('renders nothing and leaves the trading state untouched while trading is disabled', () => {
-        jest.mocked(useMessageSystemTrading).mockReturnValue({
-            isDisabled: true,
-            content: undefined,
-        });
+    it('shows the disabled card with the type tabs and leaves the trading state untouched while the type is disabled', () => {
         const onTypeChange = mock<(type: TradingType) => void>();
 
-        const store = renderEmbed({ type: 'sell', onTypeChange });
+        const store = renderEmbed({ type: 'sell', onTypeChange, disabledTypes: ['sell'] });
 
         expect(screen.queryByTestId('trading-form-wrapper/sell')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('@trading/menu/wallet-trading-sell')).not.toBeInTheDocument();
+        expect(screen.getByTestId('@trading/type-disabled')).toBeInTheDocument();
+        expect(screen.getByTestId('@trading/menu/wallet-trading-buy')).toBeInTheDocument();
         expect(store.getState().wallet.trading.sell.tradingAccountKey).toBe(previousAccountKey);
         expect(store.getState().wallet.trading.sell.transactionId).toBe('stale-order');
     });

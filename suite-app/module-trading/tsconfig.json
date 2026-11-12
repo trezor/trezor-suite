@@ -14,9 +14,6 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../../suite/account" },
-        {
-            "path": "../../suite/authenticity-checks"
-        },
         { "path": "../../suite/debug" },
         { "path": "../../suite/intl" },
         { "path": "../../suite/message-system" },
