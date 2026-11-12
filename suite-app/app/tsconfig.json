@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": ["."],
     "references": [
+        { "path": "../networks" },
         { "path": "../suite-sync" },
         {
             "path": "../../suite-common/analytics-redux"

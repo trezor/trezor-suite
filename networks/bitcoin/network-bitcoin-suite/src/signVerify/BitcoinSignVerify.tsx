@@ -1,19 +1,14 @@
 import { useState } from 'react';
 
-import { verifyThunk } from '@suite-common/sign-verify';
-import { type Account } from '@suite-common/wallet-types';
+import { type SignVerifyPage, VerifyMessageForm } from '@suite/sign-verify';
+import { verifyBitcoinMessageThunk } from '@suite-common/sign-verify';
 import { useServices } from '@trezor/dependency-injection';
+import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { BitcoinSignMessageForm } from './BitcoinSignMessageForm';
-import { VerifyMessageForm } from '../VerifyMessageForm';
-import { type SignVerifyPage } from '../types';
 
-type BitcoinSignVerifyProps = {
-    account: Account;
-};
-
-export const BitcoinSignVerify = ({ account }: BitcoinSignVerifyProps) => {
+export const BitcoinSignVerify = ({ account }: SignVerifyProps) => {
     const [page, setPage] = useState<SignVerifyPage>('sign');
 
     const { dispatch } = useServices(injectDispatch);
@@ -26,8 +21,8 @@ export const BitcoinSignVerify = ({ account }: BitcoinSignVerifyProps) => {
                 key={account.key}
                 symbol={account.symbol}
                 onPageChange={setPage}
-                verifyMessage={({ address, message, signature, hex }) =>
-                    dispatch(verifyThunk(account, address, message, signature, hex))
+                verifyMessage={params =>
+                    dispatch(verifyBitcoinMessageThunk({ account, ...params }))
                 }
             />
         );

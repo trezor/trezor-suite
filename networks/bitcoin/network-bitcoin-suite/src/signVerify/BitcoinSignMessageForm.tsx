@@ -1,14 +1,15 @@
 import { useState } from 'react';
 
-import { getHasSelectableSignatureFormat, signThunk } from '@suite-common/sign-verify';
+import { SignMessageForm, type SignVerifyPage, useAccountSignAddresses } from '@suite/sign-verify';
+import {
+    getHasSelectableSignatureFormat,
+    signBitcoinMessageThunk,
+} from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { BitcoinSignatureFormatSwitch } from './BitcoinSignatureFormatSwitch';
-import { SignMessageForm } from '../SignMessageForm';
-import { type SignVerifyPage } from '../types';
-import { useAccountSignAddresses } from '../useAccountSignAddresses';
 
 type BitcoinSignMessageFormProps = {
     account: Account;
@@ -37,7 +38,7 @@ export const BitcoinSignMessageForm = ({ account, onPageChange }: BitcoinSignMes
                 )
             }
             signMessage={({ path, message, hex }) =>
-                dispatch(signThunk(account, path, message, hex, isElectrum))
+                dispatch(signBitcoinMessageThunk({ account, path, message, hex, isElectrum }))
             }
             onClear={() => setIsElectrum(false)}
         />
