@@ -30,6 +30,7 @@ import {
     runAdditionalDiscoveryThunk,
     runDiscoveryThunk,
 } from './discoveryThunks';
+import { accountsActions } from '../accounts/accountsActions';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 import {
     type WalletSettingsRootState,
@@ -310,6 +311,85 @@ describe('runAdditionalDiscoveryThunk', () => {
                 type: updateDiscoveryMatcher.type,
                 payload: expect.objectContaining({
                     status: expect.objectContaining({ status: 'progress' }),
+                }),
+            }),
+        );
+    });
+});
+
+describe('runAdditionalDiscoveryThunk accounts', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it.each([
+        ['a custom backend', asNetworkSymbol('eth'), { selected: 'evm-rpc' as const }, 'evm-rpc'],
+        ['the default backend', asNetworkSymbol('xrp'), {}, 'ripple'],
+    ])('gives a discovered account the type of %s', async (_, symbol, backends, backendType) => {
+        // An account key doesn't allow '-' in the wallet state.
+        const walletState: StaticSessionId = 'standard@deviceid:1';
+        const wallet = mockSuiteDevice({
+            path: devicePath,
+            instance: 1,
+            connected: true,
+            state: { staticSessionId: walletState },
+            useEmptyPassphrase: true,
+        });
+        const state = createState({ status: 'progress', total: 1, progress: 0 }, wallet);
+        state.device.devices = [wallet, statelessDevice];
+        state.wallet.blockchain = {
+            ...blockchainInitialState,
+            [symbol]: { ...blockchainInitialState[symbol as 'eth' | 'xrp'], backends },
+        };
+        let onBundleProgress: ((event: unknown) => void) | undefined;
+        jest.spyOn(TrezorConnect, 'on').mockImplementation(((
+            event: string,
+            listener: (payload: unknown) => void,
+        ) => {
+            if (event === UI_EVENTS.BUNDLE_PROGRESS) onBundleProgress = listener;
+        }) as typeof TrezorConnect.on);
+        jest.spyOn(TrezorConnect, 'off').mockImplementation(jest.fn());
+        jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
+            success: true,
+            payload: { state: { staticSessionId: walletState } },
+        });
+        jest.spyOn(TrezorConnect, 'discoverAccounts').mockImplementation(() => {
+            onBundleProgress?.({
+                progress: 1,
+                total: 1,
+                response: {
+                    index: 0,
+                    symbol,
+                    type: 'normal',
+                    path: "m/44'/0'/0'/0/0",
+                    descriptor: 'address',
+                    balance: '1',
+                    availableBalance: '1',
+                    empty: false,
+                    last: true,
+                    history: { total: 1, unconfirmed: 0 },
+                },
+            });
+
+            return Promise.resolve({
+                success: true,
+                payload: { empty: 0, nonempty: 1, failed: 0 },
+            });
+        });
+        const { actions, dispatch } = createMockDispatch({
+            getState: () => state,
+            extra: createExtra(),
+        });
+
+        await dispatch(
+            runAdditionalDiscoveryThunk({ staticSessionId: walletState, trigger: 'retry' }),
+        );
+
+        expect(actions).toContainEqual(
+            expect.objectContaining({
+                type: accountsActions.createAccount.type,
+                payload: expect.objectContaining({
+                    account: expect.objectContaining({ symbol, backendType }),
                 }),
             }),
         );

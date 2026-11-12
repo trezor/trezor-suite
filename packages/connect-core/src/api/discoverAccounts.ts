@@ -7,7 +7,6 @@ import {
     CARDANO_DERIVATIONS,
     type CoinInfo,
     type DiscoverAccountsProgress,
-    type DiscoveryAccountInfoParams,
     ERRORS,
     type EntropyCheckResult,
     type FirmwareRange,
@@ -29,12 +28,6 @@ import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import { checkXPubWithHashes } from './firmware/calculateXPubHash';
 
 const ACCOUNT_LIMIT = 10;
-
-// A plain RPC node cannot list tokens or transactions the way blockbook does, so discovery on one
-// only asks whether the address is used (balance and nonce); Suite fetches the rest once it has
-// taken the account on. Everywhere else the full first page comes back in the same request.
-const getDiscoveryDetails = (coinInfo: CoinInfo): DiscoveryAccountInfoParams['details'] =>
-    coinInfo.blockchainLink?.type === 'evm-rpc' ? 'basic' : 'txs';
 
 type CardanoDerivation = (typeof CARDANO_DERIVATIONS)[keyof typeof CARDANO_DERIVATIONS];
 
@@ -180,16 +173,10 @@ export default class DiscoverAccounts extends AbstractMethod<
         const { sendCoreMessage } = context;
         const [unsupported, supported] = this.filterUnsupportedAccounts(this.params.coins);
 
-        unsupported.forEach(
-            ({ account: { path: bip43, ...rest }, error, coinInfo, skip, offset }) => {
-                const path = substituteBip43Path(bip43, skip + offset);
-                const backendType = coinInfo.blockchainLink?.type;
-                this.sendProgress(
-                    { ...rest, index: skip, failed: true, error, path, backendType },
-                    sendCoreMessage,
-                );
-            },
-        );
+        unsupported.forEach(({ account: { path: bip43, ...rest }, error, skip, offset }) => {
+            const path = substituteBip43Path(bip43, skip + offset);
+            this.sendProgress({ ...rest, index: skip, failed: true, error, path }, sendCoreMessage);
+        });
 
         const [cardanoAccounts, otherAccounts] = arrayPartition(supported, isCardanoRequest);
         const [_, filteredCardanoAccounts] = await this.filterCardanoDerivations(
@@ -358,15 +345,13 @@ export default class DiscoverAccounts extends AbstractMethod<
             return { empty: 0, nonempty: 0 };
         }
 
-        const backendType = coinInfo.blockchainLink?.type;
-        const details = getDiscoveryDetails(coinInfo);
         let index = skip;
 
         const sendProgress = (response: DiscoverAccountsProgress) =>
             this.sendProgress(response, sendCoreMessage);
 
         // The caller reads the account from the backend and answers with the getAccountInfo response.
-        const getAccountInfo = async (descriptor: string, level = details) => {
+        const getAccountInfo = async (descriptor: string, details?: 'basic') => {
             const uiPromise = createUiPromise(
                 UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
                 this.getDevice(),
@@ -374,7 +359,7 @@ export default class DiscoverAccounts extends AbstractMethod<
             sendCoreMessage(
                 createUiRequestMessage(
                     UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO,
-                    { coin: request.account.symbol, descriptor, details: level },
+                    { coin: request.account.symbol, descriptor, details },
                     { requestId: uiPromise.requestId },
                 ),
             );
@@ -426,7 +411,6 @@ export default class DiscoverAccounts extends AbstractMethod<
                     ...descRest,
                     ...accountKey,
                     index,
-                    backendType,
                     failed: false,
                     last,
                 });
@@ -443,7 +427,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 const { message: error, code } = err;
                 const failed = true;
                 this.updateProgress(accountKey, index + 1, true);
-                sendProgress({ ...accountKey, index, failed, error, code, path, backendType });
+                sendProgress({ ...accountKey, index, failed, error, code, path });
 
                 return { empty, nonempty: index - skip - empty, error };
             }

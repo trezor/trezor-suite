@@ -36,6 +36,7 @@ const state: BlockchainRootState = {
         blockchain: {
             ...blockchainInitialState,
             btc: { ...blockchainInitialState.btc, backends: { gapLimit: 30 } },
+            eth: { ...blockchainInitialState.eth, backends: { selected: 'evm-rpc' } },
         },
     },
 };
@@ -70,7 +71,7 @@ describe(createAccountInfoRequestListener.name, () => {
     it('answers with the response of reading the account with Suite page size and gap', async () => {
         getAccountInfo.mockResolvedValue({ success: true, payload: accountInfo });
 
-        await requestAccountInfo({ coin: 'btc', descriptor: 'xpub', details: 'txs' });
+        await requestAccountInfo({ coin: 'btc', descriptor: 'xpub' });
 
         expect(getAccountInfo).toHaveBeenCalledWith({
             coin: 'btc',
@@ -86,10 +87,21 @@ describe(createAccountInfoRequestListener.name, () => {
         });
     });
 
+    it.each<[string, DiscoveryAccountInfoParams]>([
+        ['on a direct RPC backend', { coin: 'eth', descriptor: '0x0' }],
+        ['when asked', { coin: 'btc', descriptor: 'xpub', details: 'basic' }],
+    ])('reads only the basic details %s', async (_, params) => {
+        getAccountInfo.mockResolvedValue({ success: true, payload: accountInfo });
+
+        await requestAccountInfo(params);
+
+        expect(getAccountInfo).toHaveBeenCalledWith(expect.objectContaining({ details: 'basic' }));
+    });
+
     it('reads an Ethereum account with the identity of the wallet and the vault protocol', async () => {
         getAccountInfo.mockResolvedValue({ success: true, payload: accountInfo });
 
-        await requestAccountInfo({ coin: 'eth', descriptor: '0x0', details: 'txs' });
+        await requestAccountInfo({ coin: 'eth', descriptor: '0x0' });
 
         expect(getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -105,7 +117,7 @@ describe(createAccountInfoRequestListener.name, () => {
     it('answers with an error when reading the account rejects', async () => {
         getAccountInfo.mockRejectedValue(new Error('IPC failed'));
 
-        await requestAccountInfo({ coin: 'btc', descriptor: 'xpub', details: 'txs' });
+        await requestAccountInfo({ coin: 'btc', descriptor: 'xpub' });
 
         expect(TrezorConnect.uiResponse).toHaveBeenCalledWith({
             type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
@@ -118,7 +130,7 @@ describe(createAccountInfoRequestListener.name, () => {
     });
 
     it('ignores the account info requests of other calls', async () => {
-        await requestAccountInfo({ coin: 'btc', descriptor: 'xpub', details: 'txs' }, 'other-call');
+        await requestAccountInfo({ coin: 'btc', descriptor: 'xpub' }, 'other-call');
 
         expect(getAccountInfo).not.toHaveBeenCalled();
     });
