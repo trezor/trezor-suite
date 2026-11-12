@@ -545,6 +545,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             persistentDeviceDataActions.setEntropyCheckResult,
             persistentDeviceDataActions.clearEntropyCheckXPubHashes,
             persistentDeviceDataActions.setDiscoveryEntropyCheckResult,
+            persistentDeviceDataActions.setDelegatedIdentityKey,
             persistentDeviceDataActions.setDeviceAuthenticityResult,
             persistentDeviceDataActions.setManualDeviceCheckSuccess,
             persistentDeviceDataActions.clearDevicePersistentData,
