@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { Keyboard } from 'react-native';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -194,6 +195,7 @@ export const useYieldDepositApprovalController = () => {
             return;
         }
 
+        Keyboard.dismiss();
         reportDeposit({ action: 'skip', type: 'approve' });
 
         dispatch(
@@ -219,6 +221,8 @@ export const useYieldDepositApprovalController = () => {
         if (!flowKey || isApprovalPending) {
             return;
         }
+
+        Keyboard.dismiss();
 
         const amount =
             amountValue !== undefined && isPositiveBalance(amountValue) ? amountValue : undefined;
@@ -253,6 +257,8 @@ export const useYieldDepositApprovalController = () => {
         if (isSubmitDisabled) {
             return;
         }
+
+        Keyboard.dismiss();
 
         if (footerApprovalAction === 'continue') {
             reportDeposit({ action: 'skip', type: 'approve' });

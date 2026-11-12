@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { Keyboard } from 'react-native';
 import { useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -84,6 +85,7 @@ export const useYieldDepositApprovalSubmit = ({
                 if (approvalAction === 'continue') {
                     dispatch(yieldActions.clearError(sessionParams));
                     dispatch(yieldActions.completeApproval({ ...sessionParams, amount }));
+                    Keyboard.dismiss();
                     navigation.navigate(YieldStackRoutes.YieldDeposit, routeParams);
 
                     return;
@@ -91,6 +93,7 @@ export const useYieldDepositApprovalSubmit = ({
 
                 if (approvalAction === 'revoke') {
                     dispatch(yieldActions.enterModifyMode({ ...sessionParams, amount }));
+                    Keyboard.dismiss();
                     navigation.navigate(YieldStackRoutes.YieldDepositRevoke, {
                         ...routeParams,
                         amount,
@@ -132,6 +135,7 @@ export const useYieldDepositApprovalSubmit = ({
 
                 if (!session.approval.modalState) {
                     if (session.step === 'action') {
+                        Keyboard.dismiss();
                         navigation.navigate(YieldStackRoutes.YieldDeposit, routeParams);
                     }
 
@@ -159,6 +163,7 @@ export const useYieldDepositApprovalSubmit = ({
                     return;
                 }
 
+                Keyboard.dismiss();
                 navigation.navigate(YieldStackRoutes.YieldDepositApprovalReview, {
                     ...routeParams,
                     amount,
