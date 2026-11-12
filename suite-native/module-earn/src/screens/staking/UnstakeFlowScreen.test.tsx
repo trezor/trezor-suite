@@ -1,4 +1,5 @@
 import { type PropsWithChildren, type ReactNode } from 'react';
+import { Keyboard } from 'react-native';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -7,7 +8,7 @@ import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type ActiveView } from '@suite-native/atoms';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { getTranslation } from '@suite-native/intl';
-import { type StakingPendingTxParams } from '@suite-native/navigation';
+import { RootStackRoutes, type StakingPendingTxParams } from '@suite-native/navigation';
 import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mock } from '@trezor/dependency-injection';
 
@@ -120,10 +121,12 @@ const renderUnstakeForm = async () => {
 
 beforeEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
     mockRouteParams = { accountKey: 'account-key' };
     mockNavigation.addListener.mockReturnValue(jest.fn());
     jest.mocked(useUnstakeForm).mockReturnValue({
         account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
+        isFeeReady: true,
         form: {
             formState: { isValid: true },
             handleSubmit: (callback: () => void) => callback,
@@ -156,6 +159,21 @@ describe('UnstakeFlowScreen analytics', () => {
                 },
             });
         },
+    );
+});
+
+it('dismisses the amount keyboard before opening the unstake review', async () => {
+    const dismissKeyboard = jest.spyOn(Keyboard, 'dismiss');
+    const view = await renderUnstakeForm();
+
+    await fireEvent.press(view.getByText(getTranslation('earn.earnFormScreen.reviewAndSign')));
+
+    expect(mockNavigation.navigate).toHaveBeenCalledWith(
+        RootStackRoutes.StakingTransactionDataReview,
+        expect.objectContaining({ stakeType: 'unstake' }),
+    );
+    expect(dismissKeyboard.mock.invocationCallOrder[0]).toBeLessThan(
+        mockNavigation.navigate.mock.invocationCallOrder[0] ?? 0,
     );
 });
 

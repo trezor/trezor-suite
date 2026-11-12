@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -105,6 +106,7 @@ export const UnstakeFlowScreen = () => {
     } = form;
 
     const handleReviewAndSign = form.handleSubmit(() => {
+        Keyboard.dismiss();
         registerNavigateBackAnalytics();
 
         analytics.report({
