@@ -1,12 +1,12 @@
+import { type AssetAccountsRootState } from '@suite-common/assets';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { type StakingPosition } from '@suite-common/earn-staking-common';
+import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AssetAccountsRootState,
-    type WalletAssetKey,
-    getWalletAssetKey,
-} from '@suite-common/wallet-core';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type WalletAssetKey, getWalletAssetKey } from '@suite-common/wallet-core';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { selectAssetSendTargets } from './selectAssetSendTargets';
@@ -23,7 +23,11 @@ const usdcKey: WalletAssetKey = getWalletAssetKey({
     contractAddress: usdcAddress,
 });
 
-const buildState = (accounts: Account[]): AssetAccountsRootState => ({
+const buildState = (
+    accounts: Account[],
+    stakingPositions: Partial<Record<AccountKey, readonly StakingPosition[]>> = {},
+): AssetAccountsRootState => ({
+    earn: { staking: mockStakingState({ positions: stakingPositions }) },
     wallet: { accounts },
     device: {
         devices: [],
@@ -67,6 +71,18 @@ describe('selectAssetSendTargets', () => {
         expect(
             selectAssetSendTargets(buildState([holding, zeroBalance, notHolding]), usdcKey),
         ).toEqual([{ account: holding, contractAddress: usdcAddress }]);
+    });
+
+    it('leaves out an account whose only funds are staked', () => {
+        const stakedOnly = ethAccount(0, { balance: '0', formattedBalance: '0' });
+        const funded = ethAccount(1);
+
+        expect(
+            selectAssetSendTargets(
+                buildState([stakedOnly, funded], { [stakedOnly.key]: [mockStakingPosition()] }),
+                ethKey,
+            ),
+        ).toEqual([{ account: funded, contractAddress: undefined }]);
     });
 
     it('returns nothing without a selected device', () => {

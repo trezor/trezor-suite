@@ -5,6 +5,9 @@ import { createIntl } from 'react-intl';
 import { screen } from '@testing-library/react';
 
 import { messages } from '@suite/intl';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -17,34 +20,35 @@ import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 const ONE_ETH_IN_WEI = '1000000000000000000';
 
-/** `balance` ether to spend, and `stakedWei` of it with Everstake. */
-const mockEthereumAccount = (stakedWei: string, balance = '1'): Account =>
-    ({
-        ...mockWalletAccount({ symbol: ETH, formattedBalance: balance }),
-        networkType: 'ethereum',
-        misc: {
-            nonce: '0',
-            stakingPools: [
-                {
-                    contract: '',
-                    name: 'Everstake',
-                    autocompoundBalance: stakedWei,
-                    pendingBalance: '0',
-                    pendingDepositedBalance: '0',
-                    withdrawTotalAmount: '0',
-                    claimableAmount: '0',
-                    depositedBalance: '0',
-                    restakedReward: '0',
-                },
-            ],
-        },
-    }) as Account;
+const amount = (value: string) => stakingAmountSchema.parse(value);
 
-const getInitialState = (account: Account): MockSuiteState => {
+/** `balance` ether to spend. */
+const mockEthereumAccount = (balance = '1'): Account =>
+    mockWalletAccount({ symbol: ETH, formattedBalance: balance });
+
+/** `stakedWei` with Everstake, on top of the balance. */
+const mockStake = (stakedWei: string) =>
+    mockStakingPosition({
+        balances: {
+            staked: amount(stakedWei),
+            pending: amount('0'),
+            unstaking: amount('0'),
+            withdrawable: amount('0'),
+            rewards: amount('0'),
+        },
+        unlocks: [],
+    });
+
+const getInitialState = (account: Account, stakedWei: string): MockSuiteState => {
     const state = getEthAssetState({ accounts: [account], ethRate: 3000 });
 
     return {
         ...state,
+        earn: {
+            staking: mockStakingState({
+                positions: stakedWei === '0' ? {} : { [account.key]: [mockStake(stakedWei)] },
+            }),
+        },
         wallet: {
             ...state.wallet,
             stake: {
@@ -61,9 +65,9 @@ const getInitialState = (account: Account): MockSuiteState => {
     };
 };
 
-const renderEarn = (account: Account) => {
+const renderEarn = (account: Account, stakedWei: string) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({
-        preloadedState: getInitialState(account),
+        preloadedState: getInitialState(account, stakedWei),
     });
 
     renderWithProviders(services, <AssetDetailEarn assetKey={ETH_ASSET_KEY} />);
@@ -73,7 +77,7 @@ const intl = createIntl({ locale: 'en' });
 
 describe('the earn card on the asset screen', () => {
     it('splits what is held into what is available and what is staking, at what rate', () => {
-        renderEarn(mockEthereumAccount(ONE_ETH_IN_WEI));
+        renderEarn(mockEthereumAccount(), ONE_ETH_IN_WEI);
 
         const card = screen.getByTestId('@asset-detail/earn');
 
@@ -86,7 +90,7 @@ describe('the earn card on the asset screen', () => {
     });
 
     it('shows the whole balance as available while nothing is staked', () => {
-        renderEarn(mockEthereumAccount('0'));
+        renderEarn(mockEthereumAccount(), '0');
 
         const card = screen.getByTestId('@asset-detail/earn');
 
@@ -96,7 +100,7 @@ describe('the earn card on the asset screen', () => {
     });
 
     it('is left out while there is nothing to stake', () => {
-        renderEarn(mockEthereumAccount('0', '0'));
+        renderEarn(mockEthereumAccount('0'), '0');
 
         expect(screen.queryByTestId('@asset-detail/earn')).not.toBeInTheDocument();
     });

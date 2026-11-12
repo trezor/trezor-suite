@@ -1,9 +1,5 @@
-import {
-    type AssetAccountsRootState,
-    type WalletAssetKey,
-    selectDeviceAssetAccounts,
-    selectVisibleDeviceAccountsMap,
-} from '@suite-common/wallet-core';
+import { type AssetAccountsRootState, selectDeviceAssetAccounts } from '@suite-common/assets';
+import { type WalletAssetKey, selectVisibleDeviceAccountsMap } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 

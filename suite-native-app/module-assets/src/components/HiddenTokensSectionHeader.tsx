@@ -1,4 +1,4 @@
-import { type HiddenTokenReason } from '@suite-common/wallet-core';
+import { type HiddenTokenReason } from '@suite-common/assets';
 import { Box, Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 

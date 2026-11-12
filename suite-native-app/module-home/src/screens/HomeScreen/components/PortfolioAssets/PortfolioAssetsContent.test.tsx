@@ -3,6 +3,7 @@ import { Text } from 'react-native';
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
+import { stakingInitialState } from '@suite-common/earn-staking';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -136,6 +137,7 @@ const createStore = ({
                 },
             }),
             discreetMode: createStaticReducer({ isActive: false }),
+            earn: createStaticReducer({ staking: stakingInitialState }),
             locale: localeReducer,
             networks: createStaticReducer(mockNetworksState([ETH, BTC])),
             tokenDefinitions: createStaticReducer({
