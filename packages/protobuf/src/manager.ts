@@ -3,6 +3,7 @@ import {
     type DescEnum,
     type DescExtension,
     type DescField,
+    type DescFile,
     type DescMessage,
     ScalarType,
     fromBinary,
@@ -10,8 +11,16 @@ import {
     toBinary,
     toJson,
 } from '@bufbuild/protobuf';
+import { enumDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import { file_google_protobuf_descriptor } from '@bufbuild/protobuf/wkt';
 
 import type { MessageResponse } from './definitions';
+import type { ProtobufDict } from './definitions/dict';
+
+type ProtobufModule = Record<string, AnyDesc> | ProtobufDict;
+
+const isProtobufDict = (mod: ProtobufModule): mod is ProtobufDict =>
+    typeof mod.fileContent === 'string';
 
 const patchLongValue = (value: unknown) => {
     if (typeof value === 'number') {
@@ -159,25 +168,86 @@ export const ProtobufManager = () => {
     const messages: Record<string, DescMessage | undefined> = {};
     const extensions: Record<string, DescExtension | undefined> = {};
     const enums: Record<string, DescEnum | undefined> = {};
+    const files: Record<string, DescFile | undefined> = {};
+    const wireMessageIds: Record<string, number | undefined> = {};
+    const wireMessageNames: Record<number, string | undefined> = {};
 
-    const load = (modules: Record<string, AnyDesc> | Record<string, AnyDesc>[]) => {
-        if (Array.isArray(modules)) {
-            modules.forEach(m => load(m));
-        } else {
-            Object.keys(modules).forEach(key => {
-                // @ts-expect-error noUncheckedIndexedAccess: def is guaranteed to exist (iterating own keys)
-                const def: AnyDesc = modules[key];
-                if (def.kind && def.kind !== 'file') {
-                    if (def.kind === 'message') {
-                        messages[key] = def;
-                    } else if (def.kind === 'extension') {
-                        extensions[key] = def;
-                    } else if (def.kind === 'enum') {
-                        enums[def.name] = def;
-                    }
+    const loadDict = (dict: ProtobufDict, loadDependencyFile: (importKey: string) => void) => {
+        const dependencies = dict.dependencies.map(dep => {
+            if (dep === 'google/protobuf/descriptor') {
+                return file_google_protobuf_descriptor;
+            }
+            // Try to load the dependency file if it hasn't been loaded yet.
+            if (!files[dep]) {
+                loadDependencyFile(dep);
+            }
+
+            const depFile = files[dep];
+            if (!depFile) {
+                throw new Error(`Protobuf dependency ${dep} must be loaded`);
+            }
+
+            return depFile;
+        });
+
+        const file = fileDesc(dict.fileContent, dependencies);
+        files[dict.fileName] = file;
+
+        Object.entries(dict.messages).forEach(([key, [kind, ...path]]) => {
+            if (kind === 'messageDesc') {
+                messages[key] = messageDesc(file, ...path);
+            } else if (kind === 'enumDesc') {
+                enums[key] = enumDesc(file, ...path);
+            }
+        });
+
+        Object.entries(dict.messageType).forEach(([messageName, messageId]) => {
+            wireMessageIds[messageName] = messageId;
+            wireMessageNames[messageId] = messageName;
+        });
+    };
+
+    const loadPbModule = (definitions: Record<string, AnyDesc>) => {
+        Object.keys(definitions).forEach(key => {
+            // @ts-expect-error noUncheckedIndexedAccess: def is guaranteed to exist (iterating own keys)
+            const def: AnyDesc = definitions[key];
+            if (def.kind === 'file') {
+                files[key] = def;
+            } else if (def.kind) {
+                if (def.kind === 'message') {
+                    messages[key] = def;
+                } else if (def.kind === 'extension') {
+                    extensions[key] = def;
+                } else if (def.kind === 'enum') {
+                    enums[def.name] = def;
                 }
-            });
-        }
+            }
+        });
+    };
+
+    const load = (modules: ProtobufModule | ProtobufModule[]) => {
+        const batch = Array.isArray(modules) ? modules : [modules];
+        const loadedModules = new Set<ProtobufModule>();
+
+        const loadModule = (mod: ProtobufModule) => {
+            if (loadedModules.has(mod)) {
+                return;
+            }
+            loadedModules.add(mod);
+
+            if (isProtobufDict(mod)) {
+                loadDict(mod, depName => {
+                    const depFile = batch.find(m => m.fileName === depName);
+                    if (depFile) {
+                        loadModule(depFile);
+                    }
+                });
+            } else {
+                loadPbModule(mod);
+            }
+        };
+
+        batch.forEach(loadModule);
     };
 
     // (wire_type) is a custom option this is why it is to be found in '$unknown' options
@@ -202,7 +272,7 @@ export const ProtobufManager = () => {
 
         if (typeof nameOrId === 'string') {
             const schemaKey = `${nameOrId}Schema`;
-            const schema = messages[schemaKey];
+            const schema = messages[schemaKey] || messages[nameOrId];
 
             if (!schema) {
                 throw new Error(`Schema ${nameOrId} not found`);
@@ -229,6 +299,10 @@ export const ProtobufManager = () => {
                 }
             }
 
+            if (messageType === -1) {
+                messageType = wireMessageIds[nameOrId] ?? -1;
+            }
+
             return {
                 schema,
                 messageType: getWireTypeOverride(schema) || messageType,
@@ -242,17 +316,18 @@ export const ProtobufManager = () => {
             matchedMessageType = thpMessageTypeEnum.value[nameOrId];
         }
 
-        if (!matchedMessageType) {
+        const messageName = matchedMessageType
+            ? matchedMessageType.name.replace('ThpMessageType_', '').replace('MessageType_', '')
+            : wireMessageNames[nameOrId];
+
+        if (!messageName) {
             throw new Error(
                 `MessageType with ID ${nameOrId} not found. Check MessageType and ThpMessageType enums.`,
             );
         }
 
-        const messageName = matchedMessageType.name
-            .replace('ThpMessageType_', '')
-            .replace('MessageType_', '');
         const schemaKey = messageName + 'Schema';
-        const schema = messages[schemaKey];
+        const schema = messages[schemaKey] || messages[messageName];
 
         if (!schema) {
             throw new Error(

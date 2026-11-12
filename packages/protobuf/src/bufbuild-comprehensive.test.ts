@@ -4,9 +4,10 @@
  * and error handling works correctly.
  */
 
-import { type AnyDesc, ScalarType } from '@bufbuild/protobuf';
+import { type AnyDesc, type DescMessage, ScalarType } from '@bufbuild/protobuf';
 import { FeatureSet_FieldPresence } from '@bufbuild/protobuf/wkt';
 
+import { type ProtobufDict } from './definitions/dict';
 import { ProtobufManager } from './manager';
 
 type TestPayload = Record<string, unknown>;
@@ -14,52 +15,50 @@ type TestPayload = Record<string, unknown>;
 const getErrorMessage = (error: unknown) =>
     error instanceof Error ? error.message : String(error);
 
-const getAllProtoModules = () => {
-    const protoFiles = [
-        'messages-bitcoin',
-        'messages-ble',
-        'messages-bootloader',
-        'messages-cardano',
-        'messages-common',
-        'messages-crypto',
-        'messages-debug',
-        'messages-definitions',
-        'messages-eos',
-        'messages-ethereum-eip712',
-        'messages-ethereum',
-        'messages-evolu',
-        'messages-management',
-        'messages-monero',
-        'messages',
-        'messages-ripple',
-        'messages-solana',
-        'messages-stellar',
-        'messages-telemetry',
-        'messages-tezos',
-        'messages-thp',
-        'messages-tron',
-        'options',
-    ];
+const protoFiles = [
+    'messages-bitcoin',
+    'messages-ble',
+    'messages-bootloader',
+    'messages-cardano',
+    'messages-common',
+    'messages-crypto',
+    'messages-debug',
+    'messages-definitions',
+    'messages-eos',
+    'messages-ethereum-eip712',
+    'messages-ethereum',
+    'messages-evolu',
+    'messages-management',
+    'messages-monero',
+    'messages-nostr',
+    'messages-ripple',
+    'messages-solana',
+    'messages-stellar',
+    'messages-telemetry',
+    'messages-tezos',
+    'messages-thp',
+    'messages-tron',
+    'options',
+];
 
-    return protoFiles.map(
-        name => require(`../src/definitions/${name}_pb`) as Record<string, AnyDesc>,
-    );
-};
+const getAllProtoModules = (): Record<string, AnyDesc>[] =>
+    protoFiles.concat(['messages']).map(name => require(`../src/definitions/${name}_pb`));
+
+const getAllDictModules = (): ProtobufDict[] =>
+    protoFiles.map(name => require(`../src/definitions/${name}_dict`).default);
 
 describe('ProtobufManager comprehensive tests', () => {
     const allProtoModules = getAllProtoModules();
     const protobufManager = ProtobufManager();
     protobufManager.load(allProtoModules);
 
+    const getAllMessageSchemas = (): DescMessage[] =>
+        allProtoModules.flatMap(mod =>
+            Object.values(mod).filter((desc): desc is DescMessage => desc.kind === 'message'),
+        );
+
     const getAllMessageNames = (): string[] => {
-        const names: string[] = [];
-        allProtoModules.forEach(mod => {
-            Object.values(mod).forEach(desc => {
-                if (desc.kind === 'message') {
-                    names.push(desc.name);
-                }
-            });
-        });
+        const names = getAllMessageSchemas().map(schema => schema.name);
 
         return [...new Set(names)];
     };
@@ -142,6 +141,9 @@ describe('ProtobufManager comprehensive tests', () => {
     };
 
     describe('messages -> JSON round-trip', () => {
+        const protobufManagerDict = ProtobufManager();
+        protobufManagerDict.load(getAllDictModules());
+
         const allMessages = getAllMessageNames();
 
         allMessages.forEach(messageName => {
@@ -157,6 +159,8 @@ describe('ProtobufManager comprehensive tests', () => {
                     const result = protobufManager.encode(messageName, testData);
                     expect(result.message).toBeDefined();
                     expect(result.messageType).toBeDefined();
+                    const resultDict = protobufManagerDict.encode(messageName, testData);
+                    expect(resultDict.message).toEqual(result.message);
                 } catch (error) {
                     console.warn(`${messageName}: ${getErrorMessage(error)}`);
                     throw error;
@@ -169,10 +173,57 @@ describe('ProtobufManager comprehensive tests', () => {
                     const decoded = protobufManager.decode(messageName, encoded.message);
                     expect(decoded.message).toBeDefined();
                     expect(decoded.type).toBe(messageName);
+                    const resultDict = protobufManagerDict.decode(messageName, encoded.message);
+                    expect(resultDict.message).toEqual(decoded.message);
                 } catch (error) {
                     console.warn(`${messageName}: ${getErrorMessage(error)}`);
                     throw error;
                 }
+            });
+        });
+    });
+
+    describe('ProtobufDict definitions vs _pb definitions', () => {
+        const protobufManagerDict = ProtobufManager();
+        protobufManagerDict.load(getAllDictModules());
+
+        const allMessages = getAllMessageSchemas();
+        allMessages.forEach(pbSchema => {
+            it(`${pbSchema.name} has all ${pbSchema.fields.length} fields`, () => {
+                const dict = protobufManagerDict.findSchema(pbSchema.name);
+                if (dict.messageType > 0) {
+                    const pb = protobufManager.findSchema(pbSchema.name);
+                    expect(dict.messageType).toEqual(pb.messageType);
+                    expect(dict.messageName).toEqual(pb.messageName);
+                }
+
+                expect(dict.schema.typeName).toBe(pbSchema.typeName);
+                expect(dict.schema.fields.map(field => field.name)).toEqual(
+                    pbSchema.fields.map(field => field.name),
+                );
+                expect(dict.schema.fields.map(field => field.proto)).toEqual(
+                    pbSchema.fields.map(field => field.proto),
+                );
+            });
+        });
+
+        const messageTypes = protobufManager.findEnum('MessageType');
+        const thpMessageTypes = protobufManager.findEnum('ThpMessageType');
+        const enums = (messageTypes?.values || []).concat(thpMessageTypes?.values || []);
+
+        // those files are skipped by the build, therefore not available in the dict. see ./scripts/protobuf-build.sh
+        // however they are still present in the _pb MessageType monolith.
+        const skip = ['NEM', 'WebAuthn', 'Benchmark'];
+        enums.forEach(({ name, number }) => {
+            const messageTypeName = name.replace('ThpMessageType_', '').replace('MessageType_', '');
+            if (skip.some(s => messageTypeName.includes(s))) {
+                return;
+            }
+
+            it(`MessageType.${messageTypeName} exists in ProtobufDict`, () => {
+                const schema = protobufManagerDict.findSchema(messageTypeName);
+
+                expect(schema.messageType).toEqual(number);
             });
         });
     });
