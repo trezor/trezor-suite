@@ -1,21 +1,17 @@
 import { useState } from 'react';
 
-import { signThunk } from '@suite-common/sign-verify';
-import { type Account } from '@suite-common/wallet-types';
+import { SignMessageForm } from '@suite/sign-verify';
+import { signCardanoMessageThunk } from '@suite-common/sign-verify';
 import { useServices } from '@trezor/dependency-injection';
+import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { CardanoPublicKeyField } from './CardanoPublicKeyField';
 import { CardanoPublicKeyFormatSwitch } from './CardanoPublicKeyFormatSwitch';
 import { useCardanoSignAddresses } from './useCardanoSignAddresses';
-import { SignMessageForm } from '../SignMessageForm';
-
-type CardanoSignVerifyProps = {
-    account: Account;
-};
 
 /** Cardano only signs, and returns the public key next to the signature. */
-export const CardanoSignVerify = ({ account }: CardanoSignVerifyProps) => {
+export const CardanoSignVerify = ({ account }: SignVerifyProps) => {
     const [isCose, setIsCose] = useState(false);
 
     const { dispatch } = useServices(injectDispatch);
@@ -33,7 +29,7 @@ export const CardanoSignVerify = ({ account }: CardanoSignVerifyProps) => {
             signingOptions={<CardanoPublicKeyFormatSwitch isCose={isCose} onChange={setIsCose} />}
             signedMessageFields={<CardanoPublicKeyField />}
             signMessage={({ path, message, hex }) =>
-                dispatch(signThunk(account, path, message, hex, false, isCose))
+                dispatch(signCardanoMessageThunk({ account, path, message, hex, isCose }))
             }
             onClear={() => setIsCose(false)}
         />

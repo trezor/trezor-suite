@@ -14,6 +14,7 @@
     "dependencies": {
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/network-bitcoin-suite": "workspace:*",
+        "@trezor/network-cardano-suite": "workspace:*",
         "@trezor/network-ethereum-suite": "workspace:*",
         "@trezor/network-module-suite-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*"

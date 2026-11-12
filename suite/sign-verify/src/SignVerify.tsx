@@ -4,7 +4,6 @@ import { useDevice } from '@suite/device';
 import { isVerifySupported } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 
-import { CardanoSignVerify } from './networks/CardanoSignVerify';
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
@@ -27,6 +26,6 @@ export const SignVerify = ({ account, renderShell }: SignVerifyProps) => {
     return renderShell({
         title: isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
         isDeviceConnected: device?.connected && device?.available,
-        children: account.networkType === 'cardano' && <CardanoSignVerify account={account} />,
+        children: null,
     });
 };
