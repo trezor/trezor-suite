@@ -118,31 +118,25 @@ export const PublicKey = Type.Object({
     path: Type.Array(Type.Number()),
     serializedPath: Type.String(),
     /**
-     * Canonical user-facing representation of the public key for the given coin.
-     * - Bitcoin: `xpubSegwit ?? xpub` (SLIP-132 form matching the requested
-     *   scriptType, e.g. ypub/zpub for SegWit, `tr(...)` descriptor for Taproot)
-     * - Ethereum: hex-encoded compressed public key (same value as `publicKey`)
-     * - Cardano: extended public key (xpub)
+     * The public key exactly as the device shows it for `showOnTrezor: true`.
+     * - Bitcoin: the xpub in the SLIP-132 form matching the requested scriptType
+     *   (e.g. ypub/zpub for SegWit). For Taproot, firmware's descriptor with
+     *   `h`-notation and checksum (same value as `descriptor`), e.g.
+     *   `tr([fp/86h/0h/0h]xpub…/<0;1>/*)#checksum`; firmware older than core 2.7.0
+     *   or legacy 1.14.0 sends no descriptor and shows the bare `xpub`. Backends
+     *   take the `'`-notation descriptor in `xpubSegwit`.
+     * - Ethereum: hex-encoded compressed public key (same value as `publicKey`).
+     *   Trezor Model One shows it in upper case with the last byte cut off.
+     * - Cardano: extended public key (xpub); firmware older than 2.6.1 shows only
+     *   the public key, which is then the value here
      * - Solana: base58-encoded address (same value as `publicKeyBase58`)
      * - Tezos: base58check-encoded public key, `edpk…` (same value as `publicKey`)
      *
-     * Generic consumers (e.g. UI components that need to display *some* canonical
-     * identifier without knowing the coin) should read this field. Coin-specific
-     * consumers should read the per-coin response type instead, which exposes the
-     * fields that genuinely apply to that coin (e.g. `xpub`, `xpubSegwit`,
-     * `publicKeyBase58`, `node`).
-     *
-     * Relation to what firmware shows on the device screen for
-     * `showOnTrezor: true`:
-     * - Bitcoin (legacy/SegWit), Cardano, Solana, Tezos: byte-identical to the
-     *   firmware display.
-     * - Bitcoin Taproot: same logical descriptor, but firmware renders the bare
-     *   account-level form with `h`-notation (e.g. `tr([fp/86h/0h/0h]xpub…)`),
-     *   while this field is the BIP-389 multipath descriptor with `'`-notation
-     *   and trailing `/<0;1>/*` used to derive both external and change
-     *   addresses (e.g. `tr([fp/86'/0'/0']xpub…/<0;1>/*)`).
-     * - Ethereum: byte-identical to the raw compressed public key (`publicKey`,
-     *   33 bytes hex) shown by firmware.
+     * Generic consumers (e.g. UI components that show the key next to an on-device
+     * verification without knowing the coin) should read this field. Coin-specific
+     * consumers, and anything that passes the key to a backend, should read the
+     * per-coin response type instead, which exposes the fields that genuinely apply
+     * to that coin (e.g. `xpub`, `xpubSegwit`, `publicKeyBase58`, `node`).
      */
     displayablePublicKey: Type.String(),
 });

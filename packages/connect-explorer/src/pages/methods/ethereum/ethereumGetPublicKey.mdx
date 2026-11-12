@@ -85,7 +85,7 @@ Result with only one public key
         childNum: number,             // BIP32 serialization format
         fingerprint: number,          // BIP32 serialization format
         depth: number,                // BIP32 serialization format
-        displayablePublicKey: string, // canonical user-facing form (= publicKey)
+        displayablePublicKey: string, // what the device shows (= publicKey; Trezor Model One shows it in upper case with the last byte cut off)
     }
 }
 ```

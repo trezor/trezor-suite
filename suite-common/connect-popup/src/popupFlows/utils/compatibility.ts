@@ -98,8 +98,7 @@ export const applyRequestCompatibility = (
  * Connect v9 returned the Cardano extended public key (xpub) directly in the
  * `publicKey` field of `cardanoGetPublicKey`. Connect v10 unified the
  * `*GetPublicKey` response shape (trezor-suite#27299): `publicKey` now holds the
- * raw 32-byte public key, and the extended key moved to the new `xpub` /
- * `displayablePublicKey` fields.
+ * raw 32-byte public key, and the extended key moved to the new `xpub` field.
  *
  * To keep host apps still pinned to a `9.x` version of `@trezor/connect`
  * working, rewrite `publicKey` back to the extended key for those callers.

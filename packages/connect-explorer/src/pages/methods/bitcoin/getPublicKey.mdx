@@ -93,20 +93,19 @@ Result with only one public key
         fingerprint: number,          // BIP-32 serialization format: fingerprint of the parent node, not the master key
         rootFingerprint?: number,     // master (root) key fingerprint as uint32, since Connect 10.0.0. See below
         depth: number,                // BIP-32 serialization format
-        descriptor?: string,          // BIP-380 descriptor. Not available for model One
-        displayablePublicKey: string, // canonical user-facing form: xpubSegwit ?? xpub (SLIP-132 form matching the requested scriptType — e.g. ypub/zpub for SegWit, tr(...) descriptor for Taproot)
+        descriptor?: string,          // BIP-380 descriptor. Not available on firmware older than 2.7.0 (Trezor Model One: 1.14.0)
+        displayablePublicKey: string, // exactly what the device shows: the xpub in the SLIP-132 form matching the scriptType (e.g. ypub/zpub for SegWit), for Taproot the `descriptor` when present
     }
 }
 ```
 
-> **`displayablePublicKey` vs. firmware display.** For legacy and SegWit
-> accounts the field is byte-identical to what the device shows when
-> `showOnTrezor: true`. For Taproot the device renders the bare account-level
-> descriptor with `h`-notation (e.g. `tr([fp/86h/0h/0h]xpub…)`), whereas
-> `displayablePublicKey` is the BIP-389 multipath descriptor with
-> `'`-notation and trailing `/<0;1>/*` (e.g. `tr([fp/86'/0'/0']xpub…/<0;1>/*)`).
-> Both describe the same key; the multipath form is what host-side wallets need
-> to derive both external and change addresses.
+> **`displayablePublicKey` is what the device shows.** It is byte-identical to
+> the string the device renders when `showOnTrezor: true`, so show it next to an
+> on-device verification. For Taproot that is firmware's descriptor with
+> `h`-notation and checksum, e.g. `tr([fp/86h/0h/0h]xpub…/<0;1>/*)#checksum`
+> (firmware older than 2.7.0, or 1.14.0 on Trezor Model One, shows the bare
+> `xpub`). To query a backend, use `xpubSegwit ?? xpub`: for Taproot,
+> `xpubSegwit` is the same descriptor with `'`-notation and without the checksum.
 
 > **`fingerprint` vs. `rootFingerprint`.** `fingerprint` is the parent
 > fingerprint stored in the BIP-32 serialization of the returned node. It is

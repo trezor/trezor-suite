@@ -6,9 +6,9 @@ const legacyResults = {
     },
 };
 
-// m/1852'/1815'/0' showOnTrezor: FW renders the same 128-hex extended public
-// key returned in `xpub` / `displayablePublicKey`. deviceScreen is a stable
-// prefix that fits inside the smallest-screen capture.
+// m/1852'/1815'/0' showOnTrezor: FW 2.6.1+ renders the same 128-hex extended
+// public key returned in `xpub` / `displayablePublicKey`. deviceScreen is a
+// stable prefix that fits inside the smallest-screen capture.
 const showOnTrezorDisplayablePublicKey =
     'd507c8f866691bd96e131334c355188b1a1d0b2fa0ab11545075aab332d77d9eb19657ad13ee581b56b0f8d744d66ca356b93d42fe176b3de007d53e9c4c4e7a';
 const showOnTrezorDeviceScreen = showOnTrezorDisplayablePublicKey.slice(0, 40);
@@ -95,7 +95,24 @@ const cardanoGetPublicKey: TestCase = {
             deviceScreen: showOnTrezorDeviceScreen,
             deviceScreenSkip: ['1', '<2.7.0'],
         },
-    ].map(t => ({ ...t, legacyResults: [legacyResults.minConnectVersion] })),
+    ].map(t => ({
+        ...t,
+        legacyResults: [
+            legacyResults.minConnectVersion,
+            // FW before 2.6.1 shows the public key without the chain code.
+            ...(typeof t.result === 'object'
+                ? [
+                      {
+                          rules: ['2.4.3-2.6.0'],
+                          payload: {
+                              ...t.result,
+                              displayablePublicKey: t.result.xpub.slice(0, 64),
+                          },
+                      },
+                  ]
+                : []),
+        ],
+    })),
 };
 
 export default cardanoGetPublicKey;
