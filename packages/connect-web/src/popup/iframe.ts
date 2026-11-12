@@ -1,4 +1,4 @@
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
+import * as ERRORS from '@trezor/connect-common/constants/errors';
 import { type Deferred, createDeferred } from '@trezor/utils';
 import { getWeakRandomId } from '@trezor/utils/src/getWeakRandomId';
 

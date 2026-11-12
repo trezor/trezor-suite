@@ -3,7 +3,7 @@ import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,
     type PrecomposedTransactionCardano,
-} from '@trezor/connect-common/src/types/api/cardano/cardanoComposeTransaction';
+} from '@trezor/connect-common/types/api/cardano/cardanoComposeTransaction';
 import cardano from '@trezor/network-cardano/runtime';
 import { Assert } from '@trezor/schema-utils';
 

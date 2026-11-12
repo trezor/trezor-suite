@@ -4,7 +4,7 @@ import type {
     BitcoinNetworkInfo,
     ComposePsbtResult,
 } from '@trezor/connect-common';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError } from '@trezor/connect-common/constants/errors';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { bufferUtils } from '@trezor/utils';
 import { Psbt } from '@trezor/utxo-lib';

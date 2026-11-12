@@ -1,6 +1,6 @@
 import { decode, verify } from 'jws';
 
-import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
+import type { FirmwareChannel } from '@trezor/connect-common/types/firmware';
 import { firmwareConfigCodesignPublicKey, firmwareConfigDevPublicKey } from '@trezor/connect-data';
 import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 

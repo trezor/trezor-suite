@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch';
 
-import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/data/connectSettings';
 
 import { getEthereumDefinitions } from './ethereumDefinitions';
 import * as settingsStore from '../../data/settingsStore';

@@ -6,7 +6,7 @@ import {
     UI_EVENTS,
     createUiEventMessage,
 } from '@trezor/connect-common';
-import { Bundle } from '@trezor/connect-common/src/types/params';
+import { Bundle } from '@trezor/connect-common/types/params';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 

@@ -11,7 +11,7 @@ import type {
     PROTO,
     PermissionRequest,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { Assert, Type } from '@trezor/schema-utils';
 

@@ -1,5 +1,5 @@
 import type { ConnectSettings } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 
 let settings: ConnectSettings | undefined;
 

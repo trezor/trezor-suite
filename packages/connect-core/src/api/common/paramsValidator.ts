@@ -7,7 +7,7 @@ import type {
     FirmwareRange,
     FirmwareRule,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { typedObjectTransformValues, versionUtils } from '@trezor/utils';
 

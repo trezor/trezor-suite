@@ -10,7 +10,7 @@ import {
 } from '@suite-common/connect-popup';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError } from '@trezor/connect-common/constants/errors';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CheckCircleIcon, CheckIcon, WarningIcon } from '@trezor/icons';

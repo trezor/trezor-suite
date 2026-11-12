@@ -8,7 +8,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
 import { type CallMethodKeys } from '@trezor/connect';
-import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError, serializeError } from '@trezor/connect-common/constants/errors';
 import { mock, mockNotExpected } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
