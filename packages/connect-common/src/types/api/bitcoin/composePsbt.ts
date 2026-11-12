@@ -1,4 +1,4 @@
-import type { AccountAddresses, Utxo as AccountUtxo } from '@trezor/blockchain-link';
+import type { AccountAddresses, Utxo as AccountUtxo } from '@trezor/blockchain-link-types';
 import type { ComposeInput as ComposeInputBase } from '@trezor/utxo-lib';
 
 import type { PrecomposeResultFinal } from './composeTransaction';

@@ -1,11 +1,11 @@
-import type { BlockchainLinkParams } from '@trezor/blockchain-link';
+import type { AccountInfoParams } from '@trezor/blockchain-link-types';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { AccountInfo, DiscoveryAccountType } from '../../account';
 import type { CoinSymbol } from '../../coinInfo';
 import type { BundledParams, Params, Response } from '../../params';
 
-export interface GetAccountInfo extends Omit<BlockchainLinkParams<'getAccountInfo'>, 'descriptor'> {
+export interface GetAccountInfo extends Omit<AccountInfoParams, 'descriptor'> {
     coin: CoinSymbol;
     identity?: string;
     path?: string;

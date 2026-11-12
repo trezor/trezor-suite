@@ -3,7 +3,7 @@ import type {
     FiatRatesBySymbol,
     NotificationEvent,
     ServerInfo,
-} from '@trezor/blockchain-link';
+} from '@trezor/blockchain-link-types';
 import { createTypeGuardByType } from '@trezor/type-utils';
 
 import type { CoinInfo } from '../types/coinInfo';
