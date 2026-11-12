@@ -184,8 +184,7 @@ const onVerifySuccess = (dispatch: Dispatch) => () => {
 };
 
 const onError =
-    (dispatch: Dispatch, type: 'sign-message-error' | 'verify-message-error') =>
-    (error: Error) => {
+    (dispatch: Dispatch, type: 'sign-message-error' | 'verify-message-error') => (error: Error) => {
         dispatch(
             notificationsActions.addToast({
                 type,
