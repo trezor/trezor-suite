@@ -25,12 +25,15 @@ import {
     shouldUseIdentities,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
+    BLOCKCHAIN_EVENT,
     type BlockchainBlock,
     type BlockchainError,
     type BlockchainNotification,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { type Getter } from '@trezor/dependency-injection';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import type { TimerId } from '@trezor/type-utils';
 import { BigNumber, arrayDistinct, arrayToDictionary } from '@trezor/utils';
@@ -115,13 +118,21 @@ export type InitBlockchainThunkState = AccountsRootState &
     WalletSettingsRootState &
     NetworksRootState;
 
-export type InitBlockchainThunkDeps = WithServices<AnalyticsDep>;
+export type InitBlockchainThunkDeps = WithServices<
+    AnalyticsDep & { getDebugSettings: Getter<[], { showConnectLogs?: boolean }> }
+>;
 
 export const initBlockchainThunk = createThunk<
     void,
     void,
     { state: InitBlockchainThunkState; extra: InitBlockchainThunkDeps }
->(`${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`, async (_, { dispatch, getState }) => {
+>(`${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`, async (_, { dispatch, getState, extra }) => {
+    // The backends log along with Connect.
+    await TrezorBlockchain.updateSettings({
+        debug: extra.services.getDebugSettings().showConnectLogs,
+    });
+    TrezorBlockchain.on(BLOCKCHAIN_EVENT, ({ event: _event, ...action }) => dispatch(action));
+
     await dispatch(preloadFeeInfoThunk());
 
     // Load custom blockbook backend
