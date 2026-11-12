@@ -92,18 +92,8 @@ jobs:
           GH_BRANCH: ${{ github.ref_name }}
           PW_CONFIG: ./playwright-config/playwright-desktop-windows.config.ts
         run: |
-          DISCOVERY_FILE="$(cygpath -w "$RUNNER_TEMP/pwc-discovery.txt")"
-
-          yarn workspace @trezor/suite-e2e test:orchestrated:e2e discover \
-            --pwc-discovery-file "$DISCOVERY_FILE" \
-            --config=$PW_CONFIG
-
-          yarn workspace @trezor/suite-e2e test:orchestrated:e2e run \
-            --pwc-discovery-file "$DISCOVERY_FILE" \
-            --config=$PW_CONFIG \
-            --pwc-cancel-after-failures false \
-            --pwc-disable-test-tags \
-            --pwc-skip-reporter-injection
+          yarn workspace @trezor/suite-e2e test:orchestrated:discover --config=$PW_CONFIG
+          yarn workspace @trezor/suite-e2e test:orchestrated:run --config=$PW_CONFIG --pwc-cancel-after-failures false
 
       - name: Extract and Attach Logs to Currents
         if: ${{ !cancelled() }}
