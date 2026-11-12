@@ -4,16 +4,11 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
-import {
-    type SignVerifyRootState,
-    showAddressThunk,
-    signThunk,
-    verifyThunk,
-} from './signVerifyActions';
+import { signThunk, verifyThunk } from './networkSignVerifyThunks';
+import { type SignVerifyRootState } from './signVerifyActions';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -30,15 +25,14 @@ const CONNECTED_DEVICE = mockSuiteDevice({ connected: true, available: true });
 
 const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootState => ({
     device: { ...deviceInitialState, selectedDevice },
-    wallet: { settings: initialWalletSettingsState },
 });
 
 describe('Sign/Verify actions', () => {
     let dispatch: jest.Mock;
     let deps: { services: { analytics: ReturnType<typeof mockAnalytics> } };
 
-    // The thunks only read the selected device and the address display type, so a state literal
-    // is enough — no store, no middleware.
+    // The thunks only read the selected device, so a state literal is enough — no store, no
+    // middleware.
     const getState = () => createState(CONNECTED_DEVICE);
 
     beforeEach(() => {
@@ -50,15 +44,6 @@ describe('Sign/Verify actions', () => {
         dispatch.mock.calls
             .map(([action]) => action?.payload?.type)
             .filter((type): type is string => typeof type === 'string');
-
-    it('showAddress', async () => {
-        testMocks.setTrezorConnectFixtures({
-            success: true,
-            payload: { address: ADDRESS },
-        });
-        const res = await showAddressThunk(ACCOUNT, ADDRESS, PATH)(dispatch, getState);
-        expect(res).toStrictEqual({ address: ADDRESS });
-    });
 
     it('sign', async () => {
         testMocks.setTrezorConnectFixtures({
