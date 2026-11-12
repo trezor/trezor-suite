@@ -39,12 +39,12 @@ const validatorsQueue: EthValidatorsQueue = {
     updatedAt: MOCK_STAKING_NOW_SECONDS,
 };
 
-const createProduct = (symbol: string): StakingProductAdapter =>
+const createProduct = (symbol: string, queue = validatorsQueue): StakingProductAdapter =>
     createEthereumEverstakePooledProduct({
         networkSymbol: asNetworkSymbol(symbol),
         ...createMockDeps<EthereumEverstakePooledProductDeps>({
             getStakingStats: () => Promise.resolve(stats),
-            getEthereumValidatorsQueue: () => Promise.resolve(validatorsQueue),
+            getEthereumValidatorsQueue: () => Promise.resolve(queue),
         }),
     });
 
@@ -484,6 +484,55 @@ describe('everstake pooled product parity with the P0.1 snapshots', () => {
         it('has a next payout time instead of a reward period', () => {
             expect(productInfo.rewardPeriodDays).toBeNull();
             expect(productInfo.nextRewardAt).not.toBeNull();
+        });
+        // Legacy rounds once, from the raw queue: a 3.4 day queue with a stake mined 0.6 days ago
+        // leaves 3 days, and a 2.6 day exit with an unstake mined 0.4 days ago leaves 2.
+        it('keeps the fraction of a day of the queue until the days left are rounded', async () => {
+            const product = createProduct('eth', {
+                ...validatorsQueue,
+                addingDelay: 0.4 * SECONDS_IN_DAY,
+                activationTime: 3 * SECONDS_IN_DAY,
+                withdrawTime: 0.6 * SECONDS_IN_DAY,
+                exitTime: 2 * SECONDS_IN_DAY,
+            });
+            const info = await product.fetchProductInfo({});
+            const daysOf = (position: StakingPosition | null) => ({
+                activations: (position?.activations ?? []).map(({ availableAt }) =>
+                    daysUntil(availableAt),
+                ),
+                unlocks: (position?.unlocks ?? []).map(({ availableAt }) => daysUntil(availableAt)),
+            });
+
+            expect(
+                daysOf(
+                    product.getPosition({
+                        account: mockEthereumStakingAccount('pending'),
+                        productInfo: info,
+                        transactions: [
+                            minedEverstakeTransaction(
+                                '0x3a29dbae',
+                                'stake',
+                                MOCK_STAKING_NOW_SECONDS - 0.6 * SECONDS_IN_DAY,
+                            ),
+                        ],
+                    }),
+                ),
+            ).toEqual({ activations: [3], unlocks: [] });
+            expect(
+                daysOf(
+                    product.getPosition({
+                        account: mockEthereumStakingAccount('unstaking'),
+                        productInfo: info,
+                        transactions: [
+                            minedEverstakeTransaction(
+                                '0x76ec871c',
+                                'unstake',
+                                MOCK_STAKING_NOW_SECONDS - 0.4 * SECONDS_IN_DAY,
+                            ),
+                        ],
+                    }),
+                ),
+            ).toEqual({ activations: [], unlocks: [2] });
         });
     });
 });

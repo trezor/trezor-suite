@@ -5,12 +5,13 @@ import {
     stakingProductInfoSchema,
 } from '@suite-common/earn-staking-common';
 
+const SECONDS_IN_DAY = 24 * 60 * 60;
+
+// Exact, so a period end is not rounded twice: here and again where the days left are shown.
 const getPeriodDays = (firstSeconds?: number, secondSeconds?: number): number | null => {
     if (firstSeconds === undefined || secondSeconds === undefined) return null;
 
-    const secondsInDay = 24 * 60 * 60;
-
-    return Math.round((firstSeconds + secondSeconds) / secondsInDay);
+    return (firstSeconds + secondSeconds) / SECONDS_IN_DAY;
 };
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -43,8 +44,7 @@ export const fetchEthereumEverstakePooledProductInfo = async (
 
     const rate = stats.apy;
 
-    const entryDays = getPeriodDays(queue?.addingDelay, queue?.activationTime);
-    const entryPeriodDays = entryDays === null ? null : Math.max(1, entryDays);
+    const entryPeriodDays = getPeriodDays(queue?.addingDelay, queue?.activationTime);
     const exitPeriodDays = getPeriodDays(queue?.withdrawTime, queue?.exitTime);
 
     const nextRewardAt =
