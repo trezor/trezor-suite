@@ -389,6 +389,8 @@ export const useYieldWithdrawController = () => {
             return;
         }
 
+        Keyboard.dismiss();
+
         const apyBreakdown = getApyBreakdown(vault?.rewardRate?.components);
 
         reportWithdraw({

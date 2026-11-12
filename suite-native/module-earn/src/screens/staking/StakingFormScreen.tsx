@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -123,6 +124,7 @@ export const StakingFormScreen = () => {
     }
 
     const handleSubmit = form.handleSubmit(() => {
+        Keyboard.dismiss();
         registerNavigateBackAnalytics();
         analytics.report({
             type: events.stakingStakeEvent.name,

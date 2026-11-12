@@ -1,12 +1,14 @@
 import { type PropsWithChildren, type ReactNode } from 'react';
+import { Keyboard } from 'react-native';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { selectIsEarnOnboardingConfirmed } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type ActiveView } from '@suite-native/atoms';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
-import { type StakingPendingTxParams } from '@suite-native/navigation';
+import { RootStackRoutes, type StakingPendingTxParams } from '@suite-native/navigation';
 import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mock } from '@trezor/dependency-injection';
 
@@ -47,7 +49,7 @@ jest.mock('@suite-native/navigation', () => ({
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectAccountNetworkSymbol: () => 'eth',
-    selectIsEarnOnboardingConfirmed: () => true,
+    selectIsEarnOnboardingConfirmed: jest.fn(),
 }));
 jest.mock('@suite-native/forms', () => ({
     ...jest.requireActual('@suite-native/forms'),
@@ -126,8 +128,10 @@ const renderStakingForm = async (isDeviceConnected = true) => {
 
 beforeEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
     jest.mocked(isBalanceBelowStakingMinimum).mockReturnValue(false);
     mockRouteParams = { accountKey: 'account-key' };
+    jest.mocked(selectIsEarnOnboardingConfirmed).mockReturnValue(true);
     mockNavigation.addListener.mockReturnValue(jest.fn());
     jest.mocked(useStakingForm).mockReturnValue({
         account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
@@ -192,6 +196,25 @@ it('shows the low-balance screen when no transaction was submitted', async () =>
     expect(view.queryByText('Fiat input')).toBeNull();
     expect(view.queryByTestId('pending-transaction-modal')).toBeNull();
 });
+
+it.each([
+    [true, RootStackRoutes.StakingTransactionDataReview],
+    [false, RootStackRoutes.EarnConsents],
+])(
+    'dismisses the amount keyboard before navigating (already onboarded: %s, route: %s)',
+    async (isConfirmed, route) => {
+        jest.mocked(selectIsEarnOnboardingConfirmed).mockReturnValue(isConfirmed);
+        const dismissKeyboard = jest.spyOn(Keyboard, 'dismiss');
+        const view = await renderStakingForm();
+
+        await fireEvent.press(view.getByTestId('submit-stake'));
+
+        expect(mockNavigation.navigate).toHaveBeenCalledWith(route, expect.anything());
+        expect(dismissKeyboard.mock.invocationCallOrder[0]).toBeLessThan(
+            mockNavigation.navigate.mock.invocationCallOrder[0] ?? 0,
+        );
+    },
+);
 
 describe('StakingFormScreen pending transaction', () => {
     const pendingTransaction: StakingPendingTxParams = {
