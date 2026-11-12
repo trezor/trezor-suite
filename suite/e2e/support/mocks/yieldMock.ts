@@ -29,6 +29,7 @@ export const YIELD_VAULTS = {
         apy: '~3.1%',
         apyBreakdown: {
             apyPercent: '3.1',
+            analyticsAttribute: 'MORPHO,0.5,WETH,2.6',
             symbols: ['WETH', 'MORPHO'],
             rates: ['+2.6% APY', '+0.5% APR'],
         },

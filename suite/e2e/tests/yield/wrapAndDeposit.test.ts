@@ -1,4 +1,6 @@
+import { events } from '@suite-common/analytics';
 import { asNetworkSymbol } from '@suite-common/networks';
+import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
@@ -25,6 +27,17 @@ const BALANCE_AFTER_WRAP = '1223999891597199690000';
 const BALANCE_AFTER_APPROVE = '1223999859979716266250';
 const BALANCE_AFTER_DEPOSIT = '1223999751576915956250';
 
+const VAULT_CONTEXT = { networkSymbol: 'eth', vaultId: wethPrime.id };
+const DEPOSIT_CONTEXT = { ...VAULT_CONTEXT, action: 'continue' };
+const APY_BREAKDOWN = wethPrime.apyBreakdown.analyticsAttribute;
+const DASHBOARD_CONTEXT = {
+    hasStakingPosition: 'true',
+    hasClaimBanner: 'false',
+    availableVaultCount: String(Object.keys(YIELD_VAULTS).length),
+    availableStakingCount: String(PROD_STAKING_SYMBOLS.length),
+    hasShowMore: 'false',
+};
+
 const APPROVE_TXID = '0x9a6e2c41d7b83f05e1c9a2d64b7f80c53a1e0d92c4b6f7a8091d3e5c2b4a6f81';
 const DEPOSIT_TXID = '0x3c8b1f6a2e94d07c5b3a8e1f9d62047ae5c1b39f8d27a604c9e5b2a1f7d38c02';
 
@@ -35,24 +48,28 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        await yieldMock.start();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            await yieldMock.start();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can wrap ETH and deposit it into a WETH yield vault',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
             page,
             yieldSection,
             yieldFlowSection,
@@ -65,24 +82,60 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
             yieldMock,
             toastSection,
         }) => {
+            const earnEntryEvents = analytics.trackEvents(events.yieldEarnEntryEvent.name);
+            const dashboardReadyEvents = analytics.trackEvents(events.earnDashboardReadyEvent.name);
+            const navigateEvents = analytics.trackEvents(events.yieldNavigateEvent.name);
+            const interactionEvents = analytics.trackEvents(events.yieldInteractionEvent.name);
+            const depositEvents = analytics.trackEvents(events.yieldDepositEvent.name);
+
             await test.step('Start a deposit into the WETH vault', async () => {
                 await yieldSection.earnMenuButton.click();
+                await earnEntryEvents.expectNext({ from: 'settings-coins' });
+                await dashboardReadyEvents.expectNext({
+                    ...DASHBOARD_CONTEXT,
+                    hasYieldPosition: 'false',
+                });
                 await expect(yieldSection.vaultSubtitle(wethPrime.id)).toHaveText(wethPrime.name);
                 await expect(yieldSection.apyPercentage(wethPrime.id)).toHaveText(wethPrime.apy);
                 await yieldSection.clickDepositNow(wethPrime.id);
+                await navigateEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    action: 'continue',
+                    from: 'earn-dashboard',
+                    to: 'deposit-in-a-nutshell-modal',
+                });
 
                 await earnNutshellModal.depositProcess.click();
                 await expect(earnNutshellModal.depositApyValue).toHaveTranslation(
                     'TR_EARN_APY_APPROX',
                     { values: { apyPercent: wethPrime.apyBreakdown.apyPercent } },
                 );
+                // The process tab reports once its expand animation finishes, so let it
+                // finish before leaving the modal.
+                await interactionEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    element: 'in-a-nutshell-process-tab',
+                    value: 'deposit',
+                });
                 await earnNutshellModal.continueButton.click();
+                await navigateEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    action: 'continue',
+                    from: 'deposit-in-a-nutshell-modal',
+                    to: 'deposit-legal-modal',
+                });
 
                 await expect(yieldConsentModal.heading).toHaveTranslation('TR_EARN_DEPOSIT_TOKEN', {
                     values: { symbol: 'ETH' },
                 });
                 await yieldConsentModal.acknowledgeCheckbox.click();
                 await yieldConsentModal.confirmButton.click();
+                await navigateEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    action: 'continue',
+                    from: 'deposit-legal-modal',
+                    to: 'deposit-form',
+                });
             });
 
             await test.step('Wrap amount is validated', async () => {
@@ -107,6 +160,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 );
                 await expect(yieldFlowSection.wrapButton).toBeEnabled();
                 await yieldFlowSection.maxButton.click();
+                await interactionEvents.expectNext({ ...VAULT_CONTEXT, element: 'deposit-max' });
                 await expect(yieldFlowSection.amountInput).toHaveValue('1,233.995');
             });
 
@@ -123,6 +177,11 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldFlowSection.wrapSkipButton).toBeHidden();
 
                 await yieldFlowSection.wrapButton.click();
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'wrap',
+                    deviceStatus: 'connected',
+                });
                 await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 10 ETH');
                 await expect(txSimulationModal.sentAssetFiat(0)).toHaveText('-$25,000.00');
                 await expect(txSimulationModal.receivedAsset(0)).toHaveText('Receiving 10 WETH');
@@ -189,6 +248,11 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                     tokens: [...ETH_MOCKED_ACCOUNT.tokens, YIELD_WETH_TOKEN],
                 });
                 await page.clock.fastForward('01:00');
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'wrap-success',
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
             });
 
             await test.step('Approve WETH spending', async () => {
@@ -200,7 +264,17 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 blockbookMock.setBroadcastTxid(APPROVE_TXID);
 
                 await yieldFlowSection.approveButton.click();
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'approve',
+                    deviceStatus: 'connected',
+                });
                 await yieldFlowSection.approveModalContinueButton.click();
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'approve-modal',
+                    approvalType: 'MINIMAL',
+                });
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
@@ -268,6 +342,15 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                     'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
                 );
 
+                await yieldFlowSection.pendingTransactionId.click();
+                await interactionEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    element: 'pending-tx-open',
+                    value: 'approve',
+                });
+                await expect(yieldFlowSection.transactionDetailTxid).toHaveText(APPROVE_TXID);
+                await page.modalCloseButton.click();
+
                 blockbookMock.updateAccountState({
                     txs: 3,
                     nonce: '3',
@@ -280,6 +363,11 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 });
                 blockbookMock.updateAllowance('10000000000000000000'); // 10 WETH
                 await page.clock.fastForward('01:00');
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'approve-success',
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
             });
 
             await test.step('Deposit WETH', async () => {
@@ -299,17 +387,30 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldFlowSection.depositButton).toBeDisabled();
 
                 await yieldFlowSection.modifyApprovalButton.click();
+                await depositEvents.expectNext({ ...DEPOSIT_CONTEXT, type: 'modify-allowance' });
                 await expect(yieldFlowSection.approveButton).toBeEnabled();
                 await expect(yieldFlowSection.depositButton).toBeHidden();
                 await expect(yieldFlowSection.amountInput).toHaveValue(DEPOSIT_AMOUNT);
                 await expect(yieldFlowSection.approvedAmount).toHaveText(`${DEPOSIT_AMOUNT} WETH`);
                 await yieldFlowSection.approveSkipButton.click();
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'approve',
+                    action: 'skip',
+                });
 
                 await expect(yieldFlowSection.depositButton).toBeEnabled();
                 await expect(yieldFlowSection.approveButton).toBeHidden();
                 await expect(yieldFlowSection.amountInput).toHaveValue(DEPOSIT_AMOUNT);
                 await expect(yieldFlowSection.approvalTooLowWarning).toBeHidden();
                 await yieldFlowSection.depositButton.click();
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'deposit',
+                    deviceStatus: 'connected',
+                    wrappedNative: 'true',
+                    apyBreakdown: APY_BREAKDOWN,
+                });
 
                 await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 10 WETH');
                 await expect(txSimulationModal.sentAssetFiat(0)).toHaveText('-$25,000.00');
@@ -320,6 +421,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(txSimulationModal.maxFeeAmount).toHaveText('0.000108403 ETH');
                 await expect(txSimulationModal.maxFeeFiat).toHaveText('≈ $0.00');
                 await txSimulationModal.confirmButton.click();
+                await depositEvents.expectNext({ ...DEPOSIT_CONTEXT, type: 'tx-simulation-modal' });
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
@@ -416,10 +518,28 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
                     '8 trSHWETHp',
                 );
+                await depositEvents.expectNext({
+                    ...DEPOSIT_CONTEXT,
+                    type: 'success',
+                    wrappedNative: 'true',
+                    apyBreakdown: APY_BREAKDOWN,
+                    durationMs: expect.stringMatching(/^\d+$/),
+                });
             });
 
             await test.step('Returning to the dashboard shows the deposited position', async () => {
                 await yieldFlowSection.backToOverviewButton.click();
+                await navigateEvents.expectNext({
+                    ...VAULT_CONTEXT,
+                    action: 'continue',
+                    from: 'deposit-form',
+                    to: 'earn-dashboard',
+                });
+                await earnEntryEvents.expectNext({ from: 'earn-yield-deposit' });
+                await dashboardReadyEvents.expectNext({
+                    ...DASHBOARD_CONTEXT,
+                    hasYieldPosition: 'true',
+                });
 
                 // 8 shares at pricePerShare 1.25 = 10, yearly reward = 10 × 3.1% APY.
                 await expect(yieldSection.depositedAmount(wethPrime.id)).toHaveTranslation(
