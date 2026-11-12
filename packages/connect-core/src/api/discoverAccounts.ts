@@ -393,8 +393,8 @@ export default class DiscoverAccounts extends AbstractMethod<
         } catch (err) {
             const path = substituteBip43Path(bip43, offset + index);
             this.updateProgress(accountKey, index + 1, true);
-            const error = err.message;
-            sendProgress({ ...accountKey, index, failed: true, error, path, backendType });
+            const { message: error, code } = err;
+            sendProgress({ ...accountKey, index, failed: true, error, code, path, backendType });
 
             return { empty: 0, nonempty: 0, error };
         }

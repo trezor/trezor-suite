@@ -2,7 +2,7 @@ export type * from './common';
 export type * from './params';
 
 export { MESSAGES, RESPONSES } from './constants';
-export { CustomError } from './constants/errors';
+export { CustomError, isBlockchainLinkErrorCode } from './constants/errors';
 export type { Response } from './responses';
 export type { BlockEvent, FiatRatesEvent, NotificationEvent } from './responses';
 export type { Message } from './messages';

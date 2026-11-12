@@ -121,7 +121,8 @@ export type AccountBackendSpecific =
       };
 
 export type AccountFailureSpecific =
-    { failed: true; error: string } | { failed?: false; error?: undefined };
+    | { failed: true; error: string; errorCode?: string }
+    | { failed?: false; error?: undefined; errorCode?: undefined };
 
 /**
  * This is synthetic (combined) key, it may be useful for some data-structures.

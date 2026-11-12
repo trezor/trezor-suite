@@ -2,8 +2,11 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type AccountFailureSpecific } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
-import { asDeviceUniquePath } from '@trezor/connect';
+import { type StaticSessionId, asDeviceUniquePath } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { discoveryActions } from './discoveryActions';
@@ -15,13 +18,26 @@ import {
 } from './discoveryStateThunks';
 
 const devicePath = asDeviceUniquePath('device-path');
+const walletState: StaticSessionId = 'standard@deviceid:1';
+const otherWalletState: StaticSessionId = 'standard@deviceid:2';
 const analytics = mockAnalytics<AnalyticsSharedEvents>();
 const discoveryReducer = prepareDiscoveryReducer(undefined);
 
-const initStore = () =>
+const failedAccount = (
+    symbol: 'btc' | 'sol',
+    failure: AccountFailureSpecific,
+    deviceState = walletState,
+) => mockWalletAccount({ symbol: asNetworkSymbol(symbol), deviceState }, undefined, failure);
+
+const initStore = (accounts: Account[] = []) =>
     createTestCompositionRoot<WithServices<AnalyticsDep>, UpdateDiscoveryThunkState>({
         services: () => ({ analytics }),
-        reducer: { wallet: combineReducers({ discovery: discoveryReducer }) },
+        reducer: {
+            wallet: combineReducers({
+                discovery: discoveryReducer,
+                accounts: (state: Account[] = accounts) => state,
+            }),
+        },
     }).services.store;
 
 beforeEach(() => {
@@ -45,6 +61,90 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
             payload: { outcome: 'complete', trigger: 'device-connect' },
+        });
+    });
+
+    it('reports a run that completed with an account it could not load as failed', () => {
+        const store = initStore([
+            failedAccount('sol', {
+                failed: true,
+                error: 'All backends are down',
+                errorCode: 'blockchain_link/connect',
+            }),
+        ]);
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'complete' },
+                path: devicePath,
+                staticSessionId: walletState,
+            }),
+        );
+
+        expect(store.getState().wallet.discovery[devicePath]).toMatchObject({
+            status: 'complete',
+        });
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'failed', trigger: 'device-connect', errorCode: 'Backend_Error' },
+        });
+    });
+
+    it('ignores an account of another wallet that failed to load', () => {
+        const store = initStore([
+            failedAccount(
+                'sol',
+                {
+                    failed: true,
+                    error: 'All backends are down',
+                    errorCode: 'blockchain_link/connect',
+                },
+                otherWalletState,
+            ),
+        ]);
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'complete' },
+                path: devicePath,
+                staticSessionId: walletState,
+            }),
+        );
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'complete', trigger: 'device-connect' },
+        });
+    });
+
+    it('reports the code of the failed account that carries one', () => {
+        const store = initStore([
+            failedAccount('btc', { failed: true, error: 'Network request failed' }),
+            failedAccount('sol', {
+                failed: true,
+                error: 'Device disconnected',
+                errorCode: 'Device_Disconnected',
+            }),
+        ]);
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'complete' },
+                path: devicePath,
+                staticSessionId: walletState,
+            }),
+        );
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: {
+                outcome: 'failed',
+                trigger: 'device-connect',
+                errorCode: 'Device_Disconnected',
+            },
         });
     });
 

@@ -1,3 +1,4 @@
+import { CustomError } from '@trezor/blockchain-link-types';
 import {
     type CoinInfo,
     type Device as DeviceMessage,
@@ -174,6 +175,24 @@ describe('DiscoverAccounts', () => {
         } as unknown as MethodContext);
 
         expect(result).toEqual({ empty: 0, nonempty: 0, failed: 1 });
+    });
+
+    it('reports the error code of a backend that cannot be initialized', async () => {
+        jest.mocked(getCoinInfoOrThrow).mockReturnValue(mockCoinInfo());
+        jest.mocked(initBlockchain).mockRejectedValue(
+            new CustomError('blockchain_link/connect', 'All backends are down'),
+        );
+        const sendCoreMessage = jest.fn();
+
+        await createMethod().run({ sendCoreMessage } as unknown as MethodContext);
+
+        const [[message]] = sendCoreMessage.mock.calls;
+        expect(message.payload.response).toMatchObject({
+            index: 0,
+            failed: true,
+            error: 'All backends are down',
+            code: 'blockchain_link/connect',
+        });
     });
 });
 
