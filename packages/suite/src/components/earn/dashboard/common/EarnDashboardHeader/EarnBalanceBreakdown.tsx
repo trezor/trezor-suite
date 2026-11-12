@@ -3,11 +3,10 @@ import {
     selectEarnTotalFiatAmount,
     selectIsEarnFiatTotalIncomplete,
     selectIsEarnFiatTotalUnavailable,
-    selectStakingTotalFiatAmount,
-    selectYieldTotalFiatAmount,
     useEarnMissingRateTickersQuery,
-    useYieldOpportunities,
-} from '@suite-common/wallet-core';
+} from '@suite-common/earn';
+import { selectDeviceStakingTotalFiatAmount } from '@suite-common/earn-staking';
+import { selectYieldTotalFiatAmount, useYieldOpportunities } from '@suite-common/wallet-core';
 import { Card, Column, SegmentedBar, Text } from '@trezor/components';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -24,7 +23,7 @@ export const EarnBalanceBreakdown = () => {
     const { yieldOpportunities } = useYieldOpportunities();
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();
 
-    const totalStakingFiatAmount = useSelector(selectStakingTotalFiatAmount);
+    const totalStakingFiatAmount = useSelector(selectDeviceStakingTotalFiatAmount);
 
     const totalYieldFiatAmount = useSelector(state =>
         selectYieldTotalFiatAmount(state, yieldOpportunities),

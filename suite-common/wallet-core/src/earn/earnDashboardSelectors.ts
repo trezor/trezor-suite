@@ -62,9 +62,7 @@ import {
 import {
     type EarnFiatPosition,
     type EarnFiatValuation,
-    getEarnMissingRateTickerIds,
     getEarnPositionFiatAmount,
-    hasAnyEarnFiatRate,
     sumEarnFiatValuations,
 } from './earnDepositsFiatUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -72,7 +70,6 @@ import { selectVisibleDeviceAccounts } from '../accounts/accountsSelectors';
 import {
     createStableFiatRateKeys,
     createStableTickerId,
-    createStableTickerIds,
     selectCurrentFiatRatesByFiatRateKeys,
 } from '../fiat-rates/fiatRatesSelectors';
 import { type FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
@@ -669,12 +666,6 @@ export const selectYieldFiatValuations = createMemoizedSelector(
     createEarnFiatValuations,
 );
 
-export const selectEarnFiatValuations = createMemoizedSelector(
-    [selectStakingFiatValuations, selectYieldFiatValuations],
-    (stakingFiatValuations, yieldFiatValuations): EarnFiatValuation[] =>
-        returnStableArrayIfEmpty([...stakingFiatValuations, ...yieldFiatValuations]),
-);
-
 export const selectStakingTotalFiatAmount = createMemoizedSelector(
     [selectStakingFiatValuations],
     sumEarnFiatValuations,
@@ -685,49 +676,6 @@ export const selectYieldTotalFiatAmount = createMemoizedSelector(
     sumEarnFiatValuations,
 );
 
-export const selectEarnTotalFiatAmount = createMemoizedSelector(
-    [selectEarnFiatValuations],
-    sumEarnFiatValuations,
-);
-
-export const selectEarnMissingTickerIds = createMemoizedSelector(
-    [selectEarnFiatValuations],
-    earnFiatValuations => createStableTickerIds(...getEarnMissingRateTickerIds(earnFiatValuations)),
-);
-
-export const selectIsEarnFiatTotalIncomplete = createMemoizedSelector(
-    [
-        selectEarnMissingTickerIds,
-        (
-            _state: EarnListRootState,
-            _yieldOpportunities: readonly YieldOpportunity[],
-            isFiatRatesLoading: boolean,
-        ) => isFiatRatesLoading,
-    ],
-    (earnMissingTickerIds, isFiatRatesLoading) =>
-        earnMissingTickerIds.length > 0 && !isFiatRatesLoading,
-);
-
-export const selectIsEarnFiatTotalUnavailable = createMemoizedSelector(
-    [selectIsEarnFiatTotalIncomplete, selectEarnFiatValuations],
-    (isEarnFiatTotalIncomplete, earnFiatValuations) =>
-        isEarnFiatTotalIncomplete && !hasAnyEarnFiatRate(earnFiatValuations),
-);
-
-export const selectIsEarnBalanceBreakdownDisplayed = createMemoizedSelector(
-    [
-        selectStakingListItems,
-        selectYieldListItems,
-        selectIsEarnFiatTotalIncomplete,
-        selectIsEarnFiatTotalUnavailable,
-    ],
-    (stakingPositions, yieldPositions, isFiatTotalIncomplete, isFiatTotalUnavailable) =>
-        stakingPositions.length > 0 &&
-        yieldPositions.length > 0 &&
-        !isFiatTotalIncomplete &&
-        !isFiatTotalUnavailable,
-);
-
 export const selectStakingPositionsCount = createMemoizedSelector(
     [selectStakingListItems],
     stakingPositions => stakingPositions.length,
@@ -736,9 +684,4 @@ export const selectStakingPositionsCount = createMemoizedSelector(
 export const selectYieldPositionsCount = createMemoizedSelector(
     [selectYieldListItems],
     yieldPositions => yieldPositions.length,
-);
-
-export const selectEarnPositionsCount = createMemoizedSelector(
-    [selectStakingPositionsCount, selectYieldPositionsCount],
-    (stakingPositionsCount, yieldPositionsCount) => stakingPositionsCount + yieldPositionsCount,
 );

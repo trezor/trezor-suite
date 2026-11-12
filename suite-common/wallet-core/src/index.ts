@@ -42,7 +42,6 @@ export * from './earn/earnTransactionsReducer';
 export * from './earn/earnTransactionsThunks';
 export * from './yield/utils/yieldClaimSummaryUtils';
 export * from './yield/hooks/useYieldClaimRewardsWithFiat';
-export * from './earn/useEarnMissingRateTickersQuery';
 export * from './yield/hooks/useYieldOpportunities';
 export * from './explorer/explorerActions';
 export * from './explorer/explorerReducer';

@@ -57,6 +57,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/discreet-mode": "workspace:*",
+        "@suite-common/earn": "workspace:*",
         "@suite-common/earn-stablecoin": "workspace:^",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-staking": "workspace:*",
