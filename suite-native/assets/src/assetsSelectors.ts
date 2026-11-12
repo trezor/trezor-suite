@@ -5,6 +5,7 @@ import {
     calculateAssetsPercentage,
 } from '@suite-common/assets';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
+import { selectStakingAmountsOutsideBalance } from '@suite-common/earn-staking';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -16,7 +17,7 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
+import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -49,16 +50,17 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
         selectDeviceNetworkSymbolsWithAssets,
         selectBaseCurrency,
         selectCurrentFiatRates,
+        selectStakingAmountsOutsideBalance,
     ],
-    (accounts, deviceNetworkSymbolsWithAssets, baseCurrencyCode, rates) => {
+    (accounts, deviceNetworkSymbolsWithAssets, baseCurrencyCode, rates, stakingBalances) => {
         const accountsWithFiatBalance = accounts.map(account => {
-            const shouldIncludeStaking = isStakingSymbol(account.symbol);
+            const stakingBalance = stakingBalances[account.key];
 
             const fiatValue = getAccountFiatBalance({
                 account,
                 baseCurrencyCode,
                 rates,
-                shouldIncludeStaking,
+                stakingBalance,
             });
 
             return {
