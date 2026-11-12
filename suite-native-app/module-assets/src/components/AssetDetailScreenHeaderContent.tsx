@@ -1,12 +1,13 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { useFormatters } from '@suite-common/formatters';
 import { AssetSymbol } from '@suite-native/assets';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
 import { TokenIcon } from '@suite-native/tokens';
 
 export const AssetDetailScreenHeaderContent = () => {
+    const { NetworkNameFormatter } = useFormatters();
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
 
@@ -34,7 +35,7 @@ export const AssetDetailScreenHeaderContent = () => {
                     numberOfLines={1}
                     ellipsizeMode="tail"
                 >
-                    {getNetworkDisplaySymbolName(networkSymbol)}
+                    <NetworkNameFormatter value={networkSymbol} />
                 </Text>
             </VStack>
         </HStack>

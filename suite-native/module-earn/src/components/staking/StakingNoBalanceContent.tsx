@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type StakeRootState,
@@ -27,6 +28,10 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        account?.symbol ? selectNativeTokenName(state, account.symbol) : undefined,
+    );
+
     const apy = useSelector((state: StakeRootState) =>
         selectApy(state, { networkSymbol: account?.symbol, accountKey }),
     );
@@ -48,7 +53,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                     title={
                         <Translation
                             id="earn.earnFormScreen.title"
-                            values={{ assetName: getNetworkDisplaySymbolName(account.symbol) }}
+                            values={{ assetName: nativeTokenName }}
                         />
                     }
                 />

@@ -1,8 +1,7 @@
 import { type TokenInfoBranded } from '@suite-common/tokens';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { AssetSymbol } from '@suite-native/assets';
-import { Box, Card, HStack, Text } from '@suite-native/atoms';
+import { AssetName, AssetSymbol } from '@suite-native/assets';
+import { Box, Card, HStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
@@ -11,7 +10,7 @@ import {
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { YieldBadge } from '@suite-native/module-earn';
-import { TokenIcon, TokenName } from '@suite-native/tokens';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -84,19 +83,13 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             )}
                         </HStack>
 
-                        {token ? (
-                            <TokenName
-                                networkSymbol={symbol}
-                                contractAddress={token.contract}
-                                variant="body-sm"
-                                color="contentSecondary"
-                                numberOfLines={1}
-                            />
-                        ) : (
-                            <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                                {getNetworkDisplaySymbolName(symbol)}
-                            </Text>
-                        )}
+                        <AssetName
+                            networkSymbol={symbol}
+                            contractAddress={token?.contract}
+                            variant="body-sm"
+                            color="contentSecondary"
+                            numberOfLines={1}
+                        />
                     </Box>
 
                     <Box alignItems="flex-end" flexShrink={1}>

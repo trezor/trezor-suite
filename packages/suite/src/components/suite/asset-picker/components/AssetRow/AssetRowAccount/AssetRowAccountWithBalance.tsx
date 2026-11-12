@@ -1,8 +1,8 @@
-import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { AssetIcon } from '@suite/assets';
 import { type Account } from '@suite-common/wallet-types';
-import { Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
+import { Row } from '@trezor/components';
 
+import { AssetDetails } from '../AssetDetails';
 import { ItemClickableContainer } from '../ItemClickableContainer';
 import { AccountAmount } from './AccountAmount';
 
@@ -32,25 +32,8 @@ export function AssetRowAccountWithBalance({
             isDisabled={isDisabled}
         >
             <Row data-testid={dataTestId} gap={12} alignItems="center" overflow="hidden">
-                <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
-                <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
-                    <Text
-                        typographyStyle="body-md"
-                        ellipsisLineCount={1}
-                        maxWidth="100%"
-                        isDisabled={isDisabled}
-                    >
-                        {getNetworkDisplaySymbolName(account.symbol)}
-                    </Text>
-                    <Text
-                        intent="neutral"
-                        priority="secondary"
-                        typographyStyle="body-sm"
-                        isDisabled={isDisabled}
-                    >
-                        {getDisplaySymbol(account.symbol)}
-                    </Text>
-                </Column>
+                <AssetIcon networkSymbol={account.symbol} size={40} showNetworkIcon />
+                <AssetDetails networkSymbol={account.symbol} isDisabled={isDisabled} />
             </Row>
             <AccountAmount
                 account={account}

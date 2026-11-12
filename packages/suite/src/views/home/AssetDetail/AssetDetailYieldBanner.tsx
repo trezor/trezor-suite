@@ -1,11 +1,11 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { closeTokenYieldBanner, selectIsTokenYieldBannerClosed } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
@@ -30,7 +30,6 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
     const formatApy = useFormatApy();
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
     const bannerKey = `${symbol}-${contractAddress?.toLowerCase()}`;
@@ -38,14 +37,18 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
     const apy = useYieldVaultApy({ symbol, contractAddress, tokenSymbol, tokenDecimals });
 
     if (
+        symbol === undefined ||
         contractAddress === undefined ||
-        displaySymbol === undefined ||
         isBannerClosed ||
         apy === null ||
         !isApyAvailable(apy)
     ) {
         return null;
     }
+
+    const symbolLabel = (
+        <AssetSymbol networkSymbol={symbol} contractAddress={contractAddress} isTruncated />
+    );
 
     const reportYieldNavigate = (action: 'continue' | 'cancel') =>
         analytics.report({
@@ -74,11 +77,14 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
             title={
                 <Translation
                     id="TR_STAKING_BANNER_ETH_EARN_TITLE"
-                    values={{ apy: formatApy(apy), displaySymbol }}
+                    values={{ apy: formatApy(apy), displaySymbol: symbolLabel }}
                 />
             }
             description={
-                <Translation id="TR_EARN_TOKEN_YIELD_BANNER_TEXT" values={{ displaySymbol }} />
+                <Translation
+                    id="TR_EARN_TOKEN_YIELD_BANNER_TEXT"
+                    values={{ displaySymbol: symbolLabel }}
+                />
             }
             rightContent={
                 <>

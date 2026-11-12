@@ -1,9 +1,6 @@
 import { Translation } from '@suite/intl';
-import {
-    selectWalletAssetContractAddress,
-    selectWalletAssetName,
-    selectWalletAssetSymbol,
-} from '@suite-common/assets';
+import { TokenName } from '@suite/token';
+import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 
@@ -17,7 +14,6 @@ export const AssetDetailAssetDescription = ({ assetKey }: AssetDetailAssetDescri
     const { NetworkNameFormatter } = useFormatters();
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const name = useSelector(state => selectWalletAssetName(state, assetKey));
 
     if (symbol === undefined) {
         return null;
@@ -32,7 +28,10 @@ export const AssetDetailAssetDescription = ({ assetKey }: AssetDetailAssetDescri
     return (
         <Translation
             id="TR_GLOBAL_RECEIVE_ASSET_ON_NETWORK"
-            values={{ asset: name, network: networkName }}
+            values={{
+                asset: <TokenName networkSymbol={symbol} tokenContract={contractAddress} />,
+                network: networkName,
+            }}
         />
     );
 };

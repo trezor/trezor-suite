@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type EarnOnboardingRootState,
@@ -59,6 +59,10 @@ export const StakingFormScreen = () => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        networkSymbol ? selectNativeTokenName(state, networkSymbol) : undefined,
+    );
+
     const { analytics } = useServices(injectNativeAnalytics);
     const deviceStatus = useEarnDeviceStatus();
     const [currency, setCurrency] = useState<'crypto' | 'fiat'>('crypto');
@@ -137,7 +141,7 @@ export const StakingFormScreen = () => {
                     title={
                         <Translation
                             id="earn.earnFormScreen.title"
-                            values={{ assetName: getNetworkDisplaySymbolName(account.symbol) }}
+                            values={{ assetName: nativeTokenName }}
                         />
                     }
                 />

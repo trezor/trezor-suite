@@ -1,11 +1,7 @@
 import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import {
-    selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
-    selectWalletAssetSymbol,
-} from '@suite-common/assets';
+import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Column, type Padding, Row } from '@trezor/components';
@@ -50,9 +46,6 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, true),
     );
-    const displaySymbol = useSelector(state =>
-        selectWalletAssetDisplaySymbol(state, assetKey, true),
-    );
 
     if (symbol === undefined) {
         return null;
@@ -77,11 +70,7 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
         >
             <Row gap={16} padding={HIDDEN_TOKEN_ROW_PADDING}>
                 <Row flex="1" minWidth={0}>
-                    <HomeAssetIdentity
-                        symbol={symbol}
-                        contractAddress={contractAddress}
-                        displaySymbol={displaySymbol}
-                    />
+                    <HomeAssetIdentity symbol={symbol} contractAddress={contractAddress} />
                 </Row>
                 <Column
                     width={HIDDEN_TOKEN_PRICE_WIDTH}

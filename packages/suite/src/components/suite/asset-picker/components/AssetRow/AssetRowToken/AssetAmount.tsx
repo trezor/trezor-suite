@@ -1,18 +1,20 @@
+import { AssetValue } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { asAmountUnit } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite';
 
 export type AssetAmountProps = {
-    symbol: string;
+    networkSymbol: NetworkSymbol;
+    contractAddress?: TokenAddress;
     amount: string;
-    contractAddress?: string | null;
-    /** The token's decimals, so a stablecoin balance is shown the way money is. */
-    decimals?: number;
     fiatAmount?: BaseCurrencyAmount;
     showNoTradingPairText?: boolean;
     isFiatPrimary?: boolean;
@@ -20,11 +22,10 @@ export type AssetAmountProps = {
 };
 
 export function AssetAmount({
-    amount,
-    symbol,
-    fiatAmount,
+    networkSymbol,
     contractAddress,
-    decimals,
+    amount,
+    fiatAmount,
     showNoTradingPairText = false,
     isFiatPrimary = false,
     isDisabled = false,
@@ -39,12 +40,11 @@ export function AssetAmount({
             typographyStyle={isFiatPrimary ? 'body-sm' : 'body-md'}
             isDisabled={isDisabled}
         >
-            <FormattedCryptoAmount
-                value={amount}
-                symbol={symbol}
+            <AssetValue
+                amount={asAmountUnit(new BigNumber(amount))}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
                 isCompact
-                tokenDecimals={decimals}
             />
         </Text>
     );

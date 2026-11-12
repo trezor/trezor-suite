@@ -1,37 +1,28 @@
-import { TokenName, TokenSymbol } from '@suite/token';
+import { AssetName, AssetSymbol } from '@suite/assets';
+import { useFormatters } from '@suite-common/formatters';
+import { selectIsNativeTokenNetworkNameRedundant } from '@suite-common/networks';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
-import { hasOwn } from '@trezor/utils';
+
+import { useSelector } from '#src/hooks/suite';
 
 type AssetDetailsProps = {
-    name: string;
-    displaySymbol: string;
+    networkSymbol: NetworkSymbol;
+    contractAddress?: TokenAddress;
     isDisabled?: boolean;
-    tokenContract?: TokenAddress;
-} & (
-    | {
-          networkSymbol: NetworkSymbol;
-      }
-    | {
-          networkName: string;
-      }
-);
+};
 
 export function AssetDetails({
-    name,
-    displaySymbol,
+    networkSymbol,
+    contractAddress,
     isDisabled = false,
-    tokenContract,
-    ...props
 }: AssetDetailsProps) {
-    const badge = hasOwn(props, 'networkSymbol')
-        ? getNetwork(props.networkSymbol).name
-        : props.networkName;
-    const tokenNameProps =
-        tokenContract && hasOwn(props, 'networkSymbol')
-            ? { networkSymbol: props.networkSymbol, tokenContract }
-            : undefined;
+    const { NetworkNameFormatter } = useFormatters();
+    const isNetworkNameRedundant = useSelector(state =>
+        selectIsNativeTokenNetworkNameRedundant(state, networkSymbol),
+    );
+    const shouldShowNetworkBadge = !!contractAddress || !isNetworkNameRedundant;
 
     return (
         <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
@@ -41,7 +32,7 @@ export function AssetDetails({
                 maxWidth="100%"
                 isDisabled={isDisabled}
             >
-                {tokenNameProps ? <TokenName {...tokenNameProps} /> : name}
+                <AssetName networkSymbol={networkSymbol} contractAddress={contractAddress} />
             </Text>
             <Row gap={8} alignItems="center">
                 <Text
@@ -50,9 +41,13 @@ export function AssetDetails({
                     priority="secondary"
                     isDisabled={isDisabled}
                 >
-                    {tokenNameProps ? <TokenSymbol {...tokenNameProps} /> : displaySymbol}
+                    <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} />
                 </Text>
-                {badge !== name && <Badge size="small">{badge}</Badge>}
+                {shouldShowNetworkBadge && (
+                    <Badge size="small">
+                        <NetworkNameFormatter value={networkSymbol} />
+                    </Badge>
+                )}
             </Row>
         </Column>
     );

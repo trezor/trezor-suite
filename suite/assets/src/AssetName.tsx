@@ -1,8 +1,17 @@
-import { TokenName } from '@suite/token';
+import { TokenName, maskUrls } from '@suite/token';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
+import { selectTokenByNetworkAndContract } from '@suite-common/token';
+import {
+    type TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 
 import { NativeTokenName } from './NativeTokenName';
+
+type AssetNameTextRootState = AccountsRootState & NetworksRootState & TokenDefinitionsRootState;
 
 type AssetNameProps = {
     networkSymbol: NetworkSymbol;
@@ -16,3 +25,21 @@ export const AssetName = ({ networkSymbol, contractAddress }: AssetNameProps) =>
     ) : (
         <NativeTokenName networkSymbol={networkSymbol} />
     );
+
+/**
+ * `AssetName` as plain text, for places that take only a string, such as the window title.
+ * It reads the store only, not context metadata.
+ */
+export const selectAssetNameText = (
+    state: AssetNameTextRootState,
+    networkSymbol: NetworkSymbol,
+    contractAddress?: TokenAddress,
+): string | undefined => {
+    if (!contractAddress) return selectNativeTokenName(state, networkSymbol);
+
+    const token = selectTokenByNetworkAndContract(state, networkSymbol, contractAddress);
+    const name = token?.name || token?.symbol;
+    const isRecognized = selectIsSpecificCoinDefinitionKnown(state, networkSymbol, contractAddress);
+
+    return name && !isRecognized ? maskUrls(name) : name;
+};

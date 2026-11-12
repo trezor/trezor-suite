@@ -4,9 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     type HomeAssetTableState,
     selectWalletAssetContractAddress,
-    selectWalletAssetName,
     selectWalletAssetSymbol,
-    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import { type AssetAccountsRootState, type WalletAssetKey } from '@suite-common/wallet-core';
@@ -35,12 +33,6 @@ export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
     const contractAddress = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
     );
-    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetTokenSymbol(state, assetKey),
-    );
-    const name = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetName(state, assetKey),
-    );
     const sendTargets = useSelector((state: AssetAccountsRootState) =>
         selectAssetSendTargets(state, assetKey),
     );
@@ -51,11 +43,11 @@ export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
     const { reportOpen } = useGlobalSendReceiveAnalytics();
     const { startSend, startReceive } = useStartSendReceiveWithAnalytics();
 
-    if (symbol === undefined || name === undefined) {
+    if (symbol === undefined) {
         return null;
     }
 
-    const asset = buildGlobalReceiveAssetOption({ symbol, contractAddress, tokenSymbol, name });
+    const asset = buildGlobalReceiveAssetOption({ symbol, contractAddress });
 
     const handleOpen = (modal: NonNullable<GlobalSendReceiveType>) => {
         const sendTarget = modal === 'send' ? getOnlyItem(sendTargets) : undefined;
