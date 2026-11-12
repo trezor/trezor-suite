@@ -1,7 +1,10 @@
+// Version bumps (`npm-release`, `npm-prerelease`) are bookkeeping, not changes to the package.
+const isReleaseCommit = (commitLine: string) => /^-\s+npm-(?:pre)?release\b/.test(commitLine);
+
 // Every package in the publish closure is bumped with each Connect release, even when nothing in
 // it changed, and every published version needs its own heading.
 const formatChangelogEntry = (version: string, commitLines: string[]) => {
-    const changes = commitLines.filter(line => line.trim());
+    const changes = commitLines.filter(line => line.trim() && !isReleaseCommit(line));
     const body = changes.length ? changes.join('\n') : '-   Version bump only.';
 
     return `# ${version}\n\n${body}`;

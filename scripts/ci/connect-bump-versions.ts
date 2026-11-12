@@ -63,6 +63,8 @@ const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
         '--pretty=tformat:"-   %s (%h)"',
         '--',
         `./${getTrezorPackageRelativePath(packageName)}`,
+        // Commits that only edit the changelog curate it, they do not change the package.
+        `:(exclude)./${getTrezorPackageRelativePath(packageName)}/CHANGELOG.md`,
     ]);
 
 const splitByNewlines = (input: string) => input.split('\n');
