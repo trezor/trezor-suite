@@ -32,7 +32,16 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@trezor/ipc-proxy": "workspace:*",
         "@trezor/requirements": "workspace:*"
+    },
+    "peerDependencies": {
+        "@trezor/ipc-proxy": "workspace:*"
+    },
+    "peerDependenciesMeta": {
+        "@trezor/ipc-proxy": {
+            "optional": true
+        }
     },
     "bugs": {
         "url": "https://github.com/trezor/trezor-suite/issues"
