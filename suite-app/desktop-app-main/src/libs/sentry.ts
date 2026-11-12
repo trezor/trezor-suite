@@ -12,12 +12,21 @@ import { TorStatus } from '@suite/tor-types';
 import type { Store } from './store';
 import type { MainThreadEmitter } from '../modules';
 import { hasSwitch } from './process-switches';
-import { RENDERER_ORIGIN } from './renderer-protocol';
+import { isRendererUrl } from './renderer-protocol';
+import { strictUrlSchema } from './strict-url';
 
 interface InitSentryParams {
     mainThreadEmitter: MainThreadEmitter;
     store: Store;
 }
+
+/**
+ * A page of the app's own files: the SDK replaces the `file://` path of the app with `app:///`
+ * before it records the URL.
+ */
+const normalizedAppFileUrlSchema = strictUrlSchema.refine(
+    url => url.protocol === 'app:' && url.host === '',
+);
 
 /**
  * @sentry/electron attaches each renderer's last URL to Electron breadcrumbs and renderer crash reports.
@@ -26,7 +35,7 @@ interface InitSentryParams {
  * loaded, which can be a URL the user typed or one carrying an address or an OAuth code.
  */
 const isSuiteRendererUrl = (url: unknown) =>
-    typeof url === 'string' && (url.startsWith(`${RENDERER_ORIGIN}/`) || url.startsWith('app:///'));
+    isRendererUrl(url) || normalizedAppFileUrlSchema.safeParse(url).success;
 
 const ELECTRON_MAIN_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,
