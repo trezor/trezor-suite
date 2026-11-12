@@ -28,6 +28,7 @@ import { initBackgroundModules, initModules } from './modules';
 // todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
 import { isWebContentsOfInAppBrowser } from './modules/in-app-browser';
+import { isLegacyOriginStorageMovePending } from './modules/legacy-origin-storage';
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
 
@@ -369,6 +370,7 @@ export const createDesktopMainApp =
                 mainWindow,
                 statePatch,
                 logger: deps.logger,
+                isHandshakeDelayed: isLegacyOriginStorageMovePending,
             });
             deps.mainWindowProxy.once('destroy', cleanup);
             const handshakeResult = await handshake;
