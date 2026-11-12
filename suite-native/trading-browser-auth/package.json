@@ -47,6 +47,6 @@
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/requirements": "workspace:*",
-        "@types/invity-api": "^1.1.23"
+        "@types/invity-api": "^1.1.24"
     }
 }

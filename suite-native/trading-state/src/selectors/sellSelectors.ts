@@ -72,6 +72,7 @@ export const selectSellFormDefaultValues = createMemoizedSelectorWithWalletSetti
         const fiatCurrency = getDefaultFiatCurrency({
             baseCurrency,
             supportedFiatCurrencies: sellInfo.supportedFiatCurrencies,
+            suggestedFiatCurrency: sellInfo.suggestedFiatCurrency,
         });
         const countryDefaultValue =
             nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country);
