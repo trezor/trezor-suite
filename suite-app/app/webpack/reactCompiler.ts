@@ -40,6 +40,12 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     'suite-common',
     // Wave 1b, one revertible entry per sub-wave, lowest bailout rate first.
     'packages/suite/src/views',
+    // App frame code that moved out of `packages/suite/src/components` and `views`, where it was
+    // compiled. The other files in `suite-app/app/src` were never compiled.
+    'suite-app/app-modal',
+    'suite-app/app/src/ModalSwitcher',
+    'suite-app/app/src/Preloader',
+    'suite-app/app/src/layouts',
     'suite-app/module-account-detail',
     'suite-app/module-activity-center',
     'suite-app/module-apps-embedding',
@@ -48,6 +54,7 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     'suite-app/module-connect-popup',
     'suite-app/module-earn',
     'suite-app/module-home',
+    'suite-app/module-onboarding',
     'suite-app/module-password-manager',
     'suite-app/module-receive',
     'suite-app/module-refer-a-friend',
