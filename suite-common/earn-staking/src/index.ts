@@ -64,8 +64,15 @@ export type {
     StakingServices,
 } from './stakingServices';
 export {
+    selectStakeableStakingProductDescriptorsBySymbol,
+    selectStakingOperationMessageContent,
     selectStakingProductAccess,
+    selectStakingPromoProductDescriptors,
     type ResolvedStakingProductAccess,
+    type StakingAccessRootState,
+    type StakingDisabledOperationReason,
+    type StakingDisabledOperations,
+    type StakingPromoRootState,
 } from './state/stakingAccessSelectors';
 export {
     selectCountedStakingPositionEntriesByAccount,
@@ -175,3 +182,7 @@ export {
 } from './state/stakingThunks';
 export { formatStakingAmount, type FormatStakingAmountParams } from './utils/formatStakingAmount';
 export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
+export {
+    isStakingOperationAvailable,
+    type IsStakingOperationAvailableParams,
+} from './utils/isStakingOperationAvailable';
