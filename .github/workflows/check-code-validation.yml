@@ -235,6 +235,9 @@ jobs:
     name: Other Checks
     needs: setup-and-cache
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -297,6 +300,25 @@ jobs:
       - name: Translation Structure (mobile)
         if: steps.native-intl-changes.outputs.native-intl == 'true'
         run: yarn workspace @suite-native/intl translations:verify-structure
+      - name: Check submodule changes
+        if: github.event_name == 'pull_request'
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
+        id: submodule-changes
+        with:
+          filters: |
+            submodules:
+              - 'submodules/**'
+      - name: Forbid unlabeled submodule changes
+        if: steps.submodule-changes.outputs.submodules == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        # Fetch PR labels, allow the update if the author added a tag `trezor-common-update`.
+        run: |
+          if ! gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json labels --jq '.labels[].name' | grep -qx 'trezor-common-update'; then
+            echo "::error::This PR changes /submodules. If the trezor-common update is intended, add the 'trezor-common-update' label and re-run this job."
+            exit 1
+          fi
 
   releases-revision-checks:
     name: Releases revision Checks
