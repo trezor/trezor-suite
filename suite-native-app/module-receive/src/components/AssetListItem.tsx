@@ -73,7 +73,7 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                     ) : (
                         <TokenName
                             networkSymbol={asset.networkSymbol}
-                            contractAddress={toTokenAddress(asset.contractAddress)}
+                            contractAddress={asset.contractAddress}
                         />
                     )
                 }
@@ -115,7 +115,7 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                     ) : (
                         <CompactTokenAmountFormatter
                             networkSymbol={asset.networkSymbol}
-                            contractAddress={toTokenAddress(asset.contractAddress)}
+                            contractAddress={asset.contractAddress}
                             value={asDecimalTokenAmount(balance.cryptoAmount)}
                             numberOfLines={1}
                             adjustsFontSizeToFit
