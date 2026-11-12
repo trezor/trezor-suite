@@ -1,21 +1,30 @@
 import { Translation } from '@suite/intl';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Icon, Paragraph, Row } from '@trezor/components';
-import { WarningIcon } from '@trezor/icons';
+import { InfoIcon, WarningIcon } from '@trezor/icons';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 type EarnStakingOutdatedProviderProps = {
     apy: number | null;
+    isStakedWithFiveBinaries: boolean;
 };
 
-export const EarnStakingOutdatedProvider = ({ apy }: EarnStakingOutdatedProviderProps) => {
+export const EarnStakingOutdatedProvider = ({
+    apy,
+    isStakedWithFiveBinaries,
+}: EarnStakingOutdatedProviderProps) => {
     const formatApyValue = useFormatApy();
+    const intent = isStakedWithFiveBinaries ? 'warning' : 'info';
 
     return (
         <Row gap={4}>
-            <Icon as={WarningIcon} size={20} intent="warning" />
-            <Paragraph typographyStyle="body-sm" intent="warning">
+            <Icon
+                as={isStakedWithFiveBinaries ? WarningIcon : InfoIcon}
+                size={20}
+                intent={intent}
+            />
+            <Paragraph typographyStyle="body-sm" intent={intent}>
                 {isApyAvailable(apy) ? (
                     <Translation
                         id="TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER"

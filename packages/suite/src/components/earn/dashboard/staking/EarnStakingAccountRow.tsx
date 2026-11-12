@@ -11,6 +11,7 @@ import {
     getNetworkAdjustedStakingBalance,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
+    isCardanoStakedWithFiveBinaries,
     isCardanoWithdrawalBlockedByMissingDrep,
     selectAccountClaimTransactions,
     selectAccountIsStakingActive,
@@ -71,6 +72,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     } = useMessageSystemStaking(account.symbol);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
     const isDrepDelegationRequired = isCardanoWithdrawalBlockedByMissingDrep(account);
     const isClaimButtonDisabled = isClaimingDisabled || isClaimPending || isDrepDelegationRequired;
     const claimTooltipContent =
@@ -322,7 +324,10 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
 
                     {stakingStatus === 'staking-outdated-provider' && (
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider
+                            apy={newProviderApy}
+                            isStakedWithFiveBinaries={isStakedWithFiveBinaries}
+                        />
                     )}
 
                     {stakingStatus === 'staking-remaining-votes' && (
@@ -482,7 +487,10 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             {stakingStatus === 'staking-outdated-provider' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider
+                            apy={newProviderApy}
+                            isStakedWithFiveBinaries={isStakedWithFiveBinaries}
+                        />
                     </Table.Cell>
                     <Table.Cell align="end">
                         <EarnStakingActionButtons {...actionButtonsProps} />

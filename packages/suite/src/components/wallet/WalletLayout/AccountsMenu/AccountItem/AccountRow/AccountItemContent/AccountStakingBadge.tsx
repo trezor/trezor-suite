@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
-import { PiggyBankIcon, WarningIcon } from '@trezor/icons';
+import { InfoIcon, PiggyBankIcon, WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite';
@@ -19,7 +19,7 @@ type AccountStakingBadgeProps = {
     isFocused: boolean;
 };
 
-const getStakingWarningLabel = (
+const getStakingNoticeLabel = (
     account: Account,
     cardanoStakingPools: ReturnType<typeof selectCardanoPoolsInfo>,
 ): TranslationKey | undefined => {
@@ -35,8 +35,11 @@ const getStakingWarningLabel = (
 export const AccountStakingBadge = ({ account, isFocused }: AccountStakingBadgeProps) => {
     const { translationString } = useTranslation();
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const warningLabel = getStakingWarningLabel(account, cardanoStakingPools);
-    const label = warningLabel ?? 'TR_EARN_STAKING';
+    const noticeLabel = getStakingNoticeLabel(account, cardanoStakingPools);
+    const label = noticeLabel ?? 'TR_EARN_STAKING';
+    const isReducedRewards = noticeLabel === 'TR_STAKING_REWARDS_REDUCED';
+    const noticeIntent = isReducedRewards ? 'warning' : 'info';
+    const noticeIcon = isReducedRewards ? WarningIcon : InfoIcon;
     const translatedLabel = translationString(label);
     const tooltipProps = isFocused
         ? { isOpen: true }
@@ -52,10 +55,10 @@ export const AccountStakingBadge = ({ account, isFocused }: AccountStakingBadgeP
             >
                 <AccountItemBadge
                     icon={PiggyBankIcon}
-                    additionalIcon={warningLabel ? WarningIcon : undefined}
-                    intent={warningLabel ? 'warning' : 'neutral'}
+                    additionalIcon={noticeLabel ? noticeIcon : undefined}
+                    intent={noticeLabel ? noticeIntent : 'neutral'}
                 >
-                    {warningLabel === 'TR_STAKING_REWARDS_REDUCED' ? translatedLabel : undefined}
+                    {isReducedRewards ? translatedLabel : undefined}
                 </AccountItemBadge>
             </div>
         </Tooltip>
