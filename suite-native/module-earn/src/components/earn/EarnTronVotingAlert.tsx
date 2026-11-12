@@ -17,7 +17,7 @@ export const EarnTronVotingAlert = ({ votesRemaining }: EarnTronVotingAlertProps
     return (
         <Box style={applyStyle(alertStyle)}>
             <BannerInline
-                intent="warning"
+                intent="info"
                 title={
                     <Translation id="earn.tron.votesAlertText" values={{ count: votesRemaining }} />
                 }

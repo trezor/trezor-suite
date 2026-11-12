@@ -322,7 +322,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
 
                     {stakingStatus === 'staking-outdated-provider' && (
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                     )}
 
                     {stakingStatus === 'staking-remaining-votes' && (
@@ -482,7 +482,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             {stakingStatus === 'staking-outdated-provider' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                     </Table.Cell>
                     <Table.Cell align="end">
                         <EarnStakingActionButtons {...actionButtonsProps} />

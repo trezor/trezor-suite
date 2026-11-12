@@ -110,10 +110,10 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
                         {hasRemainingVotes ? (
                             <PressableOpacity onPress={votesModal.openModal}>
                                 <HStack alignItems="center">
-                                    <Icon name="warning" color="contentWarning" size="medium" />
+                                    <Icon name="info" color="contentInfo" size="medium" />
                                     <Text
                                         variant="body-sm-strong"
-                                        color="contentWarning"
+                                        color="contentInfo"
                                         style={applyStyle(remainingVotesStyle)}
                                     >
                                         <Translation

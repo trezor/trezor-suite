@@ -44,7 +44,7 @@ export const AdaAccountsListStakingItem = ({
             return <ZeroApyBadge />;
         }
         if (isDelegatedOutside) {
-            return <Icon name="warning" color="contentWarning" />;
+            return <Icon name="info" color="contentInfo" />;
         }
 
         return <Icon name="check" color="contentBrand" />;
