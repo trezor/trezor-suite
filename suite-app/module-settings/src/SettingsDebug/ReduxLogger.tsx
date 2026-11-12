@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
+import { injectReduxLoggerControl } from '@suite/settings';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
-
-import { injectReduxLoggerControl } from '../createReduxLogger';
 
 export const ReduxLogger = () => {
     const { reduxLoggerControl } = useServices(injectReduxLoggerControl);

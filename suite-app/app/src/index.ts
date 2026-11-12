@@ -5,7 +5,6 @@ export {
     type SuiteReduxStore,
     type SuiteReduxStoreDep,
 } from './createReduxStore';
-export { type ReduxLoggerControlDep } from './createReduxLogger';
 export { extraDependencies, type ExtraDependenciesSuite } from './extraDependencies';
 export { type SuiteServices } from './suiteServices';
 

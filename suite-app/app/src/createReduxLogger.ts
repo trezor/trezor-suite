@@ -1,13 +1,6 @@
 import { type Middleware, createDynamicMiddleware } from '@reduxjs/toolkit';
 
-export type ReduxLoggerControl = {
-    /** Loads redux-logger on the first call and lets it log every action with both states. */
-    enable: () => Promise<void>;
-    disable: () => void;
-    isEnabled: () => boolean;
-};
-
-export type ReduxLoggerControlDep = { reduxLoggerControl?: ReduxLoggerControl };
+import { type ReduxLoggerControl } from '@suite/settings';
 
 export type ReduxLogger = { middleware: Middleware; control: ReduxLoggerControl };
 
@@ -29,12 +22,6 @@ declare global {
         reduxLogger?: ReduxLoggerControl;
     }
 }
-
-export const injectReduxLoggerControl = (
-    services: ReduxLoggerControlDep,
-): ReduxLoggerControlDep => ({
-    reduxLoggerControl: services.reduxLoggerControl,
-});
 
 /**
  * Everything passed to console.* stays reachable while DevTools are attached, so logging every
