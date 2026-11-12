@@ -37,7 +37,7 @@ export const useSignMessageForm = (account: Account) => {
         (): SelectItemType<SignFormat>[] | undefined =>
             formatChoice?.options.map(option => ({
                 value: option.format,
-                label: getFormatLabel(formatChoice.kind, option),
+                label: getFormatLabel(option),
             })),
         [formatChoice, getFormatLabel],
     );

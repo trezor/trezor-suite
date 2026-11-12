@@ -4,38 +4,29 @@ import { Badge } from '@suite-native/atoms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import type {
     SignAddressCategory,
-    SignFormatId,
-    SignFormatKind,
     SignFormatOption,
 } from '@trezor/network-module-suite-common-types';
 
 /**
- * Native keeps its own translation catalog, so it maps what a network offers onto its own keys.
- * The tables are exhaustive: a new format or address category does not compile until it is mapped.
+ * Native keeps its own translation catalog, so it maps the labels networks offer onto its own
+ * keys by the label id. A format a family adds later shows in the family's own wording until it
+ * gets a key here.
  */
-const formatLabelKeys = {
-    signature: {
-        default: 'signAndVerify.format.values.trezor',
-        electrum: 'signAndVerify.format.values.electrum',
-        cose: null,
-    },
-    publicKey: {
-        default: 'signAndVerify.format.values.rawKey',
-        electrum: null,
-        cose: 'signAndVerify.format.values.cose',
-    },
-} as const satisfies Record<SignFormatKind, Record<SignFormatId, TxKeyPath | null>>;
+const formatLabelKeys: Partial<Record<string, TxKeyPath>> = {
+    TR_BIP_SIG_FORMAT: 'signAndVerify.format.values.trezor',
+    TR_COMPATIBILITY_SIG_FORMAT: 'signAndVerify.format.values.electrum',
+    TR_PUBLIC_KEY_RAW: 'signAndVerify.format.values.rawKey',
+    TR_PUBLIC_KEY_COSE: 'signAndVerify.format.values.cose',
+};
 
 export const useMessageSigningLabels = () => {
     const { translate } = useTranslate();
 
     const getFormatLabel = useCallback(
-        (kind: SignFormatKind, { format, label }: SignFormatOption) => {
-            const formatId: SignFormatId = format;
-            const labelKey = formatLabelKeys[kind][formatId];
+        ({ label }: SignFormatOption) => {
+            const labelKey = formatLabelKeys[label.id];
 
-            // A pairing the table marks as impossible still renders, with the family's own wording.
-            return labelKey === null ? label.defaultMessage : translate(labelKey);
+            return labelKey === undefined ? label.defaultMessage : translate(labelKey);
         },
         [translate],
     );

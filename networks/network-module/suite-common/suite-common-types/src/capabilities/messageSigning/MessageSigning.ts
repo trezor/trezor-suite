@@ -4,13 +4,13 @@ import type { Branded, Result } from '@trezor/type-utils';
 import type { Label } from '../Label';
 import type { AddressRef, OpenAccount } from '../OpenAccount';
 
-export type SignFormatId = 'default' | 'electrum' | 'cose';
-
 /**
- * A format a family offered for one account. Only the family boundary mints these, so the UI can
- * hand back nothing but a value it was given: there is no way to ask Bitcoin for a COSE key.
+ * A format a family offered for one account. The ids belong to the family and no UI names one,
+ * so a family adds a format without a change here. Only the family boundary mints these, so the
+ * UI can hand back nothing but a value it was given: there is no way to ask Bitcoin for a COSE
+ * key.
  */
-export type SignFormat = SignFormatId & Branded<'SignFormat'>;
+export type SignFormat = string & Branded<'SignFormat'>;
 
 export type MessageSigningError = ERRORS.SerializedError;
 
@@ -112,7 +112,7 @@ export type MessageSigning = {
     ) => Promise<Result<AddressRef, MessageSigningError>>;
 };
 
-export type MessageSigningFormatsDefinition<TAccount, TFormat extends SignFormatId> = {
+export type MessageSigningFormatsDefinition<TAccount, TFormat extends string> = {
     readonly kind: SignFormatKind;
     readonly label: Label;
     readonly tooltip?: Label;
@@ -122,7 +122,7 @@ export type MessageSigningFormatsDefinition<TAccount, TFormat extends SignFormat
     getAvailable(account: TAccount): readonly TFormat[];
 };
 
-export type ClosedSignMessageParams<TAccount, TFormat extends SignFormatId> = Omit<
+export type ClosedSignMessageParams<TAccount, TFormat extends string> = Omit<
     SignMessageParams,
     'account' | 'format'
 > & {
@@ -144,7 +144,7 @@ export type ClosedShowSignAddressParams<TAccount> = Omit<ShowSignAddressParams, 
  * `defineMessageSigning` turns it into the open `MessageSigning`, narrowing every account and
  * format on the way in, so none of the functions below ever sees data from another family.
  */
-export type MessageSigningDefinition<TAccount, TFormat extends SignFormatId = never> = {
+export type MessageSigningDefinition<TAccount, TFormat extends string = never> = {
     readonly labels: MessageSigningLabels;
     readonly addressSelection: SignAddressSelection;
     readonly outputs: readonly SignOutput[];

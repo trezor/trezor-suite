@@ -6,7 +6,6 @@ import type {
     MessageSigningError,
     SignFormat,
     SignFormatChoice,
-    SignFormatId,
 } from './MessageSigning';
 import type { OpenAccount } from '../OpenAccount';
 
@@ -22,14 +21,14 @@ const UNSUPPORTED_ACCOUNT_MESSAGE = 'Account is not supported by this network.';
  * only if the family offers it for that account. Rejections come back as results, the same way a
  * device failure does, so callers handle one shape.
  */
-export const defineMessageSigning = <TAccount, TFormat extends SignFormatId = never>(
+export const defineMessageSigning = <TAccount, TFormat extends string = never>(
     definition: MessageSigningDefinition<TAccount, TFormat>,
 ): MessageSigning => {
     const getAvailableFormats = (account: TAccount): readonly TFormat[] =>
         definition.formats?.getAvailable(account) ?? [];
 
     // The only place a `SignFormat` is minted: it is always one this family offered.
-    const toSignFormat = (format: TFormat): SignFormat => format as SignFormat;
+    const toSignFormat = (format: TFormat): SignFormat => format as TFormat & SignFormat;
 
     const getFormatChoice = (openAccount: OpenAccount): SignFormatChoice | null => {
         const account = definition.toAccount(openAccount);
@@ -77,7 +76,7 @@ export const defineMessageSigning = <TAccount, TFormat extends SignFormatId = ne
                 return invalidParameter(UNSUPPORTED_ACCOUNT_MESSAGE);
             }
 
-            const requestedFormat: SignFormatId | undefined = format;
+            const requestedFormat: string | undefined = format;
             const offeredFormat = getAvailableFormats(account).find(
                 option => option === requestedFormat,
             );

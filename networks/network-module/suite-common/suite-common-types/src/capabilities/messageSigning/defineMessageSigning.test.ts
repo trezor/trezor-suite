@@ -88,6 +88,34 @@ describe('defineMessageSigning', () => {
         expect(signedFormats).toEqual(['electrum']);
     });
 
+    it('offers and signs a format that only the family names', async () => {
+        const signedByFamily: string[] = [];
+        const signing = defineMessageSigning<TestAccount, 'bip322'>({
+            labels: definition.labels,
+            addressSelection: definition.addressSelection,
+            outputs: definition.outputs,
+            toAccount: definition.toAccount,
+            formats: {
+                kind: 'signature',
+                label: LABEL,
+                options: { bip322: { id: 'TR_BIP322', defaultMessage: 'BIP-322' } },
+                getAvailable: () => ['bip322'],
+            },
+            getSignAddressGroups: definition.getSignAddressGroups,
+            sign: ({ format }) => {
+                if (format !== undefined) signedByFamily.push(format);
+
+                return Promise.resolve(ok({ signature: 'sig' }));
+            },
+        });
+        const offered = signing.getFormatChoice(openAccount)?.options ?? [];
+
+        await signing.sign({ ...SIGN_PARAMS, account: openAccount, format: offered[0]?.format });
+
+        expect(offered.map(option => option.label.defaultMessage)).toEqual(['BIP-322']);
+        expect(signedByFamily).toEqual(['bip322']);
+    });
+
     it('rejects a format the account was not offered without reaching the family', async () => {
         const [, electrum] = getOfferedFormats(openAccount);
 

@@ -72,7 +72,6 @@ export type {
     SignedMessage,
     SignFormat,
     SignFormatChoice,
-    SignFormatId,
     SignFormatKind,
     SignFormatOption,
     SignMessageParams,
