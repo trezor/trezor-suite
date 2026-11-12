@@ -1,6 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { type VerifyMessageResult, verifyThunk } from '@suite-common/sign-verify';
+import {
+    type VerifyMessageResult,
+    verifyBitcoinMessageThunk,
+    verifyEthereumMessageThunk,
+} from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
 import { useDeviceReadyEvents } from '@suite-native/device-authorization';
 import {
@@ -25,6 +29,18 @@ export const useVerifyMessage = () => {
     const { waitForDevice } = useDeviceReadyEvents();
     const { dispatch } = useServices(injectDispatch);
 
+    // Mobile has no Suite Native network modules yet, so the network's verification is picked here.
+    const verifyMessageByNetwork = (params: VerifyMessageArgs): Promise<VerifyMessageResult> => {
+        switch (params.account.networkType) {
+            case 'bitcoin':
+                return dispatch(verifyBitcoinMessageThunk({ ...params, hex: false }));
+            case 'ethereum':
+                return dispatch(verifyEthereumMessageThunk({ ...params, hex: false }));
+            default:
+                return Promise.resolve<VerifyMessageResult>('failed');
+        }
+    };
+
     return async ({
         account,
         address,
@@ -38,7 +54,7 @@ export const useVerifyMessage = () => {
             return 'cancelled';
         }
 
-        const result = await dispatch(verifyThunk(account, address, message, signature));
+        const result = await verifyMessageByNetwork({ account, address, message, signature });
 
         navigation.goBack();
 
