@@ -7,6 +7,10 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
+import {
+    type SignVerifyDep,
+    createSignVerifyCompositionRoot,
+} from './createSignVerifyCompositionRoot';
 import { type SignVerifyRootState } from './getStateParams';
 import { signThunk } from './signThunk';
 
@@ -29,7 +33,7 @@ const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootSt
 
 describe(signThunk.name, () => {
     let dispatch: jest.Mock;
-    let deps: { services: { analytics: ReturnType<typeof mockAnalytics> } };
+    let deps: { services: SignVerifyDep & { analytics: ReturnType<typeof mockAnalytics> } };
 
     // The thunk only reads the selected device, so a state literal is enough — no store, no
     // middleware.
@@ -37,7 +41,15 @@ describe(signThunk.name, () => {
 
     beforeEach(() => {
         dispatch = jest.fn();
-        deps = { services: { analytics: mockAnalytics() } };
+        deps = {
+            services: {
+                analytics: mockAnalytics(),
+                // The thunks reach the device through these services, on the Connect mock.
+                ...createSignVerifyCompositionRoot({
+                    getTrezorConnect: () => testMocks.getTrezorConnectMock(),
+                }),
+            },
+        };
     });
 
     it('sign', async () => {

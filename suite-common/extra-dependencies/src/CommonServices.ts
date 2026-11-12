@@ -6,6 +6,7 @@ import { type GetLanguageDep } from '@suite-common/locale';
 import type { NetworksDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import type { QueryClientDep } from '@suite-common/react-query';
+import { type SignVerifyDep } from '@suite-common/sign-verify';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -34,6 +35,7 @@ import type { CreateLoggerDep } from '@trezor/logger';
 
 export type CommonServices = SuiteSyncDep &
     NetworksDep &
+    SignVerifyDep &
     StakingDep &
     QueryClientDep &
     Bip329Dep &

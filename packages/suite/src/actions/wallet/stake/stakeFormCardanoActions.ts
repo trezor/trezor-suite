@@ -47,12 +47,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    getAddressParameters,
     getDelegationCertificates,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
-    getStakingPath,
     getUnusedChangeAddress,
     getVotingCertificates,
     isTestnet,
@@ -61,6 +56,13 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
 import { type ErrorCode } from '@trezor/connect-common/src/constants/errors';
+import {
+    getAddressParameters,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+    getStakingPath,
+} from '@trezor/network-cardano-suite-common';
 import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
 import { type WithServices } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';

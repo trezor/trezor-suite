@@ -26,6 +26,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
+        "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/utils": "workspace:*",

@@ -46,6 +46,7 @@
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/receive": "workspace:*",
+        "@suite-common/sign-verify": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",

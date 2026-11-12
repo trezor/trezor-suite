@@ -31,6 +31,9 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        {
+            "path": "../../networks/cardano/network-cardano-suite-common"
+        },
         { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"

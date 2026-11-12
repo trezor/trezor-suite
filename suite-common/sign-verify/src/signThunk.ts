@@ -3,35 +3,54 @@ import { type Dispatch } from 'redux';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
+import { type SignBitcoinMessageDep } from '@trezor/network-bitcoin-suite-common';
+import { isSupportedBitcoinNetwork } from '@trezor/network-bitcoin-types';
+import { type SignCardanoMessageDep } from '@trezor/network-cardano-suite-common';
+import { isSupportedCardanoNetwork } from '@trezor/network-cardano-types';
+import { type SignEthereumMessageDep } from '@trezor/network-ethereum-suite-common';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { getHasSelectableSignatureFormat } from './bitcoin/getHasSelectableSignatureFormat';
-import { signBitcoinMessage } from './bitcoin/signBitcoinMessage';
-import { signCardanoMessage } from './cardano/signCardanoMessage';
-import { signEthereumMessage } from './ethereum/signEthereumMessage';
 import { type SignVerifyRootState, type StateParams, getStateParams } from './getStateParams';
 import * as SIGN_VERIFY from './signVerifyConstants';
 import { asError, getFailureAttributes, onError } from './signVerifyFailure';
 
+type SignByNetworkServices = SignBitcoinMessageDep & SignEthereumMessageDep & SignCardanoMessageDep;
+
 const signByNetwork =
     (
-        path: string | number[],
+        services: SignByNetworkServices,
+        path: string,
         message: string,
         hex: boolean,
         isElectrum: boolean,
         isCose: boolean,
     ) =>
     ({ account, device }: StateParams) => {
-        switch (account.networkType) {
-            case 'bitcoin':
-                return signBitcoinMessage({ device, account, path, message, hex, isElectrum });
-            case 'ethereum':
-                return signEthereumMessage({ device, path, message, hex });
-            case 'cardano':
-                return signCardanoMessage({ device, account, path, message, hex, isCose });
-            default:
-                return Promise.reject(new Error('Signing not supported'));
+        const { symbol } = account;
+
+        if (isSupportedBitcoinNetwork(symbol)) {
+            return services.signBitcoinMessage({ device, symbol, path, message, hex, isElectrum });
         }
+
+        if (account.networkType === 'ethereum') {
+            return services.signEthereumMessage({ device, path, message, hex });
+        }
+
+        if (isSupportedCardanoNetwork(symbol)) {
+            return services.signCardanoMessage({
+                device,
+                symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+                path,
+                message,
+                hex,
+                isCose,
+            });
+        }
+
+        return Promise.reject(new Error('Signing not supported'));
     };
 
 const onSignSuccess = (dispatch: Dispatch) => (result: { signature: string; pubKey?: string }) => {
@@ -50,12 +69,12 @@ const onSignSuccess = (dispatch: Dispatch) => (result: { signature: string; pubK
 
 type SignThunkState = SignVerifyRootState;
 
-type SignThunkDeps = WithServices<AnalyticsDep>;
+type SignThunkDeps = WithServices<AnalyticsDep & SignByNetworkServices>;
 
 export const signThunk =
     (
         account: Account,
-        path: string | number[],
+        path: string,
         message: string,
         hex = false,
         isElectrum = false,
@@ -72,6 +91,7 @@ export const signThunk =
         try {
             const stateParams = await getStateParams(account, getState);
             const response = await signByNetwork(
+                extra.services,
                 path,
                 message,
                 hex,

@@ -9,6 +9,9 @@
             "path": "../../../packages/blockchain-link-utils"
         },
         {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../../../packages/device-utils"
         },
         {
@@ -22,6 +25,12 @@
         },
         {
             "path": "../../network-module/suite-common/suite-common-types"
+        },
+        {
+            "path": "../../../packages/protobuf"
+        },
+        {
+            "path": "../../../packages/type-utils"
         }
     ]
 }

@@ -29,6 +29,7 @@ import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authentic
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createQueryClient } from '@suite-common/react-query';
+import { createSignVerifyCompositionRoot } from '@suite-common/sign-verify';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -171,6 +172,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
+        ...createSignVerifyCompositionRoot({ getTrezorConnect: deps.getTrezorConnect }),
         staking,
         queryClient,
         suiteSync,

@@ -3,10 +3,11 @@ import { type Dispatch } from 'redux';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
+import { type VerifyBitcoinMessageDep } from '@trezor/network-bitcoin-suite-common';
+import { isSupportedBitcoinNetwork } from '@trezor/network-bitcoin-types';
+import { type VerifyEthereumMessageDep } from '@trezor/network-ethereum-suite-common';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { verifyBitcoinMessage } from './bitcoin/verifyBitcoinMessage';
-import { verifyEthereumMessage } from './ethereum/verifyEthereumMessage';
 import { type SignVerifyRootState, type StateParams, getStateParams } from './getStateParams';
 import * as SIGN_VERIFY from './signVerifyConstants';
 import { CANCEL_ERROR_CODES, asError, getFailureAttributes, onError } from './signVerifyFailure';
@@ -19,19 +20,29 @@ import { CANCEL_ERROR_CODES, asError, getFailureAttributes, onError } from './si
  */
 export type VerifyMessageResult = 'verified' | 'failed' | 'cancelled';
 
+type VerifyByNetworkServices = VerifyBitcoinMessageDep & VerifyEthereumMessageDep;
+
 const verifyByNetwork =
-    (address: string, message: string, signature: string, hex: boolean) =>
+    (
+        services: VerifyByNetworkServices,
+        address: string,
+        message: string,
+        signature: string,
+        hex: boolean,
+    ) =>
     ({ account, device }: StateParams) => {
+        const { symbol } = account;
         const params = { device, address, message, signature, hex };
 
-        switch (account.networkType) {
-            case 'bitcoin':
-                return verifyBitcoinMessage({ ...params, account });
-            case 'ethereum':
-                return verifyEthereumMessage(params);
-            default:
-                return Promise.reject(new Error('Verifying not supported'));
+        if (isSupportedBitcoinNetwork(symbol)) {
+            return services.verifyBitcoinMessage({ ...params, symbol });
         }
+
+        if (account.networkType === 'ethereum') {
+            return services.verifyEthereumMessage(params);
+        }
+
+        return Promise.reject(new Error('Verifying not supported'));
     };
 
 const onVerifySuccess = (dispatch: Dispatch) => () => {
@@ -49,7 +60,7 @@ const onVerifySuccess = (dispatch: Dispatch) => () => {
 
 type VerifyThunkState = SignVerifyRootState;
 
-type VerifyThunkDeps = WithServices<AnalyticsDep>;
+type VerifyThunkDeps = WithServices<AnalyticsDep & VerifyByNetworkServices>;
 
 export const verifyThunk =
     (account: Account, address: string, message: string, signature: string, hex = false) =>
@@ -62,7 +73,13 @@ export const verifyThunk =
 
         try {
             const stateParams = await getStateParams(account, getState);
-            const response = await verifyByNetwork(address, message, signature, hex)(stateParams);
+            const response = await verifyByNetwork(
+                extra.services,
+                address,
+                message,
+                signature,
+                hex,
+            )(stateParams);
 
             if (!response.success) {
                 analytics.report({
