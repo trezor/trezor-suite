@@ -40,6 +40,7 @@
         {
             "path": "../../suite-common/discreet-mode"
         },
+        { "path": "../../suite-common/earn" },
         {
             "path": "../../suite-common/earn-stablecoin"
         },

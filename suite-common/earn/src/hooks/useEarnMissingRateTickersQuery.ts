@@ -1,16 +1,19 @@
 import { useSelector } from 'react-redux';
 
-import { type EarnListRootState, selectEarnMissingTickerIds } from './earnDashboardSelectors';
-import { useMissingRateTickersQuery } from '../fiat-rates/useMissingRateTickersQuery';
-import { selectBaseCurrency } from '../settings/walletSettingsReducer';
-import { useYieldOpportunities } from '../yield/hooks/useYieldOpportunities';
+import {
+    selectBaseCurrency,
+    useMissingRateTickersQuery,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
+
+import { type EarnRootState, selectEarnMissingTickerIds } from '../state/earnSelectors';
 
 export const useEarnMissingRateTickersQuery = () => {
     const baseCurrency = useSelector(selectBaseCurrency);
 
     const { yieldOpportunities } = useYieldOpportunities();
 
-    const missingEarnRateTickers = useSelector((state: EarnListRootState) =>
+    const missingEarnRateTickers = useSelector((state: EarnRootState) =>
         selectEarnMissingTickerIds(state, yieldOpportunities),
     );
 
