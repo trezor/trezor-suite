@@ -72,7 +72,7 @@ describe('useMessageSystemMessageForm', () => {
         expect(result.current.canFormat).toBe(false);
     });
 
-    it('surfaces yup errors for a schema-invalid action', () => {
+    it('surfaces schema errors for a schema-invalid action', () => {
         const { result } = renderForm();
         const { message, conditions } = getDefaultActionByCategory('banner');
         const { id, ...messageWithoutId } = message;

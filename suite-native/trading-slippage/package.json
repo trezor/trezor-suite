@@ -30,7 +30,8 @@
         "@trezor/utils": "workspace:*",
         "react": "19.3.0",
         "react-native": "0.88.1",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.0",
+        "zod": "4.6.7"
     },
     "devDependencies": {
         "@suite-common/wallet-core": "workspace:*",

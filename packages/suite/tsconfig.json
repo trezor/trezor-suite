@@ -187,7 +187,6 @@
         },
         { "path": "../../suite/flags" },
         { "path": "../../suite/form" },
-        { "path": "../../suite/forms" },
         { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"

@@ -1,37 +1,31 @@
-import { type ObjectSchema, ValidationError } from 'yup';
+import { z } from 'zod';
 
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { type ParseJsonlError } from './parseJsonlTypes';
 
-const normalizeYupMessage = (error: ValidationError): string => {
-    const message = error.message.replace(/\.$/, '');
-    const path = error.path ? `Path: "${error.path}"` : undefined;
+const formatIssue = ({ message, path }: z.core.$ZodIssue): string => {
+    const issuePath = path.length > 0 ? `Path: "${z.core.toDotPath(path)}"` : undefined;
 
-    return [message, path].filter(Boolean).join('. ');
+    return [message.replace(/\.$/, ''), issuePath].filter(Boolean).join('. ');
 };
 
 export const validateJsonlRecord = <T extends Record<string, unknown>>(
     record: Record<string, unknown>,
-    schema: ObjectSchema<T>,
+    schema: z.ZodType<T>,
     lineNumber: number,
 ): Result<T, Extract<ParseJsonlError, { type: 'JsonlRecordDoesNotMatchSchema' }>> => {
-    try {
-        const validated = schema.validateSync(record, {
-            strict: true,
-            abortEarly: true,
-        }) as T;
+    const validated = schema.safeParse(record);
 
-        return ok(validated);
-    } catch (error) {
-        if (error instanceof ValidationError) {
-            return err({
-                type: 'JsonlRecordDoesNotMatchSchema',
-                lineNumber,
-                message: normalizeYupMessage(error),
-            });
-        }
-
-        throw error;
+    if (validated.success) {
+        return ok(validated.data);
     }
+
+    const [firstIssue] = validated.error.issues;
+
+    return err({
+        type: 'JsonlRecordDoesNotMatchSchema',
+        lineNumber,
+        message: firstIssue ? formatIssue(firstIssue) : 'Record does not match the schema',
+    });
 };

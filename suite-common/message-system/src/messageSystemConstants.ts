@@ -2,7 +2,7 @@ import {
     type CTAAction,
     type Category,
     type Condition,
-    type CountryCode,
+    type CountryCodes,
     type FirmwareVariant,
     type Model,
     type PairingMethod,
@@ -92,8 +92,7 @@ export const EXPERIMENT_MAP = Object.fromEntries(
 export const CATEGORY_ENUM = schema.definitions.category.enum.sort() as readonly Category[];
 export const VARIANT_ENUM = schema.properties.actions.items.properties.message.properties.variant
     .enum as readonly Variant[];
-export const COUNTRY_CODES = schema.definitions.countryCodes
-    .enum as unknown as readonly CountryCode[];
+export const COUNTRY_CODES = schema.definitions.countryCodes.enum as readonly CountryCodes[];
 export const CTA_ACTION_ENUM = schema.properties.actions.items.properties.message.properties.cta
     .properties.action.enum as readonly CTAAction[];
 export const MODEL_ENUM = schema.definitions.conditions.items.properties.devices.items.properties

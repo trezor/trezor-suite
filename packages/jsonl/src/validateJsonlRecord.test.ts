@@ -1,10 +1,10 @@
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { validateJsonlRecord } from './validateJsonlRecord';
 
-const testSchema = yup.object({
-    label: yup.string().required(),
-    count: yup.number().optional(),
+const testSchema = z.object({
+    label: z.string().min(1),
+    count: z.number().optional(),
 });
 
 describe(validateJsonlRecord.name, () => {

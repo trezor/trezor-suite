@@ -26,6 +26,7 @@
         "react-native": "0.88.1",
         "react-native-reanimated": "4.7.1",
         "type-fest": "5.5.0",
-        "yup": "1.7.1"
+        "yup": "1.7.1",
+        "zod": "4.6.7"
     }
 }

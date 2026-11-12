@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
@@ -21,20 +21,20 @@ export type Bip329LabelType = (typeof bip329LabelTypeValues)[number];
 /**
  * @see https://github.com/bitcoin/bips/blob/master/bip-0329.mediawiki#user-content-Specification
  */
-export const bip329LabelSchema = yup.object({
-    type: yup.mixed<Bip329LabelType>().oneOf(bip329LabelTypeValues).required(),
+export const bip329LabelSchema = z.object({
+    type: z.enum(bip329LabelTypeValues),
 
     /**
      * The identifier for the object being labeled (e.g., txid, address, txid:vout)
      */
-    ref: yup.string().required(),
+    ref: z.string().min(1),
 
-    label: yup.string().defined(), // allow for empty string
+    label: z.string(), // allow for empty string
 
-    spendable: yup.boolean().optional(),
+    spendable: z.boolean().optional(),
 });
 
-export type Bip329Label = yup.InferType<typeof bip329LabelSchema>;
+export type Bip329Label = z.infer<typeof bip329LabelSchema>;
 
 export type Bip329ExportResult = {
     accountLabel: string | null;

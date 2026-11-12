@@ -126,7 +126,6 @@
         "@suite/firmware-upgrade": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/form": "workspace:*",
-        "@suite/forms": "workspace:*",
         "@suite/github": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
         "@suite/intl": "workspace:*",
@@ -216,7 +215,8 @@
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
-        "styled-components": "^6.5.3"
+        "styled-components": "^6.5.3",
+        "zod": "4.6.7"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "7.0.1",

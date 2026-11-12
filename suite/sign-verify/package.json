@@ -21,17 +21,18 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/address": "workspace:*",
         "@suite/device": "workspace:*",
-        "@suite/forms": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.3.0",
         "react-hook-form": "^7.77.0",
         "react-redux": "9.3.0",
-        "redux": "^5.0.1"
+        "redux": "^5.0.1",
+        "zod": "4.6.7"
     },
     "devDependencies": {
         "@types/react": "19.3.0"

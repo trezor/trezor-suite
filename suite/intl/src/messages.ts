@@ -4113,10 +4113,6 @@ export const messages = defineMessages({
         id: 'TR_TOO_LONG',
         defaultMessage: 'Message is too long',
     },
-    TR_ASCII_ONLY: {
-        id: 'TR_ASCII_ONLY',
-        defaultMessage: 'Only ASCII characters are allowed',
-    },
     TR_TOTAL: {
         defaultMessage: 'Total',
         id: 'TR_TOTAL',
@@ -9552,10 +9548,6 @@ export const messages = defineMessages({
     TR_CARDANO_FINGERPRINT_HEADLINE: {
         id: 'TR_CARDANO_FINGERPRINT_HEADLINE',
         defaultMessage: 'Fingerprint',
-    },
-    TR_EXCEEDS_MAX: {
-        id: 'TR_EXCEEDS_MAX',
-        defaultMessage: 'Exceeds max length',
     },
     FAILED_TO_ENABLE_TOR: {
         id: 'FAILED_TO_ENABLE_TOR',
