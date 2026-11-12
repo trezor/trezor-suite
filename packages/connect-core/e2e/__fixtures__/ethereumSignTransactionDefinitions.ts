@@ -24,7 +24,11 @@ const ethereumSignTransactionDefinitions: TestCase = {
                 },
             },
             result: {},
-            deviceScreen: /"body":"LidoDAO".*"body":"WrapstETH".*0\.999999999999999998STETH/,
+            // The provider name and the stETH amount show only when the display-format and the
+            // stETH token definitions reach the device. The provider name comes from the live
+            // data.trezor.io definitions, so renaming it there ("Lido DAO" became
+            // "Lido DAO: wstETH") breaks this check.
+            deviceScreen: /"body":"LidoDAO:wstETH".*0\.999999999999999998STETH/,
             deviceScreenSkip: ['1', '<2.12.1'],
         },
     ],
