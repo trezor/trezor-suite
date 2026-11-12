@@ -20,6 +20,7 @@ export class YieldSection {
     readonly claimRewardsAmount: Locator;
     readonly claimSelectAccountModal: Locator;
     readonly claimSelectAccountHeading: Locator;
+    readonly claimSelectAccountCloseButton: Locator;
 
     constructor(private readonly page: Page) {
         this.earnMenuButton = this.page.getByTestId('@suite/menu/suite-earn');
@@ -39,6 +40,8 @@ export class YieldSection {
         this.claimRewardsAmount = this.page.getByTestId('@earn/dashboard/claim-rewards-amount');
         this.claimSelectAccountModal = this.page.getByTestId('@modal/earn-claim-select-account');
         this.claimSelectAccountHeading = this.claimSelectAccountModal.getByTestId('@modal/header');
+        this.claimSelectAccountCloseButton =
+            this.claimSelectAccountModal.getByTestId('@modal/close-button');
     }
 
     claimAccountButton({ symbol, accountType, index }: ClaimAccountParams): Locator {
