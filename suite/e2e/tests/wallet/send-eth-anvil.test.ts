@@ -221,6 +221,12 @@ test.describe(
                     }, 'Suite should show the transaction confirmed').toPass({ timeout: 60_000 });
                     const shownRecipient = await walletPage.transactionAddress.first().innerText();
                     expect(shownRecipient.replace(/\s/g, '')).toContain(recipientAddress.slice(-4));
+                    // History can come from before a dropped connection, so it alone does not prove
+                    // Suite is still talking to Blockbook.
+                    await expect(
+                        walletPage.backendDisconnectedBanner,
+                        'Suite should stay connected to Blockbook',
+                    ).toBeHidden();
                 });
             },
         );
