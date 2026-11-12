@@ -7,7 +7,6 @@
         { "path": "../../suite/account" },
         { "path": "../../suite/device" },
         { "path": "../../suite/intl" },
-        { "path": "../../suite/sign-verify" },
         {
             "path": "../../packages/dependency-injection"
         },

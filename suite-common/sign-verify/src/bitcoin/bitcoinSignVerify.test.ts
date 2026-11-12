@@ -4,11 +4,12 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
-import { signThunk, verifyThunk } from './networkSignVerifyThunks';
-import { type SignVerifyRootState } from './signVerifyActions';
+import { signBitcoinMessageThunk, verifyBitcoinMessageThunk } from './bitcoinSignVerify';
+import { type SignVerifyRootState } from '../signVerifyActions';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -19,7 +20,7 @@ const LEGACY_ACCOUNT = mockWalletAccount({
     symbol: asNetworkSymbol('btc'),
     accountType: 'legacy',
 });
-const ETHEREUM_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const DOGE_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('doge') });
 
 const CONNECTED_DEVICE = mockSuiteDevice({ connected: true, available: true });
 
@@ -27,7 +28,7 @@ const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootSt
     device: { ...deviceInitialState, selectedDevice },
 });
 
-describe('Sign/Verify actions', () => {
+describe('Bitcoin sign/verify thunks', () => {
     let dispatch: jest.Mock;
     let deps: { services: { analytics: ReturnType<typeof mockAnalytics> } };
 
@@ -39,6 +40,32 @@ describe('Sign/Verify actions', () => {
         dispatch = jest.fn();
         deps = { services: { analytics: mockAnalytics() } };
     });
+
+    const sign = ({
+        account = ACCOUNT,
+        hex = false,
+        isElectrum = false,
+        getSignState = getState,
+    }: {
+        account?: Account;
+        hex?: boolean;
+        isElectrum?: boolean;
+        getSignState?: () => SignVerifyRootState;
+    } = {}) =>
+        signBitcoinMessageThunk({ account, path: PATH, message: MESSAGE, hex, isElectrum })(
+            dispatch,
+            getSignState,
+            deps,
+        );
+
+    const verify = ({ hex = false }: { hex?: boolean } = {}) =>
+        verifyBitcoinMessageThunk({
+            account: ACCOUNT,
+            address: ADDRESS,
+            message: MESSAGE,
+            signature: SIGNATURE,
+            hex,
+        })(dispatch, getState, deps);
 
     const dispatchedToastTypes = () =>
         dispatch.mock.calls
@@ -53,7 +80,7 @@ describe('Sign/Verify actions', () => {
                 signature: SIGNATURE,
             },
         });
-        const res = await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+        const res = await sign();
         expect(res).toStrictEqual({ address: ADDRESS, signature: SIGNATURE });
     });
 
@@ -62,12 +89,7 @@ describe('Sign/Verify actions', () => {
             success: true,
             payload: { message: MESSAGE },
         });
-        const res = await verifyThunk(
-            ACCOUNT,
-            ADDRESS,
-            MESSAGE,
-            SIGNATURE,
-        )(dispatch, getState, deps);
+        const res = await verify();
         expect(res).toStrictEqual('verified');
     });
 
@@ -80,7 +102,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
+            await sign({ hex: true });
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: true, no_script_type: false }),
@@ -93,7 +115,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await sign();
 
             expect(connect().signMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({ message: MESSAGE, hex: false }),
@@ -103,7 +125,7 @@ describe('Sign/Verify actions', () => {
         it('verifies against the same reading of the message', async () => {
             testMocks.setTrezorConnectFixtures({ success: true, payload: { message: MESSAGE } });
 
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
+            await verify({ hex: true });
 
             expect(connect().verifyMessage).toHaveBeenLastCalledWith(
                 expect.objectContaining({
@@ -121,7 +143,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE, true)(dispatch, getState, deps);
+            await sign({ hex: true });
 
             expect(deps.services.analytics.report).toHaveBeenCalledWith(
                 expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
@@ -136,7 +158,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE, true, true)(dispatch, getState, deps);
+            await sign({ hex: true, isElectrum: true });
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -151,7 +173,7 @@ describe('Sign/Verify actions', () => {
         });
 
         it.each([
-            ['an account signing in a single format', ETHEREUM_ACCOUNT],
+            ['a network with a single account type', DOGE_ACCOUNT],
             ['an account not offered the choice', LEGACY_ACCOUNT],
         ])('leaves the signature format out for %s', async (_name, account) => {
             testMocks.setTrezorConnectFixtures({
@@ -159,7 +181,7 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(account, PATH, MESSAGE)(dispatch, getState, deps);
+            await sign({ account });
 
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
                 type: events.coinSignMessageEvent.name,
@@ -173,7 +195,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Signing failed', code: 'Failure_DataError' },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+            await sign();
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -196,7 +218,7 @@ describe('Sign/Verify actions', () => {
                     error: { message: 'Cancelled', code },
                 });
 
-                await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
+                await sign();
 
                 expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
                 expect(deps.services.analytics.report).toHaveBeenCalledWith(
@@ -211,7 +233,7 @@ describe('Sign/Verify actions', () => {
         it('reports a sign that never reached the device as an error', async () => {
             const getStateWithoutDevice = () => createState(undefined);
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getStateWithoutDevice, deps);
+            await sign({ getSignState: getStateWithoutDevice });
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -232,7 +254,7 @@ describe('Sign/Verify actions', () => {
                 payload: { message: MESSAGE },
             });
 
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true)(dispatch, getState, deps);
+            await verify({ hex: true });
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -247,7 +269,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Invalid signature', code: 'Failure_DataError' },
             });
 
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+            await verify();
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith({
@@ -267,7 +289,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Cancelled', code: 'Failure_ActionCancelled' },
             });
 
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+            await verify();
 
             expect(deps.services.analytics.report).toHaveBeenCalledTimes(1);
             expect(deps.services.analytics.report).toHaveBeenCalledWith(
@@ -285,12 +307,7 @@ describe('Sign/Verify actions', () => {
                     error: { message: 'Cancelled', code },
                 });
 
-                const result = await verifyThunk(
-                    ACCOUNT,
-                    ADDRESS,
-                    MESSAGE,
-                    SIGNATURE,
-                )(dispatch, getState, deps);
+                const result = await verify();
 
                 expect(result).toBe('cancelled');
                 // Said out loud, but as a cancellation — never as a failed verification.
@@ -304,12 +321,7 @@ describe('Sign/Verify actions', () => {
                 error: { message: 'Invalid signature', code: 'Failure_DataError' },
             });
 
-            const result = await verifyThunk(
-                ACCOUNT,
-                ADDRESS,
-                MESSAGE,
-                SIGNATURE,
-            )(dispatch, getState, deps);
+            const result = await verify();
 
             expect(result).toBe('failed');
             expect(dispatchedToastTypes()).toEqual(['verify-message-error']);
@@ -321,8 +333,8 @@ describe('Sign/Verify actions', () => {
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await signThunk(ACCOUNT, PATH, MESSAGE)(dispatch, getState, deps);
-            await verifyThunk(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE)(dispatch, getState, deps);
+            await sign();
+            await verify();
 
             const reported = JSON.stringify(deps.services.analytics.report.mock.calls);
 
