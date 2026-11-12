@@ -1,121 +1,40 @@
 import { useMemo } from 'react';
 
-import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-import { getStakingPath } from '@suite-common/wallet-utils';
+import { type TranslationKey, useTranslation } from '@suite/intl';
+
+import { type SignAddress } from './types';
 
 export type AddressItem = {
     label: string;
     value: string;
 };
 
-export const useSignAddressOptions = (
-    account: Account | undefined,
-    touchedAddresses: ReceiveInfo[],
-) => {
-    const reduceAddresses = (
-        addresses: { address: string; path: string }[],
-        category: ExtendedMessageDescriptor['id'],
-    ) =>
-        addresses.reduce(
-            (prev, { address, path }) => ({
-                ...prev,
-                [path]: {
-                    path,
-                    address,
-                    category,
-                },
-            }),
-            {},
-        );
-
-    const signAddresses = useMemo(() => {
-        switch (account?.networkType) {
-            case 'bitcoin':
-                return {
-                    ...reduceAddresses(
-                        touchedAddresses.length
-                            ? touchedAddresses
-                            : (account.addresses?.unused || []).slice(0, 1),
-                        'TR_ADDRESSES_FRESH',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.used?.slice().reverse() || [],
-                        'TR_ADDRESSES_USED',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.change?.slice().reverse() || [],
-                        'TR_ADDRESSES_CHANGE',
-                    ),
-                };
-            case 'cardano': {
-                const stakingPath = getStakingPath(account);
-
-                return {
-                    ...reduceAddresses(
-                        [
-                            {
-                                path: stakingPath,
-                                address: account.misc.staking.address,
-                            },
-                        ],
-                        'TR_STAKING_STAKE_ADDRESS',
-                    ),
-                    ...reduceAddresses(
-                        touchedAddresses.length
-                            ? touchedAddresses
-                            : (account.addresses?.unused || []).slice(0, 1),
-                        'TR_ADDRESSES_FRESH',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.used?.slice().reverse() || [],
-                        'TR_ADDRESSES_USED',
-                    ),
-                    ...reduceAddresses(
-                        account.addresses?.change?.slice().reverse() || [],
-                        'TR_ADDRESSES_CHANGE',
-                    ),
-                };
-            }
-            case 'ethereum':
-                return {
-                    [account.path]: {
-                        path: account.path,
-                        address: account.descriptor,
-                        category: '',
-                    },
-                };
-            default:
-                return {};
-        }
-    }, [account, touchedAddresses]);
+export const useSignAddressOptions = (addresses: SignAddress[]) => {
+    const signAddresses = useMemo(
+        () =>
+            addresses.reduce<Record<string, SignAddress>>(
+                (byPath, signAddress) => ({ ...byPath, [signAddress.path]: signAddress }),
+                {},
+            ),
+        [addresses],
+    );
 
     const { translationString } = useTranslation();
 
     const groupedOptions = useMemo(() => {
-        const signAddressesValues = Object.values(signAddresses);
-        const groupedAddresses = signAddressesValues.reduce<{
-            [category: string]: AddressItem[];
-        }>(
-            (grouped, { address, path, category }) => ({
-                ...grouped,
-                [category]: [
-                    ...(grouped[category] || []),
-                    {
-                        label: address,
-                        value: path,
-                    },
-                ],
-            }),
-            {},
-        );
+        const groupedAddresses = new Map<TranslationKey | undefined, AddressItem[]>();
 
-        return Object.entries(groupedAddresses).map(([label, options]) => {
-            if (!label) {
+        Object.values(signAddresses).forEach(({ address, path, category }) => {
+            groupedAddresses.set(category, [
+                ...(groupedAddresses.get(category) ?? []),
+                { label: address, value: path },
+            ]);
+        });
+
+        return Array.from(groupedAddresses, ([category, options]) => {
+            if (!category) {
                 return { label: '', options };
             }
-
-            const translatedLabel = translationString(label as ExtendedMessageDescriptor['id']);
 
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const firstOption: (typeof options)[number] = options[0];
@@ -126,19 +45,19 @@ export const useSignAddressOptions = (
             const pathLabel = `m/${pathSegment}/i`;
 
             return {
-                label: `${translatedLabel} ${pathLabel}`,
+                label: `${translationString(category)} ${pathLabel}`,
                 options,
             };
         });
     }, [signAddresses, translationString]);
 
     const getValue = (path: string): AddressItem | null => {
-        const address = signAddresses[path];
+        const signAddress = signAddresses[path];
 
-        return address
+        return signAddress
             ? {
-                  label: address.address,
-                  value: address.path,
+                  label: signAddress.address,
+                  value: signAddress.path,
               }
             : null;
     };

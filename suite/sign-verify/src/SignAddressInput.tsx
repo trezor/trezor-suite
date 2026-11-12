@@ -1,10 +1,9 @@
 import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
 
+import { type SignAddress } from './types';
 import { type AddressItem, useSignAddressOptions } from './useSignAddressOptions';
 
 const optionToAddress = (option: AddressItem | null) =>
@@ -21,24 +20,22 @@ const wrappedValueComponents = { SingleValue: WrappingSingleValue };
 const singleAddressComponents = { ...wrappedValueComponents, DropdownIndicator: () => null };
 
 type SignAddressInputProps = {
-    account?: Account;
-    touchedAddresses: ReceiveInfo[];
+    addresses: SignAddress[];
+    isAddressSelectable: boolean;
 } & SelectProps;
 
 export const SignAddressInput = ({
-    account,
-    touchedAddresses,
+    addresses,
+    isAddressSelectable,
     value,
     onChange,
     ...selectProps
 }: SignAddressInputProps) => {
-    const { getValue, groupedOptions } = useSignAddressOptions(account, touchedAddresses);
-
-    const hasMultipleAddresses = !!account && isUtxoBased(account);
+    const { getValue, groupedOptions } = useSignAddressOptions(addresses);
 
     const formatOptionLabel = (option: AddressItem) => (
         <Row gap={4}>
-            {hasMultipleAddresses && (
+            {isAddressSelectable && (
                 <Box minWidth={36}>
                     <Text isDisabled>/{option.value.split('/').pop()}</Text>
                 </Box>
@@ -54,9 +51,10 @@ export const SignAddressInput = ({
             options={groupedOptions}
             onChange={option => onChange?.(optionToAddress(option))}
             formatOptionLabel={formatOptionLabel}
-            isSearchable={hasMultipleAddresses}
-            isMenuOpen={hasMultipleAddresses ? undefined : false}
-            components={hasMultipleAddresses ? wrappedValueComponents : singleAddressComponents}
+            isSearchable={isAddressSelectable}
+            isDisabled={!isAddressSelectable}
+            isMenuOpen={isAddressSelectable ? undefined : false}
+            components={isAddressSelectable ? wrappedValueComponents : singleAddressComponents}
         />
     );
 };
