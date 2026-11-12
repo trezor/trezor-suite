@@ -3,8 +3,10 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { RootStackRoutes, YieldStackRoutes } from '@suite-native/navigation';
 
-import { navigateByYieldAccountState } from './navigateByYieldAccountState';
-import { type YieldNavigationItem } from '../../types';
+import {
+    type YieldNavigationItem,
+    navigateByYieldAccountState,
+} from './navigateByYieldAccountState';
 
 const ethSymbol = asNetworkSymbol('eth');
 

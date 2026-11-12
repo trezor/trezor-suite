@@ -63,10 +63,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { useMessageSystemWrappedNative } from '../../hooks/earn/useMessageSystemWrappedNative';
-import { useWrappedNativeFirmwareUpdateAlert } from '../../hooks/earn/useWrappedNativeFirmwareUpdateAlert';
-import { getWrappedNativeTokenEntries } from '../../utils/earn/wrappedNativeTokenEntryUtils';
-import { YieldDisabledAlert } from '../yield/YieldDisabledAlert';
+import { YieldDisabledAlert } from './YieldDisabledAlert';
+import { useMessageSystemWrappedNative } from '../hooks/useMessageSystemWrappedNative';
+import { useWrappedNativeFirmwareUpdateAlert } from '../hooks/useWrappedNativeFirmwareUpdateAlert';
+import { getWrappedNativeTokenEntries } from '../utils/wrappedNativeTokenEntryUtils';
 
 const detailRowStyle = prepareNativeStyle(({ spacings }) => ({
     flexDirection: 'row',

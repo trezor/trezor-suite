@@ -17,7 +17,7 @@ import {
 import { selectAccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { useMessageSystemYield } from '@suite-native/earn';
+import { YieldDisabledAlert, useMessageSystemYield } from '@suite-native/earn';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
@@ -36,7 +36,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldClaimFlowFooter } from '../../components/yield/YieldClaimFlowFooter';
 import { YieldClaimRewardsCard } from '../../components/yield/YieldClaimRewardsCard';
-import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../../components/yield/YieldTxSimulationBottomSheet';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';

@@ -5,9 +5,9 @@ import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { AccordionContent, AnimatedBox, PressableOpacity, Text } from '@suite-native/atoms';
+import { TokenYieldRateBadge } from '@suite-native/earn';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokenYieldRateBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type OnSelectAsset } from './types';

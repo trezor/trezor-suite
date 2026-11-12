@@ -11,6 +11,7 @@ import {
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
+import { useYieldDetailNavigation } from '@suite-native/earn';
 import {
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
@@ -21,7 +22,6 @@ import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
-import { useYieldDetailNavigation } from '../../hooks/yield/useYieldDetailNavigation';
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 

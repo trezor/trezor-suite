@@ -10,6 +10,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModal, useBottomSheetModalControls } from '@suite-native/atoms';
+import { navigateByAccountState, useStakingNavigateAnalytics } from '@suite-native/earn';
 import { useTranslate } from '@suite-native/intl';
 import {
     AddCoinAccountStackRoutes,
@@ -20,9 +21,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';
 import { useEarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
-import { navigateByAccountState } from '../../utils/staking/navigateByAccountState';
 import {
     type NavigableStakingSupport,
     resolveStakingPromoAccounts,

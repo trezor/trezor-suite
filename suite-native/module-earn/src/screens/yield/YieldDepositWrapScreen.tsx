@@ -1,6 +1,7 @@
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
+import { YieldDisabledAlert } from '@suite-native/earn';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -10,7 +11,6 @@ import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNativeFeeReserveBanner';
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
-import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';

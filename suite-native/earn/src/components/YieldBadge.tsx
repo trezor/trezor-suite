@@ -17,8 +17,8 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { useYieldDetailNavigation } from '../../hooks/yield/useYieldDetailNavigation';
-import { useYieldEntryNavigationAnalytics } from '../../hooks/yield/useYieldEntryNavigationAnalytics';
+import { useYieldDetailNavigation } from '../hooks/useYieldDetailNavigation';
+import { useYieldEntryNavigationAnalytics } from '../hooks/useYieldEntryNavigationAnalytics';
 
 type YieldBadgeVariant = 'inactive' | 'active' | 'promo';
 

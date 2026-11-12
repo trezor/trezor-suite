@@ -2,6 +2,7 @@ import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { AssetName, AssetSymbol } from '@suite-native/assets';
 import { Box, Card, HStack } from '@suite-native/atoms';
+import { YieldBadge } from '@suite-native/earn';
 import {
     CryptoToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
@@ -9,7 +10,6 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { YieldBadge } from '@suite-native/module-earn';
 import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

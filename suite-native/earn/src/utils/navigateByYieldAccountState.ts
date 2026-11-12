@@ -1,3 +1,4 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type StablecoinYieldVaultToken,
     type YieldFlowType,
@@ -11,7 +12,11 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { type YieldNavigationItem } from '../../types';
+export type YieldNavigationItem = {
+    yieldId: string;
+    underlyingTokenContract: TokenAddress;
+    receiptTokenContract: TokenAddress | null;
+};
 
 type YieldNavigateFn = StackNavigationProps<
     RootStackParamList,

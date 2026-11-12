@@ -2,22 +2,21 @@ import { toTokenAddress } from '@suite-common/tokens';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/wallet-core/mocks';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { useMessageSystemYield } from '@suite-native/earn';
+import { useMessageSystemYield, useYieldFlowData } from '@suite-native/earn';
 import { type YieldFlowParams } from '@suite-native/navigation';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
-import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldSession } from '../useYieldSession';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useIsFocused: () => true,
 }));
-jest.mock('../useYieldFlowData');
 jest.mock('@suite-native/earn', () => ({
     ...jest.requireActual('@suite-native/earn'),
     useMessageSystemYield: jest.fn(),
+    useYieldFlowData: jest.fn(),
 }));
 jest.mock('../useShowYieldTransactionFailureAlert');
 jest.mock('../useYieldSession');

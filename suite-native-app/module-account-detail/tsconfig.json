@@ -64,9 +64,6 @@
         { "path": "../../suite-native/labeling" },
         { "path": "../../suite-native/link" },
         {
-            "path": "../../suite-native/module-earn"
-        },
-        {
             "path": "../../suite-native/navigation"
         },
         {

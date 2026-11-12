@@ -1,10 +1,11 @@
 import { type Account } from '@suite-common/wallet-types';
+
 import {
-    EARN_PROMO_SYMBOLS,
     type TokenYieldRateToken,
     type TokenYieldRateVariant,
     useAssetYieldRate,
-} from '@suite-native/earn';
+} from './useAssetYieldRate';
+import { EARN_PROMO_SYMBOLS } from '../utils/promotedRateUtils';
 
 type UseTokenYieldRateParams = {
     account: Account;

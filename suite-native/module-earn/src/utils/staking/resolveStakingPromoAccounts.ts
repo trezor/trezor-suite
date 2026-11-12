@@ -1,8 +1,10 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-
-import { hasAccountActiveStaking } from './hasAccountActiveStaking';
-import { type MobileStakingSupport, getMobileStakingSupport } from './mobileStakingSupport';
+import {
+    type MobileStakingSupport,
+    getMobileStakingSupport,
+    hasAccountActiveStaking,
+} from '@suite-native/earn';
 
 type ResolveStakingPromoAccountsParams = {
     symbol: NetworkSymbol;

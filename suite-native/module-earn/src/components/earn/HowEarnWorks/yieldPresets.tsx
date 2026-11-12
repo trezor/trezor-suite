@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 
 import { type HowEarnWorksBenefitItem } from './HowEarnWorksBenefitsSection';
 import { type HowEarnWorksScreenPreset, type HowEarnWorksTimelineSectionPreset } from './types';
-import { useFormattedEarnRate } from '../../../hooks/earn/useFormattedEarnRate';
 import { ApyDottedUnderline } from '../ApyDottedUnderline';
 
 type UseHowYieldWorksPresetProps = {

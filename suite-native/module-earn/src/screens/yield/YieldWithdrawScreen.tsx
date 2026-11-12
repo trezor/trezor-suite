@@ -12,6 +12,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
+import { YieldDisabledAlert } from '@suite-native/earn';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
@@ -21,7 +22,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { EarnApproximateFiatAmount } from '../../components/earn/EarnApproximateFiatAmount';
 import { EarnFeeEstimationErrorAlert } from '../../components/earn/EarnFeeEstimationErrorAlert';
 import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
-import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldFormattedAmount } from '../../components/yield/YieldFormattedAmount';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';

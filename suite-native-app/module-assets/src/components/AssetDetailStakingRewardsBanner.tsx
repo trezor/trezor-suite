@@ -4,9 +4,8 @@ import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/walle
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { EarnPromoBanner } from '@suite-native/banners';
-import { getStakingRateLabelType, useStakingRate } from '@suite-native/earn';
+import { getStakingRateLabelType, useFormattedEarnRate, useStakingRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
-import { useFormattedEarnRate } from '@suite-native/module-earn';
 
 type AssetDetailStakingRewardsBannerProps = {
     networkSymbol: NetworkSymbol;

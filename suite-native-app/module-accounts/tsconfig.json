@@ -35,14 +35,12 @@
         {
             "path": "../../suite-native/discovery"
         },
+        { "path": "../../suite-native/earn" },
         {
             "path": "../../suite-native/formatters"
         },
         { "path": "../../suite-native/icons" },
         { "path": "../../suite-native/intl" },
-        {
-            "path": "../../suite-native/module-earn"
-        },
         {
             "path": "../../suite-native/navigation"
         },

@@ -5,6 +5,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldRootState, selectYieldSessionByFlowKey } from '@suite-common/wallet-core';
+import { useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -12,7 +13,6 @@ import {
 } from '@suite-native/navigation';
 
 import { YieldDepositReviewContent } from '../../components/yield/YieldDepositReviewContent';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositReview>;

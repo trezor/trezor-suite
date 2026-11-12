@@ -2,7 +2,7 @@ import { LinearTransition } from 'react-native-reanimated';
 
 import { AnimatedContainerCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
-import { FiveBinariesHomeBanner } from '@suite-native/module-earn';
+import { FiveBinariesHomeBanner } from '@suite-native/earn';
 
 import { AssetList } from './AssetList';
 import { DiscoveryAssetsLoader } from './DiscoveryAssetsLoader';
