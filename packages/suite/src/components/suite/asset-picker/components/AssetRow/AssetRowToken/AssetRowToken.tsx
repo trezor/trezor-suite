@@ -1,8 +1,8 @@
+import { AssetIcon } from '@suite/assets';
 import { toTokenAddress } from '@suite-common/tokens';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
+import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
@@ -34,6 +34,7 @@ export function AssetRowToken({
         selectShouldShowNetworkIcon(state, account.symbol, token.contract),
     );
     const isDisabled = !onClick;
+    const contractAddress = toTokenAddress(token.contract);
 
     return (
         <ItemClickableContainer
@@ -44,31 +45,27 @@ export function AssetRowToken({
             isDisabled={isDisabled}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
-                <TokenIcon
+                <AssetIcon
                     size={40}
-                    symbol={account.symbol}
-                    contractAddress={token.contract}
-                    placeholder={getDisplaySymbol(token.symbol!, token.contract)}
+                    networkSymbol={account.symbol}
+                    contractAddress={contractAddress}
                     showNetworkIcon={showNetworkIcon}
                 />
                 <AssetDetails
-                    name={token.name!}
-                    displaySymbol={token.symbol!}
                     networkSymbol={account.symbol}
+                    contractAddress={contractAddress}
                     isDisabled={isDisabled}
-                    tokenContract={toTokenAddress(token.contract)}
                 />
             </Row>
             {token.balance && (
                 <Row flex="0 0 auto">
                     <AssetAmount
-                        symbol={token.symbol!}
+                        networkSymbol={account.symbol}
+                        contractAddress={contractAddress}
+                        amount={token.balance}
                         fiatAmount={
                             token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined
                         }
-                        contractAddress={token.contract}
-                        decimals={token.decimals}
-                        amount={token.balance}
                         showNoTradingPairText={showNoTradingPairText}
                         isFiatPrimary={isFiatPrimary}
                         isDisabled={isDisabled}

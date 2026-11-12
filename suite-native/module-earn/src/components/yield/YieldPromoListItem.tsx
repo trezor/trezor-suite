@@ -7,7 +7,6 @@ import {
 } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -35,7 +34,7 @@ type YieldPromoListItemProps = {
 };
 
 export const YieldPromoListItem = ({ item, onPress }: YieldPromoListItemProps) => {
-    const { PercentageFormatter } = useFormatters();
+    const { PercentageFormatter, NetworkNameFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -63,7 +62,7 @@ export const YieldPromoListItem = ({ item, onPress }: YieldPromoListItemProps) =
                         <Text>{item.vaultName}</Text>
 
                         <Text color="contentSecondary" variant="body-sm">
-                            <NetworkDisplaySymbolNameFormatter value={item.networkSymbol} />
+                            <NetworkNameFormatter value={item.networkSymbol} />
                         </Text>
                     </Box>
                 </Box>

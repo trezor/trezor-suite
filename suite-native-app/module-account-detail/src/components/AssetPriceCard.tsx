@@ -1,20 +1,15 @@
 import { useSelector } from 'react-redux';
 
 import { type TokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
-import { AssetPriceChange } from '@suite-native/assets';
+import { AssetName, AssetPriceChange, AssetSymbol } from '@suite-native/assets';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import {
-    TokenIcon,
-    TokenName,
-    type TokensRootState,
-    selectAccountTokenInfo,
-} from '@suite-native/tokens';
+import { TokenIcon, type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -86,20 +81,22 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
 
                         <Box style={applyStyle(cardContentStyle)}>
                             {token ? (
-                                <TokenName
+                                <AssetName
                                     networkSymbol={networkSymbol}
                                     contractAddress={token.contract}
                                     variant="body-sm-strong"
                                     color="contentPrimary"
                                 />
                             ) : (
-                                <Text variant="body-sm-strong" color="contentPrimary">
-                                    {getNetworkDisplaySymbol(networkSymbol)}
-                                </Text>
+                                <AssetSymbol
+                                    networkSymbol={networkSymbol}
+                                    variant="body-sm-strong"
+                                    color="contentPrimary"
+                                />
                             )}
 
                             <Text variant="body-sm" color="contentSecondary">
-                                {getNetworkDisplaySymbolName(networkSymbol)}
+                                {getNetwork(networkSymbol).name}
                             </Text>
                         </Box>
                     </HStack>

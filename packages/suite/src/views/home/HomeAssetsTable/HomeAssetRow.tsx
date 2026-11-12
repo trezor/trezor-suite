@@ -4,7 +4,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
@@ -36,7 +35,6 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
 
@@ -67,7 +65,6 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                 <HomeAssetIdentity
                     symbol={symbol}
                     contractAddress={contractAddress}
-                    displaySymbol={displaySymbol}
                     badge={
                         <HomeAssetApyBadge
                             symbol={symbol}

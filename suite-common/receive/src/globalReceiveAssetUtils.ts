@@ -58,23 +58,15 @@ export const buildGlobalReceiveAssetOptions = ({
 type BuildGlobalReceiveAssetOptionParams = {
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
-    tokenSymbol: string | null;
-    name: string;
 };
 
 export const buildGlobalReceiveAssetOption = ({
     symbol,
     contractAddress,
-    tokenSymbol,
-    name,
 }: BuildGlobalReceiveAssetOptionParams): TradingAssetOption =>
     contractAddress === undefined
         ? createAssetNativeTokenOption(toNetworkSymbolNonTestnet(symbol))
-        : createAssetTokenOption(symbol, {
-              contract: contractAddress,
-              symbol: tokenSymbol ?? name,
-              name,
-          });
+        : createAssetTokenOption(symbol, { contract: contractAddress, symbol: '', name: '' });
 
 export type GlobalReceiveAssetListItem = {
     asset: TradingAssetOption;

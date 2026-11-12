@@ -1,4 +1,5 @@
 import type { Protocol } from '@trezor/network-module-suite-common-types';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { typedObjectFromEntries, typedObjectValues } from '@trezor/utils';
 
@@ -40,12 +41,36 @@ export const selectNetworkConfigs = createMemoizedSelector(
         networks === null ? [] : typedObjectValues(networks),
 );
 
-/** The name of a network's native token. */
+/**
+ * The name of a network's native token.
+ *
+ * INTENTIONAL: ETH on Arbitrum, Base, Optimism or any other Ethereum L2 is always named just
+ * "Ethereum", never "Arbitrum One Ethereum" or "Ethereum on Base". It is the same asset on every
+ * network, so the name never mentions the network; screens show the network separately (network
+ * icon, network line or network badge). Do not put the network back into this name.
+ */
 export const selectNativeTokenName = (state: NetworksRootState, symbol: NetworkSymbol) => {
     const network = selectNetworkConfig(state, symbol);
+    const nativeTokenNetwork = network?.settlementLayer
+        ? selectNetworkConfig(state, network.settlementLayer)
+        : network;
 
-    return network?.displaySymbolName || network?.name;
+    return nativeTokenNetwork?.displaySymbolName || nativeTokenNetwork?.name;
 };
+
+const NETWORKS_WITH_NATIVE_TOKEN_NAME_ALIASES: readonly NetworkSymbol[] = [
+    'pol',
+    'bsc',
+    'avax',
+].map(asNetworkSymbol);
+
+/** Whether a native asset's name already identifies its network in an asset row. */
+export const selectIsNativeTokenNetworkNameRedundant = (
+    state: NetworksRootState,
+    symbol: NetworkSymbol,
+): boolean =>
+    selectNativeTokenName(state, symbol) === selectNetworkConfig(state, symbol)?.name ||
+    NETWORKS_WITH_NATIVE_TOKEN_NAME_ALIASES.includes(symbol);
 
 export const selectNetworkColor = (state: NetworksRootState, symbol?: NetworkSymbol | null) =>
     symbol ? selectNetworkConfig(state, symbol)?.color : undefined;

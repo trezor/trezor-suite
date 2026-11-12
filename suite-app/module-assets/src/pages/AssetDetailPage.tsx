@@ -1,11 +1,8 @@
 import { useMemo } from 'react';
 
+import { selectAssetNameText } from '@suite/assets';
 import { useTranslation } from '@suite/intl';
-import {
-    selectWalletAssetContractAddress,
-    selectWalletAssetName,
-    selectWalletAssetSymbol,
-} from '@suite-common/assets';
+import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
 import { Box, Column, Row } from '@trezor/components';
 import {
     AssetDetailBalance,
@@ -28,9 +25,11 @@ export const AssetDetailPage = () => {
     const { translationString } = useTranslation();
     const { isDiscoveryRunning } = useDiscovery();
     const assetKey = useSelector(selectRoutedAssetKey);
-    const name = useSelector(state => selectWalletAssetName(state, assetKey));
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
+    const name = useSelector(
+        state => symbol && selectAssetNameText(state, symbol, contractAddress),
+    );
     const pageHeader = useMemo(() => <PageHeader />, []);
 
     useLayout(name ?? translationString('TR_ASSET'), pageHeader);

@@ -50,8 +50,6 @@ jest.mock('@react-navigation/native', () => ({
 // the component happens to read them in.
 jest.mock('@suite-common/assets', () => ({
     selectWalletAssetKey: () => 'asset-key',
-    selectWalletAssetName: () => 'USD Coin',
-    selectWalletAssetTokenSymbol: () => 'USDC',
     selectWalletAssetAccounts: jest.fn(),
 }));
 

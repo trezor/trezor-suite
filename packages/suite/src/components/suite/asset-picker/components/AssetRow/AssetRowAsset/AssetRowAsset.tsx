@@ -44,19 +44,14 @@ export function AssetRowAsset({
                     contractAddress={tokenContract}
                     showNetworkIcon={!tokenContract || showNetworkIcon}
                 />
-                <AssetDetails
-                    name={asset.displaySymbolName ?? asset.name}
-                    displaySymbol={asset.displaySymbol}
-                    networkSymbol={asset.networkSymbol}
-                    tokenContract={tokenContract}
-                />
+                <AssetDetails networkSymbol={asset.networkSymbol} contractAddress={tokenContract} />
             </Row>
             {balance && (
                 <Row flex="0 0 auto">
                     <AssetAmount
-                        symbol={asset.displaySymbol}
+                        networkSymbol={asset.networkSymbol}
+                        contractAddress={tokenContract}
                         amount={balance.cryptoAmount}
-                        contractAddress={asset.contractAddress}
                         fiatAmount={balance.fiatAmount ?? undefined}
                         isFiatPrimary
                     />

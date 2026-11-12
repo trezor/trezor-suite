@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type StakeRootState,
@@ -34,6 +34,10 @@ type StakingPositionCardProps = {
 export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps) => {
     const { PercentageFormatter } = useFormatters();
     const { symbol, accountKey, balance } = item;
+
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        selectNativeTokenName(state, symbol),
+    );
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
@@ -79,7 +83,7 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                     wrappedTokenIcon="token"
                 />
             }
-            title={getNetworkDisplaySymbolName(symbol)}
+            title={nativeTokenName}
             description={
                 account?.accountLabel ? (
                     <Text variant="body-sm" color="contentSecondary">

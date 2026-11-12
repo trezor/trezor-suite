@@ -7,7 +7,7 @@ import {
 } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
-import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
     type AssetAccountsRootState,
@@ -63,8 +63,6 @@ type WalletAsset = {
     contractAddress: TokenAddress | undefined;
     cryptoBalance: BigNumber;
     amount: string;
-    displaySymbol: string;
-    name: string;
     tokenSymbol: TokenSymbol | null;
     tokenDecimals: number | undefined;
     accountCount: number;
@@ -97,12 +95,6 @@ const groupWalletAssets = (
             contractAddress,
             cryptoBalance,
             amount: cryptoBalance.toFixed(),
-            displaySymbol: getDisplaySymbol(tokenInfo?.symbol ?? symbol, contractAddress),
-            name: getAssetName({
-                symbol,
-                tokenName: tokenInfo?.name,
-                tokenSymbol: tokenInfo?.symbol,
-            }),
             tokenSymbol: tokenInfo?.symbol === undefined ? null : toTokenSymbol(tokenInfo.symbol),
             tokenDecimals: tokenInfo?.decimals,
             accountCount: held.filter(assetAccount => isPositiveBalance(assetAccount.cryptoBalance))
@@ -606,17 +598,6 @@ export const selectWalletAssetContractAddress = (
     assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.contractAddress;
-
-export const selectWalletAssetDisplaySymbol = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey | undefined,
-    isHidden?: boolean,
-) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
-
-export const selectWalletAssetName = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey | undefined,
-) => selectWalletAsset(state, assetKey)?.name;
 
 export const selectWalletAssetAmount = (
     state: HomeAssetTableState,

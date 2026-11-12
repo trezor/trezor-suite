@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldListItem,
@@ -32,7 +31,7 @@ type YieldPositionCardProps = {
 };
 
 export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => {
-    const { PercentageFormatter } = useFormatters();
+    const { PercentageFormatter, NetworkNameFormatter } = useFormatters();
     const { analytics } = useServices(injectNativeAnalytics);
     const { navigateToYieldDetail } = useYieldDetailNavigation();
 
@@ -83,7 +82,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
             title={item.vaultName}
             description={
                 <Text variant="body-sm" color="contentSecondary">
-                    {account?.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)}
+                    {account?.accountLabel || <NetworkNameFormatter value={item.networkSymbol} />}
                 </Text>
             }
             value={

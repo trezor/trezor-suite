@@ -1,16 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
+import { AssetName } from '@suite/assets';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { TokenName } from '@suite/token';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
-import {
-    type Explorer,
-    getNetwork,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import {
     getContractAddressForNetworkSymbol,
@@ -145,14 +141,14 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                     typographyStyle="body-md"
                                     data-testid={`@wallet/send/token-name/${outputId}`}
                                 >
-                                    {selectedToken?.name ? (
-                                        <TokenName
-                                            networkSymbol={account.symbol}
-                                            tokenContract={toTokenAddress(selectedToken.contract)}
-                                        />
-                                    ) : (
-                                        getNetworkDisplaySymbolName(account.symbol)
-                                    )}
+                                    <AssetName
+                                        networkSymbol={account.symbol}
+                                        contractAddress={
+                                            selectedToken
+                                                ? toTokenAddress(selectedToken.contract)
+                                                : undefined
+                                        }
+                                    />
                                 </Text>
                             </Row>
                             <Row>

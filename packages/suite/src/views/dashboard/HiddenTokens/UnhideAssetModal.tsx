@@ -1,9 +1,6 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import {
-    selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
-    selectWalletAssetSymbol,
-} from '@suite-common/assets';
+import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
 import {
     DefinitionType,
     TokenManagementAction,
@@ -27,9 +24,6 @@ export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModa
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, true));
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, true),
-    );
-    const displaySymbol = useSelector(state =>
-        selectWalletAssetDisplaySymbol(state, assetKey, true),
     );
 
     const handleUnhide = () => {
@@ -70,7 +64,18 @@ export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModa
             }
         >
             <H3>
-                <Translation id="TR_HOME_ASSET_UNHIDE_TITLE" values={{ asset: displaySymbol }} />
+                <Translation
+                    id="TR_HOME_ASSET_UNHIDE_TITLE"
+                    values={{
+                        asset: symbol && (
+                            <AssetSymbol
+                                networkSymbol={symbol}
+                                contractAddress={contractAddress}
+                                isTruncated
+                            />
+                        ),
+                    }}
+                />
             </H3>
             <Paragraph intent="neutral" priority="secondary" margin={{ top: 8 }}>
                 <Translation

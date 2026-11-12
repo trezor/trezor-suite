@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -19,15 +19,20 @@ export const UnstakeFlowScreenHeader = () => {
         selectAccountByKey(state, accountKey),
     );
 
-    if (!account) return null;
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        account?.symbol ? selectNativeTokenName(state, account.symbol) : undefined,
+    );
 
-    const displaySymbol = getNetworkDisplaySymbolName(account.symbol);
+    if (!account) return null;
 
     return (
         <ScreenHeader
             customContent={
                 <Text variant="body-md-strong">
-                    <Translation id="earn.earnFormScreen.unstakeTitle" values={{ displaySymbol }} />
+                    <Translation
+                        id="earn.earnFormScreen.unstakeTitle"
+                        values={{ displaySymbol: nativeTokenName }}
+                    />
                 </Text>
             }
         />

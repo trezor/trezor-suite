@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { useFormatters } from '@suite-common/formatters';
 import { toTokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldClaimAccountItem,
@@ -64,6 +64,7 @@ export const YieldClaimRewardsAccountCard = ({
     onClose,
 }: YieldClaimRewardsAccountCardProps) => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const { NetworkNameFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
 
@@ -109,7 +110,7 @@ export const YieldClaimRewardsAccountCard = ({
                     />
                 ) : (
                     <Text variant="body-md-strong" numberOfLines={1}>
-                        {getNetworkDisplaySymbolName(item.summary.networkSymbol)}
+                        <NetworkNameFormatter value={item.summary.networkSymbol} />
                     </Text>
                 )}
 
