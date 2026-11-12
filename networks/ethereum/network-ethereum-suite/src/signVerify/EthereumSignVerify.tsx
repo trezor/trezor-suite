@@ -1,20 +1,13 @@
 import { useMemo, useState } from 'react';
 
-import { signThunk, verifyThunk } from '@suite-common/sign-verify';
-import { type Account } from '@suite-common/wallet-types';
+import { SignMessageForm, type SignVerifyPage, VerifyMessageForm } from '@suite/sign-verify';
+import { signEthereumMessageThunk, verifyEthereumMessageThunk } from '@suite-common/sign-verify';
 import { useServices } from '@trezor/dependency-injection';
+import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { SignMessageForm } from '../SignMessageForm';
-import { VerifyMessageForm } from '../VerifyMessageForm';
-import { type SignVerifyPage } from '../types';
-
-type EthereumSignVerifyProps = {
-    account: Account;
-};
-
-/** Every EVM account signs with its single address. */
-export const EthereumSignVerify = ({ account }: EthereumSignVerifyProps) => {
+/** One module serves every EVM network: an account signs with its single address. */
+export const EthereumSignVerify = ({ account }: SignVerifyProps) => {
     const [page, setPage] = useState<SignVerifyPage>('sign');
 
     const { dispatch } = useServices(injectDispatch);
@@ -33,8 +26,8 @@ export const EthereumSignVerify = ({ account }: EthereumSignVerifyProps) => {
                 key={account.key}
                 symbol={account.symbol}
                 onPageChange={setPage}
-                verifyMessage={({ address, message, signature, hex }) =>
-                    dispatch(verifyThunk(account, address, message, signature, hex))
+                verifyMessage={params =>
+                    dispatch(verifyEthereumMessageThunk({ account, ...params }))
                 }
             />
         );
@@ -50,7 +43,7 @@ export const EthereumSignVerify = ({ account }: EthereumSignVerifyProps) => {
             canVerify
             onPageChange={setPage}
             signMessage={({ message, hex }) =>
-                dispatch(signThunk(account, account.path, message, hex))
+                dispatch(signEthereumMessageThunk({ account, message, hex }))
             }
         />
     );

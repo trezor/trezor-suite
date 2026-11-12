@@ -10,6 +10,9 @@
             "path": "../../networks/bitcoin/network-bitcoin-suite"
         },
         {
+            "path": "../../networks/ethereum/network-ethereum-suite"
+        },
+        {
             "path": "../../networks/network-module/suite/suite-types"
         },
         {
