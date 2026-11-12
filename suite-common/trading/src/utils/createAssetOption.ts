@@ -1,6 +1,7 @@
 import { type CoinInfo, type CryptoId, type PlatformsInfo } from 'invity-api';
 
 import { type NetworkMetadata } from '@suite-common/networks';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import {
@@ -71,7 +72,7 @@ export function createAssetOption({
         symbol: coinInfoSymbol,
         coingeckoId: networkConfig.coingeckoId,
         displaySymbol: getDisplaySymbol(coinInfoSymbol.toUpperCase(), contractAddress),
-        contractAddress,
+        contractAddress: toTokenAddress(contractAddress),
         networkName: networkConfig.name,
         networkSymbol,
         displaySymbolName: coinInfo.name,

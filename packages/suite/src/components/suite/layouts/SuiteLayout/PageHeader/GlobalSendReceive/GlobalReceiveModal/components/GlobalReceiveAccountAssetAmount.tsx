@@ -1,4 +1,3 @@
-import { toTokenAddress } from '@suite-common/tokens';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { findToken } from '@suite-common/wallet-utils';
@@ -20,7 +19,7 @@ export const GlobalReceiveAccountAssetAmount = ({
     const token = asset.isNativeToken
         ? undefined
         : findToken(account.tokens, asset.contractAddress);
-    const tokenAddress = asset.isNativeToken ? undefined : toTokenAddress(asset.contractAddress);
+    const tokenAddress = asset.isNativeToken ? undefined : asset.contractAddress;
     // An eligible account need not hold the token yet, which is the point of receiving it.
     const amount = asset.isNativeToken ? account.formattedBalance : (token?.balance ?? '0');
 

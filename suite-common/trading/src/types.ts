@@ -90,7 +90,7 @@ export type TradingAssetOptionWithContractAddress = TradingAssetOptionBase & {
     name: string;
     symbol: string;
     displaySymbol: string;
-    contractAddress: string;
+    contractAddress: TokenAddress;
 };
 
 export type TradingAssetOption =

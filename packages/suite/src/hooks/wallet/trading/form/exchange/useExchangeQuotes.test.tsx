@@ -7,6 +7,7 @@ import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type AddressValidatorDep } from '@suite-common/networks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
@@ -110,7 +111,7 @@ const USDT_SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     isNativeToken: false,
     name: 'Tether USD',
     coingeckoId: 'ethereum',
-    contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    contractAddress: toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
     symbol: 'usdt',
     displaySymbol: 'USDT',
     networkName: 'Ethereum',

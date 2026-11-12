@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { TokenMetadataProvider } from '@suite-common/token';
-import { toTokenAddress } from '@suite-common/tokens';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { AccountsList } from '@suite-native/accounts';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -34,7 +33,7 @@ export const ReceiveAccountsScreen = ({
         return <ReceiveBlockedDeviceCompromisedScreen />;
     }
 
-    const tokenContract = asset.isNativeToken ? undefined : toTokenAddress(asset.contractAddress);
+    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
 
     const content = (
         <Screen
