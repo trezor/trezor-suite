@@ -86,6 +86,12 @@ export type ConnectCallSource = {
       }
 );
 
+/**
+ * The caller's app name, or its origin when the name is empty. `??` would keep the empty name.
+ */
+export const getCallSourceName = (source: ConnectCallSource): string =>
+    source.manifest?.appName || source.origin;
+
 type SelectedFee =
     | {
           gasPrice: undefined;

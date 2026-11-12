@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
     connectPopupVerifyAddressThunk,
+    getCallSourceName,
     getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
@@ -123,13 +124,7 @@ export const ConnectAddressConfirmation = () => {
                                     : 'TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION'
                             }
                             values={{
-                                thirdParty: (
-                                    <b>
-                                        {/* `??` would show an empty name, not the origin. */}
-                                        {popupCall.source.manifest?.appName ||
-                                            popupCall.source.origin}
-                                    </b>
-                                ),
+                                thirdParty: <b>{getCallSourceName(popupCall.source)}</b>,
                                 passphraseWalletLabel: device && (
                                     <b>
                                         <WalletLabeling device={device} />
