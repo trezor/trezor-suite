@@ -32,9 +32,10 @@ const appAssets = path.join(repoRoot, 'suite', 'app-assets', 'files');
 const DEV_PORT = 8000;
 
 /**
- * The packaged application is served from `build/` over the `suite://app` origin (see
- * desktop-app-main's libs/renderer-protocol.ts), so assets must resolve relative to the page
- * rather than to the origin's root.
+ * Asset paths relative to the page, which keeps them independent of where the page is served.
+ * The main process serves `build/` as the root of the `suite://app` origin
+ * (see desktop-app-main's libs/renderer-protocol.ts),
+ * where a relative and an absolute path name the same file.
  */
 const DESKTOP_ASSET_PREFIX = '.';
 
@@ -126,9 +127,7 @@ const rendererConfig: webpack.Configuration = {
             minify: !isDev,
             template: path.join(rendererDir, 'src', 'static', 'index.html'),
             templateParameters: {
-                // This needs to be set as `.` so it loads next to the page, which the main process
-                // serves from the app's `build` directory as `suite://app/index.html`; the requested
-                // asset (for example `static/fonts/fonts.css`) is located there.
+                // Loads the page's assets (for example `static/fonts/fonts.css`) from next to it.
                 assetPrefix: DESKTOP_ASSET_PREFIX,
                 isOnionLocation: FLAGS.ONION_LOCATION_META,
             },
