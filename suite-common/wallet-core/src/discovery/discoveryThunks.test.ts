@@ -317,13 +317,16 @@ describe('runAdditionalDiscoveryThunk', () => {
     });
 });
 
-describe('runAdditionalDiscoveryThunk failed accounts', () => {
+describe('runAdditionalDiscoveryThunk accounts', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    it('keeps the error code of an account that failed to load', async () => {
-        const state = createState({ status: 'progress', total: 2, progress: 1 }, existingWallet);
+    // Rediscovers the existing wallet, in which Connect finds the given account.
+    const discoverAccount = async (
+        account: object,
+        state = createState({ status: 'progress', total: 1, progress: 0 }, existingWallet),
+    ) => {
         let onBundleProgress: ((event: unknown) => void) | undefined;
         jest.spyOn(TrezorConnect, 'on').mockImplementation(((
             event: string,
@@ -331,29 +334,20 @@ describe('runAdditionalDiscoveryThunk failed accounts', () => {
         ) => {
             if (event === UI_EVENTS.BUNDLE_PROGRESS) onBundleProgress = listener;
         }) as typeof TrezorConnect.on);
-        jest.spyOn(TrezorConnect, 'off').mockImplementation(jest.fn());
         jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
             success: true,
             payload: { state: { staticSessionId: existingWalletState } },
         });
         jest.spyOn(TrezorConnect, 'discoverAccounts').mockImplementation(() => {
             onBundleProgress?.({
-                progress: 2,
-                total: 2,
-                response: {
-                    index: 0,
-                    symbol: 'btc',
-                    type: 'normal',
-                    path: "m/84'/0'/0'",
-                    failed: true,
-                    error: 'All backends are down',
-                    code: 'blockchain_link/connect',
-                },
+                progress: 1,
+                total: 1,
+                response: { descriptor: 'xpub', history: {}, ...account },
             });
 
             return Promise.resolve({
                 success: true,
-                payload: { empty: 0, nonempty: 0, failed: 1 },
+                payload: { empty: 0, nonempty: 1, failed: 0 },
             });
         });
         const { actions, dispatch } = createMockDispatch({
@@ -365,17 +359,29 @@ describe('runAdditionalDiscoveryThunk failed accounts', () => {
             runAdditionalDiscoveryThunk({ staticSessionId: existingWalletState, trigger: 'retry' }),
         );
 
-        expect(actions).toContainEqual(
-            expect.objectContaining({
-                type: accountsActions.createAccount.type,
-                payload: expect.objectContaining({
-                    account: expect.objectContaining({
-                        failed: true,
-                        errorCode: 'blockchain_link/connect',
-                    }),
-                }),
-            }),
-        );
+        return actions.find(accountsActions.createAccount.match)?.payload.account;
+    };
+
+    it('gives a discovered account the type of the custom backend', async () => {
+        const state = createState({ status: 'progress', total: 1, progress: 0 }, existingWallet);
+        state.wallet.blockchain = {
+            ...blockchainInitialState,
+            eth: { ...blockchainInitialState.eth, backends: { selected: 'evm-rpc' } },
+        };
+
+        expect(await discoverAccount({ symbol: 'eth' }, state)).toMatchObject({
+            backendType: 'evm-rpc',
+        });
+    });
+
+    it("gives a discovered account the type of the network's default backend", async () => {
+        expect(await discoverAccount({ symbol: 'xrp' })).toMatchObject({ backendType: 'ripple' });
+    });
+
+    it('keeps the error code of an account that failed to load', async () => {
+        expect(
+            await discoverAccount({ symbol: 'btc', failed: true, code: 'blockchain_link/connect' }),
+        ).toMatchObject({ failed: true, errorCode: 'blockchain_link/connect' });
     });
 });
 
