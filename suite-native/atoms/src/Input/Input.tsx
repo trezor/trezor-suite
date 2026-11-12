@@ -90,7 +90,6 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             : utils.colors.elementBorderField,
         borderWidth: utils.borders.widths.small,
         borderRadius: utils.borders.radii.r12,
-        margin: utils.borders.widths.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         justifyContent: 'flex-end',
         extend: [
@@ -98,8 +97,6 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
                 condition: isFocused,
                 style: {
                     borderColor: utils.colors.elementBorderFieldFocused,
-                    borderWidth: utils.borders.widths.large,
-                    margin: 0,
                 },
             },
             {
