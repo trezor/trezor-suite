@@ -139,6 +139,14 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
             // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
             paddingTop,
             paddingBottom,
+            extend: {
+                // On iOS, when the default lineHeight is used, input value seems to be vertically misaligned.
+                // Line height of 21 is empirically the closest value to the default that makes it work correctly.
+                condition: Platform.OS === 'ios',
+                style: {
+                    lineHeight: 21,
+                },
+            },
         };
     },
 );
