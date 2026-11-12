@@ -223,6 +223,19 @@ export const inAppBrowserOpenPayload = z.discriminatedUnion('kind', [
 export type InAppBrowserOpenPayload = z.infer<typeof inAppBrowserOpenPayload>;
 
 /**
+ * WebAuthn rejects `file:` pages, so the renderer runs its requests in an iframe that the main
+ * process serves at this origin without opening a port.
+ */
+export const WEBAUTHN_FRAME_ORIGIN = 'http://localhost:21345';
+
+const hexBytes = z.string().regex(/^(?:[0-9a-fA-F]{2})+$/);
+
+export const webauthnEvaluatePrfParams = z.strictObject({
+    credentialIdHex: hexBytes.max(2048),
+    saltHex: hexBytes.length(64),
+});
+
+/**
  * Events forwarded from the main-process WebContentsView host
  */
 export type InAppBrowserHostEvent =

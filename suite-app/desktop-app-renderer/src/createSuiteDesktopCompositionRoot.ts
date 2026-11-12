@@ -1,7 +1,7 @@
 import { createMemoryHistory } from 'history';
 
 import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
-import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
+import { createElectronWebauthnAuthenticator } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import {
     createHydrateReduxStore,
@@ -21,10 +21,8 @@ type SuiteDesktopCompositionRoot = { app: DesktopApp };
 export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
     const desktopApi = createElectronDesktopApi();
     const history = createMemoryHistory();
-    const platformEncryption =
-        window.location.protocol === 'file:'
-            ? createElectronPlatformEncryption({ desktopApi })
-            : createWebauthnPlatformEncryption();
+    const webauthnAuthenticator = createElectronWebauthnAuthenticator({ desktopApi });
+    const platformEncryption = createWebauthnPlatformEncryption({ webauthnAuthenticator });
     const reloadApp = desktopApi.appRestart;
 
     // The desktop renderer can't construct node-only transports (`usb`/`dgram`), so each factory
@@ -63,7 +61,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         preloadStore,
         getStatePatch: async () => (await desktopApi.handshake()).statePatch,
     });
-    const services = { ...suiteServices, store, hydrateReduxStore };
+    const services = { ...suiteServices, store, hydrateReduxStore, webauthnAuthenticator };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);

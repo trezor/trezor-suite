@@ -1,1 +1,5 @@
-export { createWebauthnPlatformEncryption } from './webauthnPlatformEncryption';
+export {
+    createWebauthnPlatformEncryption,
+    type WebauthnPlatformEncryptionDeps,
+} from './webauthnPlatformEncryption';
+export { createBrowserWebauthnAuthenticator } from './browserWebauthnAuthenticator';

@@ -4,7 +4,6 @@ import { ipcMain as electronIpcMain } from 'electron';
 
 import { isSenderFrameDestroyed, validateIpcMessage } from '@trezor/ipc-proxy';
 
-import { rendererOrigin } from './config';
 import { ipcMain } from './ipcMain';
 
 jest.mock('electron', () => ({
@@ -63,7 +62,7 @@ describe('ipcMain validation wrapper', () => {
             wrappedListener(ipcEvent, 'dark');
 
             expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
-            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent, rendererOrigin });
+            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
             expect(originalListener).toHaveBeenCalledWith(ipcEvent, 'dark');
         },
     );
@@ -88,7 +87,7 @@ describe('ipcMain validation wrapper', () => {
 
             await expect(wrappedListener(ipcEvent)).resolves.toBe('result');
             expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
-            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent, rendererOrigin });
+            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
             expect(originalListener).toHaveBeenCalledWith(ipcEvent);
         },
     );

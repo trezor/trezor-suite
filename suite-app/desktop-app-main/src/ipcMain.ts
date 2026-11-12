@@ -5,8 +5,6 @@ import { ipcMain as baseIpcMain } from 'electron';
 import type * as desktopApi from '@suite/desktop-app-api';
 import { isSenderFrameDestroyed, validateIpcMessage } from '@trezor/ipc-proxy';
 
-import { rendererOrigin } from './config';
-
 export type StrictIpcMain = desktopApi.StrictIpcMain<
     Omit<Electron.IpcMain, 'handle' | 'handleOnce' | 'removeHandler'>,
     Electron.IpcMainInvokeEvent
@@ -18,7 +16,7 @@ const withValidation = <T extends (...args: any[]) => any>(fn: T): T =>
         // If sender frame was closed, it's harmless, so it'll just silently early-return.
         if (isSenderFrameDestroyed({ ipcEvent })) return;
         // Failed security validation throws and stops processing.
-        validateIpcMessage({ ipcEvent, rendererOrigin });
+        validateIpcMessage({ ipcEvent });
 
         return fn(...args);
     }) as T;

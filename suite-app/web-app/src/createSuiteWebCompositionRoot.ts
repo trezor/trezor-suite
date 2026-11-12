@@ -1,6 +1,9 @@
 import { createBrowserHistory } from 'history';
 
-import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
+import {
+    createBrowserWebauthnAuthenticator,
+    createWebauthnPlatformEncryption,
+} from '@suite/platform-encryption-webauthn';
 import {
     createConnectLoggerFactory,
     createHydrateReduxStore,
@@ -25,7 +28,8 @@ type SuiteWebCompositionRoot = { app: WebApp };
 
 export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const history = createBrowserHistory();
-    const platformEncryption = createWebauthnPlatformEncryption();
+    const webauthnAuthenticator = createBrowserWebauthnAuthenticator();
+    const platformEncryption = createWebauthnPlatformEncryption({ webauthnAuthenticator });
     const reloadApp = () => window.location.reload();
 
     const getTransportsFactories = () => {
@@ -74,7 +78,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         preloadStore,
         getStatePatch: () => Promise.resolve(undefined),
     });
-    const services = { ...suiteServices, store, hydrateReduxStore };
+    const services = { ...suiteServices, store, hydrateReduxStore, webauthnAuthenticator };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);

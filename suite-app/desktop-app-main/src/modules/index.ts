@@ -43,6 +43,7 @@ import * as theme from './theme';
 import * as tray from './tray';
 import * as trezorConnect from './trezor-connect';
 import * as userData from './user-data';
+import * as webauthn from './webauthn';
 import * as windowControls from './window-controls';
 
 // General modules (both dev & prod)
@@ -77,6 +78,7 @@ const MODULES: Module[] = [
     bridge,
     systemSettings,
     safeStorage,
+    webauthn,
     bluetooth,
     firmware,
     powerMonitor,

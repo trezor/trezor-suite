@@ -1,13 +1,10 @@
 import { session } from 'electron';
 
+import { WEBAUTHN_FRAME_ORIGIN } from '@suite/desktop-app-api';
 import { isWhitelistedHost } from '@trezor/utils';
 
-import { electronOrigin, localhostDomains, rendererOrigin } from '../config';
+import { electronOrigin, localhostDomains } from '../config';
 import { hasSwitch } from './process-switches';
-
-const isRendererFrameUrl = (frameUrl: string | undefined): boolean =>
-    frameUrl !== undefined &&
-    (frameUrl.startsWith('file:') || frameUrl.startsWith(`${rendererOrigin}/`));
 
 /**
  * Create an electron Renderer interceptor with API to add/remove custom handlers. In the Renderer process,
@@ -24,7 +21,7 @@ export const createElectronSessionInterceptor = (): RequestInterceptor => {
     // URLs that should work even in offline mode (e.g., localhost, test servers)
     const offlineModeAllowedUrls = [
         'http://localhost:8000', // Development server (app itself)
-        `${rendererOrigin}/`, // Renderer server (app itself)
+        `${WEBAUTHN_FRAME_ORIGIN}/`, // WebAuthn frame, answered by the app itself
         'file://', // App's own local resources
         'devtools://', // Chrome DevTools
         'chrome-extension://', // Browser extensions
@@ -64,10 +61,9 @@ export const createElectronSessionInterceptor = (): RequestInterceptor => {
         details: Electron.OnBeforeSendHeadersListenerDetails,
         callback: (response: Electron.BeforeSendResponse) => void,
     ) => {
-        // HTTP requests of the packaged `file:` renderer carry no `origin`, and the localhost renderer
-        // sends its own. Local services expect the Electron origin from both.
+        // HTTP requests of the packaged `file:` renderer carry no `origin`. Add it for localhost requests.
         if (
-            isRendererFrameUrl(details.frame?.url) &&
+            details.frame?.url.startsWith('file:') &&
             isWhitelistedHost(new URL(details.url).hostname, localhostDomains)
         ) {
             callback({ requestHeaders: { ...details.requestHeaders, Origin: electronOrigin } });

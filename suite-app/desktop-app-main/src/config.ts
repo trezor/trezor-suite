@@ -23,9 +23,6 @@ export const electronOrigin = 'https://electron.trezor.io';
 
 export const webauthnKeychainAccessGroup = 'C3P22XVH2C.io.trezor.TrezorSuite.webauthn';
 
-export const rendererServerPort = 21345;
-export const rendererOrigin = `http://localhost:${rendererServerPort}`;
-
 export const allowedDomains = [
     ...localhostDomains,
     'trezor.io',

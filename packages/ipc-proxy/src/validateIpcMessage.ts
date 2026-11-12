@@ -6,7 +6,6 @@ const defaultDirnameProvider = () => __dirname;
 
 type ValidateIpcMessageParams = {
     ipcEvent: ElectronIpcMainInvokeEvent;
-    rendererOrigin?: string;
     dirnameProvider?: () => string;
     platformProvider?: () => string;
     pathProvider?: typeof path;
@@ -14,7 +13,6 @@ type ValidateIpcMessageParams = {
 
 export const validateIpcMessage = ({
     ipcEvent,
-    rendererOrigin,
     dirnameProvider = defaultDirnameProvider,
     platformProvider = () => process.platform,
     pathProvider = path,
@@ -28,14 +26,6 @@ export const validateIpcMessage = ({
 
         if (isDev && parsedUrl.host === 'localhost:8000') {
             return; // We are ok on develop, only allowed is `localhost:8000`
-        }
-
-        if (
-            rendererOrigin !== undefined &&
-            parsedUrl.origin === rendererOrigin &&
-            parsedUrl.pathname === '/'
-        ) {
-            return;
         }
 
         if (parsedUrl.hostname !== '') {

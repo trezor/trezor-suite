@@ -1,4 +1,10 @@
-import { type DecryptionError, type EncryptionError } from '@suite-common/platform-encryption';
+import {
+    type DecryptionError,
+    type EncryptionError,
+    type EncryptionUnavailable,
+    type EvaluateWebauthnPrfParams,
+    type WebauthnCredential,
+} from '@suite-common/platform-encryption';
 import { type Result } from '@trezor/type-utils';
 
 import {
@@ -168,6 +174,10 @@ export interface InvokeChannels {
     'bio-auth/get-validation-status': () => boolean;
     'safe-storage/decrypt': (params: { value: string }) => Result<string, DecryptionError>;
     'safe-storage/encrypt': (params: { value: string }) => Result<string, EncryptionError>;
+    'webauthn/create-credential': () => Result<WebauthnCredential, EncryptionUnavailable>;
+    'webauthn/evaluate-prf': (
+        params: EvaluateWebauthnPrfParams,
+    ) => Result<string, EncryptionUnavailable>;
 
     // MCP server
     'mcp/get-settings': () => {
@@ -277,6 +287,9 @@ export type DesktopApi = {
     // safeStorage
     safeStoreEncrypt: DesktopApiInvoke<'safe-storage/encrypt'>;
     safeStoreDecrypt: DesktopApiInvoke<'safe-storage/decrypt'>;
+    // WebAuthn
+    webauthnCreateCredential: DesktopApiInvoke<'webauthn/create-credential'>;
+    webauthnEvaluatePrf: DesktopApiInvoke<'webauthn/evaluate-prf'>;
 
     // MCP server
     mcpGetSettings: DesktopApiInvoke<'mcp/get-settings'>;

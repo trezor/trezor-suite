@@ -217,6 +217,11 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
     safeStoreEncrypt: ({ value }) => ipcRenderer.invoke('safe-storage/encrypt', { value }),
     safeStoreDecrypt: ({ value }) => ipcRenderer.invoke('safe-storage/decrypt', { value }),
 
+    // WebAuthn
+    webauthnCreateCredential: () => ipcRenderer.invoke('webauthn/create-credential'),
+    webauthnEvaluatePrf: ({ credentialIdHex, saltHex }) =>
+        ipcRenderer.invoke('webauthn/evaluate-prf', { credentialIdHex, saltHex }),
+
     // MCP server
     mcpGetSettings: () => ipcRenderer.invoke('mcp/get-settings'),
     mcpSetEnabled: (enabled: boolean) => {

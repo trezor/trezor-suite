@@ -7,6 +7,7 @@
 
 import { session } from 'electron';
 
+import { WEBAUTHN_FRAME_ORIGIN } from '@suite/desktop-app-api';
 import { isDevEnv } from '@suite-common/suite-utils';
 
 import type { ModuleInit } from './module';
@@ -28,6 +29,7 @@ const createCspRules = ({ nonce }: CreateCspRulesParams) => [
     'connect-src data: *',
     // Allow images from trezor.io
     "img-src 'self' blob: data: https://*.trezor.io",
+    `frame-src ${WEBAUTHN_FRAME_ORIGIN}`,
 ];
 
 export const init: ModuleInit = ({ cspNonce, logger }) => {
