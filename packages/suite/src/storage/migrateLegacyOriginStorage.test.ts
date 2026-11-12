@@ -1,4 +1,4 @@
-import { type LegacyOriginStorage } from '@suite/desktop-app-api';
+import { type DesktopApi, type LegacyOriginStorage } from '@suite/desktop-app-api';
 import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { createMockDeps } from '@trezor/dependency-injection';
 
@@ -7,10 +7,12 @@ import {
     createMigrateLegacyOriginStorage,
 } from './migrateLegacyOriginStorage';
 
-const createDeps = (storage: LegacyOriginStorage | undefined) =>
+type PulledLegacyOriginStorage = Awaited<ReturnType<DesktopApi['pullLegacyOriginStorage']>>;
+
+const createDeps = (pulled: PulledLegacyOriginStorage) =>
     createMockDeps<MigrateLegacyOriginStorageDeps>({
         desktopApi: {
-            pullLegacyOriginStorage: () => Promise.resolve(storage),
+            pullLegacyOriginStorage: () => Promise.resolve(pulled),
             reportLegacyOriginStorageImport: () => Promise.resolve(),
         },
     });
@@ -43,7 +45,7 @@ describe(createMigrateLegacyOriginStorage.name, () => {
     });
 
     it('does nothing when the main process has nothing to move', async () => {
-        const deps = createDeps(undefined);
+        const deps = createDeps({ success: true });
 
         const result = await createMigrateLegacyOriginStorage(deps)();
 
@@ -52,8 +54,21 @@ describe(createMigrateLegacyOriginStorage.name, () => {
         expect(await indexedDB.databases()).toEqual([]);
     });
 
+    it('fails without touching this origin when the main process could not export the storage', async () => {
+        const deps = createDeps({ success: false, error: 'timed out after 120000 ms' });
+
+        const result = await createMigrateLegacyOriginStorage(deps)();
+
+        expect(result).toEqual({ success: false, error: 'timed out after 120000 ms' });
+        expect(deps.desktopApi.reportLegacyOriginStorageImport).not.toHaveBeenCalled();
+        expect(await indexedDB.databases()).toEqual([]);
+    });
+
     it('imports the storage and reports the import', async () => {
-        const deps = createDeps(createStorage([{ key: 'suite', value: { settings: {} } }]));
+        const deps = createDeps({
+            success: true,
+            payload: createStorage([{ key: 'suite', value: { settings: {} } }]),
+        });
 
         const result = await createMigrateLegacyOriginStorage(deps)();
 
@@ -66,7 +81,10 @@ describe(createMigrateLegacyOriginStorage.name, () => {
     });
 
     it('reports a failed import and fails itself', async () => {
-        const deps = createDeps(createStorage([{ key: { not: 'a valid key' }, value: {} }]));
+        const deps = createDeps({
+            success: true,
+            payload: createStorage([{ key: { not: 'a valid key' }, value: {} }]),
+        });
 
         const result = await createMigrateLegacyOriginStorage(deps)();
 
