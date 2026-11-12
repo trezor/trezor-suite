@@ -1,5 +1,6 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -17,7 +18,6 @@ import { PROTO } from '@trezor/connect';
 import { ExchangeCard } from './ExchangeCard';
 import { useExchangeForm } from '../../hooks/exchange/useExchangeForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
-import { TradingMetadataProvider } from '../general/TradingMetadataProvider';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -62,9 +62,9 @@ describe('ExchangeCard', () => {
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },
             },
             wrapper: ({ children }) => (
-                <TradingMetadataProvider>
+                <TradingTokenMetadataProvider>
                     <Form form={form}>{children}</Form>
-                </TradingMetadataProvider>
+                </TradingTokenMetadataProvider>
             ),
         });
 
@@ -151,9 +151,9 @@ describe('ExchangeCard', () => {
                     networks: { networkIcon: mockNetworkIcon(), ...services.networks },
                 },
                 wrapper: ({ children }) => (
-                    <TradingMetadataProvider>
+                    <TradingTokenMetadataProvider>
                         <Form form={form}>{children}</Form>
-                    </TradingMetadataProvider>
+                    </TradingTokenMetadataProvider>
                 ),
             },
         );

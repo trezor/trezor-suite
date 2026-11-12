@@ -6,8 +6,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { useGlobalReceiveAssets } from '@suite-common/receive';
-import { TokenMetadataProvider } from '@suite-common/token';
+import { ReceiveTokenMetadataProvider, useGlobalReceiveAssets } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { selectAccounts, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -19,7 +18,6 @@ import { useModal } from '#src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from '#src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { useDiscovery } from '#src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from '#src/slices/wallet/globalSendReceiveFilters';
-import { getTradingAssetsTokenMetadataSources } from '#src/utils/wallet/trading/getTradingAssetsTokenMetadataSources';
 
 import { GlobalReceiveAccountStep } from './steps/GlobalReceiveAccountStep';
 import { GlobalReceiveNetworkSetupStep } from './steps/GlobalReceiveNetworkSetupStep';
@@ -282,14 +280,5 @@ export const GlobalReceiveModal = ({
         );
     }
 
-    // A catalog token the user does not hold has no metadata in the accounts.
-    const catalogTokenSources = getTradingAssetsTokenMetadataSources(
-        [...myAssets, ...otherAssets].map(item => item.asset),
-    );
-
-    return (
-        <TokenMetadataProvider sources={catalogTokenSources}>
-            {renderReceiveModal()}
-        </TokenMetadataProvider>
-    );
+    return <ReceiveTokenMetadataProvider>{renderReceiveModal()}</ReceiveTokenMetadataProvider>;
 };

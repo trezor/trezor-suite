@@ -5,7 +5,6 @@ import { useTranslate } from '@suite-native/intl';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import { type ListRenderItem } from '../components/AssetList';
-import { receiveAssetOptionsToTokenMetadataSources } from '../utils/receiveAssetOptionsToTokenMetadataSources';
 
 const OTHER_ASSETS_PAGE_SIZE = 100;
 
@@ -63,9 +62,5 @@ export const useReceiveAssetListItems = ({
         setOtherAssetsLimit(OTHER_ASSETS_PAGE_SIZE);
     }, []);
 
-    const metadataSources = receiveAssetOptionsToTokenMetadataSources(
-        [...myAssets, ...otherAssets].map(item => item.asset),
-    );
-
-    return { items, metadataSources, loadMoreOtherAssets, resetOtherAssetsLimit };
+    return { items, loadMoreOtherAssets, resetOtherAssetsLimit };
 };

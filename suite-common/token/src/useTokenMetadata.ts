@@ -9,8 +9,8 @@ import { type TokenMetadata, TokenMetadataContext } from './TokenMetadataContext
 import { selectTokenByNetworkAndContract } from './tokenMetadataSelectors';
 
 /**
- * Context metadata takes precedence as a whole; the account store is used only when
- * the contract is absent from context. Missing context fields do not inherit store values.
+ * The accounts store takes precedence; context metadata (the trading catalog, or data fetched
+ * outside the store) fills in tokens the accounts do not hold and fields their entries lack.
  * Native-coin inputs have no contract and therefore no token metadata.
  */
 export const useTokenMetadata = (
@@ -18,14 +18,25 @@ export const useTokenMetadata = (
     contractAddress: TokenAddress | undefined,
 ): TokenMetadata | null => {
     const { tokensByNetwork } = useContext(TokenMetadataContext);
-    const sourceMetadata = contractAddress
+    const accountToken = useSelector((state: AccountsRootState) =>
+        contractAddress
+            ? selectTokenByNetworkAndContract(state, networkSymbol, contractAddress)
+            : null,
+    );
+    const contextToken = contractAddress
         ? tokensByNetwork.get(networkSymbol)?.get(contractAddress)
         : undefined;
-    const accountToken = useSelector((state: AccountsRootState) =>
-        sourceMetadata || !contractAddress
-            ? null
-            : selectTokenByNetworkAndContract(state, networkSymbol, contractAddress),
-    );
 
-    return sourceMetadata ?? accountToken;
+    if (!accountToken || !contextToken) {
+        return accountToken ?? contextToken ?? null;
+    }
+
+    // An empty name or symbol counts as missing, as in the components that render them.
+    return {
+        contract: accountToken.contract,
+        name: accountToken.name || contextToken.name,
+        symbol: accountToken.symbol || contextToken.symbol,
+        decimals: accountToken.decimals ?? contextToken.decimals,
+        standard: accountToken.standard ?? contextToken.standard,
+    };
 };

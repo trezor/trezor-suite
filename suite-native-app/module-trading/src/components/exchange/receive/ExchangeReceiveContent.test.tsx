@@ -1,5 +1,6 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -18,7 +19,6 @@ import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
-import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -63,9 +63,9 @@ describe('ExchangeReceiveContent', () => {
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },
             },
             wrapper: ({ children }) => (
-                <TradingMetadataProvider>
+                <TradingTokenMetadataProvider>
                     <Form form={form}>{children}</Form>
-                </TradingMetadataProvider>
+                </TradingTokenMetadataProvider>
             ),
         });
 

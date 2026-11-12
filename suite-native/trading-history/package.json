@@ -22,7 +22,6 @@
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/mev": "workspace:*",
-        "@suite-common/token": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

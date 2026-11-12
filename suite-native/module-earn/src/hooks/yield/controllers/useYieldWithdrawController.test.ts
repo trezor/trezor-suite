@@ -99,6 +99,7 @@ const renderWithdrawController = () => {
                 isSystemLocaleUsed: true,
             }),
             wallet: combineReducers({
+                accounts: createStaticReducer([]),
                 settings: createStaticReducer({ localCurrency: 'usd', bitcoinAmountUnit: 0 }),
             }),
         },

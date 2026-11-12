@@ -51,7 +51,10 @@ describe('ExchangeUsdcPresetButton', () => {
     });
 
     it('without a matching account shows an error message', async () => {
-        const store = createTradingTestStore({ tradeType: 'exchange' });
+        const store = createTradingTestStore({
+            tradeType: 'exchange',
+            overrides: { wallet: { accounts: [] } },
+        });
         await renderWithTradingProvider(<ExchangeUsdcPresetButton />, { services: { store } });
 
         expect(screen.getByText('No account with USDC found.')).toBeOnTheScreen();

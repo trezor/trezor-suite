@@ -1,7 +1,6 @@
 import { memo, useCallback, useState } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { TokenMetadataProvider } from '@suite-common/token';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column } from '@trezor/components';
@@ -9,7 +8,6 @@ import { Column } from '@trezor/components';
 import { AssetRowAsset, AssetsModal } from '#src/components/suite/asset-picker/components';
 import { ASSET_ROW_HEIGHT } from '#src/components/suite/asset-picker/constants';
 import { useSearchFilter } from '#src/components/suite/asset-picker/hooks';
-import { getTradingAssetsTokenMetadataSources } from '#src/utils/wallet/trading/getTradingAssetsTokenMetadataSources';
 
 import {
     type TradingAssetListItem,
@@ -72,19 +70,12 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                     autoFocus
                 />
 
-                {/* A catalog token the user does not hold has no metadata in the accounts. */}
-                <TokenMetadataProvider
-                    sources={getTradingAssetsTokenMetadataSources(
-                        listItems.map(item => item.asset),
-                    )}
-                >
-                    <AssetListWrapper
-                        renderItem={renderItem}
-                        listItems={listItems}
-                        getItemHeight={getItemHeight}
-                        resetScrollTrigger={`${networkSymbol}${throttledSearch}${listItems.length}`}
-                    />
-                </TokenMetadataProvider>
+                <AssetListWrapper
+                    renderItem={renderItem}
+                    listItems={listItems}
+                    getItemHeight={getItemHeight}
+                    resetScrollTrigger={`${networkSymbol}${throttledSearch}${listItems.length}`}
+                />
             </Column>
         </AssetsModal>
     );

@@ -4,6 +4,7 @@ import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { mockAccountToken } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { eth1NormalAccount } from '@suite-native/trading-fixtures';
@@ -33,10 +34,18 @@ const nonTradeableAsset = createAsset(
     false,
 );
 
+// The list resolves token names from the accounts, which hold the assets it lists.
+const account = {
+    ...eth1NormalAccount,
+    tokens: [regularAsset, lowBalanceAsset, nonTradeableAsset].map(asset =>
+        mockAccountToken({ contract: asset.contract, name: asset.name }),
+    ),
+};
+
 const section: MyAssetsSection = {
-    key: eth1NormalAccount.key,
+    key: account.key,
     label: 'Ethereum #1',
-    sectionData: eth1NormalAccount,
+    sectionData: account,
     assets: [regularAsset],
     lowBalanceAssets: [lowBalanceAsset],
     nonTradeableAssets: [nonTradeableAsset],
@@ -56,7 +65,10 @@ describe('MyAssetList', () => {
                 selectedNetworkFilter={undefined}
                 testID={testID}
             />,
-            { services: { networks: mockNetworksServices() } },
+            {
+                overrides: { wallet: { accounts: [account] } },
+                services: { networks: mockNetworksServices() },
+            },
         );
 
     it('expands low-balance and non-tradeable groups independently', async () => {
