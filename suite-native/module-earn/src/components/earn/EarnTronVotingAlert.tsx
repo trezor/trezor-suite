@@ -1,3 +1,5 @@
+import { useFormatters } from '@suite-common/formatters';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { BannerInline, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -7,19 +9,31 @@ const alertStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp12,
 }));
 
-interface EarnTronVotingAlertProps {
+type EarnTronVotingAlertProps = {
+    apr: number | null;
     votesRemaining: string;
-}
+};
 
-export const EarnTronVotingAlert = ({ votesRemaining }: EarnTronVotingAlertProps) => {
+export const EarnTronVotingAlert = ({ apr, votesRemaining }: EarnTronVotingAlertProps) => {
+    const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
 
     return (
         <Box style={applyStyle(alertStyle)}>
             <BannerInline
-                intent="warning"
+                intent="info"
                 title={
-                    <Translation id="earn.tron.votesAlertText" values={{ count: votesRemaining }} />
+                    apr !== null && isApyAvailable(apr) ? (
+                        <Translation
+                            id="earn.tron.unassignedVotesApr"
+                            values={{ count: votesRemaining, apr: PercentageFormatter.format(apr) }}
+                        />
+                    ) : (
+                        <Translation
+                            id="earn.tron.unassignedVotes"
+                            values={{ count: votesRemaining }}
+                        />
+                    )
                 }
             />
         </Box>

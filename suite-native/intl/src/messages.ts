@@ -267,6 +267,7 @@ export const messages = {
         staking: 'Staking',
         stakingDisabled: 'Staking is currently unavailable.',
         rewardsReduced: 'No rewards',
+        externalPool: 'External pool',
     },
     assets: {
         priceChangePeriod: '7d',
@@ -3915,14 +3916,15 @@ export const messages = {
         tron: {
             votes: 'Votes',
             allVotesAssigned: '{count, plural, one {# vote assigned} other {All # votes assigned}}',
-            votesRemaining:
-                '{count, plural, one {1 unassigned vote} other {{count} unassigned votes}}',
+            votesLeftBadge: '{count, plural, one {# vote left} other {# votes left}}',
             votesBottomSheet: {
                 title: 'Assign all votes to earn more rewards.',
                 description: 'Staking can currently be managed only in Trezor Suite for desktop.',
             },
-            votesAlertText:
-                '{count, plural, one {You have 1 unassigned vote. Assign it to earn more rewards.} other {You have {count} unassigned votes. Assign them to earn more rewards.}}',
+            unassignedVotesApr:
+                '{count, plural, one {# unassigned vote} other {# unassigned votes}}. Vote to earn ~{apr}% APR.',
+            unassignedVotes:
+                '{count, plural, one {# unassigned vote} other {# unassigned votes}}. Vote to earn rewards.',
             readyToWithdrawAlert: '{amount} {displaySymbol} unstaked and ready to withdraw.',
             resources: {
                 title: 'Resources',

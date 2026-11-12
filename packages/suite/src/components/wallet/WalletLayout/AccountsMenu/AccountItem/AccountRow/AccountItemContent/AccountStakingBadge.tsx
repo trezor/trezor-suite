@@ -1,16 +1,17 @@
+import { shallowEqual, useSelector } from 'react-redux';
+
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import {
-    getTronAvailableVotingPower,
-    isCardanoStakedOutsideEverstake,
-    isCardanoStakedWithFiveBinaries,
-    selectCardanoPoolsInfo,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    formatStakingAmount,
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountDelegatedOutside,
+    selectStakingAccountPositionDetails,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
-import { TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
-import { PiggyBankIcon, WarningIcon } from '@trezor/icons';
-import { BigNumber } from '@trezor/utils';
-
-import { useSelector } from '#src/hooks/suite/useSelector';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { type IconComponent, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
+import { InfoIcon, PiggyBankIcon, WarningIcon } from '@trezor/icons';
 
 import { AccountItemBadge } from './AccountItemBadge';
 
@@ -19,43 +20,86 @@ type AccountStakingBadgeProps = {
     isFocused: boolean;
 };
 
-const getStakingWarningLabel = (
-    account: Account,
-    cardanoStakingPools: ReturnType<typeof selectCardanoPoolsInfo>,
-): TranslationKey | undefined => {
-    if (isCardanoStakedWithFiveBinaries(account)) return 'TR_STAKING_REWARDS_REDUCED';
-    if (isCardanoStakedOutsideEverstake(account, cardanoStakingPools)) {
-        return 'TR_STAKING_DIFFERENT_PROVIDER';
+type StakingBadgeContent = {
+    tooltipId: TranslationKey;
+    labelId?: TranslationKey;
+    additionalIcon?: IconComponent;
+    intent: 'neutral' | 'info' | 'warning';
+    voteCount?: string;
+};
+
+const selectStakingBadgeContent = (
+    state: StakingRootState,
+    { key, networkType, symbol }: Account,
+): StakingBadgeContent => {
+    if (selectHasStakingAccountWarning(state, key, 'outdated-provider')) {
+        return {
+            tooltipId: 'TR_STAKING_REWARDS_REDUCED',
+            labelId: 'TR_STAKING_REWARDS_REDUCED',
+            additionalIcon: WarningIcon,
+            intent: 'warning',
+        };
     }
-    if (account.symbol === 'trx' && new BigNumber(getTronAvailableVotingPower(account)).gt(0)) {
-        return 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR';
+
+    if (selectIsStakingAccountDelegatedOutside(state, key)) {
+        if (networkType === 'cardano') {
+            return {
+                tooltipId: 'TR_STAKING_EXTERNAL_POOL',
+                labelId: 'TR_STAKING_EXTERNAL_POOL',
+                intent: 'info',
+            };
+        }
+
+        return {
+            tooltipId: 'TR_STAKING_DIFFERENT_PROVIDER',
+            additionalIcon: InfoIcon,
+            intent: 'info',
+        };
     }
+
+    const votes = selectStakingAccountPositionDetails(
+        state,
+        key,
+        'tron-staking',
+    )?.unallocatedVotingPower;
+    if (votes !== undefined && isPositiveBalance(votes)) {
+        return {
+            tooltipId: 'TR_EARN_TRON_VOTES_TO_ALLOCATE',
+            labelId: 'TR_EARN_TRON_VOTES_LEFT_BADGE',
+            intent: 'info',
+            voteCount: formatStakingAmount({ amount: votes, networkSymbol: symbol }),
+        };
+    }
+
+    return { tooltipId: 'TR_EARN_STAKING', intent: 'neutral' };
 };
 
 export const AccountStakingBadge = ({ account, isFocused }: AccountStakingBadgeProps) => {
     const { translationString } = useTranslation();
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const warningLabel = getStakingWarningLabel(account, cardanoStakingPools);
-    const label = warningLabel ?? 'TR_EARN_STAKING';
-    const translatedLabel = translationString(label);
+    const { tooltipId, labelId, additionalIcon, intent, voteCount } = useSelector(
+        (state: StakingRootState) => selectStakingBadgeContent(state, account),
+        shallowEqual,
+    );
+    const values = voteCount === undefined ? undefined : { count: voteCount };
+    const tooltipLabel = translationString(tooltipId, values);
     const tooltipProps = isFocused
         ? { isOpen: true }
         : ({ delayShow: TOOLTIP_DELAY_NORMAL } as const);
 
     return (
-        <Tooltip content={translatedLabel} minWidth={0} maxWidth="100%" {...tooltipProps}>
+        <Tooltip content={tooltipLabel} minWidth={0} maxWidth="100%" {...tooltipProps}>
             <div
                 role="img"
-                aria-label={translatedLabel}
+                aria-label={tooltipLabel}
                 data-testid="@account-menu/staking/badge"
                 style={{ minWidth: 0, maxWidth: '100%' }}
             >
                 <AccountItemBadge
                     icon={PiggyBankIcon}
-                    additionalIcon={warningLabel ? WarningIcon : undefined}
-                    intent={warningLabel ? 'warning' : 'neutral'}
+                    additionalIcon={additionalIcon}
+                    intent={intent}
                 >
-                    {warningLabel === 'TR_STAKING_REWARDS_REDUCED' ? translatedLabel : undefined}
+                    {labelId && translationString(labelId, values)}
                 </AccountItemBadge>
             </div>
         </Tooltip>

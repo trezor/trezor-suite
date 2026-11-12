@@ -5,9 +5,15 @@ import { Box, Icon, type IconComponent, Row, Text } from '@trezor/components';
 type AccountItemBadgeProps = {
     icon?: IconComponent;
     additionalIcon?: IconComponent;
-    intent?: 'neutral' | 'warning';
+    intent?: 'neutral' | 'warning' | 'info';
     children?: ReactNode;
 };
+
+const backgroundColorByIntent = {
+    neutral: 'elementFillNeutralSoft',
+    warning: 'elementFillWarningSoft',
+    info: 'elementFillInfoSoft',
+} as const;
 
 export const AccountItemBadge = ({
     icon,
@@ -16,7 +22,7 @@ export const AccountItemBadge = ({
     children,
 }: AccountItemBadgeProps) => (
     <Box
-        backgroundColor={intent === 'warning' ? 'elementFillWarningSoft' : 'elementFillNeutralSoft'}
+        backgroundColor={backgroundColorByIntent[intent]}
         minWidth={0}
         maxWidth="100%"
         borderRadius={20}
@@ -28,7 +34,7 @@ export const AccountItemBadge = ({
                     as={icon}
                     size={16}
                     intent={intent}
-                    priority={intent === 'warning' ? 'primary' : 'secondary'}
+                    priority={intent === 'neutral' ? 'secondary' : 'primary'}
                 />
             )}
             {additionalIcon && (

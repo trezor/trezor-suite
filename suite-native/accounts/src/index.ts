@@ -8,6 +8,7 @@ export * from './components/AccountsList/AccountsListItemBase';
 export * from './components/AccountsList/AccountsListStakingItem';
 export * from './components/AccountsList/AccountsListTokenItem';
 export * from './components/AccountsList/StakingBadge';
+export * from './components/AccountsList/TronUnassignedVotesBadge';
 export * from './components/AccountsList/ZeroApyBadge';
 export * from './components/AccountsListFooter';
 export * from './components/SearchableAccountsListHeader';

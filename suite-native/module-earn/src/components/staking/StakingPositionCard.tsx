@@ -136,7 +136,12 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
                 ))
             }
             alerts={
-                votesRemaining !== null && <EarnTronVotingAlert votesRemaining={votesRemaining} />
+                votesRemaining !== null && (
+                    <EarnTronVotingAlert
+                        apr={rateKind === 'apr' ? rate : null}
+                        votesRemaining={votesRemaining}
+                    />
+                )
             }
             onPress={onPress}
         />
