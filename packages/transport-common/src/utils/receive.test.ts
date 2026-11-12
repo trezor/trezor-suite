@@ -1,7 +1,7 @@
 import { protobufManager } from '@trezor/protobuf';
-import commonProto from '@trezor/protobuf/src/definitions/messages-common_dict';
-import stellarProto from '@trezor/protobuf/src/definitions/messages-stellar_dict';
-import optionsProto from '@trezor/protobuf/src/definitions/options_dict';
+import commonProto from '@trezor/protobuf/definitions/messages-common_dict';
+import stellarProto from '@trezor/protobuf/definitions/messages-stellar_dict';
+import optionsProto from '@trezor/protobuf/definitions/options_dict';
 import { bridge as bridgeProtocol, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 
 import { receive, receiveAndParse } from './receive';

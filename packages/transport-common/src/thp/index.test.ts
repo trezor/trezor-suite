@@ -1,6 +1,6 @@
 import { protobufManager } from '@trezor/protobuf';
-import thpProto from '@trezor/protobuf/src/definitions/messages-thp_dict';
-import optionsProto from '@trezor/protobuf/src/definitions/options_dict';
+import thpProto from '@trezor/protobuf/definitions/messages-thp_dict';
+import optionsProto from '@trezor/protobuf/definitions/options_dict';
 import { thp as protocolThp, v2 } from '@trezor/protocol';
 
 import { ATTEMPTS_LIMIT, THP_ACK_DEADLINE, THP_ACK_TIMEOUT } from './receiveExpectedMessage';

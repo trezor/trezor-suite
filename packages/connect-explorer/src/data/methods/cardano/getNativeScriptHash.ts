@@ -1,4 +1,4 @@
-import { CardanoNativeScriptType } from '@trezor/protobuf/src/definitions';
+import { CardanoNativeScriptType } from '@trezor/protobuf/definitions';
 
 import { cardanoDerivationType, cardanoNativeScriptHashDisplayFormat } from './common';
 

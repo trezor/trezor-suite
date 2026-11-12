@@ -2,7 +2,7 @@ import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSet
 import { firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type { ConditionalRelease } from '@trezor/device-utils';
 import { FirmwareType } from '@trezor/device-utils';
-import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
+import { DeviceModelInternal } from '@trezor/protobuf/definitions';
 
 import {
     calculateShouldOfferRelease,

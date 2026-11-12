@@ -1,7 +1,7 @@
 import { protobufManager } from '@trezor/protobuf';
-import bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_dict';
-import commonProto from '@trezor/protobuf/src/definitions/messages-common_dict';
-import optionsProto from '@trezor/protobuf/src/definitions/options_dict';
+import bitcoinProto from '@trezor/protobuf/definitions/messages-bitcoin_dict';
+import commonProto from '@trezor/protobuf/definitions/messages-common_dict';
+import optionsProto from '@trezor/protobuf/definitions/options_dict';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import { UsbApi } from '../api/usb';

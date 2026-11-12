@@ -12,6 +12,11 @@
     },
     "sideEffects": false,
     "main": "src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./definitions": "./src/definitions/index.ts",
+        "./definitions/*": "./src/definitions/*.ts"
+    },
     "publishConfig": {
         "main": "./lib/index.js",
         "types": "./lib/index.d.ts",
@@ -21,11 +26,14 @@
                 "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*",
-            "./lib/definitions": {
+            "./definitions": {
                 "types": "./lib/definitions/index.d.ts",
                 "default": "./lib/definitions/index.js"
             },
-            "./lib/definitions/*": "./lib/definitions/*"
+            "./definitions/*": {
+                "types": "./lib/definitions/*.d.ts",
+                "default": "./lib/definitions/*.js"
+            }
         }
     },
     "files": [

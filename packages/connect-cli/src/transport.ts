@@ -1,6 +1,6 @@
 import { type ConnectSettingsTransport, type UiRequestThpPairing } from '@trezor/connect';
 import { protobufManager } from '@trezor/protobuf';
-import debugProto from '@trezor/protobuf/src/definitions/messages-debug_dict';
+import debugProto from '@trezor/protobuf/definitions/messages-debug_dict';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';
 import { BridgeTransport } from '@trezor/transport-common';
@@ -33,7 +33,7 @@ const debugTransport =
 export const initDebugLink = async () => {
     if (args['interactive']) return;
 
-    protobufManager.load(debugProto);
+    protobufManager.load([debugProto]);
 
     console.log('init', debugTransport.name, 'in DebugLink mode');
     await debugTransport.init();

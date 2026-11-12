@@ -1,5 +1,5 @@
 import { UI_EVENTS, UI_REQUESTS, UI_RESPONSE } from '@trezor/connect-common';
-import type { ApplySettings } from '@trezor/protobuf/src/definitions';
+import type { ApplySettings } from '@trezor/protobuf/definitions';
 import { BridgeTransport } from '@trezor/transport-common';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';

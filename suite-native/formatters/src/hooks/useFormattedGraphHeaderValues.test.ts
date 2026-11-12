@@ -12,7 +12,7 @@ import {
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { AmountUnit } from '@trezor/protobuf/src/definitions';
+import { AmountUnit } from '@trezor/protobuf/definitions';
 
 import { useFormattedGraphHeaderValues } from './useFormattedGraphHeaderValues';
 

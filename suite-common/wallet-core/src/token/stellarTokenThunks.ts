@@ -16,7 +16,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import stellar from '@trezor/network-stellar/runtime';
-import { StellarAssetType } from '@trezor/protobuf/src/definitions';
+import { StellarAssetType } from '@trezor/protobuf/definitions';
 import { createThunk } from '@trezor/redux-utils';
 
 import { stellarContractTokensActions } from './stellarContractTokensSlice';

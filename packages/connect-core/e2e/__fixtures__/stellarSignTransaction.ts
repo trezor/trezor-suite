@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import * as Messages from '@trezor/protobuf/src/definitions';
+import * as Messages from '@trezor/protobuf/definitions';
 
 import { loadCommonFixture } from './commonFixtures';
 

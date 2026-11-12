@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { escapeRegExp } from 'lodash';
 
-import type { ApplySettings } from '@trezor/protobuf/src/definitions';
+import type { ApplySettings } from '@trezor/protobuf/definitions';
 import {
     Model,
     ReadAndConfirmAtomicShamirMnemonicEmu,

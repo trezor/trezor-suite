@@ -4,10 +4,10 @@ import { usb } from 'usb-legacy';
 
 import { Log } from '@trezor/logger';
 import { protobufManager } from '@trezor/protobuf';
-import bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_dict';
-import commonProto from '@trezor/protobuf/src/definitions/messages-common_dict';
-import managementProto from '@trezor/protobuf/src/definitions/messages-management_dict';
-import optionsProto from '@trezor/protobuf/src/definitions/options_dict';
+import bitcoinProto from '@trezor/protobuf/definitions/messages-bitcoin_dict';
+import commonProto from '@trezor/protobuf/definitions/messages-common_dict';
+import managementProto from '@trezor/protobuf/definitions/messages-management_dict';
+import optionsProto from '@trezor/protobuf/definitions/options_dict';
 import { TrezordNode } from '@trezor/transport-bridge/src';
 import { BridgeTransport, TREZOR_USB_DESCRIPTORS } from '@trezor/transport-common';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
