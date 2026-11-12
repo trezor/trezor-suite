@@ -158,6 +158,7 @@ export {
     type StakingOptionField,
     type StakingProductDescriptor,
     type StakingProductLimits,
+    type StakingRateKind,
     type StakingRewardsKind,
 } from './stakingProductDescriptor';
 export {

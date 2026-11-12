@@ -50,6 +50,17 @@ export {
     type StakingEngineRejection,
 } from './engine/stakingEngineRejection';
 export { toPrecomposedLevels } from './fees/toPrecomposedLevels';
+export { useStakingPeriods, type StakingPeriods } from './hooks/useStakingPeriods';
+export {
+    useStakingProductInfo,
+    type StakingProductInfoResult,
+} from './hooks/useStakingProductInfo';
+export { useStakingProductTargets } from './hooks/useStakingProductTargets';
+export {
+    useStakingRate,
+    type StakingRateResult,
+    type UseStakingRateParams,
+} from './hooks/useStakingRate';
 export {
     createStakingProductRepository,
     injectStakingProductRepository,
