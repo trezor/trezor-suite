@@ -244,11 +244,10 @@ export { useTradingPageHeader } from './src/views/wallet/trading/common/TradingL
 export { TradingOfferBuy } from './src/views/wallet/trading/common/TradingSelectedOffer/TradingOfferBuy/TradingOfferBuy';
 export { TradingDetail } from './src/views/wallet/trading/common/TradingDetail/TradingDetail';
 export { TradingBuyDetailContent } from './src/views/wallet/trading/buy/TradingBuyDetail/TradingBuyDetailContent';
-export { useMessageSystemTrading } from './src/hooks/suite/useMessageSystemTrading';
 export { TradingBuyFormWrapper } from './src/views/wallet/trading/buy/TradingBuyFormWrapper';
 export { TradingContainer } from './src/views/wallet/trading/common/TradingContainer';
 export { TradingLayout } from './src/views/wallet/trading/common/TradingLayout/TradingLayout';
-export { TradingDisabled } from './src/views/wallet/trading/common/TradingDisabled';
+export { TradingAvailabilityGuard } from './src/views/wallet/trading/common/TradingAvailabilityGuard/TradingAvailabilityGuard';
 export { TradingConciergeForm } from './src/views/wallet/trading/concierge/TradingConciergeForm';
 export { ALLOWANCE_STEP_TEXT_ID } from './src/components/wallet/Allowance/AllowanceStepCard';
 export { ApprovalRequiredBadge } from './src/components/wallet/Allowance/ApprovalRequiredBadge';

@@ -1,4 +1,3 @@
-import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { Translation, type TranslationId } from '@suite/intl';
 import {
     Card,
@@ -11,12 +10,10 @@ import {
 } from '@trezor/components';
 import { ArrowFatLinesRightIcon, MoneyIcon, UserIcon } from '@trezor/icons';
 import {
+    TradingAvailabilityGuard,
     TradingConciergeForm,
-    TradingDisabled,
     TradingFooter,
     TradingLayout,
-    useMessageSystemTrading,
-    useSelector,
 } from '@trezor/suite';
 
 const LIST_ITEMS: { titleId: TranslationId; descriptionId: TranslationId; icon: IconComponent }[] =
@@ -38,57 +35,39 @@ const LIST_ITEMS: { titleId: TranslationId; descriptionId: TranslationId; icon: 
         },
     ];
 
-export const TradingConciergeDetailPage = () => {
-    const { isDisabled, content } = useMessageSystemTrading('concierge');
-    const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
+export const TradingConciergeDetailPage = () => (
+    <TradingLayout>
+        <TradingAvailabilityGuard type="concierge">
+            <Column width="100%" alignItems="center" gap={24} maxWidth="440px" alignSelf="center">
+                <Card width="100%" paddingType="large">
+                    <H3 typographyStyle="headline-sm">
+                        <Translation id="TR_TRADING_CONCIERGE_TITLE" />
+                    </H3>
 
-    return (
-        <TradingLayout>
-            {isDisabled || isDeviceCompromised ? (
-                <TradingDisabled type="concierge" content={content} />
-            ) : (
-                <>
-                    <Column
-                        width="100%"
-                        alignItems="center"
-                        gap={24}
-                        maxWidth="440px"
-                        alignSelf="center"
-                    >
-                        <Card width="100%" paddingType="large">
-                            <H3 typographyStyle="headline-sm">
-                                <Translation id="TR_TRADING_CONCIERGE_TITLE" />
-                            </H3>
+                    <Paragraph margin={{ bottom: 20 }} typographyStyle="body-sm">
+                        <Translation id="TR_TRADING_CONCIERGE_DESCRIPTION" />
+                    </Paragraph>
 
-                            <Paragraph margin={{ bottom: 20 }} typographyStyle="body-sm">
-                                <Translation id="TR_TRADING_CONCIERGE_DESCRIPTION" />
-                            </Paragraph>
+                    <List gap={20} bulletAlignment="start">
+                        {LIST_ITEMS.map(item => (
+                            <List.Item
+                                key={item.titleId}
+                                bulletComponent={<IconCircle icon={item.icon} size={24} />}
+                            >
+                                <Paragraph typographyStyle="body-md-strong">
+                                    <Translation id={item.titleId} />
+                                </Paragraph>
+                                <Paragraph typographyStyle="body-sm" color="contentSecondary">
+                                    <Translation id={item.descriptionId} />
+                                </Paragraph>
+                            </List.Item>
+                        ))}
+                    </List>
+                </Card>
 
-                            <List gap={20} bulletAlignment="start">
-                                {LIST_ITEMS.map(item => (
-                                    <List.Item
-                                        key={item.titleId}
-                                        bulletComponent={<IconCircle icon={item.icon} size={24} />}
-                                    >
-                                        <Paragraph typographyStyle="body-md-strong">
-                                            <Translation id={item.titleId} />
-                                        </Paragraph>
-                                        <Paragraph
-                                            typographyStyle="body-sm"
-                                            color="contentSecondary"
-                                        >
-                                            <Translation id={item.descriptionId} />
-                                        </Paragraph>
-                                    </List.Item>
-                                ))}
-                            </List>
-                        </Card>
-
-                        <TradingConciergeForm />
-                    </Column>
-                    <TradingFooter />
-                </>
-            )}
-        </TradingLayout>
-    );
-};
+                <TradingConciergeForm />
+            </Column>
+            <TradingFooter />
+        </TradingAvailabilityGuard>
+    </TradingLayout>
+);
