@@ -3,7 +3,16 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/networks';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    Button,
+    Card,
+    CardDivider,
+    HStack,
+    Text,
+    TitleHeader,
+    VStack,
+} from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
@@ -43,6 +52,8 @@ export const StakingPromoList = () => {
         onEnableNetworkPress,
         onEnableNetworkDismiss,
         infoSheetRef,
+        unsupportedNetworkSheetRef,
+        closeUnsupportedNetworkSheet,
         chosenAccounts,
         pendingEnableSymbol,
         onPromoItemPress,
@@ -104,6 +115,19 @@ export const StakingPromoList = () => {
             />
 
             <StakingDesktopOnlyBottomSheet ref={infoSheetRef} />
+
+            <BottomSheetModal ref={unsupportedNetworkSheetRef}>
+                <VStack spacing="sp24" paddingHorizontal="sp8">
+                    <TitleHeader
+                        title={<Translation id="moduleSettings.notSupported" />}
+                        titleVariant="headline-sm"
+                        textAlign="center"
+                    />
+                    <Button onPress={closeUnsupportedNetworkSheet}>
+                        <Translation id="generic.buttons.gotIt" />
+                    </Button>
+                </VStack>
+            </BottomSheetModal>
         </>
     );
 };

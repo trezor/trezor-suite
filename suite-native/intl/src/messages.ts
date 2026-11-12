@@ -1711,7 +1711,7 @@ export const messages = {
             exportButton: 'Export to file',
         },
         availableOn: 'Available on {supportedNetworks}.',
-        notSupported: 'Not supported on this Trezor device.',
+        notSupported: 'Not supported on this Trezor model.',
     },
     moduleOnboarding: {
         welcomeScreen: {
