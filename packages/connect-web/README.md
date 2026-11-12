@@ -51,6 +51,6 @@ With Connect 10, your page no longer talks to the Trezor device. Trezor Suite de
 | ---------------------------------------------- | :----: | :------: | :------: | :-------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Suite Desktop WebSocket                        |   ✓    | untested | untested |        –        | Needs Trezor Suite desktop running on the same computer. If your page sends a Content-Security-Policy, `connect-src` must allow `ws://127.0.0.1:21335`. |
 | Suite Web popup (`@trezor/connect-web`)        |  125+  |    ✗     |    ✗     |    untested     | Needs `document.requestStorageAccess` with `BroadcastChannel` (Chrome 125+, Opera 111+). Many WebViews and some Chromium forks lack it.                 |
-| Suite Web tab (`@trezor/connect-webextension`) |   ✓    | untested | untested |    untested     | Needs `externally_connectable` and `host_permissions` for `https://suite.trezor.io/*`, see the `@trezor/connect-webextension` README.                   |
+| Suite Web tab (`@trezor/connect-webextension`) |   ✓    |    ✗     | untested |    untested     | Needs `externally_connectable` and `host_permissions` for `https://suite.trezor.io/*`, see the `@trezor/connect-webextension` README.                   |
 
 ✓ supported, ✗ not supported, untested: not verified yet, –: not applicable.

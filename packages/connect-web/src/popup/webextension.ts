@@ -6,6 +6,11 @@ import { createDeferred } from '@trezor/utils';
 
 import { Popup } from './abstract';
 
+// Suite Web answers the extension through `externally_connectable`, which Firefox does not
+// implement for web pages (https://bugzil.la/1319168), so the handshake could never complete there.
+export const canSuiteWebReplyToExtension = () =>
+    !chrome.runtime.getURL('').startsWith('moz-extension://');
+
 export class WebExtensionPopup extends Popup {
     private popupWindow?: chrome.tabs.Tab;
     private popupWindowPromise = createDeferred<chrome.tabs.Tab>();
