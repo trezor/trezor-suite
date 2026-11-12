@@ -5,20 +5,14 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
-    getStakingPath,
-} from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO } from '@trezor/connect';
-import { asCoinSymbol, getSerializedPath } from '@trezor/connect-common';
 import { type ErrorCode, type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type WithServices } from '@trezor/redux-utils';
 
+import { signBitcoinMessage, verifyBitcoinMessage } from './bitcoin/bitcoinSignVerify';
+import { getHasSelectableSignatureFormat } from './bitcoin/getHasSelectableSignatureFormat';
+import { signCardanoMessage } from './cardano/cardanoSignVerify';
+import { signEthereumMessage, verifyEthereumMessage } from './ethereum/ethereumSignVerify';
 import * as SIGN_VERIFY from './signVerifyConstants';
-import { getHasSelectableSignatureFormat } from './signVerifyUtils';
 
 export type SignVerifyRootState = DeviceRootState;
 
@@ -77,55 +71,14 @@ const signByNetwork =
         isElectrum: boolean,
         isCose: boolean,
     ) =>
-    ({ account, device, coin }: StateParams) => {
-        const params = {
-            device,
-            path,
-            coin: asCoinSymbol(coin),
-            message,
-            hex,
-            no_script_type: isElectrum,
-        };
-
+    ({ account, device }: StateParams) => {
         switch (account.networkType) {
             case 'bitcoin':
-                return TrezorConnect.signMessage(params);
+                return signBitcoinMessage({ device, account, path, message, hex, isElectrum });
             case 'ethereum':
-                return TrezorConnect.ethereumSignMessage(params);
-            case 'cardano': {
-                const payload = hex ? message : Buffer.from(message, 'utf8').toString('hex');
-                const serializedPath = typeof path === 'string' ? path : getSerializedPath(path);
-                const stakingPath = getStakingPath(account);
-                const addressParameters =
-                    path === stakingPath
-                        ? {
-                              addressType: PROTO.CardanoAddressType.REWARD,
-                              stakingPath,
-                          }
-                        : getAddressParameters(account, serializedPath);
-
-                return TrezorConnect.cardanoSignMessage({
-                    ...params,
-                    payload,
-                    addressParameters,
-                    protocolMagic: getProtocolMagic(account.symbol),
-                    networkId: getNetworkId(),
-                    derivationType: getDerivationType(account.accountType),
-                }).then(response =>
-                    response.success
-                        ? {
-                              ...response,
-                              payload: {
-                                  signature: response.payload.coseSignature,
-                                  pubKey: isCose
-                                      ? response.payload.coseKey
-                                      : response.payload.pubKey,
-                                  address: response.payload.headers.protected.address,
-                              },
-                          }
-                        : response,
-                );
-            }
+                return signEthereumMessage({ device, path, message, hex });
+            case 'cardano':
+                return signCardanoMessage({ device, account, path, message, hex, isCose });
             default:
                 return Promise.reject(new Error('Signing not supported'));
         }
@@ -143,14 +96,14 @@ export const isVerifySupported = (account?: Account) => {
 
 const verifyByNetwork =
     (address: string, message: string, signature: string, hex: boolean) =>
-    ({ account, device, coin }: StateParams) => {
-        const params = { device, address, coin: asCoinSymbol(coin), message, signature, hex };
+    ({ account, device }: StateParams) => {
+        const params = { device, address, message, signature, hex };
 
         switch (account.networkType) {
             case 'bitcoin':
-                return TrezorConnect.verifyMessage(params);
+                return verifyBitcoinMessage({ ...params, account });
             case 'ethereum':
-                return TrezorConnect.ethereumVerifyMessage(params);
+                return verifyEthereumMessage(params);
             default:
                 return Promise.reject(new Error('Verifying not supported'));
         }
