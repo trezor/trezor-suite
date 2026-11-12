@@ -22,16 +22,26 @@ export type MigrateLegacyOriginStorageDep = {
 export const createMigrateLegacyOriginStorage =
     (deps: MigrateLegacyOriginStorageDeps): MigrateLegacyOriginStorage =>
     async () => {
-        const storageExport = await deps.desktopApi.pullLegacyOriginStorage();
+        // A call the main process rejects is a failed move too, the app must not wait for it forever.
+        const storageExport = await deps.desktopApi
+            .pullLegacyOriginStorage()
+            .catch((error: unknown) => err(error instanceof Error ? error.message : String(error)));
         if (!storageExport.success) return err(storageExport.error);
         if (!storageExport.payload) return ok();
 
         const result = await importLegacyOriginStorage(storageExport.payload);
-        await deps.desktopApi.reportLegacyOriginStorageImport(
-            result.success
-                ? { success: true, isImported: result.payload.isImported }
-                : { success: false, error: result.error },
-        );
+        /**
+         * A report the main process rejects changes nothing here, the outcome of the import stands.
+         * The legacy origin is kept then, and the next start settles it:
+         * the databases are found here already, so nothing is written twice.
+         */
+        await deps.desktopApi
+            .reportLegacyOriginStorageImport(
+                result.success
+                    ? { success: true, isImported: result.payload.isImported }
+                    : { success: false, error: result.error },
+            )
+            .catch(() => undefined);
 
         return result.success ? ok() : err(result.error);
     };

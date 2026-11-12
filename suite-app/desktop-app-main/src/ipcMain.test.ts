@@ -62,7 +62,10 @@ describe('ipcMain validation wrapper', () => {
             wrappedListener(ipcEvent, 'dark');
 
             expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
-            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
+            expect(validateIpcMessage).toHaveBeenCalledWith({
+                ipcEvent,
+                rendererUrl: 'suite://app/index.html',
+            });
             expect(originalListener).toHaveBeenCalledWith(ipcEvent, 'dark');
         },
     );
@@ -87,7 +90,10 @@ describe('ipcMain validation wrapper', () => {
 
             await expect(wrappedListener(ipcEvent)).resolves.toBe('result');
             expect(isSenderFrameDestroyed).toHaveBeenCalledWith({ ipcEvent });
-            expect(validateIpcMessage).toHaveBeenCalledWith({ ipcEvent });
+            expect(validateIpcMessage).toHaveBeenCalledWith({
+                ipcEvent,
+                rendererUrl: 'suite://app/index.html',
+            });
             expect(originalListener).toHaveBeenCalledWith(ipcEvent);
         },
     );

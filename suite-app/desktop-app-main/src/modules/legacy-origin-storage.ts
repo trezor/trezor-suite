@@ -52,6 +52,15 @@ const NOTHING_TO_MOVE = ok(undefined);
 
 type LegacyOriginStorageExport = Result<LegacyOriginStorage, string>;
 
+let isMovePending = false;
+
+/**
+ * Whether the move of the legacy storage is still to be finished.
+ * The renderer shakes hands only after the move, which takes long for a large storage,
+ * and it stays on its error screen when the move fails.
+ */
+export const isLegacyOriginStorageMovePending = () => isMovePending;
+
 type ExportLegacyOriginStorageParams = {
     logger: ILogger;
 };
@@ -190,7 +199,10 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     let pendingExport: Promise<Result<LegacyOriginStorage | undefined, string>> =
         Promise.resolve(NOTHING_TO_MOVE);
 
-    const markMigrated = () => store.setLegacyOriginStorageSettings({ isMigrated: true });
+    const markMigrated = () => {
+        isMovePending = false;
+        store.setLegacyOriginStorageSettings({ isMigrated: true });
+    };
 
     const hasLegacyStorage = fs.existsSync(
         path.join(app.getPath('userData'), LEGACY_INDEXED_DB_DIR),
@@ -199,6 +211,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     if (!isDevEnv && hasLegacyStorage && !store.getLegacyOriginStorageSettings().isMigrated) {
         const exportResult = createDeferred<LegacyOriginStorageExport>();
         pendingExport = exportResult.promise;
+        isMovePending = true;
         // Only once the main window exists: the hidden export window must never be the first
         // window of the app, which is the one tooling such as Playwright's `firstWindow()` attaches to.
         mainWindowProxy.once('init', () => {
