@@ -11384,6 +11384,7 @@ __metadata:
     rimraf: "npm:^6.1.2"
     webpack: "npm:5.111.1"
     ws: "npm:^8.20.0"
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 

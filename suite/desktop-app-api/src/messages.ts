@@ -4,6 +4,7 @@ import { type TorStatus } from '@suite/tor-types';
 import { appsEmbeddingEntryId } from '@suite-common/apps-embedding';
 import { httpsUrl } from '@suite-common/schemas/src/general/url';
 
+import { LEGACY_ORIGIN_RECORDS_PER_MESSAGE } from './legacyOriginExportLimits';
 import { type ExtractUndefined } from './methods';
 
 export type SuiteThemeVariant = 'light' | 'dark' | 'system';
@@ -251,35 +252,84 @@ export type InAppBrowserHostEvent =
  * renderer loads from now (see desktop-app-main's legacy-origin-storage module). The shapes mirror
  * the IndexedDB and File System APIs so the data can be recreated exactly: records and file
  * contents pass through IPC by structured clone, untouched.
+ * The schemas also refuse the key paths, keys and file names that IndexedDB or the file system would refuse,
+ * so a bad export fails in the main process instead of half-way through the import.
  */
-export const legacyOriginIndexDefinition = z.object({
-    name: z.string(),
-    keyPath: z.union([z.string(), z.array(z.string())]),
-    unique: z.boolean(),
-    multiEntry: z.boolean(),
-});
+
+/** An identifier as ECMAScript defines it, the unit of an IndexedDB key path. */
+const IDENTIFIER = '[\\p{ID_Start}$_][\\p{ID_Continue}$\\u200C\\u200D]*';
+const KEY_PATH_STRING = new RegExp(`^(?:${IDENTIFIER}(?:\\.${IDENTIFIER})*)?$`, 'u');
+
+/** A key path: identifiers joined by periods, the empty string, or a non-empty list of those. */
+const legacyOriginKeyPath = z.union([
+    z.string().regex(KEY_PATH_STRING),
+    z.array(z.string().regex(KEY_PATH_STRING)).min(1),
+]);
+
+const hasUniqueNames = (names: string[]) => new Set(names).size === names.length;
+
+export const legacyOriginIndexDefinition = z
+    .strictObject({
+        name: z.string(),
+        keyPath: legacyOriginKeyPath,
+        unique: z.boolean(),
+        multiEntry: z.boolean(),
+    })
+    .refine(index => !index.multiEntry || !Array.isArray(index.keyPath), {
+        message: 'A multi-entry index cannot have an array key path',
+    });
 
 export type LegacyOriginIndexDefinition = z.infer<typeof legacyOriginIndexDefinition>;
 
-export const legacyOriginObjectStoreDefinition = z.object({
-    name: z.string(),
-    // `null` for stores with out-of-line keys, which the records then carry explicitly.
-    keyPath: z.union([z.string(), z.array(z.string()), z.null()]),
-    autoIncrement: z.boolean(),
-    indexes: z.array(legacyOriginIndexDefinition),
-});
+export const legacyOriginObjectStoreDefinition = z
+    .strictObject({
+        name: z.string(),
+        // `null` for stores with out-of-line keys, which the records then carry explicitly.
+        keyPath: z.union([legacyOriginKeyPath, z.null()]),
+        autoIncrement: z.boolean(),
+        indexes: z.array(legacyOriginIndexDefinition),
+    })
+    .refine(
+        store =>
+            !store.autoIncrement ||
+            store.keyPath === null ||
+            (typeof store.keyPath === 'string' && store.keyPath !== ''),
+        {
+            message:
+                'An auto-increment store needs out-of-line keys or a single non-empty key path',
+        },
+    )
+    .refine(store => hasUniqueNames(store.indexes.map(index => index.name)), {
+        message: 'The indexes of a store must have unique names',
+    });
 
 export type LegacyOriginObjectStoreDefinition = z.infer<typeof legacyOriginObjectStoreDefinition>;
 
-export const legacyOriginDatabaseDefinition = z.object({
+export const legacyOriginDatabaseDefinition = z.strictObject({
     name: z.string().min(1),
-    version: z.number().int().positive(),
+    version: z.int().positive(),
 });
 
 export type LegacyOriginDatabaseDefinition = z.infer<typeof legacyOriginDatabaseDefinition>;
 
-export const legacyOriginRecord = z.object({
-    key: z.unknown(),
+/** A valid IndexedDB key, which every record of the legacy origin was stored under. */
+export type LegacyOriginKey =
+    number | string | Date | ArrayBuffer | ArrayBufferView | LegacyOriginKey[];
+
+export const legacyOriginKey: z.ZodType<LegacyOriginKey> = z.lazy(() =>
+    z.union([
+        // Unlike `z.number()`, it accepts the infinities: they are valid keys, only NaN is not.
+        z.custom<number>(value => typeof value === 'number' && !Number.isNaN(value)),
+        z.string(),
+        z.date(),
+        z.instanceof(ArrayBuffer),
+        z.custom<ArrayBufferView>(value => ArrayBuffer.isView(value)),
+        z.array(legacyOriginKey),
+    ]),
+);
+
+export const legacyOriginRecord = z.strictObject({
+    key: legacyOriginKey,
     value: z.unknown(),
 });
 
@@ -293,9 +343,17 @@ export type LegacyOriginDatabase = LegacyOriginDatabaseDefinition & {
     objectStores: LegacyOriginObjectStore[];
 };
 
+/** A name the origin private file system accepts for a file or a directory. */
+const legacyOriginFileName = z
+    .string()
+    .min(1)
+    .refine(name => name !== '.' && name !== '..' && !name.includes('/'), {
+        message: 'Not a valid file name',
+    });
+
 /** A file of the origin private file system, with its path from the root directory. */
-export const legacyOriginFile = z.object({
-    path: z.array(z.string().min(1)).min(1),
+export const legacyOriginFile = z.strictObject({
+    path: z.array(legacyOriginFileName).min(1),
     content: z.instanceof(ArrayBuffer),
 });
 
@@ -307,13 +365,16 @@ export type LegacyOriginStorage = {
     files: LegacyOriginFile[];
 };
 
-export type LegacyOriginStorageImportReport =
-    | {
-          success: true;
-          /** False when the renderer origin already had the database, so nothing was written. */
-          isImported: boolean;
-      }
-    | { success: false; error: string };
+export const legacyOriginStorageImportReport = z.discriminatedUnion('success', [
+    z.strictObject({
+        success: z.literal(true),
+        /** False when the renderer origin already had the database, so nothing was written. */
+        isImported: z.boolean(),
+    }),
+    z.strictObject({ success: z.literal(false), error: z.string() }),
+]);
+
+export type LegacyOriginStorageImportReport = z.infer<typeof legacyOriginStorageImportReport>;
 
 /**
  * Messages of the export page's preload to the main process, one object store (in slices of records) or file at a time,
@@ -322,26 +383,34 @@ export type LegacyOriginStorageImportReport =
  * the renderer writes each database inside the single versionchange transaction that creates it,
  * so it needs all of a database's records at once.
  */
-export const legacyOriginExportObjectStoreMessage = z.object({
+export const legacyOriginExportObjectStoreMessage = z.strictObject({
     database: legacyOriginDatabaseDefinition,
     objectStore: legacyOriginObjectStoreDefinition,
-    records: z.array(legacyOriginRecord),
+    records: z.array(legacyOriginRecord).max(LEGACY_ORIGIN_RECORDS_PER_MESSAGE),
 });
 
 export type LegacyOriginExportObjectStoreMessage = z.infer<
     typeof legacyOriginExportObjectStoreMessage
 >;
 
-export const legacyOriginExportFinishedMessage = z.object({
-    databases: z.array(
-        legacyOriginDatabaseDefinition.extend({ objectStoreNames: z.array(z.string()) }),
-    ),
+export const legacyOriginExportFinishedMessage = z.strictObject({
+    databases: z
+        .array(
+            legacyOriginDatabaseDefinition.safeExtend({
+                objectStoreNames: z.array(z.string()).refine(hasUniqueNames, {
+                    message: 'The object stores of a database must have unique names',
+                }),
+            }),
+        )
+        .refine(databases => hasUniqueNames(databases.map(database => database.name)), {
+            message: 'The databases must have unique names',
+        }),
     localStorage: z.record(z.string(), z.string()),
 });
 
 export type LegacyOriginExportFinishedMessage = z.infer<typeof legacyOriginExportFinishedMessage>;
 
-export const legacyOriginExportFailedMessage = z.object({
+export const legacyOriginExportFailedMessage = z.strictObject({
     error: z.string(),
 });
 

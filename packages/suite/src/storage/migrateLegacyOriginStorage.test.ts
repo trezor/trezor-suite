@@ -83,7 +83,7 @@ describe(createMigrateLegacyOriginStorage.name, () => {
     it('reports a failed import and fails itself', async () => {
         const deps = createDeps({
             success: true,
-            payload: createStorage([{ key: { not: 'a valid key' }, value: {} }]),
+            payload: createStorage([{ key: Number.NaN, value: {} }]),
         });
 
         const result = await createMigrateLegacyOriginStorage(deps)();
@@ -126,7 +126,7 @@ describe(createMigrateLegacyOriginStorage.name, () => {
     it('fails with the error of the import when the main process rejects its report', async () => {
         const deps = createDeps({
             success: true,
-            payload: createStorage([{ key: { not: 'a valid key' }, value: {} }]),
+            payload: createStorage([{ key: Number.NaN, value: {} }]),
         });
         deps.desktopApi.reportLegacyOriginStorageImport.mockRejectedValue(
             new Error('No handler registered'),

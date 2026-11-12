@@ -32,6 +32,7 @@ import {
     legacyOriginExportFinishedMessage,
     legacyOriginExportObjectStoreMessage,
     legacyOriginFile,
+    legacyOriginStorageImportReport,
 } from '@suite/desktop-app-api';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
@@ -298,7 +299,15 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
         return { success: true, payload: storage };
     });
 
-    ipcMain.handle('legacy-origin-storage/report-import', async (_, report) => {
+    ipcMain.handle('legacy-origin-storage/report-import', async (_, payload) => {
+        const parsedReport = legacyOriginStorageImportReport.safeParse(payload);
+        if (!parsedReport.success) {
+            logger.error(SERVICE_NAME, `Invalid import report: ${parsedReport.error.message}`);
+
+            return;
+        }
+
+        const report = parsedReport.data;
         if (!report.success) {
             // The export is kept, so a reload of the renderer can try the import again.
             logger.error(SERVICE_NAME, `Import failed in the renderer: ${report.error}`);

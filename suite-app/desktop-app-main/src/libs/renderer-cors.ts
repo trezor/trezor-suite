@@ -1,7 +1,9 @@
+import { safeParseUrl } from '@trezor/utils';
+
 import { RENDERER_ORIGIN, isRendererUrl } from './renderer-protocol';
 
 const ALLOW_ORIGIN_HEADER = 'access-control-allow-origin';
-const HTTP_URL = /^https?:\/\//;
+const HTTP_PROTOCOLS = ['http:', 'https:'];
 
 type ResponseHeaders = Record<string, string[]>;
 
@@ -25,7 +27,9 @@ export const allowRendererOrigin = ({
     requestUrl,
     responseHeaders = {},
 }: AllowRendererOriginParams): ResponseHeaders => {
-    if (!isRendererUrl(frameUrl) || !HTTP_URL.test(requestUrl)) return responseHeaders;
+    const requestProtocol = safeParseUrl(requestUrl)?.protocol;
+    const isHttpRequest = HTTP_PROTOCOLS.some(protocol => protocol === requestProtocol);
+    if (!isRendererUrl(frameUrl) || !isHttpRequest) return responseHeaders;
 
     const otherHeaders = Object.entries(responseHeaders).filter(
         ([name]) => name.toLowerCase() !== ALLOW_ORIGIN_HEADER,
