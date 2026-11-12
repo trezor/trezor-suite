@@ -85,6 +85,8 @@ export class WalletPage {
     readonly stakingCardano: Locator;
     readonly transactionSummaryTitle: Locator;
     readonly transactionItem: Locator;
+    readonly transactionItemHeading = (index: number): Locator =>
+        this.page.getByTestId(`@transaction-item/${index}/heading`);
     readonly transactionAddress: Locator;
     readonly fiatAmount: Locator;
     readonly walletFilter = (symbol: NetworkSymbol) =>

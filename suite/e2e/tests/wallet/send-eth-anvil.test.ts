@@ -167,6 +167,20 @@ test.describe(
             },
         );
 
+        // Some runs show Suite's default Blockbook connection as disconnected while the account's
+        // own connection keeps working. Recorded on every run until the cause is known.
+        test.afterEach(async ({ page, anvil, anvilBlockbook }, testInfo) => {
+            const backendState = {
+                suite: await page.getReduxObject('wallet.blockchain.eth'),
+                blockbook: await anvilBlockbook.getStatus().catch(error => `${error}`),
+                anvilBlockNumber: Number(await anvil.getBlockNumber()),
+            };
+            await testInfo.attach('backend-state.json', {
+                body: JSON.stringify(backendState, null, 2),
+                contentType: 'application/json',
+            });
+        });
+
         test(
             'User sees the sent transaction in history after coming back to the account',
             { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
@@ -221,12 +235,25 @@ test.describe(
                     }, 'Suite should show the transaction confirmed').toPass({ timeout: 60_000 });
                     const shownRecipient = await walletPage.transactionAddress.first().innerText();
                     expect(shownRecipient.replace(/\s/g, '')).toContain(recipientAddress.slice(-4));
+                    await walletPage.transactionItem.scrollIntoViewIfNeeded();
                     // History can come from before a dropped connection, so it alone does not prove
                     // Suite is still talking to Blockbook.
                     await expect(
                         walletPage.backendDisconnectedBanner,
                         'Suite should stay connected to Blockbook',
                     ).toBeHidden();
+                });
+
+                await test.step('Transaction detail shows what Blockbook indexed', async () => {
+                    await walletPage.transactionItemHeading(0).click();
+                    await expect(toastSection.txDetailsConfirmed).toHaveTranslation(
+                        'TR_CONFIRMED_TX',
+                    );
+                    await walletPage.transactionDetailFee.scrollIntoViewIfNeeded();
+                    await expect(walletPage.transactionDetailAmount).toHaveText(
+                        `–${localizeNumber(sendAmount)}`,
+                    );
+                    await expect(walletPage.transactionDetailFee).toBeVisible();
                 });
             },
         );
