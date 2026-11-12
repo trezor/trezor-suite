@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-11-12T15:41:13+00:00",
-    "sequence": 167,
+    "timestamp": "2026-11-12T15:41:24+00:00",
+    "sequence": 168,
     "actions": [
         {
             "conditions": [
@@ -2192,6 +2192,30 @@
             ],
             "experiment": {
                 "id": "da21537c-d393-4292-9908-cba1eabdb651",
+                "groups": [
+                    {
+                        "variant": "A",
+                        "percentage": 100
+                    },
+                    {
+                        "variant": "B",
+                        "percentage": 0
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": ">=26.11.1",
+                        "web": "!"
+                    }
+                }
+            ],
+            "experiment": {
+                "id": "d0dca9bc-578f-47c9-97a9-fc83d2b27713",
                 "groups": [
                     {
                         "variant": "A",
