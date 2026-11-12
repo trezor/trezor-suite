@@ -41,6 +41,7 @@ jobs:
       CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
       CURRENTS_MACHINE_ID: windows-${{ matrix.runner }}
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+      DOCKER_HOST: tcp://127.0.0.1:2375
       UBUNTU_WSL_IMAGE_URL: https://releases.ubuntu.com/noble/ubuntu-24.04.5-wsl-amd64.wsl
       UBUNTU_WSL_IMAGE_SHA256: bb415d824822c4b878125729af451a5d18fb13d1cf5cbed9a7393ad64ac6039e
     steps:
@@ -52,10 +53,23 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Start test environment in Docker inside WSL
+        id: start-test-env
+        env:
+          CONTAINERS: ${{ inputs.containers }}
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/ubuntu-wsl.wsl" "$UBUNTU_WSL_IMAGE_URL"
+          echo "$UBUNTU_WSL_IMAGE_SHA256  $RUNNER_TEMP/ubuntu-wsl.wsl" | sha256sum -c -
+          node suite/e2e/scripts/windows/start-test-env.ts "$(cygpath -w "$RUNNER_TEMP/ubuntu-wsl.wsl")" $CONTAINERS
+        background: true
+
       - name: Install e2e workspace
+        uses: ./.github/actions/minimal-yarn-install
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-        run: yarn workspaces focus @trezor/suite-e2e @suite-app/desktop-app
+        with:
+          focus: "@trezor/suite-e2e @suite-app/desktop-app"
+          safedep: "false"
 
       # Desktop fixtures still open a Chromium context, so the headless shell must be present.
       - name: Install Playwright Chromium
@@ -76,13 +90,8 @@ jobs:
       - name: Extract desktop build
         run: tar -xzf artifact-download/app-build.tar.gz -C suite-app/desktop-app
 
-      - name: Start test environment in Docker inside WSL
-        env:
-          CONTAINERS: ${{ inputs.containers }}
-        run: |
-          curl -fsSL -o "$RUNNER_TEMP/ubuntu-wsl.wsl" "$UBUNTU_WSL_IMAGE_URL"
-          echo "$UBUNTU_WSL_IMAGE_SHA256  $RUNNER_TEMP/ubuntu-wsl.wsl" | sha256sum -c -
-          yarn workspace @trezor/suite-e2e test-env:windows "$(cygpath -w "$RUNNER_TEMP/ubuntu-wsl.wsl")" $CONTAINERS
+      - name: Wait for test environment
+        wait: start-test-env
 
       - name: Run Playwright E2E Tests
         env:

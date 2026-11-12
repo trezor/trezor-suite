@@ -5,7 +5,7 @@ import * as path from 'node:path';
 
 type RunParams = { command: string; args: string[]; options?: SpawnOptions };
 
-const repoDir = path.resolve(__dirname, '..', '..', '..', '..');
+const repoDir = path.resolve(import.meta.dirname, '..', '..', '..', '..');
 const composeFile = 'docker/docker-compose.suite-ci-e2e.yml';
 const distro = 'trezor-user-env';
 // os.tmpdir() is on the small C: drive of the hosted runners, RUNNER_TEMP on D:.
@@ -144,9 +144,6 @@ const main = async () => {
     await waitForDocker();
     await composeUp(services);
 
-    if (process.env.GITHUB_ENV) {
-        fs.appendFileSync(process.env.GITHUB_ENV, `DOCKER_HOST=${dockerHost}\n`);
-    }
     console.log(`Test environment is up in WSL distro ${distro}, Docker at ${dockerHost}`);
 };
 
