@@ -4,12 +4,12 @@ import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
 import {
     useYieldDetailNavigation,
     useYieldEntryNavigationAnalytics,
     useYieldFlowData,
-} from '@suite-native/module-earn';
+} from '@suite-native/earn';
+import { Translation } from '@suite-native/intl';
 
 type YieldVaultBannerProps = {
     accountKey: AccountKey;

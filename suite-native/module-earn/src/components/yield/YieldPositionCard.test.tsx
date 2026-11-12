@@ -12,7 +12,8 @@ import { YieldPositionCard } from './YieldPositionCard';
 
 const mockNavigateToYieldDetail = jest.fn();
 
-jest.mock('../../hooks/yield/useYieldDetailNavigation', () => ({
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
     useYieldDetailNavigation: () => ({ navigateToYieldDetail: mockNavigateToYieldDetail }),
 }));
 

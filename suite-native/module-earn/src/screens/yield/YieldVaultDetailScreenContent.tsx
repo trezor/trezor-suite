@@ -24,6 +24,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { useStablecoinYieldFirmwareUpdateAlert, useYieldFlowData } from '@suite-native/earn';
 import {
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
@@ -43,8 +44,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { ApyDottedUnderline } from '../../components/earn/ApyDottedUnderline';
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
-import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { yieldVaultDetailToTokenMetadataSources } from '../../utils/yield/yieldVaultDetailToTokenMetadataSources';
 
 const stakedSectionStyle = prepareNativeStyle(utils => ({

@@ -5,7 +5,7 @@ import { type YieldPromoListItem } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
-import { type YieldAccountNavigationDestination } from '../../utils/yield/navigateByYieldAccountState';
+import { type YieldAccountNavigationDestination } from '../utils/navigateByYieldAccountState';
 
 export type YieldEntrySheet = 'choose-account-sheet' | 'enable-network-sheet';
 

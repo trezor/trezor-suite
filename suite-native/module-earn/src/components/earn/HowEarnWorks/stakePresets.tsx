@@ -1,11 +1,11 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type HowEarnWorksScreenPreset } from './types';
-import { useFormattedEarnRate } from '../../../hooks/earn/useFormattedEarnRate';
 
 interface UseHowStakeWorksPresetProps {
     symbol: NetworkSymbol;

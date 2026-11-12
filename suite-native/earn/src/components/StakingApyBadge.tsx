@@ -1,10 +1,12 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
-import { getStakingRateLabelType, useStakingRate } from '@suite-native/earn';
-import { type TokenYieldRateToken } from '@suite-native/earn';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+
+import { type TokenYieldRateToken } from '../hooks/useAssetYieldRate';
+import { useStakingRate } from '../hooks/useStakingRate';
+import { getStakingRateLabelType } from '../utils/getYieldRateLabelType';
 
 type StakingApyBadgeProps = {
     account: Account;

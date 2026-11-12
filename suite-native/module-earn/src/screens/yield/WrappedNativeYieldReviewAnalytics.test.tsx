@@ -35,7 +35,10 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectYieldSessionByFlowKey: () => mockSessions[mockStep],
 }));
-jest.mock('../../hooks/yield/useYieldFlowData', () => ({ useYieldFlowData: () => mockData }));
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useYieldFlowData: () => mockData,
+}));
 jest.mock('../../hooks/earn/useWrappedNativeReviewPreview', () => ({
     useWrappedNativeReviewPreview: () => ({ preview: {}, spentToken: mockData.token }),
 }));

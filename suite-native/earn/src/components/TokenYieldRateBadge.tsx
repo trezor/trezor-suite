@@ -1,16 +1,15 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
-import {
-    type TokenYieldRateToken,
-    type TokenYieldRateVariant,
-    type YieldRateLabelType,
-    upToYieldRateTranslationIds,
-} from '@suite-native/earn';
 import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
-import { useTokenYieldRate } from '../../hooks/yield/useTokenYieldRate';
+import { type TokenYieldRateToken, type TokenYieldRateVariant } from '../hooks/useAssetYieldRate';
+import { useTokenYieldRate } from '../hooks/useTokenYieldRate';
+import {
+    type YieldRateLabelType,
+    upToYieldRateTranslationIds,
+} from '../utils/getYieldRateLabelType';
 
 const translationIds: Record<TokenYieldRateVariant, Record<YieldRateLabelType, TxKeyPath>> = {
     inactive: upToYieldRateTranslationIds,

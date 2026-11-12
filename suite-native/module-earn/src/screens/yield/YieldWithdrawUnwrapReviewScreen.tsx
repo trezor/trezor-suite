@@ -9,6 +9,7 @@ import {
     selectYieldSessionByFlowKey,
     yieldActions,
 } from '@suite-common/wallet-core';
+import { useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -20,7 +21,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { WrappedNativeTokenReviewContent } from '../../components/earn/WrappedNativeTokenReviewContent';
 import { useWrappedNativeReviewPreview } from '../../hooks/earn/useWrappedNativeReviewPreview';
 import { useYieldFlowAnalytics } from '../../hooks/yield/useYieldFlowAnalytics';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { type YieldBroadcastTransaction } from '../../types';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawUnwrapReview>;

@@ -36,7 +36,8 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectVisibleDeviceAccounts: () => mockAccounts,
 }));
-jest.mock('./useStablecoinYieldFirmwareUpdateAlert', () => ({
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
     useStablecoinYieldFirmwareUpdateAlert: () => ({ isFirmwareSupported: () => true }),
 }));
 jest.mock('../../components/earn/EarnPortfolioTrackerGuard', () => ({

@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
-import { getStakingAnalyticsNavigateFrom } from '../../utils/staking/getStakingAnalyticsNavigateFrom';
+import { getStakingAnalyticsNavigateFrom } from '../utils/getStakingAnalyticsNavigateFrom';
 
 export const useStakingNavigateAnalytics = () => {
     const { analytics } = useServices(injectNativeAnalytics);

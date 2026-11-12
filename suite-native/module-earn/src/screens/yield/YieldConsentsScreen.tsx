@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
+import { useYieldFlowData } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -22,7 +23,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { YieldConsentsProviderCard } from '../../components/yield/YieldConsentsProviderCard';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useStartYieldDepositFlow } from '../../hooks/yield/useStartYieldDepositFlow';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 const titleStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp32,

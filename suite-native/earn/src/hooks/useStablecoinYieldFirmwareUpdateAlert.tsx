@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { useTranslate } from '@suite-native/intl';
 
-import { useFirmwareUpdateAlert } from '../earn/useFirmwareUpdateAlert';
+import { useFirmwareUpdateAlert } from './useFirmwareUpdateAlert';
 
 export const useStablecoinYieldFirmwareUpdateAlert = () => {
     const { translate } = useTranslate();

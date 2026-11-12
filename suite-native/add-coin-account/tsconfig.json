@@ -26,9 +26,9 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../discovery" },
+        { "path": "../earn" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-earn" },
         { "path": "../navigation" },
         {
             "path": "../../packages/dependency-injection"

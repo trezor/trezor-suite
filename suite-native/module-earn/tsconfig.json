@@ -35,9 +35,6 @@
             "path": "../../suite-common/test-utils"
         },
         { "path": "../../suite-common/token" },
-        {
-            "path": "../../suite-common/token-definitions"
-        },
         { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"
@@ -77,7 +74,6 @@
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../settings" },
-        { "path": "../storage" },
         { "path": "../test-utils" },
         { "path": "../tokens" },
         { "path": "../trading-state" },

@@ -33,12 +33,6 @@ export type YieldBroadcastTransaction = {
     fee?: string;
 };
 
-export type YieldNavigationItem = {
-    yieldId: string;
-    underlyingTokenContract: TokenAddress;
-    receiptTokenContract: TokenAddress | null;
-};
-
 export type ChooseAccountTokenBalance = {
     tokenContractAddress: TokenAddress;
     tokenDecimals?: number;
