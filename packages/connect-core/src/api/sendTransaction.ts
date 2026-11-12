@@ -8,7 +8,6 @@ import {
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { ComposeOutput } from '@trezor/utxo-lib';
 
-import { assertBackendSupported } from '../backend/BlockchainLink';
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
@@ -39,8 +38,6 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         ]);
 
         const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
         const outputs: ComposeOutput[] = [];
