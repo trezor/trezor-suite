@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 
-import { isVerifySupported } from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
 import { Badge, HStack, type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -9,6 +8,7 @@ import { SignMessageCard } from './SignMessageCard';
 import { VerifyMessageCard } from './VerifyMessageCard';
 import { useSignMessageForm } from '../hooks/useSignMessageForm';
 import { useVerifyMessageForm } from '../hooks/useVerifyMessageForm';
+import { isVerifySupported } from '../isVerifySupported';
 
 type Tab = 'sign' | 'verify';
 

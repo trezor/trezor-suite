@@ -1,6 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { signThunk } from '@suite-common/sign-verify';
+import {
+    type SignedMessage,
+    signBitcoinMessageThunk,
+    signCardanoMessageThunk,
+    signEthereumMessageThunk,
+} from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
 import { useDeviceReadyEvents } from '@suite-native/device-authorization';
 import {
@@ -28,6 +33,42 @@ export const useSignMessage = () => {
     const { waitForDevice } = useDeviceReadyEvents();
     const { dispatch } = useServices(injectDispatch);
 
+    // Mobile has no Suite Native network modules yet, so the network's signing is picked here.
+    const signMessageByNetwork = ({
+        account,
+        format,
+        path,
+        message,
+        hex,
+    }: SignMessageArgs): Promise<SignedMessage | false> => {
+        switch (account.networkType) {
+            case 'bitcoin':
+                return dispatch(
+                    signBitcoinMessageThunk({
+                        account,
+                        path,
+                        message,
+                        hex,
+                        isElectrum: format === 'electrum',
+                    }),
+                );
+            case 'ethereum':
+                return dispatch(signEthereumMessageThunk({ account, message, hex }));
+            case 'cardano':
+                return dispatch(
+                    signCardanoMessageThunk({
+                        account,
+                        path,
+                        message,
+                        hex,
+                        isCose: format === 'cose',
+                    }),
+                );
+            default:
+                return Promise.resolve<false>(false);
+        }
+    };
+
     return async ({ account, format, path, message, hex }: SignMessageArgs) => {
         navigation.navigate(RootStackRoutes.SignAndVerifyStack);
 
@@ -36,9 +77,7 @@ export const useSignMessage = () => {
             return false;
         }
 
-        const result = await dispatch(
-            signThunk(account, path, message, hex, format === 'electrum', format === 'cose'),
-        );
+        const result = await signMessageByNetwork({ account, format, path, message, hex });
 
         navigation.goBack();
 
