@@ -1,8 +1,9 @@
 import { app, net, protocol } from 'electron';
+import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
 
-import { type Result, err, ok } from '@trezor/type-utils';
+import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 import type { ILogger } from './logger';
 import { strictUrlSchema } from './strict-url';
@@ -94,6 +95,95 @@ export const resolveRendererFile = ({
     return ok(file);
 };
 
+const SINGLE_BYTE_RANGE = /^bytes=(\d*)-(\d*)$/;
+
+type ByteRange =
+    { type: 'whole' } | { type: 'partial'; start: number; end: number } | { type: 'unsatisfiable' };
+
+type ResolveByteRangeParams = {
+    range: string;
+    size: number;
+};
+
+/**
+ * Reads a `Range` header for a file of `size` bytes; `start` and `end` are inclusive.
+ * A header that is not one valid byte range, such as several ranges or another unit,
+ * asks for the whole file: RFC 9110 lets a server ignore it.
+ */
+export const resolveByteRange = ({ range, size }: ResolveByteRangeParams): ByteRange => {
+    const match = SINGLE_BYTE_RANGE.exec(range.trim());
+    const [, first = '', last = ''] = match ?? [];
+    if (!match || (first === '' && last === '')) {
+        return { type: 'whole' };
+    }
+
+    if (first === '') {
+        const suffixLength = Number(last);
+        if (suffixLength === 0 || size === 0) {
+            return { type: 'unsatisfiable' };
+        }
+
+        return { type: 'partial', start: Math.max(size - suffixLength, 0), end: size - 1 };
+    }
+
+    const start = Number(first);
+    const end = last === '' ? Infinity : Number(last);
+    if (end < start) {
+        return { type: 'whole' };
+    }
+    if (start >= size) {
+        return { type: 'unsatisfiable' };
+    }
+
+    return { type: 'partial', start, end: Math.min(end, size - 1) };
+};
+
+type FetchRendererFileParams = {
+    file: string;
+    request: Request;
+};
+
+/**
+ * Reads the file through the file loader, which also reads it inside `app.asar`.
+ * The loader slices the body by a `Range` header but answers 200 without `Content-Range`,
+ * so a media element seeking in it would read the slice as the start of the file.
+ * The partial response is therefore built here.
+ */
+const fetchRendererFile = async ({ file, request }: FetchRendererFileParams) => {
+    const fileUrl = pathToFileURL(file).toString();
+    const range = request.headers.get('range');
+    if (!range) {
+        return net.fetch(fileUrl, { method: request.method });
+    }
+
+    const { size } = await fs.promises.stat(file);
+    const byteRange = resolveByteRange({ range, size });
+    switch (byteRange.type) {
+        case 'whole':
+            return net.fetch(fileUrl, { method: request.method });
+        case 'unsatisfiable':
+            return new Response(null, {
+                status: 416,
+                headers: { 'Content-Range': `bytes */${size}` },
+            });
+        case 'partial': {
+            const { start, end } = byteRange;
+            const response = await net.fetch(fileUrl, {
+                method: request.method,
+                headers: { range: `bytes=${start}-${end}` },
+            });
+            const headers = new Headers(response.headers);
+            headers.set('Accept-Ranges', 'bytes');
+            headers.set('Content-Range', `bytes ${start}-${end}/${size}`);
+            headers.set('Content-Length', String(end - start + 1));
+
+            return new Response(response.body, { status: 206, headers });
+        }
+        default:
+            return exhaustive(byteRange);
+    }
+};
+
 type HandleRendererProtocolParams = {
     logger: ILogger;
 };
@@ -114,14 +204,8 @@ export const handleRendererProtocol = ({ logger }: HandleRendererProtocolParams)
             return new Response(null, { status: 404 });
         }
 
-        // Media elements request byte ranges; the file loader honours the header when it is passed on.
-        const range = request.headers.get('range');
-
         try {
-            return await net.fetch(pathToFileURL(file.payload).toString(), {
-                method: request.method,
-                headers: range ? { range } : {},
-            });
+            return await fetchRendererFile({ file: file.payload, request });
         } catch (error) {
             logger.warn(SERVICE_NAME, `Cannot serve ${request.url}: ${error.message}`);
 

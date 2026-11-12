@@ -1,6 +1,15 @@
+import { app, net, protocol } from 'electron';
+import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
-import { isRendererUrl, resolveRendererFile } from './renderer-protocol';
+import type { ILogger } from './logger';
+import {
+    handleRendererProtocol,
+    isRendererUrl,
+    resolveByteRange,
+    resolveRendererFile,
+} from './renderer-protocol';
 
 jest.mock('electron', () => ({
     app: { getAppPath: jest.fn() },
@@ -9,6 +18,27 @@ jest.mock('electron', () => ({
 }));
 
 const buildDir = path.join(path.sep, 'Applications', 'Trezor Suite.app', 'build');
+
+const createLogger = (): ILogger => ({
+    level: 'mute',
+    config: {
+        colors: false,
+        writeToConsole: false,
+        writeToDisk: false,
+        outputFile: '',
+        outputPath: '',
+        logFormat: '',
+        dedupeTimeout: 0,
+        memoryCap: 0,
+    },
+    exit: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    log: jest.fn(),
+    debug: jest.fn(),
+    getLog: jest.fn(() => []),
+});
 
 describe(resolveRendererFile.name, () => {
     it('maps the index page onto the build directory', () => {
@@ -101,5 +131,104 @@ describe(isRendererUrl.name, () => {
         ['no URL', undefined],
     ])('refuses %s', (_, url) => {
         expect(isRendererUrl(url)).toBe(false);
+    });
+});
+
+describe(resolveByteRange.name, () => {
+    it.each([
+        ['a closed range', 'bytes=2-5', { type: 'partial', start: 2, end: 5 }],
+        ['an open range', 'bytes=4-', { type: 'partial', start: 4, end: 9 }],
+        [
+            'a range past the end, cut to the file',
+            'bytes=8-100',
+            { type: 'partial', start: 8, end: 9 },
+        ],
+        ['a suffix range', 'bytes=-3', { type: 'partial', start: 7, end: 9 }],
+        ['a suffix longer than the file', 'bytes=-50', { type: 'partial', start: 0, end: 9 }],
+        ['a start past the end', 'bytes=10-', { type: 'unsatisfiable' }],
+        ['an empty suffix', 'bytes=-0', { type: 'unsatisfiable' }],
+        ['several ranges', 'bytes=0-1,4-5', { type: 'whole' }],
+        ['another unit', 'items=0-1', { type: 'whole' }],
+        ['a reversed range', 'bytes=5-2', { type: 'whole' }],
+        ['no bounds', 'bytes=-', { type: 'whole' }],
+    ])('reads %s', (_, range, byteRange) => {
+        expect(resolveByteRange({ range, size: 10 })).toEqual(byteRange);
+    });
+
+    it('cannot satisfy any range of an empty file', () => {
+        expect(resolveByteRange({ range: 'bytes=0-', size: 0 })).toEqual({ type: 'unsatisfiable' });
+        expect(resolveByteRange({ range: 'bytes=-1', size: 0 })).toEqual({ type: 'unsatisfiable' });
+    });
+});
+
+describe(handleRendererProtocol.name, () => {
+    const fileContent = '0123456789';
+    let appDir: string;
+
+    const serve = (headers: Record<string, string> = {}) => {
+        const handler = jest.mocked(protocol.handle).mock.calls[0]?.[1];
+        if (!handler) throw new Error('No protocol handler was registered');
+
+        return handler(new Request('suite://app/videos/clip.webm', { headers }));
+    };
+
+    beforeEach(() => {
+        appDir = fs.mkdtempSync(path.join(os.tmpdir(), 'renderer-protocol-'));
+        fs.mkdirSync(path.join(appDir, 'build', 'videos'), { recursive: true });
+        fs.writeFileSync(path.join(appDir, 'build', 'videos', 'clip.webm'), fileContent);
+        jest.mocked(app.getAppPath).mockReturnValue(appDir);
+        jest.mocked(net.fetch).mockImplementation(() =>
+            Promise.resolve(
+                new Response('sliced by the file loader', {
+                    headers: { 'Content-Type': 'video/webm' },
+                }),
+            ),
+        );
+        handleRendererProtocol({ logger: createLogger() });
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        fs.rmSync(appDir, { recursive: true, force: true });
+    });
+
+    it('serves the whole file without a range', async () => {
+        const response = await serve();
+
+        expect(net.fetch).toHaveBeenCalledWith(expect.stringMatching(/^file:.*clip\.webm$/), {
+            method: 'GET',
+        });
+        expect(response.status).toBe(200);
+    });
+
+    it('answers a byte range as partial content', async () => {
+        const response = await serve({ Range: 'bytes=2-' });
+
+        expect(net.fetch).toHaveBeenCalledWith(expect.stringMatching(/clip\.webm$/), {
+            method: 'GET',
+            headers: { range: 'bytes=2-9' },
+        });
+        expect(response.status).toBe(206);
+        expect(response.headers.get('Content-Range')).toBe('bytes 2-9/10');
+        expect(response.headers.get('Content-Length')).toBe('8');
+        expect(response.headers.get('Accept-Ranges')).toBe('bytes');
+        expect(response.headers.get('Content-Type')).toBe('video/webm');
+    });
+
+    it('refuses a range past the end of the file', async () => {
+        const response = await serve({ Range: 'bytes=10-' });
+
+        expect(net.fetch).not.toHaveBeenCalled();
+        expect(response.status).toBe(416);
+        expect(response.headers.get('Content-Range')).toBe('bytes */10');
+    });
+
+    it('serves the whole file for a range it does not read', async () => {
+        const response = await serve({ Range: 'bytes=0-1,4-5' });
+
+        expect(net.fetch).toHaveBeenCalledWith(expect.stringMatching(/clip\.webm$/), {
+            method: 'GET',
+        });
+        expect(response.status).toBe(200);
     });
 });
