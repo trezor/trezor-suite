@@ -248,6 +248,10 @@ export class AnvilFork {
         return this.rpc.getTransactionCount({ address });
     }
 
+    getTransactionReceipt(hash: Hash) {
+        return this.rpc.getTransactionReceipt({ hash });
+    }
+
     // Contracts and tokens
 
     readContract<
