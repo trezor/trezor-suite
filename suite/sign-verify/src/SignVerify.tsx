@@ -1,12 +1,12 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode } from 'react';
 
 import { useDevice } from '@suite/device';
 import { isVerifySupported } from '@suite-common/sign-verify';
-import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { SignVerifyForm } from './SignVerifyForm';
-import { type SignVerifyPage } from './types';
+import { BitcoinSignVerify } from './networks/BitcoinSignVerify';
+import { CardanoSignVerify } from './networks/CardanoSignVerify';
+import { EthereumSignVerify } from './networks/EthereumSignVerify';
 
 type SignVerifyShellProps = {
     title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
@@ -16,27 +16,25 @@ type SignVerifyShellProps = {
 
 type SignVerifyProps = {
     account: Account;
-    network?: Network;
     renderShell: (props: SignVerifyShellProps) => ReactNode;
 };
 
-export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
-    const [page, setPage] = useState<SignVerifyPage>('sign');
+/**
+ * Picks the network's form until the forms move to their network modules. Only the networks
+ * offering Sign & Verify reach this page.
+ */
+export const SignVerify = ({ account, renderShell }: SignVerifyProps) => {
     const { device } = useDevice();
 
     return renderShell({
         title: isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
         isDeviceConnected: device?.connected && device?.available,
         children: (
-            // Each tab of each account is a form of its own: keying it throws away everything the
-            // previous one was in the middle of, including the outcome it had reached.
-            <SignVerifyForm
-                key={`${page}-${account.key}`}
-                account={account}
-                network={network}
-                page={page}
-                onPageChange={setPage}
-            />
+            <>
+                {account.networkType === 'bitcoin' && <BitcoinSignVerify account={account} />}
+                {account.networkType === 'ethereum' && <EthereumSignVerify account={account} />}
+                {account.networkType === 'cardano' && <CardanoSignVerify account={account} />}
+            </>
         ),
     });
 };

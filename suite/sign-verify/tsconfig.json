@@ -16,9 +16,6 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../address" },
         { "path": "../device" },
         { "path": "../forms" },
