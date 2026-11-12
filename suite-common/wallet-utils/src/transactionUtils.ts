@@ -717,7 +717,12 @@ export const findChainedTransactions = (
 export const getConfirmations = (
     tx: WalletAccountTransaction | AccountTransaction,
     height: number,
-) => (tx.blockHeight && tx.blockHeight > 0 ? height - tx.blockHeight + 1 : 0);
+) =>
+    tx.blockHeight && tx.blockHeight > 0
+        ? // The stored blockchain tip can lag behind the transaction's block (or be unknown yet),
+          // but a mined transaction always has at least one confirmation.
+          Math.max(1, height - tx.blockHeight + 1)
+        : 0;
 
 // inner private type, it's pointless to move it outside of this file
 interface Analyze {
