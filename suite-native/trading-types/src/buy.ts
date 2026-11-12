@@ -18,4 +18,9 @@ export type BuyFormValues = BaseFormValues<
         receiveAccount: ReceiveAccount | undefined;
     };
 
-export type BuyFormType = UseFormReturn<BuyFormValues>;
+export type BuyFormValidatedValues = {
+    cryptoValue: number | undefined;
+    fiatValue: number | undefined;
+};
+
+export type BuyFormType = UseFormReturn<BuyFormValues, object, BuyFormValidatedValues>;

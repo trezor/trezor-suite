@@ -18,4 +18,12 @@ export type ExchangeFormValues = BaseFormValues<
         receiveAccount: ReceiveAccount | undefined;
     };
 
-export type ExchangeFormType = UseFormReturn<ExchangeFormValues>;
+export type ExchangeFormValidatedValues = {
+    sendCryptoAmount: number | undefined;
+};
+
+export type ExchangeFormType = UseFormReturn<
+    ExchangeFormValues,
+    object,
+    ExchangeFormValidatedValues
+>;

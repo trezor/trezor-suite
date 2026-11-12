@@ -15821,6 +15821,7 @@ __metadata:
     "@suite-native/clipboard": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.3.0"
     react-hook-form: "npm:^7.77.0"

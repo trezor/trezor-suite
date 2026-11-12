@@ -38,7 +38,7 @@ export const SuiteSyncQuotaManager = () => {
             suiteSyncQuotaManagerUrl: quotaManagerCustomUrl ?? '',
         },
         validation: yup.object({
-            suiteSyncQuotaManagerUrl: yup.string().url('Invalid URL format'),
+            suiteSyncQuotaManagerUrl: yup.string().defined().url('Invalid URL format'),
         }),
     });
 

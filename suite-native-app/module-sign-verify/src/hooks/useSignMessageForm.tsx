@@ -92,7 +92,7 @@ export const useSignMessageForm = (account: Account) => {
         );
     }, [translate, isAddressBased, isCardano, account, AddressFormatter]);
 
-    const form = useForm<FormValues>({
+    const form = useForm<FormValues, object, Omit<FormValues, 'signature'>>({
         validation: yup.object({
             format: yup.string<SignatureFormat>().required(),
             address: yup.string().required(),

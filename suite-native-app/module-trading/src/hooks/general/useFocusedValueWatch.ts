@@ -6,8 +6,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebouncedValue } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-export const useFocusedValueWatch = <TFieldValues extends FieldValues>(
-    control: Control<TFieldValues>,
+export const useFocusedValueWatch = <
+    TFieldValues extends FieldValues,
+    TTransformedValues = TFieldValues,
+>(
+    control: Control<TFieldValues, object, TTransformedValues>,
 ) => {
     const { dispatch } = useServices(injectDispatch);
 

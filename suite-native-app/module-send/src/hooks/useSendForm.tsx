@@ -41,7 +41,7 @@ import {
     getNetworkReserve,
 } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
-import { useForm } from '@suite-native/forms';
+import { type UseFormReturn, useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AccountDetailStackRoutes,
@@ -635,9 +635,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         normalFeeLevelMaxAmount: maxSendAmountByFeeLevel?.normal,
     });
 
+    const sendForm: UseFormReturn<SendOutputsFormValues> & typeof amountConversion = {
+        ...form,
+        ...amountConversion,
+    };
+
     return {
         handleSubmitSendForm,
-        form: { ...form, ...amountConversion },
+        form: sendForm,
         network,
         amount,
         maxSpendableAmount,

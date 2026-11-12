@@ -5,7 +5,7 @@ import {
     btc1NormalAccount,
     btcAsset,
 } from '@suite-native/trading-fixtures';
-import { type SellFormValues } from '@suite-native/trading-types';
+import { type SellFormValidatedValues, type SellFormValues } from '@suite-native/trading-types';
 
 import { resetSellForm } from './sellFormResetUtils';
 import { sellFormValidationSchema } from './sellFormValidationSchema';
@@ -13,7 +13,9 @@ import { sellFormValidationSchema } from './sellFormValidationSchema';
 describe('resetSellForm', () => {
     const renderFilledSellForm = async () => {
         const rendered = await renderHookWithBasicProvider(() =>
-            useForm<SellFormValues>({ validation: sellFormValidationSchema }),
+            useForm<SellFormValues, object, SellFormValidatedValues>({
+                validation: sellFormValidationSchema,
+            }),
         );
 
         await act(() => {

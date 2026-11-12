@@ -8,7 +8,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { AlertRenderer } from '@suite-native/alerts';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { Form, useForm, yup } from '@suite-native/forms';
+import { Form, useForm } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act, fireEvent, screen, waitFor } from '@suite-native/test-utils-store';
 import { bnbAsset, btcAsset, ethAsset, ethOnBaseAsset } from '@suite-native/trading-fixtures';
@@ -76,10 +76,9 @@ const renderSwitchButton = async ({
         store,
     };
 
-    const { result } = await renderHookWithTradingProvider(
-        () => useForm<ExchangeFormValues>({ validation: yup.object({}) }),
-        { services: storeServices },
-    );
+    const { result } = await renderHookWithTradingProvider(() => useForm<ExchangeFormValues>({}), {
+        services: storeServices,
+    });
     const form = result.current;
 
     await act(() => {

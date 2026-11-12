@@ -47,11 +47,11 @@ export const useNetworkExplorerForm = ({ symbol }: Network) => {
     const isValidPath = (value: string | undefined, { path }: yup.TestContext) =>
         !pathInputFields.some(({ name }) => name === path) || (!!value && value.trim() !== '');
 
-    const form = useForm<Explorer>({
+    const form = useForm<Explorer, object, Omit<Explorer, 'contract'>>({
         validation: yup.object({
-            base: yup.string().test('format', invalidValueMessage, isValidUrl),
-            tx: yup.string().test('format', invalidValueMessage, isValidPath),
-            address: yup.string().test('format', invalidValueMessage, isValidPath),
+            base: yup.string().defined().test('format', invalidValueMessage, isValidUrl),
+            tx: yup.string().defined().test('format', invalidValueMessage, isValidPath),
+            address: yup.string().defined().test('format', invalidValueMessage, isValidPath),
             nft: yup.string().test('format', invalidValueMessage, isValidPath),
             token: yup.string().test('format', invalidValueMessage, isValidPath),
             queryString: yup.string(),

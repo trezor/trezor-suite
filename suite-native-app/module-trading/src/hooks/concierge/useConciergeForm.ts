@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type TradingCountryCode, nonSanctionedRegional } from '@suite-common/trading';
-import { useForm, yup } from '@suite-native/forms';
+import { useForm } from '@suite-native/forms';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type ConciergeFormValues } from '@suite-native/trading-types';
 
@@ -20,7 +20,6 @@ export const useConciergeForm = ({ defaultCountryCode }: ConciergeFormProps) => 
         defaultValues: {
             country,
         },
-        validation: yup.object({}),
     });
     useCountryChangeEffect(form.control);
 

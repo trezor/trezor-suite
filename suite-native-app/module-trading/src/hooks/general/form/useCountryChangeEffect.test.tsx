@@ -6,7 +6,7 @@ import {
     type TradingCountrySubdivisionOption,
 } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { useForm, yup } from '@suite-native/forms';
+import { useForm } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import {
@@ -58,7 +58,6 @@ describe('useCountryChangeEffect', () => {
             () => {
                 const form = useForm<CountryFormValues>({
                     defaultValues,
-                    validation: yup.object({}),
                 });
                 useCountryChangeEffect(form.control);
 
