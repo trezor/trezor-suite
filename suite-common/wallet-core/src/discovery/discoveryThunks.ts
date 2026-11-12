@@ -309,7 +309,13 @@ const completeDiscovery = (
     deviceState: TrezorDeviceWithState['state'],
     { dispatch, fetchAndSaveMetadata, getState }: CompleteDiscoveryParams,
 ) => {
-    dispatch(updateDiscoveryThunk({ status: { status: 'complete' }, path: devicePath }));
+    dispatch(
+        updateDiscoveryThunk({
+            status: { status: 'complete' },
+            path: devicePath,
+            staticSessionId: deviceState.staticSessionId,
+        }),
+    );
     dispatch(fetchAndSaveMetadata(deviceState.staticSessionId));
     dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
 
@@ -960,6 +966,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
                           errorCode: result.error.code,
                       },
                 path: updatedDevice.path,
+                staticSessionId,
             }),
         );
         dispatch(deviceActions.setDiscovered(staticSessionId, result.success));

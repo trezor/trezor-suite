@@ -1,7 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountFailureSpecific } from '@suite-common/wallet-types';
@@ -20,24 +19,20 @@ import {
 
 const devicePath = asDeviceUniquePath('device-path');
 const walletState: StaticSessionId = 'standard@deviceid:1';
-const device = mockSuiteDevice({ path: devicePath, state: { staticSessionId: walletState } });
+const otherWalletState: StaticSessionId = 'standard@deviceid:2';
 const analytics = mockAnalytics<AnalyticsSharedEvents>();
 const discoveryReducer = prepareDiscoveryReducer(undefined);
 
-const failedAccount = (symbol: 'btc' | 'sol', failure: AccountFailureSpecific) =>
-    mockWalletAccount(
-        { symbol: asNetworkSymbol(symbol), deviceState: walletState },
-        undefined,
-        failure,
-    );
+const failedAccount = (
+    symbol: 'btc' | 'sol',
+    failure: AccountFailureSpecific,
+    deviceState = walletState,
+) => mockWalletAccount({ symbol: asNetworkSymbol(symbol), deviceState }, undefined, failure);
 
 const initStore = (accounts: Account[] = []) =>
     createTestCompositionRoot<WithServices<AnalyticsDep>, UpdateDiscoveryThunkState>({
         services: () => ({ analytics }),
         reducer: {
-            device: (
-                state = { devices: [device], selectedDevice: device, buttonRequestsByPath: {} },
-            ) => state,
             wallet: combineReducers({
                 discovery: discoveryReducer,
                 accounts: (state: Account[] = accounts) => state,
@@ -79,7 +74,13 @@ describe('discovery state thunks', () => {
         ]);
 
         store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
-        store.dispatch(updateDiscoveryThunk({ status: { status: 'complete' }, path: devicePath }));
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'complete' },
+                path: devicePath,
+                staticSessionId: walletState,
+            }),
+        );
 
         expect(store.getState().wallet.discovery[devicePath]).toMatchObject({
             status: 'complete',
@@ -87,6 +88,34 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
             payload: { outcome: 'failed', trigger: 'device-connect', errorCode: 'Backend_Error' },
+        });
+    });
+
+    it('ignores an account of another wallet that failed to load', () => {
+        const store = initStore([
+            failedAccount(
+                'sol',
+                {
+                    failed: true,
+                    error: 'All backends are down',
+                    errorCode: 'blockchain_link/connect',
+                },
+                otherWalletState,
+            ),
+        ]);
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'complete' },
+                path: devicePath,
+                staticSessionId: walletState,
+            }),
+        );
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'complete', trigger: 'device-connect' },
         });
     });
 
@@ -101,7 +130,13 @@ describe('discovery state thunks', () => {
         ]);
 
         store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
-        store.dispatch(updateDiscoveryThunk({ status: { status: 'complete' }, path: devicePath }));
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'complete' },
+                path: devicePath,
+                staticSessionId: walletState,
+            }),
+        );
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
