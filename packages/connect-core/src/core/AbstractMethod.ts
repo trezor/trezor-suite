@@ -16,7 +16,7 @@ import type {
     UiRequestButtonData,
 } from '@trezor/connect-common';
 import { isStaticSessionId } from '@trezor/device-utils';
-import type { Capability } from '@trezor/protobuf/src/definitions';
+import type { Capability } from '@trezor/protobuf/definitions';
 import { isNotUndefined, isUUID, versionUtils } from '@trezor/utils';
 
 import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';

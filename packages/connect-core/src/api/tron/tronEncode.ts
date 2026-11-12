@@ -3,7 +3,7 @@ import { hexToBytes } from '@noble/hashes/utils.js';
 
 import type { TronContracts } from '@trezor/connect-common';
 import { protobufManager } from '@trezor/protobuf';
-import { TronRawContractType } from '@trezor/protobuf/src/definitions/messages-tron';
+import { TronRawContractType } from '@trezor/protobuf/definitions/messages-tron';
 
 type BlockParams = {
     ref_block_bytes: string;

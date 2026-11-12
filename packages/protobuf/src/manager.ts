@@ -1,8 +1,7 @@
 import {
-    type AnyDesc,
     type DescEnum,
-    type DescExtension,
     type DescField,
+    type DescFile,
     type DescMessage,
     ScalarType,
     fromBinary,
@@ -10,8 +9,11 @@ import {
     toBinary,
     toJson,
 } from '@bufbuild/protobuf';
+import { enumDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2';
+import { file_google_protobuf_descriptor } from '@bufbuild/protobuf/wkt';
 
 import type { MessageResponse } from './definitions';
+import type { ProtobufDict } from './definitions/dict';
 
 const patchLongValue = (value: unknown) => {
     if (typeof value === 'number') {
@@ -157,112 +159,98 @@ const transformSchemaFields = (
 
 export const ProtobufManager = () => {
     const messages: Record<string, DescMessage | undefined> = {};
-    const extensions: Record<string, DescExtension | undefined> = {};
     const enums: Record<string, DescEnum | undefined> = {};
+    const files: Record<string, DescFile | undefined> = {};
+    const wireMessageIds: Record<string, number | undefined> = {};
+    const wireMessageNames: Record<number, string | undefined> = {};
 
-    const load = (modules: Record<string, AnyDesc> | Record<string, AnyDesc>[]) => {
-        if (Array.isArray(modules)) {
-            modules.forEach(m => load(m));
-        } else {
-            Object.keys(modules).forEach(key => {
-                // @ts-expect-error noUncheckedIndexedAccess: def is guaranteed to exist (iterating own keys)
-                const def: AnyDesc = modules[key];
-                if (def.kind && def.kind !== 'file') {
-                    if (def.kind === 'message') {
-                        messages[key] = def;
-                    } else if (def.kind === 'extension') {
-                        extensions[key] = def;
-                    } else if (def.kind === 'enum') {
-                        enums[def.name] = def;
-                    }
-                }
-            });
-        }
+    const loadDict = (dict: ProtobufDict, loadDependencyFile: (importKey: string) => void) => {
+        const dependencies = dict.dependencies.map(dep => {
+            if (dep === 'google/protobuf/descriptor') {
+                return file_google_protobuf_descriptor;
+            }
+            // Try to load the dependency file if it hasn't been loaded yet.
+            if (!files[dep]) {
+                loadDependencyFile(dep);
+            }
+
+            const depFile = files[dep];
+            if (!depFile) {
+                throw new Error(`Protobuf dependency ${dep} must be loaded`);
+            }
+
+            return depFile;
+        });
+
+        const file = fileDesc(dict.fileContent, dependencies);
+        files[dict.fileName] = file;
+
+        Object.entries(dict.messages).forEach(([key, [kind, ...path]]) => {
+            if (kind === 'messageDesc') {
+                messages[key] = messageDesc(file, ...path);
+            } else if (kind === 'enumDesc') {
+                enums[key] = enumDesc(file, ...path);
+            }
+        });
+
+        Object.entries(dict.messageType).forEach(([messageName, messageId]) => {
+            wireMessageIds[messageName] = messageId;
+            wireMessageNames[messageId] = messageName;
+        });
     };
 
-    // (wire_type) is a custom option this is why it is to be found in '$unknown' options
-    // as { no: option_id, data: Uint8Array }
-    const getWireTypeOverride = (schema: AnyDesc) => {
-        const unknownOptions = schema.proto.options?.['$unknown'] ?? [];
-        if (unknownOptions.length === 0) {
-            return;
-        }
+    const load = (modules: ProtobufDict | ProtobufDict[]) => {
+        const batch = Array.isArray(modules) ? modules : [modules];
 
-        const wireTypeExtension = extensions['wire_type'];
-        const wireTypeOption = unknownOptions.find(o => o.no === wireTypeExtension?.number);
+        const loadModule = (mod: ProtobufDict) => {
+            if (files[mod.fileName]) {
+                return;
+            }
 
-        return wireTypeOption ? wireTypeOption.data[0] : undefined;
+            loadDict(mod, depName => {
+                const depFile = batch.find(m => m.fileName === depName);
+                if (depFile) {
+                    loadModule(depFile);
+                }
+            });
+        };
+
+        batch.forEach(loadModule);
     };
 
     const findEnum = (enumName: string) => enums[enumName];
 
     const findSchema = (nameOrId: number | string) => {
-        const messageTypeEnum = findEnum('MessageType');
-        const thpMessageTypeEnum = findEnum('ThpMessageType');
-
         if (typeof nameOrId === 'string') {
-            const schemaKey = `${nameOrId}Schema`;
-            const schema = messages[schemaKey];
+            const schema = messages[nameOrId];
 
             if (!schema) {
                 throw new Error(`Schema ${nameOrId} not found`);
             }
 
-            // Try to find message type enum value
-            // -1 is expected for ThpMessageType and other non-standard messages
-            let messageType = -1;
-            if (thpMessageTypeEnum) {
-                const thpEnum = thpMessageTypeEnum.values.find(
-                    k => k.name === 'ThpMessageType_' + schema.name,
-                );
-                if (thpEnum) {
-                    messageType = thpEnum.number;
-                }
-            }
-
-            if (messageType === -1 && messageTypeEnum) {
-                const mtEnum = messageTypeEnum.values.find(
-                    k => k.name === 'MessageType_' + schema.name,
-                );
-                if (mtEnum) {
-                    messageType = mtEnum.number;
-                }
-            }
+            const messageType = wireMessageIds[nameOrId] ?? -1;
 
             return {
                 schema,
-                messageType: getWireTypeOverride(schema) || messageType,
+                messageType,
                 messageName: nameOrId,
             };
         }
 
-        // Lookup by numeric ID
-        let matchedMessageType = messageTypeEnum?.value[nameOrId];
-        if (!matchedMessageType && thpMessageTypeEnum) {
-            matchedMessageType = thpMessageTypeEnum.value[nameOrId];
+        const messageName = wireMessageNames[nameOrId];
+        if (!messageName) {
+            throw new Error(`MessageType with ID ${nameOrId} not found.`);
         }
 
-        if (!matchedMessageType) {
-            throw new Error(
-                `MessageType with ID ${nameOrId} not found. Check MessageType and ThpMessageType enums.`,
-            );
-        }
-
-        const messageName = matchedMessageType.name
-            .replace('ThpMessageType_', '')
-            .replace('MessageType_', '');
-        const schemaKey = messageName + 'Schema';
-        const schema = messages[schemaKey];
+        const schema = messages[messageName];
 
         if (!schema) {
-            throw new Error(
-                `Schema "${messageName}" (from ID ${nameOrId}) not found. Available: ${Object.keys(messages).length}`,
-            );
+            throw new Error(`Schema "${messageName}" (from ID ${nameOrId}) not found.`);
         }
 
         return {
             schema,
-            messageType: getWireTypeOverride(schema) || nameOrId,
+            messageType: nameOrId,
             messageName,
         };
     };

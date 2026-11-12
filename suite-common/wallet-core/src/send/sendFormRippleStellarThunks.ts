@@ -27,7 +27,7 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { XRP_FLAG } from '@trezor/network-ripple/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import type { StellarTransaction } from '@trezor/network-stellar/types';
-import { StellarAssetType } from '@trezor/protobuf/src/definitions';
+import { StellarAssetType } from '@trezor/protobuf/definitions';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 

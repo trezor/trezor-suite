@@ -1,4 +1,4 @@
-import type { Nonce } from '@trezor/protobuf';
+import type { Nonce } from '@trezor/protobuf/definitions';
 
 import type { CommonParams, Response } from '../../params';
 

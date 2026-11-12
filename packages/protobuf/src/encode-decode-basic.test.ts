@@ -1,5 +1,3 @@
-import type { AnyDesc } from '@bufbuild/protobuf';
-
 import { ProtobufManager } from './manager';
 
 const getAllProtoModules = () => {
@@ -18,7 +16,6 @@ const getAllProtoModules = () => {
         'messages-evolu',
         'messages-management',
         'messages-monero',
-        'messages',
         'messages-ripple',
         'messages-solana',
         'messages-stellar',
@@ -29,9 +26,7 @@ const getAllProtoModules = () => {
         'options',
     ];
 
-    return protoFiles.map(
-        name => require(`../src/definitions/${name}_pb`) as Record<string, AnyDesc>,
-    );
+    return protoFiles.map(name => require(`../src/definitions/${name}_dict`).default);
 };
 
 const protobufManager = ProtobufManager();

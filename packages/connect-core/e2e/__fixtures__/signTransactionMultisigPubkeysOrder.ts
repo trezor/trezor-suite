@@ -1,4 +1,4 @@
-import { MultisigPubkeysOrder } from '@trezor/protobuf/src/definitions';
+import { MultisigPubkeysOrder } from '@trezor/protobuf/definitions';
 
 import { getRefTxs } from './refTxs';
 

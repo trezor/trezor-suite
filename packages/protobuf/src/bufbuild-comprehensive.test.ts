@@ -4,9 +4,10 @@
  * and error handling works correctly.
  */
 
-import { type AnyDesc, ScalarType } from '@bufbuild/protobuf';
+import { ScalarType } from '@bufbuild/protobuf';
 import { FeatureSet_FieldPresence } from '@bufbuild/protobuf/wkt';
 
+import { type ProtobufDict } from './definitions/dict';
 import { ProtobufManager } from './manager';
 
 type TestPayload = Record<string, unknown>;
@@ -14,37 +15,34 @@ type TestPayload = Record<string, unknown>;
 const getErrorMessage = (error: unknown) =>
     error instanceof Error ? error.message : String(error);
 
-const getAllProtoModules = () => {
-    const protoFiles = [
-        'messages-bitcoin',
-        'messages-ble',
-        'messages-bootloader',
-        'messages-cardano',
-        'messages-common',
-        'messages-crypto',
-        'messages-debug',
-        'messages-definitions',
-        'messages-eos',
-        'messages-ethereum-eip712',
-        'messages-ethereum',
-        'messages-evolu',
-        'messages-management',
-        'messages-monero',
-        'messages',
-        'messages-ripple',
-        'messages-solana',
-        'messages-stellar',
-        'messages-telemetry',
-        'messages-tezos',
-        'messages-thp',
-        'messages-tron',
-        'options',
-    ];
+const protoFiles = [
+    'messages-bitcoin',
+    'messages-ble',
+    'messages-bootloader',
+    'messages-cardano',
+    'messages-common',
+    'messages-crypto',
+    'messages-debug',
+    'messages-definitions',
+    'messages-eos',
+    'messages-ethereum-eip712',
+    'messages-ethereum',
+    'messages-evolu',
+    'messages-management',
+    'messages-monero',
+    'messages-nostr',
+    'messages-ripple',
+    'messages-solana',
+    'messages-stellar',
+    'messages-telemetry',
+    'messages-tezos',
+    'messages-thp',
+    'messages-tron',
+    'options',
+];
 
-    return protoFiles.map(
-        name => require(`../src/definitions/${name}_pb`) as Record<string, AnyDesc>,
-    );
-};
+const getAllProtoModules = (): ProtobufDict[] =>
+    protoFiles.map(name => require(`../src/definitions/${name}_dict`).default);
 
 describe('ProtobufManager comprehensive tests', () => {
     const allProtoModules = getAllProtoModules();
@@ -54,14 +52,15 @@ describe('ProtobufManager comprehensive tests', () => {
     const getAllMessageNames = (): string[] => {
         const names: string[] = [];
         allProtoModules.forEach(mod => {
-            Object.values(mod).forEach(desc => {
-                if (desc.kind === 'message') {
-                    names.push(desc.name);
+            Object.keys(mod.messages).forEach(key => {
+                const desc = mod.messages[key];
+                if (desc && desc[0] === 'messageDesc') {
+                    names.push(key);
                 }
             });
         });
 
-        return [...new Set(names)];
+        return names;
     };
 
     const getRequiredFieldNames = (messageName: string): string[] => {
@@ -236,12 +235,7 @@ describe('ProtobufManager comprehensive tests', () => {
     });
 
     describe('enum availability', () => {
-        const criticalEnums = [
-            'MessageType',
-            'ThpMessageType',
-            'InputScriptType',
-            'OutputScriptType',
-        ];
+        const criticalEnums = ['InputScriptType', 'OutputScriptType'];
 
         criticalEnums.forEach(enumName => {
             it(`${enumName} - should exist in @bufbuild definitions`, () => {

@@ -1,4 +1,4 @@
-import type { FailureType } from '@trezor/protobuf';
+import type { FailureType } from '@trezor/protobuf/definitions';
 import type { thp } from '@trezor/protocol';
 
 export const ERROR_CODES = {
