@@ -4,6 +4,7 @@ import { promisify } from 'node:util';
 
 import type { WorkspacePackage } from '@trezor/requirements';
 
+import { addChangelogEntry } from './connect-changelog';
 import {
     comment,
     commit,
@@ -192,10 +193,13 @@ const bumpConnect = async () => {
                     await writeFile(CHANGELOG_PATH, '');
                 }
 
-                let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                const changelog = await readFile(CHANGELOG_PATH, 'utf-8');
 
-                changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
-                await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
+                await writeFile(
+                    CHANGELOG_PATH,
+                    addChangelogEntry(changelog, version, newCommits),
+                    'utf-8',
+                );
 
                 await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
             }
