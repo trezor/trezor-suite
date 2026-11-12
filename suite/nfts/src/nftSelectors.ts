@@ -1,10 +1,14 @@
 import { shallowEqual } from 'react-redux';
 
-import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { type DeviceRootState } from '@suite-common/device';
+import {
+    type TokenDefinitionsRootState,
+    selectTokenDefinitions,
+} from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AssetAccountsRootState,
+    type AccountsRootState,
     type ExplorerState,
     type WalletAssetKey,
     type WalletSettingsRootState,
@@ -20,7 +24,11 @@ import { type MultiTokenValue, type TokenInfo } from '@trezor/blockchain-link-ty
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-export type NftState = AssetAccountsRootState & WalletSettingsRootState & ExplorerState;
+export type NftState = AccountsRootState &
+    DeviceRootState &
+    TokenDefinitionsRootState &
+    WalletSettingsRootState &
+    ExplorerState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NftState>();
 

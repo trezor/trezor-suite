@@ -6,7 +6,6 @@ import {
     selectWalletAssetUnstakedAccounts,
 } from '@suite-common/assets';
 import {
-    type TransactionsRootState,
     type WalletAssetKey,
     getStakingLimitsByNetworkSymbol,
     isSupportedStakingNetworkSymbol,
@@ -15,9 +14,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { type BannerFlagsSliceRootState, selectIsEarnBannerClosed } from '@suite-native/banners';
 
-export type AssetDetailStakingBannerState = HomeAssetTableState &
-    TransactionsRootState &
-    BannerFlagsSliceRootState;
+export type AssetDetailStakingBannerState = HomeAssetTableState & BannerFlagsSliceRootState;
 
 const NO_ACCOUNTS: readonly Account[] = [];
 

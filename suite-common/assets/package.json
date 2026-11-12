@@ -13,9 +13,12 @@
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
+        "@suite-common/earn-staking": "workspace:*",
+        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

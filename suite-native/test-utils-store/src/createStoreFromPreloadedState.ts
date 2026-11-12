@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { stakingInitialState } from '@suite-common/earn-staking';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { createStaticReducer } from './createStaticReducer';
@@ -17,6 +18,8 @@ export const createStoreFromPreloadedState = <TState extends object = object>(
 ) => {
     const defaultState = {
         discreetMode: { isActive: false },
+        // Every app store has staking positions; asset amounts read them before any provider.
+        earn: { staking: stakingInitialState },
         wallet: {
             // Every app store has accounts; token metadata reads them before any provider.
             accounts: [] as unknown[],

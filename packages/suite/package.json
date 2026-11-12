@@ -62,6 +62,7 @@
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/earn-staking": "workspace:*",
         "@suite-common/earn-staking-api": "workspace:*",
+        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/firmware": "workspace:*",

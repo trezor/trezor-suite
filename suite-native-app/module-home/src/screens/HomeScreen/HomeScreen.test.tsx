@@ -26,6 +26,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
     selectBaseCurrency: () => 'usd',
     selectBitcoinAmountUnit: () => 0,
     selectIsDiscoveredDeviceAccountless: () => false,

@@ -1,4 +1,5 @@
 import { deviceInitialState } from '@suite-common/device';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -105,6 +106,7 @@ const createState = ({
     transactions = {},
     txsMarkedAsNotScam = {},
 }: CreateStateParams): AssetDetailState => ({
+    earn: { staking: mockStakingState() },
     device: {
         ...deviceInitialState,
         selectedDevice: mockSuiteDevice({ state: { staticSessionId: ALICE } }),
