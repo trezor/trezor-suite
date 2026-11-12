@@ -3,9 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../device" },
+        { "path": "../earn-staking" },
+        { "path": "../earn-staking-common" },
         { "path": "../feedback" },
         { "path": "../message-system" },
         { "path": "../networks" },
+        { "path": "../token-definitions" },
         { "path": "../tokens" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },

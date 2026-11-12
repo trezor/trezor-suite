@@ -1,12 +1,16 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
+import {
+    type HiddenTokenReason,
+    selectWalletAssetContractAddress,
+    selectWalletAssetSymbol,
+} from '@suite-common/assets';
 import {
     DefinitionType,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

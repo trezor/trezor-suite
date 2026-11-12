@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    type AssetAccountsRootState,
     type HomeAssetTableState,
     selectWalletAssetContractAddress,
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
 import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
-import { type AssetAccountsRootState, type WalletAssetKey } from '@suite-common/wallet-core';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
 import { GlobalSendReceiveView } from './GlobalSendReceiveView';

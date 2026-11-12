@@ -1,5 +1,9 @@
-import { selectWalletAssetTokenDecimals, selectWalletAssetTokenSymbol } from '@suite-common/assets';
-import { type AssetAccount, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AssetAccount,
+    selectWalletAssetTokenDecimals,
+    selectWalletAssetTokenSymbol,
+} from '@suite-common/assets';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Text } from '@trezor/components';
 
