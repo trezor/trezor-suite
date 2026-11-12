@@ -35,6 +35,7 @@ Nested mandatory skills still apply within their stated scope.
   [Development commands](skills/development-commands/SKILL.md), [Troubleshooting](skills/common-issues/SKILL.md).
 - Package/dependency work: [Packages](skills/packages/SKILL.md), [Common tasks](skills/common-tasks/SKILL.md),
   [Publishing metadata](skills/publish-config/SKILL.md). Orientation: [Project structure](skills/project-structure/SKILL.md).
+- Connect releases: [Connect release changelog](skills/connect-release-changelog/SKILL.md).
 - Persistence/browser APIs: [IDB migrations](skills/idb-migrations/SKILL.md),
   [Security headers](skills/security-headers/SKILL.md). Migration default exports are a specific exception
   to the general named-export rule.
