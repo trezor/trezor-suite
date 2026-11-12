@@ -1,0 +1,5 @@
+name: "CodeQL config"
+
+paths-ignore:
+  # Local mock server for development and E2E tests. It only ever serves mocked data.
+  - packages/e2e-utils/src/mocks/referAFriend
