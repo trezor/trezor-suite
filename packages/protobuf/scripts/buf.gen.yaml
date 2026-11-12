@@ -12,6 +12,8 @@ plugins:
       opt:
           - target=ts+dts
           - types=messages-thp
-          # `messages-debug.proto` not implemented in `@trezor/connect` codebase, however we still want to have _pb definitions available
+          # `messages-debug.proto` not implemented in `@trezor/connect` codebase, however we still want to have _dict.ts definitions available
           # `messages.proto` and `options.proto` does not produce any output
           - skipTypeBox=messages-debug+messages+options
+          # `messages.proto` MessageType monolith is broken down to each corresponding dict file.
+          - skipDict=messages
