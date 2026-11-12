@@ -23,6 +23,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-data": "workspace:*",
+        "@trezor/ipc-proxy": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"

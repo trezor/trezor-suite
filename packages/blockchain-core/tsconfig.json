@@ -6,6 +6,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
+        { "path": "../ipc-proxy" },
         { "path": "../schema-utils" },
         { "path": "../type-utils" },
         { "path": "../utils" },

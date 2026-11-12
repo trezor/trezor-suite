@@ -63,6 +63,7 @@ const rendererConfig: webpack.Configuration = {
     resolve: {
         alias: {
             '@trezor/connect$': '@trezor/connect-electron',
+            '@trezor/blockchain-core$': '@trezor/blockchain-core/src/index.electron',
             // conditionally mocks message-system config that is being used during build
             ...(isTestBuild ? { [messageSystemFile]: messageSystemMockFile } : {}),
         },

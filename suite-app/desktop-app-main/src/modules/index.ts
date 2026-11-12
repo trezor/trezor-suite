@@ -41,6 +41,7 @@ import * as store from './store';
 import * as systemSettings from './system-settings';
 import * as theme from './theme';
 import * as tray from './tray';
+import * as trezorBlockchain from './trezor-blockchain';
 import * as trezorConnect from './trezor-connect';
 import * as userData from './user-data';
 import * as windowControls from './window-controls';
@@ -70,6 +71,7 @@ const MODULES: Module[] = [
     store,
     userData,
     trezorConnect,
+    trezorBlockchain,
     devTools,
     requestInterceptor,
     coinjoin,
@@ -85,7 +87,13 @@ const MODULES: Module[] = [
     appsEmbedding,
 ];
 
-const MODULES_BACKGROUND: ModuleBackground[] = [bridge, trezorConnect, httpReceiverModule, tray];
+const MODULES_BACKGROUND: ModuleBackground[] = [
+    bridge,
+    trezorConnect,
+    trezorBlockchain,
+    httpReceiverModule,
+    tray,
+];
 
 export type Module = { SERVICE_NAME: string; init: ModuleInit };
 export type ModuleBackground = { SERVICE_NAME: string; initBackground: ModuleInitBackground };

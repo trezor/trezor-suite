@@ -7,7 +7,7 @@ import path from 'path';
 
 import { type BootstrapTorEvent, type HandshakeTorModule } from '@suite/desktop-app-api';
 import { TorStatus } from '@suite/tor-types';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { getFreePort } from '@trezor/node-utils';
 import { type BootstrapEvent } from '@trezor/request-manager';
 
@@ -260,13 +260,9 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter, logger }: Depen
 
             await setupTor(shouldEnableTor);
 
-            // After setupTor we can assume TOR is available so we set the proxy in TrezorConnect
-            // This is only required when 'toggle' because when app starts with TOR enable TrezorConnect is
-            // correctly set in module trezor-connect-ipc.
+            // After setupTor we can assume TOR is available so we set the proxy of the backends.
             const proxySettings = getProxySettings(shouldEnableTor);
-
-            // Proxy is also set in suite-app/desktop-app-main/src/modules/trezor-connect.ts
-            await TrezorConnect.updateConnectSettings({ proxy: proxySettings });
+            await TrezorBlockchain.updateSettings({ proxy: proxySettings });
 
             logger.info(
                 'tor',
