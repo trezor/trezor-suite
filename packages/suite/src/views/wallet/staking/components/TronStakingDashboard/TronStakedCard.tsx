@@ -24,7 +24,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { WarningIcon } from '@trezor/icons';
+import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
@@ -116,6 +116,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
         stakingDetails === null ? '0' : formatAmount(stakingDetails.unallocatedVotingPower);
     const totalVotes = stakingDetails === null ? '0' : formatAmount(stakingDetails.votingPower);
     const hasRemainingVotes = isPositiveBalance(remainingVotes);
+    const isVotingPrimary = hasRemainingVotes && isOffered('vote');
     const shouldShowRemainingVotes =
         isPositiveBalance(remainingVotes) || isPositiveBalance(totalVotes);
 
@@ -188,8 +189,8 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                     <Row gap={8}>
                         <Tooltip content={stake.message}>
                             <Button
-                                intent="brand"
-                                priority="primary"
+                                intent={isVotingPrimary ? 'neutral' : 'brand'}
+                                priority={isVotingPrimary ? 'secondary' : 'primary'}
                                 onClick={() => goToFlow('earn-tron-stake')}
                                 isDisabled={stake.isDisabled}
                                 data-testid="@staking/tron-staked-card/stake-button"
@@ -221,8 +222,8 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                         {isOffered('vote') && (
                             <Tooltip content={vote.message}>
                                 <Button
-                                    intent="neutral"
-                                    priority="secondary"
+                                    intent={isVotingPrimary ? 'brand' : 'neutral'}
+                                    priority={isVotingPrimary ? 'primary' : 'secondary'}
                                     onClick={() => goToFlow('earn-tron-vote')}
                                     isDisabled={vote.isDisabled}
                                     data-testid="@staking/tron-staked-card/vote-button"
@@ -248,7 +249,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                     {hasRemainingVotes ? (
                         <Tooltip content={<Translation id="TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP" />}>
                             <Row gap={4} alignItems="center">
-                                <IconCircle icon={WarningIcon} size={24} intent="warning" />
+                                <IconCircle icon={InfoIcon} size={24} intent="info" />
 
                                 <TextButton
                                     size="small"

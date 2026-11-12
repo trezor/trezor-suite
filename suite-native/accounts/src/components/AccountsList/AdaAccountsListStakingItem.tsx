@@ -12,6 +12,7 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
+import { ExternalPoolBadge } from './ExternalPoolBadge';
 import { ZeroApyBadge } from './ZeroApyBadge';
 
 type AdaAccountsListStakingItemProps = {
@@ -44,7 +45,7 @@ export const AdaAccountsListStakingItem = ({
             return <ZeroApyBadge />;
         }
         if (isDelegatedOutside) {
-            return <Icon name="warning" color="contentWarning" />;
+            return <ExternalPoolBadge />;
         }
 
         return <Icon name="check" color="contentBrand" />;

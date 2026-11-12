@@ -11536,6 +11536,10 @@ export const messages = defineMessages({
         id: 'TR_STAKING_DIFFERENT_PROVIDER',
         defaultMessage: 'Staked with a different provider',
     },
+    TR_STAKING_EXTERNAL_POOL: {
+        id: 'TR_STAKING_EXTERNAL_POOL',
+        defaultMessage: 'External pool',
+    },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
         defaultMessage: 'No rewards',
@@ -11616,13 +11620,15 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER_NO_APY',
         defaultMessage: 'Switch to Everstake to start earning again',
     },
-    TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES: {
-        id: 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES',
-        defaultMessage: 'You only earn ~{apr}% APR on assigned votes. Assign the rest too.',
+    TR_EARN_UNASSIGNED_VOTES_APR: {
+        id: 'TR_EARN_UNASSIGNED_VOTES_APR',
+        defaultMessage:
+            '{count, plural, one {# unassigned vote} other {# unassigned votes}}. Vote to earn ~{apr}% APR.',
     },
-    TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR: {
-        id: 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR',
-        defaultMessage: 'You only earn rewards on assigned votes. Assign your remaining votes.',
+    TR_EARN_UNASSIGNED_VOTES: {
+        id: 'TR_EARN_UNASSIGNED_VOTES',
+        defaultMessage:
+            '{count, plural, one {# unassigned vote} other {# unassigned votes}}. Vote to earn rewards.',
     },
     TR_STAKING_BANNER_DETAIL_TITLE: {
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
@@ -12208,6 +12214,10 @@ export const messages = defineMessages({
     TR_EARN_TRON_VOTES_TO_ALLOCATE: {
         id: 'TR_EARN_TRON_VOTES_TO_ALLOCATE',
         defaultMessage: '{count, plural, one {1 unassigned vote} other {# unassigned votes}}',
+    },
+    TR_EARN_TRON_VOTES_LEFT_BADGE: {
+        id: 'TR_EARN_TRON_VOTES_LEFT_BADGE',
+        defaultMessage: '{count, plural, one {# vote left} other {# votes left}}',
     },
     TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP: {
         id: 'TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP',

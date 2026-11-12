@@ -7,6 +7,7 @@ import {
 import { Translation } from '@suite-native/intl';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
+import { TronUnassignedVotesBadge } from './TronUnassignedVotesBadge';
 
 type DefaultAccountsListStakingItemProps = {
     account: Account;
@@ -47,6 +48,13 @@ export const DefaultAccountsListStakingItem = ({
                 adjustsFontSizeToFit
             />
         }
-        badges={badges}
+        badges={
+            <>
+                {badges}
+                {account.networkType === 'tron' && (
+                    <TronUnassignedVotesBadge accountKey={account.key} />
+                )}
+            </>
+        }
     />
 );

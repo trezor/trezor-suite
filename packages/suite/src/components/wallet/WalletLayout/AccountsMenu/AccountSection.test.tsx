@@ -157,14 +157,14 @@ const mockCardanoDelegation = ({
     });
 
 /** 1000 frozen TRX with every vote still to cast. */
-const mockTronStake = () =>
+const mockTronStake = (unallocatedVotingPower = amount('1000000000')) =>
     mockPosition(trxProduct.id, {
         balances: { ...zeroBalances, staked: amount('1000000000') },
         operations: ['stake', 'unstake', 'vote'],
         details: {
             ...TRON_DETAILS,
             votingPower: amount('1000000000'),
-            unallocatedVotingPower: amount('1000000000'),
+            unallocatedVotingPower,
         },
     });
 
@@ -426,23 +426,28 @@ describe('compact account sidebar', () => {
                 poolId: MOCK_CARDANO_EXTERNAL_POOL,
                 hasDrep: false,
             }),
-            label: messages.TR_STAKING_DIFFERENT_PROVIDER.defaultMessage,
+            label: messages.TR_STAKING_EXTERNAL_POOL.defaultMessage,
+            badgeLabel: messages.TR_STAKING_EXTERNAL_POOL.defaultMessage,
         },
         {
             account: mockTronStakingAccount('frozenNotVoted'),
-            position: mockTronStake(),
-            label: messages.TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR.defaultMessage,
+            position: mockTronStake(amount('2000000')),
+            label: '2 unassigned votes',
+            badgeLabel: '2 votes left',
         },
-    ])('explains the staking warning for $account.symbol', async ({ account, position, label }) => {
-        renderAccount({ account, stakingPositions: { [account.key]: [position] } });
-        const badge = screen.getByRole('img', { name: label });
+    ])(
+        'shows the staking notice inline and in the tooltip for $account.symbol',
+        async ({ account, position, label, badgeLabel }) => {
+            renderAccount({ account, stakingPositions: { [account.key]: [position] } });
+            const badge = screen.getByRole('img', { name: label });
 
-        expect(screen.queryByText(label)).not.toBeInTheDocument();
+            expect(screen.getByText(badgeLabel)).toBeInTheDocument();
 
-        await userEvent.hover(badge);
+            await userEvent.hover(badge);
 
-        expect(await screen.findByRole('tooltip')).toHaveTextContent(label);
-    });
+            expect(await screen.findByRole('tooltip')).toHaveTextContent(label);
+        },
+    );
 
     it('does not show an incomplete fiat total while a visible token rate loads', () => {
         const { container } = renderAccount({ tokenRate: createRate(undefined, true) });

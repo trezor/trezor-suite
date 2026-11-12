@@ -9,6 +9,7 @@ import { type StakingAmount } from '@suite-common/earn-staking-common';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
+import { TronUnassignedVotesBadge } from '@suite-native/accounts';
 import {
     Card,
     HStack,
@@ -18,9 +19,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakingVotesBottomSheet } from './TronStakingVotesBottomSheet';
@@ -34,11 +33,6 @@ type TronResourceRowProps = {
     available: number;
     total: number;
 };
-
-const remainingVotesStyle = prepareNativeStyle(utils => ({
-    textDecorationLine: 'underline',
-    marginLeft: utils.spacings.sp4,
-}));
 
 const TronResourceRow = ({ labelId, available, total }: TronResourceRowProps) => (
     <VStack spacing="sp8">
@@ -58,7 +52,6 @@ const TronResourceRow = ({ labelId, available, total }: TronResourceRowProps) =>
 );
 
 export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
-    const { applyStyle } = useNativeStyles();
     const votesModal = useBottomSheetModal();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -109,19 +102,7 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
                         </Text>
                         {hasRemainingVotes ? (
                             <PressableOpacity onPress={votesModal.openModal}>
-                                <HStack alignItems="center">
-                                    <Icon name="warning" color="contentWarning" size="medium" />
-                                    <Text
-                                        variant="body-sm-strong"
-                                        color="contentWarning"
-                                        style={applyStyle(remainingVotesStyle)}
-                                    >
-                                        <Translation
-                                            id="earn.tron.votesRemaining"
-                                            values={{ count: unallocatedVotingPower }}
-                                        />
-                                    </Text>
-                                </HStack>
+                                <TronUnassignedVotesBadge accountKey={accountKey} />
                             </PressableOpacity>
                         ) : (
                             <Text variant="body-sm">

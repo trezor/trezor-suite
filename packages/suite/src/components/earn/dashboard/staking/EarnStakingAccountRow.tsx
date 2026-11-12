@@ -99,6 +99,14 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         account.key,
     );
 
+    const voteCount =
+        position?.details?.kind === 'tron-staking'
+            ? formatStakingAmount({
+                  amount: position.details.unallocatedVotingPower,
+                  networkSymbol: account.symbol,
+              })
+            : '0';
+
     const stakeableDescriptor = useSelector(state =>
         selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
     );
@@ -434,11 +442,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         {stakingStatus === 'insufficient-funds' && minStakeParagraph}
 
                         {stakingStatus === 'staking-outdated-provider' && (
-                            <EarnStakingOutdatedProvider apy={newProviderApy} />
+                            <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                         )}
 
                         {stakingStatus === 'staking-remaining-votes' && (
-                            <EarnStakingRemainingVotes apr={rate} />
+                            <EarnStakingRemainingVotes apr={rate} count={voteCount} />
                         )}
 
                         {(stakingStatus === 'staking-active' ||
@@ -599,7 +607,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 {stakingStatus === 'staking-outdated-provider' && (
                     <>
                         <Table.Cell colSpan={2}>
-                            <EarnStakingOutdatedProvider apy={newProviderApy} />
+                            <EarnStakingOutdatedProvider apy={newProviderApy} account={account} />
                         </Table.Cell>
                         <Table.Cell align="end">
                             <EarnStakingActionButtons {...actionButtonsProps} />
@@ -610,7 +618,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 {stakingStatus === 'staking-remaining-votes' && (
                     <>
                         <Table.Cell colSpan={2}>
-                            <EarnStakingRemainingVotes apr={rate} />
+                            <EarnStakingRemainingVotes apr={rate} count={voteCount} />
                         </Table.Cell>
                         <Table.Cell align="end">
                             <EarnStakingActionButtons {...actionButtonsProps} />
