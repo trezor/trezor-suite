@@ -54,6 +54,8 @@ const validChannels: Array<keyof RendererChannels> = [
     'bio-auth/bio-auth-availability-changed',
     'bio-auth/settings-changed',
     'theme/system-change',
+    'find:show',
+    'find:result',
     'in-app-browser/event',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);

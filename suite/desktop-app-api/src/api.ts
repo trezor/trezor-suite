@@ -31,6 +31,11 @@ import { type InvokeMethod, type ListenerMethod, type SendMethod } from './metho
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)
 // Handled by ipcMain.on (see suite-app/desktop-app-main/src/modules/*)
+export type FindResult = {
+    matches: number;
+    activeMatchOrdinal: number;
+};
+
 export interface MainChannels {
     'app/restart': void;
     'app/focus': void;
@@ -48,6 +53,10 @@ export interface MainChannels {
     'update/install': void;
     'logger/config': LoggerConfig;
     'debug/set-mode': boolean;
+    'find/query': string;
+    'find/next': void;
+    'find/previous': void;
+    'find/stop': void;
 }
 
 // Event messages from main to renderer process
@@ -104,6 +113,7 @@ export interface RendererChannels {
     'power-monitor/suspend': void;
 
     'find:show': void;
+    'find:result': FindResult;
 
     // application menu (Help) → open the in-app guide on a specific view
     'guide/open': void;
@@ -228,6 +238,11 @@ export type DesktopApi = {
     setAutoInstallOnAppQuit: DesktopApiSend<'update/set-auto-install-on-app-quit'>;
     // Theme
     themeChange: DesktopApiSend<'theme/change'>;
+    // Find in page. Chromium owns the match highlights.
+    findQuery: DesktopApiSend<'find/query'>;
+    findNext: DesktopApiSend<'find/next'>;
+    findPrevious: DesktopApiSend<'find/previous'>;
+    findStop: DesktopApiSend<'find/stop'>;
     // Handshake
     handshake: DesktopApiInvoke<'handshake/client'>;
     loadModules: DesktopApiInvoke<'handshake/load-modules'>;

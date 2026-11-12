@@ -74,6 +74,14 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
         if (validation.isTheme(theme)) ipcRenderer.send('theme/change', theme);
     },
 
+    // Find in page
+    findQuery: query => {
+        if (validation.isPrimitive('string', query)) ipcRenderer.send('find/query', query);
+    },
+    findNext: () => ipcRenderer.send('find/next'),
+    findPrevious: () => ipcRenderer.send('find/previous'),
+    findStop: () => ipcRenderer.send('find/stop'),
+
     // Client
     handshake: () => ipcRenderer.invoke('handshake/client'),
     loadModules: payload => ipcRenderer.invoke('handshake/load-modules', payload),

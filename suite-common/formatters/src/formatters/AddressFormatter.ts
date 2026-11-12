@@ -1,35 +1,63 @@
+import { exhaustive } from '@trezor/type-utils';
+
 import { makeFormatter } from '../makeFormatter';
 
 const REGEXP_ADDRESS = /^(0x)?((.{8})(?:.{4})*(.{5,8}))$/;
 const TRUNCATION_PLACEHOLDER = '...';
+const ADDRESS_CHUNK_LENGTH = 4;
 
-const addSpacing = (value?: string) => value?.match(/.{1,4}/g)?.join(' ') ?? value;
+const splitIntoChunks = (value: string): string[] =>
+    value.match(new RegExp(`.{1,${ADDRESS_CHUNK_LENGTH}}`, 'g')) ?? [];
 
 export type AddressFormat = 'full' | 'long' | 'short';
 export type AddressFormatterDataContext = { format?: AddressFormat; isChunked?: boolean };
 
+export const getAddressChunks = (
+    value: string,
+    format: AddressFormat = 'full',
+): string[] | null => {
+    const match = value.match(REGEXP_ADDRESS);
+
+    if (!match) {
+        return null;
+    }
+
+    const prefix = match[1] ?? '';
+    const rest = match[2] ?? '';
+    const beginning = match[3] ?? '';
+    const end = match[4] ?? '';
+
+    switch (format) {
+        case 'full':
+            return [...splitIntoChunks(prefix), ...splitIntoChunks(rest)];
+        case 'long':
+            return [
+                ...splitIntoChunks(prefix),
+                ...splitIntoChunks(beginning),
+                TRUNCATION_PLACEHOLDER,
+                ...splitIntoChunks(end),
+            ];
+        case 'short':
+            return [
+                ...splitIntoChunks(prefix),
+                ...splitIntoChunks(beginning.slice(0, ADDRESS_CHUNK_LENGTH)),
+                TRUNCATION_PLACEHOLDER,
+                ...splitIntoChunks(end),
+            ];
+        default:
+            return exhaustive(format);
+    }
+};
+
 export const AddressFormatter = makeFormatter<string, string, AddressFormatterDataContext>(
     (value, { format = 'full', isChunked = true }) => {
-        const match = value.match(REGEXP_ADDRESS);
+        const chunks = getAddressChunks(value, format);
 
-        if (!match) return value;
+        if (!chunks) {
+            return value;
+        }
 
-        const [, prefix, rest, beginning, end] = isChunked
-            ? match.map(part => addSpacing(part))
-            : match;
-
-        const parts = (() => {
-            switch (format) {
-                case 'full':
-                    return [prefix, rest];
-                case 'long':
-                    return [prefix, beginning, TRUNCATION_PLACEHOLDER, end];
-                case 'short':
-                    return [prefix, beginning?.slice(0, 4), TRUNCATION_PLACEHOLDER, end];
-            }
-        })();
-
-        return parts.filter(Boolean).join(isChunked ? ' ' : '');
+        return chunks.join(isChunked ? ' ' : '');
     },
     'AddressFormatter',
 );

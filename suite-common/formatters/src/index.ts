@@ -14,6 +14,10 @@ export {
 export { getCompactAmount } from './utils/getCompactAmount';
 export { formatCompactCryptoAmount, isMoneyLikeToken } from './utils/formatCompactCryptoAmount';
 export { truncateCryptoAmount } from './utils/truncateCryptoAmount';
-export { AddressFormatter, type AddressFormat } from './formatters/AddressFormatter';
+export {
+    AddressFormatter,
+    getAddressChunks,
+    type AddressFormat,
+} from './formatters/AddressFormatter';
 export * from './hooks/useCurrencyAmountParts';
 export { type PercentageFormatterDataContext } from './formatters/preparePercentageFormatter';

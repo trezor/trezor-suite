@@ -18,6 +18,7 @@ import * as eventLoggingApp from './event-logging/app';
 import * as eventLoggingContents from './event-logging/contents';
 import * as eventLoggingProcess from './event-logging/process';
 import * as externalLinks from './external-links';
+import * as find from './find';
 import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
 import * as appsEmbedding from './in-app-browser';
@@ -59,6 +60,7 @@ const MODULES: Module[] = [
     crashRecover,
     debug,
     menu,
+    find,
     shortcuts,
     requestFilter,
     externalLinks,

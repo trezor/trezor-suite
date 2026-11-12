@@ -57,8 +57,6 @@ export { type DashboardBannerType } from './src/views/dashboard/DashboardPromoBa
 export * as storageConstants from './src/actions/suite/constants/storageConstants';
 export { desktopHandshake } from './src/actions/suite/suiteActions';
 
-export { FIND_HIGHLIGHT_SELECTOR } from './src/components/suite/FindBar/consts';
-export { MARK_HIGHLIGHT_PULSE_SELECTOR } from './src/components/suite/FindBar/consts';
 export * as analyticsActions from './src/actions/suite/analyticsActions';
 export { initThunk } from './src/actions/suite/initAction';
 export { resetSuiteAppThunk } from './src/actions/suite/suiteThunks';

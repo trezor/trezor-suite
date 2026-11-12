@@ -4,6 +4,14 @@ import { fontFamilies, typography } from '@trezor/theme';
 
 import animations from './animations';
 
+const SEARCH_MATCH_COLOR = '#ffff00';
+const SEARCH_CURRENT_MATCH_COLOR = '#ff9632';
+
+const searchHighlightShadow = (color: string) =>
+    ['1px 0', '-1px 0', '0 1px', '0 -1px', '1px 1px', '-1px 1px', '1px -1px', '-1px -1px']
+        .map(offset => `${offset} 0 ${color}`)
+        .join(', ');
+
 const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     :root {
         --font-sans: ${fontFamilies.base};
@@ -56,6 +64,19 @@ const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     /* https://floating-ui.com/docs/misc#handling-large-content */
     .floating {
         max-width: calc(100vw - 10px);
+    }
+
+    /* Find highlights cannot take padding, so the same color extends 1px past the glyphs. */
+    ::search-text {
+        background-color: ${SEARCH_MATCH_COLOR};
+        color: #000;
+        text-shadow: ${searchHighlightShadow(SEARCH_MATCH_COLOR)};
+    }
+
+    ::search-text:current {
+        background-color: ${SEARCH_CURRENT_MATCH_COLOR};
+        color: #000;
+        text-shadow: ${searchHighlightShadow(SEARCH_CURRENT_MATCH_COLOR)};
     }
 `;
 

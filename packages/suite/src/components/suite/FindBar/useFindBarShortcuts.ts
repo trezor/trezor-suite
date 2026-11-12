@@ -3,7 +3,8 @@ import { useCallback, useEffect } from 'react';
 type UseFindBarShortcutsProps = {
     setVisible: (visible: boolean) => void;
     inputRef: React.RefObject<HTMLInputElement | null>;
-    clearHighlights: () => void;
+    selectQuery: () => void;
+    stop: () => void;
     next: () => void;
     prev: () => void;
 };
@@ -11,7 +12,8 @@ type UseFindBarShortcutsProps = {
 export const useFindBarShortcuts = ({
     setVisible,
     inputRef,
-    clearHighlights,
+    selectQuery,
+    stop,
     next,
     prev,
 }: UseFindBarShortcutsProps) => {
@@ -23,7 +25,7 @@ export const useFindBarShortcuts = ({
             if (cmd && key === 'f') {
                 e.preventDefault();
                 setVisible(true);
-                setTimeout(() => inputRef.current?.select());
+                selectQuery();
 
                 return;
             }
@@ -44,20 +46,21 @@ export const useFindBarShortcuts = ({
 
             if (key === 'enter' && document.activeElement === inputRef.current) {
                 e.preventDefault();
-                next();
+                if (e.shiftKey) prev();
+                else next();
 
                 return;
             }
 
             if (key === 'escape') {
                 e.preventDefault();
-                clearHighlights();
+                stop();
                 setVisible(false);
 
                 return;
             }
         },
-        [setVisible, inputRef, clearHighlights, next, prev],
+        [setVisible, selectQuery, inputRef, stop, next, prev],
     );
 
     useEffect(() => {

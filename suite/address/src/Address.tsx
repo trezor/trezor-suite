@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styled, { type RuleSet, css } from 'styled-components';
 
 import { selectDeviceInternalModel } from '@suite-common/device';
-import { AddressFormatter, clearAddressPrefix } from '@suite-common/formatters';
+import { AddressFormatter, clearAddressPrefix, getAddressChunks } from '@suite-common/formatters';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -13,9 +13,8 @@ import { CopyIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type TypographyStyle } from '@trezor/theme';
 
+import { AddressChunks } from './AddressChunks';
 import { copyAddressToClipboard } from './copyAddressActions';
-
-const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
 
 const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): RuleSet<object> => {
     switch (deviceModelInternal) {
@@ -36,7 +35,11 @@ const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): Ru
     }
 };
 
-const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isUnderlined: boolean }>`
+const AddressWrapper = styled.p<{
+    $device?: DeviceModelInternal;
+    $isUnderlined: boolean;
+    $hasDeviceIndent: boolean;
+}>`
     ${({ $isUnderlined }) => $isUnderlined && 'text-decoration: underline;'}
     ${({ $device }) =>
         $device &&
@@ -44,10 +47,14 @@ const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isUnderlined: 
             ${mapDeviceModelToFontStyle($device)};
             white-space: pre-wrap;
         `};
+    ${({ $hasDeviceIndent }) =>
+        $hasDeviceIndent &&
+        css`
+            &::before {
+                content: '  ';
+            }
+        `}
 `;
-
-const addNewlineAfterEveryFourthChunk = (value: string) =>
-    value?.replace(REGEXP_ADDRESS_CHUNKS, '$1\n') ?? value;
 
 type AddressBaseProps = {
     value: string;
@@ -94,18 +101,20 @@ export const Address = ({
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
 
     const addressWithoutPrefix = clearAddressPrefix(value);
-    const formattedValue = AddressFormatter.format(addressWithoutPrefix, {
-        format: isTruncated ? 'long' : 'full',
-        isChunked: isAddressChunked,
+    const displayFormat = isTruncated ? 'long' : 'full';
+    const displayedChunks = isAddressChunked
+        ? getAddressChunks(addressWithoutPrefix, displayFormat)
+        : null;
+    const displayedText = AddressFormatter.format(addressWithoutPrefix, {
+        format: displayFormat,
+        isChunked: false,
     });
-    const formattedValueFull = AddressFormatter.format(addressWithoutPrefix, {
+    const fullChunks = isAddressChunked ? getAddressChunks(addressWithoutPrefix, 'full') : null;
+    const fullText = AddressFormatter.format(addressWithoutPrefix, {
         format: 'full',
-        isChunked: isAddressChunked,
+        isChunked: false,
     });
-
-    const deviceRenderedIndent = isAddressChunked && value.startsWith('0x') ? '  ' : '';
-    const deviceRenderedValue =
-        deviceRenderedIndent + addNewlineAfterEveryFourthChunk(formattedValueFull);
+    const hasDeviceIndent = isDeviceRendered && displayedChunks !== null && value.startsWith('0x');
 
     const onManualCopy = (e: React.ClipboardEvent) => {
         const selection = window.getSelection()?.toString();
@@ -119,7 +128,13 @@ export const Address = ({
             isActive={isTruncated && isCopyAllowed}
             content={
                 <Row gap={8}>
-                    <Text onCopy={onManualCopy}>{formattedValueFull}</Text>
+                    <Text onCopy={onManualCopy}>
+                        <AddressChunks
+                            chunks={fullChunks}
+                            fallback={fullText}
+                            isDeviceRendered={false}
+                        />
+                    </Text>
                     <IconButton
                         icon={CopyIcon}
                         size="small"
@@ -155,8 +170,13 @@ export const Address = ({
                     id={value}
                     $device={isDeviceRendered ? deviceModelInternal : undefined}
                     $isUnderlined={isUnderlined}
+                    $hasDeviceIndent={hasDeviceIndent}
                 >
-                    {isDeviceRendered ? deviceRenderedValue : formattedValue}
+                    <AddressChunks
+                        chunks={displayedChunks}
+                        fallback={displayedText}
+                        isDeviceRendered={isDeviceRendered}
+                    />
                 </AddressWrapper>
             </Text>
         </Tooltip>

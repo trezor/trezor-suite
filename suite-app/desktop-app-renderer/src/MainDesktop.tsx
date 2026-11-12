@@ -17,7 +17,6 @@ import {
     useTor,
 } from '@trezor/suite';
 
-import { GlobalStyle } from './GlobalStyle';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { desktopComponents } from './support/desktopComponents';
 
@@ -28,7 +27,6 @@ export const MainDesktop = () => {
 
     return (
         <Main trafficLightOffset={<TrafficLightDraggableWindowHeader />}>
-            <GlobalStyle />
             <DesktopUpdater />
             <Metadata />
             <ToasterProvider />
