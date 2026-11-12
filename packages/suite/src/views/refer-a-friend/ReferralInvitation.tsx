@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Box, Button, Card, Column, Flex, H3, Link, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
-import { DATA_PRIVACY_URL, TREZOR_TOS_REFER_A_FRIEND_URL, TREZOR_TOS_URL } from '@trezor/urls';
+import { DATA_PRIVACY_URL, TREZOR_TOS_URL } from '@trezor/urls';
 
 import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
@@ -11,6 +11,8 @@ type ReferralInvitationProps = {
     rewardAmount: string;
     minimumOrderAmount: string;
     friendDiscountPercentage: number;
+    termsUrl: string;
+    isJoining: boolean;
     onJoin: () => void;
 };
 
@@ -18,6 +20,8 @@ export const ReferralInvitation = ({
     rewardAmount,
     minimumOrderAmount,
     friendDiscountPercentage,
+    termsUrl,
+    isJoining,
     onJoin,
 }: ReferralInvitationProps) => {
     const isBelowTablet = useIsContentBelowBreakpoint(breakpoints.tablet);
@@ -76,6 +80,7 @@ export const ReferralInvitation = ({
                         <Button
                             data-testid="@referral/join"
                             size={isBelowTablet ? 'medium' : 'large'}
+                            isLoading={isJoining}
                             onClick={onJoin}
                         >
                             <Translation id="TR_REFERRAL_JOIN_PROGRAM" />
@@ -93,9 +98,7 @@ export const ReferralInvitation = ({
                     id="TR_REFERRAL_TERMS"
                     values={{
                         privacyPolicy: chunks => <Link href={DATA_PRIVACY_URL}>{chunks}</Link>,
-                        programTerms: chunks => (
-                            <Link href={TREZOR_TOS_REFER_A_FRIEND_URL}>{chunks}</Link>
-                        ),
+                        programTerms: chunks => <Link href={termsUrl}>{chunks}</Link>,
                         generalTerms: chunks => <Link href={TREZOR_TOS_URL}>{chunks}</Link>,
                     }}
                 />

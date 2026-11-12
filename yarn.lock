@@ -11235,6 +11235,7 @@ __metadata:
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
+    "@suite-common/refer-a-friend": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
@@ -11350,6 +11351,7 @@ __metadata:
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/refer-a-friend": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-constants": "workspace:^"
     "@suite-common/suite-sync-storage": "workspace:*"
@@ -12397,6 +12399,27 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/refer-a-friend@workspace:*, @suite-common/refer-a-friend@workspace:suite-common/refer-a-friend":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/refer-a-friend@workspace:suite-common/refer-a-friend"
+  dependencies:
+    "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -14429,6 +14452,7 @@ __metadata:
     "@suite-common/platform-encryption-native": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
+    "@suite-common/refer-a-friend": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
@@ -20069,6 +20093,7 @@ __metadata:
     "@suite-common/price-chart": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
+    "@suite-common/refer-a-friend": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"

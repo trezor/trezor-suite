@@ -23,6 +23,9 @@
             "path": "../../suite-common/platform-encryption"
         },
         {
+            "path": "../../suite-common/refer-a-friend"
+        },
+        {
             "path": "../../suite-common/sentry"
         },
         {

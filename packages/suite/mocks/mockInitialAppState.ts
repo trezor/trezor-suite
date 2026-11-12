@@ -24,6 +24,7 @@ import { type MetadataState } from '@suite-common/metadata-types';
 import { type NetworksState } from '@suite-common/networks';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
+import { referAFriendInitialState } from '@suite-common/refer-a-friend';
 import { type SuiteSyncDataState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 import { type ThpState } from '@suite-common/thp';
@@ -74,6 +75,7 @@ export const mockInitialAppState = {
     } as SuiteSyncDataState,
     suiteSync: initialSuiteSyncDesktopState,
     suiteSyncQuotaManager: quotaManagerInitialState,
+    referAFriend: referAFriendInitialState,
     window: {
         isVisible: true,
         isBelowMobile: false,
