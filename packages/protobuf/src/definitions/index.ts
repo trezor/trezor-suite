@@ -125,6 +125,18 @@ import {
     EvoluSignRegistrationRequest,
 } from './messages-evolu';
 import {
+    ExtAppDataChunkAck,
+    ExtAppDataChunkRequest,
+    ExtAppHeaderAck,
+    ExtAppHeaderRequest,
+    ExtAppLoad,
+    ExtAppLoaded,
+    ExtAppMessage,
+    ExtAppResponse,
+    ExtAppRootPacketAck,
+    ExtAppRootPacketRequest,
+} from './messages-extapp';
+import {
     ApplyFlags,
     ApplySettings,
     AuthenticateDevice,
@@ -313,6 +325,7 @@ export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
 export * from './messages-evolu';
+export * from './messages-extapp';
 export * from './messages-monero';
 export * from './messages-nostr';
 export * from './messages-ripple';
@@ -487,6 +500,16 @@ export const MessageType = Type.Object(
         EvoluDelegatedIdentityKey,
         EvoluIndexManagement,
         EvoluIndexManagementResponse,
+        ExtAppLoad,
+        ExtAppLoaded,
+        ExtAppHeaderRequest,
+        ExtAppHeaderAck,
+        ExtAppRootPacketRequest,
+        ExtAppRootPacketAck,
+        ExtAppDataChunkRequest,
+        ExtAppDataChunkAck,
+        ExtAppMessage,
+        ExtAppResponse,
         MoneroGetAddress,
         MoneroAddress,
         MoneroGetWatchKey,
@@ -715,6 +738,11 @@ export type WireInMessage =
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
     | 'EvoluIndexManagement'
+    | 'ExtAppLoad'
+    | 'ExtAppHeaderAck'
+    | 'ExtAppRootPacketAck'
+    | 'ExtAppDataChunkAck'
+    | 'ExtAppMessage'
     | 'MoneroGetAddress'
     | 'MoneroGetWatchKey'
     | 'MoneroTransactionInitRequest'
@@ -842,6 +870,11 @@ export type WireOutMessage =
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'
     | 'EvoluIndexManagementResponse'
+    | 'ExtAppLoaded'
+    | 'ExtAppHeaderRequest'
+    | 'ExtAppRootPacketRequest'
+    | 'ExtAppDataChunkRequest'
+    | 'ExtAppResponse'
     | 'MoneroAddress'
     | 'MoneroWatchKey'
     | 'MoneroTransactionInitAck'
