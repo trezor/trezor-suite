@@ -1,7 +1,5 @@
 import { Translation } from '@suite/intl';
-
-import { FormatSwitch } from '../FormatSwitch';
-import { useSignedMessage } from '../SignedMessageContext';
+import { FormatSwitch, useSignedMessage } from '@suite/sign-verify';
 
 type CardanoPublicKeyFormatSwitchProps = {
     isCose: boolean;

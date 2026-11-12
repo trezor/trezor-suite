@@ -1,10 +1,8 @@
 import { useMemo } from 'react';
 
+import { type SignAddress, useAccountSignAddresses } from '@suite/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
-
-import { type SignAddress } from '../types';
-import { useAccountSignAddresses } from '../useAccountSignAddresses';
 
 /** Cardano also signs with the stake address, which comes first. */
 export const useCardanoSignAddresses = (account: Account): SignAddress[] => {

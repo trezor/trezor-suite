@@ -1,9 +1,6 @@
 import { useTranslation } from '@suite/intl';
+import { CopyFieldButton, useSignVerifyCopyValue, useSignedMessage } from '@suite/sign-verify';
 import { Input } from '@trezor/components';
-
-import { CopyFieldButton } from '../CopyFieldButton';
-import { useSignedMessage } from '../SignedMessageContext';
-import { useSignVerifyCopyValue } from '../useSignVerifyCopyValue';
 
 export const CardanoPublicKeyField = () => {
     const signedMessage = useSignedMessage();

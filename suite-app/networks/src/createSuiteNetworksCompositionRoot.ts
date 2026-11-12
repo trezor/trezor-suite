@@ -1,4 +1,5 @@
 import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
+import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
 import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
 
 import { createSuiteNetworkModuleRepository } from './SuiteNetworkModuleRepository';
@@ -12,6 +13,7 @@ export const createSuiteNetworksCompositionRoot = (): SuiteNetworksServices => {
         suiteNetworkModules: [
             createBitcoinSuiteNetworkModule(),
             createEthereumSuiteNetworkModule(),
+            createCardanoSuiteNetworkModule(),
         ],
     });
 
