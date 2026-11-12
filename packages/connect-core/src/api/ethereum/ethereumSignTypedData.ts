@@ -4,7 +4,7 @@ import { hashDomain, hashStruct } from 'viem';
 import type { TypedDataDomain } from 'viem';
 
 import type { EthereumSignTypedDataTypes } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { getIndexOrThrow } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

@@ -1,6 +1,6 @@
 import type { CoreCallMessage } from '@trezor/connect-common';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
-import { MODULES } from '@trezor/connect-common/src/constants/network';
+import { TypedError } from '@trezor/connect-common/constants/errors';
+import { MODULES } from '@trezor/connect-common/constants/network';
 
 import * as Methods from '../api';
 import type { AbstractMethod } from './AbstractMethod';

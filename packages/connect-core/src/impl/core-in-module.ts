@@ -19,14 +19,14 @@ import type {
     UiResponseEvent,
     UpdateConnectSettings,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
-import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
+import { ERRORS } from '@trezor/connect-common/constants';
+import { parseConnectSettings } from '@trezor/connect-common/data/connectSettings';
+import { ConnectEmitter } from '@trezor/connect-common/types/emitter';
 import {
     type CancelParams,
     createCoreCallCancelMessage,
-} from '@trezor/connect-common/src/utils/cancelParams';
-import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/deferred';
+} from '@trezor/connect-common/utils/cancelParams';
+import { createUUIDDeferredManager } from '@trezor/connect-common/utils/deferred';
 import { type Logger, noopLogger } from '@trezor/logger';
 import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
 import { cloneObject } from '@trezor/utils';

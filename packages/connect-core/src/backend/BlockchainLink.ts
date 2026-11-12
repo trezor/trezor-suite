@@ -1,5 +1,5 @@
 import type { CoinInfo, Proxy } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 
 import { BackendManager } from './BackendManager';
 import type { BlockchainOptions as Options } from './Blockchain';

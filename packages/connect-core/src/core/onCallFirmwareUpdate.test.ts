@@ -1,5 +1,5 @@
 import { UI_EVENTS } from '@trezor/connect-common';
-import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/data/connectSettings';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { Log, noopCreateLogger } from '@trezor/logger';
 import { v1 as protocolV1 } from '@trezor/protocol';

@@ -16,7 +16,7 @@ import {
     resetDeviceWithEntropyCheckThunk,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { type ERRORS } from '@trezor/connect-common/src/constants';
+import { type ERRORS } from '@trezor/connect-common/constants';
 import { createThunk } from '@trezor/redux-utils';
 
 import {

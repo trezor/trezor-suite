@@ -7,7 +7,7 @@ import {
     CardanoPoolParameters,
     CardanoPoolRelay,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 

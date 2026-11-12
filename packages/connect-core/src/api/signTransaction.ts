@@ -10,8 +10,8 @@ import {
     getOriginalTxids,
     getPreviousTxids,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { ERRORS } from '@trezor/connect-common/constants';
+import { TypedError } from '@trezor/connect-common/constants/errors';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 

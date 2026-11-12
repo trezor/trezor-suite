@@ -3,7 +3,7 @@ import { bytesToHex, concatBytes, randomBytes } from '@noble/hashes/utils.js';
 
 import type { UiResponseThpPairingTag } from '@trezor/connect-common';
 import { DEVICE } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 

@@ -1,4 +1,4 @@
-import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect-common/src/constants/cardano';
+import { NETWORK_IDS, PROTOCOL_MAGICS } from '@trezor/connect-common/constants/cardano';
 import { MessagesSchema } from '@trezor/protobuf';
 
 const {

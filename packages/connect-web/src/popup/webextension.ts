@@ -1,7 +1,7 @@
 import { WEBEXTENSION_SUITE_WEB_CHANNEL } from '@trezor/connect-common';
-import { type CoreEventMessage } from '@trezor/connect-common/src/events';
-import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
-import { ServiceWorkerWindowExtConnectableChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window-ext-connectable';
+import { type CoreEventMessage } from '@trezor/connect-common/events';
+import { type AbstractMessageChannel } from '@trezor/connect-common/messageChannel/abstract';
+import { ServiceWorkerWindowExtConnectableChannel } from '@trezor/connect-common/messageChannel/serviceworker-window-ext-connectable';
 import { createDeferred } from '@trezor/utils';
 
 import { Popup } from './abstract';

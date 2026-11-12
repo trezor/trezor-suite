@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
 import { type PermissionRequest, UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { TransportError } from '@trezor/connect-common/src/constants/errors';
+import { ERRORS } from '@trezor/connect-common/constants';
+import { TransportError } from '@trezor/connect-common/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import { getRandomInt } from '@trezor/utils';

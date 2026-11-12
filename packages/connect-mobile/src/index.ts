@@ -1,21 +1,15 @@
-import { connectPublicCallableMethods } from '@trezor/connect-common/src/callableMethods';
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { corsValidator, parseManifest } from '@trezor/connect-common/src/data';
-import {
-    DEEPLINK_VERSION,
-    DEFAULT_DOMAIN_MAJOR_VER,
-} from '@trezor/connect-common/src/data/version';
-import { type CallMethodPayload, createErrorMessage } from '@trezor/connect-common/src/events';
-import { factoryPublic } from '@trezor/connect-common/src/factory';
-import type { ConnectMobileSettings, Manifest } from '@trezor/connect-common/src/types';
-import type {
-    TrezorConnectCore,
-    TrezorConnectPublicAPI,
-} from '@trezor/connect-common/src/types/api';
+import { connectPublicCallableMethods } from '@trezor/connect-common/callableMethods';
+import { ERRORS } from '@trezor/connect-common/constants';
+import { corsValidator, parseManifest } from '@trezor/connect-common/data';
+import { DEEPLINK_VERSION, DEFAULT_DOMAIN_MAJOR_VER } from '@trezor/connect-common/data/version';
+import { type CallMethodPayload, createErrorMessage } from '@trezor/connect-common/events';
+import { factoryPublic } from '@trezor/connect-common/factory';
+import type { ConnectMobileSettings, Manifest } from '@trezor/connect-common/types';
+import type { TrezorConnectCore, TrezorConnectPublicAPI } from '@trezor/connect-common/types/api';
 import {
     type CancelParams,
     normalizeCancelParams,
-} from '@trezor/connect-common/src/utils/cancelParams';
+} from '@trezor/connect-common/utils/cancelParams';
 import {
     createDeferredManager,
     getWeakRandomUUID,
@@ -195,6 +189,6 @@ const TrezorConnect: TrezorConnectMobileAPI = factoryPublic(new TrezorConnectDee
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect-common/src/constants';
-export * from '@trezor/connect-common/src/events';
-export * from '@trezor/connect-common/src/types';
+export * from '@trezor/connect-common/constants';
+export * from '@trezor/connect-common/events';
+export * from '@trezor/connect-common/types';

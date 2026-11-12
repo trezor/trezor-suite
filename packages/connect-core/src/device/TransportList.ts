@@ -1,5 +1,5 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { ConnectSettingsTransport } from '@trezor/connect-common/src/types/settings';
+import { ERRORS } from '@trezor/connect-common/constants';
+import type { ConnectSettingsTransport } from '@trezor/connect-common/types/settings';
 import { type Transport, isTransportInstance } from '@trezor/transport-common';
 
 // TODO(reconfigure): dedupe-by-name silently ignores a same-name candidate

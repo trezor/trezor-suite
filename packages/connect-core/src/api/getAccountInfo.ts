@@ -6,7 +6,7 @@ import type {
     GetAccountInfo as GetAccountInfoParams,
     PermissionRequest,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { toCanonicalDescriptor } from '@trezor/utils';
 
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';

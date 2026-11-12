@@ -1,4 +1,4 @@
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError } from '@trezor/connect-common/constants/errors';
 
 import type { Device } from './Device';
 

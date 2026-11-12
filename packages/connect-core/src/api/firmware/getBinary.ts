@@ -1,5 +1,5 @@
 import type { BinaryInfo } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { removeTrailingSlashes } from '@trezor/utils';
 

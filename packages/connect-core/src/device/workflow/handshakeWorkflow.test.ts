@@ -1,4 +1,4 @@
-import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/data/connectSettings';
 import { noopCreateLogger } from '@trezor/logger';
 
 import { handshakeCancel } from './handshake';

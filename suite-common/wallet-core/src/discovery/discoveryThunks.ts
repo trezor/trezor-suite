@@ -43,7 +43,7 @@ import TrezorConnect, {
     type UiEventBundleProgress,
     type UiEventDiscoveryEntropyCheck,
 } from '@trezor/connect';
-import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
+import { type DiscoverAccountsProgress } from '@trezor/connect-common/types/api/account/discoverAccounts';
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trezor/redux-utils';
 

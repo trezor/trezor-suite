@@ -8,7 +8,7 @@ import type {
     EthereumTransactionEIP1559,
     PROTO,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import type { MessagesSchema } from '@trezor/protobuf';
 
 import { getEthereumDefinitions } from './ethereumDefinitions';

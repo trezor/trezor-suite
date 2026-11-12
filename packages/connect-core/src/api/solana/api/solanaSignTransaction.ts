@@ -3,7 +3,7 @@ import {
     SolanaTxAdditionalInfo,
 } from '@trezor/connect-common';
 import type { PROTO, PermissionRequest, TokenInfo } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';

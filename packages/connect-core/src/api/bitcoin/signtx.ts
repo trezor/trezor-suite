@@ -6,7 +6,7 @@ import type {
     SignedTransaction,
     TransactionOptions,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 
 import type { TypedCall } from '../../device/DeviceCommands';
 

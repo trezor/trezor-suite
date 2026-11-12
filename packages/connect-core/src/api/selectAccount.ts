@@ -1,9 +1,9 @@
 import { type CoinInfo, type PermissionRequest } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import {
     type AddressSelection,
     SelectAccount as SelectAccountSchema,
-} from '@trezor/connect-common/src/types/api/selectAccount';
+} from '@trezor/connect-common/types/api/selectAccount';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodReturnType } from '../core/AbstractMethod';

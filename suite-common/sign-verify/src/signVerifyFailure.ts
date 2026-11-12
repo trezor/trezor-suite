@@ -2,7 +2,7 @@ import { type Dispatch } from 'redux';
 
 import { type EventInstance, type events } from '@suite-common/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type ErrorCode, type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type ErrorCode, type SerializedError } from '@trezor/connect-common/constants/errors';
 
 export const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
 

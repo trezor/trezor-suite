@@ -27,10 +27,10 @@ import type {
     DeviceIdentity,
     MethodInfo,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
-import { parseLocalFirmwares } from '@trezor/connect-common/src/data/connectSettings';
-import { setLogWriter } from '@trezor/connect-common/src/utils/debug';
+import { ERRORS } from '@trezor/connect-common/constants';
+import type { TrezorError } from '@trezor/connect-common/constants/errors';
+import { parseLocalFirmwares } from '@trezor/connect-common/data/connectSettings';
+import { setLogWriter } from '@trezor/connect-common/utils/debug';
 import {
     type CreateLogger,
     type LogWriter,

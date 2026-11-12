@@ -1,4 +1,4 @@
-import { ERROR_CODES } from '@trezor/connect-common/src/constants/errors';
+import { ERROR_CODES } from '@trezor/connect-common/constants/errors';
 
 import { toConnectV9ErrorPayload } from './connectV9ErrorPayload';
 

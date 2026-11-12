@@ -1,6 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { parseConnectSettings } from '@trezor/connect-common/data/connectSettings';
 import { AbstractApiTransport, type UsbApi } from '@trezor/transport-common';
 
 import * as settingsStore from './src/data/settingsStore';

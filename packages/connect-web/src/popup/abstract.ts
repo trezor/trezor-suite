@@ -1,13 +1,13 @@
 import EventEmitter from 'events';
 
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
-import { type CoreEventMessage, POPUP } from '@trezor/connect-common/src/events';
+import * as ERRORS from '@trezor/connect-common/constants/errors';
+import { type CoreEventMessage, POPUP } from '@trezor/connect-common/events';
 import {
     type AbstractMessageChannel,
     type Message,
-} from '@trezor/connect-common/src/messageChannel/abstract';
-import type { Manifest, PermissionRequest } from '@trezor/connect-common/src/types';
-import { getOrigin } from '@trezor/connect-common/src/utils/urlUtils';
+} from '@trezor/connect-common/messageChannel/abstract';
+import type { Manifest, PermissionRequest } from '@trezor/connect-common/types';
+import { getOrigin } from '@trezor/connect-common/utils/urlUtils';
 import { type Log } from '@trezor/logger';
 import type { IntervalId } from '@trezor/type-utils';
 import { type Deferred, createDeferred } from '@trezor/utils';
