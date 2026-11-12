@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-import { getStakingPath } from '@suite-common/wallet-utils';
+import { getStakingPath } from '@trezor/network-cardano-suite-common';
 
 export type AddressItem = {
     label: string;

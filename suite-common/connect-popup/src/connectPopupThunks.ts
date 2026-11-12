@@ -11,10 +11,6 @@ import {
 import {
     formatNetworkAmount,
     getAddressForNetworkType,
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
     getPublicKeyForNetworkType,
     prepareNewAccountPayload,
 } from '@suite-common/wallet-utils';
@@ -22,6 +18,12 @@ import TrezorConnect, { type CallMethodKeys } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
+import {
+    getAddressParameters,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+} from '@trezor/network-cardano-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';

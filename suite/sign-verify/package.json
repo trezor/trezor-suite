@@ -27,6 +27,7 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
+        "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "react": "19.3.0",
         "react-hook-form": "^7.77.0",

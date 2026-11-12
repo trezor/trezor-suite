@@ -6,15 +6,17 @@ import {
 } from '@suite-common/wallet-types';
 import {
     formatMaxOutputAmount,
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
     getUnusedChangeAddress,
     isTestnet,
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO, type PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import {
+    getAddressParameters,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+} from '@trezor/network-cardano-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';

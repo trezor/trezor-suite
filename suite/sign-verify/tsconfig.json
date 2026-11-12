@@ -29,6 +29,9 @@
         },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },
+        {
+            "path": "../../networks/cardano/network-cardano-suite-common"
+        },
         { "path": "../../packages/redux-utils" }
     ]
 }

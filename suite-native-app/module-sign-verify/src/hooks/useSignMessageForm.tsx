@@ -3,10 +3,11 @@ import { useMemo, useState } from 'react';
 import { useFormatters } from '@suite-common/formatters';
 import { MAX_LENGTH_MESSAGE, getHasSelectableSignatureFormat } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
-import { getStakingPath, isUtxoBased } from '@suite-common/wallet-utils';
+import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Badge, type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { getStakingPath } from '@trezor/network-cardano-suite-common';
 import { isHex } from '@trezor/utils';
 
 import { type SignatureFormat, useSignMessage } from './useSignMessage';
