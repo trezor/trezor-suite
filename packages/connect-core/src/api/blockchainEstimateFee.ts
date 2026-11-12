@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainEstimateFee.js
 
-import { estimateFee } from '@trezor/blockchain-core/src/api/estimateFee';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -59,10 +59,10 @@ export default class BlockchainEstimateFee extends AbstractBlockchainMethod<
         return [];
     }
 
-    run({ sendCoreMessage }: MethodContext) {
+    run() {
         // The payload is a union of the overloads' params, which no single overload accepts.
-        const payload = this.payload as Parameters<typeof estimateFee>[0];
+        const payload = this.payload as Parameters<typeof TrezorBlockchain.estimateFee>[0];
 
-        return estimateFee(payload, sendCoreMessage);
+        return this.callBlockchain(TrezorBlockchain.estimateFee(payload));
     }
 }

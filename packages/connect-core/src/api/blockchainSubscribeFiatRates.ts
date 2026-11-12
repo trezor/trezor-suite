@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainSubscribeFiatRates.js
 
-import { subscribeFiatRates } from '@trezor/blockchain-core/src/api/subscribeFiatRates';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -43,7 +43,7 @@ export default class BlockchainSubscribeFiatRates extends AbstractBlockchainMeth
         return [];
     }
 
-    run({ sendCoreMessage }: MethodContext) {
-        return subscribeFiatRates(this.payload, sendCoreMessage);
+    run() {
+        return this.callBlockchain(TrezorBlockchain.subscribeFiatRates(this.payload));
     }
 }

@@ -1,3 +1,3 @@
-export * from './backend/BlockchainLink';
-export type { BlockchainOptions } from './backend/Blockchain';
-export { EvmRpcWorker } from './workers/workers';
+export { TrezorBlockchain } from './TrezorBlockchain';
+export type { TrezorBlockchainApi, TrezorBlockchainSettings } from './TrezorBlockchain';
+export type { BlockchainLinkSettings } from './data/coinInfo';

@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainSubscribe.js
 
-import { subscribe } from '@trezor/blockchain-core/src/api/subscribe';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -52,7 +52,7 @@ export default class BlockchainSubscribe extends AbstractBlockchainMethod<
         return [{ permission: 'internal' }];
     }
 
-    run({ sendCoreMessage }: MethodContext) {
-        return subscribe(this.payload, sendCoreMessage);
+    run() {
+        return this.callBlockchain(TrezorBlockchain.subscribe(this.payload));
     }
 }

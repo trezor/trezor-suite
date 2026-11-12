@@ -1,4 +1,4 @@
-import { updateProxy } from '@trezor/blockchain-core';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import {
     BLOCKCHAIN_EVENT,
     CORE_CALL,
@@ -160,7 +160,7 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
     // (proxy is unsupported in a browser); node, native and the platform-neutral local root all
     // share this implementation.
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        await updateProxy(proxy);
+        await TrezorBlockchain.updateSettings({ proxy });
     }
 
     public async updateConnectSettings(params: UpdateConnectSettings) {

@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetTransactions.js
 
-import { getTransactions } from '@trezor/blockchain-core/src/api/getTransactions';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -49,10 +49,10 @@ export default class BlockchainGetTransactions extends AbstractBlockchainMethod<
         return [];
     }
 
-    run({ sendCoreMessage }: MethodContext) {
+    run() {
         // The payload is a union of the overloads' params, which no single overload accepts.
-        const payload = this.payload as Parameters<typeof getTransactions>[0];
+        const payload = this.payload as Parameters<typeof TrezorBlockchain.getTransactions>[0];
 
-        return getTransactions(payload, sendCoreMessage);
+        return this.callBlockchain(TrezorBlockchain.getTransactions(payload));
     }
 }

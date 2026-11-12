@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainUnsubscribeFiatRates.js
 
-import { unsubscribeFiatRates } from '@trezor/blockchain-core/src/api/unsubscribeFiatRates';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -40,7 +40,7 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractBlockchainMe
         return [];
     }
 
-    run({ sendCoreMessage }: MethodContext) {
-        return unsubscribeFiatRates(this.payload, sendCoreMessage);
+    run() {
+        return this.callBlockchain(TrezorBlockchain.unsubscribeFiatRates(this.payload));
     }
 }

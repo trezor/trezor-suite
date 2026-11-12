@@ -1,9 +1,9 @@
-import { getInfo } from '@trezor/blockchain-core/src/api/getInfo';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -38,7 +38,7 @@ export default class BlockchainGetInfo extends AbstractBlockchainMethod<
         return [];
     }
 
-    run({ sendCoreMessage }: MethodContext) {
-        return getInfo(this.payload, sendCoreMessage);
+    run() {
+        return this.callBlockchain(TrezorBlockchain.getInfo(this.payload));
     }
 }

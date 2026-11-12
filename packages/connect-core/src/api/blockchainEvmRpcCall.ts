@@ -1,9 +1,9 @@
-import { evmRpcCall } from '@trezor/blockchain-core/src/api/evmRpcCall';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -51,7 +51,7 @@ export default class BlockchainEvmRpcCall extends AbstractBlockchainMethod<
         return 'Blockchain Evm Rpc Call';
     }
 
-    run({ sendCoreMessage }: MethodContext) {
-        return evmRpcCall(this.payload, sendCoreMessage);
+    run() {
+        return this.callBlockchain(TrezorBlockchain.evmRpcCall(this.payload));
     }
 }

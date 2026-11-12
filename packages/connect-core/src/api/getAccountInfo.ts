@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { getAccountInfo } from '@trezor/blockchain-core/src/api/getAccountInfo';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type {
     CoinInfo,
     GetAccountInfo as GetAccountInfoParams,
@@ -8,7 +8,7 @@ import type {
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
@@ -63,9 +63,9 @@ export default class GetAccountInfo extends AbstractBlockchainMethod<'getAccount
         return getLabel('Export #NETWORK account info', this.params.coinInfo);
     }
 
-    run({ sendCoreMessage }: MethodContext) {
+    run() {
         const { coinInfo: _, ...params } = this.params;
 
-        return getAccountInfo(params, sendCoreMessage);
+        return this.callBlockchain(TrezorBlockchain.getAccountInfo(params));
     }
 }
