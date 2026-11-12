@@ -7,7 +7,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
-import { type SignVerifyRootState, signThunk, verifyThunk } from './signVerifyActions';
+import { signThunk, verifyThunk } from './networkSignVerifyThunks';
+import { type SignVerifyRootState } from './signVerifyActions';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';

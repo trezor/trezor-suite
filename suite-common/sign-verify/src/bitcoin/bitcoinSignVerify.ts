@@ -3,6 +3,9 @@ import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
+import { getHasSelectableSignatureFormat } from './getHasSelectableSignatureFormat';
+import { signMessageThunk, verifyMessageThunk } from '../signVerifyActions';
+
 type SignBitcoinMessageParams = {
     device: TrezorDevice;
     account: Account;
@@ -53,4 +56,29 @@ export const verifyBitcoinMessage = ({
         message,
         signature,
         hex,
+    });
+
+type SignBitcoinMessageThunkParams = Omit<SignBitcoinMessageParams, 'device' | 'path'> & {
+    path: string;
+};
+
+export const signBitcoinMessageThunk = (params: SignBitcoinMessageThunkParams) =>
+    signMessageThunk({
+        account: params.account,
+        hex: params.hex,
+        // Networks signing in a single format never offered the choice, so reporting one of its
+        // values would invent an answer the user never gave.
+        signatureFormat: getHasSelectableSignatureFormat(params.account)
+            ? params.isElectrum
+                ? 'electrum'
+                : 'trezor'
+            : undefined,
+        signMessage: device => signBitcoinMessage({ ...params, device }),
+    });
+
+export const verifyBitcoinMessageThunk = (params: Omit<VerifyBitcoinMessageParams, 'device'>) =>
+    verifyMessageThunk({
+        account: params.account,
+        hex: params.hex,
+        verifyMessage: device => verifyBitcoinMessage({ ...params, device }),
     });

@@ -10,6 +10,8 @@ import {
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect-common';
 
+import { signMessageThunk } from '../signVerifyActions';
+
 type SignCardanoMessageParams = {
     device: TrezorDevice;
     account: Account;
@@ -59,3 +61,14 @@ export const signCardanoMessage = ({
             : response,
     );
 };
+
+type SignCardanoMessageThunkParams = Omit<SignCardanoMessageParams, 'device' | 'path'> & {
+    path: string;
+};
+
+export const signCardanoMessageThunk = (params: SignCardanoMessageThunkParams) =>
+    signMessageThunk({
+        account: params.account,
+        hex: params.hex,
+        signMessage: device => signCardanoMessage({ ...params, device }),
+    });
