@@ -18,6 +18,7 @@ contextBridge.exposeInMainWorld(
         'Bluetooth',
         'CoinjoinBackend',
         'CoinjoinClient',
+        'TrezorBlockchain',
         'TrezorConnect',
     ]),
 );

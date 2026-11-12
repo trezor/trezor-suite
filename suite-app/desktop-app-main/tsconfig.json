@@ -59,6 +59,9 @@
             "path": "../../suite/tor-types"
         },
         {
+            "path": "../../packages/blockchain-core"
+        },
+        {
             "path": "../../packages/coinjoin"
         },
         {

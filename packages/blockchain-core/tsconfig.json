@@ -9,6 +9,7 @@
         { "path": "../schema-utils" },
         { "path": "../type-utils" },
         { "path": "../utils" },
+        { "path": "../ipc-proxy" },
         { "path": "../requirements" }
     ]
 }

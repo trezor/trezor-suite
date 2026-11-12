@@ -11552,6 +11552,7 @@ __metadata:
     "@suite/desktop-app-native-bindings": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@suite/tor-types": "workspace:*"
+    "@trezor/blockchain-core": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -19422,10 +19423,16 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"
+    "@trezor/ipc-proxy": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+  peerDependencies:
+    "@trezor/ipc-proxy": "workspace:*"
+  peerDependenciesMeta:
+    "@trezor/ipc-proxy":
+      optional: true
   languageName: unknown
   linkType: soft
 
