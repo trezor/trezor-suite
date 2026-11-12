@@ -1,4 +1,4 @@
-import { formatEther, parseEther } from 'viem';
+import { type Hash, formatEther, isAddressEqual, parseEther } from 'viem';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -127,6 +127,19 @@ test.describe('Send ETH on a mainnet fork', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Suite shows the confirmed transaction and new balance', async () => {
                 await toastSection.openTxSentDetailsAndWaitForConfirmation();
+                const txid = (await tradingPage.transactionDetailModalTxid.innerText()) as Hash;
+                const receipt = await anvil.getTransactionReceipt(txid);
+                expect(receipt.status).toBe('success');
+                expect(isAddressEqual(receipt.from, senderAddress)).toBe(true);
+                expect(receipt.to && isAddressEqual(receipt.to, recipientAddress)).toBe(true);
+                // Amount and fee sit at the bottom of the modal, below the fold.
+                await walletPage.transactionDetailFee.scrollIntoViewIfNeeded();
+                await expect(walletPage.transactionDetailAmount).toHaveText(
+                    `–${localizeNumber(sendAmount)}`,
+                );
+                await expect(walletPage.transactionDetailFee).toHaveText(
+                    `–${localizeNumber(formatEther(receipt.gasUsed * receipt.effectiveGasPrice))}`,
+                );
                 const senderBalanceAfter = await anvil.getBalance(senderAddress);
                 await expect(walletPage.balanceOfAccount({ symbol: ethSymbol })).toHaveText(
                     toCompactAmount(formatEther(senderBalanceAfter)),
