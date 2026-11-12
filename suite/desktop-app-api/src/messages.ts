@@ -316,8 +316,11 @@ export type LegacyOriginStorageImportReport =
     | { success: false; error: string };
 
 /**
- * Messages of the export page's preload to the main process, one object store (in slices of
- * records) or file at a time, so no single IPC message has to carry a whole wallet history.
+ * Messages of the export page's preload to the main process, one object store (in slices of records) or file at a time,
+ * which bounds the size of each message the page sends.
+ * The main process hands the export to the renderer whole all the same:
+ * the renderer writes each database inside the single versionchange transaction that creates it,
+ * so it needs all of a database's records at once.
  */
 export const legacyOriginExportObjectStoreMessage = z.object({
     database: legacyOriginDatabaseDefinition,

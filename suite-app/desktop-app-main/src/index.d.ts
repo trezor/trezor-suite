@@ -83,8 +83,9 @@ declare type McpSettings = {
 
 declare type LegacyOriginStorageSettings = {
     /**
-     * The renderer's storage has moved from the legacy `file://` origin to the renderer origin, or
-     * there was nothing to move. Set once per user-data directory, see modules/legacy-origin-storage.ts.
+     * The renderer's storage has moved from the legacy `file://` origin to the renderer origin,
+     * there was nothing to move, or the user chose to start without it after the move failed.
+     * Set once per user-data directory, see modules/legacy-origin-storage.ts.
      */
     isMigrated: boolean;
 };
