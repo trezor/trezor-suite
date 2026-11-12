@@ -1,6 +1,8 @@
 import { type ElectronIpcMainInvokeEvent } from './types';
 import { validateIpcMessage } from './validateIpcMessage';
 
+const RENDERER_URL = 'suite://app/index.html';
+
 const createSenderFrame = (url: string, destroyed?: boolean): ElectronIpcMainInvokeEvent => ({
     senderFrame: { url: encodeURI(url), isDestroyed: () => destroyed === true },
 });
@@ -17,20 +19,32 @@ const withNodeEnv = (nodeEnv: string, subject: () => void) => {
 
 describe(validateIpcMessage.name, () => {
     it('passes when in DEV (localhost:8000)', () => {
-        validateIpcMessage({ ipcEvent: createSenderFrame('http://localhost:8000/') });
+        validateIpcMessage({
+            ipcEvent: createSenderFrame('http://localhost:8000/'),
+            rendererUrl: RENDERER_URL,
+        });
     });
 
     it('passes in PROD: the renderer served over the suite scheme', () => {
         withNodeEnv('production', () => {
-            validateIpcMessage({ ipcEvent: createSenderFrame('suite://app/index.html') });
-            validateIpcMessage({ ipcEvent: createSenderFrame('suite://app/index.html?x=1#top') });
+            validateIpcMessage({
+                ipcEvent: createSenderFrame('suite://app/index.html'),
+                rendererUrl: RENDERER_URL,
+            });
+            validateIpcMessage({
+                ipcEvent: createSenderFrame('suite://app/index.html?x=1#top'),
+                rendererUrl: RENDERER_URL,
+            });
         });
     });
 
     it('errors when in PROD and on localhost:8000', () => {
         withNodeEnv('production', () => {
             const subject = () => {
-                validateIpcMessage({ ipcEvent: createSenderFrame('http://localhost:8000/') });
+                validateIpcMessage({
+                    ipcEvent: createSenderFrame('http://localhost:8000/'),
+                    rendererUrl: RENDERER_URL,
+                });
             };
 
             expect(subject).toThrow(
@@ -43,7 +57,10 @@ describe(validateIpcMessage.name, () => {
         const senderUrl = 'file:///tmp/.mount_TrezorXsQUqQ/resources/app.asar/build/index.html';
 
         const subject = () => {
-            validateIpcMessage({ ipcEvent: createSenderFrame(senderUrl) });
+            validateIpcMessage({
+                ipcEvent: createSenderFrame(senderUrl),
+                rendererUrl: RENDERER_URL,
+            });
         };
 
         expect(subject).toThrow('Invalid ipcEvent.senderFrame.url');
@@ -56,16 +73,38 @@ describe(validateIpcMessage.name, () => {
             'suite://other/index.html',
         ].forEach(senderUrl => {
             const subject = () => {
-                validateIpcMessage({ ipcEvent: createSenderFrame(senderUrl) });
+                validateIpcMessage({
+                    ipcEvent: createSenderFrame(senderUrl),
+                    rendererUrl: RENDERER_URL,
+                });
             };
 
             expect(subject).toThrow('Invalid ipcEvent.senderFrame.url');
         });
     });
 
+    it('allows the page it is given and no other', () => {
+        const rendererUrl = 'app://renderer/main.html';
+
+        withNodeEnv('production', () => {
+            validateIpcMessage({ ipcEvent: createSenderFrame(rendererUrl), rendererUrl });
+
+            const subject = () => {
+                validateIpcMessage({ ipcEvent: createSenderFrame(RENDERER_URL), rendererUrl });
+            };
+
+            expect(subject).toThrow(
+                'Invalid ipcEvent.senderFrame.url: "suite://app/index.html", only "app://renderer/main.html" is allowed',
+            );
+        });
+    });
+
     it('errors for malicious URL', () => {
         const subject = () => {
-            validateIpcMessage({ ipcEvent: createSenderFrame('https://www.irs.gov/') });
+            validateIpcMessage({
+                ipcEvent: createSenderFrame('https://www.irs.gov/'),
+                rendererUrl: RENDERER_URL,
+            });
         };
 
         expect(subject).toThrow('Invalid ipcEvent.senderFrame.url: "https://www.irs.gov/"');
@@ -73,12 +112,12 @@ describe(validateIpcMessage.name, () => {
 
     it('errors for invalid senderFrame', () => {
         const subjectWithEmptyEvent = () => {
-            validateIpcMessage({ ipcEvent: {} as any });
+            validateIpcMessage({ ipcEvent: {} as any, rendererUrl: RENDERER_URL });
         };
         const subjectWithEmptySenderFrame = () => {
             const ipcEvent = createSenderFrame('http://localhost:8000/');
             delete (ipcEvent.senderFrame as any).url;
-            validateIpcMessage({ ipcEvent });
+            validateIpcMessage({ ipcEvent, rendererUrl: RENDERER_URL });
         };
 
         expect(subjectWithEmptyEvent).toThrow('Invalid ipcEvent: {}');
@@ -90,7 +129,10 @@ describe(validateIpcMessage.name, () => {
             const SCAM_URL = 'https://www.scam.com/index.html';
 
             const subject = () => {
-                validateIpcMessage({ ipcEvent: createSenderFrame(SCAM_URL) });
+                validateIpcMessage({
+                    ipcEvent: createSenderFrame(SCAM_URL),
+                    rendererUrl: RENDERER_URL,
+                });
             };
 
             expect(subject).toThrow(

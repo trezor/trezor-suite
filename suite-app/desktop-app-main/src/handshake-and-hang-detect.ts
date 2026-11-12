@@ -27,6 +27,8 @@ type HandshakeAndHangDetectDeps = {
     mainWindow: BrowserWindow;
     logger: ILogger;
     statePatch?: Record<string, any>;
+    /** Whether the renderer is known to be kept from its handshake, so its silence is not a hang. */
+    isHandshakeDelayed: () => boolean;
 };
 
 /**
@@ -36,6 +38,7 @@ export const handshakeAndHangDetect = ({
     mainWindow,
     statePatch,
     logger,
+    isHandshakeDelayed,
 }: HandshakeAndHangDetectDeps) => {
     const handshakeHandler = () => Promise.resolve({});
     let timeout: TimerId;
@@ -44,6 +47,13 @@ export const handshakeAndHangDetect = ({
         const timeoutCallback = async () => {
             // if renderer process was killed during timeout, then do not invoke any renderer api
             if (!isMainWindowUsable(mainWindow)) return {};
+
+            if (isHandshakeDelayed()) {
+                logger.info('hang-detect', 'Handshake is delayed, delaying check');
+                timeout = setTimeout(timeoutCallback, HANG_WAIT);
+
+                return {};
+            }
 
             // TODO: what happen if handshake will be fired up after timeout?
             const result = await showDialog(mainWindow);
