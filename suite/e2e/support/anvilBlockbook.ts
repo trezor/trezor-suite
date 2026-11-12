@@ -168,6 +168,15 @@ export class AnvilBlockbook {
         );
     }
 
+    async getStatus(): Promise<BlockbookStatus> {
+        const response = await fetch(`${this.url}/api/`);
+        if (!response.ok) {
+            throw new Error(`Blockbook answered ${response.status} for its status`);
+        }
+
+        return response.json() as Promise<BlockbookStatus>;
+    }
+
     async getAddress(address: Address): Promise<BlockbookAddress> {
         const response = await fetch(`${this.url}/api/v2/address/${address}?details=txids`);
         if (!response.ok) {
