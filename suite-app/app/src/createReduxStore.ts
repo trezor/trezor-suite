@@ -1,17 +1,14 @@
 import { type DevToolsEnhancerOptions, configureStore } from '@reduxjs/toolkit';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { type ReduxLoggerControl } from '@suite/settings';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { addLog } from '@suite-common/logger';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { type ReduxStoreWithThunk, createReduxExtra } from '@trezor/redux-utils';
 
-import {
-    type ReduxLoggerControl,
-    type ReduxLoggerStorage,
-    createReduxLogger,
-} from './createReduxLogger';
+import { type ReduxLoggerStorage, createReduxLogger } from './createReduxLogger';
 import { type ExtraDependenciesSuite } from './extraDependencies';
 import { type AppState, type SuiteRootReducer, getCustomMiddleware } from './store';
 import { type SuiteServices } from './suiteServices';
