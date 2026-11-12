@@ -1,5 +1,4 @@
 import { type TokenMetadataSource } from '@suite-common/token';
-import { toTokenAddress } from '@suite-common/tokens';
 import { type TradingAssetOption } from '@suite-common/trading';
 
 export const receiveAssetOptionsToTokenMetadataSources = (
@@ -13,7 +12,7 @@ export const receiveAssetOptionsToTokenMetadataSources = (
                       networkSymbol: asset.networkSymbol,
                       tokens: [
                           {
-                              contract: toTokenAddress(asset.contractAddress),
+                              contract: asset.contractAddress,
                               name: asset.name,
                               symbol: asset.symbol,
                           },
