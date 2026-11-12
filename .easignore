@@ -99,6 +99,7 @@
 !/suite-common/device-authenticity
 !/suite-common/discreet-mode
 !/suite-common/e2e-evolu-client
+!/suite-common/earn
 !/suite-common/earn-stablecoin
 !/suite-common/earn-stablecoin-api
 !/suite-common/earn-stablecoin-defs

@@ -60,7 +60,6 @@ import { getDerivationType } from './cardanoUtils';
 import { getDescriptorForNetworkType } from './deviceAddressUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
-import { getAccountTotalStakingBalance } from './stakingUtils';
 import { shouldUppercaseTokenSymbol } from './tokenUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
@@ -590,18 +589,13 @@ export const getAccountTokensFiatBalance = (
         }, new BigNumber(0)),
     );
 
-const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
-    const balance = getAccountTotalStakingBalance(account) ?? '0';
-
-    return toFiatCurrency({ amount: balance, rate });
-};
-
 type GetAccountFiatBalanceParams = {
     account: Account;
     baseCurrencyCode: BaseCurrencyCode;
     rates?: RatesByKey;
     shouldIncludeTokens?: boolean;
-    shouldIncludeStaking?: boolean;
+    /** What the account holds in staking outside its balance, in the coin's smallest unit. */
+    stakingBalance?: string;
 };
 
 export const getAccountFiatBalance = ({
@@ -609,7 +603,7 @@ export const getAccountFiatBalance = ({
     baseCurrencyCode,
     rates,
     shouldIncludeTokens = true,
-    shouldIncludeStaking = true,
+    stakingBalance,
 }: GetAccountFiatBalanceParams) => {
     const coinFiatRateKey = getFiatRateKey(account.symbol, baseCurrencyCode);
     const coinFiatRate = rates?.[coinFiatRateKey];
@@ -636,21 +630,25 @@ export const getAccountFiatBalance = ({
         totalBalance = totalBalance.plus(tokensBalance ?? 0);
     }
 
-    // account staking balance, Cardano staking should never be included as it would double the total
-    if (shouldIncludeStaking && account.networkType !== 'cardano') {
-        const stakingBalance = getStakingFiatBalance(account, coinFiatRate.rate);
-        totalBalance = totalBalance.plus(stakingBalance ?? 0);
+    if (stakingBalance !== undefined) {
+        const stakingFiatBalance = toFiatCurrency({
+            amount: formatNetworkAmount(stakingBalance, account.symbol),
+            rate: coinFiatRate.rate,
+        });
+
+        totalBalance = totalBalance.plus(stakingFiatBalance ?? 0);
     }
 
     return asBaseCurrencyAmount(totalBalance);
 };
 
 type GetTotalFiatBalanceParams = {
-    deviceAccounts: Account[];
+    deviceAccounts: readonly Account[];
     baseCurrencyCode: BaseCurrencyCode;
     rates?: RatesByKey;
     shouldIncludeTokens?: boolean;
-    shouldIncludeStaking?: boolean;
+    /** By account key, in the coin's smallest unit. */
+    stakingBalances?: Partial<Record<AccountKey, string>>;
 };
 
 export const getTotalFiatBalance = ({
@@ -658,7 +656,7 @@ export const getTotalFiatBalance = ({
     baseCurrencyCode,
     rates,
     shouldIncludeTokens = true,
-    shouldIncludeStaking = true,
+    stakingBalances,
 }: GetTotalFiatBalanceParams) => {
     let instanceBalance = new BigNumber(0);
 
@@ -669,7 +667,7 @@ export const getTotalFiatBalance = ({
                 baseCurrencyCode,
                 rates,
                 shouldIncludeTokens,
-                shouldIncludeStaking,
+                stakingBalance: stakingBalances?.[account.key],
             }) ?? '0';
         instanceBalance = instanceBalance.plus(accountFiatBalance);
     });

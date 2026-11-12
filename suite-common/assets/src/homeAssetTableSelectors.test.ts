@@ -1,7 +1,21 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import {
+    type StakingPosition,
+    type StakingPositionBalances,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type HomeAssetsTableGrouping } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type HomeAssetsTableGrouping,
+} from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
@@ -51,6 +65,25 @@ const ROW_LIMIT = 8;
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const USDC_ON_POL = '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359' as TokenAddress;
 const UNKNOWN_TOKEN = '0x0000000000000000000000000000000000000bad' as TokenAddress;
+
+const ETH_STAKING_PRODUCT = mockStakingProductDescriptor();
+const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
+    networkSymbol: ADA,
+    type: 'native',
+    operations: ['stake', 'unstake', 'claim', 'vote'],
+    rewardsKind: 'claimable',
+});
+
+const amount = (value: string) => stakingAmountSchema.parse(value);
+
+const balances = (overrides: Partial<StakingPositionBalances>): StakingPositionBalances => ({
+    staked: amount('0'),
+    pending: amount('0'),
+    unstaking: amount('0'),
+    withdrawable: amount('0'),
+    rewards: amount('0'),
+    ...overrides,
+});
 
 type MockAccountParams = {
     deviceState?: StaticSessionId;
@@ -102,6 +135,7 @@ type MockStateParams = {
     grouping?: HomeAssetsTableGrouping;
     shownTokens?: TokenAddress[];
     localCurrency?: BaseCurrencyCode;
+    stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
 };
 
 const createState = ({
@@ -115,12 +149,19 @@ const createState = ({
     grouping = 'default',
     shownTokens = [],
     localCurrency = 'usd',
+    stakingPositions = {},
 }: MockStateParams): HomeAssetTableState => {
     const definitions = {
         coin: { data: knownTokens, hide: hiddenTokens, show: shownTokens },
     };
 
     return {
+        earn: {
+            staking: mockStakingState({
+                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT],
+                positions: stakingPositions,
+            }),
+        },
         device: {
             selectedDevice: {
                 state: { staticSessionId: ALICE },
@@ -565,46 +606,27 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetSignVerifyAccounts(stateWithSigners, solanaKey)).toEqual([]);
     });
 
-    it('separates available from staked, pending, and withdrawing balances', () => {
+    it('separates available from the locked stake, pending and withdrawing balances', () => {
+        const visible = mockAccount({ symbol: ETH, balance: '1' });
+        const hidden = mockAccount({ symbol: ETH, index: 1, balance: '10', isVisible: false });
         const staked = createState({
-            accounts: [
-                {
-                    ...mockAccount({ symbol: ETH, balance: '1' }),
-                    networkType: 'ethereum',
-                    misc: {
-                        stakingPools: [
-                            {
-                                name: 'Everstake',
-                                autocompoundBalance: '1000000000000000000',
-                                pendingBalance: '500000000000000000',
-                                pendingDepositedBalance: '250000000000000000',
-                                withdrawTotalAmount: '250000000000000000',
-                                claimableAmount: '0',
-                                depositedBalance: '0',
-                                restakedReward: '0',
-                            },
-                        ],
-                    },
-                } as Account,
-                {
-                    ...mockAccount({ symbol: ETH, index: 1, balance: '10', isVisible: false }),
-                    networkType: 'ethereum',
-                    misc: {
-                        stakingPools: [
-                            {
-                                name: 'Everstake',
-                                autocompoundBalance: '10000000000000000000',
-                                pendingBalance: '0',
-                                pendingDepositedBalance: '0',
-                                withdrawTotalAmount: '0',
-                                claimableAmount: '0',
-                                depositedBalance: '0',
-                                restakedReward: '0',
-                            },
-                        ],
-                    },
-                } as Account,
-            ],
+            accounts: [visible, hidden],
+            stakingPositions: {
+                [visible.key]: [
+                    mockStakingPosition({
+                        balances: balances({
+                            staked: amount('1000000000000000000'),
+                            pending: amount('750000000000000000'),
+                            unstaking: amount('250000000000000000'),
+                        }),
+                    }),
+                ],
+                [hidden.key]: [
+                    mockStakingPosition({
+                        balances: balances({ staked: amount('10000000000000000000') }),
+                    }),
+                ],
+            },
             rates: mockRate(ETH, 3000),
         });
 
@@ -615,46 +637,29 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
     });
 
-    it('counts a delegating Cardano account whole as staked', () => {
-        const delegating = createState({
-            accounts: [
-                {
-                    ...mockAccount({ symbol: ADA, balance: '3' }),
-                    networkType: 'cardano',
-                    balance: '3000000',
-                    misc: { staking: { isActive: true } },
-                } as Account,
-                {
-                    ...mockAccount({ symbol: ADA, index: 1, balance: '1' }),
-                    networkType: 'cardano',
-                    balance: '1000000',
-                    misc: { staking: { isActive: false } },
-                } as Account,
-            ],
+    it('counts a liquid Cardano stake in the balance the account already holds', () => {
+        const delegating = mockAccount({ symbol: ADA, balance: '3' });
+        const idle = mockAccount({ symbol: ADA, index: 1, balance: '1' });
+        const delegated = createState({
+            accounts: [delegating, idle],
+            stakingPositions: {
+                [delegating.key]: [
+                    mockStakingPosition({
+                        productId: ADA_STAKING_PRODUCT.id,
+                        lockup: 'liquid',
+                        balances: balances({ staked: amount('3000000') }),
+                        unlocks: [],
+                        operations: ['unstake', 'claim', 'vote'],
+                    }),
+                ],
+            },
             enabledNetworks: [ADA],
         });
 
-        expect(selectWalletAssetAvailableAmount(delegating, cardanoKey)).toBe('1');
-        expect(selectWalletAssetStakingAmount(delegating, cardanoKey)).toBe('3');
-        expect(selectWalletAssetStakingRatio(delegating, cardanoKey)).toBeCloseTo(3 / 4);
-    });
-
-    it('leaves a pending send out of what a delegating Cardano account stakes', () => {
-        const sending = createState({
-            accounts: [
-                {
-                    ...mockAccount({ symbol: ADA, balance: '2.5' }),
-                    networkType: 'cardano',
-                    balance: '3000000',
-                    misc: { staking: { isActive: true } },
-                } as Account,
-            ],
-            enabledNetworks: [ADA],
-        });
-
-        expect(selectWalletAssetStakingAmount(sending, cardanoKey)).toBe('2.5');
-        expect(selectWalletAssetAvailableAmount(sending, cardanoKey)).toBe('0');
-        expect(selectWalletAssetStakingRatio(sending, cardanoKey)).toBe(1);
+        expect(selectWalletAssetAmount(delegated, cardanoKey)).toBe('4');
+        expect(selectWalletAssetAvailableAmount(delegated, cardanoKey)).toBe('1');
+        expect(selectWalletAssetStakingAmount(delegated, cardanoKey)).toBe('3');
+        expect(selectWalletAssetStakingRatio(delegated, cardanoKey)).toBeCloseTo(3 / 4);
     });
 
     it('says nothing at all while no asset of the wallet can be priced', () => {

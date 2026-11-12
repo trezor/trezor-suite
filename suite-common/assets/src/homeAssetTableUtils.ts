@@ -1,5 +1,6 @@
-import { type AssetAccount } from '@suite-common/wallet-core';
 import { BigNumber } from '@trezor/utils';
+
+import { type AssetAccount } from './assetAccountsSelectors';
 
 export const sumAssetAccounts = (assetAccounts: readonly AssetAccount[]) => ({
     cryptoBalance: assetAccounts.reduce(

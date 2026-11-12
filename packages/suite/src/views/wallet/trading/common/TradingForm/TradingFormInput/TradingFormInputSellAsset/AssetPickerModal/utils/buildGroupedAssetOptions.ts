@@ -69,7 +69,6 @@ export const buildGroupedAssetOptions = ({
             baseCurrencyCode,
             rates: fiatRates,
             shouldIncludeTokens: false,
-            shouldIncludeStaking: false,
         });
     };
 

@@ -1,12 +1,21 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import {
+    type StakingPosition,
+    type StakingPositionBalances,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type WalletAssetKey, getWalletAssetKey } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type AssetAccountsRootState,
-    type WalletAssetKey,
-    getWalletAssetKey,
     selectAssetAccounts,
     selectHiddenAssetAccountKeys,
 } from './assetAccountsSelectors';
@@ -34,6 +43,25 @@ const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress
 const USDT_ON_ETH = '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress;
 const UNKNOWN_TOKEN = '0x0000000000000000000000000000000000000bad' as TokenAddress;
 
+const ETH_STAKING_PRODUCT = mockStakingProductDescriptor();
+const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
+    networkSymbol: ADA,
+    type: 'native',
+    operations: ['stake', 'unstake', 'claim', 'vote'],
+    rewardsKind: 'claimable',
+});
+
+const amount = (value: string) => stakingAmountSchema.parse(value);
+
+const balances = (overrides: Partial<StakingPositionBalances>): StakingPositionBalances => ({
+    staked: amount('0'),
+    pending: amount('0'),
+    unstaking: amount('0'),
+    withdrawable: amount('0'),
+    rewards: amount('0'),
+    ...overrides,
+});
+
 type MockAccountParams = {
     deviceState?: StaticSessionId;
     symbol?: Account['symbol'];
@@ -41,8 +69,6 @@ type MockAccountParams = {
     balance?: string;
     isVisible?: boolean;
     tokens?: { contract: TokenAddress; balance: string; standard?: string }[];
-    networkType?: Account['networkType'];
-    misc?: Account['misc'];
 };
 
 const mockAccount = ({
@@ -52,8 +78,6 @@ const mockAccount = ({
     balance = '1',
     isVisible = true,
     tokens = [],
-    networkType,
-    misc,
 }: MockAccountParams = {}): Account =>
     ({
         key: `descriptor${index}-${symbol}-${deviceState}`,
@@ -63,12 +87,11 @@ const mockAccount = ({
         formattedBalance: balance,
         visible: isVisible,
         tokens,
-        networkType,
-        misc,
     }) as unknown as Account;
 
 type MockStateParams = {
     accounts: Account[];
+    stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
     shownTokens?: TokenAddress[];
@@ -76,6 +99,7 @@ type MockStateParams = {
 
 const createState = ({
     accounts,
+    stakingPositions = {},
     knownTokens = [USDC_ON_ETH, USDT_ON_ETH],
     hiddenTokens = [],
     shownTokens = [],
@@ -85,6 +109,12 @@ const createState = ({
     };
 
     return {
+        earn: {
+            staking: mockStakingState({
+                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT],
+                positions: stakingPositions,
+            }),
+        },
         wallet: { accounts },
         tokenDefinitions: { eth: definitions, dsol: definitions },
     } as unknown as AssetAccountsRootState;
@@ -190,12 +220,6 @@ describe('which assetAccounts the user is shown', () => {
     });
 });
 
-describe('getWalletAssetKey', () => {
-    it('is the wallet, the network and the contract', () => {
-        expect(aliceUsdc).toBe(`${ALICE}/eth/${USDC_ON_ETH}`);
-    });
-});
-
 describe('what becomes a assetAccount', () => {
     it('is the account’s own coin, always', () => {
         const state = createState({ accounts: [mockAccount({ balance: '2.5' })] });
@@ -205,28 +229,18 @@ describe('what becomes a assetAccount', () => {
         ]);
     });
 
-    it('is the account’s own coin with what it has staked', () => {
+    it('is the account’s own coin with what it has locked in staking', () => {
+        const account = mockAccount({ balance: '1' });
         const state = createState({
-            accounts: [
-                mockAccount({
-                    balance: '1',
-                    networkType: 'ethereum',
-                    misc: {
-                        stakingPools: [
-                            {
-                                name: 'Everstake',
-                                autocompoundBalance: '2000000000000000000',
-                                pendingBalance: '0',
-                                pendingDepositedBalance: '0',
-                                withdrawTotalAmount: '0',
-                                claimableAmount: '0',
-                                depositedBalance: '0',
-                                restakedReward: '0',
-                            },
-                        ],
-                    } as Account['misc'],
-                }),
-            ],
+            accounts: [account],
+            stakingPositions: {
+                [account.key]: [
+                    mockStakingPosition({
+                        balances: balances({ staked: amount('2000000000000000000') }),
+                        unlocks: [],
+                    }),
+                ],
+            },
         });
 
         expect(accountsOfAsset(state, aliceCoin)).toEqual([
@@ -234,16 +248,21 @@ describe('what becomes a assetAccount', () => {
         ]);
     });
 
-    it('is the Cardano coin once, as its stake is the balance itself', () => {
+    it('is the Cardano coin once, as its liquid stake is the balance itself', () => {
+        const account = mockAccount({ symbol: ADA, balance: '5' });
         const state = createState({
-            accounts: [
-                mockAccount({
-                    symbol: ADA,
-                    balance: '5',
-                    networkType: 'cardano',
-                    misc: { staking: { isActive: true } } as Account['misc'],
-                }),
-            ],
+            accounts: [account],
+            stakingPositions: {
+                [account.key]: [
+                    mockStakingPosition({
+                        productId: ADA_STAKING_PRODUCT.id,
+                        lockup: 'liquid',
+                        balances: balances({ staked: amount('5000000') }),
+                        unlocks: [],
+                        operations: ['unstake', 'claim', 'vote'],
+                    }),
+                ],
+            },
         });
 
         expect(
@@ -405,7 +424,7 @@ describe('what a write does not change', () => {
         ).toBe('3');
     });
 
-    it('keeps what an account nothing wrote to holds', () => {
+    it('keeps the assetAccount of an account nothing wrote to', () => {
         const untouched = mockAccount({ index: 0 });
         const before = accountsOfAsset(
             createState({ accounts: [untouched, mockAccount({ index: 1, balance: '1' })] }),
@@ -417,7 +436,15 @@ describe('what a write does not change', () => {
             aliceCoin,
         );
 
-        expect(after[0]).toEqual(before[0]);
+        expect(after[0]).toBe(before[0]);
+    });
+
+    it('keeps the assetAccounts while the accounts and the positions are unchanged', () => {
+        const accounts = [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '1' }] })];
+
+        expect(selectAssetAccounts(createState({ accounts }))).toBe(
+            selectAssetAccounts(createState({ accounts })),
+        );
     });
 
     it('builds the assetAccounts once for repeated reads', () => {

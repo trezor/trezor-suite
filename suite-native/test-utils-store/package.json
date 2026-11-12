@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/earn-staking": "workspace:*",
         "@suite-native/formatters-config": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@testing-library/react-native": "14.0.1",

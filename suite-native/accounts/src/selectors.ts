@@ -6,6 +6,10 @@ import {
     selectDeviceStaticSessionId,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
+import {
+    type StakingRootState,
+    selectStakingAccountAmountOutsideBalance,
+} from '@suite-common/earn-staking';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type SuiteSyncDataRootState,
@@ -81,7 +85,8 @@ export type NativeAccountsRootState = AccountsRootState &
     DeviceRootState &
     SuiteSyncDataRootState &
     TokenDefinitionsRootState &
-    TransactionsRootState;
+    TransactionsRootState &
+    StakingRootState;
 
 export type NativeAccountsWithNetworksRootState = NativeAccountsRootState &
     NetworksRootState &
@@ -256,23 +261,10 @@ export const selectAccountFiatBalance = createMemoizedSelector(
         selectAccountByKey,
         selectAccountTokens,
         selectBaseCurrency,
-        (_, _accountKey: AccountKey, shouldIncludeStaking?: boolean) =>
-            shouldIncludeStaking ?? true,
-        (
-            _,
-            _accountKey: AccountKey,
-            _shouldIncludeStaking?: boolean,
-            shouldIncludeTokens?: boolean,
-        ) => shouldIncludeTokens ?? true,
+        selectStakingAccountAmountOutsideBalance,
+        (_, _accountKey: AccountKey, shouldIncludeTokens?: boolean) => shouldIncludeTokens ?? true,
     ],
-    (
-        fiatRates,
-        account,
-        tokenCategories,
-        localCurrency,
-        shouldIncludeStaking,
-        shouldIncludeTokens,
-    ) => {
+    (fiatRates, account, tokenCategories, localCurrency, stakingBalance, shouldIncludeTokens) => {
         if (!account) {
             return BASE_CURRENCY_ZERO;
         }
@@ -281,7 +273,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
             account: { ...account, tokens: tokenCategories?.shownWithBalance ?? [] },
             rates: fiatRates,
             baseCurrencyCode: localCurrency,
-            shouldIncludeStaking,
+            stakingBalance,
             shouldIncludeTokens,
         });
 

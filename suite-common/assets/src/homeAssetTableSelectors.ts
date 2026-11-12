@@ -5,24 +5,23 @@ import {
     selectDeviceStaticSessionId,
     selectHasBitcoinOnlyFirmware,
 } from '@suite-common/device';
+import {
+    formatStakingAmount,
+    selectCountedStakingPositionEntriesByAccount,
+} from '@suite-common/earn-staking';
+import { getStakingPositionAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    type AssetAccount,
-    type AssetAccountsRootState,
     type FiatRatesRootState,
-    type HiddenTokenReason,
     type WalletAssetKey,
     type WalletSettingsRootState,
     getWalletAssetKey,
     selectAreHomeAssetSmallBalancesShown,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceAssetAccounts,
     selectEnabledSupportedNetworks,
-    selectHiddenAssetAccountKeySet,
-    selectHiddenTokenReasons,
     selectHomeAssetsTableGrouping,
     selectLastWeekFiatRates,
     selectVisibleDeviceAccounts,
@@ -35,7 +34,6 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import {
-    getAccountTotalStakingBalance,
     getFiatRateKey,
     hasNetworkFeatures,
     isPositiveBalance,
@@ -45,6 +43,14 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
+import {
+    type AssetAccount,
+    type AssetAccountsRootState,
+    type HiddenTokenReason,
+    selectDeviceAssetAccounts,
+    selectHiddenAssetAccountKeySet,
+    selectHiddenTokenReasons,
+} from './assetAccountsSelectors';
 import { sumAssetAccounts } from './homeAssetTableUtils';
 
 export type HomeAssetTableState = AssetAccountsRootState &
@@ -655,32 +661,38 @@ export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
         ),
 );
 
-// A Cardano delegation stakes what the account can spend, which a pending send has already
-// reduced, as the asset's amount has; its on-chain balance would count the send too.
-const getAssetStakingBalance = (account: Account) => {
-    if (account.networkType !== 'cardano') {
-        return getAccountTotalStakingBalance(account);
-    }
+const selectHomeAssetTableState = (state: HomeAssetTableState) => state;
 
-    return account.misc?.staking?.isActive ? account.formattedBalance : null;
-};
+const getAccountStakingAmount = (state: HomeAssetTableState, account: Account) =>
+    selectCountedStakingPositionEntriesByAccount(state, account.key).reduce(
+        (total, { position }) => total.plus(getStakingPositionAmount(position)),
+        ZERO,
+    );
 
 export const selectWalletAssetStakingAmount = createMemoizedSelector(
-    [selectVisibleDeviceAccounts, selectWalletAssetSymbol, selectWalletAssetContractAddress],
-    (accounts, networkSymbol, contractAddress) => {
+    [
+        selectHomeAssetTableState,
+        selectVisibleDeviceAccounts,
+        selectWalletAssetSymbol,
+        selectWalletAssetContractAddress,
+    ],
+    (state, accounts, networkSymbol, contractAddress): string => {
         if (networkSymbol === undefined || contractAddress !== undefined) {
             return '0';
         }
 
-        return accounts
-            .reduce(
-                (total, account) =>
-                    account.symbol === networkSymbol
-                        ? total.plus(getAssetStakingBalance(account) ?? 0)
-                        : total,
-                new BigNumber(0),
-            )
-            .toFixed();
+        const stakingAmount = accounts.reduce(
+            (total, account) =>
+                account.symbol === networkSymbol
+                    ? total.plus(getAccountStakingAmount(state, account))
+                    : total,
+            ZERO,
+        );
+
+        return formatStakingAmount({
+            amount: stakingAmountSchema.parse(stakingAmount.toFixed(0)),
+            networkSymbol,
+        });
     },
 );
 

@@ -33,11 +33,6 @@ import {
     getStakingPromoListSymbols,
     selectCardanoAccountForFiveBinariesBanner,
     selectCardanoStakedWithFiveBinariesAccountKey,
-    selectEarnFiatValuations,
-    selectEarnMissingTickerIds,
-    selectEarnTotalFiatAmount,
-    selectIsEarnFiatTotalIncomplete,
-    selectIsEarnFiatTotalUnavailable,
     selectStakingFiatPositions,
     selectStakingListItems,
     selectStakingListSymbols,
@@ -886,77 +881,12 @@ describe('earn fiat selectors', () => {
         ]);
     });
 
-    it('sums staking, yield and earn totals from the current rates', () => {
+    it('sums staking and yield totals from the current rates', () => {
         const state = createState(accounts, createRates([adaRate(0.5), usdcRate(2)]));
         const yieldFiatAmount = new BigNumber(getYieldTokenBalance(state)).times(2);
 
         expect(selectStakingTotalFiatAmount(state)).toBe('2.5');
         expect(selectYieldTotalFiatAmount(state, [valuedVault])).toBe(yieldFiatAmount.toString());
-        expect(selectEarnTotalFiatAmount(state, [valuedVault])).toBe(
-            yieldFiatAmount.plus('2.5').toString(),
-        );
-    });
-
-    it('excludes positions without a rate from the total and reports their tickers', () => {
-        const state = createState(accounts, createRates([adaRate(0.5)]));
-
-        expect(selectEarnTotalFiatAmount(state, [valuedVault])).toBe('2.5');
-        expect(selectEarnMissingTickerIds(state, [valuedVault])).toEqual([
-            { symbol: ethSymbol, tokenAddress: usdcContract },
-        ]);
-    });
-
-    it('returns a stable empty ticker list when every position has a rate', () => {
-        const rates = createRates([adaRate(0.5), usdcRate(2)]);
-
-        expect(selectEarnMissingTickerIds(createState(accounts, rates), [valuedVault])).toBe(
-            selectEarnMissingTickerIds(createState([], rates), [valuedVault]),
-        );
-    });
-
-    it('keeps valuation and ticker references across recreated state', () => {
-        const rates = createRates([adaRate(0.5)]);
-        const firstState = createState([...accounts], rates);
-        const secondState = createState([...accounts], rates);
-
-        expect(selectEarnFiatValuations(secondState, [valuedVault])).toBe(
-            selectEarnFiatValuations(firstState, [valuedVault]),
-        );
-        expect(selectEarnMissingTickerIds(secondState, [valuedVault])).toBe(
-            selectEarnMissingTickerIds(firstState, [valuedVault]),
-        );
-    });
-
-    it('returns a new valuation reference when a rate changes', () => {
-        const firstValuations = selectEarnFiatValuations(
-            createState(accounts, createRates([adaRate(0.5)])),
-            [valuedVault],
-        );
-        const secondValuations = selectEarnFiatValuations(
-            createState(accounts, createRates([adaRate(0.75)])),
-            [valuedVault],
-        );
-
-        expect(secondValuations).not.toBe(firstValuations);
-        expect(secondValuations[0]?.fiatAmount?.toFixed()).toBe('3.75');
-    });
-
-    it('marks the total incomplete only when rates are missing and not loading', () => {
-        const missingState = createState(accounts, createRates([adaRate(0.5)]));
-        const completeState = createState(accounts, createRates([adaRate(0.5), usdcRate(2)]));
-
-        expect(selectIsEarnFiatTotalIncomplete(missingState, [valuedVault], false)).toBe(true);
-        expect(selectIsEarnFiatTotalIncomplete(missingState, [valuedVault], true)).toBe(false);
-        expect(selectIsEarnFiatTotalIncomplete(completeState, [valuedVault], false)).toBe(false);
-    });
-
-    it('marks the total unavailable only when no position has a rate', () => {
-        const partialState = createState(accounts, createRates([adaRate(0.5)]));
-        const emptyState = createState(accounts);
-
-        expect(selectIsEarnFiatTotalUnavailable(partialState, [valuedVault], false)).toBe(false);
-        expect(selectIsEarnFiatTotalUnavailable(emptyState, [valuedVault], false)).toBe(true);
-        expect(selectIsEarnFiatTotalUnavailable(emptyState, [valuedVault], true)).toBe(false);
     });
 });
 

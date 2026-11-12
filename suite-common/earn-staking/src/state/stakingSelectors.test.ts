@@ -13,6 +13,7 @@ import {
     selectStakingAccountAmountOutsideBalance,
     selectStakingAccountKeysToRevalidate,
     selectStakingAccountTotals,
+    selectStakingAmountsOutsideBalance,
     selectStakingPlatform,
     selectStakingPosition,
     selectStakingPositionsByAccount,
@@ -194,6 +195,17 @@ describe('staking selectors', () => {
             rewards: '0',
         });
     });
+    it('maps the amount outside the balance of every account with positions', () => {
+        const amounts = selectStakingAmountsOutsideBalance(state);
+
+        expect(amounts[accountKey]).toBe(
+            selectStakingAccountAmountOutsideBalance(state, accountKey),
+        );
+        expect(amounts[unknownAccountKey]).toBeUndefined();
+        expect(selectStakingAmountsOutsideBalance(state)).toBe(amounts);
+        expect(selectStakingAmountsOutsideBalance(empty)).toEqual({});
+    });
+
     describe('revalidation', () => {
         const revalidating = (accountKeySuffix: string, revalidateAt: number | null) => ({
             accountKey: mockAccountKey({

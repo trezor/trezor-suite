@@ -19,6 +19,10 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
+    type StakingRootState,
+    selectStakingAmountsOutsideBalance,
+} from '@suite-common/earn-staking';
+import {
     getFirmwareAuthenticityCheckErrors,
     getIsHardRevisionCheckError,
     getIsRetriableRevisionCheckError,
@@ -48,14 +52,8 @@ import {
     selectHasRunningDiscovery,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type BaseCurrencyAmount,
-    type RatesByKey,
-    areBaseCurrencyAmountsEqual,
-    asBaseCurrencyAmount,
-} from '@suite-common/wallet-types';
-import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
+import { areBaseCurrencyAmountsEqual, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { type DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type NativeFirmwareRootState } from '@suite-native/firmware';
@@ -65,10 +63,9 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite-native/settings';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type Device } from '@trezor/connect';
 import { createWeakMapSelector } from '@trezor/redux-utils';
-import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
+import { isNotNullOrUndefined } from '@trezor/utils';
 
 import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
@@ -83,7 +80,8 @@ export type NativeDeviceRootState = DeviceRootState &
     FeatureFlagsRootState &
     NativeFirmwareRootState &
     MessageSystemRootState &
-    DeviceOnboardingSliceRootState;
+    DeviceOnboardingSliceRootState &
+    StakingRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
@@ -132,40 +130,21 @@ export const selectDeviceError = (
     return device?.error;
 };
 
-type GetTotalFiatBalanceNativeParams = {
-    deviceAccounts: Account[];
-    localCurrency: BaseCurrencyCode;
-    rates?: RatesByKey;
-};
-
-// FIXME: this function can be removed and substituted with @suite-common/wallet-utils/getTotalFiatBalance when Solana supports staking on mobile.
-const getTotalFiatBalanceNative = ({
-    deviceAccounts,
-    localCurrency,
-    rates,
-}: GetTotalFiatBalanceNativeParams): BaseCurrencyAmount => {
-    let instanceBalance = new BigNumber(0);
-    deviceAccounts.forEach(a => {
-        const accountFiatBalance =
-            getAccountFiatBalance({
-                account: a,
-                baseCurrencyCode: localCurrency,
-                rates,
-                shouldIncludeStaking: isStakingSymbol(a.symbol),
-            }) ?? '0';
-        instanceBalance = instanceBalance.plus(accountFiatBalance);
-    });
-
-    return asBaseCurrencyAmount(instanceBalance);
-};
-
 export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
-    [selectDeviceAccounts, selectCurrentFiatRates, selectBaseCurrency, selectHasRunningDiscovery],
-    (deviceAccounts, rates, localCurrency, hasRunningDiscovery) =>
+    [
+        selectDeviceAccounts,
+        selectCurrentFiatRates,
+        selectBaseCurrency,
+        selectStakingAmountsOutsideBalance,
+        selectHasRunningDiscovery,
+    ],
+    (deviceAccounts, rates, baseCurrencyCode, stakingBalances, hasRunningDiscovery) =>
         // do not return any value before discovery is finished to prevent unnecessary rerenders of portfolio graph.
         hasRunningDiscovery
             ? undefined
-            : getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+            : asBaseCurrencyAmount(
+                  getTotalFiatBalance({ deviceAccounts, baseCurrencyCode, rates, stakingBalances }),
+              ),
     {
         memoizeOptions: {
             // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
@@ -176,9 +155,16 @@ export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
 );
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
-    [selectAccountsByDeviceState, selectCurrentFiatRates, selectBaseCurrency],
-    (deviceAccounts, rates, localCurrency) =>
-        getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+    [
+        selectAccountsByDeviceState,
+        selectCurrentFiatRates,
+        selectBaseCurrency,
+        selectStakingAmountsOutsideBalance,
+    ],
+    (deviceAccounts, rates, baseCurrencyCode, stakingBalances) =>
+        asBaseCurrencyAmount(
+            getTotalFiatBalance({ deviceAccounts, baseCurrencyCode, rates, stakingBalances }),
+        ),
     {
         memoizeOptions: {
             // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference

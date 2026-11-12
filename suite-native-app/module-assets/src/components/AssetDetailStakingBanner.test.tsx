@@ -1,8 +1,14 @@
 import { type useNativeYieldVault } from '@suite-common/earn-stablecoin';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { type StakingPosition, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { stakeInitialState, transactionsInitialState } from '@suite-common/wallet-core';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -49,19 +55,39 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
 const mockAccount = (networkSymbol: NetworkSymbol, formattedBalance = '10'): Account =>
     mockWalletAccount({ symbol: networkSymbol, deviceState: DEVICE_STATE, formattedBalance });
 
-const mockUnstakedCardanoAccount = (): Account =>
-    mockWalletAccount(
-        {
-            symbol: ADA,
-            deviceState: DEVICE_STATE,
-            formattedBalance: '10',
-            descriptor: asAccountDescriptor('unstakedAda'),
+const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
+    networkSymbol: ADA,
+    type: 'native',
+    operations: ['stake', 'unstake', 'claim', 'vote'],
+    rewardsKind: 'claimable',
+});
+
+const mockCardanoAccount = (descriptor: string): Account =>
+    mockWalletAccount({
+        symbol: ADA,
+        deviceState: DEVICE_STATE,
+        formattedBalance: '10',
+        descriptor: asAccountDescriptor(descriptor),
+    });
+
+const mockDelegation = (): StakingPosition =>
+    mockStakingPosition({
+        productId: ADA_STAKING_PRODUCT.id,
+        lockup: 'liquid',
+        balances: {
+            staked: stakingAmountSchema.parse('10000000'),
+            pending: stakingAmountSchema.parse('0'),
+            unstaking: stakingAmountSchema.parse('0'),
+            withdrawable: stakingAmountSchema.parse('0'),
+            rewards: stakingAmountSchema.parse('0'),
         },
-        { misc: { staking: { isActive: false } } },
-    );
+        unlocks: [],
+        operations: ['unstake', 'claim', 'vote'],
+    });
 
 type RenderStakingBannerParams = {
     accounts: Account[];
+    stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
     stakingRate?: number;
     closedEarnBannerSymbols?: NetworkSymbol[];
     isDiscreetMode?: boolean;
@@ -69,6 +95,7 @@ type RenderStakingBannerParams = {
 
 const renderStakingBanner = async ({
     accounts,
+    stakingPositions = {},
     stakingRate,
     closedEarnBannerSymbols = [],
     isDiscreetMode = false,
@@ -85,6 +112,12 @@ const renderStakingBanner = async ({
     const store = createStoreFromPreloadedState({
         discreetMode: { isActive: isDiscreetMode },
         device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
+        earn: {
+            staking: mockStakingState({
+                descriptors: [ADA_STAKING_PRODUCT],
+                positions: stakingPositions,
+            }),
+        },
         wallet: {
             accounts,
             stake: stakeInitialState,
@@ -209,13 +242,23 @@ describe('AssetDetailStakingBanner', () => {
     });
 
     it('stays visible while one of the accounts is not staking', async () => {
-        await renderStakingBanner({ accounts: [mockAccount(ADA), mockUnstakedCardanoAccount()] });
+        const delegating = mockCardanoAccount('delegatingAda');
+
+        await renderStakingBanner({
+            accounts: [delegating, mockCardanoAccount('idleAda')],
+            stakingPositions: { [delegating.key]: [mockDelegation()] },
+        });
 
         expect(screen.getByText(exploreButtonLabel)).toBeTruthy();
     });
 
     it('stays hidden once every account is staking', async () => {
-        await renderStakingBanner({ accounts: [mockAccount(ADA)] });
+        const delegating = mockCardanoAccount('delegatingAda');
+
+        await renderStakingBanner({
+            accounts: [delegating],
+            stakingPositions: { [delegating.key]: [mockDelegation()] },
+        });
 
         expect(screen.queryByText(exploreButtonLabel)).toBeNull();
     });

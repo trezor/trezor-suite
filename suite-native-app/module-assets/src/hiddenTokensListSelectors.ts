@@ -1,5 +1,9 @@
-import { type HomeAssetTableState, selectHiddenWalletAssetKeys } from '@suite-common/assets';
-import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
+import {
+    type HiddenTokenReason,
+    type HomeAssetTableState,
+    selectHiddenWalletAssetKeys,
+} from '@suite-common/assets';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type HiddenTokensListEntry =

@@ -5,6 +5,9 @@
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
             "path": "../../suite-common/fiat-services"
         },
         {

@@ -1,7 +1,17 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import {
+    type StakingPosition,
+    type StakingPositionBalances,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TransactionsRootState, getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getWalletAssetKey } from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
@@ -15,31 +25,38 @@ const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 
 const BTC = asNetworkSymbol('btc');
 const ETH = asNetworkSymbol('eth');
+const ADA = asNetworkSymbol('ada');
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const DAI_ON_ETH = '0x6b175474e89094c44da98b954eedeac495271d0f' as TokenAddress;
 
-const ADA = asNetworkSymbol('ada');
-
-const ONE_ETH_IN_WEI = '1000000000000000000';
-const EVERSTAKE_CLAIM_METHOD_ID = '0x33986ffa';
-
-type EverstakePoolParams = {
-    depositedWei?: string;
-    claimableWei?: string;
-};
-
-const mockEverstakePool = ({ depositedWei = '0', claimableWei = '0' }: EverstakePoolParams) => ({
-    contract: '',
-    name: 'Everstake',
-    autocompoundBalance: '0',
-    pendingBalance: '0',
-    pendingDepositedBalance: '0',
-    withdrawTotalAmount: '0',
-    claimableAmount: claimableWei,
-    depositedBalance: depositedWei,
-    restakedReward: '0',
+const ETH_STAKING_PRODUCT = mockStakingProductDescriptor();
+const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
+    networkSymbol: ADA,
+    type: 'native',
+    operations: ['stake', 'unstake', 'claim', 'vote'],
+    rewardsKind: 'claimable',
 });
+
+const amount = (value: string) => stakingAmountSchema.parse(value);
+
+const balances = (overrides: Partial<StakingPositionBalances>): StakingPositionBalances => ({
+    staked: amount('0'),
+    pending: amount('0'),
+    unstaking: amount('0'),
+    withdrawable: amount('0'),
+    rewards: amount('0'),
+    ...overrides,
+});
+
+const mockDelegation = () =>
+    mockStakingPosition({
+        productId: ADA_STAKING_PRODUCT.id,
+        lockup: 'liquid',
+        balances: balances({ staked: amount('10000000') }),
+        unlocks: [],
+        operations: ['unstake', 'claim', 'vote'],
+    });
 
 type MockAccountParams = {
     symbol: Account['symbol'];
@@ -47,63 +64,44 @@ type MockAccountParams = {
     balance?: string;
     availableBalance?: string;
     tokens?: { contract: TokenAddress; balance: string }[];
-    isDelegating?: boolean;
-    everstakePool?: EverstakePoolParams;
 };
 
-const getNetworkType = (symbol: Account['symbol']) => {
-    if (symbol === ADA) return 'cardano';
-    if (symbol === ETH) return 'ethereum';
-
-    return undefined;
-};
-
-const getMisc = ({ symbol, isDelegating, everstakePool }: MockAccountParams) => {
-    if (symbol === ADA) return { staking: { isActive: isDelegating } };
-    if (everstakePool !== undefined) return { stakingPools: [mockEverstakePool(everstakePool)] };
-
-    return undefined;
-};
-
-const mockAccount = (params: MockAccountParams): Account => {
-    const { symbol, index, balance = '1', availableBalance = balance, tokens = [] } = params;
-
-    return {
+const mockAccount = ({
+    symbol,
+    index,
+    balance = '1',
+    availableBalance = balance,
+    tokens = [],
+}: MockAccountParams): Account =>
+    ({
         key: `descriptor${index}-${symbol}-${ALICE}`,
         descriptor: `descriptor${index}`,
         deviceState: ALICE,
         symbol,
-        networkType: getNetworkType(symbol),
         index,
         accountType: 'normal',
         formattedBalance: balance,
         availableBalance,
         visible: true,
         tokens: tokens.map(token => ({ ...token, standard: 'ERC20', symbol: 'tkn' })),
-        misc: getMisc(params),
-    } as unknown as Account;
-};
-
-const mockPendingClaimTransaction = (): WalletAccountTransaction =>
-    ({
-        blockHeight: 0,
-        ethereumSpecific: { parsedData: { methodId: EVERSTAKE_CLAIM_METHOD_ID } },
-    }) as unknown as WalletAccountTransaction;
+    }) as unknown as Account;
 
 type MockStateParams = {
     accounts: Account[];
-    transactions?: Record<string, WalletAccountTransaction[]>;
+    stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
 };
 
-const createState = ({
-    accounts,
-    transactions = {},
-}: MockStateParams): HomeAssetTableState & TransactionsRootState =>
+const createState = ({ accounts, stakingPositions = {} }: MockStateParams): HomeAssetTableState =>
     ({
+        earn: {
+            staking: mockStakingState({
+                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT],
+                positions: stakingPositions,
+            }),
+        },
         device: { selectedDevice: { state: { staticSessionId: ALICE } } },
         wallet: {
             accounts,
-            transactions: { transactions },
             settings: {
                 enabledNetworks: [BTC, ETH, ADA],
                 localCurrency: 'usd',
@@ -115,7 +113,7 @@ const createState = ({
             [ETH]: { coin: { data: [USDC_ON_ETH, DAI_ON_ETH], hide: [], show: [] } },
         },
         networks: {},
-    }) as unknown as HomeAssetTableState & TransactionsRootState;
+    }) as unknown as HomeAssetTableState;
 
 const bitcoin = getWalletAssetKey({ deviceState: ALICE, symbol: BTC, contractAddress: undefined });
 const cardano = getWalletAssetKey({ deviceState: ALICE, symbol: ADA, contractAddress: undefined });
@@ -205,7 +203,7 @@ describe('whether an asset can be sent', () => {
 });
 
 describe('the accounts the staking banner speaks for', () => {
-    const keysOf = (state: HomeAssetTableState & TransactionsRootState) =>
+    const keysOf = (state: HomeAssetTableState) =>
         selectWalletAssetUnstakedAccounts(state, cardano).map(({ key }) => key);
 
     it('lists every account of the coin, the one holding the most first', () => {
@@ -220,19 +218,20 @@ describe('the accounts the staking banner speaks for', () => {
     });
 
     it('leaves out an account that already stakes, however much it holds', () => {
+        const delegating = mockAccount({ symbol: ADA, index: 1, balance: '50' });
         const state = createState({
-            accounts: [
-                mockAccount({ symbol: ADA, index: 0, balance: '10' }),
-                mockAccount({ symbol: ADA, index: 1, balance: '50', isDelegating: true }),
-            ],
+            accounts: [mockAccount({ symbol: ADA, index: 0, balance: '10' }), delegating],
+            stakingPositions: { [delegating.key]: [mockDelegation()] },
         });
 
         expect(keysOf(state)).toEqual([`descriptor0-ada-${ALICE}`]);
     });
 
     it('lists none once every account stakes', () => {
+        const delegating = mockAccount({ symbol: ADA, index: 0, balance: '10' });
         const state = createState({
-            accounts: [mockAccount({ symbol: ADA, index: 0, balance: '10', isDelegating: true })],
+            accounts: [delegating],
+            stakingPositions: { [delegating.key]: [mockDelegation()] },
         });
 
         expect(keysOf(state)).toEqual([]);
@@ -253,49 +252,56 @@ describe('the accounts the staking banner speaks for', () => {
 });
 
 describe('the ether accounts the staking banner speaks for', () => {
-    const keysOf = (state: HomeAssetTableState & TransactionsRootState) =>
+    const keysOf = (state: HomeAssetTableState) =>
         selectWalletAssetUnstakedAccounts(state, ethereum).map(({ key }) => key);
 
-    const claimingAccount = mockAccount({
-        symbol: ETH,
-        index: 0,
-        everstakePool: { claimableWei: ONE_ETH_IN_WEI },
-    });
+    const idle = mockAccount({ symbol: ETH, index: 0 });
+    const staking = mockAccount({ symbol: ETH, index: 1 });
 
-    it('leaves out an account with ether deposited with Everstake', () => {
+    it('leaves out an account with an active stake', () => {
         const state = createState({
-            accounts: [
-                mockAccount({ symbol: ETH, index: 0 }),
-                mockAccount({
-                    symbol: ETH,
-                    index: 1,
-                    everstakePool: { depositedWei: ONE_ETH_IN_WEI },
-                }),
-            ],
+            accounts: [idle, staking],
+            stakingPositions: { [staking.key]: [mockStakingPosition()] },
         });
 
-        expect(keysOf(state)).toEqual([`descriptor0-eth-${ALICE}`]);
+        expect(keysOf(state)).toEqual([idle.key]);
     });
 
-    it('counts an account as staking only once its claim is pending', () => {
-        const beforeClaim = createState({ accounts: [claimingAccount] });
-        const whileClaiming = createState({
-            accounts: [claimingAccount],
-            transactions: { [claimingAccount.key]: [mockPendingClaimTransaction()] },
-        });
-
-        expect(keysOf(beforeClaim)).toEqual([`descriptor0-eth-${ALICE}`]);
-        expect(keysOf(whileClaiming)).toEqual([]);
-    });
-
-    it('ignores transactions that are not claims', () => {
+    it('keeps an account whose pool entry holds nothing', () => {
         const state = createState({
-            accounts: [claimingAccount],
-            transactions: {
-                [claimingAccount.key]: [{ blockHeight: 0 } as unknown as WalletAccountTransaction],
+            accounts: [idle, staking],
+            stakingPositions: {
+                [staking.key]: [
+                    mockStakingPosition({
+                        status: 'inactive',
+                        balances: balances({}),
+                        unlocks: [],
+                        targets: [],
+                        operations: ['stake'],
+                    }),
+                ],
             },
         });
 
-        expect(keysOf(state)).toEqual([`descriptor0-eth-${ALICE}`]);
+        expect(keysOf(state)).toEqual([idle.key, staking.key]);
+    });
+
+    it('counts an account as staking once its first stake is activating', () => {
+        const state = createState({
+            accounts: [idle, staking],
+            stakingPositions: {
+                [staking.key]: [
+                    mockStakingPosition({
+                        status: 'activating',
+                        balances: balances({ pending: amount('1000000000000000000') }),
+                        unlocks: [],
+                        targets: [],
+                        operations: ['stake'],
+                    }),
+                ],
+            },
+        });
+
+        expect(keysOf(state)).toEqual([idle.key]);
     });
 });

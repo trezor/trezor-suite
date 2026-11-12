@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../earn-staking" },
+        { "path": "../wallet-core" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../earn-stablecoin-api" },
+        { "path": "../earn-staking-common" },
+        { "path": "../networks" },
+        { "path": "../suite-types" },
+        { "path": "../tokens" },
+        { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        { "path": "../../packages/requirements" },
+        { "path": "../../packages/utils" }
+    ]
+}

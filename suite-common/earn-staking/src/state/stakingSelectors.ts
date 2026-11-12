@@ -12,6 +12,7 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-u
 import { BigNumber, isNotNull, isNotUndefined, typedObjectEntries } from '@trezor/utils';
 
 import type { StakingAccountPositions } from './stakingPositionsReducer';
+import type { StakingProductsState } from './stakingProductsReducer';
 import type { StakingRootState } from './stakingReducer';
 
 const selectStakingState = (state: StakingRootState) => state.earn.staking;
@@ -77,33 +78,57 @@ const sumBalance = (
             .toFixed(0),
     );
 
+const isCountedStakingPosition =
+    (products: StakingProductsState) =>
+    ({ productId }: StakingPosition) =>
+        products[productId]?.isCountedInAccountTotals === true;
+
 const selectCountedStakingPositions = createWeakMapSelector(
     [selectStakingPositionsByAccount, selectStakingProducts],
     (positions, products) =>
-        returnStableArrayIfEmpty(
-            positions.filter(
-                ({ productId }) => products[productId]?.isCountedInAccountTotals === true,
-            ),
-        ),
+        returnStableArrayIfEmpty(positions.filter(isCountedStakingPosition(products))),
 );
 
 // The stake of liquid positions is already in the account balance; only locked positions hold
 // funds outside it. Rewards are never added: they compound into the stake, are only expected, or
 // are part of the balance.
+const getStakingAmountOutsideBalance = (
+    countedPositions: readonly StakingPosition[],
+): StakingAmount => {
+    const lockedPositions = countedPositions.filter(({ lockup }) => lockup === 'locked');
+
+    return stakingAmountSchema.parse(
+        (['staked', 'pending', 'unstaking', 'withdrawable'] as const)
+            .reduce(
+                (sum, balance) => sum.plus(sumBalance(lockedPositions, balance)),
+                new BigNumber(0),
+            )
+            .toFixed(0),
+    );
+};
+
 export const selectStakingAccountAmountOutsideBalance = createWeakMapSelector(
     [selectCountedStakingPositions],
-    (countedPositions): StakingAmount => {
-        const lockedPositions = countedPositions.filter(({ lockup }) => lockup === 'locked');
+    getStakingAmountOutsideBalance,
+);
 
-        return stakingAmountSchema.parse(
-            (['staked', 'pending', 'unstaking', 'withdrawable'] as const)
-                .reduce(
-                    (sum, balance) => sum.plus(sumBalance(lockedPositions, balance)),
-                    new BigNumber(0),
-                )
-                .toFixed(0),
-        );
-    },
+export const selectStakingAmountsOutsideBalance = createWeakMapSelector(
+    [selectStakingPositions, selectStakingProducts],
+    (positionsByAccount, products): Partial<Record<AccountKey, StakingAmount>> =>
+        typedObjectEntries(positionsByAccount).reduce<Partial<Record<AccountKey, StakingAmount>>>(
+            (amounts, [accountKey, accountPositions]) => {
+                if (accountPositions !== undefined) {
+                    amounts[accountKey] = getStakingAmountOutsideBalance(
+                        Object.values(accountPositions)
+                            .filter(isNotUndefined)
+                            .filter(isCountedStakingPosition(products)),
+                    );
+                }
+
+                return amounts;
+            },
+            {},
+        ),
 );
 
 export const selectStakingAccountTotals = createWeakMapSelector(
