@@ -18855,7 +18855,6 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -19697,6 +19696,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ripple@workspace:networks/ripple/network-ripple"
   dependencies:
+    "@trezor/blockchain-link-types": "workspace:*"
     xrpl: "npm:5.3.0"
   languageName: unknown
   linkType: soft

@@ -1,6 +1,6 @@
 import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/ripple';
+import { transformRippleTransaction } from '@trezor/network-ripple/constants';
 
 import type { Request } from '../types';
 
@@ -15,7 +15,7 @@ export const getTransaction = async ({
         binary: false,
     });
 
-    const tx = transformTransaction(
+    const tx = transformRippleTransaction(
         rawTx.result.hash,
         rawTx.result.tx_json,
         rawTx.result.meta,
