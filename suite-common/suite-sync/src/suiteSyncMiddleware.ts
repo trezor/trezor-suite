@@ -7,12 +7,12 @@ import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-
 
 import {
     type WithSuiteSyncAndDeviceState,
-    selectHasDeviceSuiteSyncError,
+    selectIsSuiteSyncBlockedByError,
     selectIsSuiteSyncEnabled,
 } from './suiteSyncSelectors';
 
-type SuiteSyncMiddlewareDeps = WithServices<SuiteSyncDep>;
-type SuiteSyncMiddlewareState = WithSuiteSyncAndDeviceState & MessageSystemRootState;
+export type SuiteSyncMiddlewareDeps = WithServices<SuiteSyncDep>;
+export type SuiteSyncMiddlewareState = WithSuiteSyncAndDeviceState & MessageSystemRootState;
 
 export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps<
     SuiteSyncMiddlewareDeps,
@@ -24,11 +24,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps<
         deviceActions.setDiscovered.match(action) &&
         action.payload.success
     ) {
-        const suiteSyncErrors = selectHasDeviceSuiteSyncError(
-            getState(),
-            action.payload.staticSessionId,
-        );
-        if (!suiteSyncErrors) {
+        if (!selectIsSuiteSyncBlockedByError(getState(), action.payload.staticSessionId)) {
             extra.services.suiteSync.ensureWalletSuiteSyncOnUncontrolled({
                 deviceStaticSessionId: action.payload.staticSessionId,
                 isWriteMode: false,
@@ -40,13 +36,10 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps<
         const { payload } = action;
 
         if (isTrezorDeviceWithState(payload.device) && payload.device.discovered) {
-            const suiteSyncErrors = selectHasDeviceSuiteSyncError(
-                getState(),
-                payload.device?.state.staticSessionId,
-            );
-
-            // If the device is reselected with already existing error within the session, don't trigger it again.
-            if (!suiteSyncErrors) {
+            // A device reselected with an error from this session is not retried, unless it was only disconnected.
+            if (
+                !selectIsSuiteSyncBlockedByError(getState(), payload.device.state.staticSessionId)
+            ) {
                 extra.services.suiteSync.ensureWalletSuiteSyncOnUncontrolled({
                     deviceStaticSessionId: payload.device.state.staticSessionId,
                     isWriteMode: false,
