@@ -121,7 +121,7 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
                 )
                 .toContain(ADDRESS.slice(0, 8));
             await page.getByTestId('@sign-verify/format').click();
-            await page.getByTestId('@sign-verify/format/true').click();
+            await page.getByTestId('@sign-verify/format/electrum').click();
             await page.getByTestId('@sign-verify/submit').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(device).toShowOnDisplay({

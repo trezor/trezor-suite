@@ -2,6 +2,10 @@ export { createCardanoSuiteCommonNetworkModule } from './CardanoNetworkSuiteComm
 
 export { networkConfigBySymbol } from './networkConfig';
 export { cardanoFamily, type CardanoFamilyDeps } from './cardanoFamily';
+export type {
+    CardanoMessageSigning,
+    CardanoSignParams,
+} from './messageSigning/createCardanoMessageSigning';
 export {
     getAddressParameters,
     getAddressType,

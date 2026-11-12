@@ -9,7 +9,7 @@ import { MAX_LENGTH_MESSAGE, type MessageSigningController } from '@suite-common
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
-import type { SignFormat } from '@trezor/network-module-suite-common-types';
+import type { SignSelection } from '@trezor/network-module-suite-common-types';
 
 export type SignVerifyFormFields = ReturnType<typeof useSignVerifyForm>;
 
@@ -26,8 +26,8 @@ export type SignVerifyFields = {
     hex: boolean;
     path?: string;
     signature?: string;
-    /** One of the formats the network offered; absent when it offered no choice. */
-    format?: SignFormat;
+    /** Options picked from the network's choices; a choice left out takes its first option. */
+    selection: SignSelection;
     pubKey?: string;
 };
 
@@ -60,14 +60,14 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
         then: schema => schema.required(),
     }),
     hex: yup.boolean().required(),
-    format: yup.mixed<SignFormat>(),
+    selection: yup.mixed<SignSelection>().required(),
     pubKey: yup.string(),
 });
 
 const DEFAULT_VALUES: SignVerifyFields = {
     message: '',
     address: '',
-    format: undefined,
+    selection: {},
     path: '',
     signature: '',
     hex: false,
@@ -109,9 +109,9 @@ export const useSignVerifyForm = (
         control,
         name: 'hex',
     });
-    const { field: formatField } = useController({
+    const { field: selectionField } = useController({
         control,
-        name: 'format',
+        name: 'selection',
     });
 
     useEffect(() => {
@@ -125,22 +125,20 @@ export const useSignVerifyForm = (
             setValue('signature', '');
             setValue('pubKey', '');
         }
-    }, [setValue, isSignPage, formValues.address, formValues.message, formValues.format]);
+    }, [setValue, isSignPage, formValues.address, formValues.message, formValues.selection]);
 
-    // The network decides the starting format and, for a fixed-address network, the address
-    // itself; the form only keeps what the user changes from there.
-    const { fixedAddress, formatChoice } = signing;
-    const defaultFormat = formatChoice?.options[0]?.format;
+    // The network decides the starting options, the first of each choice, and for a fixed-address
+    // network the address itself; the form only keeps what the user changes from there.
+    const { fixedAddress } = signing;
 
     useEffect(() => {
         reset({
             ...DEFAULT_VALUES,
-            format: defaultFormat,
             ...(isSignPage && fixedAddress !== undefined
                 ? { path: fixedAddress.path, address: fixedAddress.address }
                 : {}),
         });
-    }, [reset, isSignPage, account.key, defaultFormat, fixedAddress]);
+    }, [reset, isSignPage, account.key, fixedAddress]);
     type FormSetSignatureParams = { signature: string; pubKey?: string };
 
     return {
@@ -174,9 +172,9 @@ export const useSignVerifyForm = (
             },
             isDisabled: signing.isAddressFixed,
         },
-        formatField: {
-            selectedOption: formatField.value,
-            onChange: formatField.onChange,
+        selectionField: {
+            value: selectionField.value,
+            onChange: selectionField.onChange,
         },
     };
 };

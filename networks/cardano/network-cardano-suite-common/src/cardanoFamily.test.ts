@@ -57,8 +57,14 @@ const createSigning = () => {
     return { messageSigning, cardanoSignMessage };
 };
 
-const getFormat = (signing: ReturnType<typeof createSigning>['messageSigning'], id: string) =>
-    signing.getFormatChoice(account)?.options.find(({ format }) => format === id)?.format;
+const getPublicKeyFormatId = (
+    signing: ReturnType<typeof createSigning>['messageSigning'],
+    id: string,
+) =>
+    signing
+        .getChoices(account)
+        .find(({ key }) => key === 'publicKeyFormat')
+        ?.options.find(candidate => candidate.id === id)?.id;
 
 describe('cardanoFamily message signing', () => {
     it('signs only, with the stake address offered first', () => {
@@ -86,7 +92,7 @@ describe('cardanoFamily message signing', () => {
             path: "m/1852'/1815'/0'/0/0",
             message: 'hello',
             isHex: false,
-            format: getFormat(messageSigning, 'cose'),
+            selection: { publicKeyFormat: getPublicKeyFormatId(messageSigning, 'cose') },
         });
 
         expect(result).toEqual({

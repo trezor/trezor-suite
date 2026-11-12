@@ -4,7 +4,10 @@ import {
     asDeviceUniquePath,
 } from '@trezor/connect-common';
 import { mock } from '@trezor/dependency-injection';
-import { type OpenAccount, type SignFormat } from '@trezor/network-module-suite-common-types';
+import {
+    type OpenAccount,
+    type SignChoiceOptionId,
+} from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { type BitcoinFamilyDeps, bitcoinFamily } from './bitcoinFamily';
@@ -61,14 +64,17 @@ const createSigning = (
     return messageSigning;
 };
 
-const getFormat = (signing: ReturnType<typeof createSigning>, id: string): SignFormat => {
-    const option = signing.getFormatChoice(account)?.options.find(({ format }) => format === id);
+const getFormatId = (signing: ReturnType<typeof createSigning>, id: string): SignChoiceOptionId => {
+    const option = signing
+        .getChoices(account)
+        .find(({ key }) => key === 'format')
+        ?.options.find(candidate => candidate.id === id);
 
     if (option === undefined) {
         throw new Error(`Format ${id} is expected to be offered.`);
     }
 
-    return option.format;
+    return option.id;
 };
 
 describe('bitcoinFamily message signing', () => {
@@ -88,11 +94,10 @@ describe('bitcoinFamily message signing', () => {
     it('offers both signature formats, except to legacy accounts', () => {
         const signing = createSigning(createConnect());
 
-        expect(signing.getFormatChoice(account)?.options.map(({ format }) => format)).toEqual([
-            'default',
-            'electrum',
-        ]);
-        expect(signing.getFormatChoice({ ...account, accountType: 'legacy' })).toBeNull();
+        expect(
+            signing.getChoices(account).map(({ key, options }) => [key, options.map(o => o.id)]),
+        ).toEqual([['format', ['default', 'electrum']]]);
+        expect(signing.getChoices({ ...account, accountType: 'legacy' })).toEqual([]);
     });
 
     it('groups fresh, used and change addresses, newest first', () => {
@@ -124,7 +129,7 @@ describe('bitcoinFamily message signing', () => {
             path: "m/84'/0'/0'/0/0",
             message: 'hello',
             isHex: false,
-            format: getFormat(signing, 'electrum'),
+            selection: { format: getFormatId(signing, 'electrum') },
         });
 
         expect(result).toEqual({
@@ -139,6 +144,29 @@ describe('bitcoinFamily message signing', () => {
             hex: false,
             no_script_type: true,
         });
+    });
+
+    it('signs with the format typed by Bitcoin, as the closed network offers it', async () => {
+        const connect = createConnect();
+        connect.signMessage.mockResolvedValue({
+            success: true,
+            payload: { address: 'used-0', signature: SIGNATURE },
+            device: { path: DEVICE_PATH, state: undefined },
+        });
+        const signing = createSigning(connect);
+
+        await signing.signWithParams({
+            device: DEVICE,
+            account,
+            path: "m/84'/0'/0'/0/0",
+            message: 'hello',
+            isHex: false,
+            format: 'electrum',
+        });
+
+        expect(connect.signMessage).toHaveBeenCalledWith(
+            expect.objectContaining({ no_script_type: true }),
+        );
     });
 
     it('passes a device failure through unchanged', async () => {

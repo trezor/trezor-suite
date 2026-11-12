@@ -6,14 +6,15 @@ import { type Account } from '@suite-common/wallet-types';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import type { SignFormat } from '@trezor/network-module-suite-common-types';
+import type { SignChoiceOptionId, SignSelection } from '@trezor/network-module-suite-common-types';
 import { isHex } from '@trezor/utils';
 
 import { useSignMessage } from './useSignMessage';
 import { useMessageSigningLabels } from '../messageSigningLabels';
 
 type FormValues = {
-    format?: SignFormat;
+    /** Options picked from the network's choices, by choice key. */
+    selection: SignSelection;
     address: string;
     message: string;
     hex: boolean;
@@ -27,19 +28,25 @@ export const useSignMessageForm = (account: Account) => {
     const signMessage = useSignMessage();
     const { AddressFormatter } = useFormatters();
     const { translate } = useTranslate();
-    const { getFormatLabel, addressBadges } = useMessageSigningLabels();
+    const { getLabel, addressBadges } = useMessageSigningLabels();
 
     const [isSigned, setIsSigned] = useState(false);
 
-    const formatChoice = signing?.formatChoice ?? null;
+    const choices = useMemo(() => signing?.choices ?? [], [signing]);
 
-    const formats = useMemo(
-        (): SelectItemType<SignFormat>[] | undefined =>
-            formatChoice?.options.map(option => ({
-                value: option.format,
-                label: getFormatLabel(option),
+    // Each choice of the family's own parameters, as a select over the options it offered.
+    const choiceFields = useMemo(
+        () =>
+            choices.map(choice => ({
+                key: choice.key,
+                name: `selection.${choice.key}` as const,
+                title: getLabel(choice.label),
+                items: choice.options.map((option): SelectItemType<SignChoiceOptionId> => ({
+                    value: option.id,
+                    label: getLabel(option.label),
+                })),
             })),
-        [formatChoice, getFormatLabel],
+        [choices, getLabel],
     );
 
     const addresses = useMemo((): (SelectItemType<string> & { path: string })[] => {
@@ -57,7 +64,7 @@ export const useSignMessageForm = (account: Account) => {
 
     const form = useForm<FormValues>({
         validation: yup.object({
-            format: yup.mixed<SignFormat>(),
+            selection: yup.mixed<SignSelection>().required(),
             address: yup.string().required(),
             message: yup
                 .string()
@@ -73,7 +80,9 @@ export const useSignMessageForm = (account: Account) => {
             hex: yup.boolean().required(),
         }),
         defaultValues: {
-            format: formatChoice?.options[0]?.format,
+            selection: Object.fromEntries(
+                choices.map(choice => [choice.key, choice.options[0]?.id]),
+            ),
             address: isAddressFixed ? addresses[0]?.value : '',
             message: '',
             hex: false,
@@ -87,8 +96,8 @@ export const useSignMessageForm = (account: Account) => {
         hex: useWatch({ control: form.control, name: 'hex' }),
     };
 
-    const setFormat = (format: SignFormat) => {
-        form.setValue('format', format);
+    const selectOption = (name: `selection.${string}`, id: SignChoiceOptionId) => {
+        form.setValue(name, id);
     };
 
     const setAddress = (address: string) => {
@@ -102,10 +111,10 @@ export const useSignMessageForm = (account: Account) => {
         }
     };
 
-    const submit = form.handleSubmit(async ({ format, address, message, hex }) => {
+    const submit = form.handleSubmit(async ({ selection, address, message, hex }) => {
         const signResult = await signMessage({
             account,
-            format,
+            selection,
             path: addresses.find(({ value }) => value === address)?.path ?? '',
             message,
             hex,
@@ -123,8 +132,8 @@ export const useSignMessageForm = (account: Account) => {
 
     return {
         hookForm: form,
-        formats,
-        setFormat,
+        choiceFields,
+        selectOption,
         addresses,
         setAddress,
         hex: formValues.hex,

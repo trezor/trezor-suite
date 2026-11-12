@@ -18,8 +18,8 @@ const hexSwitchStyle = prepareNativeStyle(() => ({
 export const SignMessageCard = ({ form }: SignMessageCardProps) => {
     const {
         hookForm,
-        formats,
-        setFormat,
+        choiceFields,
+        selectOption,
         addresses,
         setAddress,
         hex,
@@ -35,16 +35,17 @@ export const SignMessageCard = ({ form }: SignMessageCardProps) => {
         <Card>
             <Form form={hookForm}>
                 <VStack spacing="sp16">
-                    {formats && (
+                    {choiceFields.map(({ key, name, title, items }) => (
                         <SelectField
-                            name="format"
+                            key={key}
+                            name={name}
                             labelType="outsideLabel"
-                            title={<Translation id="signAndVerify.format.label" />}
-                            items={formats}
-                            onSelectItem={setFormat}
+                            title={title}
+                            items={items}
+                            onSelectItem={id => selectOption(name, id)}
                             isReadOnly={isSigned}
                         />
-                    )}
+                    ))}
                     <SelectField
                         name="address"
                         labelType="outsideLabel"

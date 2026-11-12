@@ -11,7 +11,7 @@ import type {
     AddressRef,
     MessageSigning,
     MessageSigningError,
-    SignFormat,
+    SignSelection,
     SignedMessage,
 } from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
@@ -123,8 +123,8 @@ export type SignThunkParams = {
     readonly path: string;
     readonly message: string;
     readonly isHex: boolean;
-    /** One of the options the account's message signing offered; omitted when it offered none. */
-    readonly format?: SignFormat;
+    /** Options picked from the account's message signing choices; omitted ones take the default. */
+    readonly selection?: SignSelection;
 };
 
 type SignThunkState = SignVerifyRootState;
@@ -132,7 +132,7 @@ type SignThunkState = SignVerifyRootState;
 type SignThunkDeps = SignVerifyThunkExtra;
 
 export const signThunk =
-    ({ account, path, message, isHex, format }: SignThunkParams) =>
+    ({ account, path, message, isHex, selection }: SignThunkParams) =>
     async (
         dispatch: Dispatch,
         getState: () => SignThunkState,
@@ -142,13 +142,19 @@ export const signThunk =
         const messageSigning = getAccountMessageSigning(extra, account);
         // Accounts signing in a single format never offered the choice, so reporting one of its
         // values would invent an answer the user never gave.
-        const formatAttributes =
-            messageSigning?.getFormatChoice(account)?.kind === 'signature'
-                ? {
-                      signatureFormat:
-                          format === 'electrum' ? ('electrum' as const) : ('trezor' as const),
-                  }
-                : {};
+        const signatureChoice = messageSigning
+            ?.getChoices(account)
+            .find(({ kind }) => kind === 'signature');
+        const chosenSignatureId =
+            signatureChoice && (selection?.[signatureChoice.key] ?? signatureChoice.options[0]?.id);
+        const formatAttributes = signatureChoice
+            ? {
+                  signatureFormat:
+                      chosenSignatureId === 'electrum'
+                          ? ('electrum' as const)
+                          : ('trezor' as const),
+              }
+            : {};
         const report = (payload: { status: 'success' | 'error' | 'cancelled'; error?: string }) =>
             analytics.report({
                 type: events.coinSignMessageEvent.name,
@@ -175,7 +181,7 @@ export const signThunk =
             path,
             message,
             isHex,
-            format,
+            selection,
         });
 
         if (!result.success) {

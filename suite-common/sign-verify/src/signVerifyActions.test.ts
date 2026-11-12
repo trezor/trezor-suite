@@ -40,23 +40,29 @@ const LEGACY_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc'), accou
 const CONNECTED_DEVICE = mockSuiteDevice({ connected: true, available: true });
 
 type TestAccount = { readonly hasChoice: boolean };
-type TestFormat = 'default' | 'electrum';
+type TestParams = { readonly format: 'default' | 'electrum' };
 
 const LABEL = { id: 'TR_TEST', defaultMessage: 'Test' };
 
 const createMessageSigning = (
-    overrides: Partial<MessageSigningDefinition<TestAccount, TestFormat>>,
+    overrides: Partial<MessageSigningDefinition<TestAccount, TestParams>>,
 ) =>
-    defineMessageSigning<TestAccount, TestFormat>({
+    defineMessageSigning<TestAccount, TestParams>({
         labels: { title: LABEL },
         addressSelection: 'pick',
         outputs: ['signature'],
         toAccount: account => ({ hasChoice: account.accountType !== 'legacy' }),
-        formats: {
-            kind: 'signature',
-            label: LABEL,
-            options: { default: LABEL, electrum: LABEL },
-            getAvailable: account => (account.hasChoice ? ['default', 'electrum'] : []),
+        params: {
+            format: {
+                kind: 'signature',
+                label: LABEL,
+                getOptions: account => [
+                    { id: 'default', label: LABEL, value: 'default' },
+                    ...(account.hasChoice
+                        ? [{ id: 'electrum', label: LABEL, value: 'electrum' as const }]
+                        : []),
+                ],
+            },
         },
         getSignAddressGroups: () => [],
         sign: () => Promise.resolve(ok({ signature: SIGNATURE, address: ADDRESS })),
@@ -91,9 +97,11 @@ const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootSt
 
 const getConnectedState = () => createState(CONNECTED_DEVICE);
 
-const getElectrumFormat = (messageSigning: MessageSigning, account: Account) =>
-    messageSigning.getFormatChoice(account)?.options.find(({ format }) => format === 'electrum')
-        ?.format;
+const getElectrumId = (messageSigning: MessageSigning, account: Account) =>
+    messageSigning
+        .getChoices(account)
+        .find(({ key }) => key === 'format')
+        ?.options.find(({ id }) => id === 'electrum')?.id;
 
 describe('sign/verify thunks', () => {
     let dispatch: jest.Mock;
@@ -110,7 +118,7 @@ describe('sign/verify thunks', () => {
     it('signs through the capability of the account network with the selected device', async () => {
         const sign = mock<
             (
-                params: ClosedSignMessageParams<TestAccount, TestFormat>,
+                params: ClosedSignMessageParams<TestAccount, TestParams>,
             ) => ReturnType<MessageSigning['sign']>
         >(() => Promise.resolve(ok({ signature: SIGNATURE, address: ADDRESS })));
         const messageSigning = createMessageSigning({ sign });
@@ -121,7 +129,7 @@ describe('sign/verify thunks', () => {
             path: PATH,
             message: MESSAGE,
             isHex: true,
-            format: getElectrumFormat(messageSigning, ACCOUNT),
+            selection: { format: getElectrumId(messageSigning, ACCOUNT) },
         })(dispatch, getConnectedState, extra);
 
         expect(result).toEqual({ signature: SIGNATURE, address: ADDRESS });

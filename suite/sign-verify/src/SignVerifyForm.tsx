@@ -6,7 +6,7 @@ import { CapabilityLabel, Translation, type TranslationKey, useTranslation } fro
 import { type MessageSigningController } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
-import type { SignFormatKind } from '@trezor/network-module-suite-common-types';
+import type { SignChoiceKind } from '@trezor/network-module-suite-common-types';
 
 import { FormatSwitch } from './FormatSwitch';
 import { SignVerifyAddressField } from './SignVerifyAddressField';
@@ -19,14 +19,14 @@ import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
 import { type SignVerifyFields, useSignVerifyForm } from './useSignVerifyForm';
 
 /**
- * How desktop presents each kind of format choice. A signature format only matters until the
- * message is signed; a public key format explains the key shown next to the signature, so it stays.
- * The test ids are the ones the e2e suites already address.
+ * How desktop presents each kind of choice. A signature format only matters until the message is
+ * signed; a public key format explains the key shown next to the signature, so it stays. The test
+ * ids are the ones the e2e suites already address.
  */
-const formatSwitchPresentation = {
+const choicePresentation = {
     signature: { isShownWhenSigned: false, testId: '@sign-verify/format' },
     publicKey: { isShownWhenSigned: true, testId: '@sign-verify/cardano-pubkey-format' },
-} as const satisfies Record<SignFormatKind, { isShownWhenSigned: boolean; testId: string }>;
+} as const satisfies Record<SignChoiceKind, { isShownWhenSigned: boolean; testId: string }>;
 
 /** Rich-text tags used by catalog messages that families reference, such as format tooltips. */
 const richTextValues = {
@@ -61,7 +61,7 @@ export const SignVerifyForm = ({ account, signing, page, onPageChange }: SignVer
         hexField,
         addressField,
         pathField,
-        formatField,
+        selectionField,
     } = useSignVerifyForm(isSignPage, account, signing);
 
     const { isLocked } = useDevice();
@@ -70,12 +70,11 @@ export const SignVerifyForm = ({ account, signing, page, onPageChange }: SignVer
 
     const isCompleted = outcome === 'signed' || outcome === 'verified';
     const hasFailedVerification = outcome === 'failed';
-    const { formatChoice } = signing;
-    const formatPresentation = formatChoice && formatSwitchPresentation[formatChoice.kind];
-    const isFormatSwitchShown =
-        isSignPage &&
-        formatPresentation !== null &&
-        (formatPresentation.isShownWhenSigned || !isCompleted);
+    const shownChoices = isSignPage
+        ? signing.choices.filter(
+              ({ kind }) => choicePresentation[kind].isShownWhenSigned || !isCompleted,
+          )
+        : [];
 
     const getErrorMessage = (error?: FieldError) =>
         error ? translationString(error.message as TranslationKey) : undefined;
@@ -107,10 +106,10 @@ export const SignVerifyForm = ({ account, signing, page, onPageChange }: SignVer
     };
 
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, format } = data;
+        const { address, path, message, signature, hex, selection } = data;
 
         if (isSignPage && path !== undefined) {
-            const result = await signing.sign({ path, message, isHex: hex, format });
+            const result = await signing.sign({ path, message, isHex: hex, selection });
 
             if (result) {
                 formSetSignature({ signature: result.signature, pubKey: result.publicKey });
@@ -137,26 +136,35 @@ export const SignVerifyForm = ({ account, signing, page, onPageChange }: SignVer
             />
             <form onSubmit={formSubmit(onSubmit)}>
                 <Column gap={16} margin={{ bottom: 32 }}>
-                    {isFormatSwitchShown && formatChoice !== null && (
+                    {shownChoices.map(choice => (
                         <FormatSwitch
-                            label={<CapabilityLabel label={formatChoice.label} />}
-                            options={formatChoice.options.map(option => ({
-                                value: option.format,
+                            key={choice.key}
+                            label={<CapabilityLabel label={choice.label} />}
+                            options={choice.options.map(option => ({
+                                value: option.id,
                                 label: <CapabilityLabel label={option.label} />,
                             }))}
                             tooltip={
-                                formatChoice.tooltip && (
+                                choice.tooltip && (
                                     <CapabilityLabel
-                                        label={formatChoice.tooltip}
+                                        label={choice.tooltip}
                                         values={richTextValues}
                                     />
                                 )
                             }
                             isDisabled={isCompleted}
-                            data-testid={formatSwitchPresentation[formatChoice.kind].testId}
-                            {...formatField}
+                            data-testid={choicePresentation[choice.kind].testId}
+                            selectedOption={
+                                selectionField.value[choice.key] ?? choice.options[0]?.id
+                            }
+                            onChange={id =>
+                                selectionField.onChange({
+                                    ...selectionField.value,
+                                    [choice.key]: id,
+                                })
+                            }
                         />
-                    )}
+                    ))}
                     <SignVerifyAddressField
                         addressGroups={signing.addressGroups}
                         isAddressFixed={signing.isAddressFixed}

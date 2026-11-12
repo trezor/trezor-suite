@@ -22,6 +22,7 @@ const messageSigning = defineCapability({
             addressSelection: 'fixed',
             outputs: ['signature'],
             toAccount: account => account,
+            params: {},
             getSignAddressGroups: () => [],
             sign: () => Promise.resolve({ success: true, payload: { signature: 'sig' } }),
         }),

@@ -1,12 +1,13 @@
 import { defineCapability, defineFamily } from './defineFamily';
 import type { SuiteCommonNetworkConfig } from '../SuiteCommonNetworkConfig';
-import type { MessageSigning } from './messageSigning/MessageSigning';
+import type { OpenNetwork } from './defineFamily';
+import type { FamilyMessageSigning, MessageSigning } from './messageSigning/MessageSigning';
 
 type TestDeps = { getUrl: () => string };
 type OtherDeps = { getOther: () => number };
 
 declare const getConfig: (symbol: 'aaa' | 'taaa') => SuiteCommonNetworkConfig;
-declare const messageSigning: MessageSigning;
+declare const messageSigning: FamilyMessageSigning<{ readonly format: 'a' | 'b' }>;
 
 const signing = defineCapability({
     requires: { feature: 'sign-verify' },
@@ -60,6 +61,19 @@ const _wrongDeps = defineFamily<TestDeps>()({
 
 // @ts-expect-error A symbol of another family cannot be created.
 family.createNetwork({ getUrl: () => '' }, { symbol: 'zzz', backend: 'blockbook' });
+
+// A network the app resolved is open; narrowing it to its family brings the family's types back.
+declare const resolved: OpenNetwork;
+declare const base: Parameters<MessageSigning['sign']>[0];
+// @ts-expect-error The open network does not know any family's parameters.
+void resolved.capabilities.messageSigning?.signWithParams;
+if (family.isOwnNetwork(resolved)) {
+    const _family: 'test' = resolved.family;
+    void resolved.capabilities.messageSigning?.signWithParams({ ...base, format: 'b' });
+    // @ts-expect-error A value the family does not offer.
+    void resolved.capabilities.messageSigning?.signWithParams({ ...base, format: 'c' });
+    void _family;
+}
 
 void _closedSymbol;
 void _optionalSigning;

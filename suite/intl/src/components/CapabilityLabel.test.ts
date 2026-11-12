@@ -71,15 +71,16 @@ const getMessageSigningLabels = (): Label[] => {
             throw new Error(`${symbol} is expected to sign messages.`);
         }
 
-        const formatChoice = messageSigning.getFormatChoice(account);
+        const choices = messageSigning.getChoices(account);
         const groups = messageSigning.getSignAddressGroups({ account, touchedAddresses: [] });
 
         return [
             messageSigning.labels.title,
-            ...(formatChoice
-                ? [formatChoice.label, ...formatChoice.options.map(o => o.label)]
-                : []),
-            ...(formatChoice?.tooltip ? [formatChoice.tooltip] : []),
+            ...choices.flatMap(choice => [
+                choice.label,
+                ...choice.options.map(option => option.label),
+                ...(choice.tooltip ? [choice.tooltip] : []),
+            ]),
             ...groups.flatMap(group => (group.label ? [group.label] : [])),
         ];
     });

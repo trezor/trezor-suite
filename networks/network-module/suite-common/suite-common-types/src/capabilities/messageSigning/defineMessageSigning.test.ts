@@ -1,12 +1,12 @@
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { ok } from '@trezor/type-utils';
 
-import type { MessageSigningDefinition, SignFormat } from './MessageSigning';
+import type { MessageSigningDefinition, SignChoiceOptionId } from './MessageSigning';
 import { defineMessageSigning } from './defineMessageSigning';
 import type { OpenAccount } from '../OpenAccount';
 
 type TestAccount = { readonly path: string; readonly hasChoice: boolean };
-type TestFormat = 'default' | 'electrum';
+type TestParams = { readonly format: 'default' | 'electrum'; readonly bip322: boolean };
 
 const LABEL = { id: 'TR_TEST', defaultMessage: 'Test' };
 
@@ -20,9 +20,9 @@ const openAccount: OpenAccount = {
 const foreignAccount: OpenAccount = { ...openAccount, symbol: asNetworkSymbol('zzz') };
 const singleFormatAccount: OpenAccount = { ...openAccount, accountType: 'legacy' };
 
-const signedFormats: (TestFormat | undefined)[] = [];
+const signedParams: TestParams[] = [];
 
-const definition: MessageSigningDefinition<TestAccount, TestFormat> = {
+const definition: MessageSigningDefinition<TestAccount, TestParams> = {
     labels: { title: LABEL },
     addressSelection: 'pick',
     outputs: ['signature'],
@@ -30,109 +30,127 @@ const definition: MessageSigningDefinition<TestAccount, TestFormat> = {
         account.symbol === 'aaa'
             ? { path: account.path, hasChoice: account.accountType !== 'legacy' }
             : undefined,
-    formats: {
-        kind: 'signature',
-        label: LABEL,
-        options: { default: LABEL, electrum: { id: 'TR_ELECTRUM', defaultMessage: 'Electrum' } },
-        getAvailable: account => (account.hasChoice ? ['default', 'electrum'] : []),
+    params: {
+        format: {
+            kind: 'signature',
+            label: LABEL,
+            getOptions: account => [
+                { id: 'default', label: LABEL, value: 'default' },
+                ...(account.hasChoice
+                    ? [
+                          {
+                              id: 'electrum',
+                              label: { id: 'TR_ELECTRUM', defaultMessage: 'Electrum' },
+                              value: 'electrum' as const,
+                          },
+                      ]
+                    : []),
+            ],
+        },
+        // A parameter the shared contract has never heard of: a family adds it on its own.
+        bip322: {
+            kind: 'signature',
+            label: LABEL,
+            getOptions: () => [
+                { id: 'off', label: LABEL, value: false },
+                { id: 'on', label: LABEL, value: true },
+            ],
+        },
     },
     getSignAddressGroups: account => [
         { category: 'account', label: null, addresses: [{ path: account.path, address: 'addr' }] },
     ],
-    sign: ({ format }) => {
-        signedFormats.push(format);
+    sign: ({ format, bip322 }) => {
+        signedParams.push({ format, bip322 });
 
         return Promise.resolve(ok({ signature: 'sig' }));
     },
 };
 
-const getOfferedFormats = (account: OpenAccount): SignFormat[] =>
-    defineMessageSigning(definition)
-        .getFormatChoice(account)
-        ?.options.map(option => option.format) ?? [];
+const getOptionId = (account: OpenAccount, key: string, id: string): SignChoiceOptionId => {
+    const option = defineMessageSigning(definition)
+        .getChoices(account)
+        .find(choice => choice.key === key)
+        ?.options.find(candidate => candidate.id === id);
+
+    if (option === undefined) {
+        throw new Error(`Option ${key}=${id} was not offered`);
+    }
+
+    return option.id;
+};
 
 const SIGN_PARAMS = { device: {}, path: 'p', message: 'm', isHex: false };
 
-describe('defineMessageSigning', () => {
+describe(defineMessageSigning.name, () => {
     beforeEach(() => {
-        signedFormats.length = 0;
+        signedParams.length = 0;
     });
 
-    it('offers the formats available for the account, with their labels', () => {
-        const choice = defineMessageSigning(definition).getFormatChoice(openAccount);
+    it('offers each parameter that has more than one option, with its labels', () => {
+        const choices = defineMessageSigning(definition).getChoices(openAccount);
 
-        expect(choice?.kind).toBe('signature');
-        expect(choice?.options.map(option => [option.format, option.label.id])).toEqual([
-            ['default', 'TR_TEST'],
-            ['electrum', 'TR_ELECTRUM'],
+        expect(choices.map(({ key, options }) => [key, options.map(option => option.id)])).toEqual([
+            ['format', ['default', 'electrum']],
+            ['bip322', ['off', 'on']],
         ]);
     });
 
-    it('offers no choice when the account has a single format or is foreign', () => {
+    it('offers no choice for a parameter with a single option, nor for a foreign account', () => {
         const signing = defineMessageSigning(definition);
 
-        expect(signing.getFormatChoice(singleFormatAccount)).toBeNull();
-        expect(signing.getFormatChoice(foreignAccount)).toBeNull();
+        expect(signing.getChoices(singleFormatAccount).map(({ key }) => key)).toEqual(['bip322']);
+        expect(signing.getChoices(foreignAccount)).toEqual([]);
     });
 
-    it('signs with a format the family offered', async () => {
-        const [, electrum] = getOfferedFormats(openAccount);
-
+    it('signs with the options chosen by id, and the first option of the rest', async () => {
         const result = await defineMessageSigning(definition).sign({
             ...SIGN_PARAMS,
             account: openAccount,
-            format: electrum,
+            selection: { bip322: getOptionId(openAccount, 'bip322', 'on') },
         });
 
         expect(result).toEqual(ok({ signature: 'sig' }));
-        expect(signedFormats).toEqual(['electrum']);
+        expect(signedParams).toEqual([{ format: 'default', bip322: true }]);
     });
 
-    it('offers and signs a format that only the family names', async () => {
-        const signedByFamily: string[] = [];
-        const signing = defineMessageSigning<TestAccount, 'bip322'>({
-            labels: definition.labels,
-            addressSelection: definition.addressSelection,
-            outputs: definition.outputs,
-            toAccount: definition.toAccount,
-            formats: {
-                kind: 'signature',
-                label: LABEL,
-                options: { bip322: { id: 'TR_BIP322', defaultMessage: 'BIP-322' } },
-                getAvailable: () => ['bip322'],
-            },
-            getSignAddressGroups: definition.getSignAddressGroups,
-            sign: ({ format }) => {
-                if (format !== undefined) signedByFamily.push(format);
-
-                return Promise.resolve(ok({ signature: 'sig' }));
-            },
+    it('signs with values typed by the family', async () => {
+        await defineMessageSigning(definition).signWithParams({
+            ...SIGN_PARAMS,
+            account: openAccount,
+            format: 'electrum',
+            bip322: false,
         });
-        const offered = signing.getFormatChoice(openAccount)?.options ?? [];
 
-        await signing.sign({ ...SIGN_PARAMS, account: openAccount, format: offered[0]?.format });
-
-        expect(offered.map(option => option.label.defaultMessage)).toEqual(['BIP-322']);
-        expect(signedByFamily).toEqual(['bip322']);
+        expect(signedParams).toEqual([{ format: 'electrum', bip322: false }]);
     });
 
-    it('rejects a format the account was not offered without reaching the family', async () => {
-        const [, electrum] = getOfferedFormats(openAccount);
+    it('rejects an option the account was not offered without reaching the family', async () => {
+        const signing = defineMessageSigning(definition);
+        const electrum = getOptionId(openAccount, 'format', 'electrum');
 
-        const result = await defineMessageSigning(definition).sign({
+        const byId = await signing.sign({
             ...SIGN_PARAMS,
             account: singleFormatAccount,
-            format: electrum,
+            selection: { format: electrum },
+        });
+        const byValue = await signing.signWithParams({
+            ...SIGN_PARAMS,
+            account: singleFormatAccount,
+            format: 'electrum',
+            bip322: false,
         });
 
-        expect(result).toEqual({
+        const rejection = {
             success: false,
             error: {
                 code: 'Method_InvalidParameter',
-                message: 'Format electrum is not offered for this account.',
+                message: 'The value of format is not offered for this account.',
             },
-        });
-        expect(signedFormats).toEqual([]);
+        };
+        expect(byId).toEqual(rejection);
+        expect(byValue).toEqual(rejection);
+        expect(signedParams).toEqual([]);
     });
 
     it('rejects a foreign account on every call', async () => {

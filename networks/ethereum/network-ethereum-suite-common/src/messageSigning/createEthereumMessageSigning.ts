@@ -1,7 +1,7 @@
 import type { GetTrezorConnectDep } from '@trezor/connect-common';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 import {
-    type MessageSigning,
+    type FamilyMessageSigning,
     type NetworkDescription,
     defineMessageSigning,
     isAccountOfNetwork,
@@ -19,14 +19,17 @@ type EthereumSigningAccount = {
     readonly address: string;
 };
 
-type EthereumMessageSigning = MessageSigning;
+/** Every EVM network signs with the account address and has no parameters of its own yet. */
+export type EthereumSignParams = Record<never, never>;
+
+export type EthereumMessageSigning = FamilyMessageSigning<EthereumSignParams>;
 
 /** Every EVM chain signs with the one account address, so there is nothing to choose. */
 export const createEthereumMessageSigning = (
     deps: EthereumMessageSigningDeps,
     network: NetworkDescription<EthereumNetworkSymbol>,
 ): EthereumMessageSigning =>
-    defineMessageSigning<EthereumSigningAccount>({
+    defineMessageSigning<EthereumSigningAccount, EthereumSignParams>({
         labels: { title: labels.title },
         addressSelection: 'fixed',
         outputs: ['signature'],
@@ -34,6 +37,7 @@ export const createEthereumMessageSigning = (
             isAccountOfNetwork(account, network)
                 ? { path: account.path, address: account.descriptor }
                 : undefined,
+        params: {},
         getSignAddressGroups: account => [
             {
                 category: 'account',

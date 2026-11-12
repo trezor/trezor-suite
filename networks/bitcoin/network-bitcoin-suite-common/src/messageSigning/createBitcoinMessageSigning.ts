@@ -1,7 +1,7 @@
 import { type GetTrezorConnectDep, asCoinSymbol } from '@trezor/connect-common';
 import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
 import {
-    type MessageSigning,
+    type FamilyMessageSigning,
     type NetworkDescription,
     type OpenAccountAddresses,
     defineMessageSigning,
@@ -23,15 +23,21 @@ type BitcoinSigningAccount = {
     readonly hasSelectableFormat: boolean;
 };
 
-type BitcoinSignFormat = 'default' | 'electrum';
+/** Bitcoin's own signing parameters: the signature format, BIP-137 or Electrum's. */
+export type BitcoinSignParams = {
+    readonly format: 'default' | 'electrum';
+};
 
-type BitcoinMessageSigning = MessageSigning;
+export type BitcoinMessageSigning = FamilyMessageSigning<BitcoinSignParams>;
+
+const defaultFormat = { id: 'default', label: labels.formatDefault, value: 'default' } as const;
+const electrumFormat = { id: 'electrum', label: labels.formatElectrum, value: 'electrum' } as const;
 
 export const createBitcoinMessageSigning = (
     deps: BitcoinMessageSigningDeps,
     network: NetworkDescription<BitcoinNetworkSymbol>,
 ): BitcoinMessageSigning =>
-    defineMessageSigning<BitcoinSigningAccount, BitcoinSignFormat>({
+    defineMessageSigning<BitcoinSigningAccount, BitcoinSignParams>({
         labels: { title: labels.title },
         addressSelection: 'pick',
         outputs: ['signature'],
@@ -47,12 +53,14 @@ export const createBitcoinMessageSigning = (
                           Object.keys(network.config.accountTypes).length > 0,
                   }
                 : undefined,
-        formats: {
-            kind: 'signature',
-            label: labels.format,
-            tooltip: labels.formatTooltip,
-            options: { default: labels.formatDefault, electrum: labels.formatElectrum },
-            getAvailable: account => (account.hasSelectableFormat ? ['default', 'electrum'] : []),
+        params: {
+            format: {
+                kind: 'signature',
+                label: labels.format,
+                tooltip: labels.formatTooltip,
+                getOptions: account =>
+                    account.hasSelectableFormat ? [defaultFormat, electrumFormat] : [defaultFormat],
+            },
         },
         getSignAddressGroups: (account, touchedAddresses) =>
             groupSignAddresses([

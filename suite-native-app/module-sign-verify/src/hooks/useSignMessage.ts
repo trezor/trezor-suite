@@ -9,14 +9,14 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
-import type { SignFormat } from '@trezor/network-module-suite-common-types';
+import type { SignSelection } from '@trezor/network-module-suite-common-types';
 import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
 type SignMessageArgs = {
     account: Account;
-    format?: SignFormat;
+    selection?: SignSelection;
     path: string;
     message: string;
     hex: boolean;
@@ -27,7 +27,7 @@ export const useSignMessage = () => {
     const { waitForDevice } = useDeviceReadyEvents();
     const { dispatch } = useServices(injectDispatch);
 
-    return async ({ account, format, path, message, hex }: SignMessageArgs) => {
+    return async ({ account, selection, path, message, hex }: SignMessageArgs) => {
         navigation.navigate(RootStackRoutes.SignAndVerifyStack);
 
         const isDeviceReady = await waitForDevice();
@@ -35,7 +35,7 @@ export const useSignMessage = () => {
             return false;
         }
 
-        const result = await dispatch(signThunk({ account, path, message, isHex: hex, format }));
+        const result = await dispatch(signThunk({ account, path, message, isHex: hex, selection }));
 
         navigation.goBack();
 

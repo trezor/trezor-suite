@@ -2,7 +2,7 @@ import type { GetTrezorConnectDep } from '@trezor/connect-common';
 import type { CardanoNetworkSymbol } from '@trezor/network-cardano-types';
 import {
     type AccountType,
-    type MessageSigning,
+    type FamilyMessageSigning,
     type NetworkDescription,
     type OpenAccountAddresses,
     defineMessageSigning,
@@ -33,7 +33,10 @@ type CardanoSigningAccount = {
     readonly addresses?: OpenAccountAddresses;
 };
 
-type CardanoSignFormat = 'default' | 'cose';
+/** Cardano's own signing parameters: how the returned public key is encoded. */
+export type CardanoSignParams = {
+    readonly publicKeyFormat: 'raw' | 'cose';
+};
 
 /** The stake address lives in the account's network-specific data, which only Cardano knows. */
 const getStakingAddress = (misc: unknown): string | undefined => {
@@ -55,13 +58,13 @@ const getSigningAddressParameters = (account: CardanoSigningAccount, path: strin
         : getAddressParameters(account, path);
 };
 
-type CardanoMessageSigning = MessageSigning;
+export type CardanoMessageSigning = FamilyMessageSigning<CardanoSignParams>;
 
 export const createCardanoMessageSigning = (
     deps: CardanoMessageSigningDeps,
     network: NetworkDescription<CardanoNetworkSymbol>,
 ): CardanoMessageSigning =>
-    defineMessageSigning<CardanoSigningAccount, CardanoSignFormat>({
+    defineMessageSigning<CardanoSigningAccount, CardanoSignParams>({
         labels: { title: labels.title },
         addressSelection: 'pick',
         outputs: ['signature', 'publicKey'],
@@ -78,11 +81,15 @@ export const createCardanoMessageSigning = (
                   }
                 : undefined;
         },
-        formats: {
-            kind: 'publicKey',
-            label: labels.format,
-            options: { default: labels.formatDefault, cose: labels.formatCose },
-            getAvailable: () => ['default', 'cose'],
+        params: {
+            publicKeyFormat: {
+                kind: 'publicKey',
+                label: labels.format,
+                getOptions: () => [
+                    { id: 'raw', label: labels.formatDefault, value: 'raw' },
+                    { id: 'cose', label: labels.formatCose, value: 'cose' },
+                ],
+            },
         },
         getSignAddressGroups: (account, touchedAddresses) =>
             groupSignAddresses([
@@ -107,7 +114,7 @@ export const createCardanoMessageSigning = (
                     addresses: (account.addresses?.change ?? []).toReversed(),
                 },
             ]),
-        sign: async ({ device, account, path, message, isHex, format }) => {
+        sign: async ({ device, account, path, message, isHex, publicKeyFormat }) => {
             const response = await deps.getTrezorConnect().cardanoSignMessage({
                 device,
                 path,
@@ -122,7 +129,9 @@ export const createCardanoMessageSigning = (
                 ? ok({
                       signature: response.payload.coseSignature,
                       publicKey:
-                          format === 'cose' ? response.payload.coseKey : response.payload.pubKey,
+                          publicKeyFormat === 'cose'
+                              ? response.payload.coseKey
+                              : response.payload.pubKey,
                       address: response.payload.headers.protected.address,
                   })
                 : err(response.error);

@@ -91,6 +91,15 @@ export type NetworkFamily<TFamily extends string, TSymbol extends string, TDeps,
         deps: TDeps,
         context: NetworkContext<TNetworkSymbol>,
     ): Network<TFamily, TNetworkSymbol, TCapabilities>;
+    /**
+     * Narrows a network the app resolved to this family's, with the family's own capability
+     * types, such as message signing with its own parameters.
+     *
+     * @see https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates
+     */
+    isOwnNetwork(
+        network: OpenNetwork,
+    ): network is OpenNetwork & Network<TFamily, NetworkSymbol & TSymbol, TCapabilities>;
     bind(deps: TDeps): BoundNetworkFamily;
 };
 
@@ -156,6 +165,11 @@ const createFamily = <
         symbols: definition.symbols,
         isSupportedNetwork,
         createNetwork,
+        isOwnNetwork: (
+            network: OpenNetwork,
+        ): network is OpenNetwork &
+            Network<TFamily, NetworkSymbol & TSymbol, NetworkCapabilities<TCapabilities>> =>
+            network.family === definition.family,
         bind: deps => ({
             family: definition.family,
             isSupportedNetwork,

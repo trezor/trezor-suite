@@ -2,17 +2,15 @@ import { type ReactNode, useCallback, useMemo } from 'react';
 
 import { Badge } from '@suite-native/atoms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
-import type {
-    SignAddressCategory,
-    SignFormatOption,
-} from '@trezor/network-module-suite-common-types';
+import type { Label, SignAddressCategory } from '@trezor/network-module-suite-common-types';
 
 /**
  * Native keeps its own translation catalog, so it maps the labels networks offer onto its own
- * keys by the label id. A format a family adds later shows in the family's own wording until it
- * gets a key here.
+ * keys by the label id. A choice or option a family adds later shows in the family's own wording
+ * until it gets a key here.
  */
-const formatLabelKeys: Partial<Record<string, TxKeyPath>> = {
+const labelKeys: Partial<Record<string, TxKeyPath>> = {
+    TR_FORMAT: 'signAndVerify.format.label',
     TR_BIP_SIG_FORMAT: 'signAndVerify.format.values.trezor',
     TR_COMPATIBILITY_SIG_FORMAT: 'signAndVerify.format.values.electrum',
     TR_PUBLIC_KEY_RAW: 'signAndVerify.format.values.rawKey',
@@ -22,9 +20,9 @@ const formatLabelKeys: Partial<Record<string, TxKeyPath>> = {
 export const useMessageSigningLabels = () => {
     const { translate } = useTranslate();
 
-    const getFormatLabel = useCallback(
-        ({ label }: SignFormatOption) => {
-            const labelKey = formatLabelKeys[label.id];
+    const getLabel = useCallback(
+        (label: Label) => {
+            const labelKey = labelKeys[label.id];
 
             return labelKey === undefined ? label.defaultMessage : translate(labelKey);
         },
@@ -44,5 +42,5 @@ export const useMessageSigningLabels = () => {
         [translate],
     );
 
-    return { getFormatLabel, addressBadges };
+    return { getLabel, addressBadges };
 };

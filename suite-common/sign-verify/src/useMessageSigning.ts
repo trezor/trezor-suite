@@ -10,7 +10,7 @@ import type {
     Label,
     MessageSigning,
     SignAddressGroup,
-    SignFormatChoice,
+    SignChoice,
     SignedMessage,
 } from '@trezor/network-module-suite-common-types';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -42,7 +42,8 @@ export type MessageSigningController = {
     /** The one address a fixed-address network signs with. */
     readonly fixedAddress: AddressRef | undefined;
     readonly addressGroups: readonly SignAddressGroup[];
-    readonly formatChoice: SignFormatChoice | null;
+    /** The family's own parameters the user may choose, such as Bitcoin's signature format. */
+    readonly choices: readonly SignChoice[];
     readonly hasPublicKeyOutput: boolean;
     sign(params: Omit<SignThunkParams, 'account'>): Promise<SignedMessage | false>;
     verify(params: Omit<VerifyThunkParams, 'account'>): Promise<VerifyMessageResult>;
@@ -79,7 +80,7 @@ export const useMessageSigning = (
             isAddressFixed,
             fixedAddress: isAddressFixed ? addressGroups[0]?.addresses[0] : undefined,
             addressGroups,
-            formatChoice: messageSigning.getFormatChoice(account),
+            choices: messageSigning.getChoices(account),
             hasPublicKeyOutput: messageSigning.outputs.includes('publicKey'),
             sign: params => dispatch(signThunk({ ...params, account })),
             verify: params => dispatch(verifyThunk({ ...params, account })),

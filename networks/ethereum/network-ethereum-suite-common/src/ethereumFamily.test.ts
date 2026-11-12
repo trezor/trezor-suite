@@ -55,7 +55,7 @@ describe('ethereumFamily message signing', () => {
         }).capabilities;
 
         expect(messageSigning?.addressSelection).toBe('fixed');
-        expect(messageSigning?.getFormatChoice(account)).toBeNull();
+        expect(messageSigning?.getChoices(account)).toEqual([]);
         expect(messageSigning?.getSignAddressGroups({ account, touchedAddresses: [] })).toEqual([
             {
                 category: 'account',
