@@ -1,4 +1,8 @@
-import { deviceReducerInitialState } from '@suite-common/device';
+import {
+    DeviceCancelledErr,
+    DeviceNotConnectedError,
+    deviceReducerInitialState,
+} from '@suite-common/device';
 import {
     type MessageSystemRootState,
     messageSystemInitialState,
@@ -8,7 +12,11 @@ import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage'
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 
-import { selectIsSuiteSyncInitPossible, selectSuiteSyncInteraction } from './suiteSyncSelectors';
+import {
+    selectIsSuiteSyncBlockedByError,
+    selectIsSuiteSyncInitPossible,
+    selectSuiteSyncInteraction,
+} from './suiteSyncSelectors';
 import type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 import { type SuiteSyncState, initialSuiteSyncState } from './suiteSyncSlice';
 
@@ -177,6 +185,62 @@ describe(selectIsSuiteSyncInitPossible.name, () => {
         });
 
         const result = selectIsSuiteSyncInitPossible(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(true);
+    });
+});
+
+describe(selectIsSuiteSyncBlockedByError.name, () => {
+    const deviceNotConnectedErrors = {
+        [DEVICE_STATIC_SESSION_ID_123]: DeviceNotConnectedError('Device not connected'),
+    };
+
+    it('returns false when the wallet has no error', () => {
+        const state = createMockState({ connected: true });
+
+        const result = selectIsSuiteSyncBlockedByError(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(false);
+    });
+
+    it('returns true for a disconnected device error while the device is still disconnected', () => {
+        const state = createMockState(
+            { connected: false },
+            { suiteSyncErrors: deviceNotConnectedErrors },
+        );
+
+        const result = selectIsSuiteSyncBlockedByError(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(true);
+    });
+
+    it('returns false for a disconnected device error once the device is connected', () => {
+        const state = createMockState(
+            { connected: true },
+            { suiteSyncErrors: deviceNotConnectedErrors },
+        );
+
+        const result = selectIsSuiteSyncBlockedByError(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(false);
+    });
+
+    it('returns true for a disconnected device error when the device is not found', () => {
+        const state = createMockState({}, { suiteSyncErrors: deviceNotConnectedErrors });
+        state.device.devices = [];
+
+        const result = selectIsSuiteSyncBlockedByError(state, DEVICE_STATIC_SESSION_ID_123);
+
+        expect(result).toBe(true);
+    });
+
+    it('returns true for a cancelled request even when the device is connected', () => {
+        const state = createMockState(
+            { connected: true },
+            { suiteSyncErrors: { [DEVICE_STATIC_SESSION_ID_123]: DeviceCancelledErr() } },
+        );
+
+        const result = selectIsSuiteSyncBlockedByError(state, DEVICE_STATIC_SESSION_ID_123);
 
         expect(result).toBe(true);
     });
