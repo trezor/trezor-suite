@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 
-import {
-    fetchAllTransactionsForAccountThunk,
-    selectAccountIsStakingActive,
-} from '@suite-common/wallet-core';
+import { selectIsStakingAccountActive } from '@suite-common/earn-staking';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -32,7 +30,7 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
     const { dispatch } = useServices(injectDispatch);
     const accountKey = account.key;
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, accountKey));
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, accountKey));
 
     const nowSeconds = useNow(UNSTAKING_REFRESH_INTERVAL_MS) / 1000;
 
