@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
-import type { Features } from '@trezor/connect-common/src/types/device';
+import type { Features } from '@trezor/connect-common/types/device';
 import type {
     FirmwareChannel,
     FirmwareReleaseConfigInfo,
-} from '@trezor/connect-common/src/types/firmware';
+} from '@trezor/connect-common/types/firmware';
 import { firmwareAssets, firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type {
     ConditionalRelease,

@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import {
     type BitcoinNetworkInfo,
     type CoinInfo,
@@ -7,7 +7,7 @@ import {
     type EthereumNetworkInfo,
     type MiscNetworkInfo,
     asCoinSymbol,
-} from '@trezor/connect-common/src/types/coinInfo';
+} from '@trezor/connect-common/types/coinInfo';
 import coinsEth from '@trezor/connect-data/files/coins-eth.json';
 import coins from '@trezor/connect-data/files/coins.json';
 import { fromHardenedPathPart, toHardenedPathPart } from '@trezor/crypto-utils';

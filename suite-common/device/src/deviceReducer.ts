@@ -15,7 +15,7 @@ import {
     type KnownDevice,
     type StaticSessionId,
 } from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type SerializedError } from '@trezor/connect-common/constants/errors';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import {
     type ActionTypesDep,

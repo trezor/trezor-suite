@@ -12,7 +12,7 @@ import {
     type PopupHandshake,
 } from '@trezor/connect';
 import { ERRORS } from '@trezor/connect-common';
-import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
+import { parseManifest, parseVersion } from '@trezor/connect-common/data/connectSettings';
 import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';

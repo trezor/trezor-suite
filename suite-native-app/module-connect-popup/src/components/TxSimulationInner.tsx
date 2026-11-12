@@ -5,7 +5,7 @@ import { AccountsListItem } from '@suite-native/accounts';
 import { Button, Card, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { EvmTxSimulationReviewContent } from '@suite-native/tx-simulation';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

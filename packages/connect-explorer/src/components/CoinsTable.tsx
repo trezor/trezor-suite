@@ -1,6 +1,6 @@
 import { Code, Table, Td, Th, Tr } from 'nextra/components';
 
-import { isCoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
+import { isCoinSymbol } from '@trezor/connect-common/types/coinInfo';
 import coinsEth from '@trezor/connect-data/files/coins-eth.json';
 import coins from '@trezor/connect-data/files/coins.json';
 

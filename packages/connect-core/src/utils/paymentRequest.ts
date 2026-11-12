@@ -1,4 +1,4 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { formatBigUintToLE } from '@trezor/utils/src/formatBigUintToLE';
 

@@ -18,7 +18,7 @@ import type {
     UiResponseWord,
     UnavailableCapabilities,
 } from '@trezor/connect-common';
-import type { FirmwareReleaseConfigInfo } from '@trezor/connect-common/src/types/firmware';
+import type { FirmwareReleaseConfigInfo } from '@trezor/connect-common/types/firmware';
 import type { FirmwareRelease, FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {

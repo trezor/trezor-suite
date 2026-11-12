@@ -21,7 +21,7 @@ import {
     requestPrioritizedDeviceAccess,
 } from '@suite-native/device-mutex';
 import TrezorConnect, { type OkWithDevice, PROTO, type Response } from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type SerializedError } from '@trezor/connect-common/constants/errors';
 import { createThunk } from '@trezor/redux-utils';
 import { type Err, exhaustive } from '@trezor/type-utils';
 

@@ -7,7 +7,7 @@ import TrezorConnect, {
     type UiRequestSelectFee,
     asCoinSymbol,
 } from '@trezor/connect';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError } from '@trezor/connect-common/constants/errors';
 
 import { CommonPopupFlow, getPayloadOrThrow } from './CommonPopupFlow';
 import { buildOptions, pickAccounts } from './selectAccount';

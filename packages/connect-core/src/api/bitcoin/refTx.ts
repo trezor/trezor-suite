@@ -6,7 +6,7 @@ import type {
     RawTransaction,
     RefTransaction,
 } from '@trezor/connect-common';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError } from '@trezor/connect-common/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 import { arrayPartition, bufferUtils, throwError } from '@trezor/utils';

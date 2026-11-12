@@ -1,4 +1,4 @@
-import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
+import type { CoinSymbol } from '@trezor/connect-common/types/coinInfo';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
 
 import {

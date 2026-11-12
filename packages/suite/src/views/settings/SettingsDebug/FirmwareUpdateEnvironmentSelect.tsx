@@ -1,7 +1,7 @@
 import { firmwareActions, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import { injectGetAllowPrerelease } from '@suite-common/suite-types';
 import { Column, Text } from '@trezor/components';
-import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
+import { type FirmwareChannel } from '@trezor/connect-common/types/firmware';
 import { useGetter, useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';

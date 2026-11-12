@@ -1,4 +1,4 @@
-import { ALGORITHM_IDS } from '@trezor/connect-common/src/constants/cardano';
+import { ALGORITHM_IDS } from '@trezor/connect-common/constants/cardano';
 
 const legacyResults = {
     beforeMessageSigning: {

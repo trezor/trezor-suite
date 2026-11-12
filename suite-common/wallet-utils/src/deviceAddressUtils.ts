@@ -1,8 +1,8 @@
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import TrezorConnect, { type AccountInfo, type PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type DeviceIdentity } from '@trezor/connect-common/src/types/params';
+import { type SerializedError } from '@trezor/connect-common/constants/errors';
+import { type DeviceIdentity } from '@trezor/connect-common/types/params';
 import { type Result, exhaustive } from '@trezor/type-utils';
 
 type DeviceParam = DeviceIdentity & { useEmptyPassphrase?: boolean };

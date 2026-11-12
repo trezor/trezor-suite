@@ -1,6 +1,6 @@
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import type { TimerId } from '@trezor/type-utils';
 import { deepEqual } from '@trezor/utils';
 

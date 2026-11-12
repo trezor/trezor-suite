@@ -1,5 +1,5 @@
 import { UI_EVENTS } from '@trezor/connect-common';
-import type { DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
+import type { DiscoverAccountsProgress } from '@trezor/connect-common/types/api/account/discoverAccounts';
 
 import TrezorConnect, { type UiEventBundleProgress } from '../../../src';
 import { getController, initTrezorConnect, setup } from '../../common.setup';

@@ -6,7 +6,7 @@ import { reloadAppAsync } from 'expo';
 import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
 import { useAlert } from '@suite-native/alerts';
 import { Select, type SelectItemType } from '@suite-native/atoms';
-import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
+import { type FirmwareChannel } from '@trezor/connect-common/types/firmware';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

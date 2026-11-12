@@ -4,7 +4,7 @@ import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { UI_EVENTS, type UiEventWalletCreationEntropyCheck } from '@trezor/connect';
-import { type ErrorCode } from '@trezor/connect-common/src/constants/errors';
+import { type ErrorCode } from '@trezor/connect-common/constants/errors';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {

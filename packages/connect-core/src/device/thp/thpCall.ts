@@ -1,5 +1,5 @@
 import { DEVICE, normalizeButtonRequestPayload } from '@trezor/connect-common';
-import { TypedError } from '@trezor/connect-common/src/constants/errors';
+import { TypedError } from '@trezor/connect-common/constants/errors';
 import type { thp as protocolThp } from '@trezor/protocol';
 
 import type { IDevice } from '../../types/idevice';

@@ -1,4 +1,4 @@
-import type { FeeInfo, FeeLevel } from '@trezor/connect-common/src/types/fees';
+import type { FeeInfo, FeeLevel } from '@trezor/connect-common/types/fees';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 // this is workaround for the lack of information from 'trezor-common'

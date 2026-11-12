@@ -1,4 +1,4 @@
-import { ERROR_CODES } from '@trezor/connect-common/src/constants/errors';
+import { ERROR_CODES } from '@trezor/connect-common/constants/errors';
 
 import { type ConnectSerializedError } from './connectPopupTypes';
 

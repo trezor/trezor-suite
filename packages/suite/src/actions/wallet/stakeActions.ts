@@ -55,7 +55,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type SerializedError } from '@trezor/connect-common/constants/errors';
 import { type WithServices } from '@trezor/redux-utils';
 import { type Err } from '@trezor/type-utils';
 

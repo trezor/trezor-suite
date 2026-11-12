@@ -1,7 +1,7 @@
 import { generateKeyPairSync } from 'crypto';
 import { sign } from 'jws';
 
-import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
+import type { FirmwareChannel } from '@trezor/connect-common/types/firmware';
 import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 import { typedObjectEntries, typedObjectKeys } from '@trezor/utils';
 

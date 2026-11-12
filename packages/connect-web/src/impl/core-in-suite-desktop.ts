@@ -1,17 +1,17 @@
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
+import * as ERRORS from '@trezor/connect-common/constants/errors';
 import {
     CORE_CALL,
     type CallMethodAnyResponse,
     type CallMethodPayload,
     POPUP,
-} from '@trezor/connect-common/src/events';
-import type { ConnectImpl } from '@trezor/connect-common/src/impl/dynamic';
-import type { PermissionRequest } from '@trezor/connect-common/src/types/method';
-import type { ConnectImplSettings, Manifest } from '@trezor/connect-common/src/types/settings';
+} from '@trezor/connect-common/events';
+import type { ConnectImpl } from '@trezor/connect-common/impl/dynamic';
+import type { PermissionRequest } from '@trezor/connect-common/types/method';
+import type { ConnectImplSettings, Manifest } from '@trezor/connect-common/types/settings';
 import {
     type CancelParams,
     createCoreCallCancelMessage,
-} from '@trezor/connect-common/src/utils/cancelParams';
+} from '@trezor/connect-common/utils/cancelParams';
 import { WebsocketClient, WebsocketError } from '@trezor/websocket-client';
 
 /**

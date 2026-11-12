@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtxVerify.js
 
 import type { Network, PROTO } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import {
     address as BitcoinJsAddress,
     payments as BitcoinJsPayments,

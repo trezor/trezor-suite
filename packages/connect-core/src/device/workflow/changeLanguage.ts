@@ -1,4 +1,4 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 
 import { getLanguage } from '../../data/firmwareInfo';
 import type { IDevice } from '../../types/idevice';

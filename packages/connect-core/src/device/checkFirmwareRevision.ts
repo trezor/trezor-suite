@@ -1,7 +1,7 @@
 import type {
     FirmwareRevisionCheckError,
     FirmwareRevisionCheckResult,
-} from '@trezor/connect-common/src/types/device';
+} from '@trezor/connect-common/types/device';
 import type { FirmwareType } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { serializeError, versionUtils } from '@trezor/utils';

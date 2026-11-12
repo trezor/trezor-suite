@@ -1,4 +1,4 @@
-import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/src/types/device';
+import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/types/device';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 

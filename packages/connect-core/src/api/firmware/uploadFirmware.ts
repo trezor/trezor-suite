@@ -2,7 +2,7 @@
 
 import { DEVICE, UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type { CoreEventMessage, FirmwareUpdateFlowType, PROTO } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { TRANSPORT } from '@trezor/transport-common';
 import { isWithinRange } from '@trezor/utils/src/versionUtils';
