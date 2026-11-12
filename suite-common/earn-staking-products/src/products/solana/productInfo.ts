@@ -11,6 +11,7 @@ export const SOLANA_EXTERNAL_PRODUCT_INFO = stakingProductInfoSchema.parse({
     rate: null,
     entryPeriodDays: null,
     exitPeriodDays: null,
+    rewardPeriodDays: null,
     nextRewardAt: null,
     targets: [],
 });
@@ -34,11 +35,13 @@ export const fetchSolanaProductInfo = async (
 
     const entryPeriodDays = SOLANA_EPOCH_DAYS;
     const exitPeriodDays = SOLANA_EPOCH_DAYS;
+    const rewardPeriodDays = SOLANA_EPOCH_DAYS;
 
     return stakingProductInfoSchema.parse({
         rate,
         entryPeriodDays,
         exitPeriodDays,
+        rewardPeriodDays,
         nextRewardAt,
         targets: [],
     });

@@ -54,6 +54,7 @@ export const fetchEthereumEverstakePooledProductInfo = async (
         rate,
         entryPeriodDays,
         exitPeriodDays,
+        rewardPeriodDays: null,
         nextRewardAt,
         targets: [],
     });

@@ -9,6 +9,7 @@ const limits = stakingProductLimitsSchema.parse({
     feeBufferBalance: '5',
     minBalanceForStaking: '102',
     minStakeAmountForDashboard: '10',
+    registrationDeposit: '0',
 });
 
 describe('getMaxStakeAmount', () => {

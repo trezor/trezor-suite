@@ -7,6 +7,7 @@ import {
 } from '@suite-common/earn-staking-common';
 
 import {
+    getPositionActivations,
     getPositionBalances,
     getPositionOperations,
     getPositionTargets,
@@ -44,6 +45,7 @@ export const getSolanaProductPosition = ({
     const balances = getPositionBalances({ stakeAccounts, rate, epoch });
     const status = getStakingPositionStatus({ balances });
 
+    const activations = getPositionActivations({ balances });
     const unlocks = getPositionUnlocks({ balances });
     const targets = getPositionTargets({ stakeAccounts, provider });
 
@@ -76,6 +78,7 @@ export const getSolanaProductPosition = ({
         status,
         lockup: 'locked',
         balances,
+        activations,
         unlocks,
         targets,
         operations,

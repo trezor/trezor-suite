@@ -15,6 +15,7 @@ export const CARDANO_UNMANAGED_PRODUCT_INFO = stakingProductInfoSchema.parse({
     rate: null,
     entryPeriodDays: null,
     exitPeriodDays: CARDANO_EPOCH_DAYS,
+    rewardPeriodDays: CARDANO_EPOCH_DAYS,
     nextRewardAt: null,
     targets: [],
 });
@@ -58,6 +59,7 @@ export const fetchCardanoProductInfo = async (
         rate: leastSaturatedTarget?.rate ?? null,
         entryPeriodDays: null,
         exitPeriodDays: CARDANO_EPOCH_DAYS,
+        rewardPeriodDays: CARDANO_EPOCH_DAYS,
         nextRewardAt: null,
         targets,
     });

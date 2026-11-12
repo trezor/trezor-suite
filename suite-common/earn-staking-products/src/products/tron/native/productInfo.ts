@@ -48,6 +48,7 @@ export const fetchTronNativeProductInfo = async (
         rate: targets.length === 0 ? null : Math.max(...targets.map(({ rate }) => rate)),
         entryPeriodDays: null,
         exitPeriodDays: TRON_UNFREEZE_DELAY_DAYS,
+        rewardPeriodDays: null,
         nextRewardAt: null,
         targets,
     });

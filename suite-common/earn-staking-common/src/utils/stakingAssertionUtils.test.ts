@@ -3,13 +3,13 @@ import {
     assertSignedStakingStep,
     assertStakingPlan,
     assertStakingPosition,
-} from './stakingAssertions';
+} from './stakingAssertionUtils';
 import {
     mockComposedStakingStep,
     mockSignedStakingStep,
     mockStakingPlan,
     mockStakingPosition,
-} from '../mocks';
+} from '../../mocks';
 
 describe('staking assertions', () => {
     it('accepts a valid position', () => {

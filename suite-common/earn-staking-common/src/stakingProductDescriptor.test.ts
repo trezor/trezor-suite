@@ -191,4 +191,66 @@ describe('stakingProductDescriptorSchema', () => {
 
         expect(result.success).toBe(false);
     });
+
+    it('requires every product to say how its rewards are paid', () => {
+        const { rewardsKind: _rewardsKind, ...descriptor } = mockStakingProductDescriptor();
+        const result = stakingProductDescriptorSchema.safeParse(descriptor);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['rewardsKind']);
+    });
+
+    it('rejects an unknown rewards kind', () => {
+        const result = stakingProductDescriptorSchema.safeParse({
+            ...mockStakingProductDescriptor(),
+            rewardsKind: 'liquid',
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['rewardsKind']);
+    });
+
+    it('requires the registration deposit among the limits', () => {
+        const { registrationDeposit: _deposit, ...limits } = mockStakingProductDescriptor().limits;
+        const result = stakingProductDescriptorSchema.safeParse({
+            ...mockStakingProductDescriptor(),
+            limits,
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['limits', 'registrationDeposit']);
+    });
+
+    it('parses a minimum firmware for an operation the product offers', () => {
+        const descriptor = mockStakingProductDescriptor({ minFirmware: { withdraw: '2.12.2' } });
+
+        expect(stakingProductDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    });
+
+    it('rejects a minimum firmware for an operation the product does not offer', () => {
+        const result = stakingProductDescriptorSchema.safeParse(
+            mockStakingProductDescriptor({ minFirmware: { claim: '2.12.2' } }),
+        );
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['minFirmware']);
+    });
+
+    it.each(['2.12', '2.12.2-beta', 'v2.12.2', ''])('rejects the minimum firmware %p', version => {
+        const result = stakingProductDescriptorSchema.safeParse({
+            ...mockStakingProductDescriptor(),
+            minFirmware: { withdraw: version },
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['minFirmware', 'withdraw']);
+    });
+
+    it('requires every product to list its minimum firmware', () => {
+        const { minFirmware: _minFirmware, ...descriptor } = mockStakingProductDescriptor();
+        const result = stakingProductDescriptorSchema.safeParse(descriptor);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['minFirmware']);
+    });
 });

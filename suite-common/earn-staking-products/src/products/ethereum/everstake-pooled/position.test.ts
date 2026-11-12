@@ -1,11 +1,15 @@
 import {
     type StakingPosition,
     type StakingPositionTarget,
+    type StakingProductInfo,
     type StakingTransaction,
     stakingAmountSchema,
     stakingPositionSchema,
 } from '@suite-common/earn-staking-common';
-import { mockStakingTransaction } from '@suite-common/earn-staking-common/mocks';
+import {
+    mockStakingProductInfo,
+    mockStakingTransaction,
+} from '@suite-common/earn-staking-common/mocks';
 import {
     type EthereumStakingScenario,
     mockEthereumStakingAccount,
@@ -56,6 +60,7 @@ const emptyPosition: StakingPosition = {
         withdrawable: amount('0'),
         rewards: amount('0'),
     },
+    activations: [],
     unlocks: [],
     targets: [],
     operations: ['stake'],
@@ -96,6 +101,7 @@ describe('getEthereumEverstakePooledProductPosition', () => {
                 ...emptyPosition,
                 status: 'activating',
                 balances: { ...emptyPosition.balances, pending: amount(`75${ETHER.slice(2)}`) },
+                activations: [{ amount: amount(`75${ETHER.slice(2)}`), availableAt: null }],
             },
         },
         {
@@ -104,6 +110,7 @@ describe('getEthereumEverstakePooledProductPosition', () => {
                 ...emptyPosition,
                 status: 'activating',
                 balances: { ...emptyPosition.balances, pending: amount(`25${ETHER.slice(2)}`) },
+                activations: [{ amount: amount(`25${ETHER.slice(2)}`), availableAt: null }],
             },
         },
         {
@@ -334,5 +341,98 @@ describe('getEthereumEverstakePooledProductPosition', () => {
 
         expect(readOperations('0x33986ffa')).toEqual(['stake']);
         expect(readOperations('0x3a29dbae')).toEqual(['stake', 'withdraw']);
+    });
+
+    describe('activation and unlock times', () => {
+        const DAY_MS = 24 * 60 * 60 * 1000;
+        const productInfo = mockStakingProductInfo({ entryPeriodDays: 4, exitPeriodDays: 3 });
+
+        const minedTransaction = (methodId: string, blockTime: number) =>
+            mockStakingTransaction({
+                txid: `${methodId}-${blockTime}`,
+                blockHeight: 21_000_000,
+                blockTime,
+                ethereumSpecific: {
+                    status: 1,
+                    nonce: 5,
+                    gasLimit: 300_000,
+                    parsedData: { methodId, name: 'staking' },
+                },
+            });
+
+        const readTimes = (
+            scenario: EthereumStakingScenario,
+            transactions: StakingTransaction[],
+            info: StakingProductInfo | null = productInfo,
+        ) => {
+            const position = getEthereumEverstakePooledProductPosition({
+                productId: eth.id,
+                poolAddress: ETH_POOL_ADDRESS,
+                account: mockEthereumStakingAccount(scenario),
+                productInfo: info,
+                transactions,
+            });
+
+            return {
+                activatesAt: position?.activations.map(({ availableAt }) => availableAt),
+                unlocksAt: position?.unlocks.map(({ availableAt }) => availableAt),
+            };
+        };
+
+        it('dates the activation from the latest mined stake and the entry period', () => {
+            expect(
+                readTimes('pending', [
+                    minedTransaction('0x3a29dbae', 1_700_000_000),
+                    minedTransaction('0x3a29dbae', 1_700_100_000),
+                    minedTransaction('0x3a29dbae', 1_700_050_000),
+                ]),
+            ).toEqual({ activatesAt: [1_700_100_000 * 1000 + 4 * DAY_MS], unlocksAt: [] });
+        });
+
+        it('dates the unlock from the latest mined unstake and the exit period', () => {
+            expect(
+                readTimes('unstaking', [
+                    minedTransaction('0x76ec871c', 1_700_000_000),
+                    minedTransaction('0x3a29dbae', 1_700_200_000),
+                ]),
+            ).toEqual({ activatesAt: [], unlocksAt: [1_700_000_000 * 1000 + 3 * DAY_MS] });
+        });
+
+        it('leaves the times unknown without a mined transaction of the operation', () => {
+            expect(readTimes('pending', [minedTransaction('0x76ec871c', 1_700_000_000)])).toEqual({
+                activatesAt: [null],
+                unlocksAt: [],
+            });
+            expect(readTimes('unstaking', [stakingTransaction('0x76ec871c', undefined)])).toEqual({
+                activatesAt: [],
+                unlocksAt: [null],
+            });
+        });
+
+        it('leaves the times unknown without the period', () => {
+            const unknownPeriods = mockStakingProductInfo({
+                entryPeriodDays: null,
+                exitPeriodDays: null,
+            });
+
+            expect(
+                readTimes(
+                    'pending',
+                    [minedTransaction('0x3a29dbae', 1_700_000_000)],
+                    unknownPeriods,
+                ),
+            ).toEqual({ activatesAt: [null], unlocksAt: [] });
+            expect(
+                readTimes('pending', [minedTransaction('0x3a29dbae', 1_700_000_000)], null),
+            ).toEqual({ activatesAt: [null], unlocksAt: [] });
+        });
+
+        it('ignores a mined transaction without a block time', () => {
+            expect(
+                readTimes('pending', [
+                    { ...minedTransaction('0x3a29dbae', 1_700_000_000), blockTime: undefined },
+                ]),
+            ).toEqual({ activatesAt: [null], unlocksAt: [] });
+        });
     });
 });

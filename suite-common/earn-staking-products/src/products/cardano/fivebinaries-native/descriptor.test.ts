@@ -23,6 +23,7 @@ describe('createCardanoFivebinariesNativeProductDescriptor', () => {
             operations: ['unstake', 'claim', 'vote'],
             exclusivity: 'account',
             rateKind: 'apy',
+            rewardsKind: 'claimable',
             limits: {
                 minStakeAmount: '0',
                 maxStakeAmount: '0',
@@ -30,6 +31,7 @@ describe('createCardanoFivebinariesNativeProductDescriptor', () => {
                 feeBufferBalance: '0',
                 minBalanceForStaking: '0',
                 minStakeAmountForDashboard: '0',
+                registrationDeposit: '0',
             },
             options: [],
             consentKey: null,
@@ -42,6 +44,7 @@ describe('createCardanoFivebinariesNativeProductDescriptor', () => {
                 claim: 'ada.staking.claim',
                 vote: 'ada.staking.vote',
             },
+            minFirmware: {},
             isCountedInAccountTotals: true,
         });
     });

@@ -12380,6 +12380,7 @@ __metadata:
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/requirements": "workspace:*"
+    "@trezor/utils": "workspace:*"
     zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
