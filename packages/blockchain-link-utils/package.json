@@ -34,7 +34,6 @@
     "dependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/network-ripple": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/utils": "workspace:*"
     },

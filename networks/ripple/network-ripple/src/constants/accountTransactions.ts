@@ -1,19 +1,9 @@
-import type { ServerInfo, Transaction } from '@trezor/blockchain-link-types';
-import { RIPPLE_DECIMALS, getUnixTimestamp } from '@trezor/network-ripple/constants';
-import type { AccountTxTransaction, ServerInfoResponse } from '@trezor/network-ripple/types';
+import type { Transaction } from '@trezor/blockchain-link-types';
 
-export const transformServerInfo = (payload: ServerInfoResponse): Omit<ServerInfo, 'url'> => ({
-    name: 'Ripple',
-    shortcut: 'xrp',
-    network: 'xrp',
-    testnet: false,
-    version: payload.result.info.build_version,
-    decimals: RIPPLE_DECIMALS,
-    blockHeight: payload.result.info.validated_ledger?.seq ?? 0,
-    blockHash: payload.result.info.validated_ledger?.hash ?? '',
-});
+import { getUnixTimestamp } from './timestamp';
+import type { AccountTxTransaction } from '../types';
 
-export const transformTransaction = (
+export const transformRippleTransaction = (
     hash: string | undefined,
     tx_json: NonNullable<AccountTxTransaction['tx_json']>,
     meta: AccountTxTransaction['meta'] | undefined,
