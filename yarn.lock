@@ -18997,7 +18997,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-core@workspace:packages/blockchain-core"
   dependencies:
+    "@trezor/blockchain-link": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/requirements": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -19201,6 +19205,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
+    "@trezor/blockchain-core": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-common": "workspace:*"

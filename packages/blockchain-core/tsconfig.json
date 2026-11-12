@@ -1,5 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [{ "path": "../requirements" }]
+    "references": [
+        { "path": "../blockchain-link" },
+        { "path": "../connect-common" },
+        { "path": "../type-utils" },
+        { "path": "../utils" },
+        { "path": "../requirements" }
+    ]
 }

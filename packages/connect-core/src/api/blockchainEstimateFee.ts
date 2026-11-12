@@ -1,5 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainEstimateFee.js
 
+import type { Blockchain } from '@trezor/blockchain-core';
+import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type {
     BitcoinNetworkInfo,
     CoinInfo,
@@ -13,8 +15,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isNotNull } from '@trezor/utils/src/isNotNull';
 import { clamp } from '@trezor/utils/src/number';
 
-import type { Blockchain } from '../backend/Blockchain';
-import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';

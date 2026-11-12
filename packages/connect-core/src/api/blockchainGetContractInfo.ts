@@ -1,6 +1,6 @@
+import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';

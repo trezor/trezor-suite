@@ -2,7 +2,6 @@ import { tokenProgramsInfo } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 
 import SolanaComposeTransaction from './solanaComposeTransaction';
-import { assertBackendSupported, initBlockchain } from '../../../backend/BlockchainLink';
 import { getCoinInfoOrThrow } from '../../../data/coinInfo';
 
 jest.mock('@trezor/schema-utils', () => {
@@ -17,11 +16,6 @@ jest.mock('@trezor/schema-utils', () => {
 jest.mock('@trezor/network-solana/runtime', () => ({
     __esModule: true,
     default: jest.fn(),
-}));
-
-jest.mock('../../../backend/BlockchainLink', () => ({
-    initBlockchain: jest.fn(),
-    assertBackendSupported: jest.fn(),
 }));
 
 jest.mock('../../../data/coinInfo', () => ({
@@ -59,8 +53,6 @@ const runMethod = (payload: Record<string, unknown> = VALID_PAYLOAD) =>
 describe('solanaComposeTransaction', () => {
     beforeEach(() => {
         jest.mocked(getCoinInfoOrThrow).mockReturnValue({ type: 'solana' } as any);
-        jest.mocked(assertBackendSupported).mockImplementation(() => undefined);
-        jest.mocked(initBlockchain).mockResolvedValue({} as any);
     });
 
     afterEach(() => {

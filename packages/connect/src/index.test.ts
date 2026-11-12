@@ -18,7 +18,8 @@ jest.mock('@trezor/connect-core/src/core', () => ({
     }),
 }));
 
-jest.mock('@trezor/connect-core/src/backend/BlockchainLink', () => ({
+jest.mock('@trezor/blockchain-core', () => ({
+    ...jest.requireActual('@trezor/blockchain-core'),
     updateProxy: jest.fn(() => Promise.resolve()),
 }));
 
