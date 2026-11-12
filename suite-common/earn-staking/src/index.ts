@@ -67,6 +67,16 @@ export {
     selectStakingProductAccess,
     type ResolvedStakingProductAccess,
 } from './state/stakingAccessSelectors';
+export {
+    selectCountedStakingPositionEntriesByAccount,
+    selectIsStakingAccountActive,
+    selectIsStakingOperationPending,
+    selectStakingAccountBalanceWithStaking,
+    selectStakingAccountFiatAmount,
+    selectStakingPositionEntriesByAccount,
+    type StakingAccountFiatRootState,
+    type StakingPositionEntry,
+} from './state/stakingAccountSelectors';
 export { prepareStakingMiddleware, type StakingMiddlewareDeps } from './state/stakingMiddleware';
 export {
     mergeAccountPositions,
@@ -149,3 +159,5 @@ export {
     type SyncStakingPositionsThunkDeps,
     type SyncStakingPositionsThunkState,
 } from './state/stakingThunks';
+export { formatStakingAmount, type FormatStakingAmountParams } from './utils/formatStakingAmount';
+export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
