@@ -203,7 +203,7 @@ describe('DiscoverAccounts', () => {
         const { requests } = await discover({ usedIndexes: [] });
 
         expect(requests).toEqual([
-            { coin: 'btc', descriptor: '0', details: 'txs' },
+            { coin: 'btc', descriptor: '0' },
             { coin: 'btc', descriptor: '1', details: 'basic' },
         ]);
     });
