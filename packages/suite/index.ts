@@ -302,12 +302,14 @@ export { TradingFormEmbed } from './src/views/wallet/trading/common/TradingFormE
 export { SolanaLimitedHistoryBanner } from './src/components/wallet/WalletLayout/AccountBanners/SolanaLimitedHistoryBanner';
 export { isNetworkWithGraphFeature } from './src/utils/wallet/graph/utils';
 export { TradeBox } from './src/views/wallet/transactions/TradeBox/TradeBox';
+export { RateLimitedHistoryBanner } from './src/views/wallet/transactions/TransactionList/RateLimitedHistoryBanner';
 export { SingleAccountTransactionList } from './src/views/wallet/transactions/TransactionList/SingleAccountTransactionList';
 export { AccountEmpty } from './src/views/wallet/transactions/components/AccountEmpty';
 export { AccountOverviewBalance } from './src/views/wallet/transactions/components/AccountOverviewBalance';
 export { NoTransactions } from './src/views/wallet/transactions/components/NoTransactions';
 export { TransactionSummary } from './src/views/wallet/transactions/components/TransactionSummary';
 export { TronResources } from './src/views/wallet/transactions/components/TronResources/TronResources';
+export { useWatchAccountHistory } from './src/views/wallet/transactions/useWatchAccountHistory';
 export { CardanoNewProviderCard } from './src/views/wallet/staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 export { SendForm } from './src/views/wallet/send/SendForm';
 export { AboveTabletOnly } from './src/components/suite/layouts/SuiteLayout/LayoutSizeOnly';
