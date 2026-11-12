@@ -16,6 +16,7 @@ import {
     type IpcMainInvokeEvent,
     app,
     ipcMain as baseIpcMain,
+    dialog,
     session,
 } from 'electron';
 /* eslint-enable @typescript-eslint/no-restricted-imports */
@@ -38,6 +39,7 @@ import { createDeferred } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';
+import { restartApp } from '../libs/app-utils';
 import { LEGACY_ORIGIN_EXPORT_CHANNELS } from '../libs/legacy-origin-storage-export';
 import type { ILogger } from '../libs/logger';
 
@@ -49,6 +51,8 @@ const LEGACY_INDEXED_DB_DIR = path.join('IndexedDB', 'file__0.indexeddb.leveldb'
 const EXPORT_PAGE = 'build/legacy-origin-storage.html';
 const EXPORT_TIMEOUT_MS = 120_000;
 const NOTHING_TO_MOVE = ok(undefined);
+/** The buttons of the dialog shown when the move fails, in their order. */
+const FAILED_MOVE_CHOICES = ['retry', 'skip', 'quit'] as const;
 
 type LegacyOriginStorageExport = Result<LegacyOriginStorage, string>;
 
@@ -204,6 +208,44 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
         store.setLegacyOriginStorageSettings({ isMigrated: true });
     };
 
+    let isFailedMoveDialogOpen = false;
+
+    /**
+     * The renderer stops on its error screen when the move fails, and only a restart tries the move again.
+     * A failure that comes back on every start would keep the app unusable,
+     * so the user may also start without the old data, which then stays on the legacy origin untouched.
+     */
+    const offerWayPastFailedMove = async (reason: string) => {
+        const mainWindow = mainWindowProxy.getInstance();
+        if (!mainWindow || isFailedMoveDialogOpen) return;
+
+        isFailedMoveDialogOpen = true;
+        const { response } = await dialog.showMessageBox(mainWindow, {
+            type: 'error',
+            message: 'Moving the app data failed',
+            detail: `${reason}\n\nTry again, or start without the data of the previous version. That data stays on this computer, but the app will not try to move it again.`,
+            buttons: ['Try again', 'Start without the old data', 'Quit'],
+            defaultId: 0,
+            cancelId: 0,
+        });
+        isFailedMoveDialogOpen = false;
+
+        const choice = FAILED_MOVE_CHOICES[response] ?? 'retry';
+        if (choice === 'quit') {
+            app.quit();
+
+            return;
+        }
+        if (choice === 'skip') {
+            logger.warn(
+                SERVICE_NAME,
+                'Starting without the legacy storage, it stays on the legacy origin',
+            );
+            markMigrated();
+        }
+        restartApp({ logger });
+    };
+
     const hasLegacyStorage = fs.existsSync(
         path.join(app.getPath('userData'), LEGACY_INDEXED_DB_DIR),
     );
@@ -227,7 +269,11 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
          * the database it would create there makes the next start skip the import,
          * as if the user already lived on the new origin.
          */
-        if (!storageExport.success) return { success: false, error: storageExport.error };
+        if (!storageExport.success) {
+            offerWayPastFailedMove(storageExport.error);
+
+            return { success: false, error: storageExport.error };
+        }
 
         const storage = storageExport.payload;
         if (!storage) return { success: true };
@@ -257,6 +303,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
             // The export is kept, so a reload of the renderer can try the import again.
             logger.error(SERVICE_NAME, `Import failed in the renderer: ${report.error}`);
             captureException(new Error(`${SERVICE_NAME}: import failed: ${report.error}`));
+            offerWayPastFailedMove(report.error);
 
             return;
         }
