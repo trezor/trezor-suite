@@ -1,5 +1,4 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { SignVerify } from '@suite/sign-verify';
 import { injectGetSignVerify } from '@suite-app/networks';
 import { useServices } from '@trezor/dependency-injection';
 import { useSelector } from '@trezor/suite';
@@ -19,18 +18,10 @@ export const SignVerifyPage = () => {
 
     const signVerify = getSignVerify(account);
 
-    // Networks whose form has not moved to their network module yet.
+    // The menu offers Sign & Verify only on networks that have it, so this is reached only by a
+    // direct link to the page.
     if (signVerify === null) {
-        return (
-            <SignVerify
-                account={account}
-                renderShell={({ title, children }) => (
-                    <SignVerifyPageLayout title={title} selectedAccount={selectedAccount}>
-                        {children}
-                    </SignVerifyPageLayout>
-                )}
-            />
-        );
+        return null;
     }
 
     const { Component, title } = signVerify;
