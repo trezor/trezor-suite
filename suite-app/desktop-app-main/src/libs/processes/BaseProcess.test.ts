@@ -74,9 +74,10 @@ const fastForward = (seconds: number) => jest.advanceTimersByTimeAsync(seconds *
 
 const watchPromiseSettled = (promise: Promise<void>) => {
     const state = { settled: false };
-    promise.then(() => {
+    const markSettled = () => {
         state.settled = true;
-    });
+    };
+    promise.then(markSettled, markSettled);
 
     return state;
 };
@@ -501,20 +502,12 @@ describe('BaseProcess.start', () => {
 
             return Promise.resolve({
                 service: statusCalls > serviceUpOnCheck,
-                process: !!child,
+                process: true,
             });
         });
         const started = testProcess.start();
-        const state = { settled: false };
         // A rejection is asserted explicitly where expected; the watcher keeps it from being unhandled.
-        started.then(
-            () => {
-                state.settled = true;
-            },
-            () => {
-                state.settled = true;
-            },
-        );
+        const state = watchPromiseSettled(started);
 
         return { testProcess, child, started, state };
     };

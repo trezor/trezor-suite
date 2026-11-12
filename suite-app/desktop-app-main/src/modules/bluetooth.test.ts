@@ -46,14 +46,26 @@ jest.mock('../libs/processes/BluetoothProcess', () => ({
     },
 }));
 
-const createLogger = (): ILogger =>
-    ({
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn(),
-        log: jest.fn(),
-        debug: jest.fn(),
-    }) as unknown as ILogger;
+const createLogger = (): ILogger => ({
+    exit: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    log: jest.fn(),
+    debug: jest.fn(),
+    level: 'mute',
+    config: {
+        colors: false,
+        writeToConsole: false,
+        writeToDisk: false,
+        outputFile: '',
+        outputPath: '',
+        logFormat: '',
+        dedupeTimeout: 0,
+        memoryCap: 0,
+    },
+    getLog: () => [],
+});
 
 const flushPromises = () => new Promise(resolve => setTimeout(resolve, 0));
 
@@ -131,6 +143,62 @@ describe('bluetooth module', () => {
         expect(mockHelperStart).toHaveBeenCalledTimes(2);
         expect(mockClientInit).toHaveBeenCalledWith(state);
         expect(bluetoothModuleState.getTransport()).toBeInstanceOf(BluetoothTransport);
+    });
+
+    it('starts the helper again when the early start fails after the init request arrived', async () => {
+        const helperStart = createDeferred<void>();
+        mockHelperStart.mockReturnValueOnce(helperStart.promise);
+        ({ onQuit } = initModule());
+
+        const instance = await mockProxy.options?.onCreateInstance();
+        const request = instance?.onRequest('init', [{ knownDevices: [] }]);
+        await flushPromises();
+
+        helperStart.reject(new Error('spawn ENOENT'));
+        await request;
+
+        expect(mockHelperStart).toHaveBeenCalledTimes(2);
+        expect(mockClientInit).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not log a start cut short by quitting as failed', async () => {
+        const helperStart = createDeferred<void>();
+        mockHelperStart.mockReturnValue(helperStart.promise);
+        const { logger, onQuit: quit } = initModule();
+        await flushPromises();
+
+        const quitting = quit();
+        await flushPromises();
+        helperStart.resolve();
+        await quitting;
+
+        expect(logger.warn).not.toHaveBeenCalled();
+        expect(mockHelperStop).toHaveBeenCalledTimes(1);
+    });
+
+    it('logs the outcome of the early start once the module is loaded', async () => {
+        const { logger, onLoad, onQuit: quit } = initModule();
+        onQuit = quit;
+        await flushPromises();
+        onLoad({} as HandshakeClient);
+
+        expect(logger.info).toHaveBeenCalledWith(
+            '@trezor/transport-bluetooth',
+            'Helper running at http://localhost:21327/',
+        );
+    });
+
+    it('logs a failed early start again once the module is loaded', async () => {
+        mockHelperStart.mockRejectedValueOnce(new Error('spawn ENOENT'));
+        const { logger, onLoad, onQuit: quit } = initModule();
+        onQuit = quit;
+        await flushPromises();
+        onLoad({} as HandshakeClient);
+
+        expect(logger.info).toHaveBeenCalledWith(
+            '@trezor/transport-bluetooth',
+            expect.stringContaining('early start failed: Error: spawn ENOENT'),
+        );
     });
 
     it('reuses the early start for the init request', async () => {

@@ -271,6 +271,14 @@ export const createDesktopMainApp =
 
         ipcMain.handle('handshake/load-tor-module', () => loadTorModule());
 
+        const quitAllModules = () =>
+            Promise.race([
+                // await quitting all registered modules
+                Promise.allSettled([quitModules(), quitTorModule(), quitBackgroundModules()]),
+                // or timeout after 5s
+                resolveAfter(5000),
+            ]);
+
         let readyToQuit = false;
         let stoppingDaemon = false;
         mainThreadEmitter.on('app/fully-quit', () => {
@@ -318,12 +326,7 @@ export const createDesktopMainApp =
             }
 
             deps.logger.info('modules', 'Quitting all modules');
-            await Promise.race([
-                // await quitting all registered modules
-                Promise.allSettled([quitModules(), quitTorModule(), quitBackgroundModules()]),
-                // or timeout after 5s
-                resolveAfter(5000),
-            ]);
+            await quitAllModules();
 
             // global cleanup
             deps.logger.info('modules', 'All modules quit, exiting');
@@ -371,6 +374,8 @@ export const createDesktopMainApp =
             // handle hangDetect errors
             if (handshakeResult === 'quit') {
                 deps.logger.info('hang-detect', 'Quitting app');
+                // This quit skips the before-quit teardown, and modules may already run a process.
+                await quitAllModules();
                 readyToQuit = true;
                 app.quit();
 

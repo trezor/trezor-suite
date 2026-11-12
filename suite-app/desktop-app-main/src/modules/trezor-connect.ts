@@ -62,10 +62,10 @@ export const transportFactory = (
 // 1) translate legacy string transports to DI references (see above)
 // 2) add BluetoothTransport if the bluetooth module is enabled
 export const getTransportsParam = (
-    rawTransports?: ConnectSettings['transports'],
-    createLogger?: CreateLogger,
-    usbImplementation?: UsbImplementation,
-    bluetooth: BluetoothTransport | undefined = bluetoothModuleState.getTransport(),
+    rawTransports: ConnectSettings['transports'],
+    createLogger: CreateLogger | undefined,
+    usbImplementation: UsbImplementation,
+    bluetooth: BluetoothTransport | undefined,
 ): ConnectSettings['transports'] => {
     const transports = rawTransports
         ?.map(transport => transportFactory(transport, createLogger, usbImplementation))
@@ -210,6 +210,8 @@ export const initBackground: ModuleInitBackground = ({
                         params[0].transports,
                         createLogger,
                         getUsbImplementation(),
+                        // Init has already waited for a helper start in progress.
+                        bluetoothModuleState.getTransport(),
                     );
                 }
 
