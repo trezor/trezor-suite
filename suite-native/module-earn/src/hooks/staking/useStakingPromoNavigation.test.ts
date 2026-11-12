@@ -1,0 +1,231 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type useAlert } from '@suite-native/alerts';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { type useBottomSheetModalControls } from '@suite-native/atoms';
+import {
+    AddCoinAccountStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { mock } from '@trezor/dependency-injection';
+import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+
+import { useStakingPromoNavigation } from './useStakingPromoNavigation';
+
+type Navigation = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
+type AlertApi = ReturnType<typeof useAlert>;
+
+const mockNavigate = mock<Navigation['navigate']>();
+const mockShowAlert = mock<AlertApi['showAlert']>();
+const mockHideAlert = mock<AlertApi['hideAlert']>();
+const mockOpenSheet = mock<() => void>();
+const mockOpenInfoSheet = mock<() => void>();
+const mockOpenUnsupportedNetworkSheet = mock<() => void>();
+const mockCloseUnsupportedNetworkSheet = mock<() => void>();
+const mockHideSheet = mock<ReturnType<typeof useBottomSheetModalControls>['hideSheet']>();
+const mockOpenPortfolioTrackerSheet = mock<() => void>();
+let mockIsPortfolioTrackerDevice = false;
+let mockAccounts: Account[] = [];
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: mockNavigate }),
+}));
+jest.mock('@suite-native/alerts', () => ({
+    ...jest.requireActual('@suite-native/alerts'),
+    useAlert: () => ({ showAlert: mockShowAlert, hideAlert: mockHideAlert }),
+}));
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
+    useBottomSheetModalControls: () => ({
+        bottomSheetRef: { current: null },
+        showSheet: mockOpenSheet,
+        hideSheet: mockHideSheet,
+    }),
+}));
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectVisibleDeviceAccounts: () => mockAccounts,
+}));
+jest.mock('../../components/earn/EarnPortfolioTrackerGuard', () => ({
+    useEarnPortfolioTrackerGuard: () => ({
+        isPortfolioTrackerDevice: mockIsPortfolioTrackerDevice,
+        openPortfolioTrackerSheet: mockOpenPortfolioTrackerSheet,
+    }),
+}));
+
+const modelOne = mockSuiteDevice(
+    {
+        connected: true,
+        available: true,
+        unavailableCapabilities: {
+            [asNetworkSymbol('sol')]: 'no-support',
+            [asNetworkSymbol('dsol')]: 'no-support',
+            [asNetworkSymbol('ada')]: 'no-support',
+            [asNetworkSymbol('trx')]: 'no-support',
+        },
+    },
+    {
+        major_version: 1,
+        minor_version: 14,
+        patch_version: 2,
+        internal_model: DeviceModelInternal.T1B1,
+    },
+);
+
+const staking = mockStakingState({
+    platform: 'mobile',
+    descriptors: (['eth', 'sol', 'dsol', 'ada', 'trx'] as const).map(symbol =>
+        mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol(symbol) }),
+    ),
+});
+
+const renderNavigation = async (device: TrezorDevice = modelOne) => {
+    const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
+
+    const view = await renderHookWithStoreProvider(useStakingPromoNavigation, {
+        services,
+        preloadedState: {
+            device: { selectedDevice: device, devices: [device] },
+            earn: { staking },
+            messageSystem: messageSystemInitialState,
+        },
+    });
+    const sheetMethods = {
+        snapToIndex: jest.fn(),
+        snapToPosition: jest.fn(),
+        expand: jest.fn(),
+        collapse: jest.fn(),
+        close: jest.fn(),
+        forceClose: jest.fn(),
+        dismiss: jest.fn(),
+    };
+    view.result.current.infoSheetRef.current = { ...sheetMethods, present: mockOpenInfoSheet };
+    view.result.current.unsupportedNetworkSheetRef.current = {
+        ...sheetMethods,
+        present: mockOpenUnsupportedNetworkSheet,
+        dismiss: mockCloseUnsupportedNetworkSheet,
+    };
+
+    return view;
+};
+
+describe('staking promotion device support', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIsPortfolioTrackerDevice = false;
+        mockAccounts = [];
+    });
+
+    it.each(['sol', 'dsol', 'ada', 'trx'] as const)(
+        'explains unsupported %s instead of offering network activation',
+        async symbol => {
+            const { result } = await renderNavigation();
+
+            await act(() => result.current.onPromoItemPress(asNetworkSymbol(symbol)));
+
+            expect(mockOpenUnsupportedNetworkSheet).toHaveBeenCalled();
+            expect(mockShowAlert).not.toHaveBeenCalled();
+            expect(mockOpenSheet).not.toHaveBeenCalled();
+            expect(mockOpenInfoSheet).not.toHaveBeenCalled();
+            expect(mockNavigate).not.toHaveBeenCalled();
+            expect(result.current.pendingEnableSymbol).toBeNull();
+        },
+    );
+
+    it('dismisses the unsupported network sheet', async () => {
+        const { result } = await renderNavigation();
+        await act(() => result.current.onPromoItemPress(asNetworkSymbol('sol')));
+        await act(() => result.current.closeUnsupportedNetworkSheet());
+
+        expect(mockCloseUnsupportedNetworkSheet).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps Ethereum activation available on Model One', async () => {
+        const { result } = await renderNavigation();
+        await act(() => result.current.onPromoItemPress(asNetworkSymbol('eth')));
+        await act(() => result.current.onEnableNetworkPress());
+
+        expect(mockOpenUnsupportedNetworkSheet).not.toHaveBeenCalled();
+        expect(mockShowAlert).not.toHaveBeenCalled();
+        expect(mockOpenSheet).toHaveBeenCalled();
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AddCoinAccountStack, {
+            screen: AddCoinAccountStackRoutes.AddCoinDiscoveryRunning,
+            params: {
+                networkSymbol: 'eth',
+                flowType: 'earn',
+                earnFlowParams: { earnType: 'staking' },
+            },
+        });
+    });
+
+    it('allows Solana on a supporting device', async () => {
+        const { result } = await renderNavigation(
+            mockSuiteDevice({ connected: true, available: true }),
+        );
+        await act(() => result.current.onPromoItemPress(asNetworkSymbol('sol')));
+
+        expect(mockOpenUnsupportedNetworkSheet).not.toHaveBeenCalled();
+        expect(mockShowAlert).not.toHaveBeenCalled();
+        expect(result.current.pendingEnableSymbol).toBe('sol');
+        expect(mockOpenSheet).toHaveBeenCalled();
+    });
+
+    it('explains missing firmware capabilities', async () => {
+        const device = mockSuiteDevice({
+            unavailableCapabilities: { [asNetworkSymbol('sol')]: 'no-capability' },
+        });
+        const { result } = await renderNavigation(device);
+        await act(() => result.current.onPromoItemPress(asNetworkSymbol('sol')));
+
+        expect(mockOpenUnsupportedNetworkSheet).toHaveBeenCalled();
+        expect(mockOpenSheet).not.toHaveBeenCalled();
+        expect(mockOpenInfoSheet).not.toHaveBeenCalled();
+    });
+
+    it('explains unsupported staking on Bitcoin-only firmware', async () => {
+        const { result } = await renderNavigation(
+            mockSuiteDevice({ firmwareType: FirmwareType.BitcoinOnly }),
+        );
+        await act(() => result.current.onPromoItemPress(asNetworkSymbol('eth')));
+
+        expect(mockOpenUnsupportedNetworkSheet).toHaveBeenCalled();
+        expect(mockOpenSheet).not.toHaveBeenCalled();
+        expect(mockOpenInfoSheet).not.toHaveBeenCalled();
+    });
+
+    it('opens the unsupported sheet before navigating to an existing account', async () => {
+        mockAccounts = [mockWalletAccount({ symbol: asNetworkSymbol('eth') })];
+        const { result } = await renderNavigation(
+            mockSuiteDevice({ firmwareType: FirmwareType.BitcoinOnly }),
+        );
+        await act(() => result.current.onPromoItemPress(asNetworkSymbol('eth')));
+
+        expect(mockOpenUnsupportedNetworkSheet).toHaveBeenCalled();
+        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(mockOpenSheet).not.toHaveBeenCalled();
+        expect(mockOpenInfoSheet).not.toHaveBeenCalled();
+    });
+
+    it('keeps Portfolio Tracker exploration behind its existing guard', async () => {
+        mockIsPortfolioTrackerDevice = true;
+        const { result } = await renderNavigation();
+        await act(() => result.current.onPromoItemPress(asNetworkSymbol('sol')));
+
+        expect(mockOpenPortfolioTrackerSheet).toHaveBeenCalled();
+        expect(mockOpenUnsupportedNetworkSheet).not.toHaveBeenCalled();
+        expect(mockShowAlert).not.toHaveBeenCalled();
+        expect(mockOpenSheet).not.toHaveBeenCalled();
+        expect(mockOpenInfoSheet).not.toHaveBeenCalled();
+    });
+});
