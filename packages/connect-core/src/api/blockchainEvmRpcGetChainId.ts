@@ -1,9 +1,9 @@
-import { evmRpcGetChainId } from '@trezor/blockchain-core/src/api/evmRpcGetChainId';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type PermissionRequest } from '@trezor/connect-common';
 
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import type { MethodMessage } from '../core/AbstractMethod';
 
 type Params = { url: string };
 
@@ -29,7 +29,7 @@ export default class BlockchainEvmRpcGetChainId extends AbstractBlockchainMethod
         return 'Get EVM RPC Chain ID';
     }
 
-    run() {
-        return evmRpcGetChainId(this.payload);
+    callBlockchain() {
+        return TrezorBlockchain.evmRpcGetChainId(this.payload);
     }
 }

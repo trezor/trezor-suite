@@ -1,8 +1,5 @@
-import type { FeeLevel } from '@trezor/connect-common';
-import type {
-    BlockchainEstimateFee,
-    BlockchainEstimateFeeLevel,
-} from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
+import type { FeeInfo, FeeLevel } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isNotNull } from '@trezor/utils/src/isNotNull';
@@ -13,9 +10,23 @@ import { assertBackendSupported, initCoinBackend } from '../backend/BlockchainLi
 import { type BackendCoinInfo, getBackendCoinInfo } from '../data/coinInfo';
 import { COIN_PARAMS, type CoinParams, validateParams } from '../utils/validateParams';
 
-type BackendLevelsParams = CoinParams & BlockchainEstimateFee;
+type BackendLevelsParams = CoinParams & {
+    request?: BlockchainLinkParams<'estimateFee'> & { feeLevels?: undefined };
+};
 
-type FeeLevelsParams = CoinParams & BlockchainEstimateFeeLevel;
+type FeeLevelsParams = CoinParams & {
+    request: BlockchainLinkParams<'estimateFee'> & { feeLevels: 'preloaded' | 'smart' };
+};
+
+type EstimatedFee = Omit<FeeInfo, 'dustLimit'> & {
+    dustLimit?: number; // dustLimit is set only for bitcoin-like coins
+};
+
+export type BlockchainEstimatedFee = EstimatedFee & {
+    levels: BlockchainLinkResponse<'estimateFee'>;
+};
+
+export type BlockchainEstimatedFeeLevel = EstimatedFee & { levels: FeeLevel[] };
 
 type EstimateFeeRequest = Parameters<Blockchain['estimateFee']>[0];
 type EstimatedFees = Awaited<ReturnType<Blockchain['estimateFee']>>;
@@ -162,14 +173,20 @@ const getFeeInfo = (params: BackendLevelsParams | FeeLevelsParams) => {
     return { coinInfo, feeInfo: { blockTime, minFee, maxFee, minPriorityFee, dustLimit } };
 };
 
-export const estimateFee = async (params: BackendLevelsParams, postMessage: PostMessage) => {
+export const estimateFee = async (
+    params: BackendLevelsParams,
+    postMessage: PostMessage,
+): Promise<BlockchainEstimatedFee> => {
     const { feeInfo } = getFeeInfo(params);
     const backend = await initCoinBackend(params, postMessage);
 
     return { ...feeInfo, levels: await backend.estimateFee(params.request || {}) };
 };
 
-export const estimateFeeLevels = async (params: FeeLevelsParams, postMessage: PostMessage) => {
+export const estimateFeeLevels = async (
+    params: FeeLevelsParams,
+    postMessage: PostMessage,
+): Promise<BlockchainEstimatedFeeLevel> => {
     const { coinInfo, feeInfo } = getFeeInfo(params);
     const { request } = params;
     // In Suite, request.feeLevels: 'smart' is always used to update the fee levels.
