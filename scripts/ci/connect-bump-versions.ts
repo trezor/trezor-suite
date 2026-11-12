@@ -187,7 +187,7 @@ const bumpConnect = async () => {
 
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
-            if (newCommits.length && deploymentType === 'stable') {
+            if (deploymentType === 'stable') {
                 const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
                 if (!fs.existsSync(CHANGELOG_PATH)) {
                     await writeFile(CHANGELOG_PATH, '');
