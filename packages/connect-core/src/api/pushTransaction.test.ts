@@ -1,7 +1,7 @@
+import { setCustomBackend } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import PushTransactionBase from './pushTransaction';
-import { setCustomBackend } from '../backend/BlockchainLink';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 class PushTransaction extends PushTransactionBase {

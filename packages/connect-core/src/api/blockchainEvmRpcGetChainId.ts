@@ -1,10 +1,10 @@
+import { EvmRpcWorker } from '@trezor/blockchain-core';
 import { BlockchainLink } from '@trezor/blockchain-link';
 import { MESSAGES, type ResponseTypes } from '@trezor/blockchain-link-types';
 import { type PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { EvmRpcWorker } from '../workers/workers';
 import { validateParams } from './common/paramsValidator';
 
 type Params = { url: string };

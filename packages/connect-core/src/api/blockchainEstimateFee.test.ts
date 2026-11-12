@@ -6,7 +6,7 @@ const mockEstimateFee = jest.fn();
 // Replaces fields of the coin the method resolves, e.g. its default levels.
 let mockCoinInfoPatch: Partial<CoinInfo> = {};
 
-jest.mock('../backend/BlockchainLink', () => ({
+jest.mock('@trezor/blockchain-core', () => ({
     assertBackendSupported: jest.fn(),
     initBlockchain: () => Promise.resolve({ estimateFee: mockEstimateFee }),
 }));
