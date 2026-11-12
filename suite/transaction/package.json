@@ -1,0 +1,29 @@
+{
+    "name": "@suite/transaction",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/toast-notifications": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react": "19.2.3",
+        "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@storybook/react": "^10.6.2",
+        "@trezor/icons": "workspace:*",
+        "@types/react": "19.2.14"
+    }
+}

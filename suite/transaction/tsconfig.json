@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/icons" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/utils" }
+    ]
+}
