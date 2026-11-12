@@ -9,7 +9,7 @@ import {
     EncryptionUnavailable,
     type WebauthnAuthenticator,
 } from '@suite-common/platform-encryption';
-import { err, ok } from '@trezor/type-utils';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 const RELYING_PARTY_NAME = 'Trezor Suite';
 const USER_NAME = 'Trezor Suite';
@@ -38,6 +38,20 @@ const hexToBytes = (value: string) => new Uint8Array(Buffer.from(value, 'hex'));
 const describeFailure = (result: { error: string; errorObject?: Error }) =>
     result.errorObject ? `${result.error}: ${result.errorObject.message}` : result.error;
 
+const describeError = (error: unknown) =>
+    error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+
+/** The native module may fail to load or bind, e.g. below macOS 15, which must not reject. */
+const callNative = async <T>(call: () => Promise<T>): Promise<Result<T, EncryptionUnavailable>> => {
+    try {
+        return ok(await call());
+    } catch (error) {
+        return err(
+            EncryptionUnavailable(`The passkey API is not available: ${describeError(error)}`),
+        );
+    }
+};
+
 /**
  * Runs WebAuthn through the operating system's passkey API instead of Chromium's, because
  * Electron's own platform authenticators on macOS ignore the PRF extension.
@@ -64,29 +78,35 @@ export const createNativeWebauthnAuthenticator = (
                 return err(EncryptionUnavailable('No window to show the passkey prompt in'));
             }
 
-            const result = await deps.createCredential(
-                {
-                    rp: { id: deps.relyingPartyId, name: RELYING_PARTY_NAME },
-                    user: {
-                        id: deps.getRandomBytes(USER_ID_LENGTH),
-                        name: USER_NAME,
-                        displayName: USER_NAME,
+            const nativeResult = await callNative(() =>
+                deps.createCredential(
+                    {
+                        rp: { id: deps.relyingPartyId, name: RELYING_PARTY_NAME },
+                        user: {
+                            id: deps.getRandomBytes(USER_ID_LENGTH),
+                            name: USER_NAME,
+                            displayName: USER_NAME,
+                        },
+                        challenge: deps.getRandomBytes(CHALLENGE_LENGTH),
+                        pubKeyCredParams: [
+                            { type: 'public-key', alg: -7 },
+                            { type: 'public-key', alg: -257 },
+                        ],
+                        authenticatorSelection: {
+                            residentKey: 'preferred',
+                            userVerification: 'preferred',
+                        },
+                        attestation: 'none',
+                        timeout: REQUEST_TIMEOUT_MS,
+                        extensions: { prf: {} },
                     },
-                    challenge: deps.getRandomBytes(CHALLENGE_LENGTH),
-                    pubKeyCredParams: [
-                        { type: 'public-key', alg: -7 },
-                        { type: 'public-key', alg: -257 },
-                    ],
-                    authenticatorSelection: {
-                        residentKey: 'preferred',
-                        userVerification: 'preferred',
-                    },
-                    attestation: 'none',
-                    timeout: REQUEST_TIMEOUT_MS,
-                    extensions: { prf: {} },
-                },
-                requestOptions,
+                    requestOptions,
+                ),
             );
+            if (!nativeResult.success) {
+                return nativeResult;
+            }
+            const result = nativeResult.payload;
             if (!result.success) {
                 return err(
                     EncryptionUnavailable(`Credential creation failed: ${describeFailure(result)}`),
@@ -105,19 +125,25 @@ export const createNativeWebauthnAuthenticator = (
                 return err(EncryptionUnavailable('No window to show the passkey prompt in'));
             }
 
-            const result = await deps.getCredential(
-                {
-                    rpId: deps.relyingPartyId,
-                    challenge: deps.getRandomBytes(CHALLENGE_LENGTH),
-                    allowCredentials: [
-                        { type: 'public-key', id: hexToBytes(params.credentialIdHex) },
-                    ],
-                    userVerification: 'preferred',
-                    timeout: REQUEST_TIMEOUT_MS,
-                    extensions: { prf: { eval: { first: hexToBytes(params.saltHex) } } },
-                },
-                requestOptions,
+            const nativeResult = await callNative(() =>
+                deps.getCredential(
+                    {
+                        rpId: deps.relyingPartyId,
+                        challenge: deps.getRandomBytes(CHALLENGE_LENGTH),
+                        allowCredentials: [
+                            { type: 'public-key', id: hexToBytes(params.credentialIdHex) },
+                        ],
+                        userVerification: 'preferred',
+                        timeout: REQUEST_TIMEOUT_MS,
+                        extensions: { prf: { eval: { first: hexToBytes(params.saltHex) } } },
+                    },
+                    requestOptions,
+                ),
             );
+            if (!nativeResult.success) {
+                return nativeResult;
+            }
+            const result = nativeResult.payload;
             if (!result.success) {
                 return err(EncryptionUnavailable(`Assertion failed: ${describeFailure(result)}`));
             }

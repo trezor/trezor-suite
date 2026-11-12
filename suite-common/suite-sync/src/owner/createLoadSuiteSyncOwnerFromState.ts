@@ -41,6 +41,7 @@ export const createLoadSuiteSyncOwnerFromState =
 
         const result = await deps.platformEncryption.decrypt({
             value: encryptedSuiteSyncOwner,
+            context: `suite-sync-owner:${deviceStaticId}`,
         });
 
         if (!result.success) {
@@ -55,6 +56,9 @@ export const createLoadSuiteSyncOwnerFromState =
                  *
                  * User is therefore required to have device connected.
                  */
+                // The key is only locked for now, so the stored owner stays for the next unlock.
+                case 'EncryptionLocked':
+                    return null;
                 case 'EncryptionUnavailable':
                 case 'DecryptionFailed': {
                     deps.dispatch(setSuiteSyncOwner({ deviceStaticId, owner: null }));

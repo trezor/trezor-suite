@@ -124,6 +124,24 @@ describe(createNativeWebauthnAuthenticator.name, () => {
         );
     });
 
+    it('reports a native module that fails to load instead of throwing', async () => {
+        const deps = createDeps();
+        deps.getCredential.mockRejectedValue(new Error("Cannot find module 'electron-webauthn'"));
+
+        const result = await createNativeWebauthnAuthenticator(deps).evaluatePrf({
+            credentialIdHex: 'abcd',
+            saltHex: 'ff00',
+        });
+
+        expect(result).toEqual(
+            err(
+                EncryptionUnavailable(
+                    "The passkey API is not available: Error: Cannot find module 'electron-webauthn'",
+                ),
+            ),
+        );
+    });
+
     it('does not prompt without a window', async () => {
         const deps = createMockDeps<NativeWebauthnAuthenticatorDeps>({
             relyingPartyId: 'trezor.io',

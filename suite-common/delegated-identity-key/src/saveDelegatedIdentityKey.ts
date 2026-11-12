@@ -25,10 +25,12 @@ export const createSaveDelegatedIdentityKey =
     async ({ deviceId, delegatedIdentityKey }) => {
         const result = await deps.platformEncryption.encrypt({
             value: delegatedIdentityKey,
+            context: `delegated-identity-key:${deviceId}`,
         });
 
         if (!result.success) {
-            switch (result.error.type) {
+            const errorType = result.error.type;
+            switch (errorType) {
                 /**
                  * If encryption is not available we are not storing it.
                  * Therefore, we can silently pass null.
@@ -48,9 +50,12 @@ export const createSaveDelegatedIdentityKey =
 
                     return;
                 }
+                // The key is only locked for now, so whatever is stored stays valid.
+                case 'EncryptionLocked':
+                    return;
 
                 default:
-                    return exhaustive(result.error.type);
+                    return exhaustive(errorType);
             }
         }
 

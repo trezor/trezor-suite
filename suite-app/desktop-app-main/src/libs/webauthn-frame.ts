@@ -65,3 +65,35 @@ export const createActivateWebauthnFrame =
 
         return true;
     };
+
+type RequestFrameLike = {
+    parent: RequestFrameLike | null;
+};
+
+export type WebauthnFrameRequestGuardDeps = {
+    getMainWindowTopFrame: () => RequestFrameLike | undefined;
+};
+
+type GuardedRequestDetails = {
+    url: string;
+    frame?: RequestFrameLike | null;
+};
+
+export type WebauthnFrameRequestGuard = (
+    details: GuardedRequestDetails,
+) => { cancel: true } | undefined;
+
+/** Only the app's own top frame may embed the WebAuthn frame, so other documents cannot ask it. */
+export const createWebauthnFrameRequestGuard =
+    (deps: WebauthnFrameRequestGuardDeps): WebauthnFrameRequestGuard =>
+    details => {
+        if (!details.url.startsWith(`${WEBAUTHN_FRAME_ORIGIN}/`)) {
+            return undefined;
+        }
+
+        const topFrame = deps.getMainWindowTopFrame();
+        const parent = details.frame?.parent;
+        const isEmbeddedByApp = parent !== undefined && parent !== null && parent === topFrame;
+
+        return isEmbeddedByApp ? undefined : { cancel: true };
+    };

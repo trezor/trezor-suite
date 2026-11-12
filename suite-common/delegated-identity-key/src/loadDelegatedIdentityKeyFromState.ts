@@ -33,6 +33,7 @@ export const createLoadDelegatedIdentityKeyFromState =
 
         const result = await deps.platformEncryption.decrypt({
             value: encryptedCurrentDelegatedKey,
+            context: `delegated-identity-key:${deviceId}`,
         });
 
         if (!result.success) {
@@ -47,6 +48,9 @@ export const createLoadDelegatedIdentityKeyFromState =
                  *
                  * User is therefore required to have device connected.
                  */
+                // The key is only locked for now, so the stored key stays for the next unlock.
+                case 'EncryptionLocked':
+                    return null;
                 case 'EncryptionUnavailable':
                 case 'DecryptionFailed': {
                     deps.dispatch(

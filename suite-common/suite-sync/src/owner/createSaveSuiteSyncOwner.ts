@@ -27,10 +27,12 @@ export const createSaveSuiteSyncOwner =
     async ({ deviceStaticId, suiteSyncOwner }) => {
         const result = await deps.platformEncryption.encrypt({
             value: serializeSuiteSyncOwner(suiteSyncOwner),
+            context: `suite-sync-owner:${deviceStaticId}`,
         });
 
         if (!result.success) {
-            switch (result.error.type) {
+            const errorType = result.error.type;
+            switch (errorType) {
                 /**
                  * If encryption is not available we are not storing it.
                  * Therefore, we can silently pass null.
@@ -45,9 +47,12 @@ export const createSaveSuiteSyncOwner =
 
                     return;
                 }
+                // The key is only locked for now, so whatever is stored stays valid.
+                case 'EncryptionLocked':
+                    return;
 
                 default:
-                    return exhaustive(result.error.type);
+                    return exhaustive(errorType);
             }
         }
 

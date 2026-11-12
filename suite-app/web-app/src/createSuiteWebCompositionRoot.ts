@@ -34,6 +34,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const platformEncryption = createWebauthnPlatformEncryption({
         webauthnAuthenticator,
         credentialIdStorage: createStorageCredentialIdStorage({ storage: window.localStorage }),
+        now: Date.now,
     });
     const reloadApp = () => window.location.reload();
 

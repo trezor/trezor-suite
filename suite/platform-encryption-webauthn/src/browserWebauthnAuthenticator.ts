@@ -59,7 +59,7 @@ export const createBrowserWebauthnAuthenticator = (
                         { type: 'public-key', alg: -257 },
                     ],
                     authenticatorSelection: {
-                        residentKey: 'discouraged',
+                        residentKey: 'preferred',
                         userVerification: 'discouraged',
                     },
                     attestation: 'none',

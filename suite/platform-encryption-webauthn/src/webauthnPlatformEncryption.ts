@@ -6,6 +6,7 @@ import {
     type EncryptableBranded,
     type EncryptedHex,
     type EncryptionError,
+    EncryptionLocked,
     EncryptionUnavailable,
     type PlatformEncryption,
     type WebauthnAuthenticatorDep,
@@ -16,14 +17,25 @@ import { type Result, err, ok } from '@trezor/type-utils';
 import { type WebauthnCredentialIdStorage } from './credentialIdStorage';
 import { bytesToHex, getRandomBytes, hexToBytes } from './hex';
 
+const FORMAT_VERSION = 1;
 const KEY_SALT_LENGTH = 32;
 const IV_LENGTH = 12;
+const HEADER_LENGTH = 1 + KEY_SALT_LENGTH + IV_LENGTH;
 const HKDF_INFO = 'trezor-suite-platform-encryption';
 // A fixed PRF input makes the passkey yield the same secret on every evaluation and device.
 const PRF_INPUT_HEX = bytesToHex(new TextEncoder().encode('trezor-suite/platform-encryption/v1'));
+// After a refused or failed prompt, no new prompt is shown for this long.
+export const PROMPT_COOLDOWN_MS = 5_000;
 
 export type WebauthnPlatformEncryptionDeps = WebauthnAuthenticatorDep & {
     credentialIdStorage: WebauthnCredentialIdStorage;
+    now: () => number;
+};
+
+/** @serviceContract */
+export type LockablePlatformEncryption = PlatformEncryption & {
+    /** Drops the root key, so the next operation asks the passkey again. */
+    lock: () => void;
 };
 
 type DeriveMessageKeyParams = {
@@ -40,14 +52,18 @@ const deriveMessageKey = ({ rootKey, salt }: DeriveMessageKeyParams) =>
         ['encrypt', 'decrypt'],
     );
 
+const getAdditionalData = (context: string | undefined) =>
+    new TextEncoder().encode(`${FORMAT_VERSION}:${context ?? ''}`);
+
 export const createWebauthnPlatformEncryption = (
     deps: WebauthnPlatformEncryptionDeps,
-): PlatformEncryption => {
-    let rootKeyPromise: Promise<Result<CryptoKey, EncryptionUnavailable>> | undefined;
+): LockablePlatformEncryption => {
+    let rootKeyPromise: Promise<Result<CryptoKey, EncryptionError>> | undefined;
+    let cooldownUntil = 0;
 
     const evaluateRootKey = async (
         credentialIdHex: string,
-    ): Promise<Result<CryptoKey, EncryptionUnavailable>> => {
+    ): Promise<Result<CryptoKey, EncryptionError>> => {
         const prfResult = await deps.webauthnAuthenticator.evaluatePrf({
             credentialIdHex,
             saltHex: PRF_INPUT_HEX,
@@ -66,7 +82,7 @@ export const createWebauthnPlatformEncryption = (
         return ok(rootKey);
     };
 
-    const createRootKey = async (): Promise<Result<CryptoKey, EncryptionUnavailable>> => {
+    const createRootKey = async (): Promise<Result<CryptoKey, EncryptionError>> => {
         const storedCredentialIdHex = deps.credentialIdStorage.getCredentialId();
         if (storedCredentialIdHex !== null) {
             return evaluateRootKey(storedCredentialIdHex);
@@ -92,11 +108,16 @@ export const createWebauthnPlatformEncryption = (
     };
 
     // The passkey is asked once per session: the root key stays in memory, non-extractable.
-    const getRootKey = async (): Promise<Result<CryptoKey, EncryptionUnavailable>> => {
+    const getRootKey = async (): Promise<Result<CryptoKey, EncryptionError>> => {
+        if (rootKeyPromise === undefined && deps.now() < cooldownUntil) {
+            return err(EncryptionLocked('The passkey was refused a moment ago'));
+        }
+
         rootKeyPromise ??= createRootKey();
         const rootKeyResult = await rootKeyPromise;
         if (!rootKeyResult.success) {
             rootKeyPromise = undefined;
+            cooldownUntil = deps.now() + PROMPT_COOLDOWN_MS;
         }
 
         return rootKeyResult;
@@ -104,6 +125,7 @@ export const createWebauthnPlatformEncryption = (
 
     const encrypt = async <T extends EncryptableBranded>({
         value,
+        context,
     }: EncryptParams<T>): Promise<Result<EncryptedHex<T>, EncryptionError>> => {
         const rootKeyResult = await getRootKey();
         if (!rootKeyResult.success) {
@@ -114,23 +136,27 @@ export const createWebauthnPlatformEncryption = (
         const iv = getRandomBytes(IV_LENGTH);
         const messageKey = await deriveMessageKey({ rootKey: rootKeyResult.payload, salt });
         const ciphertext = await crypto.subtle.encrypt(
-            { name: 'AES-GCM', iv },
+            { name: 'AES-GCM', iv, additionalData: getAdditionalData(context) },
             messageKey,
             new TextEncoder().encode(value),
         );
 
         return ok(
             asEncryptedHex<T>(
-                bytesToHex(salt) + bytesToHex(iv) + bytesToHex(new Uint8Array(ciphertext)),
+                bytesToHex(new Uint8Array([FORMAT_VERSION])) +
+                    bytesToHex(salt) +
+                    bytesToHex(iv) +
+                    bytesToHex(new Uint8Array(ciphertext)),
             ),
         );
     };
 
     const decrypt = async <T extends EncryptableBranded>({
         value,
+        context,
     }: DecryptParams<T>): Promise<Result<T, DecryptionError>> => {
         const bytes = hexToBytes(value);
-        if (bytes === undefined || bytes.length <= KEY_SALT_LENGTH + IV_LENGTH) {
+        if (bytes === undefined || bytes.length <= HEADER_LENGTH || bytes[0] !== FORMAT_VERSION) {
             return err(DecryptionFailed());
         }
 
@@ -143,15 +169,15 @@ export const createWebauthnPlatformEncryption = (
             return rootKeyResult;
         }
 
-        const salt = bytes.slice(0, KEY_SALT_LENGTH);
-        const iv = bytes.subarray(KEY_SALT_LENGTH, KEY_SALT_LENGTH + IV_LENGTH);
-        const ciphertext = bytes.subarray(KEY_SALT_LENGTH + IV_LENGTH);
+        const salt = bytes.slice(1, 1 + KEY_SALT_LENGTH);
+        const iv = bytes.subarray(1 + KEY_SALT_LENGTH, HEADER_LENGTH);
+        const ciphertext = bytes.subarray(HEADER_LENGTH);
         const messageKey = await deriveMessageKey({ rootKey: rootKeyResult.payload, salt });
 
         let plaintext: ArrayBuffer;
         try {
             plaintext = await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv },
+                { name: 'AES-GCM', iv, additionalData: getAdditionalData(context) },
                 messageKey,
                 ciphertext,
             );
@@ -162,5 +188,9 @@ export const createWebauthnPlatformEncryption = (
         return ok(new TextDecoder().decode(plaintext) as T);
     };
 
-    return { encrypt, decrypt };
+    const lock = () => {
+        rootKeyPromise = undefined;
+    };
+
+    return { encrypt, decrypt, lock };
 };

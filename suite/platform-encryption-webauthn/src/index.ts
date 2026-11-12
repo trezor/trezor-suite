@@ -1,5 +1,6 @@
 export {
     createWebauthnPlatformEncryption,
+    type LockablePlatformEncryption,
     type WebauthnPlatformEncryptionDeps,
 } from './webauthnPlatformEncryption';
 export {

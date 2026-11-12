@@ -7,7 +7,12 @@ export type {
     DecryptionError,
     EncryptionError,
 } from './platformEncryption';
-export { asEncryptedHex, EncryptionUnavailable, DecryptionFailed } from './platformEncryption';
+export {
+    asEncryptedHex,
+    EncryptionUnavailable,
+    EncryptionLocked,
+    DecryptionFailed,
+} from './platformEncryption';
 export { injectPlatformEncryption, type PlatformEncryptionDep } from './platformEncryption';
 export type {
     WebauthnAuthenticator,

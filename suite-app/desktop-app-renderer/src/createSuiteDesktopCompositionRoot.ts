@@ -40,6 +40,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     const platformEncryption = createWebauthnPlatformEncryption({
         webauthnAuthenticator,
         credentialIdStorage: createStorageCredentialIdStorage({ storage: window.localStorage }),
+        now: Date.now,
     });
     const reloadApp = desktopApi.appRestart;
 

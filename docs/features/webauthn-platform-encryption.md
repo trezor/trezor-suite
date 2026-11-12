@@ -59,8 +59,14 @@ Every part takes its browser or Electron APIs as dependencies and has unit tests
 
 ### 1. Relying party and the shared passkey
 
-- [ ] Decide the relying party ID. `trezor.io` lets one synced passkey serve web Suite
-      (`suite.trezor.io`) and the desktop app, so both derive the same key.
+- [ ] Decide the relying party ID. One domain for web and desktop means one synced passkey and one
+      key on every device that holds the passkey. Prefer `suite.trezor.io` over `trezor.io`: a
+      passkey for `trezor.io` can be requested by a page on any `trezor.io` subdomain, while
+      `suite.trezor.io` limits that to the web app's own origin.
+- [ ] Windows and Linux desktop cannot share that passkey today: the iframe runs at
+      `http://localhost:21345`, so its passkeys belong to the relying party `localhost`. Sharing
+      would need the frame served at an `https://` origin under the chosen domain from a dedicated
+      session partition, which is unverified on Windows.
 - [ ] Web: pass the relying party from configuration instead of `window.location.hostname`. Keep the
       hostname for local development, where `localhost` cannot use `trezor.io`.
 - [ ] Desktop: `webauthnRelyingPartyId` in `suite-app/desktop-app-main/src/config.ts` is already
@@ -131,18 +137,40 @@ in `/Applications`. Without `get-task-allow`, macOS ignored the app's associated
 - [ ] Before this branch, desktop encrypted with `safeStorage`. Data already encrypted that way, such
       as the Suite Sync owner and delegated identity keys, needs a migration: decrypt with
       `safeStorage`, encrypt again with the passkey key.
-- [ ] Add a version byte to the ciphertext so the format can change later.
+- [x] The ciphertext starts with a format version byte and is bound to a `context` string
+      (record type and id) as AES-GCM additional data, so blobs cannot be swapped between records.
 
 ### 6. Losing the passkey or the credential ID
 
 - [ ] The credential ID lives in `localStorage`. If it is cleared, the passkey still exists but Suite
-      does not know which one to ask. Create passkeys as discoverable (`residentKey: 'required'`) and
-      fall back to a request without `allowCredentials`, so the user can pick the passkey again.
-      Web and the iframe path currently use `residentKey: 'discouraged'`.
+      does not know which one to ask. Passkeys are now created with `residentKey: 'preferred'` on
+      every path; a recovery request without `allowCredentials`, so the user can pick the passkey
+      again, is not implemented.
 - [ ] If the passkey itself is deleted, the data is lost. Only encrypt data that can be recreated,
       or document this for users.
 
-### 7. User experience
+### 7. Security properties and decisions
+
+- The passkey proves possession, not identity: requests use `userVerification: 'preferred'`
+  (native macOS) and `'discouraged'` (web, iframe). Platform authenticators verify the user
+  anyway; a security key releases the PRF secret on a touch. This is accepted for decrypting
+  local data. Anything that replaces bio auth must request `'required'`.
+- The root key stays in memory until `lock()` on the encryption service is called. Nothing calls
+  it yet; a bio-auth replacement must wire it to the blur and master timers.
+- After a refused or failed prompt no new prompt is shown for five seconds; callers get
+  `EncryptionLocked` and must keep stored data. Consumers of the Suite Sync owner and the
+  delegated identity key do.
+- Domain binding differs per platform. On macOS the OS only lets apps listed in the domain's
+  `apple-app-site-association` file use its passkeys, so another app cannot request Suite's
+  passkey even with the same relying party hardcoded. Browsers can, from pages on that domain,
+  which the web app needs. On Windows any local app may request a Windows Hello passkey for any
+  relying party, and security keys answer any client that claims the relying party. There the
+  user's attention at the prompt is the only check, and local malware running as the user can
+  ask for the key. The design protects data at rest, not a live session against local malware.
+- Only the app's own top frame may load the WebAuthn frame; the request filter cancels it for any
+  other embedder.
+
+### 8. User experience
 
 - [ ] First setup asks twice: the native macOS API returned no PRF output at creation, so a second
       request reads it. Check whether evaluating PRF during creation works on newer systems.
@@ -150,7 +178,7 @@ in `/Applications`. Without `get-task-allow`, macOS ignored the app's associated
       cancellation and time-outs.
 - [ ] Keep credential IDs and PRF outputs out of logs, analytics and Sentry.
 
-### 8. Verification and review
+### 9. Verification and review
 
 - [ ] Run the unit tests. They are written but were not run:
 

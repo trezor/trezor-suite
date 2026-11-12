@@ -4,8 +4,10 @@ import {
     type ActivateWebauthnFrameDeps,
     WEBAUTHN_FRAME_SCRIPT_PATH,
     type WebauthnFrameProtocolHandlerDeps,
+    type WebauthnFrameRequestGuardDeps,
     createActivateWebauthnFrame,
     createWebauthnFrameProtocolHandler,
+    createWebauthnFrameRequestGuard,
 } from './webauthn-frame';
 
 const FRAME_ORIGIN = 'http://localhost:21345';
@@ -87,5 +89,37 @@ describe(createActivateWebauthnFrame.name, () => {
         const deps: ActivateWebauthnFrameDeps = { getChildFrames: () => [] };
 
         expect(await createActivateWebauthnFrame(deps)()).toBe(false);
+    });
+});
+
+describe(createWebauthnFrameRequestGuard.name, () => {
+    const appTopFrame = { parent: null };
+    const otherTopFrame = { parent: null };
+    const deps: WebauthnFrameRequestGuardDeps = { getMainWindowTopFrame: () => appTopFrame };
+
+    it('lets the app top frame embed the WebAuthn frame', () => {
+        const guard = createWebauthnFrameRequestGuard(deps);
+
+        expect(guard({ url: `${FRAME_ORIGIN}/`, frame: { parent: appTopFrame } })).toBeUndefined();
+        expect(
+            guard({ url: `${FRAME_ORIGIN}/webauthn-frame.js`, frame: { parent: appTopFrame } }),
+        ).toBeUndefined();
+    });
+
+    it.each([
+        { name: 'another document', frame: { parent: otherTopFrame } },
+        { name: 'a nested frame', frame: { parent: { parent: appTopFrame } } },
+        { name: 'a top-level navigation', frame: { parent: null } },
+        { name: 'no frame', frame: null },
+    ])('cancels the WebAuthn frame requested by $name', ({ frame }) => {
+        const guard = createWebauthnFrameRequestGuard(deps);
+
+        expect(guard({ url: `${FRAME_ORIGIN}/`, frame })).toEqual({ cancel: true });
+    });
+
+    it('ignores other urls', () => {
+        const guard = createWebauthnFrameRequestGuard(deps);
+
+        expect(guard({ url: 'http://127.0.0.1:21325/', frame: null })).toBeUndefined();
     });
 });
