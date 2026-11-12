@@ -236,6 +236,9 @@ export const HELP_CENTER_DEVICE_AUTHENTICATION: Url = withPlatformUtm(
 export const HELP_CENTER_DEVICE_AUTHENTICATION_MOBILE: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-safe-device-authentication-check',
 ); // FIXME: mobile specific
+export const HELP_CENTER_DEFI_YIELD: Url = withPlatformUtm(
+    'https://trezor.io/learn/advanced/defi/how-de-fi-yield-works-with-morpho-vaults',
+);
 export const HELP_CENTER_ETH_STAKING: Url = withPlatformUtm(
     'https://trezor.io/guides/sending-receiving-staking-funds/staking-assets-in-trezor-suite/staking-ethereum-eth-in-trezor-suite',
 );
