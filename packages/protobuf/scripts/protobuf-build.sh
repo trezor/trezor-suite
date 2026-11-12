@@ -51,13 +51,6 @@ rm -f ./build/messages-{webauthn,benchmark,nem}.proto
 buf generate
 cd ..
 
-# clear all generated comments and empty lines
-perl -0777 -pi -e 's{/\*.*?\*/}{}gs; s/^\s*\n//mg' src/definitions/*.js
-
-# generated source JS is inside a package with "type": "module", so relative JS imports
-# need explicit extensions for strict ESM resolution in bundlers
-perl -pi -e 's{from (["'"'"'])(\.\/[^"'"'"']+)\1;}{from $1$2.js$1;}g' src/definitions/*.js
-
 # remove cached eslint results
 rm -f ./.eslintcache
 # enable type-aware rules so the fix matches what CI enforces
