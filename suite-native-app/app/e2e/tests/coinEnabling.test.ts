@@ -27,6 +27,7 @@ describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
 
         await onDeviceConnecting.waitForDeviceConnectingScreen();
         await onHome.waitForScreen();
+        await onHome.waitForDiscoveryComplete();
         await onHome.scrollScreenToBottom();
         await waitForVisible(by.text('Bitcoin'));
 
@@ -37,6 +38,7 @@ describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
         await device.pressBack();
         await onTabBar.navigateToHome();
 
+        await onHome.waitForDiscoveryComplete();
         await onHome.scrollScreenToBottom();
         await waitForVisible(by.text('Ethereum'));
 
