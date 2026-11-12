@@ -1,8 +1,6 @@
-import { getAccountInfo } from '@trezor/blockchain-core/src/api/getAccountInfo';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { default as GetAccountInfo } from './getAccountInfo';
-
-jest.mock('@trezor/blockchain-core/src/api/getAccountInfo', () => ({ getAccountInfo: jest.fn() }));
 
 const DESCRIPTOR = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
 
@@ -36,15 +34,15 @@ describe(GetAccountInfo.name, () => {
         ).toThrow(expect.objectContaining({ code: 'Method_NotAllowed' }));
     });
 
-    it('passes the account to the backends', async () => {
+    it('passes the account to TrezorBlockchain and unwraps its response', async () => {
         const account = { descriptor: DESCRIPTOR, empty: true } as any;
-        jest.mocked(getAccountInfo).mockResolvedValue(account);
-        const sendCoreMessage = jest.fn();
+        const getAccountInfo = jest
+            .spyOn(TrezorBlockchain, 'getAccountInfo')
+            .mockResolvedValue({ success: true, payload: account });
 
-        await expect(createMethod().run({ sendCoreMessage } as any)).resolves.toBe(account);
+        await expect(createMethod().run()).resolves.toBe(account);
         expect(getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ coin: 'xlm', descriptor: DESCRIPTOR, details: 'basic' }),
-            sendCoreMessage,
         );
     });
 });
