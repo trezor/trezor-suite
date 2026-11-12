@@ -179,9 +179,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
         ),
     ),
     'wallet-sign-verify': lazy(() =>
-        import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/SignVerifyPage').then(
-            ({ SignVerifyPage }) => ({ default: SignVerifyPage }),
-        ),
+        import(
+            /* webpackChunkName: "wallet" */ '@suite-app/module-sign-verify/pages/SignVerifyPage'
+        ).then(({ SignVerifyPage }) => ({ default: SignVerifyPage })),
     ),
     'wallet-anonymize': lazy(() =>
         import(/* webpackChunkName: "wallet" */ '@suite-app/app/pages/WalletAnonymizePage').then(

@@ -140,7 +140,6 @@
         { "path": "../../suite/regions" },
         { "path": "../../suite/router" },
         { "path": "../../suite/settings" },
-        { "path": "../../suite/sign-verify" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/tor" },
         { "path": "../../suite/tor-desktop" },
