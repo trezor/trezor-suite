@@ -19,6 +19,7 @@
         "@solana/rpc-api",
         "@solana/rpc-types",
         "@stellar/stellar-sdk",
+        "@trezor/blockchain-core",
         "@trezor/blockchain-link",
         "@trezor/blockchain-link-types",
         "@trezor/blockchain-link-utils",

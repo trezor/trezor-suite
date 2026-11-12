@@ -8,6 +8,7 @@
         "types": ["w3c-web-usb"]
     },
     "references": [
+        { "path": "../blockchain-core" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../connect-common" },

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
 
+import { dispose as disposeBackend, setDebug as setBackendDebug } from '@trezor/blockchain-core';
 import {
     CORE_CALL,
     CORE_CALL_CANCEL,
@@ -44,7 +45,6 @@ import { createLazy, throwError } from '@trezor/utils';
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
-import { dispose as disposeBackend, setDebug as setBackendDebug } from '../backend/BlockchainLink';
 import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import { getLocalFirmwareConfig, getRemoteFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';

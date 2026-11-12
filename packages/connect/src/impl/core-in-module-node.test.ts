@@ -3,7 +3,8 @@ import { type AbstractTransportParams, BridgeTransport } from '@trezor/transport
 
 import { CoreInModuleNode } from './core-in-module-node';
 
-jest.mock('@trezor/connect-core/src/backend/BlockchainLink', () => ({
+jest.mock('@trezor/blockchain-core', () => ({
+    ...jest.requireActual('@trezor/blockchain-core'),
     updateProxy: jest.fn(() => Promise.resolve()),
 }));
 
@@ -11,7 +12,7 @@ jest.mock('@trezor/connect-core/src/backend/BlockchainLink', () => ({
 // NodeUsbTransport constructs a WebUSB instance, so stub it here.
 jest.mock('usb', () => ({ WebUSB: class {} }));
 
-const { updateProxy } = jest.requireMock('@trezor/connect-core/src/backend/BlockchainLink');
+const { updateProxy } = jest.requireMock('@trezor/blockchain-core');
 
 class Probe extends CoreInModuleNode {
     public getDefaultTransports(params: AbstractTransportParams) {
