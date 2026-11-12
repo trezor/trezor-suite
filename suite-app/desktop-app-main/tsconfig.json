@@ -50,6 +50,9 @@
             "path": "../../suite/desktop-app-native-bindings"
         },
         {
+            "path": "../../suite/platform-encryption-webauthn"
+        },
+        {
             "path": "../../suite/sentry"
         },
         {

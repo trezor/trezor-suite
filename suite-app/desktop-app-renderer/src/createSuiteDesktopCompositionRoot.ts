@@ -1,8 +1,13 @@
 import { createMemoryHistory } from 'history';
 
+import { WEBAUTHN_FRAME_ORIGIN } from '@suite/desktop-app-api';
 import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
-import { createElectronWebauthnAuthenticator } from '@suite/platform-encryption-electron';
-import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
+import {
+    createFrameWebauthnAuthenticator,
+    createIframeWebauthnDeps,
+    createLocalStorageCredentialIdStorage,
+    createWebauthnPlatformEncryption,
+} from '@suite/platform-encryption-webauthn';
 import {
     createHydrateReduxStore,
     createReduxStore,
@@ -21,8 +26,16 @@ type SuiteDesktopCompositionRoot = { app: DesktopApp };
 export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot => {
     const desktopApi = createElectronDesktopApi();
     const history = createMemoryHistory();
-    const webauthnAuthenticator = createElectronWebauthnAuthenticator({ desktopApi });
-    const platformEncryption = createWebauthnPlatformEncryption({ webauthnAuthenticator });
+    const webauthnAuthenticator = createFrameWebauthnAuthenticator(
+        createIframeWebauthnDeps({
+            frameOrigin: WEBAUTHN_FRAME_ORIGIN,
+            activateFrame: desktopApi.webauthnActivateFrame,
+        }),
+    );
+    const platformEncryption = createWebauthnPlatformEncryption({
+        webauthnAuthenticator,
+        credentialIdStorage: createLocalStorageCredentialIdStorage(),
+    });
     const reloadApp = desktopApi.appRestart;
 
     // The desktop renderer can't construct node-only transports (`usb`/`dgram`), so each factory

@@ -13,13 +13,13 @@ export type EvaluateWebauthnPrfParams = {
 };
 
 /** @serviceContract */
-export interface WebauthnAuthenticator {
+export type WebauthnAuthenticator = {
     createCredential: () => Promise<Result<WebauthnCredential, EncryptionUnavailable>>;
 
     evaluatePrf: (
         params: EvaluateWebauthnPrfParams,
     ) => Promise<Result<string, EncryptionUnavailable>>;
-}
+};
 
 export type WebauthnAuthenticatorDep = { webauthnAuthenticator: WebauthnAuthenticator };
 

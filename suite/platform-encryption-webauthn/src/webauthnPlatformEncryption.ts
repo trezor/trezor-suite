@@ -20,7 +20,14 @@ const PRF_SALT_LENGTH = 32;
 const IV_LENGTH = 12;
 const HKDF_INFO = 'trezor-suite-platform-encryption';
 
-export type WebauthnPlatformEncryptionDeps = WebauthnAuthenticatorDep;
+export type WebauthnCredentialIdStorage = {
+    getCredentialId: () => string | null;
+    setCredentialId: (credentialIdHex: string) => void;
+};
+
+export type WebauthnPlatformEncryptionDeps = WebauthnAuthenticatorDep & {
+    credentialIdStorage: WebauthnCredentialIdStorage;
+};
 
 type DeriveKeyParams = {
     credentialIdHex: string;
@@ -31,7 +38,7 @@ export const createWebauthnPlatformEncryption = (
     deps: WebauthnPlatformEncryptionDeps,
 ): PlatformEncryption => {
     const ensureCredentialId = async (): Promise<Result<string, EncryptionUnavailable>> => {
-        const storedCredentialIdHex = window.localStorage.getItem(CREDENTIAL_ID_STORAGE_KEY);
+        const storedCredentialIdHex = deps.credentialIdStorage.getCredentialId();
         if (storedCredentialIdHex !== null) {
             return ok(storedCredentialIdHex);
         }
@@ -47,10 +54,7 @@ export const createWebauthnPlatformEncryption = (
             );
         }
 
-        window.localStorage.setItem(
-            CREDENTIAL_ID_STORAGE_KEY,
-            credentialResult.payload.credentialIdHex,
-        );
+        deps.credentialIdStorage.setCredentialId(credentialResult.payload.credentialIdHex);
 
         return ok(credentialResult.payload.credentialIdHex);
     };
@@ -122,7 +126,7 @@ export const createWebauthnPlatformEncryption = (
             return err(DecryptionFailed());
         }
 
-        const credentialIdHex = window.localStorage.getItem(CREDENTIAL_ID_STORAGE_KEY);
+        const credentialIdHex = deps.credentialIdStorage.getCredentialId();
         if (credentialIdHex === null) {
             return err(EncryptionUnavailable('No WebAuthn credential is registered'));
         }
@@ -152,3 +156,9 @@ export const createWebauthnPlatformEncryption = (
 
     return { encrypt, decrypt };
 };
+
+export const createLocalStorageCredentialIdStorage = (): WebauthnCredentialIdStorage => ({
+    getCredentialId: () => window.localStorage.getItem(CREDENTIAL_ID_STORAGE_KEY),
+    setCredentialId: credentialIdHex =>
+        window.localStorage.setItem(CREDENTIAL_ID_STORAGE_KEY, credentialIdHex),
+});

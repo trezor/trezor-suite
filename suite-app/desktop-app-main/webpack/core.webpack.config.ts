@@ -225,4 +225,36 @@ const config: webpack.Configuration = {
     ignoreWarnings: [{ module: /cardano-serialization-lib-browser/ }],
 };
 
-export default config;
+// The WebAuthn frame runs in a browser page, not in Electron Main or a preload.
+const webauthnFrameConfig: webpack.Configuration = {
+    target: 'web',
+    mode: isDev ? 'development' : 'production',
+    devtool: 'source-map',
+    entry: { 'webauthn-frame': path.resolve(source, 'webauthn-frame.ts') },
+    output: {
+        filename: '[name].js',
+        path: dist,
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-typescript'],
+                    },
+                },
+            },
+        ],
+    },
+    resolve: {
+        extensions: ['.ts', '.js'],
+    },
+    performance: {
+        hints: false,
+    },
+};
+
+export default [config, webauthnFrameConfig];

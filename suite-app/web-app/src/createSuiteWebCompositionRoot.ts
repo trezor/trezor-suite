@@ -2,6 +2,8 @@ import { createBrowserHistory } from 'history';
 
 import {
     createBrowserWebauthnAuthenticator,
+    createLocalStorageCredentialIdStorage,
+    createNavigatorWebauthnDeps,
     createWebauthnPlatformEncryption,
 } from '@suite/platform-encryption-webauthn';
 import {
@@ -28,8 +30,11 @@ type SuiteWebCompositionRoot = { app: WebApp };
 
 export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const history = createBrowserHistory();
-    const webauthnAuthenticator = createBrowserWebauthnAuthenticator();
-    const platformEncryption = createWebauthnPlatformEncryption({ webauthnAuthenticator });
+    const webauthnAuthenticator = createBrowserWebauthnAuthenticator(createNavigatorWebauthnDeps());
+    const platformEncryption = createWebauthnPlatformEncryption({
+        webauthnAuthenticator,
+        credentialIdStorage: createLocalStorageCredentialIdStorage(),
+    });
     const reloadApp = () => window.location.reload();
 
     const getTransportsFactories = () => {

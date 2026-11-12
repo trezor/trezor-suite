@@ -28,6 +28,7 @@
         "@suite/desktop-app-api": "workspace:*",
         "@suite/desktop-app-api-electron": "workspace:*",
         "@suite/desktop-app-native-bindings": "workspace:*",
+        "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@suite/tor-types": "workspace:*",
         "@trezor/coinjoin": "workspace:*",

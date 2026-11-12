@@ -11359,6 +11359,7 @@ __metadata:
     "@suite/desktop-app-api": "workspace:*"
     "@suite/desktop-app-api-electron": "workspace:*"
     "@suite/desktop-app-native-bindings": "workspace:*"
+    "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@suite/tor-types": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
@@ -11415,7 +11416,6 @@ __metadata:
     "@suite/flags": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/intl": "workspace:*"
-    "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
@@ -17507,7 +17507,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/platform-encryption-electron@workspace:*, @suite/platform-encryption-electron@workspace:suite/platform-encryption-electron":
+"@suite/platform-encryption-electron@workspace:suite/platform-encryption-electron":
   version: 0.0.0-use.local
   resolution: "@suite/platform-encryption-electron@workspace:suite/platform-encryption-electron"
   dependencies:
@@ -17522,6 +17522,7 @@ __metadata:
   resolution: "@suite/platform-encryption-webauthn@workspace:suite/platform-encryption-webauthn"
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft

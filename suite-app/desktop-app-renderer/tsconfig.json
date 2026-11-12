@@ -23,9 +23,6 @@
         { "path": "../../suite/github" },
         { "path": "../../suite/intl" },
         {
-            "path": "../../suite/platform-encryption-electron"
-        },
-        {
             "path": "../../suite/platform-encryption-webauthn"
         },
         { "path": "../../suite/router" },

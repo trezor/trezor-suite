@@ -228,13 +228,6 @@ export type InAppBrowserOpenPayload = z.infer<typeof inAppBrowserOpenPayload>;
  */
 export const WEBAUTHN_FRAME_ORIGIN = 'http://localhost:21345';
 
-const hexBytes = z.string().regex(/^(?:[0-9a-fA-F]{2})+$/);
-
-export const webauthnEvaluatePrfParams = z.strictObject({
-    credentialIdHex: hexBytes.max(2048),
-    saltHex: hexBytes.length(64),
-});
-
 /**
  * Events forwarded from the main-process WebContentsView host
  */
