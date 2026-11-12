@@ -4,7 +4,6 @@ import { useDevice } from '@suite/device';
 import { isVerifySupported } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 
-import { BitcoinSignVerify } from './networks/BitcoinSignVerify';
 import { CardanoSignVerify } from './networks/CardanoSignVerify';
 import { EthereumSignVerify } from './networks/EthereumSignVerify';
 
@@ -20,8 +19,8 @@ type SignVerifyProps = {
 };
 
 /**
- * Picks the network's form until the forms move to their network modules. Only the networks
- * offering Sign & Verify reach this page.
+ * Picks the form of a network that has no network module yet. Only the networks offering
+ * Sign & Verify reach this page.
  */
 export const SignVerify = ({ account, renderShell }: SignVerifyProps) => {
     const { device } = useDevice();
@@ -31,7 +30,6 @@ export const SignVerify = ({ account, renderShell }: SignVerifyProps) => {
         isDeviceConnected: device?.connected && device?.available,
         children: (
             <>
-                {account.networkType === 'bitcoin' && <BitcoinSignVerify account={account} />}
                 {account.networkType === 'ethereum' && <EthereumSignVerify account={account} />}
                 {account.networkType === 'cardano' && <CardanoSignVerify account={account} />}
             </>

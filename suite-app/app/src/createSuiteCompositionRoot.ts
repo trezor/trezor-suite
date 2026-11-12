@@ -11,6 +11,7 @@ import { selectLabelingDataForAccount } from '@suite/metadata';
 import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
 import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
+import { createSuiteNetworksCompositionRoot } from '@suite-app/networks';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite-app/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
@@ -142,6 +143,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
     });
 
+    const suiteNetworks = createSuiteNetworksCompositionRoot();
+
     const staking = createStakingCompositionRoot({
         platform: 'desktop',
         adapters: createStakingProductsCompositionRoot(),
@@ -171,6 +174,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
+        getSignVerify: suiteNetworks.getSignVerify,
         staking,
         queryClient,
         suiteSync,

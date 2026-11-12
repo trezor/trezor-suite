@@ -1,0 +1,25 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": [".", "**/*.json"],
+    "references": [
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../networks/bitcoin/network-bitcoin-suite"
+        },
+        {
+            "path": "../../networks/network-module/suite/suite-types"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        }
+    ]
+}
