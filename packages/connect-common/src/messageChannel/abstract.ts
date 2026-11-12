@@ -25,6 +25,14 @@ export type Message<IncomingMessages extends { type: string }> = IncomingMessage
     payload: Extract<IncomingMessages, { type: IncomingMessages['type'] }> | undefined;
 };
 
+// The handshake is `pending` until the peer confirms our request (a lazy channel starts requesting
+// only after the peer's first request) and `confirmed` afterwards. Every handshake owns its
+// deferred, so a retry loop of an aborted or cleared handshake cannot confirm or fail the next one.
+type HandshakeState =
+    | { status: 'idle' }
+    | { status: 'pending'; finished: Deferred<void>; isRequesting: boolean }
+    | { status: 'confirmed'; finished: Deferred<void> };
+
 /**
  * concepts:
  * - it handshakes automatically with the other side of the channel
@@ -47,7 +55,7 @@ export abstract class AbstractMessageChannel<
 
     private readonly handshakeMaxRetries = 5;
     private readonly handshakeRetryInterval = 2000;
-    private handshakeFinished: Deferred<void> | undefined;
+    private handshakeState: HandshakeState = { status: 'idle' };
 
     protected lazyHandshake?: boolean;
     protected logger?: Log;
@@ -78,15 +86,31 @@ export abstract class AbstractMessageChannel<
      * initiates handshake sequence with peer. resolves after communication with peer is established
      */
     public init() {
-        if (!this.handshakeFinished) {
-            this.handshakeFinished = createDeferred();
+        if (this.handshakeState.status === 'idle') {
+            this.handshakeState = {
+                status: 'pending',
+                finished: createDeferred(),
+                isRequesting: false,
+            };
             if (!this.lazyHandshake) {
                 // When `lazyHandshake` handshakeWithPeer will start when received channel-handshake-request.
                 this.handshakeWithPeer();
             }
         }
 
-        return this.handshakeFinished.promise;
+        return this.handshakeState.finished.promise;
+    }
+
+    private isCurrentHandshake(finished: Deferred<void>) {
+        return this.handshakeState.status !== 'idle' && this.handshakeState.finished === finished;
+    }
+
+    private flushMessagesQueue() {
+        this.messagesQueue.forEach(message => {
+            message.channel = this.channel;
+            this.sendFn(message);
+        });
+        this.messagesQueue = [];
     }
 
     /**
@@ -94,10 +118,20 @@ export abstract class AbstractMessageChannel<
      * both parties initiate handshake procedure and keep asking over time in a loop until they time out or receive confirmation from peer
      */
     protected handshakeWithPeer(): Promise<void> {
+        const state = this.handshakeState;
+        if (state.status !== 'pending' || state.isRequesting) {
+            return Promise.resolve();
+        }
+
         this.logger?.log(this.channel.here, 'handshake');
+        const { finished } = state;
+        this.handshakeState = { ...state, isRequesting: true };
 
         return scheduleAction(
             async () => {
+                // Stop requesting once this handshake was aborted or cleared.
+                if (!this.isCurrentHandshake(finished)) return;
+
                 this.postMessage(
                     {
                         type: 'channel-handshake-request',
@@ -105,7 +139,7 @@ export abstract class AbstractMessageChannel<
                     },
                     { usePromise: false, useQueue: false },
                 );
-                await this.handshakeFinished?.promise;
+                await finished.promise;
             },
             {
                 attempts: this.handshakeMaxRetries,
@@ -113,16 +147,17 @@ export abstract class AbstractMessageChannel<
             },
         )
             .then(() => {
+                if (!this.isCurrentHandshake(finished)) return;
+
                 this.logger?.log(this.channel.here, 'handshake confirmed');
-                this.messagesQueue.forEach(message => {
-                    message.channel = this.channel;
-                    this.sendFn(message);
-                });
-                this.messagesQueue = [];
+                this.handshakeState = { status: 'confirmed', finished };
+                this.flushMessagesQueue();
             })
             .catch(() => {
-                this.handshakeFinished?.reject(new Error('handshake failed'));
-                this.handshakeFinished = undefined;
+                if (!this.isCurrentHandshake(finished)) return;
+
+                finished.reject(new Error('handshake failed'));
+                this.handshakeState = { status: 'idle' };
             });
     }
 
@@ -155,14 +190,15 @@ export abstract class AbstractMessageChannel<
                 { usePromise: false, useQueue: false },
             );
             if (this.lazyHandshake) {
-                // When received channel-handshake-request in lazyHandshake mode we start from this side.
-                this.handshakeWithPeer();
+                this.continueLazyHandshake();
             }
 
             return;
         }
         if (type === 'channel-handshake-confirm') {
-            this.handshakeFinished?.resolve(undefined);
+            if (this.handshakeState.status === 'pending') {
+                this.handshakeState.finished.resolve(undefined);
+            }
 
             return;
         }
@@ -178,6 +214,23 @@ export abstract class AbstractMessageChannel<
 
         // @ts-expect-error TS complains for odd reasons
         this.emit('message', message);
+    }
+
+    private continueLazyHandshake() {
+        if (this.handshakeState.status === 'confirmed') {
+            // A reconnected peer handshakes again, this side is confirmed already.
+            this.flushMessagesQueue();
+
+            return;
+        }
+
+        if (this.handshakeState.status === 'idle') {
+            // A failed handshake is reported by the requesting loop, nobody awaits it here.
+            this.init().catch(() => {});
+        }
+
+        // When received channel-handshake-request in lazyHandshake mode we start from this side.
+        this.handshakeWithPeer();
     }
 
     // todo: outgoing messages should be typed
@@ -225,11 +278,18 @@ export abstract class AbstractMessageChannel<
     }
 
     abortHandshake(reason?: string) {
-        this.handshakeFinished?.reject(new Error(reason ?? 'Handshake aborted'));
-        this.handshakeFinished = undefined;
+        const state = this.handshakeState;
+        this.handshakeState = { status: 'idle' };
+        this.messagesQueue = [];
+
+        if (state.status === 'pending') {
+            state.finished.reject(new Error(reason ?? 'Handshake aborted'));
+        }
     }
 
     clear() {
-        this.handshakeFinished = undefined;
+        this.handshakeState = { status: 'idle' };
+        // Messages queued for the previous peer must not be delivered after the next handshake.
+        this.messagesQueue = [];
     }
 }

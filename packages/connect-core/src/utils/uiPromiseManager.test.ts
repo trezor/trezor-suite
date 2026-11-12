@@ -74,4 +74,63 @@ describe('utils/uiPromiseManager', () => {
             expect(p1.requestId).not.toBe(p3.requestId);
         });
     });
+
+    describe('clear', () => {
+        it('drops only the promises of the given device', async () => {
+            const manager = createUiPromiseManager();
+            const device1 = createMockDevice('path-1');
+            const device2 = createMockDevice('path-2');
+            manager.create(UI_RESPONSE.RECEIVE_PIN, device1);
+            const promise2 = manager.create(UI_RESPONSE.RECEIVE_PIN, device2);
+
+            manager.clear({ device: device1 });
+
+            expect(
+                manager.resolve({
+                    type: UI_RESPONSE.RECEIVE_PIN,
+                    payload: 'pin-for-device-2',
+                    requestId: promise2.requestId,
+                }),
+            ).toBe(true);
+            expect((await promise2.promise).payload).toBe('pin-for-device-2');
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PIN)).toBe(false);
+        });
+
+        it('drops all promises when no device is given', () => {
+            const manager = createUiPromiseManager();
+            manager.create(UI_RESPONSE.RECEIVE_PIN, createMockDevice('path-1'));
+            manager.create(UI_RESPONSE.RECEIVE_PASSPHRASE);
+
+            manager.clear();
+
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PIN)).toBe(false);
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PASSPHRASE)).toBe(false);
+        });
+    });
+
+    describe('rejectAll', () => {
+        it('rejects only the promises of the given device', async () => {
+            const manager = createUiPromiseManager();
+            const device1 = createMockDevice('path-1');
+            const promise1 = manager.create(UI_RESPONSE.RECEIVE_PIN, device1);
+            manager.create(UI_RESPONSE.RECEIVE_PIN, createMockDevice('path-2'));
+
+            manager.rejectAll(new Error('reconnect failed'), { device: device1 });
+
+            await expect(promise1.promise).rejects.toThrow('reconnect failed');
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PIN)).toBe(true);
+        });
+
+        it('rejects all promises when no device is given', async () => {
+            const manager = createUiPromiseManager();
+            const promise1 = manager.create(UI_RESPONSE.RECEIVE_PIN, createMockDevice('path-1'));
+            const promise2 = manager.create(UI_RESPONSE.RECEIVE_WORD);
+
+            manager.rejectAll(new Error('cancelled'));
+
+            await expect(promise1.promise).rejects.toThrow('cancelled');
+            await expect(promise2.promise).rejects.toThrow('cancelled');
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PIN)).toBe(false);
+        });
+    });
 });
