@@ -23,6 +23,7 @@ export interface SellInfo {
     supportedCryptoCurrencies: CryptoId[];
     country: TradingCountryCode;
     countrySubdivision?: string;
+    suggestedFiatCurrency?: string;
 }
 
 export type TradingSellState = {
