@@ -1,9 +1,12 @@
 export {
-    createLocalStorageCredentialIdStorage,
     createWebauthnPlatformEncryption,
-    type WebauthnCredentialIdStorage,
     type WebauthnPlatformEncryptionDeps,
 } from './webauthnPlatformEncryption';
+export {
+    createStorageCredentialIdStorage,
+    type StorageCredentialIdStorageDeps,
+    type WebauthnCredentialIdStorage,
+} from './credentialIdStorage';
 export {
     createBrowserWebauthnAuthenticator,
     createNavigatorWebauthnDeps,
@@ -19,3 +22,4 @@ export {
     startWebauthnFrameHost,
     type WebauthnFrameHostDeps,
 } from './webauthnFrameHost';
+export { isHex } from './webauthnFrameMessages';

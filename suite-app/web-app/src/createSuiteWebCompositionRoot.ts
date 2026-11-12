@@ -2,8 +2,8 @@ import { createBrowserHistory } from 'history';
 
 import {
     createBrowserWebauthnAuthenticator,
-    createLocalStorageCredentialIdStorage,
     createNavigatorWebauthnDeps,
+    createStorageCredentialIdStorage,
     createWebauthnPlatformEncryption,
 } from '@suite/platform-encryption-webauthn';
 import {
@@ -33,7 +33,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const webauthnAuthenticator = createBrowserWebauthnAuthenticator(createNavigatorWebauthnDeps());
     const platformEncryption = createWebauthnPlatformEncryption({
         webauthnAuthenticator,
-        credentialIdStorage: createLocalStorageCredentialIdStorage(),
+        credentialIdStorage: createStorageCredentialIdStorage({ storage: window.localStorage }),
     });
     const reloadApp = () => window.location.reload();
 

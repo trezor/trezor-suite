@@ -3,9 +3,7 @@ import { app, net, session } from 'electron';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { EncryptionUnavailable } from '@suite-common/platform-encryption';
 import { isMacOs } from '@trezor/env-utils';
-import { err } from '@trezor/type-utils';
 
 import { webauthnKeychainAccessGroup, webauthnRelyingPartyId } from '../config';
 import type { ModuleInit } from './module';
@@ -15,9 +13,7 @@ import {
     createActivateWebauthnFrame,
     createWebauthnFrameProtocolHandler,
 } from '../libs/webauthn-frame';
-
-const isHex = (value: unknown): value is string =>
-    typeof value === 'string' && /^(?:[0-9a-fA-F]{2})+$/.test(value);
+import { createEvaluatePrfFromIpc } from '../libs/webauthn-ipc';
 
 export const SERVICE_NAME = 'webauthn';
 
@@ -65,14 +61,9 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
         nativeWebauthnAuthenticator.createCredential(),
     );
 
-    ipcMain.handle('webauthn/evaluate-prf', (_, params) => {
-        if (!isHex(params?.credentialIdHex) || !isHex(params?.saltHex)) {
-            return Promise.resolve(err(EncryptionUnavailable('Invalid WebAuthn PRF parameters')));
-        }
-
-        return nativeWebauthnAuthenticator.evaluatePrf({
-            credentialIdHex: params.credentialIdHex,
-            saltHex: params.saltHex,
-        });
+    const evaluatePrfFromIpc = createEvaluatePrfFromIpc({
+        webauthnAuthenticator: nativeWebauthnAuthenticator,
     });
+
+    ipcMain.handle('webauthn/evaluate-prf', (_, params) => evaluatePrfFromIpc(params));
 };

@@ -6,7 +6,7 @@ import { createDesktopApiWebauthnAuthenticator } from '@suite/platform-encryptio
 import {
     createFrameWebauthnAuthenticator,
     createIframeWebauthnDeps,
-    createLocalStorageCredentialIdStorage,
+    createStorageCredentialIdStorage,
     createWebauthnPlatformEncryption,
 } from '@suite/platform-encryption-webauthn';
 import {
@@ -39,7 +39,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
           );
     const platformEncryption = createWebauthnPlatformEncryption({
         webauthnAuthenticator,
-        credentialIdStorage: createLocalStorageCredentialIdStorage(),
+        credentialIdStorage: createStorageCredentialIdStorage({ storage: window.localStorage }),
     });
     const reloadApp = desktopApi.appRestart;
 

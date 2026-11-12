@@ -13,19 +13,14 @@ import {
 } from '@suite-common/platform-encryption';
 import { type Result, err, ok } from '@trezor/type-utils';
 
+import { type WebauthnCredentialIdStorage } from './credentialIdStorage';
 import { bytesToHex, getRandomBytes, hexToBytes } from './hex';
 
-const CREDENTIAL_ID_STORAGE_KEY = 'trezor-suite-webauthn-credential-id';
 const KEY_SALT_LENGTH = 32;
 const IV_LENGTH = 12;
 const HKDF_INFO = 'trezor-suite-platform-encryption';
 // A fixed PRF input makes the passkey yield the same secret on every evaluation and device.
 const PRF_INPUT_HEX = bytesToHex(new TextEncoder().encode('trezor-suite/platform-encryption/v1'));
-
-export type WebauthnCredentialIdStorage = {
-    getCredentialId: () => string | null;
-    setCredentialId: (credentialIdHex: string) => void;
-};
 
 export type WebauthnPlatformEncryptionDeps = WebauthnAuthenticatorDep & {
     credentialIdStorage: WebauthnCredentialIdStorage;
@@ -169,9 +164,3 @@ export const createWebauthnPlatformEncryption = (
 
     return { encrypt, decrypt };
 };
-
-export const createLocalStorageCredentialIdStorage = (): WebauthnCredentialIdStorage => ({
-    getCredentialId: () => window.localStorage.getItem(CREDENTIAL_ID_STORAGE_KEY),
-    setCredentialId: credentialIdHex =>
-        window.localStorage.setItem(CREDENTIAL_ID_STORAGE_KEY, credentialIdHex),
-});
