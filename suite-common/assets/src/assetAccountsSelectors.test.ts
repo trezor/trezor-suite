@@ -452,4 +452,17 @@ describe('what a write does not change', () => {
 
         expect(selectAssetAccounts(state)).toBe(selectAssetAccounts(state));
     });
+
+    it('does not walk the accounts again on an unrelated state change', () => {
+        const state = createState({ accounts: [mockAccount()] });
+        const recomputations = () =>
+            (selectAssetAccounts as unknown as { recomputations: () => number }).recomputations();
+        const assetAccounts = selectAssetAccounts(state);
+        const before = recomputations();
+
+        expect(selectAssetAccounts({ ...state, device: {} } as AssetAccountsRootState)).toBe(
+            assetAccounts,
+        );
+        expect(recomputations()).toBe(before);
+    });
 });

@@ -5,6 +5,9 @@
         { "path": "../../suite-common/address" },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -62,6 +65,9 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
+        {
+            "path": "../../suite-common/earn-staking-common"
+        },
         { "path": "../feature-flags" },
         { "path": "../settings" },
         { "path": "../test-utils" },

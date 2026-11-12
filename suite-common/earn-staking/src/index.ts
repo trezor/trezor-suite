@@ -129,6 +129,7 @@ export {
     selectIsStakingSupportedSymbol,
     selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
+    selectStakingAmountsOutsideBalance,
     selectStakingPlatform,
     selectStakingPosition,
     selectStakingPositionsByAccount,
