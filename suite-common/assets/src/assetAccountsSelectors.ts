@@ -2,9 +2,9 @@ import { type DeviceRootState } from '@suite-common/device';
 import {
     type StakingRootState,
     formatStakingAmount,
-    selectStakingAccountAmountOutsideBalance,
+    selectStakingAmountsOutsideBalance,
 } from '@suite-common/earn-staking';
-import { type StakingAmount } from '@suite-common/earn-staking-common';
+import { type StakingAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
 import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
@@ -50,7 +50,7 @@ export type AssetAccountsRootState = AccountsRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetAccountsRootState>();
 
-const selectState = (state: AssetAccountsRootState) => state;
+const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 const createAssetAccount = weakMapMemoize(
     (
@@ -144,29 +144,28 @@ const toAssetAccounts = weakMapMemoize(
     },
 );
 
+// Inputs are the accounts and the staking amounts, never the whole state, so an unrelated update
+// does not walk the accounts again.
 const toStableAssetAccounts = (
-    state: AssetAccountsRootState,
     accounts: readonly Account[],
+    amountsOutsideBalance: Partial<Record<AccountKey, StakingAmount>>,
 ): readonly AssetAccount[] =>
     returnStableArrayIfEmpty(
         createStableAssetAccounts(
             ...accounts.flatMap(account =>
-                toAssetAccounts(
-                    account,
-                    selectStakingAccountAmountOutsideBalance(state, account.key),
-                ),
+                toAssetAccounts(account, amountsOutsideBalance[account.key] ?? ZERO_STAKING_AMOUNT),
             ),
         ),
     );
 
 export const selectAssetAccounts = createMemoizedSelector(
-    [selectState, selectAccounts],
+    [selectAccounts, selectStakingAmountsOutsideBalance],
     toStableAssetAccounts,
 );
 
 /** Only the wallet on screen: another wallet's accounts are no work this table has to do. */
 export const selectDeviceAssetAccounts = createMemoizedSelector(
-    [selectState, selectVisibleDeviceAccounts],
+    [selectVisibleDeviceAccounts, selectStakingAmountsOutsideBalance],
     toStableAssetAccounts,
 );
 

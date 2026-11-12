@@ -11,6 +11,7 @@ import {
     selectIsStakingSupportedSymbol,
     selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
+    selectStakingAmountsOutsideBalance,
     selectStakingPlatform,
     selectStakingPosition,
     selectStakingPositionsByAccount,
@@ -199,5 +200,15 @@ describe('staking selectors', () => {
             withdrawable: '0',
             rewards: '0',
         });
+    });
+    it('maps the amount outside the balance of every account with positions', () => {
+        const amounts = selectStakingAmountsOutsideBalance(state);
+
+        expect(amounts[accountKey]).toBe(
+            selectStakingAccountAmountOutsideBalance(state, accountKey),
+        );
+        expect(amounts[unknownAccountKey]).toBeUndefined();
+        expect(selectStakingAmountsOutsideBalance(state)).toBe(amounts);
+        expect(selectStakingAmountsOutsideBalance(empty)).toEqual({});
     });
 });

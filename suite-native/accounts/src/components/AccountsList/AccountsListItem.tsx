@@ -2,9 +2,12 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    formatStakingAmount,
+    selectStakingAccountBalanceWithStaking,
+} from '@suite-common/earn-staking';
+import {
     type AccountsRootState,
     type StakeRootState,
-    getAccountCryptoBalanceWithStaking,
     selectAccountHasStaking,
     selectFormattedAccountType,
     selectIsCardanoStakedWithFiveBinaries,
@@ -79,7 +82,10 @@ const AccountsListItemComponent = ({
     );
 
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
-        selectAccountFiatBalance(state, account.key, accountHasStaking),
+        selectAccountFiatBalance(state, account.key),
+    );
+    const balanceWithStaking = useSelector((state: NativeAccountsRootState) =>
+        selectStakingAccountBalanceWithStaking(state, account.key),
     );
 
     const handleOnPress = useCallback(() => {
@@ -103,7 +109,10 @@ const AccountsListItemComponent = ({
         <CryptoToFiatAmountFormatter
             value={
                 shouldIncludeStakingInFiat
-                    ? getAccountCryptoBalanceWithStaking(account)
+                    ? formatStakingAmount({
+                          amount: balanceWithStaking,
+                          networkSymbol: account.symbol,
+                      })
                     : account.formattedBalance
             }
             isBalance={true}

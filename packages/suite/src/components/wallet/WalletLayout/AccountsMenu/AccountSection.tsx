@@ -1,3 +1,4 @@
+import { selectStakingAccountAmountOutsideBalance } from '@suite-common/earn-staking';
 import {
     selectAccountHasStaking,
     selectBaseCurrency,
@@ -21,11 +22,16 @@ type AccountSectionProps = {
 export const AccountSection = ({ account, tokens, selected }: AccountSectionProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rates = useSelector(selectCurrentFiatRates);
+
     const hasStaking = useSelector(state => selectAccountHasStaking(state, account.key));
+    const stakingBalance = useSelector(state =>
+        selectStakingAccountAmountOutsideBalance(state, account.key),
+    );
+
     const accountWithVisibleTokens = { ...account, tokens };
     const fiatBalance = getAccountFiatBalance({
         account: accountWithVisibleTokens,
-        shouldIncludeStaking: hasStaking,
+        stakingBalance,
         baseCurrencyCode,
         rates,
     });

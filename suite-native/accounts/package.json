@@ -19,6 +19,7 @@
         "@shopify/flash-list": "2.3.2",
         "@suite-common/address": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/earn-staking": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
@@ -59,6 +60,7 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
