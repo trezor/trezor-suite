@@ -24,6 +24,7 @@ import {
 } from '@suite-common/token-definitions';
 import {
     type TradingRootStateWithDeviceAndAccounts,
+    TradingTokenMetadataProvider,
     type TradingType,
 } from '@suite-common/trading';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
@@ -69,8 +70,6 @@ import {
 } from '@suite-native/transaction-management';
 import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
-
-import { TradingMetadataProvider } from '../components/general/TradingMetadataProvider';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
@@ -212,7 +211,7 @@ export const renderWithTradingProvider = <TServices extends object>(
         // A wrapper keeps the provider in place when tests rerender the element.
         wrapper: ({ children }) =>
             createElement(
-                TradingMetadataProvider,
+                TradingTokenMetadataProvider,
                 null,
                 Wrapper ? createElement(Wrapper, null, children) : children,
             ),

@@ -36,6 +36,7 @@ export * from './thunks/common/buildTradingComposeFormState';
 export * from './thunks/exchange/buildExchangeComposeInputs';
 export * from './selectors/tradingSelectors';
 export * from './selectors/tradeableAssetBalancesSelectors';
+export { TradingTokenMetadataProvider } from './components/TradingTokenMetadataProvider';
 export * from './hooks/useTradingDetail';
 export type * from './types/tradingDetail';
 export type * from './types';

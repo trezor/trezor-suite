@@ -12,7 +12,6 @@
         {
             "path": "../../suite-common/suite-sync"
         },
-        { "path": "../../suite-common/token" },
         { "path": "../../suite-common/tokens" },
         { "path": "../../suite-common/trading" },
         {

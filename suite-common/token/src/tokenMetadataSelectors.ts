@@ -5,6 +5,8 @@ import { createWeakMapSelector } from '@trezor/redux-utils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState>();
 
+type AccountToken = NonNullable<AccountsRootState['wallet']['accounts'][number]['tokens']>[number];
+
 export const selectTokenByNetworkAndContract = createMemoizedSelector(
     [
         selectAccounts,
@@ -16,9 +18,13 @@ export const selectTokenByNetworkAndContract = createMemoizedSelector(
         for (const account of accounts) {
             if (account.symbol !== networkSymbol) continue;
 
-            const token = account.tokens?.find(candidate => candidate.contract === tokenContract);
+            // The stored token itself, so its labels re-render only when that token changes.
+            const token = account.tokens?.find(
+                (candidate): candidate is AccountToken & { contract: TokenAddress } =>
+                    candidate.contract === tokenContract,
+            );
 
-            if (token) return { ...token, contract: tokenContract };
+            if (token) return token;
         }
 
         return null;

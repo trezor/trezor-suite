@@ -1,5 +1,6 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -19,7 +20,6 @@ import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
-import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 jest.mock('../../../hooks/general/useAmountInputDecimals', () => ({
     useAmountInputDecimals: () => 8,
@@ -53,9 +53,9 @@ describe('ExchangeSendContent', () => {
     const renderExchangeSendContent = () =>
         renderWithStoreProvider(<ExchangeSendContent />, {
             wrapper: ({ children }) => (
-                <TradingMetadataProvider>
+                <TradingTokenMetadataProvider>
                     <Form form={form}>{children}</Form>
-                </TradingMetadataProvider>
+                </TradingTokenMetadataProvider>
             ),
             preloadedState,
             services: {

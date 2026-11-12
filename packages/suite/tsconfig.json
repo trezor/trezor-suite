@@ -129,7 +129,6 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
-        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },
