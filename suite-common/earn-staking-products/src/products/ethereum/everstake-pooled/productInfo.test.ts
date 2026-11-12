@@ -39,6 +39,7 @@ describe('fetchEthereumEverstakePooledProductInfo', () => {
             rate: 3.08,
             entryPeriodDays: 4,
             exitPeriodDays: 3,
+            rewardPeriodDays: null,
             nextRewardAt: NOW + 5 * SECONDS_IN_DAY * 1000,
             targets: [],
         });
@@ -133,6 +134,7 @@ describe('fetchEthereumEverstakePooledProductInfo', () => {
             rate: 3.08,
             entryPeriodDays: null,
             exitPeriodDays: null,
+            rewardPeriodDays: null,
             nextRewardAt: NOW + 5 * SECONDS_IN_DAY * 1000,
             targets: [],
         });

@@ -20,6 +20,7 @@ describe('createSolanaExternalDelegationDescriptor', () => {
             operations: [],
             exclusivity: 'none',
             rateKind: 'apy',
+            rewardsKind: 'expected',
             limits: {
                 minStakeAmount: '0',
                 maxStakeAmount: '0',
@@ -27,6 +28,7 @@ describe('createSolanaExternalDelegationDescriptor', () => {
                 feeBufferBalance: '0',
                 minBalanceForStaking: '0',
                 minStakeAmountForDashboard: '0',
+                registrationDeposit: '0',
             },
             options: [],
             consentKey: null,
@@ -35,6 +37,7 @@ describe('createSolanaExternalDelegationDescriptor', () => {
                 mobile: { access: 'read-only' },
             },
             messageSystemFeatures: {},
+            minFirmware: {},
             isCountedInAccountTotals: false,
         });
     });

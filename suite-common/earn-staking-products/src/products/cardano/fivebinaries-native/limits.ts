@@ -7,4 +7,5 @@ export const CARDANO_FIVEBINARIES_NATIVE_PRODUCT_LIMITS = stakingProductLimitsSc
     feeBufferBalance: '0',
     minBalanceForStaking: '0',
     minStakeAmountForDashboard: '0',
+    registrationDeposit: '0',
 });

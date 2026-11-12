@@ -17,6 +17,7 @@ export const stakingProductInfoSchema = z.strictObject({
     rate: z.number().nonnegative().nullable(),
     entryPeriodDays: z.number().nullable(),
     exitPeriodDays: z.number().nullable(),
+    rewardPeriodDays: z.number().nullable(),
     nextRewardAt: timestampSchema.nullable(),
     targets: z
         .array(stakingProductTargetSchema)

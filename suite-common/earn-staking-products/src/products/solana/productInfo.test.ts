@@ -21,6 +21,7 @@ describe('fetchSolanaProductInfo', () => {
             rate: 6.24,
             entryPeriodDays: 1,
             exitPeriodDays: 1,
+            rewardPeriodDays: 1,
             nextRewardAt: null,
             targets: [],
         });
@@ -59,6 +60,7 @@ describe('SOLANA_EXTERNAL_PRODUCT_INFO', () => {
             rate: null,
             entryPeriodDays: null,
             exitPeriodDays: null,
+            rewardPeriodDays: null,
             nextRewardAt: null,
             targets: [],
         });

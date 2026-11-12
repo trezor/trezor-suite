@@ -7,4 +7,5 @@ export const CARDANO_EXTERNAL_NATIVE_PRODUCT_LIMITS = stakingProductLimitsSchema
     feeBufferBalance: '0',
     minBalanceForStaking: '0',
     minStakeAmountForDashboard: '0',
+    registrationDeposit: '0',
 });

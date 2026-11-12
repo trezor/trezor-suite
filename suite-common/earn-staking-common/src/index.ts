@@ -1,4 +1,9 @@
-export { networkSymbolSchema, timestampSchema } from './primitiveSchemas';
+export {
+    firmwareVersionSchema,
+    networkSymbolSchema,
+    timestampSchema,
+    type FirmwareVersion,
+} from './primitiveSchemas';
 export type { StakingAccount } from './stakingAccount';
 export {
     getStakingSigningErrorCode,
@@ -16,7 +21,7 @@ export {
     assertSignedStakingStep,
     assertStakingPlan,
     assertStakingPosition,
-} from './stakingAssertions';
+} from './utils/stakingAssertionUtils';
 export {
     STAKING_FEE_LEVEL_LABELS,
     stakingCustomFeeSchema,
@@ -78,6 +83,7 @@ export {
 export {
     STAKING_POSITION_LOCKUPS,
     STAKING_POSITION_STATUSES,
+    stakingPositionActivationSchema,
     stakingPositionBalancesSchema,
     stakingPositionPendingTransactionSchema,
     stakingPositionSchema,
@@ -85,6 +91,7 @@ export {
     stakingPositionUnlockSchema,
     stakingPositionWarningSchema,
     type StakingPosition,
+    type StakingPositionActivation,
     type StakingPositionBalances,
     type StakingPositionPendingTransaction,
     type StakingPositionTarget,
@@ -106,6 +113,14 @@ export {
     type StakingPositionDetails,
     type TronResourceAmounts,
 } from './stakingPositionDetails';
+export {
+    getStakingPositionAmount,
+    getStakingPositionPrincipal,
+    getStakingPositionRate,
+    hasPendingStakingOperation,
+    isStakingPositionActive,
+    type GetStakingPositionRateParams,
+} from './utils/stakingPositionUtils';
 export type {
     BroadcastStepParams,
     ComposeStepParams,
@@ -132,15 +147,18 @@ export {
     STAKING_OPTION_KINDS,
     STAKING_PRODUCT_EXCLUSIVITIES,
     STAKING_RATE_KINDS,
+    STAKING_REWARDS_KINDS,
     stakingConsentKeySchema,
     stakingOptionFieldSchema,
     stakingProductDescriptorObjectSchema,
     stakingProductDescriptorSchema,
     stakingProductLimitsSchema,
+    stakingRewardsKindSchema,
     type StakingConsentKey,
     type StakingOptionField,
     type StakingProductDescriptor,
     type StakingProductLimits,
+    type StakingRewardsKind,
 } from './stakingProductDescriptor';
 export {
     getStakingProductId,

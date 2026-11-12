@@ -32,6 +32,7 @@ export const createSolanaEverstakeNativeProductDescriptor = ({
         operations: ['stake', 'unstake', 'withdraw'],
         exclusivity: 'none',
         rateKind: 'apy',
+        rewardsKind: 'expected',
         limits: SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
         options: [],
         consentKey: `staking:${provider.id}`,
@@ -40,6 +41,7 @@ export const createSolanaEverstakeNativeProductDescriptor = ({
             mobile: { access: 'manage' },
         },
         messageSystemFeatures,
+        minFirmware: {},
         isCountedInAccountTotals: true,
     });
 };

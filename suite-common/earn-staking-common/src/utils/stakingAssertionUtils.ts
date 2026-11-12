@@ -7,8 +7,8 @@ import {
     composedStakingStepSchema,
     signedStakingStepSchema,
     stakingPlanSchema,
-} from './stakingPlan';
-import { type StakingPosition, stakingPositionSchema } from './stakingPosition';
+} from '../stakingPlan';
+import { type StakingPosition, stakingPositionSchema } from '../stakingPosition';
 
 const isStakingValidationEnabled = process.env.NODE_ENV !== 'production';
 

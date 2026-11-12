@@ -19,6 +19,7 @@ describe('createEthereumEverstakePooledProductLimits', () => {
             feeBufferBalance: '5000000000000000',
             minBalanceForStaking: '15000000000000000',
             minStakeAmountForDashboard: '10000000000000000',
+            registrationDeposit: '0',
         });
     });
 
@@ -32,6 +33,7 @@ describe('createEthereumEverstakePooledProductLimits', () => {
             feeBufferBalance: '5000000000000000',
             minBalanceForStaking: '105000000000000000',
             minStakeAmountForDashboard: '100000000000000000',
+            registrationDeposit: '0',
         });
     });
 });

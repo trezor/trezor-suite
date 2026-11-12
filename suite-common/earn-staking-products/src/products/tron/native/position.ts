@@ -101,6 +101,7 @@ export const getTronNativeProductPosition = ({
         status,
         lockup: 'locked',
         balances,
+        activations: [],
         unlocks,
         targets,
         operations,

@@ -24,6 +24,7 @@ describe('createCardanoEverstakeNativeProductDescriptor', () => {
             operations: ['stake', 'unstake', 'claim', 'vote'],
             exclusivity: 'account',
             rateKind: 'apy',
+            rewardsKind: 'claimable',
             limits: CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
             options: [],
             consentKey: 'staking:everstake',
@@ -37,6 +38,7 @@ describe('createCardanoEverstakeNativeProductDescriptor', () => {
                 claim: 'ada.staking.claim',
                 vote: 'ada.staking.vote',
             },
+            minFirmware: {},
             isCountedInAccountTotals: true,
         });
     });
@@ -49,6 +51,7 @@ describe('createCardanoEverstakeNativeProductDescriptor', () => {
             feeBufferBalance: '0',
             minBalanceForStaking: '0',
             minStakeAmountForDashboard: '2000000',
+            registrationDeposit: '2000000',
         });
     });
 });

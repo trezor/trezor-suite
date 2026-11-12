@@ -4,6 +4,9 @@ export const TRON_RESOURCES = ['energy', 'bandwidth'] as const;
 
 export const TRON_UNFREEZE_DELAY_DAYS = 14;
 
+// The legacy isTronClaimSupported gate: WithdrawBalanceContract needs this firmware.
+export const TRON_CLAIM_MIN_FIRMWARE = '2.12.2';
+
 // TRON_STAKING_RESERVE, which the legacy freeze form keeps on Max.
 export const TRON_STAKE_RESERVE = stakingAmountSchema.parse('500000');
 

@@ -526,4 +526,31 @@ describe('tron curated product parity with the P0.1 snapshots', () => {
     it('shows the product read-only on mobile, as getMobileStakingSupport does', () => {
         expect(product.descriptor.platforms.mobile).toEqual({ access: 'read-only' });
     });
+
+    describe('read-side contract additions', () => {
+        it.each(SCENARIOS)('$scenario has no activations', async ({ scenario }) => {
+            const { position } = await readPosition(mockTronStakingAccount(scenario));
+
+            expect(position?.activations ?? []).toEqual([]);
+        });
+
+        // isTronClaimSupported: WithdrawBalanceContract needs firmware 2.12.2.
+        it('pays claimable rewards and gates the claim on firmware', () => {
+            expect({
+                rewardsKind: product.descriptor.rewardsKind,
+                registrationDeposit: fromSun(product.descriptor.limits.registrationDeposit),
+                minFirmware: product.descriptor.minFirmware,
+            }).toEqual({
+                rewardsKind: 'claimable',
+                registrationDeposit: '0',
+                minFirmware: { claim: '2.12.2' },
+            });
+        });
+
+        it('has no reward period', async () => {
+            const { productInfo } = await readPosition(mockTronStakingAccount('votedLuganodes'));
+
+            expect(productInfo.rewardPeriodDays).toBeNull();
+        });
+    });
 });
