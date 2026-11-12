@@ -39,6 +39,8 @@ export const STAKING_PRODUCT_EXCLUSIVITIES = ['none', 'account'] as const;
 
 export const STAKING_RATE_KINDS = ['apy', 'apr'] as const;
 
+export type StakingRateKind = (typeof STAKING_RATE_KINDS)[number];
+
 /**
  * `compounded`: rewards are restaked into `balances.staked`. `claimable`: rewards accrue apart
  * from the stake and are paid out by `claim`. `expected`: rewards are an estimate, since the

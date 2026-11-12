@@ -12209,6 +12209,8 @@ __metadata:
     "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/utils": "workspace:*"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.0"
     zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
