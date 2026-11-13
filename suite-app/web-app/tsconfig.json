@@ -6,6 +6,22 @@
     "include": ["."],
     "references": [
         { "path": "../app" },
+        { "path": "../module-account-detail" },
+        { "path": "../module-activity-center" },
+        { "path": "../module-apps-embedding" },
+        { "path": "../module-assets" },
+        { "path": "../module-coinjoin" },
+        { "path": "../module-connect-popup" },
+        { "path": "../module-earn" },
+        { "path": "../module-home" },
+        { "path": "../module-password-manager" },
+        { "path": "../module-receive" },
+        { "path": "../module-refer-a-friend" },
+        { "path": "../module-send" },
+        { "path": "../module-settings" },
+        { "path": "../module-sign-verify" },
+        { "path": "../module-trading" },
+        { "path": "../module-transactions" },
         {
             "path": "../../suite-common/suite-utils"
         },

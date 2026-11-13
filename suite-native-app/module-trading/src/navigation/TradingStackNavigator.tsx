@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import {
     type TradingStackParamList,
     TradingStackRoutes,
@@ -7,7 +8,6 @@ import {
 } from '@suite-native/navigation';
 
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
-import { TradingMetadataProvider } from '../components/general/TradingMetadataProvider';
 import { TradingRestrictedGuard } from '../components/general/TradingRestrictedGuard';
 import { TradingBuyPreviewScreen } from '../screens/TradingBuyPreviewScreen';
 import { TradingConfirmingScreen } from '../screens/TradingConfirmingScreen';
@@ -120,7 +120,7 @@ const TradingStackScreens = () => (
 );
 
 export const TradingStackNavigator = () => (
-    <TradingMetadataProvider>
+    <TradingTokenMetadataProvider>
         <TradingStackScreens />
-    </TradingMetadataProvider>
+    </TradingTokenMetadataProvider>
 );

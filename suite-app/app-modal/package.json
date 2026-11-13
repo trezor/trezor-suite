@@ -1,0 +1,25 @@
+{
+    "name": "@suite-app/app-modal",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite/modal": "workspace:*",
+        "@suite/tor": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "react": "19.3.0"
+    }
+}

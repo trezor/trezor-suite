@@ -12,7 +12,6 @@
         {
             "path": "../../suite-common/suite-sync"
         },
-        { "path": "../../suite-common/token" },
         { "path": "../../suite-common/tokens" },
         { "path": "../../suite-common/trading" },
         {
@@ -33,6 +32,7 @@
         {
             "path": "../../suite-native/analytics"
         },
+        { "path": "../../suite-native/assets" },
         { "path": "../../suite-native/atoms" },
         {
             "path": "../../suite-native/clipboard"

@@ -32,6 +32,12 @@ const markdownTree = (markdown: string) => (
 const renderMarkdown = (markdown: string) => render(markdownTree(markdown));
 
 describe('Markdown', () => {
+    // Loads the real module once, past the mock and outside any findBy: on a cold, busy runner its
+    // first load adds to React's 300 ms Suspense reveal throttle and can push past the 1 s timeout.
+    beforeAll(() => {
+        jest.requireActual('react-markdown');
+    }, 30_000);
+
     // Runs first: once react-markdown has loaded, the module registry keeps it and no load fails again.
     it('loads react-markdown once per mount when it fails, however often it re-renders with new props', async () => {
         mockChunkLoad.shouldFail = true;

@@ -79,7 +79,6 @@ export {
     selectPrerequisite,
     selectSuiteLifecycle,
 } from './src/selectors/suite/suiteSelectors';
-export { Onboarding } from './src/views/onboarding';
 export { ErrorPage } from './src/views/suite/ErrorPage';
 export { ToasterProvider } from './src/components/suite/notifications/Toaster/ToasterProvider';
 export { TrafficLightDraggableWindowHeader } from '@suite/macos';
@@ -329,8 +328,8 @@ export { DeviceCompromisedContent } from './src/components/suite/SecurityCheck/D
 export { ConnectionGlobalModalManager } from './src/components/connection/ConnectionGlobalModalManager';
 export { ThpGlobalModalManager } from './src/components/connection/thp/ThpGlobalModalManager';
 export { WipedBleDeviceNeedsManualOsRemovalModalManager } from './src/components/suite/bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
-export { ReduxModal } from './src/components/suite/modals/ReduxModal/ReduxModal';
 export { getForegroundApp } from './src/components/suite/modals/ModalSwitcher/lazyForegroundApps';
+export { lazyUserContextModals } from './src/components/suite/modals/ReduxModal/UserContextModal/lazyUserContextModals';
 export {
     Body,
     Columns,
@@ -350,3 +349,27 @@ export {
     SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from './src/components/suite/layouts/SuiteLayout/Sidebar/consts';
+export { type ReduxModalProps } from './src/components/suite/modals/ReduxModal/ReduxModalProps';
+export { DeviceConfirmationModal } from './src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal';
+export { DeviceContextModal } from './src/components/suite/modals/ReduxModal/DeviceContextModal/DeviceContextModal';
+export { OnboardingProgressBar } from './src/components/onboarding/OnboardingProgressBar';
+export { MAX_ONBOARDING_WIDTH } from './src/constants/suite/layout';
+export { useFilteredModal } from './src/hooks/suite/useFilteredModal';
+export {
+    OnboardingCancelButtonContext,
+    useOnboardingCancelButtonContext,
+} from './src/components/onboarding/OnboardingCancelButtonContext';
+export { SmallDeviceItem } from './src/views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
+export { getOnboardingStepIndex } from './src/config/onboarding/steps';
+export { useOnboarding } from './src/hooks/suite/useOnboarding';
+export { UnexpectedState } from './src/views/onboarding/UnexpectedState';
+export { BackupTypeStep } from './src/views/onboarding/steps/BackupTypeStep';
+export { CreateOrRecoverStep } from './src/views/onboarding/steps/CreateOrRecoverStep';
+export { DeviceAuthenticityStep } from './src/views/onboarding/steps/DeviceAuthenticityStep';
+export { DeviceTutorialStep } from './src/views/onboarding/steps/DeviceTutorialStep';
+export { FinalStep } from './src/views/onboarding/steps/FinalStep';
+export { FirmwareStep } from './src/views/onboarding/steps/FirmwareStep';
+export { PinStep } from './src/views/onboarding/steps/PinStep';
+export { RecoveryStep } from './src/views/onboarding/steps/RecoveryStep';
+export { SecurityStep } from './src/views/onboarding/steps/SecurityStep';
+export * as onboardingSteps from './src/constants/onboarding/steps';

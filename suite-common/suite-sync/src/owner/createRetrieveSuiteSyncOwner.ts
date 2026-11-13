@@ -13,6 +13,7 @@ import {
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result, err } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';
@@ -37,6 +38,7 @@ export type RetrieveSuiteSyncOwner = (
         | DeviceErrorType
         | ProofOfDelegatedSignFailedType
         | CreateSuiteSyncOwnerError
+        | LazyLoadingError
         | DeviceNotConnectedErrorType
     >
 >;
@@ -54,7 +56,7 @@ export const createRetrieveSuiteSyncOwner =
             );
         }
 
-        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+        const proofOfDelegatedIdentity = await getProofOfDelegatedIdentity({
             delegatedKey,
             header: PROOF_OF_DELEGATED_IDENTITY_HEADER,
         });

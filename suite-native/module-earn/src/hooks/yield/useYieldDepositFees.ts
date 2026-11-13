@@ -107,9 +107,11 @@ export const useYieldDepositFees = ({
 
     return {
         feePreview: preparedAction?.feePreview ?? null,
+        getCustomFeeLevel: fees.getCustomFeeLevel,
         formDraft: fees.formDraft,
         formDraftKey: fees.formDraftKey,
         hasFeeEstimationError: fees.hasFeeEstimationError,
+        isComposingFeeLevels: fees.isFeePreparing,
         isDepositFeeReady: fees.isFeeReady,
         isFeeUnavailable: fees.isFeeUnavailable,
         isPreparingDepositFee: fees.isFeePreparing,

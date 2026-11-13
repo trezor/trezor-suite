@@ -9,6 +9,7 @@ import {
 } from './CommonPopupFlow';
 import { EthereumSignTransaction } from './ethereumSignTransaction';
 import { EthereumSignTypedData } from './ethereumSignTypedData';
+import { GetAccountInfo } from './getAccountInfo';
 import { RequestLogin } from './requestLogin';
 import { SelectAccount } from './selectAccount';
 import { SendTransaction } from './sendTransaction';
@@ -30,6 +31,7 @@ const POPUP_FLOWS: { [M in CallMethodKeys]?: PopupFlowConstructor<M> } = {
     ethereumSignTypedData: EthereumSignTypedData,
     solanaSignTransaction: SolanaSignTransaction,
     stellarSignTransaction: StellarSignTransaction,
+    getAccountInfo: GetAccountInfo,
     getAddress: AddressConfirmationFlow,
     ethereumGetAddress: AddressConfirmationFlow,
     cardanoGetAddress: AddressConfirmationFlow,

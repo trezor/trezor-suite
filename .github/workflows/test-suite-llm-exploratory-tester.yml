@@ -135,16 +135,11 @@ jobs:
         with:
           ref: ${{ github.event_name == 'pull_request' && 'develop' || '' }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e @suite-app/desktop-app
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          focus: "@trezor/e2e-utils @trezor/suite-e2e @suite-app/desktop-app"
+          safedep: "false"
 
       - name: Build Message System Config
         run: yarn message-system-sign-config

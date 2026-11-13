@@ -202,6 +202,7 @@ export const StakeChangeDelegateModalLoaded = ({
                                 isDisabled={isDisabled}
                                 isLoading={isComposing}
                                 onClick={handleContinue}
+                                data-testid="@modal/staking/continue-button"
                             >
                                 <Translation id="TR_CONTINUE" />
                             </Modal.Button>

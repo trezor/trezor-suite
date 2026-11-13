@@ -1,12 +1,13 @@
 import { type ComponentType } from 'react';
 
 import { type PageName } from '@suite/router';
+import { NftsPage, TokensPage, WalletDetailsPage } from '@suite-app/module-account-detail';
+import { NotificationPage } from '@suite-app/module-activity-center';
+import { AppsEmbeddingPage } from '@suite-app/module-apps-embedding';
+import { AssetDetailPage } from '@suite-app/module-assets';
+import { WalletAnonymizePage, WalletCoinjoinPage } from '@suite-app/module-coinjoin';
+import { ConnectPopupPage } from '@suite-app/module-connect-popup';
 import {
-    AppsEmbeddingPage,
-    AssetDetailPage,
-    ConnectPopupPage,
-    DashboardPage,
-    DesktopSettingsGeneralPage,
     EarnClaimPage,
     EarnDepositPage,
     EarnPage,
@@ -19,18 +20,22 @@ import {
     EarnUnwrapPage,
     EarnWithdrawPage,
     EarnWrapPage,
-    HiddenTokensPage,
-    NftsPage,
-    NotificationPage,
-    PasswordManagerPage,
-    ReceivePage,
-    ReferAFriendPage,
+    WalletStakingPage,
+} from '@suite-app/module-earn';
+import { DashboardPage, HiddenTokensPage } from '@suite-app/module-home';
+import { PasswordManagerPage } from '@suite-app/module-password-manager';
+import { ReceivePage } from '@suite-app/module-receive';
+import { ReferAFriendPage } from '@suite-app/module-refer-a-friend';
+import { WalletSendPage } from '@suite-app/module-send';
+import {
+    DesktopSettingsGeneralPage,
     SettingsCoinsPage,
     SettingsConnectedAppsPage,
     SettingsDebugPage,
     SettingsDevicePage,
-    SignVerifyPage,
-    TokensPage,
+} from '@suite-app/module-settings';
+import { SignVerifyPage } from '@suite-app/module-sign-verify';
+import {
     TradingBuyConfirmPage,
     TradingBuyDetailPage,
     TradingBuyFormPage,
@@ -44,14 +49,9 @@ import {
     TradingSellDetailPage,
     TradingSellFormPage,
     TradingTransactionsPage,
-    TransactionsPage,
-    WalletAnonymizePage,
-    WalletCoinjoinPage,
-    WalletDetailsPage,
-    WalletSendPage,
-    WalletStakingPage,
     WalletTradePage,
-} from '@suite-app/app';
+} from '@suite-app/module-trading';
+import { TransactionsPage } from '@suite-app/module-transactions';
 
 /*
  Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific

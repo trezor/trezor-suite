@@ -19,9 +19,7 @@ import {
     findAccountsByAddress,
     isAccountDiscoverable,
     isAccountFailed,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
 import { type StaticSessionId, type TrezorConnectCallable } from '@trezor/connect';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { arrayToDictionary } from '@trezor/utils';
@@ -34,7 +32,7 @@ import {
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
-import { type BlockchainRootState, selectGapLimit } from './blockchain/blockchainReducer';
+import { type BlockchainRootState } from './blockchain/blockchainReducer';
 import { selectEnabledSupportedNetworks } from './device/deviceSelectors';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
 import { type DiscoveryRootState } from './discovery/discoveryTypes';
@@ -127,21 +125,9 @@ export const selectDiscoveryAccountsParam = (
 ): DiscoveryAccountsParam =>
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
         const network = getNetwork(symbol);
-        const { networkType } = network;
-        const identity = tryGetAccountIdentity({ networkType, deviceState });
-        const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
-
-        const protocols: ContractInfoProtocol[] | undefined =
-            networkType === 'ethereum' ? ['erc4626'] : undefined;
 
         // undiscovered network; discover as a whole
-        if (!accounts)
-            return {
-                symbol,
-                identity,
-                protocols,
-                gap: bitcoinGap,
-            } as DiscoveryAccountsParam[number];
+        if (!accounts) return { symbol } as DiscoveryAccountsParam[number];
 
         const known = getAccountChainsPerAccountType(network, accounts).map(
             ({ type, lastAccount, firstFailedAccount, canDiscoverNextAccount }) => {
@@ -154,14 +140,7 @@ export const selectDiscoveryAccountsParam = (
             },
         );
 
-        return {
-            symbol,
-            identity,
-            protocols,
-            known,
-            knownOnly,
-            gap: bitcoinGap,
-        } as DiscoveryAccountsParam[number];
+        return { symbol, known, knownOnly } as DiscoveryAccountsParam[number];
     });
 
 export const selectShowRediscoverButton = (

@@ -46,8 +46,9 @@ jest.mock('../useYieldPendingSheet');
 jest.mock('../useYieldPendingTransactionTracking', () => ({
     useYieldPendingTransactionTracking: jest.fn(),
 }));
-jest.mock('../../earn/useNavigateBackAnalytics', () => ({
-    useNavigateBackAnalytics: jest.fn(),
+jest.mock('../useYieldFlowAnalytics', () => ({
+    ...jest.requireActual('../useYieldFlowAnalytics'),
+    useYieldFormExitAnalytics: jest.fn(),
 }));
 jest.mock('@suite-native/formatters', () => ({
     ...jest.requireActual('@suite-native/formatters'),
@@ -99,6 +100,7 @@ const renderWithdrawController = () => {
                 isSystemLocaleUsed: true,
             }),
             wallet: combineReducers({
+                accounts: createStaticReducer([]),
                 settings: createStaticReducer({ localCurrency: 'usd', bitcoinAmountUnit: 0 }),
             }),
         },

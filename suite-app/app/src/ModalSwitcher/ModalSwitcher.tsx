@@ -5,12 +5,12 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
+import { ReduxModal } from '@suite-app/app-modal';
 import { ModalSkeleton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     ConnectionGlobalModalManager,
-    ReduxModal,
     ThpGlobalModalManager,
     WipedBleDeviceNeedsManualOsRemovalModalManager,
     usePreferredModal,

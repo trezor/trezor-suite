@@ -1,8 +1,8 @@
 import React from 'react';
 
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
-import { toTokenAddress } from '@suite-common/tokens';
 import { AccountsListItemBase } from '@suite-native/accounts';
+import { AssetIcon, AssetName, AssetSymbol } from '@suite-native/assets';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -10,7 +10,6 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type PositionedAssetListItem = GlobalReceiveAssetListItem & {
@@ -53,42 +52,35 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     const title = asset.displaySymbolName ?? asset.name;
+    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
 
     return (
         <Box style={applyStyle(rowStyle, { isFirst, isLast })}>
             <AccountsListItemBase
                 onPress={() => onSelect(item)}
                 icon={
-                    <TokenIcon
+                    <AssetIcon
                         networkSymbol={asset.networkSymbol}
-                        contractAddress={asset.contractAddress ?? undefined}
+                        contractAddress={tokenContract}
                         showNetworkIcon
                         size="medium"
                     />
                 }
                 title={
-                    asset.isNativeToken ? (
-                        title
-                    ) : (
-                        <TokenName
-                            networkSymbol={asset.networkSymbol}
-                            contractAddress={toTokenAddress(asset.contractAddress)}
-                        />
-                    )
+                    <AssetName
+                        networkSymbol={asset.networkSymbol}
+                        contractAddress={tokenContract}
+                    />
                 }
                 badges={
                     <HStack alignItems="center">
                         <Text variant="body-sm" priority="secondary">
-                            {asset.isNativeToken ? (
-                                asset.displaySymbol
-                            ) : (
-                                <TokenSymbol
-                                    networkSymbol={asset.networkSymbol}
-                                    contractAddress={toTokenAddress(asset.contractAddress)}
-                                    variant="body-sm"
-                                    priority="secondary"
-                                />
-                            )}
+                            <AssetSymbol
+                                networkSymbol={asset.networkSymbol}
+                                contractAddress={tokenContract}
+                                variant="body-sm"
+                                priority="secondary"
+                            />
                         </Text>
                         {title != asset.networkName && <Badge label={asset.networkName} />}
                     </HStack>
@@ -114,7 +106,7 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                     ) : (
                         <CompactTokenAmountFormatter
                             networkSymbol={asset.networkSymbol}
-                            contractAddress={toTokenAddress(asset.contractAddress)}
+                            contractAddress={asset.contractAddress}
                             value={asDecimalTokenAmount(balance.cryptoAmount)}
                             numberOfLines={1}
                             adjustsFontSizeToFit

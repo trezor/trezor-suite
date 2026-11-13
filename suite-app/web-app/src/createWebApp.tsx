@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client';
 
 import {
     type HydrateReduxStoreDep,
-    type ReduxLoggerControlDep,
     type SuiteReduxStoreDep,
     type SuiteServices,
 } from '@suite-app/app';
@@ -16,7 +15,7 @@ import { initSentry } from './sentry';
 import { logXssWarning } from './support/xssWarning';
 
 type WebAppDeps = {
-    services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep & ReduxLoggerControlDep;
+    services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
 };
 
 export type WebApp = (container: HTMLElement) => Promise<void>;

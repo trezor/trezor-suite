@@ -1,3 +1,4 @@
+import { AssetName } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { getGlobalReceiveAssetDescriptionValues } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
@@ -13,7 +14,13 @@ export const GlobalSendReceiveAssetDescription = ({
         return null;
     }
 
-    const { assetName, networkName } = getGlobalReceiveAssetDescriptionValues(asset);
+    const { networkName } = getGlobalReceiveAssetDescriptionValues(asset);
+    const assetName = (
+        <AssetName
+            networkSymbol={asset.networkSymbol}
+            contractAddress={asset.isNativeToken ? undefined : asset.contractAddress}
+        />
+    );
 
     if (networkName === undefined) {
         return assetName;

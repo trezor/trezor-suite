@@ -96,4 +96,28 @@ describe('enhancePrecomposedTransactionThunk', () => {
             expect(fetchMock).toHaveBeenCalledWith(url, { method: 'HEAD' });
         },
     );
+
+    it('rejects with a typed send form error when no device is selected', async () => {
+        const { store } = createTestCompositionRoot<
+            EnhancePrecomposedTransactionThunkDeps,
+            EnhancePrecomposedTransactionThunkState
+        >({
+            preloadedState: {
+                device: { selectedDevice: undefined },
+            } as EnhancePrecomposedTransactionThunkState,
+            services: () => ({ getDebugSettings: asGetter(() => ({})) }),
+        }).services;
+
+        await expect(
+            store
+                .dispatch(
+                    enhancePrecomposedTransactionThunk({
+                        transactionFormValues: formState,
+                        precomposedTransaction,
+                        selectedAccount: account,
+                    }),
+                )
+                .unwrap(),
+        ).rejects.toEqual({ error: 'enhance-transaction-failed', message: 'Device not found' });
+    });
 });

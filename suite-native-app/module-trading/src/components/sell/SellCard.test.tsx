@@ -1,5 +1,6 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -16,7 +17,6 @@ import { type SellFormType } from '@suite-native/trading-types';
 import { SellCard } from './SellCard';
 import { useSellForm } from '../../hooks/sell/useSellForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
-import { TradingMetadataProvider } from '../general/TradingMetadataProvider';
 
 jest.mock('../../hooks/general/useAmountInputDecimals', () => ({
     useAmountInputDecimals: () => 6,
@@ -52,9 +52,9 @@ describe('SellCard', () => {
 
         return renderWithStoreProvider(<SellCard isAmountInputActive={isAmountInputActive} />, {
             wrapper: ({ children }) => (
-                <TradingMetadataProvider>
+                <TradingTokenMetadataProvider>
                     <Form form={form}>{children}</Form>
-                </TradingMetadataProvider>
+                </TradingTokenMetadataProvider>
             ),
             preloadedState: cardPreloadedState,
             services: {

@@ -549,6 +549,14 @@ export const messages = defineMessages({
         defaultMessage: 'Unable to send transaction, missing data',
         id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
     },
+    TR_TRADING_SIGN_TRANSACTION_FAILED: {
+        defaultMessage: "Your Trezor couldn't sign the transaction",
+        id: 'TR_TRADING_SIGN_TRANSACTION_FAILED',
+    },
+    TR_TRADING_PUSH_TRANSACTION_FAILED: {
+        defaultMessage: "The transaction couldn't be sent to the network",
+        id: 'TR_TRADING_PUSH_TRANSACTION_FAILED',
+    },
     TR_TRADING_INCORRECT_SERIALIZED_DATA: {
         defaultMessage: "Unable to send transaction—the serialized data isn't valid.",
         id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA',
@@ -13865,6 +13873,11 @@ export const messages = defineMessages({
     TR_SUITE_SYNC_ERROR_UNAVAILABLE: {
         id: 'TR_SUITE_SYNC_ERROR_UNAVAILABLE',
         defaultMessage: 'Suite Sync is unavailable on this device.',
+    },
+    TR_SUITE_SYNC_ERROR_LAZY_LOADING: {
+        id: 'TR_SUITE_SYNC_ERROR_LAZY_LOADING',
+        defaultMessage:
+            'Something went wrong. Try reloading the app, and if it keeps happening, contact Trezor Support.',
     },
     TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
         id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',

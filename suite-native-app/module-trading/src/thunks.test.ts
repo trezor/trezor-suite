@@ -1,5 +1,7 @@
+import { createAction } from '@reduxjs/toolkit';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
 import {
     tradingBuyActions,
@@ -7,19 +9,31 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type SendFormError } from '@suite-common/wallet-core';
+import {
+    type Account,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';
+import { asGetter, createMockDeps, mock } from '@trezor/dependency-injection';
 import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
+import { type Ok, ok } from '@trezor/type-utils';
 
 import { createTradingTestStore } from './test-utils/tradingTestUtils';
 import {
     type ComposeEvmApprovalFeeLevelsThunkState,
     type ComposeTradingTransactionThunkState,
+    type SignAndPushSendFormTransactionThunkDeps,
+    type SignAndPushSendFormTransactionThunkState,
     clearTradingStateThunk,
     composeEvmApprovalFeeLevelsThunk,
     composeTradingTransactionThunk,
+    signAndPushSendFormTransactionThunk,
 } from './thunks';
 
 jest.mock('@trezor/connect', () => ({
@@ -89,12 +103,34 @@ const mockTokenInfo = {
 
 const mockComposeSendFormTransactionFeeLevelsThunk = jest.fn();
 const mockComposeAllowanceTransactionThunk = jest.fn();
+type MockThunkAction<TPayload> = {
+    type: string;
+    payload?: TPayload;
+    error?: { message: string };
+    meta: {
+        requestId: string;
+        requestStatus: 'fulfilled' | 'rejected';
+        rejectedWithValue?: boolean;
+    };
+};
+
+const mockEnhanceTransactionResult =
+    mock<() => MockThunkAction<GeneralPrecomposedTransactionFinal | SendFormError>>();
+const mockSignTransactionResult =
+    mock<() => MockThunkAction<{ serializedTx: string } | SendFormError>>();
+const mockPushTransactionResult =
+    mock<() => MockThunkAction<Ok<{ txid: string }> | SendFormError>>();
 
 jest.mock('@suite-common/wallet-core', () => {
     const actual = jest.requireActual('@suite-common/wallet-core');
 
     return {
         ...actual,
+        selectIsMevProtectionEnabled: () => false,
+        enhancePrecomposedTransactionThunk: () => () =>
+            Promise.resolve(mockEnhanceTransactionResult()),
+        signTransactionThunk: () => () => Promise.resolve(mockSignTransactionResult()),
+        pushSendFormTransactionThunk: () => () => Promise.resolve(mockPushTransactionResult()),
         composeAllowanceTransactionThunk: () => () =>
             Promise.resolve({
                 type: '@common/wallet-core/approval/composeAllowanceTransactionThunk/fulfilled',
@@ -470,5 +506,154 @@ describe('thunks', () => {
             expect(draft?.outputs[0]?.amount).toBe(invityDexQuote.sendStringAmount);
             expect(draft?.outputs[0]?.token).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         });
+    });
+});
+
+describe('signAndPushSendFormTransactionThunk', () => {
+    const fulfilledAction = <TPayload>(payload: TPayload): MockThunkAction<TPayload> => ({
+        type: 'test/fulfilled',
+        payload,
+        meta: { requestId: 'test', requestStatus: 'fulfilled' },
+    });
+    const rejectedAction = (
+        payload?: SendFormError,
+        message = 'Rejected',
+    ): MockThunkAction<SendFormError> => ({
+        type: 'test/rejected',
+        payload,
+        error: { message },
+        meta: {
+            requestId: 'test',
+            requestStatus: 'rejected',
+            rejectedWithValue: payload !== undefined,
+        },
+    });
+
+    const formState: FormState = {
+        outputs: [],
+        feePerUnit: '',
+        feeLimit: '',
+        options: [],
+        isCoinControlEnabled: false,
+        hasCoinControlBeenOpened: false,
+        selectedUtxos: [],
+    };
+
+    const signAndPush = (waitForPushApprovalPromise = () => Promise.resolve(true)) => {
+        const getState = mock<() => SignAndPushSendFormTransactionThunkState>();
+        const extra: SignAndPushSendFormTransactionThunkDeps = {
+            actions: { onModalCancel: createAction<void>('test/onModalCancel') },
+            services: {
+                analytics: mockNativeAnalytics(),
+                networks: createMockDeps<
+                    SignAndPushSendFormTransactionThunkDeps['services']['networks']
+                >({ getAccountSyncInterval: null }),
+                getIsWindowVisible: asGetter(() => true),
+                getTradedAccountKeys: asGetter(() => []),
+                suiteSync: mockSuiteSync(),
+            },
+        };
+        const { dispatch } = createMockDispatch({ getState, extra });
+
+        return signAndPushSendFormTransactionThunk({
+            formState,
+            precomposedTransaction: mockPrecomposedLevels.normal,
+            selectedAccount: eth1NormalAccount,
+            waitForPushApprovalPromise,
+        })(dispatch, getState, extra);
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockEnhanceTransactionResult.mockReturnValue(fulfilledAction(mockPrecomposedLevels.normal));
+        mockSignTransactionResult.mockReturnValue(fulfilledAction({ serializedTx: 'signed' }));
+        mockPushTransactionResult.mockReturnValue(fulfilledAction(ok({ txid: 'txid' })));
+    });
+
+    it.each<[string, () => void, SendFormError]>([
+        [
+            'enhance',
+            () =>
+                mockEnhanceTransactionResult.mockReturnValue(
+                    rejectedAction({
+                        error: 'enhance-transaction-failed',
+                        message: 'Device not found',
+                    }),
+                ),
+            { error: 'enhance-transaction-failed', message: 'Device not found' },
+        ],
+        [
+            'sign',
+            () =>
+                mockSignTransactionResult.mockReturnValue(
+                    rejectedAction({
+                        error: 'sign-transaction-failed',
+                        errorCode: 'Device_Disconnected',
+                        message: 'Device disconnected',
+                    }),
+                ),
+            {
+                error: 'sign-transaction-failed',
+                errorCode: 'Device_Disconnected',
+                message: 'Device disconnected',
+            },
+        ],
+        [
+            'push',
+            () =>
+                mockPushTransactionResult.mockReturnValue(
+                    rejectedAction({
+                        error: 'push-transaction-failed',
+                        errorCode: 'Backend_Error',
+                        message: 'Blockhash not found',
+                    }),
+                ),
+            {
+                error: 'push-transaction-failed',
+                errorCode: 'Backend_Error',
+                message: 'Blockhash not found',
+            },
+        ],
+    ])('rejects with the original %s error', async (_, arrangeFailure, expectedError) => {
+        arrangeFailure();
+
+        const result = await signAndPush();
+
+        expect(result.payload).toEqual(expectedError);
+    });
+
+    it('keeps the thrown message when signing rejects without a typed error', async () => {
+        mockSignTransactionResult.mockReturnValue(rejectedAction(undefined, 'Unexpected failure'));
+
+        const result = await signAndPush();
+
+        expect(result.payload).toEqual({
+            error: 'sign-transaction-failed',
+            message: 'Unexpected failure',
+        });
+    });
+
+    it('keeps the thrown message when pushing rejects without a typed error', async () => {
+        mockPushTransactionResult.mockReturnValue(rejectedAction(undefined, 'Unexpected failure'));
+
+        const result = await signAndPush();
+
+        expect(result.payload).toEqual({
+            error: 'push-transaction-failed',
+            message: 'Unexpected failure',
+        });
+    });
+
+    it('rejects as push approval rejected when the user does not approve sending', async () => {
+        const result = await signAndPush(() => Promise.resolve(false));
+
+        expect(result.payload).toEqual({ error: 'push-approval-rejected' });
+        expect(mockPushTransactionResult).not.toHaveBeenCalled();
+    });
+
+    it('fulfills with the txid when the transaction is pushed', async () => {
+        const result = await signAndPush();
+
+        expect(result.payload).toEqual({ success: true, payload: { txid: 'txid' } });
     });
 });

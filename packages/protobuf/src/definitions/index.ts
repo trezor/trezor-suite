@@ -83,20 +83,6 @@ import {
     SignedIdentity,
 } from './messages-crypto';
 import {
-    DebugLinkGcInfo,
-    DebugLinkGetGcInfo,
-    DebugLinkGetPairingInfo,
-    DebugLinkN1W1Connected,
-    DebugLinkN1W1Read,
-    DebugLinkN1W1Response,
-    DebugLinkN1W1Write,
-    DebugLinkOptigaSetSecMax,
-    DebugLinkPairingInfo,
-    DebugLinkResetDebugEvents,
-    DebugLinkSetBatteryState,
-    DebugLinkSetLogFilter,
-} from './messages-debug';
-import {
     EosGetPublicKey,
     EosPublicKey,
     EosSignTx,
@@ -138,6 +124,18 @@ import {
     EvoluRegistrationRequest,
     EvoluSignRegistrationRequest,
 } from './messages-evolu';
+import {
+    ExtAppDataChunkAck,
+    ExtAppDataChunkRequest,
+    ExtAppHeaderAck,
+    ExtAppHeaderRequest,
+    ExtAppLoad,
+    ExtAppLoaded,
+    ExtAppMessage,
+    ExtAppResponse,
+    ExtAppRootPacketAck,
+    ExtAppRootPacketRequest,
+} from './messages-extapp';
 import {
     ApplyFlags,
     ApplySettings,
@@ -315,7 +313,6 @@ import {
     TronWithdrawUnfreeze,
 } from './messages-tron';
 
-export type * from './options';
 export * from './messages-common';
 export * from './messages-bitcoin';
 export * from './messages-ble';
@@ -323,12 +320,12 @@ export * from './messages-bootloader';
 export * from './messages-cardano';
 export * from './messages-crypto';
 export * from './messages-management';
-export * from './messages-debug';
 export * from './messages-definitions';
 export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
 export * from './messages-evolu';
+export * from './messages-extapp';
 export * from './messages-monero';
 export * from './messages-nostr';
 export * from './messages-ripple';
@@ -338,7 +335,6 @@ export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
-export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
@@ -470,18 +466,6 @@ export const MessageType = Type.Object(
         SetBrightness,
         GetSerialNumber,
         SerialNumber,
-        DebugLinkGetPairingInfo,
-        DebugLinkPairingInfo,
-        DebugLinkSetBatteryState,
-        DebugLinkResetDebugEvents,
-        DebugLinkOptigaSetSecMax,
-        DebugLinkGetGcInfo,
-        DebugLinkGcInfo,
-        DebugLinkSetLogFilter,
-        DebugLinkN1W1Connected,
-        DebugLinkN1W1Write,
-        DebugLinkN1W1Read,
-        DebugLinkN1W1Response,
         EosGetPublicKey,
         EosPublicKey,
         EosSignTx,
@@ -516,6 +500,16 @@ export const MessageType = Type.Object(
         EvoluDelegatedIdentityKey,
         EvoluIndexManagement,
         EvoluIndexManagementResponse,
+        ExtAppLoad,
+        ExtAppLoaded,
+        ExtAppHeaderRequest,
+        ExtAppHeaderAck,
+        ExtAppRootPacketRequest,
+        ExtAppRootPacketAck,
+        ExtAppDataChunkRequest,
+        ExtAppDataChunkAck,
+        ExtAppMessage,
+        ExtAppResponse,
         MoneroGetAddress,
         MoneroAddress,
         MoneroGetWatchKey,
@@ -744,6 +738,11 @@ export type WireInMessage =
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
     | 'EvoluIndexManagement'
+    | 'ExtAppLoad'
+    | 'ExtAppHeaderAck'
+    | 'ExtAppRootPacketAck'
+    | 'ExtAppDataChunkAck'
+    | 'ExtAppMessage'
     | 'MoneroGetAddress'
     | 'MoneroGetWatchKey'
     | 'MoneroTransactionInitRequest'
@@ -871,6 +870,11 @@ export type WireOutMessage =
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'
     | 'EvoluIndexManagementResponse'
+    | 'ExtAppLoaded'
+    | 'ExtAppHeaderRequest'
+    | 'ExtAppRootPacketRequest'
+    | 'ExtAppDataChunkRequest'
+    | 'ExtAppResponse'
     | 'MoneroAddress'
     | 'MoneroWatchKey'
     | 'MoneroTransactionInitAck'

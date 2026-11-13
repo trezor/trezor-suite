@@ -9,7 +9,8 @@ import {
     type IconCircleIntent,
     type IconCircleSize,
 } from '@suite-native/atoms';
-import { type IconName, TokenIcon } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionIconProps = {
@@ -17,7 +18,6 @@ type TransactionIconProps = {
     stakeOperationType?: StakeType;
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
-    tokenSymbol?: string;
     isAnimated?: boolean;
     intent?: IconCircleIntent;
     size?: IconCircleSize;
@@ -52,7 +52,6 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
 export const TransactionIcon = ({
     symbol,
     contractAddress,
-    tokenSymbol,
     transactionType,
     stakeOperationType,
     intent,
@@ -77,7 +76,6 @@ export const TransactionIcon = ({
                     <TokenIcon
                         networkSymbol={iconSymbol}
                         contractAddress={contractAddress}
-                        tokenSymbol={tokenSymbol}
                         size="tiny"
                     />
                 </Box>

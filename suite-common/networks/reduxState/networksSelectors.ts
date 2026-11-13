@@ -40,6 +40,13 @@ export const selectNetworkConfigs = createMemoizedSelector(
         networks === null ? [] : typedObjectValues(networks),
 );
 
+/** The name of a network's native token. */
+export const selectNativeTokenName = (state: NetworksRootState, symbol: NetworkSymbol) => {
+    const network = selectNetworkConfig(state, symbol);
+
+    return network?.displaySymbolName || network?.name;
+};
+
 export const selectNetworkColor = (state: NetworksRootState, symbol?: NetworkSymbol | null) =>
     symbol ? selectNetworkConfig(state, symbol)?.color : undefined;
 

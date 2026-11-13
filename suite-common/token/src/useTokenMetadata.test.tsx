@@ -40,7 +40,7 @@ describe('useTokenMetadata', () => {
         expect(result.current).toEqual(accountToken);
     });
 
-    it('uses context metadata instead of the account entry, including for missing fields', () => {
+    it('prefers the account entry over context metadata', () => {
         const { services } = createTestCompositionRoot<void, AccountsRootState>({
             preloadedState: state,
         });
@@ -49,9 +49,45 @@ describe('useTokenMetadata', () => {
             { services, wrapper: MetadataWrapper },
         );
 
-        expect(result.current).toMatchObject({ contract, symbol: 'SOURCE' });
-        expect(result.current?.name).toBeUndefined();
-        expect(result.current?.decimals).toBeUndefined();
+        expect(result.current).toMatchObject({
+            contract,
+            name: 'Stored token',
+            symbol: 'STORE',
+            decimals: accountToken.decimals,
+        });
+    });
+
+    it.each([undefined, ''])('fills an account symbol of %p from context metadata', symbol => {
+        const { services } = createTestCompositionRoot<void, AccountsRootState>({
+            preloadedState: {
+                wallet: {
+                    accounts: [
+                        mockWalletAccount({
+                            symbol: networkSymbol,
+                            tokens: [{ ...accountToken, symbol }],
+                        }),
+                    ],
+                },
+            },
+        });
+        const { result } = renderHookWithStoreProvider(
+            () => useTokenMetadata(networkSymbol, contract),
+            { services, wrapper: MetadataWrapper },
+        );
+
+        expect(result.current).toMatchObject({ contract, name: 'Stored token', symbol: 'SOURCE' });
+    });
+
+    it('uses context metadata for a token the accounts do not hold', () => {
+        const { services } = createTestCompositionRoot<void, AccountsRootState>({
+            preloadedState: { wallet: { accounts: [] } },
+        });
+        const { result } = renderHookWithStoreProvider(
+            () => useTokenMetadata(networkSymbol, contract),
+            { services, wrapper: MetadataWrapper },
+        );
+
+        expect(result.current).toEqual({ contract, symbol: 'SOURCE' });
     });
 
     it.each([undefined, toTokenAddress('0x0000000000000000000000000000000000000002')])(

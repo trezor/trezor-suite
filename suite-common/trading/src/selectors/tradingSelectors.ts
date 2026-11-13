@@ -20,10 +20,12 @@ import {
     type NetworksRootState,
     selectSupportedNetworkSymbols,
 } from '@suite-common/networks';
+import { type TokenMetadata, type TokenMetadataSource } from '@suite-common/token';
 import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type NetworkSymbolExtended,
     getNetwork,
@@ -86,6 +88,7 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
+    cryptoIdToNetworkAndContractAddress,
     cryptoIdToNetworkSymbol,
     cryptoIdToNetworkSymbolAndContractAddress,
     getCryptoId,
@@ -215,6 +218,34 @@ export const selectTradingBtcSwapComposeTemplate = (state: TradingRootState) =>
 
 export const selectTradingCoins = (state: TradingRootState): Coins | undefined =>
     state.wallet.trading.info.coins;
+
+/** Catalog tokens as token metadata, so a token the user does not hold has a name and symbol. */
+export const selectTradingTokenMetadataSources = createMemoizedSelector(
+    [selectTradingCoins],
+    (coins): TokenMetadataSource[] => {
+        const tokensByNetwork = new Map<NetworkSymbol, TokenMetadata[]>();
+
+        for (const [cryptoId, coin] of Object.entries(coins ?? {})) {
+            const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(
+                cryptoId as CryptoId,
+            );
+            if (!network || !contractAddress) continue;
+
+            const tokens = tokensByNetwork.get(network.symbol) ?? [];
+            tokens.push({
+                contract: toTokenAddress(contractAddress),
+                name: coin.name,
+                symbol: coin.symbol.toUpperCase(),
+            });
+            tokensByNetwork.set(network.symbol, tokens);
+        }
+
+        return Array.from(tokensByNetwork, ([networkSymbol, tokens]) => ({
+            networkSymbol,
+            tokens,
+        }));
+    },
+);
 
 export const selectTradingBuyInfo = createMemoizedSelector(
     [state => state.wallet.trading.buy.buyInfo],

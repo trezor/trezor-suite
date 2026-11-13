@@ -23,6 +23,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/token": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/tx-simulation": "workspace:*",

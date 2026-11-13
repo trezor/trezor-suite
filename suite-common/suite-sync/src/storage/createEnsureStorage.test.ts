@@ -7,6 +7,7 @@ import { asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 import { createMockDeps, mock } from '@trezor/dependency-injection';
+import { LazyLoadingError } from '@trezor/lazy-loading';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../mocks/mockCreateSuiteSyncStorage';
@@ -156,7 +157,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => Promise.resolve(newStorage),
+            createSuiteStorage: () => Promise.resolve(ok(newStorage)),
             ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
@@ -190,7 +191,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => Promise.resolve(newStorage),
+            createSuiteStorage: () => Promise.resolve(ok(newStorage)),
             ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),
@@ -212,6 +213,35 @@ describe(createEnsureStorage.name, () => {
         expect(deps.suiteSyncStorageRepository.set).toHaveBeenCalled();
     });
 
+    it('returns the LazyLoadingError when the storage library fails to load', async () => {
+        const device = mockSuiteDevice();
+
+        const deps = createMockDeps<EnsureStorageDeps>({
+            getRelayUrl: null,
+            getOwnerHasAllowance: null,
+            suiteSyncStorageRepository: {
+                get: () => null,
+                set: null,
+                delete: null,
+            },
+            createSuiteStorage: () =>
+                Promise.resolve(err(LazyLoadingError('Failed to start Evolu: network error'))),
+            ensureSuiteSyncKeys: () =>
+                Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
+            ensureQuota: null,
+            getDeviceForStaticSessionId: () => device,
+        });
+
+        const result = await createEnsureStorage(deps)({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
+
+        expect(result).toEqual(err(LazyLoadingError('Failed to start Evolu: network error')));
+        expect(deps.ensureQuota).not.toHaveBeenCalled();
+        expect(deps.suiteSyncStorageRepository.set).not.toHaveBeenCalled();
+    });
+
     it('calls updateRelayUrl with the relay URL from getRelayUrl', async () => {
         const device = mockSuiteDevice();
 
@@ -227,7 +257,7 @@ describe(createEnsureStorage.name, () => {
                 set: mock(() => {}),
                 delete: null,
             },
-            createSuiteStorage: () => Promise.resolve(newStorage),
+            createSuiteStorage: () => Promise.resolve(ok(newStorage)),
             ensureSuiteSyncKeys: () =>
                 Promise.resolve(ok({ owner: OWNER_ABCD, delegatedKey: DELEGATED_KEY })),
             ensureQuota: () => Promise.resolve(ok(undefined)),

@@ -120,6 +120,8 @@ export const messages = {
             suiteSyncUpdateError: 'Failed to update data.',
             suiteSyncUnavailable: 'Suite Sync unavailable on this device.',
             quotaManagerCommunicationFailed: 'Quota Manager communication failed.',
+            lazyLoadingError:
+                'Something went wrong. Try restarting the app, and if it keeps happening, contact Trezor Support.',
         },
     },
     moduleHome: {
@@ -2514,6 +2516,9 @@ export const messages = {
                     'Stake your balance and earn ~{potentialRewards} {symbol} yearly at the current APR.',
                 description: 'Make your {symbol} work for you. Start staking to earn rewards.',
             },
+            yieldBanner: {
+                description: 'Deposit your {symbol} in a yield vault and earn rewards on it.',
+            },
             hiddenBanner: {
                 suspiciousTitle: 'Flagged as suspicious',
                 suspiciousDescription:
@@ -4368,6 +4373,19 @@ export const messages = {
                 description:
                     'Not confirmed on your Trezor in time. Go back to the summary to try again.',
                 button: 'Back to summary',
+            },
+            errorAlert: {
+                title: 'Transaction failed',
+                prepareTransactionDescription: "We couldn't prepare the transaction. Try again.",
+                signTransactionDescription: "Your Trezor couldn't sign the transaction. Try again.",
+                pushTransactionDescription:
+                    "The transaction couldn't be sent to the network. Try again.",
+                quoteExpiredDescription: 'The quote expired. Go back and get a new quote.',
+                providerNoResponseDescription: "The trading provider didn't respond. Try again.",
+                paymentRequestDescription: "Payment request couldn't be created. Try again.",
+                deviceNotConnectedDescription: 'Connect your Trezor and try again.',
+                nonceDescription: "Nonce couldn't be generated. Try again.",
+                verifyAddressDescription: "Address couldn't be verified. Try again.",
             },
             signData: {
                 heading: 'Sign EIP-712 typed data',

@@ -10,8 +10,10 @@ export interface GetAccountInfo extends Omit<BlockchainLinkParams<'getAccountInf
     identity?: string;
     path?: string;
     descriptor?: string;
+    /** @deprecated, ignored */
     defaultAccountType?: DiscoveryAccountType;
     derivationType?: PROTO.CardanoDerivationType;
+    /** @deprecated, ignored */
     suppressBackupWarning?: boolean;
 }
 

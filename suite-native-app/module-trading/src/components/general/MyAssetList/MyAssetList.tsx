@@ -3,7 +3,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
-import { TokenMetadataProvider } from '@suite-common/token';
 import { Box, EdgeFades, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type MyAsset } from '@suite-native/trading-types';
@@ -16,7 +15,6 @@ import {
     type TradingAssetListHeaderProps,
 } from '../TradingAssetListHeader';
 import { MyAssetListSection } from './MyAssetListSection';
-import { myAssetSectionsToTokenMetadataSources } from '../../../utils/general/myAssetSectionsToTokenMetadataSources';
 
 export type MyAssetListProps = {
     assets: MyAssetsSection[];
@@ -68,7 +66,7 @@ export const MyAssetList = ({
         [onAssetSelect, testID],
     );
 
-    const content = (
+    return (
         <VStack flex={1} spacing="sp10" testID={testID}>
             <TradingAssetListHeader
                 networkFilterMode="discovered"
@@ -101,11 +99,5 @@ export const MyAssetList = ({
                 <EdgeFades direction="vertical" startSize={utils.spacings.sp16} endSize={bottom} />
             </Box>
         </VStack>
-    );
-
-    return (
-        <TokenMetadataProvider sources={myAssetSectionsToTokenMetadataSources(assets)}>
-            {content}
-        </TokenMetadataProvider>
     );
 };

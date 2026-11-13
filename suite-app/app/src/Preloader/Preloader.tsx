@@ -10,6 +10,7 @@ import {
     selectRouterApp,
     selectRouterLoaded,
 } from '@suite/router';
+import { Onboarding } from '@suite-app/module-onboarding';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import {
     useReportDeviceCompromised,
@@ -22,7 +23,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     ErrorPage,
     InteractiveDeviceChecksFlow,
-    Onboarding,
     PrerequisitesGuide,
     analyticsActions,
     initThunk,

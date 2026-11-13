@@ -65,8 +65,8 @@ export {
     ACCOUNT_TYPES,
     type AccountTypeItem,
     type AccountTypeKey,
-    type AdditionalParams,
     type DiscoverAccountsProgress,
+    type DiscoveryAccountInfoParams,
     CARDANO_DERIVATIONS,
 } from './api/account/discoverAccounts';
 export { type FirmwareUpdateResponse } from './api/device/firmwareUpdate';

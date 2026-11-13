@@ -1,0 +1,38 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": [".", "**/*.json"],
+    "references": [
+        {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../../suite/account" },
+        {
+            "path": "../../suite/authenticity-checks"
+        },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/intl" },
+        { "path": "../../suite/message-system" },
+        { "path": "../../suite/router" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/icons" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/requirements" }
+    ]
+}

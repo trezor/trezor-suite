@@ -90,7 +90,6 @@ const getLatestAccountInfo = async ({
         coin: asCoinSymbol(symbol),
         identity,
         descriptor,
-        suppressBackupWarning: true,
         details: 'tokenBalances',
     });
 

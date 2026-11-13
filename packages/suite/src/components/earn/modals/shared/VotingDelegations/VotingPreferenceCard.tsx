@@ -213,6 +213,7 @@ export const VotingPreferenceCard = ({
                                     isChecked={selectedVotingDelegation.type === option.type}
                                     verticalAlignment="center"
                                     onChange={() => handleOptionSelect(option.type)}
+                                    data-testid={`@staking/voting-preference/option/${option.type}`}
                                 >
                                     <Column gap={2}>
                                         <Row gap={8}>

@@ -53,11 +53,11 @@ const createWorkspaceAliases = () => {
         }));
 
     return [
-        // The `./pages/*` export of @suite-app/app points into `src`, which a plain prefix alias
-        // would miss, so it is matched before the package alias.
+        // The `./pages/*` export of each @suite-app/module-* package points into `src`, which a
+        // plain prefix alias would miss, so it is matched before the package alias.
         {
-            find: /^@suite-app\/app\/pages\/(.*)$/,
-            replacement: `${resolve(packageDir, '../app/src/pages')}/$1`,
+            find: /^@suite-app\/(module-[\w-]+)\/pages\/(.*)$/,
+            replacement: `${resolve(packageDir, '..')}/$1/src/pages/$2`,
         },
         ...suiteCommonAliases,
         ...trezorPackagesAliases,

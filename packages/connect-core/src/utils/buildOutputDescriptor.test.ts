@@ -1,198 +1,53 @@
 import { buildOutputDescriptor } from './buildOutputDescriptor';
 
+const HARDENED = 0x80000000;
+
+// Returned by the firmware for m/86'/0'/0' of mnemonic_12, see e2e fixtures of getPublicKey.
 const XPUB =
-    'xpub6DDUPHpUo4pcy43iJeZjbSVWGav1SMMmuWdMHiGtkK8rhKmfbomtkwW6GKs1GGAKehT6QRocrmda3WWxXawpjmwaUHfFRXuKrXSapdckEYF';
+    'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7';
+
+const build = (
+    path: number[],
+    scriptType?: Parameters<typeof buildOutputDescriptor>[0]['scriptType'],
+) => buildOutputDescriptor({ path, scriptType, xpub: XPUB, rootFingerprint: 0x95d8f670 });
+
+const account = (purpose: number) => [purpose + HARDENED, HARDENED, HARDENED];
 
 describe('utils/buildOutputDescriptor', () => {
-    describe('passthrough', () => {
-        it('returns descriptor as-is when provided', () => {
-            // When a descriptor is passed in, the function immediately returns it as-is — no checksum validation, no parsing, nothing.
-            const precomputed = 'wpkh([00000000/84h/0h/0]xpub.../<0;1>/*)#checksum';
-            expect(buildOutputDescriptor({ account: 0, xpub: XPUB, descriptor: precomputed })).toBe(
-                precomputed,
-            );
-        });
+    it('builds the same descriptor as the firmware', () => {
+        expect(build(account(86), 'SPENDTAPROOT')).toBe(
+            `tr([95d8f670/86h/0h/0h]${XPUB}/<0;1>/*)#htg5lhe3`,
+        );
     });
 
-    describe('script type inference from purpose', () => {
-        it('infers SPENDADDRESS from purpose 44', () => {
-            const result = buildOutputDescriptor({ account: 0, purpose: 44, xpub: XPUB });
-            expect(result).toMatch(/^pkh\(/);
-        });
-
-        it('infers SPENDP2SHWITNESS from purpose 49', () => {
-            const result = buildOutputDescriptor({ account: 0, purpose: 49, xpub: XPUB });
-            expect(result).toMatch(/^sh\(wpkh\(/);
-        });
-
-        it('infers SPENDWITNESS from purpose 84', () => {
-            const result = buildOutputDescriptor({ account: 0, purpose: 84, xpub: XPUB });
-            expect(result).toMatch(/^wpkh\(/);
-        });
-
-        it('infers SPENDTAPROOT from purpose 86', () => {
-            const result = buildOutputDescriptor({ account: 0, purpose: 86, xpub: XPUB });
-            expect(result).toMatch(/^tr\(/);
-        });
+    it.each([
+        ['SPENDADDRESS', 'pkh('],
+        ['SPENDP2SHWITNESS', 'sh(wpkh('],
+        ['SPENDWITNESS', 'wpkh('],
+        [undefined, 'pkh('],
+    ] as const)('formats the script type %s', (scriptType, prefix) => {
+        expect(build(account(84), scriptType)?.startsWith(`${prefix}[95d8f670/84h/0h/0h]`)).toBe(
+            true,
+        );
     });
 
-    describe('purpose inference from scriptType', () => {
-        it('defaults to SPENDADDRESS when neither purpose nor scriptType given', () => {
-            const result = buildOutputDescriptor({ account: 0, xpub: XPUB });
-            expect(result).toMatch(/^pkh\(/);
-            expect(result).toContain('/44h/0h/0h');
-        });
-
-        it('infers purpose 49 from SPENDP2SHWITNESS', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                scriptType: 'SPENDP2SHWITNESS',
-                xpub: XPUB,
-            });
-            expect(result).toContain('/49h/0h/0h');
-        });
-
-        it('infers purpose 84 from SPENDWITNESS', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-            });
-            expect(result).toContain('/84h/0h/0h');
-        });
+    it('describes the path as given', () => {
+        expect(build([...account(84), 1, 0], 'SPENDWITNESS')).toMatch(
+            /^wpkh\(\[95d8f670\/84h\/0h\/0h\/1\/0\]/,
+        );
     });
 
-    describe('path construction', () => {
-        it('uses coin_type 0 for Bitcoin', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                coin: 'Bitcoin',
-                scriptType: 'SPENDWITNESS',
+    it('describes a missing root fingerprint by zeros', () => {
+        expect(
+            buildOutputDescriptor({
+                path: account(44),
                 xpub: XPUB,
-            });
-            expect(result).toContain('/84h/0h/0h');
-        });
-
-        it('uses coin_type 1 for Testnet', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                coin: 'Testnet',
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-            });
-            expect(result).toContain('/84h/1h/0h');
-        });
-
-        it('uses coin_type 1 for Regtest', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                coin: 'Regtest',
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-            });
-            expect(result).toContain('/84h/1h/0h');
-        });
-
-        it('uses the correct account index', () => {
-            const result = buildOutputDescriptor({
-                account: 2,
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-            });
-            expect(result).toContain('/84h/0h/2h');
-        });
-
-        it('encodes rootFingerprint as 8-char hex', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-                rootFingerprint: 0xdeadbeef,
-            });
-            expect(result).toContain('[deadbeef/');
-        });
-
-        it('zero-pads rootFingerprint to 8 chars', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-                rootFingerprint: 1,
-            });
-            expect(result).toContain('[00000001/');
-        });
-
-        it('defaults rootFingerprint to 00000000 when not provided', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-            });
-            expect(result).toContain('[00000000/');
-        });
+                rootFingerprint: null,
+            })?.startsWith('pkh([00000000/44h/0h/0h]'),
+        ).toBe(true);
     });
 
-    describe('SLIP25', () => {
-        it('appends /1h for SLIP25 taproot', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                purpose: 10025,
-                scriptType: 'SPENDTAPROOT',
-                xpub: XPUB,
-            });
-            expect(result).toEqual(
-                'tr([00000000/10025h/0h/0h/1h]xpub6DDUPHpUo4pcy43iJeZjbSVWGav1SMMmuWdMHiGtkK8rhKmfbomtkwW6GKs1GGAKehT6QRocrmda3WWxXawpjmwaUHfFRXuKrXSapdckEYF/<0;1>/*)#zqcxnytn',
-            );
-        });
-
-        it('returns undefined for SLIP25 with non-taproot script type', () => {
-            expect(
-                buildOutputDescriptor({
-                    account: 0,
-                    purpose: 10025,
-                    scriptType: 'SPENDWITNESS',
-                    xpub: XPUB,
-                }),
-            ).toBeUndefined();
-        });
-    });
-
-    describe('checksum', () => {
-        it('appends a #checksum suffix', () => {
-            const result = buildOutputDescriptor({
-                account: 0,
-                scriptType: 'SPENDWITNESS',
-                xpub: XPUB,
-            });
-            expect(result).toMatch(/#[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{8}$/);
-        });
-    });
-
-    describe('invalid inputs return undefined', () => {
-        it('returns undefined for unsupported coin', () => {
-            expect(
-                buildOutputDescriptor({
-                    account: 0,
-                    coin: 'eth',
-                    scriptType: 'SPENDWITNESS',
-                    xpub: XPUB,
-                }),
-            ).toBeUndefined();
-        });
-
-        it('returns undefined for unknown purpose', () => {
-            expect(buildOutputDescriptor({ account: 0, purpose: 999, xpub: XPUB })).toBeUndefined();
-        });
-
-        it('returns undefined when purpose and scriptType are mismatched', () => {
-            expect(
-                buildOutputDescriptor({
-                    account: 0,
-                    purpose: 84,
-                    scriptType: 'SPENDADDRESS',
-                    xpub: XPUB,
-                }),
-            ).toBeUndefined();
-        });
+    it.each(['SPENDMULTISIG', 'EXTERNAL'] as const)('builds none for %s', scriptType => {
+        expect(build(account(48), scriptType)).toBeUndefined();
     });
 });

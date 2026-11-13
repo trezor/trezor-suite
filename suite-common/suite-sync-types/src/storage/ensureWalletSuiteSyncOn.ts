@@ -5,6 +5,7 @@ import {
     type DeviceNotConnectedErrorType,
 } from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect-common';
+import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result } from '@trezor/type-utils';
 
 import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
@@ -34,7 +35,8 @@ export type EnsureWalletSuiteSyncOnErrors =
     | DeviceCancelledErrType
     | DeviceNotConnectedErrorType
     | WriteModeRequiredForAllocationErrType
-    | QuotaManagerCommunicationFailedErrType;
+    | QuotaManagerCommunicationFailedErrType
+    | LazyLoadingError;
 
 /** @serviceContract */
 export type EnsureWalletSuiteSyncOn = (
@@ -77,4 +79,5 @@ export type SuiteSyncUserFacingErrorType =
     | 'DeviceCancelled'
     | 'DeviceError'
     | 'SuiteSyncUpdateError'
-    | 'QuotaManagerCommunicationFailed';
+    | 'QuotaManagerCommunicationFailed'
+    | 'LazyLoadingError';

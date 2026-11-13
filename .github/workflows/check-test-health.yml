@@ -20,7 +20,14 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - "**.md"
+  schedule:
+    - cron: "0 5 * * 1-5"
   workflow_dispatch:
+    inputs:
+      unquarantine:
+        description: "Also unquarantine recovered tests, as the scheduled run does"
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}
@@ -38,14 +45,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
       - name: Cache node_modules
         id: node-modules-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
@@ -53,20 +52,16 @@ jobs:
           path: node_modules
           key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
-      - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
-        continue-on-error: true
-        with:
-          version: v0.32.0
-          config-file: .github/pmg-config.yml
       - name: Install dependencies
-        shell: bash
-        run: yarn workspaces focus @trezor/e2e-utils
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          focus: "@trezor/e2e-utils"
 
       - name: Check test health and manage quarantine
         env:
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK: ${{ secrets.E2E_TEST_SLACK_QUARANTINE_BOT_WEBHOOK }}
           GITHUB_RUN_ID: ${{ github.run_id }}
+          UNQUARANTINE_FLAG: ${{ (github.event_name == 'schedule' || inputs.unquarantine == true) && '--nightlyUnquarantine' || '' }}
         run: |
-          yarn workspace @trezor/e2e-utils test-health
+          yarn workspace @trezor/e2e-utils test-health $UNQUARANTINE_FLAG

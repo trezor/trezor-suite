@@ -9,11 +9,12 @@ import solana from '@trezor/network-solana/runtime';
 import { createThunk } from '@trezor/redux-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { type TradingSendRejectedProps } from '../../types';
+import { type TradingError } from '../../types';
 import {
     formatSlip24AddressByNetwork,
     formatSlip24SendAmountByNetwork,
 } from '../../utils/signature/signatureUtils';
+import { getConnectErrorCause, toTradingError } from '../../utils/tradingErrorUtils';
 
 export type GetPaymentRequestOutputsThunkState = DeviceRootState;
 
@@ -25,7 +26,7 @@ export const getPaymentRequestOutputsThunk = createThunk<
         composedLevels: GeneralPrecomposedTransactionFinal;
         destinationTag?: string;
     },
-    { rejectValue: TradingSendRejectedProps; state: GetPaymentRequestOutputsThunkState }
+    { rejectValue: TradingError; state: GetPaymentRequestOutputsThunkState }
 >(
     `${TRADING_THUNK_PREFIX}/getPaymentRequestOutputs`,
     async (
@@ -52,13 +53,13 @@ export const getPaymentRequestOutputsThunk = createThunk<
                             );
 
                         sendAddress = associatedTokenAccountAddress.toString();
-                    } catch {
-                        return rejectWithValue({
-                            type: 'sign-tx-error',
-                            error: {
-                                id: 'TR_PAYMENT_REQUESTS_ERROR',
-                            },
-                        });
+                    } catch (error) {
+                        return rejectWithValue(
+                            toTradingError(error, {
+                                type: 'sign-tx-error',
+                                code: 'payment-requests-failed',
+                            }),
+                        );
                     }
                 }
 
@@ -78,9 +79,7 @@ export const getPaymentRequestOutputsThunk = createThunk<
                 if (!device) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_DEVICE_NOT_CONNECTED',
-                        },
+                        code: 'device-not-connected',
                     });
                 }
 
@@ -96,9 +95,8 @@ export const getPaymentRequestOutputsThunk = createThunk<
                 if (!getAddress.success) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
-                        error: {
-                            id: 'TR_PAYMENT_REQUESTS_ERROR',
-                        },
+                        code: 'payment-requests-failed',
+                        cause: getConnectErrorCause(getAddress.error),
                     });
                 }
 

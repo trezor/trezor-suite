@@ -290,7 +290,6 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             const accountResponse = await TrezorConnect.getAccountInfo({
                 descriptor: address,
                 coin: asCoinSymbol(account.symbol),
-                suppressBackupWarning: true,
                 stellarClassicTokens:
                     account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CLASSIC'
                         ? [tokenInfo.contract]
@@ -523,7 +522,6 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
             const destinationAccount = await TrezorConnect.getAccountInfo({
                 descriptor: firstSignOutput.address,
                 coin: asCoinSymbol(selectedAccount.symbol),
-                suppressBackupWarning: true,
             });
 
             const destinationActivated =

@@ -1,6 +1,7 @@
 import { type TokenInfoBranded } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
@@ -10,7 +11,7 @@ import {
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { YieldBadge } from '@suite-native/module-earn';
-import { TokenIcon, TokenName, TokenSymbol } from '@suite-native/tokens';
+import { TokenIcon, TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -66,18 +67,12 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                 <HStack alignItems="center" justifyContent="space-between" flex={1}>
                     <Box style={applyStyle(cardContentStyle)}>
                         <HStack>
-                            {token ? (
-                                <TokenSymbol
-                                    networkSymbol={symbol}
-                                    contractAddress={token.contract}
-                                    variant="body-sm-strong"
-                                    color="contentPrimary"
-                                />
-                            ) : (
-                                <Text variant="body-sm-strong" color="contentPrimary">
-                                    {getNetworkDisplaySymbol(symbol)}
-                                </Text>
-                            )}
+                            <AssetSymbol
+                                networkSymbol={symbol}
+                                contractAddress={token?.contract}
+                                variant="body-sm-strong"
+                                color="contentPrimary"
+                            />
 
                             {yieldBadge && account && (
                                 <YieldBadge

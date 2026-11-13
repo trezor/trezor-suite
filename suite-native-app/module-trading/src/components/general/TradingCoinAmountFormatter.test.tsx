@@ -1,22 +1,22 @@
 import { type CryptoId } from 'invity-api';
 
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
+import { btcAsset, getEthAccount, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 
 import {
     TradingCoinAmountFormatter,
     type TradingCoinAmountFormatterProps,
 } from './TradingCoinAmountFormatter';
-import { TradingMetadataProvider } from './TradingMetadataProvider';
 
 describe('TradingCoinAmountFormatter', () => {
     const renderTradingCoinAmountFormatter = (
         props: Partial<TradingCoinAmountFormatterProps> = {},
     ) =>
         renderWithStoreProvider(
-            <TradingMetadataProvider>
+            <TradingTokenMetadataProvider>
                 <TradingCoinAmountFormatter {...props} />
-            </TradingMetadataProvider>,
+            </TradingTokenMetadataProvider>,
             {
                 preloadedState: { wallet: getWalletState() },
             },
@@ -38,6 +38,36 @@ describe('TradingCoinAmountFormatter', () => {
         });
 
         expect(getByText('123,456 USDC')).toBeOnTheScreen();
+    });
+
+    it("shows a held token's symbol from the account, not from the trading catalog", async () => {
+        const heldUsdcAccount = getEthAccount({
+            tokens: [
+                {
+                    standard: 'ERC20',
+                    name: 'USD Coin',
+                    contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                    symbol: 'USDC.e',
+                    decimals: 6,
+                    balance: '1',
+                },
+            ],
+        });
+        const { getByText } = await renderWithStoreProvider(
+            <TradingTokenMetadataProvider>
+                <TradingCoinAmountFormatter amount="123456" cryptoId={usdcAsset.cryptoId} />
+            </TradingTokenMetadataProvider>,
+            {
+                preloadedState: {
+                    wallet: {
+                        ...getWalletState(),
+                        accounts: [heldUsdcAccount],
+                    },
+                },
+            },
+        );
+
+        expect(getByText('123,456 USDC.e')).toBeOnTheScreen();
     });
 
     it('should render null when cryptoId is undefined', async () => {

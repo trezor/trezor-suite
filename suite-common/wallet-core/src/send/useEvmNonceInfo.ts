@@ -68,7 +68,6 @@ export const useEvmNonceInfo = (
                 identity: tryGetAccountIdentity(account),
                 details: 'basic',
                 confirmedNonce: true,
-                suppressBackupWarning: true,
             });
 
             if (!response.success) throw new Error(response.error.message);

@@ -20,6 +20,7 @@ import {
 } from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 import { isNotNull } from '@trezor/utils';
 
@@ -52,6 +53,7 @@ export type EnsureStorage = (
         | DeviceNotConnectedErrorType
         | WriteModeRequiredForAllocationErrType
         | QuotaManagerCommunicationFailedErrType
+        | LazyLoadingError
     >
 >;
 
@@ -94,8 +96,15 @@ export const createEnsureStorage =
 
         const { owner, delegatedKey } = keysResult.payload;
 
-        const storage =
-            existingStorage ?? (await deps.createSuiteStorage({ suiteSyncOwner: owner }));
+        const storageResult = isNotNull(existingStorage)
+            ? ok(existingStorage)
+            : await deps.createSuiteStorage({ suiteSyncOwner: owner });
+
+        if (!storageResult.success) {
+            return storageResult;
+        }
+
+        const storage = storageResult.payload;
 
         // We need to call this even for isWriteMode because this also register device
         const quotaResult = await deps.ensureQuota({

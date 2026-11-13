@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
@@ -20,7 +21,6 @@ import { TRADING_KEYBOARD_TOOLBAR_HOST } from '../components/general/CryptoAmoun
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
-import { TradingMetadataProvider } from '../components/general/TradingMetadataProvider';
 import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
@@ -84,5 +84,5 @@ export const TradingScreen = () => {
         </Screen>
     );
 
-    return <TradingMetadataProvider>{content}</TradingMetadataProvider>;
+    return <TradingTokenMetadataProvider>{content}</TradingTokenMetadataProvider>;
 };

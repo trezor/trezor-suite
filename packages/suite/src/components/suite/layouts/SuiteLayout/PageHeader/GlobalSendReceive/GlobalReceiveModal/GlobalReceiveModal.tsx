@@ -6,7 +6,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { useGlobalReceiveAssets } from '@suite-common/receive';
+import { ReceiveTokenMetadataProvider, useGlobalReceiveAssets } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { selectAccounts, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -280,5 +280,5 @@ export const GlobalReceiveModal = ({
         );
     }
 
-    return renderReceiveModal();
+    return <ReceiveTokenMetadataProvider>{renderReceiveModal()}</ReceiveTokenMetadataProvider>;
 };

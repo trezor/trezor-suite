@@ -6,10 +6,13 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { MODAL_CONTEXT_NONE } from '@suite/modal';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
+import { type Account, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { ServicesProvider, mock } from '@trezor/dependency-injection';
 import { type Dispatch, type DispatchDep } from '@trezor/redux-utils';
+
+import { type VotingPreferenceOption } from '#src/components/earn';
 
 import { StakeChangeDelegateModalLoaded } from './StakeChangeDelegateModal';
 
@@ -17,6 +20,7 @@ const mockAnalytics = mockDesktopAnalytics();
 const mockReport = jest.mocked(mockAnalytics.report);
 const mockDispatch = mock<Dispatch>();
 const mockSignTx = jest.fn();
+const mockVotingPreferenceCard = jest.fn();
 const mockAccount = mockWalletAccount({ symbol: asNetworkSymbol('ada') });
 let mockDevice = { connected: true, available: true };
 
@@ -36,13 +40,21 @@ jest.mock('@trezor/components', () => {
         Card: Container,
         Tooltip: Container,
         Banner: () => null,
-        Modal: Object.assign(({ bottomContent }: { bottomContent: ReactNode }) => bottomContent, {
-            Button: ({ onClick, isDisabled }: { onClick: () => void; isDisabled: boolean }) => (
-                <button onClick={onClick} disabled={isDisabled}>
-                    Submit
-                </button>
+        Modal: Object.assign(
+            ({ bottomContent, children }: PropsWithChildren<{ bottomContent: ReactNode }>) => (
+                <>
+                    {children}
+                    {bottomContent}
+                </>
             ),
-        }),
+            {
+                Button: ({ onClick, isDisabled }: { onClick: () => void; isDisabled: boolean }) => (
+                    <button onClick={onClick} disabled={isDisabled}>
+                        Submit
+                    </button>
+                ),
+            },
+        ),
     };
 });
 jest.mock('#src/hooks/suite', () => ({
@@ -69,8 +81,16 @@ jest.mock('#src/hooks/wallet/useChangeDelegateForm', () => ({
     }),
 }));
 jest.mock('#src/components/earn', () => ({
-    BASE_VOTING_PREFERENCE_OPTIONS: [],
-    VotingPreferenceCard: () => null,
+    BASE_VOTING_PREFERENCE_OPTIONS: [
+        { type: 'abstain', label: 'TR_STAKING_VOTE_ABSTAIN' },
+        { type: 'everstake', label: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE' },
+        { type: 'another_drep', label: 'TR_STAKING_VOTE_CHOOSE_OWN_DREP' },
+    ],
+    VotingPreferenceCard: (props: { options: VotingPreferenceOption[] }) => {
+        mockVotingPreferenceCard(props);
+
+        return null;
+    },
 }));
 jest.mock('#src/components/wallet/Fees/Fees', () => ({ Fees: () => null }));
 jest.mock('./CurrentVotingPreference', () => ({ CurrentVotingPreference: () => null }));
@@ -120,5 +140,37 @@ describe('change delegate submit analytics', () => {
             throw new Error('Missing analytics report or signing call');
         }
         expect(reportOrder).toBeLessThan(signOrder);
+    });
+});
+
+describe('change delegate voting options', () => {
+    // Recurring bug: https://github.com/trezor/trezor-suite/issues/31984
+    it('offers every vote except the one the account already delegates to', () => {
+        const everstakeVoter: Account = mockWalletAccount(
+            { symbol: asNetworkSymbol('ada') },
+            { misc: { staking: { drep: { drep_id: CARDANO_EVERSTAKE_DREP.bech32 } } } },
+        );
+        const services: DesktopAnalyticsDep & { store: DispatchDep } = {
+            analytics: mockAnalytics,
+            store: { dispatch: mockDispatch },
+        };
+        const selectedAccount: SelectedAccountLoaded = {
+            status: 'loaded',
+            account: everstakeVoter,
+            network: getNetwork(everstakeVoter.symbol),
+            params: undefined,
+        };
+
+        render(
+            <ServicesProvider services={services}>
+                <StakeChangeDelegateModalLoaded selectedAccount={selectedAccount} />
+            </ServicesProvider>,
+        );
+
+        const [{ options }] = mockVotingPreferenceCard.mock.lastCall;
+        expect(options.map((option: VotingPreferenceOption) => option.type)).toEqual([
+            'abstain',
+            'another_drep',
+        ]);
     });
 });

@@ -1,6 +1,7 @@
 import { type CryptoId, type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type TradingAssetOption,
     type TradingAssetSellOption,
@@ -33,7 +34,7 @@ const usdt: TradingAssetSellOption = {
     name: 'Tether',
     symbol: 'usdt',
     displaySymbol: 'USDT',
-    contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    contractAddress: toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
     accountKey: mockWalletAccount({ symbol: asNetworkSymbol('eth') }).key,
 };
 const eth: TradingAssetOption = {

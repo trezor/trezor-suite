@@ -3,19 +3,21 @@ import { type Store } from '@reduxjs/toolkit';
 import { type DeviceRootState } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
+    type TradingError,
     type TradingRootStateWithDeviceAndAccounts,
-    type TradingSendRejectedProps,
 } from '@suite-common/trading';
 import {
     type AccountsRootState,
     type FormDraftRootState,
+    type SendFormError,
     type WalletSettingsRootState,
 } from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type FormState, asAccountDescriptor } from '@suite-common/wallet-types';
 import { type SettingsSliceRootState } from '@suite-native/settings';
 import { act } from '@suite-native/test-utils-store';
 import { type TokensRootState } from '@suite-native/tokens';
 import {
+    createPrecomposedTxFinal,
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
@@ -42,7 +44,7 @@ type State = TradingRootState &
 const mockComposeTradingTransaction = jest.fn();
 const mockSendTransactionResult = jest.fn<
     {
-        payload?: TradingSendRejectedProps;
+        payload?: TradingError;
         meta: { requestId: string; requestStatus: 'fulfilled' | 'rejected' };
         error?: { message: string };
     },
@@ -274,6 +276,59 @@ describe('useTradingTransaction', () => {
                     payload: expect.objectContaining({ isSlip24Active: true }),
                 }),
             );
+        });
+    });
+
+    describe('signAndPushSendFormTransaction', () => {
+        const formState: FormState = {
+            outputs: [],
+            feePerUnit: '',
+            feeLimit: '',
+            options: [],
+            isCoinControlEnabled: false,
+            hasCoinControlBeenOpened: false,
+            selectedUtxos: [],
+        };
+        const signAndPushProps = {
+            formState,
+            precomposedTransaction: createPrecomposedTxFinal(),
+            selectedAccount: btc1Account,
+        };
+
+        it('returns the original send form error when signing fails', async () => {
+            const signError: SendFormError = {
+                error: 'sign-transaction-failed',
+                errorCode: 'Device_Disconnected',
+                message: 'Device disconnected',
+            };
+            mockSigningResult.mockReturnValue({
+                payload: signError,
+                error: { message: 'Rejected' },
+                meta: { requestId: 'test-sign', requestStatus: 'rejected' },
+            });
+            const { result } = await renderUseTradingTransaction({
+                store: getInitializedStore(),
+            });
+
+            const signAndPushResult =
+                await result.current.signAndPushSendFormTransaction(signAndPushProps);
+
+            expect(signAndPushResult).toEqual({ success: false, error: signError });
+        });
+
+        it('returns the pushed transaction when signing and pushing succeed', async () => {
+            mockSigningResult.mockReturnValue({
+                payload: { success: true, payload: { txid: 'txid' } },
+                meta: { requestId: 'test-sign', requestStatus: 'fulfilled' },
+            });
+            const { result } = await renderUseTradingTransaction({
+                store: getInitializedStore(),
+            });
+
+            const signAndPushResult =
+                await result.current.signAndPushSendFormTransaction(signAndPushProps);
+
+            expect(signAndPushResult).toEqual({ success: true, payload: { txid: 'txid' } });
         });
     });
 

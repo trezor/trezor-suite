@@ -6,6 +6,7 @@ import {
 } from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect-common';
 import { type WalletDescriptor } from '@trezor/device-utils';
+import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result } from '@trezor/type-utils';
 
 import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';
@@ -46,6 +47,7 @@ export type EnsureSubscribedStorage = (
         | DeviceNotConnectedErrorType
         | WriteModeRequiredForAllocationErrType
         | QuotaManagerCommunicationFailedErrType
+        | LazyLoadingError
     >
 >;
 

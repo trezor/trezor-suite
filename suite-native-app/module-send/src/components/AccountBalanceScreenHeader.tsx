@@ -1,13 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import { type TokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
-import { TokenSymbol } from '@suite-native/tokens';
 
 type AccountBalanceScreenHeaderProps = {
     accountKey: AccountKey;
@@ -33,14 +32,12 @@ export const AccountBalanceScreenHeader = ({
                     <Translation
                         id="moduleSend.outputs.title"
                         values={{
-                            assetName: tokenContract ? (
-                                <TokenSymbol
+                            assetName: (
+                                <AssetSymbol
                                     networkSymbol={account.symbol}
                                     contractAddress={tokenContract}
                                     variant="body-md-strong"
                                 />
-                            ) : (
-                                getNetworkDisplaySymbol(account.symbol)
                             ),
                         }}
                     />

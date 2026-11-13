@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { ReceiveTokenMetadataProvider } from '@suite-common/receive';
 import {
     type ReceiveStackParamList,
     ReceiveStackRoutes,
@@ -16,7 +17,7 @@ import { ReceiveFreshAddressScreen } from '../screens/ReceiveFreshAddressScreen'
 
 const ReceiveStack = createNativeStackNavigator<ReceiveStackParamList>();
 
-export const ReceiveStackNavigator = () => (
+const ReceiveStackScreens = () => (
     <ReceiveStack.Navigator
         initialRouteName={ReceiveStackRoutes.ReceiveAccounts}
         screenOptions={stackNavigationOptionsConfig}
@@ -50,4 +51,10 @@ export const ReceiveStackNavigator = () => (
             component={ReceiveAddressDetailScreen}
         />
     </ReceiveStack.Navigator>
+);
+
+export const ReceiveStackNavigator = () => (
+    <ReceiveTokenMetadataProvider>
+        <ReceiveStackScreens />
+    </ReceiveTokenMetadataProvider>
 );

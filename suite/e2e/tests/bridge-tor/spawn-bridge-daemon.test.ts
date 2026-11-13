@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { TestStream } from '@trezor/e2e-utils';
 
 import {
@@ -6,29 +8,34 @@ import {
     waitForAppToBeInitialized,
 } from '../../support/bridge';
 import { skipFixture } from '../../support/common';
-import { launchSuite, launchSuiteElectronApp } from '../../support/electron';
+import { launchSuiteElectronApp } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({ jsExceptionWatcher: skipFixture, startEmulator: false, setupEmulator: false });
+test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1', '@windows'] }, () => {
+    // The fixture app is closed right after launch, and its interrupted startup raises toasts.
+    test.use({
+        jsExceptionWatcher: skipFixture,
+        toastErrorWatcher: skipFixture,
+        startEmulator: false,
+        setupEmulator: false,
+    });
 
-    test.beforeEach(async ({ trezorUserEnv, page }) => {
-        await page.close();
+    test.beforeEach(async ({ trezorUserEnv, electronApp }) => {
+        // The app must exit, not just close its window: a running app holds the single-instance lock.
+        await electronApp!.close();
         // Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
         await trezorUserEnv.connect();
         await trezorUserEnv.stopBridge();
     });
 
     test(
-        'App in daemon mode spawns node-bridge',
+        'App in daemon mode spawns node-bridge and opens its UI for a second instance',
         { annotation: createTestAnnotation({ stream: TestStream.Connect }) },
         async ({ request }, testInfo) => {
             await expectBridgeToBeStopped(request);
 
             const daemonApp = await launchSuiteElectronApp({
-                // A second UI would share the profile and race with this test's storage reset,
-                // leaving IndexedDB locked and the foreground app stuck on its loader.
                 bridgeDaemon: 'without-ui',
                 artefactFolder: testInfo.outputDir,
                 viewport: testInfo.project.use.viewport!,
@@ -38,18 +45,22 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
                 await expectBridgeToBeRunning(request);
             }).toPass({ timeout: 3_000 });
 
-            // launch UI, with node-bridge already running in background
-            const suite = await launchSuite({
-                artefactFolder: testInfo.outputDir,
-                viewport: testInfo.project.use.viewport!,
-            });
-            const title = await suite.window.title();
-            expect(title).toContain('Trezor Suite');
+            const daemonWindow = daemonApp.waitForEvent('window');
+            // Resetting user data would delete the daemon's single-instance lock on Linux.
+            await expect(
+                launchSuiteElectronApp({
+                    keepUserData: true,
+                    bridgeDaemon: 'with-ui',
+                    artefactFolder: path.join(testInfo.outputDir, 'second-instance'),
+                    viewport: testInfo.project.use.viewport!,
+                }),
+                'expect the second instance to quit because the daemon holds the single-instance lock',
+            ).rejects.toThrow();
 
-            await waitForAppToBeInitialized(suite);
+            const window = await daemonWindow;
+            expect(await window.title()).toContain('Trezor Suite');
+            await waitForAppToBeInitialized({ electronApp: daemonApp, window });
 
-            await expectBridgeToBeRunning(request);
-            await suite.electronApp.close();
             await expectBridgeToBeRunning(request);
             await daemonApp.close();
             await expectBridgeToBeStopped(request);

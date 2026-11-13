@@ -10,6 +10,7 @@ export {
 } from '../reduxState/networksReducer';
 export { type NetworkMetadata } from '../reduxState/NetworkMetadata';
 export {
+    selectNativeTokenName,
     selectNetworkCoingeckoId,
     selectNetworkColor,
     selectNetworkConfig,

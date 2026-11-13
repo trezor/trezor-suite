@@ -5,7 +5,6 @@ import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
-import { Divider } from '../Divider';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
 
@@ -22,11 +21,6 @@ const cardStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     backgroundColor: colors.surfaceFillSunken,
     paddingHorizontal: spacings.sp16,
     paddingVertical: spacings.sp12,
-}));
-
-const dividerStyle = prepareNativeStyle(({ spacings }) => ({
-    marginHorizontal: -spacings.sp16,
-    marginVertical: spacings.sp12,
 }));
 
 export const CollapsibleCard = ({ title, isCollapsed, children }: CollapsibleCardProps) => {
@@ -47,10 +41,9 @@ export const CollapsibleCard = ({ title, isCollapsed, children }: CollapsibleCar
                 </HStack>
             </Pressable>
             {isContentVisible && (
-                <>
-                    <Divider style={applyStyle(dividerStyle)} />
-                    <Box marginVertical="sp4">{children}</Box>
-                </>
+                <Box marginTop="sp16" marginBottom="sp4">
+                    {children}
+                </Box>
             )}
         </Box>
     );

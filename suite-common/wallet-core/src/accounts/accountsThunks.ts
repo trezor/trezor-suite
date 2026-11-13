@@ -103,7 +103,6 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
             descriptor: account.descriptor,
             details: 'tokenBalances',
             contractFilter: t.contract,
-            suppressBackupWarning: true,
             protocols: isEvmNetwork ? ['erc4626'] : undefined,
         }),
     );
@@ -217,7 +216,6 @@ export const fetchAndUpdateAccountThunk = createThunk<
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: getRefreshDetails(account),
-            suppressBackupWarning: true,
             tokenAccountsPubKeys,
             stellarContractTokens,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
@@ -253,7 +251,6 @@ export const fetchAndUpdateAccountThunk = createThunk<
             details: 'txs',
             page: 1, // useful for every network except ripple and stellar
             pageSize,
-            suppressBackupWarning: true,
             stellarContractTokens,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             privatePending,

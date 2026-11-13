@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": [".", "**/*.json"],
+    "references": [
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../../suite/modal" },
+        { "path": "../../suite/tor" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/type-utils" }
+    ]
+}

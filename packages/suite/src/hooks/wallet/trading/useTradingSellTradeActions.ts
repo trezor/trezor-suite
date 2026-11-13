@@ -2,15 +2,12 @@ import type { BankAccount } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { type TranslationKey, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
-    isSendRejectedError,
-    isSilentSendRejection,
+    isTradingError,
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24SellAllowed,
     selectTradingSellActiveTrade,
@@ -32,13 +29,15 @@ import { useTradingFormAccount } from '#src/hooks/wallet/trading/form/useTrading
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import { buildSellReturnUrl } from '#src/utils/wallet/trading/buildSellReturnUrl';
 
+import { useTradingErrorToast } from './useTradingErrorToast';
+
 export const useTradingSellTradeActions = () => {
     const { desktopApi, analytics, dispatch } = useServices(
         injectDesktopApi,
         injectDesktopAnalytics,
         injectDispatch,
     );
-    const { translationString } = useTranslation();
+    const { showTradingErrorToast } = useTradingErrorToast();
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const trade = useSelector(selectTradingSellActiveTrade);
@@ -150,18 +149,11 @@ export const useTradingSellTradeActions = () => {
 
             return true;
         } catch (e) {
-            if (!isSendRejectedError<TranslationKey>(e)) {
+            if (!isTradingError(e)) {
                 return false;
             }
 
-            if (!isSilentSendRejection(e.type)) {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: e.type,
-                        error: translationString(e.error.id, e.error.values),
-                    }),
-                );
-            }
+            showTradingErrorToast(e);
 
             return false;
         }

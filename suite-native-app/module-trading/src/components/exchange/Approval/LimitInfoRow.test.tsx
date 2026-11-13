@@ -1,13 +1,13 @@
 import type { CryptoId } from 'invity-api';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedBestQuote } from '@suite-native/trading-fixtures';
 
 import { LimitInfoRow } from './LimitInfoRow';
-import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 type LimitInfoRowProps = React.ComponentProps<typeof LimitInfoRow>;
 
@@ -39,7 +39,7 @@ describe('LimitInfoRow', () => {
         return renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
             preloadedState,
             services: { networks: mockNetworksServices() },
-            wrapper: TradingMetadataProvider,
+            wrapper: TradingTokenMetadataProvider,
         });
     };
 

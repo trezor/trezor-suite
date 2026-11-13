@@ -35,18 +35,31 @@ type TypeFileBuild = {
 type PluginOptions = {
     // list of .proto files to generate *_types.ts file which contains only type definitions (without schema generation)
     // usage: --types=messages-management+messages-bitcoin+...
-    types: string[];
+    types: Set<string>;
+    // List of .proto files to be ignored for TypeBox schema generation.
+    skipTypeBox: Set<string>;
 };
 
-const parseOptions = (rawOptions: { key: string; value: string }[]): PluginOptions => ({
-    types: rawOptions
-        .map(({ key, value }) => {
-            if (key !== 'types') throw new Error(`Unknown option: ${key}`);
+const parseOptions = (rawOptions: { key: string; value: string }[]): PluginOptions => {
+    const options: PluginOptions = {
+        types: new Set(),
+        skipTypeBox: new Set(),
+    };
 
-            return value.split('+').filter(Boolean);
-        })
-        .flat(),
-});
+    const getOptionsArray = (value: string) => value.split('+').filter(Boolean);
+
+    rawOptions.forEach(({ key, value }) => {
+        if (key === 'types') {
+            getOptionsArray(value).forEach(v => options.types.add(v));
+        } else if (key === 'skipTypeBox') {
+            getOptionsArray(value).forEach(v => options.skipTypeBox.add(v));
+        } else {
+            throw new Error(`Unknown option: ${key}`);
+        }
+    });
+
+    return options;
+};
 
 const disclaimer = (file?: Schema<PluginOptions>['files'][number]) =>
     [
@@ -246,15 +259,17 @@ const sortTypeItems = (types: TypeItem[]) => {
     types.push(...result);
 };
 
+type SchemaWireMessages = {
+    wireMessages: Set<string>;
+    wireIn: Set<string>;
+    wireOut: Set<string>;
+};
+
 type SchemaContext = {
     files: string[];
     owners: Map<string, string>;
     internalMessages: Set<string>;
-    messageType: {
-        wireMessages: Set<string>;
-        wireIn: Set<string>;
-        wireOut: Set<string>;
-    };
+    messageType: SchemaWireMessages;
 };
 
 // Step 1: collect all messages, enums and extensions from the schema.
@@ -321,6 +336,22 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
         });
     };
 
+    const collectWireMessage = (name: string, proto: AnyDesc['proto']) => {
+        const [isWireIn, isWireDebugIn, isWireOut, isWireDebugOut] = findOptions(proto, [
+            'wire_in',
+            'wire_debug_in',
+            'wire_out',
+            'wire_debug_out',
+        ]);
+        if (isWireIn || isWireDebugIn) {
+            wireIn.add(name);
+        }
+        if (isWireOut || isWireDebugOut) {
+            wireOut.add(name);
+        }
+        wireMessages.add(name);
+    };
+
     for (const [name, desc] of messages) {
         if (SKIP.includes(name)) {
             continue;
@@ -335,14 +366,7 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
 
         const isMessageType = findMessageType(name);
         if (isMessageType) {
-            const [isWireIn, isWireOut] = findOptions(isMessageType.proto, ['wire_in', 'wire_out']);
-            if (isWireIn) {
-                wireIn.add(name);
-            }
-            if (isWireOut) {
-                wireOut.add(name);
-            }
-            wireMessages.add(name);
+            collectWireMessage(name, isMessageType.proto);
 
             continue;
         }
@@ -358,17 +382,8 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
                     `wire_type ${wireTypeOption.data[0]} for message '${name}' not found in MessageType/ThpMessageType`,
                 );
             }
-            const [isWireIn, isWireOut] = findOptions(wiredMessageType.proto, [
-                'wire_in',
-                'wire_out',
-            ]);
-            if (isWireIn) {
-                wireIn.add(name);
-            }
-            if (isWireOut) {
-                wireOut.add(name);
-            }
-            wireMessages.add(name);
+
+            collectWireMessage(name, wiredMessageType.proto);
         }
     }
 
@@ -376,7 +391,11 @@ const getSchemaContext = (schema: Schema<PluginOptions>): SchemaContext => {
         files,
         owners,
         internalMessages,
-        messageType: { wireIn, wireOut, wireMessages },
+        messageType: {
+            wireIn,
+            wireOut,
+            wireMessages,
+        },
     };
 };
 
@@ -497,9 +516,8 @@ const buildTypeFile = (
 };
 
 const generateTypes = (schema: Schema<PluginOptions>, schemaContext: SchemaContext) => {
-    const typeFileNames = new Set(schema.options.types);
     for (const file of schema.files) {
-        if (!typeFileNames.has(file.name)) {
+        if (!schema.options.types.has(file.name)) {
             continue;
         }
         const f = schema.generateFile(file.name + '_types.ts');
@@ -508,9 +526,10 @@ const generateTypes = (schema: Schema<PluginOptions>, schemaContext: SchemaConte
     }
 };
 
-// Step 4: generate index.ts file with exports of all messages and enums
-// create MessageType schema with all wire messages
-// create WireInMessage and WireOutMessage union types based on MessageType enum values
+// Generate TypeBox `index.ts` file.
+// - Export all the messages and enums.
+// - Create MessageType schema containing all the wireMessages.
+// - Create WireInMessage and WireOutMessage union types based on MessageType enum values.
 const generateIndexFile = (
     schema: Schema<PluginOptions>,
     { files, owners, messageType }: SchemaContext,
@@ -520,8 +539,23 @@ const generateIndexFile = (
 
     const lines: string[] = [];
 
-    for (const messageName of messageType.wireMessages) {
+    // exclude skipped files.
+    files = files.filter(file => !schema.options.skipTypeBox.has(file));
+
+    const getOwner = (messageName: string) => {
         const owner = owners.get(messageName);
+        if (owner && files.includes(owner)) {
+            return owner;
+        }
+    };
+
+    // exclude messages where the owner file is skipped.
+    const wireMessages = Array.from(messageType.wireMessages).filter(messageName =>
+        getOwner(messageName),
+    );
+
+    for (const messageName of wireMessages) {
+        const owner = getOwner(messageName);
         if (owner) {
             lines.push(`import { ${messageName} } from './${owner}';`);
         }
@@ -537,7 +571,7 @@ const generateIndexFile = (
 
     lines.push('export type MessageType = Static<typeof MessageType>;');
     lines.push('export const MessageType = Type.Object({');
-    for (const messageName of messageType.wireMessages) {
+    for (const messageName of wireMessages) {
         lines.push(messageName + ': ' + messageName + ',');
     }
     lines.push("}, { $id: 'MessageType' });");
@@ -546,7 +580,7 @@ const generateIndexFile = (
     const wireInUnion =
         messageType.wireIn.size > 0
             ? Array.from(messageType.wireIn)
-                  .map(n => `'${n}'`)
+                  .flatMap(n => (wireMessages.includes(n) ? `'${n}'` : []))
                   .join(' | ')
             : 'never';
     lines.push(`export type WireInMessage = ${wireInUnion};`);
@@ -556,7 +590,7 @@ const generateIndexFile = (
     const wireOutUnion =
         messageType.wireOut.size > 0
             ? Array.from(messageType.wireOut)
-                  .map(n => `'${n}'`)
+                  .flatMap(n => (wireMessages.includes(n) ? `'${n}'` : []))
                   .join(' | ')
             : 'never';
     lines.push(`export type WireOutMessage = ${wireOutUnion};`);
@@ -566,11 +600,15 @@ const generateIndexFile = (
     f.print(lines.join('\n'));
 };
 
-// generate *.ts files for corresponding _pb.js files, create types and message schema for each _pb.js file
+// Generate TypeBox `${file.name}.ts` file for each corresponding `_pb.js` file.
 const generateTs = (schema: Schema<PluginOptions>) => {
     const schemaContext = getSchemaContext(schema);
 
     for (const file of schema.files) {
+        if (schema.options.skipTypeBox?.has(file.name)) {
+            continue;
+        }
+
         const f = schema.generateFile(file.name + '.ts');
         f.print(disclaimer(file));
 

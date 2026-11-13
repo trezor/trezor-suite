@@ -57,5 +57,10 @@ runs:
         CURRENTS_WORKSPACE: ${{ inputs.currents-workspace }}
       run: |
         ZIP_PATH="$PWD/test-env-logs-$CURRENTS_MACHINE_ID.zip"
-        zip -j -q "$ZIP_PATH" test-env-logs/*
+        # Windows runners ship 7-Zip, not zip.
+        if command -v zip > /dev/null; then
+          zip -j -q "$ZIP_PATH" test-env-logs/*
+        else
+          (cd test-env-logs && 7z a -bso0 "$ZIP_PATH" ./*)
+        fi
         yarn workspace "$CURRENTS_WORKSPACE" exec currents run attach --caption "Test environment logs" "$ZIP_PATH"

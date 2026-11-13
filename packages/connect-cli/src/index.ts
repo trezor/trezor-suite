@@ -41,14 +41,7 @@ const waitForPairingTag = async (uiEvent: UiRequestThpPairing) => {
         if (!state?.success) {
             throw new Error('DebugLinkState missing: ' + state.error);
         }
-        const { payload } = state;
-        if (payload.type !== 'DebugLinkPairingInfo') {
-            throw new Error(
-                'DebugLinkState missing, received ' + state.payload.type,
-                // state.payload.message,
-            );
-        }
-        const { code_entry_code, code_qr_code, nfc_secret_trezor } = payload.message;
+        const { code_entry_code, code_qr_code, nfc_secret_trezor } = state.payload.message;
         if (selectedMethod === ThpPairingMethod.CodeEntry && code_entry_code) {
             return Number(code_entry_code).toString().padStart(6, '0');
         }
@@ -117,14 +110,20 @@ const runTestCase = async (device: Device) => {
         case 'get-credentials':
             result = await TrezorConnect.thpGetCredentials({ device });
             break;
-        case 'get-account-info':
-            result = await TrezorConnect.getAccountInfo({
-                device,
-                coin: 'btc',
-                path: "m/84'/0'/0'",
-                ...params,
-            });
+        case 'get-account-info': {
+            // Connect reads an account only by its descriptor, so a bitcoin account path is
+            // derived on the device first.
+            const { coin = 'btc', path: accountPath = "m/84'/0'/0'", ...rest } = params;
+            const publicKey = await TrezorConnect.getPublicKey({ device, coin, path: accountPath });
+            result = publicKey.success
+                ? await TrezorConnect.getAccountInfo({
+                      coin,
+                      descriptor: publicKey.payload.xpubSegwit ?? publicKey.payload.xpub,
+                      ...rest,
+                  })
+                : publicKey;
             break;
+        }
         case 'get-features':
             result = await TrezorConnect.getFeatures({ device, ...params });
             break;

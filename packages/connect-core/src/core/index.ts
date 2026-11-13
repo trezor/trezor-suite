@@ -392,7 +392,7 @@ const onCallDevice = async (
             device.eventNames().forEach(e => device.removeAllListeners(e as keyof DeviceEvents));
 
             closePopup(context);
-            cleanup(context);
+            cleanup(context, device);
 
             if (method) {
                 method.dispose();
@@ -412,8 +412,8 @@ const onCallDevice = async (
  * @returns {void}
  * @memberof Core
  */
-const cleanup = ({ uiPromises, logger }: CoreContext) => {
-    uiPromises.clear();
+const cleanup = ({ uiPromises, logger }: CoreContext, device?: Device) => {
+    uiPromises.clear(device);
     logger.debug('Cleanup...');
 };
 
@@ -813,6 +813,7 @@ export class Core extends EventEmitter {
             case UI_RESPONSE.RECEIVE_PASSPHRASE:
             case UI_RESPONSE.RECEIVE_THP_PAIRING_TAG:
             case UI_RESPONSE.RECEIVE_WORD:
+            case UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO:
                 this.uiPromises.resolve(message);
                 break;
             case UI_RESPONSE.RECEIVE_FIRMWARE: {

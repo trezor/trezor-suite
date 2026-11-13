@@ -18,6 +18,8 @@ export const createStoreFromPreloadedState = <TState extends object = object>(
     const defaultState = {
         discreetMode: { isActive: false },
         wallet: {
+            // Every app store has accounts; token metadata reads them before any provider.
+            accounts: [] as unknown[],
             settings: { localCurrency: 'usd', bitcoinAmountUnit: 0, addressDisplayType: 'chunked' },
         },
         locale: { systemLocaleCode: 'en', appLocaleCode: 'system' },

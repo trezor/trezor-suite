@@ -83,7 +83,6 @@ export * from './components/form/Input/Input';
 export * from './components/form/Radio/Radio';
 export * from './components/form/Range/Range';
 export * from './components/form/Select/Select';
-export * from './components/form/Select/SelectCacheProvider';
 export * from './components/form/SelectBar/SelectBar';
 export * from './components/form/Switch/Switch';
 export * from './components/form/Textarea/Textarea';

@@ -1,7 +1,11 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
-import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
+import {
+    TradingTokenMetadataProvider,
+    selectTradingExchangeSelectedQuote,
+    tradingExchangeActions,
+} from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -9,7 +13,6 @@ import { type TradingRootState } from '@suite-native/trading-state';
 
 import { LimitPicker } from './LimitPicker';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
-import { TradingMetadataProvider } from '../../general/TradingMetadataProvider';
 
 type State = TradingRootState;
 
@@ -36,7 +39,7 @@ describe('LimitPicker', () => {
                     store,
                     networks: mockNetworksServices(),
                 },
-                wrapper: TradingMetadataProvider,
+                wrapper: TradingTokenMetadataProvider,
             },
         );
 

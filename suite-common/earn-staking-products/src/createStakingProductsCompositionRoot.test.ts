@@ -9,12 +9,12 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
-import { createSolanaExternalDelegationProduct } from './products/solana/external/createSolanaExternalDelegationProduct';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/solana/everstake-native/messageSystemFeatures';
 import {
-    type SolanaNativeDelegationProductDeps,
-    createSolanaNativeDelegationProduct,
-} from './products/solana/native/createSolanaNativeDelegationProduct';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductDescriptor';
+    type SolanaEverstakeNativeProductDeps,
+    createSolanaEverstakeNativeProduct,
+} from './products/solana/everstake-native/product';
+import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
 import { everstakeProvider } from './providers/everstake';
 
 describe('createStakingProductsCompositionRoot', () => {
@@ -35,6 +35,17 @@ describe('createStakingProductsCompositionRoot', () => {
         ]);
     });
 
+    it('gives each Everstake pool the minimum stake of its own deployment', () => {
+        expect(
+            adapters
+                .filter(({ descriptor }) => descriptor.type === 'pooled')
+                .map(({ descriptor }) => [descriptor.id, descriptor.limits.minStakeAmount]),
+        ).toEqual([
+            ['eth:eth:everstake:pooled', '10000000000000000'],
+            ['thod:thod:everstake:pooled', '100000000000000000'],
+        ]);
+    });
+
     it('registers descriptors that match the contract', () => {
         adapters.forEach(adapter => {
             expect(stakingProductDescriptorSchema.safeParse(adapter.descriptor).success).toBe(true);
@@ -44,18 +55,19 @@ describe('createStakingProductsCompositionRoot', () => {
 
 const stats: EthOrSolStats = { symbol: 'sol', apy: 6.24 };
 
-type CreateSolanaProductsDeps = SolanaNativeDelegationProductDeps;
+type CreateSolanaProductsDeps = SolanaEverstakeNativeProductDeps;
 
 const createProducts = (symbol: string) => [
-    createSolanaNativeDelegationProduct({
+    createSolanaEverstakeNativeProduct({
         networkSymbol: asNetworkSymbol(symbol),
         provider: everstakeProvider,
-        messageSystemFeatures: symbol === 'sol' ? EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES : {},
+        messageSystemFeatures:
+            symbol === 'sol' ? SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES : {},
         ...createMockDeps<CreateSolanaProductsDeps>({
             getStakingStats: () => Promise.resolve(stats),
         }),
     }),
-    createSolanaExternalDelegationProduct({
+    createSolanaExternalNativeProduct({
         networkSymbol: asNetworkSymbol(symbol),
         managedProviders: [everstakeProvider],
     }),

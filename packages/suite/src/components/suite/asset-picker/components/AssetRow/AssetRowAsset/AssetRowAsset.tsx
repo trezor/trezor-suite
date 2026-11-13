@@ -1,6 +1,7 @@
+import { AssetIcon } from '@suite/assets';
 import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
-import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
+import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 
 import { useSelector } from '#src/hooks/suite';
 
@@ -27,6 +28,8 @@ export function AssetRowAsset({
         selectShouldShowNetworkIcon(state, asset.networkSymbol, asset.contractAddress),
     );
 
+    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
+
     return (
         <ItemClickableContainer
             isDisabled={isDisabled}
@@ -35,21 +38,17 @@ export function AssetRowAsset({
             }}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
-                {asset.isNativeToken ? (
-                    <TokenIcon size={40} symbol={asset.symbol} showNetworkIcon />
-                ) : (
-                    <TokenIcon
-                        size={40}
-                        symbol={asset.networkSymbol}
-                        contractAddress={asset.contractAddress}
-                        placeholder={asset.displaySymbol}
-                        showNetworkIcon={showNetworkIcon}
-                    />
-                )}
+                <AssetIcon
+                    size={40}
+                    networkSymbol={asset.networkSymbol}
+                    contractAddress={tokenContract}
+                    showNetworkIcon={!tokenContract || showNetworkIcon}
+                />
                 <AssetDetails
                     name={asset.displaySymbolName ?? asset.name}
                     displaySymbol={asset.displaySymbol}
-                    networkName={asset.networkName}
+                    networkSymbol={asset.networkSymbol}
+                    tokenContract={tokenContract}
                 />
             </Row>
             {balance && (

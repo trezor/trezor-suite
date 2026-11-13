@@ -8,6 +8,7 @@
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
+        { "path": "../token" },
         { "path": "../token-definitions" },
         { "path": "../tokens" },
         { "path": "../trading" },

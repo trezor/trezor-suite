@@ -10,13 +10,14 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { type TradingExchangeType, type TradingSendRejectedProps } from '../../types';
+import { type TradingError, type TradingExchangeType } from '../../types';
 import { addIdsToQuotes } from '../../utils';
 import { exchangeUtils } from '../../utils/exchange/exchangeUtils';
+import { getInvityErrorCause } from '../../utils/tradingErrorUtils';
 
-const fetchRejectedValue: TradingSendRejectedProps = {
+const fetchRejectedValue: TradingError = {
     type: 'error',
-    error: { id: 'TR_TRADING_REFRESH_TRANSACTION_FAILED' },
+    code: 'refresh-transaction-failed',
 };
 
 export type FetchSelectedProviderQuoteThunkState = TradingRootState;
@@ -24,7 +25,7 @@ export type FetchSelectedProviderQuoteThunkState = TradingRootState;
 export const fetchSelectedProviderQuoteThunk = createThunk<
     ExchangeTrade,
     void,
-    { rejectValue: TradingSendRejectedProps; state: FetchSelectedProviderQuoteThunkState }
+    { rejectValue: TradingError; state: FetchSelectedProviderQuoteThunkState }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/fetchSelectedProviderQuote`,
     async (_, { dispatch, getState, rejectWithValue, signal }) => {
@@ -38,8 +39,8 @@ export const fetchSelectedProviderQuoteThunk = createThunk<
         let quotes: ExchangeTrade[] | undefined;
         try {
             quotes = await tradeApi.getExchangeQuotes(quotesRequest, signal);
-        } catch {
-            return rejectWithValue(fetchRejectedValue);
+        } catch (error) {
+            return rejectWithValue({ ...fetchRejectedValue, cause: getInvityErrorCause(error) });
         }
 
         const successQuotes = addIdsToQuotes<TradingExchangeType>(

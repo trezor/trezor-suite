@@ -638,7 +638,7 @@ describe('pushStakeTransactionThunk', () => {
             ok: false,
             error: {
                 error: 'push-transaction-pending-conflict',
-                metadata: { error: { message: 'could not replace existing tx' } },
+                message: 'could not replace existing tx',
             },
         });
         errorSpy.mockRestore();

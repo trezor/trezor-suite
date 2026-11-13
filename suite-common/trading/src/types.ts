@@ -1,4 +1,3 @@
-import { type SerializedError } from '@reduxjs/toolkit';
 import type {
     BtcSwapComposeTemplate,
     BuyCryptoPaymentMethod,
@@ -23,17 +22,20 @@ import type {
 import { type CountryCode } from '@suite-common/geolocation';
 import { type Network } from '@suite-common/networks';
 import { type TokenAddress } from '@suite-common/tokens';
+import { type SendFormError } from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
     type BaseCurrencyOption,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionError,
 } from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
+import { type ERRORS } from '@trezor/connect-common';
 import { type SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
 import { type NetworkSymbol } from '@trezor/network-module-types';
-import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
+import { type Err, type Ok } from '@trezor/type-utils';
 
 import type * as constants from './constants';
 
@@ -90,7 +92,7 @@ export type TradingAssetOptionWithContractAddress = TradingAssetOptionBase & {
     name: string;
     symbol: string;
     displaySymbol: string;
-    contractAddress: string;
+    contractAddress: TokenAddress;
 };
 
 export type TradingAssetOption =
@@ -282,13 +284,45 @@ export type MinimalExchangeFormProps = {
 
 export type TradingExchangeStepType = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION' | 'SIGN_DATA';
 
-export type TradingSendRejectedProps<TranslationKey extends string = string> = {
-    type: 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
-    error: {
-        id: TranslationKey;
-        values?: Record<string, PrimitiveType>;
+export type TradingErrorCode =
+    | 'cannot-send-transaction'
+    | 'sign-transaction-failed'
+    | 'push-transaction-failed'
+    | 'cannot-create-transaction'
+    | 'compose-failed'
+    | 'missing-composed-data'
+    | 'missing-fee-level'
+    | 'incorrect-serialized-data'
+    | 'refresh-transaction-failed'
+    | 'no-response'
+    | 'invalid-response'
+    | 'payment-requests-failed'
+    | 'device-not-connected'
+    | 'nonce-failed'
+    | 'verify-address-failed';
+
+/**
+ * The original failure behind a trading error.
+ */
+export type TradingErrorCause =
+    | { source: 'send-form'; error: TradingSignAndPushError }
+    | {
+          source: 'precompose';
+          errorMessage: NonNullable<PrecomposedTransactionError['errorMessage']>;
+      }
+    | { source: 'connect'; code?: ERRORS.ErrorCode; message: string }
+    | { source: 'invity'; message: string }
+    | { source: 'unexpected'; message?: string };
+
+type TradingErrorType = 'error' | 'sign-tx-error' | 'sign-transaction-timeout' | 'sign-cancelled';
+
+export type TradingError = {
+    [TType in TradingErrorType]: {
+        type: TType;
+        code: TradingErrorCode;
+        cause?: TradingErrorCause;
     };
-};
+}[TradingErrorType];
 
 export type TradingExchangeUserConsentProps = {
     provider: string;
@@ -359,4 +393,14 @@ export type TradingVerifiedAddress =
       }
     | undefined;
 
-export type TradingFulfillValue = Ok<{ txid: string }> | Err<SerializedError> | undefined;
+export type PushApprovalRejectedError = {
+    error: 'push-approval-rejected';
+};
+
+export type TradingSignAndPushError = SendFormError | PushApprovalRejectedError;
+
+/**
+ * Result of signing and pushing a trading transaction.
+ * `undefined` means the flow stopped and the user was already informed, so nothing is left to report.
+ */
+export type TradingFulfillValue = Ok<{ txid: string }> | Err<TradingSignAndPushError> | undefined;

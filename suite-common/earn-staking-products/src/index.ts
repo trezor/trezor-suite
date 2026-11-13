@@ -1,36 +1,36 @@
 export { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
 export {
-    createCardanoExternalDelegationProduct,
-    type CreateCardanoExternalDelegationProductParams,
-} from './products/cardano/external/createCardanoExternalDelegationProduct';
+    createCardanoEverstakeNativeProduct,
+    type CardanoEverstakeNativeProductDeps,
+    type CreateCardanoEverstakeNativeProductParams,
+} from './products/cardano/everstake-native/product';
 export {
-    type CardanoNativeDelegationProductDeps,
-    createCardanoNativeDelegationProduct,
-    type CreateCardanoNativeDelegationProductParams,
-} from './products/cardano/native/createCardanoNativeDelegationProduct';
+    createCardanoExternalNativeProduct,
+    type CreateCardanoExternalNativeProductParams,
+} from './products/cardano/external-native/product';
 export {
-    createCardanoRetiredDelegationProduct,
-    type CreateCardanoRetiredDelegationProductParams,
-} from './products/cardano/retired/createCardanoRetiredDelegationProduct';
+    createCardanoFivebinariesNativeProduct,
+    type CreateCardanoFivebinariesNativeProductParams,
+} from './products/cardano/fivebinaries-native/product';
 export {
-    createEverstakePooledProduct,
-    type CreateEverstakePooledProductParams,
-    type EverstakePooledProductDeps,
-} from './products/ethereum/createEverstakePooledProduct';
+    createEthereumEverstakePooledProduct,
+    type CreateEthereumEverstakePooledProductParams,
+    type EthereumEverstakePooledProductDeps,
+} from './products/ethereum/everstake-pooled/product';
 export {
-    createSolanaExternalDelegationProduct,
-    type CreateSolanaExternalDelegationProductParams,
-} from './products/solana/external/createSolanaExternalDelegationProduct';
+    createSolanaEverstakeNativeProduct,
+    type CreateSolanaEverstakeNativeProductParams,
+    type SolanaEverstakeNativeProductDeps,
+} from './products/solana/everstake-native/product';
 export {
-    createSolanaNativeDelegationProduct,
-    type CreateSolanaNativeDelegationProductParams,
-    type SolanaNativeDelegationProductDeps,
-} from './products/solana/native/createSolanaNativeDelegationProduct';
+    createSolanaExternalNativeProduct,
+    type CreateSolanaExternalNativeProductParams,
+} from './products/solana/external-native/product';
 export {
-    createTronCuratedProduct,
-    type CreateTronCuratedProductParams,
-    type TronCuratedProductDeps,
-} from './products/tron/createTronCuratedProduct';
+    createTronNativeProduct,
+    type CreateTronNativeProductParams,
+    type TronNativeProductDeps,
+} from './products/tron/native/product';
 export { curatedProvider } from './providers/curated';
 export { everstakeProvider } from './providers/everstake';
 export { externalProvider } from './providers/external';

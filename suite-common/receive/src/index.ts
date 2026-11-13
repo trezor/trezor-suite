@@ -23,3 +23,4 @@ export {
     type GlobalReceiveAssetCatalogStatus,
     useGlobalReceiveAssets,
 } from './hooks/useGlobalReceiveAssets';
+export { ReceiveTokenMetadataProvider } from './components/ReceiveTokenMetadataProvider';

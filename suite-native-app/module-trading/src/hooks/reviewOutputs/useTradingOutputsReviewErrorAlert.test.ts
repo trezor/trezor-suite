@@ -1,8 +1,9 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { type TradingError } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { getTranslation } from '@suite-native/intl';
+import { type TxKeyPath, getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 import { type TradingRootState } from '@suite-native/trading-state';
 
@@ -41,14 +42,20 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         const { result } = await renderUseTradingOutputsReviewErrorAlert();
 
         await act(() => {
-            result.current(mockOnRetry, mockOnCancel);
+            result.current(
+                { type: 'sign-tx-error', code: 'cannot-send-transaction' },
+                mockOnRetry,
+                mockOnCancel,
+            );
         });
 
         expect(mockShowAlert).toHaveBeenCalledTimes(1);
         expect(mockShowAlert).toHaveBeenCalledWith({
             icon: 'warningCircle',
-            title: getTranslation('moduleSend.review.outputs.errorAlert.generic.title'),
-            description: getTranslation('moduleSend.review.outputs.errorAlert.generic.description'),
+            title: getTranslation('moduleTrading.tradingReviewOutputs.errorAlert.title'),
+            description: getTranslation(
+                'moduleTrading.tradingReviewOutputs.errorAlert.prepareTransactionDescription',
+            ),
             primaryButtonTitle: getTranslation('generic.buttons.tryAgain'),
             primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
             onPressPrimaryButton: mockOnRetry,
@@ -56,5 +63,45 @@ describe('useTradingOutputsReviewErrorAlert', () => {
             secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
             onPressSecondaryButton: mockOnCancel,
         });
+    });
+
+    it.each<[TradingError, TxKeyPath]>([
+        [
+            { type: 'error', code: 'refresh-transaction-failed' },
+            'moduleTrading.tradingReviewOutputs.errorAlert.quoteExpiredDescription',
+        ],
+        [
+            {
+                type: 'error',
+                code: 'invalid-response',
+                cause: { source: 'invity', message: 'Bad gateway' },
+            },
+            'moduleTrading.tradingReviewOutputs.errorAlert.providerNoResponseDescription',
+        ],
+        [
+            { type: 'sign-tx-error', code: 'device-not-connected' },
+            'moduleTrading.tradingReviewOutputs.errorAlert.deviceNotConnectedDescription',
+        ],
+        [
+            {
+                type: 'sign-tx-error',
+                code: 'push-transaction-failed',
+                cause: {
+                    source: 'send-form',
+                    error: { error: 'push-transaction-failed', message: 'Backend error' },
+                },
+            },
+            'moduleTrading.tradingReviewOutputs.errorAlert.pushTransactionDescription',
+        ],
+    ])('should describe %o without its cause message', async (tradingError, descriptionId) => {
+        const { result } = await renderUseTradingOutputsReviewErrorAlert();
+
+        await act(() => {
+            result.current(tradingError, jest.fn(), jest.fn());
+        });
+
+        expect(mockShowAlert).toHaveBeenCalledWith(
+            expect.objectContaining({ description: getTranslation(descriptionId) }),
+        );
     });
 });

@@ -7,19 +7,19 @@ import {
 import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
+import { createCardanoEverstakeNativeProduct } from './products/cardano/everstake-native/product';
+import { createCardanoExternalNativeProduct } from './products/cardano/external-native/product';
+import { createCardanoFivebinariesNativeProduct } from './products/cardano/fivebinaries-native/product';
 import {
-    CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
-    EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
-} from './products/cardano/cardanoMessageSystemFeatures';
-import { createCardanoExternalDelegationProduct } from './products/cardano/external/createCardanoExternalDelegationProduct';
-import { createCardanoNativeDelegationProduct } from './products/cardano/native/createCardanoNativeDelegationProduct';
-import { createCardanoRetiredDelegationProduct } from './products/cardano/retired/createCardanoRetiredDelegationProduct';
-import { createEverstakePooledProduct } from './products/ethereum/createEverstakePooledProduct';
-import { createSolanaExternalDelegationProduct } from './products/solana/external/createSolanaExternalDelegationProduct';
-import { createSolanaNativeDelegationProduct } from './products/solana/native/createSolanaNativeDelegationProduct';
-import { EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES } from './products/solana/native/solanaNativeDelegationProductDescriptor';
-import { createTronCuratedProduct } from './products/tron/createTronCuratedProduct';
-import { TRON_CURATED_MESSAGE_SYSTEM_FEATURES } from './products/tron/tronCuratedProductDescriptor';
+    CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
+    CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
+} from './products/cardano/messageSystemFeatures';
+import { createEthereumEverstakePooledProduct } from './products/ethereum/everstake-pooled/product';
+import { SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/solana/everstake-native/messageSystemFeatures';
+import { createSolanaEverstakeNativeProduct } from './products/solana/everstake-native/product';
+import { createSolanaExternalNativeProduct } from './products/solana/external-native/product';
+import { TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './products/tron/native/messageSystemFeatures';
+import { createTronNativeProduct } from './products/tron/native/product';
 import { everstakeProvider } from './providers/everstake';
 import { fivebinariesProvider } from './providers/fivebinaries';
 import { luganodesProvider } from './providers/luganodes';
@@ -30,11 +30,11 @@ const createEthereumStakingProducts = (): readonly StakingProductAdapter[] => {
     const ethereumStakingApi = { getStakingStats, getEthereumValidatorsQueue };
 
     return [
-        createEverstakePooledProduct({
+        createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),
             ...ethereumStakingApi,
         }),
-        createEverstakePooledProduct({
+        createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('thod'),
             ...ethereumStakingApi,
         }),
@@ -45,23 +45,23 @@ const createSolanaStakingProducts = (): readonly StakingProductAdapter[] => {
     const solanaStakingApi = { getStakingStats };
 
     return [
-        createSolanaNativeDelegationProduct({
+        createSolanaEverstakeNativeProduct({
             networkSymbol: asNetworkSymbol('sol'),
             provider: everstakeProvider,
-            messageSystemFeatures: EVERSTAKE_SOLANA_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: SOLANA_EVERSTAKE_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
             ...solanaStakingApi,
         }),
-        createSolanaExternalDelegationProduct({
+        createSolanaExternalNativeProduct({
             networkSymbol: asNetworkSymbol('sol'),
             managedProviders: [everstakeProvider],
         }),
-        createSolanaNativeDelegationProduct({
+        createSolanaEverstakeNativeProduct({
             networkSymbol: asNetworkSymbol('dsol'),
             provider: everstakeProvider,
             messageSystemFeatures: {},
             ...solanaStakingApi,
         }),
-        createSolanaExternalDelegationProduct({
+        createSolanaExternalNativeProduct({
             networkSymbol: asNetworkSymbol('dsol'),
             managedProviders: [everstakeProvider],
         }),
@@ -72,41 +72,42 @@ const createCardanoStakingProducts = (): readonly StakingProductAdapter[] => {
     const cardanoStakingApi = { getCardanoPools };
 
     const managedProducts = [
-        createCardanoNativeDelegationProduct({
+        createCardanoEverstakeNativeProduct({
             networkSymbol: asNetworkSymbol('ada'),
             provider: everstakeProvider,
-            messageSystemFeatures: EVERSTAKE_CARDANO_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: CARDANO_EVERSTAKE_NATIVE_MESSAGE_SYSTEM_FEATURES,
             ...cardanoStakingApi,
         }),
-        createCardanoRetiredDelegationProduct({
+        createCardanoFivebinariesNativeProduct({
             networkSymbol: asNetworkSymbol('ada'),
             provider: fivebinariesProvider,
-            messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
         }),
     ];
 
+    const managedProviders = managedProducts.map(({ descriptor }) =>
+        getStakingProvider(descriptor.providerId),
+    );
+
     // A stake key delegates to one pool, so the external product
     // owns exactly the pools the products above do not.
-    return [
-        ...managedProducts,
-        createCardanoExternalDelegationProduct({
-            networkSymbol: asNetworkSymbol('ada'),
-            managedProviders: managedProducts.map(({ descriptor }) =>
-                getStakingProvider(descriptor.providerId),
-            ),
-            messageSystemFeatures: CARDANO_STAKE_KEY_MESSAGE_SYSTEM_FEATURES,
-        }),
-    ];
+    const externalProduct = createCardanoExternalNativeProduct({
+        networkSymbol: asNetworkSymbol('ada'),
+        managedProviders,
+        messageSystemFeatures: CARDANO_STAKING_MESSAGE_SYSTEM_FEATURES,
+    });
+
+    return [...managedProducts, externalProduct];
 };
 
 const createTronStakingProducts = (): readonly StakingProductAdapter[] => {
     const tronStakingApi = { getTronStakingStats };
 
     return [
-        createTronCuratedProduct({
+        createTronNativeProduct({
             networkSymbol: asNetworkSymbol('trx'),
             providers: [luganodesProvider, p2pProvider],
-            messageSystemFeatures: TRON_CURATED_MESSAGE_SYSTEM_FEATURES,
+            messageSystemFeatures: TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
             ...tronStakingApi,
         }),
     ];

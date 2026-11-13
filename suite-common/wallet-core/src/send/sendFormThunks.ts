@@ -87,6 +87,7 @@ import {
 } from './sendFormSolanaThunks';
 import {
     type ComposeFeeLevelsError,
+    type EnhanceTransactionError,
     type PushTransactionError,
     type SignTransactionError,
     type SignTransactionTimeoutError,
@@ -512,10 +513,7 @@ export const pushSendFormTransactionThunk = createThunk<
         if (!serializedTx || !precomposedTransaction)
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: {
-                    success: false,
-                    error: { message: 'Transaction not found.', code: 'Failure_UnknownCode' },
-                },
+                message: 'Transaction not found.',
             });
 
         const txData = getMevProtectedTxData(
@@ -648,7 +646,8 @@ export const pushSendFormTransactionThunk = createThunk<
             error: isPendingConflict
                 ? 'push-transaction-pending-conflict'
                 : 'push-transaction-failed',
-            metadata: pushTxResponse,
+            errorCode: pushTxResponse.error.code,
+            message: pushTxResponse.error.message,
         });
     },
 );
@@ -863,7 +862,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         selectedAccount: Account;
     },
     {
-        rejectValue: string;
+        rejectValue: EnhanceTransactionError;
         state: EnhancePrecomposedTransactionThunkState;
         extra: EnhancePrecomposedTransactionThunkDeps;
     }
@@ -875,7 +874,11 @@ export const enhancePrecomposedTransactionThunk = createThunk<
     ) => {
         const device = selectSelectedDevice(getState());
         const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
-        if (!device) return rejectWithValue('Device not found');
+        if (!device)
+            return rejectWithValue({
+                error: 'enhance-transaction-failed',
+                message: 'Device not found',
+            });
 
         const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
             if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
