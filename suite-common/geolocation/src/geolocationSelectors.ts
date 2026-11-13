@@ -5,3 +5,9 @@ export type GeolocationRootState = {
 };
 
 export const selectCountryCode = (state: GeolocationRootState) => state.geolocation.countryCode;
+
+export const selectCountryCodeFetch = (state: GeolocationRootState) =>
+    state.geolocation.countryCodeFetch;
+
+export const selectPresenceIpCountry = (state: GeolocationRootState) =>
+    state.geolocation.countryCodeFetch?.status === 'success' ? state.geolocation.countryCode : null;

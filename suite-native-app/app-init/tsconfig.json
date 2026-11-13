@@ -27,6 +27,7 @@
         {
             "path": "../../suite-native/analytics-redux"
         },
+        { "path": "../../suite-native/regions" },
         { "path": "../../suite-native/settings" },
         { "path": "../../packages/redux-utils" }
     ]

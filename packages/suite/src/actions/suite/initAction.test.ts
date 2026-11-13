@@ -35,6 +35,7 @@ import {
 import { connectPopupInitialState } from '@suite-common/connect-popup';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
+import { geolocationInitialState } from '@suite-common/geolocation';
 import {
     fetchConfigThunk,
     initMessageSystemThunk,
@@ -90,6 +91,17 @@ import { createWalletReducer } from '#src/reducers/wallet';
 
 import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
 
+const mockInitPresenceDetection = jest.fn();
+
+jest.mock('@suite/regions', () => ({
+    ...jest.requireActual('@suite/regions'),
+    initPresenceDetectionThunk: () => {
+        mockInitPresenceDetection();
+
+        return () => Promise.resolve();
+    },
+}));
+
 const walletReducers = createWalletReducer(mockExtraDependenciesForReducers);
 
 const deviceReducer = prepareDeviceReducer({
@@ -141,6 +153,7 @@ const getInitialState = (): InitThunkState => ({
     device: deviceReducer(undefined, EMPTY_ACTION),
     metadata: metadataReducer(undefined, EMPTY_ACTION),
     firmware: firmwareInitialState,
+    geolocation: geolocationInitialState,
 });
 
 type Fixture = {
@@ -378,5 +391,14 @@ describe('Suite init thunk', () => {
                 expect(store.getState().router.app).toEqual(options.expectedApp);
             }
         });
+    });
+
+    it('starts presence detection', async () => {
+        const { store } = initStore(getInitialState());
+        mockInitPresenceDetection.mockClear();
+
+        await store.dispatch(initThunk());
+
+        expect(mockInitPresenceDetection).toHaveBeenCalledTimes(1);
     });
 });
