@@ -205,7 +205,7 @@
         "polished": "^4.3.1",
         "react": "19.3.0",
         "react-dom": "19.3.0",
-        "react-error-boundary": "^6.0.0",
+        "react-error-boundary": "^6.1.6",
         "react-focus-lock": "^2.13.7",
         "react-hook-form": "^7.77.0",
         "react-intl": "^12.1.4",
