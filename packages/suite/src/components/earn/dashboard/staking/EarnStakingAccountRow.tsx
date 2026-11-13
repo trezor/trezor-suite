@@ -11,6 +11,7 @@ import {
     getNetworkAdjustedStakingBalance,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
+    isCardanoRegisteredWithoutPool,
     isCardanoWithdrawalBlockedByMissingDrep,
     selectAccountClaimTransactions,
     selectAccountIsStakingActive,
@@ -57,6 +58,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
+    const hasNoPool = isCardanoRegisteredWithoutPool(account);
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const isClaimPending = useSelector(state =>
         selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
@@ -282,8 +284,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     };
 
     const apyAvailable =
-        stakingStatus !== 'staking-outdated-provider' &&
-        stakingStatus !== 'staking-remaining-votes';
+        hasNoPool ||
+        (stakingStatus !== 'staking-outdated-provider' &&
+            stakingStatus !== 'staking-remaining-votes');
 
     const actionButtonsProps = {
         stakingStatus,
@@ -322,7 +325,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
 
                     {stakingStatus === 'staking-outdated-provider' && (
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} hasNoPool={hasNoPool} />
                     )}
 
                     {stakingStatus === 'staking-remaining-votes' && (
@@ -482,7 +485,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             {stakingStatus === 'staking-outdated-provider' && (
                 <>
                     <Table.Cell colSpan={2}>
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        <EarnStakingOutdatedProvider apy={newProviderApy} hasNoPool={hasNoPool} />
                     </Table.Cell>
                     <Table.Cell align="end">
                         <EarnStakingActionButtons {...actionButtonsProps} />

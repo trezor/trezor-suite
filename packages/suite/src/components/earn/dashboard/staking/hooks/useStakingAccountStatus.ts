@@ -4,6 +4,7 @@ import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import {
     getStakingLimitsByNetworkSymbol,
     getTronAvailableVotingPower,
+    isCardanoRegisteredWithoutPool,
     isCardanoStakedOutsideEverstake,
     selectAccountIsStakingActive,
     selectCardanoPoolsInfo,
@@ -39,7 +40,8 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
 
     return useMemo(() => {
         if (
-            isCardanoStakedOutsideEverstake(account, cardanoStakingPools) &&
+            (isCardanoStakedOutsideEverstake(account, cardanoStakingPools) ||
+                isCardanoRegisteredWithoutPool(account)) &&
             isNewProviderBannerEnabled
         ) {
             return 'staking-outdated-provider';
