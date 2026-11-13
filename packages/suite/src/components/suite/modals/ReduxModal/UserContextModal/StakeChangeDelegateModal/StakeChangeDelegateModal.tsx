@@ -8,6 +8,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     CARDANO_ALWAYS_ABSTAIN_DREP_ID,
+    CARDANO_ALWAYS_NO_CONFIDENCE_DREP_ID,
     areCardanoDrepIdsEqual,
     getCardanoAccountDrepId,
     getCardanoCurrentVotingOption,
@@ -62,6 +63,8 @@ export const StakeChangeDelegateModalLoaded = ({
         composedLevels,
         selectedFee,
         isComposing,
+        hasComposeError,
+        retryCompose,
         methods,
         handleSubmit,
         signTx,
@@ -138,6 +141,13 @@ export const StakeChangeDelegateModalLoaded = ({
 
                 break;
             }
+            case 'no_confidence': {
+                if (currentDrepId === CARDANO_ALWAYS_NO_CONFIDENCE_DREP_ID) {
+                    return { isDisabled: true, errorType: 'current_delegate' as const };
+                }
+
+                break;
+            }
             case 'another_drep': {
                 const { drepId } = selectedVotingDelegation;
 
@@ -170,6 +180,10 @@ export const StakeChangeDelegateModalLoaded = ({
             return <Translation id="TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP" />;
         }
 
+        if (hasComposeError) {
+            return <Translation id="TR_STAKING_ERROR_GENERIC" />;
+        }
+
         return composeErrorMessage;
     }, [
         isVotingDisabled,
@@ -177,6 +191,7 @@ export const StakeChangeDelegateModalLoaded = ({
         isSelectionInvalid,
         errorType,
         composeErrorMessage,
+        hasComposeError,
     ]);
 
     const options = useMemo(
@@ -210,6 +225,17 @@ export const StakeChangeDelegateModalLoaded = ({
                     }
                 >
                     <Column gap={16}>
+                        {hasComposeError && (
+                            <Banner
+                                intent="critical"
+                                description={<Translation id="TR_STAKING_ERROR_GENERIC" />}
+                                rightContent={
+                                    <Banner.Button onClick={() => retryCompose()}>
+                                        <Translation id="TR_RETRY" />
+                                    </Banner.Button>
+                                }
+                            />
+                        )}
                         <CurrentVotingPreference account={account} />
                         <VotingPreferenceCard
                             account={account}

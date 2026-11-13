@@ -131,6 +131,8 @@ const getConfirmedVoteDrep = (
             return decodeCardanoDrepId(confirmedOption.drepId);
         case 'everstake':
             return { type: PROTO.CardanoDRepType.KEY_HASH, hex: CARDANO_EVERSTAKE_DREP.hex };
+        case 'no_confidence':
+            return { type: PROTO.CardanoDRepType.NO_CONFIDENCE };
         case 'abstain':
         case 'current':
         case undefined:
@@ -359,7 +361,22 @@ export const composeTransactionThunk =
             return getComposeErrorLevels(txPlan.error, account.symbol, predefinedLevels);
         }
 
-        if (txPlan?.type !== 'final') return;
+        if (txPlan?.type !== 'final') {
+            const isKeepingCurrentVote =
+                votingDelegation?.accountKey === account.key &&
+                votingDelegation.option.type === 'current' &&
+                hasCardanoLiveVoteDelegation(account);
+
+            if (formValues.stakeType === 'change-delegate' && !isKeepingCurrentVote) {
+                return getComposeErrorLevels(
+                    'TR_GENERIC_ERROR_TITLE',
+                    account.symbol,
+                    predefinedLevels,
+                );
+            }
+
+            return;
+        }
 
         const amountAda = calculateOutputAmount(account, formValues.stakeType, txPlan?.totalSpent);
 

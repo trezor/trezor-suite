@@ -354,6 +354,19 @@ describe('prepareTxPlan', () => {
             },
         );
 
+        it('encodes a confirmed no-confidence option without treating it as a custom DRep', async () => {
+            await prepare(action, {
+                accountKey: STAKE_READY_ACCOUNT_KEY,
+                option: { type: 'no_confidence' },
+            });
+
+            expect(getVoteDelegationCertificate()?.dRep).toEqual({
+                type: PROTO.CardanoDRepType.NO_CONFIDENCE,
+                keyHash: undefined,
+                scriptHash: undefined,
+            });
+        });
+
         it('delegates the vote to the custom DRep when the drepId is valid', async () => {
             await prepare(action, {
                 accountKey: STAKE_READY_ACCOUNT_KEY,
@@ -575,6 +588,27 @@ describe('composeTransactionThunk', () => {
             expect(levels?.normal).toEqual(expectedLevel);
         },
     );
+
+    it.each(['utxo', 'addresses'] as const)(
+        'offers a retry when change-delegate cannot prepare a plan without %s',
+        async field => {
+            const account = createStakeReadyAccount();
+            delete account[field];
+
+            const levels = await compose(account, { type: 'abstain' });
+
+            expect(levels?.normal).toMatchObject({
+                type: 'error',
+                error: 'TR_GENERIC_ERROR_TITLE',
+            });
+        },
+    );
+
+    it('keeps an unchanged live voting preference as an intentional empty plan', async () => {
+        const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
+
+        await expect(compose(account, { type: 'current' })).resolves.toBeUndefined();
+    });
 
     it('keeps the selected custom fee level in the error levels, so the form never waits for a missing level', async () => {
         mockComposeError('UTXO_BALANCE_INSUFFICIENT');
