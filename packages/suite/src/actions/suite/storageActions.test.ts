@@ -13,13 +13,18 @@ import { suiteSettingsInitialState } from '@suite/settings';
 import { type DesktopSuiteSyncRootState, prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
+import {
+    persistentDeviceDataActions,
+    preparePersistentDeviceDataReducer,
+    selectDelegatedIdentityKeyByDeviceId,
+} from '@suite-common/persistent-device-data';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type WithSuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { type DelegatedIdentityKey } from '@suite-common/suite-types';
+import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     createTestCompositionRoot,
     testMocks,
@@ -58,6 +63,7 @@ import {
 import suiteReducer, { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
 import graphReducer from '#src/reducers/wallet/graphReducer';
 import { type Db, type DbDep } from '#src/storage/createDb';
+import { storageLoadReducers } from '#src/support/storageLoadReducers';
 import { type PreloadStore, createPreloadStore } from '#src/support/suite/createPreloadStore';
 import { type AcquiredDevice } from '#src/types/suite';
 
@@ -103,6 +109,12 @@ const deviceReducer = prepareDesktopDeviceReducer({
 const flagsReducer = prepareFlagsReducer({
     actionTypes: { storageLoad: storageLoad.type },
     reducers: { storageLoadFlags: mockExtraDependenciesForReducers.reducers.storageLoadFlags },
+});
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer({
+    actionTypes: { storageLoad: storageLoad.type },
+    reducers: {
+        storageLoadPersistentDeviceData: storageLoadReducers.storageLoadPersistentDeviceData,
+    },
 });
 const quotaManagerSliceReducer = prepareSuiteSyncQuotaManagerReducer(undefined);
 const suiteSyncReducer = prepareSuiteSyncReducer(undefined);
@@ -176,7 +188,10 @@ type PartialState = Omit<State, 'wallet'> & { wallet: Partial<State['wallet']> }
 const getInitialState = (prevState?: Partial<PartialState>, action?: any): State => ({
     networks:
         prevState?.networks ?? mockNetworksState([asNetworkSymbol('btc'), asNetworkSymbol('ltc')]),
-    persistentDeviceData: prevState?.persistentDeviceData ?? persistentDeviceDataInitialState,
+    persistentDeviceData: persistentDeviceDataReducer(
+        prevState?.persistentDeviceData,
+        action || ({ type: 'foo' } as any),
+    ),
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
         action || ({ type: 'foo' } as any),
@@ -244,6 +259,7 @@ const mockStore = (db: Db, preloadedState: State) =>
                 flags: nextState.flags,
                 metadata: nextState.metadata,
                 suiteSync: nextState.suiteSync,
+                persistentDeviceData: nextState.persistentDeviceData,
                 device: nextState.device,
                 wallet: nextState.wallet,
             };
@@ -694,6 +710,32 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
+    });
+
+    it('should store the delegated identity key on setDelegatedIdentityKey and load it after a restart', async () => {
+        const deviceId = 'device_a_id';
+        const delegatedKey = asEncryptedHex<DelegatedIdentityKey>('encrypted-delegated-key');
+        const store = mockStore(
+            db,
+            getInitialState({
+                persistentDeviceData: {
+                    devices: [{ ...defaultDevicePersistentData, device_id: deviceId }],
+                },
+            }),
+        );
+
+        store.dispatch(
+            persistentDeviceDataActions.setDelegatedIdentityKey({ deviceId, delegatedKey }),
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const restartedStore = mockStore(db, getInitialState());
+        restartedStore.dispatch((await preloadStore())!);
+
+        expect(selectDelegatedIdentityKeyByDeviceId(restartedStore.getState(), deviceId)).toBe(
+            delegatedKey,
+        );
     });
 
     it('should load the trade API install salt created by the database migration', async () => {
