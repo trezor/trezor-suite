@@ -31,6 +31,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { sanitizeName } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -50,6 +51,9 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
             sessionTopic: session.topic,
         });
     };
+    // The url stands in for a name with nothing visible left.
+    const peerName = sanitizeName(session.peer.metadata.name);
+    const peerUrl = session.peer.metadata.url;
     const isExpanded = useSharedValue(false);
     const animatedChevronStyle = useAnimatedStyle(() => ({
         transform: [
@@ -72,10 +76,12 @@ export const SessionDetailCard = ({ session }: { session: WalletConnectSession }
                             size="medium"
                         />
                         <VStack flex={1} spacing="sp1">
-                            <Text>{session.peer.metadata.name}</Text>
-                            <Text color="contentSecondary" numberOfLines={1}>
-                                {session.peer.metadata.url}
-                            </Text>
+                            <Text>{peerName || peerUrl}</Text>
+                            {peerName && (
+                                <Text color="contentSecondary" numberOfLines={1}>
+                                    {peerUrl}
+                                </Text>
+                            )}
                         </VStack>
                         <AnimatedBox style={animatedChevronStyle}>
                             <Icon name="caretDown" size="mediumLarge" />
