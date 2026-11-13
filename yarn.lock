@@ -13691,7 +13691,7 @@ __metadata:
     react-native-quick-crypto: "npm:1.1.8"
     react-native-reanimated: "npm:4.7.1"
     react-native-safe-area-context: "npm:~5.10.1"
-    react-native-screens: "npm:~4.30.0"
+    react-native-screens: "npm:~4.30.1"
     react-native-svg: "npm:15.16.0"
     react-native-tcp-socket: "npm:6.4.3"
     react-native-teleport: "npm:^1.2.2"
@@ -42778,16 +42778,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-screens@npm:~4.30.0":
-  version: 4.30.0
-  resolution: "react-native-screens@npm:4.30.0"
+"react-native-screens@npm:~4.30.1":
+  version: 4.30.1
+  resolution: "react-native-screens@npm:4.30.1"
   dependencies:
     react-freeze: "npm:^1.0.0"
     warn-once: "npm:^0.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/f66072de9b7938a47fa2fec9bbd51bfac4908b1f8a56dc7c8418872ba70a9f586f3afe6502d92f87649fde4af220057d44937ea1c37d70070bf377c6a137563e
+  checksum: 10/a832e7830251fdd2a99cfe685a5b07203110e380462a2b9bfb79700d4e54a527190fefea75ad550660ed38d1666ed435e978057089148cbfdf4e368eadff8cc3
   languageName: node
   linkType: hard
 
