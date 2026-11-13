@@ -16,7 +16,11 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
-import { changeCoinVisibilityEvent, setBitcoinAmountUnits } from '@suite-common/wallet-core';
+import {
+    applyDeviceStatesThunk,
+    changeCoinVisibilityEvent,
+    setBitcoinAmountUnits,
+} from '@suite-common/wallet-core';
 import { TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 import {
     getBootloaderHash,
@@ -88,11 +92,11 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
             }
         }
 
-        if (deviceActions.addAuthorizedDevice.match(action)) {
+        if (applyDeviceStatesThunk.fulfilled.match(action)) {
             analytics.report({
-                type: events.selectWalletTypeEvent.name,
+                type: events.createWalletTypeEvent.name,
                 payload: {
-                    type: action.payload.device.walletNumber ? 'hidden' : 'standard',
+                    type: action.payload.device.useEmptyPassphrase ? 'standard' : 'hidden',
                 },
             });
         } else if (onSuiteReady.match(action)) {
