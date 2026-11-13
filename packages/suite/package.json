@@ -112,6 +112,7 @@
         "@suite/app-assets": "workspace:*",
         "@suite/assets": "workspace:*",
         "@suite/authenticity-checks": "workspace:*",
+        "@suite/automation-tools": "workspace:*",
         "@suite/backup": "workspace:*",
         "@suite/bluetooth": "workspace:*",
         "@suite/coinjoin": "workspace:*",

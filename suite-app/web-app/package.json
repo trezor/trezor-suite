@@ -35,6 +35,7 @@
         "@suite-app/module-trading": "workspace:*",
         "@suite-app/module-transactions": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
+        "@suite/automation-tools": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",

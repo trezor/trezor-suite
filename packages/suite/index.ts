@@ -43,6 +43,7 @@ export {
     useResponsiveContext,
 } from './src/support/suite/ResponsiveContext';
 export { createDb, type DbDep } from './src/storage/createDb';
+export { loadSuiteAutomationTools } from './src/support/automation/loadSuiteAutomationTools';
 export { selectIsWindowVisible } from './src/reducers/suite/windowReducer';
 export { reportSecurityCheck } from './src/utils/suite/sentry';
 export { markDeviceAsRecentlyConnectedThunk } from './src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
