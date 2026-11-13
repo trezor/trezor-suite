@@ -12,7 +12,8 @@ import { Amount } from './Amount/Amount';
 import { CardanoMinAmountInfo } from './CardanoMinAmountInfo';
 import { OpReturn } from './OpReturn';
 import { TokenSelect } from './TokenSelect/TokenSelect';
-import { DestinationTag } from '../Options/MiscNetworkOptions/DestinationTag';
+import { RecipientMemo } from '../Options/sendOptions/RecipientMemo';
+import { useSendOptions } from '../Options/sendOptions/useSendOptions';
 
 interface OutputsProps {
     disableAnim?: boolean; // used in tests, with animations enabled react-testing-library can't find output fields
@@ -31,6 +32,9 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
         account: { symbol },
         getValues,
     } = useSendFormContext();
+    const {
+        options: { memo },
+    } = useSendOptions();
 
     // Only adding or removing an output slides the content below, typing never does.
     const containerRef = useHeightAnimationOnChange({
@@ -88,8 +92,8 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 )}
                             </Card>
 
-                            {output.type !== 'opreturn' && (
-                                <DestinationTag networkSymbol={symbol} />
+                            {output.type !== 'opreturn' && memo?.prominence === 'recipient' && (
+                                <RecipientMemo memo={memo} />
                             )}
                         </Column>
                     </motion.div>
