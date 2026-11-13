@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 
-import { ZodError } from 'zod';
+import { ZodError } from '@trezor/zod';
 
 import type { DocsThemeConfig } from '../schema';
 import { themeSchema } from '../schema';

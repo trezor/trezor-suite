@@ -250,3 +250,34 @@ for (const filename of [
         assert.equal(errors.length, 1);
     });
 }
+
+for (const filename of [
+    nativeFilename,
+    `${repositoryRoot}networks/bitcoin/network-bitcoin/src/index.ts`,
+    `${repositoryRoot}packages/example/src/index.ts`,
+    `${repositoryRoot}suite-common/example/src/index.ts`,
+    `${repositoryRoot}suite-app/app/src/createSuiteCompositionRoot.ts`,
+]) {
+    for (const code of [
+        "import * as z from 'zod';",
+        "import { z } from 'zod/v4';",
+        "export * from 'zod';",
+    ]) {
+        test(`rejects a direct zod import in ${filename}: ${code}`, async () => {
+            const errors = await lintRestrictedImports({ code, filename });
+
+            assert.equal(errors.length, 1);
+            assert.match(errors[0].message, /@trezor\/zod/);
+        });
+    }
+
+    test(`allows @trezor/zod and zod-named packages in ${filename}`, async () => {
+        assert.deepEqual(
+            await lintRestrictedImports({
+                code: "import { z } from '@trezor/zod';\nimport { fromError } from 'zod-validation-error';",
+                filename,
+            }),
+            [],
+        );
+    });
+}

@@ -1,5 +1,6 @@
 import { captureException, withScope } from '@sentry/core';
-import { z } from 'zod';
+
+import { z } from '@trezor/zod';
 
 import { stakingBatchResponse } from '../../api/schemas';
 import type { StakingBatch, StakingBatchDataItem, StakingBatchErrorsItem } from '../../api/types';

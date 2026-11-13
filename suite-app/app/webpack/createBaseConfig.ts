@@ -136,7 +136,6 @@ export const createBaseConfig = ({
                 // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
                 crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
                 stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
-                vm: require.resolve('vm-browserify'), // ignore "vm" imports in "asn1.js@4.10.1" > crypto-browserify"
                 util: require.resolve('util'), // required by "xrpl.js"
                 assert: require.resolve('assert'), // required by multiple dependencies
                 events: require.resolve('events'),
@@ -152,6 +151,12 @@ export const createBaseConfig = ({
                 http: false,
                 zlib: false,
                 url: false,
+                /**
+                 * asn1.js@4.10.1 (crypto-browserify) falls back when its `vm` call throws.
+                 * vm-browserify would `eval` instead,
+                 * which a CSP without 'unsafe-eval' reports as a violation.
+                 */
+                vm: false,
             },
             // Prefer the ESM 'module' entry over 'browser', which in several packages points at a
             // UMD or pre-bundled file that cannot be tree-shaken (e.g. dropbox).

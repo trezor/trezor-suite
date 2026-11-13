@@ -21,6 +21,7 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../http-client" },
-        { "path": "../../packages/eslint" }
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/zod" }
     ]
 }

@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import { isHttps } from '@trezor/utils';
+import { z } from '@trezor/zod';
 
 const sandboxOptions = ['allow-forms', 'allow-scripts'];
 

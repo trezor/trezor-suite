@@ -1,5 +1,3 @@
-import type z from 'zod';
-
 import type {
     GetYieldsV2QueryParams,
     YieldResponseV2Output,
@@ -7,6 +5,7 @@ import type {
 } from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
+import type { z } from '@trezor/zod';
 
 import { earnYieldWorkerBaseUrl } from '../context';
 

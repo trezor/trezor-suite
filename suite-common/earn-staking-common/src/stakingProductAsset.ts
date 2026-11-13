@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { NetworkSymbol } from '@trezor/network-module-types';
+import { z } from '@trezor/zod';
 
 export const STAKING_ASSET_SYMBOL_PATTERN = /^[a-z0-9][a-z0-9.-]*$/;
 

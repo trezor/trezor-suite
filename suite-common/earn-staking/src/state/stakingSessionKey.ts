@@ -1,7 +1,6 @@
-import { z } from 'zod';
-
 import type { StakingOperation, StakingProductId } from '@suite-common/earn-staking-common';
 import type { AccountKey } from '@suite-common/wallet-types';
+import { z } from '@trezor/zod';
 
 export const stakingSessionKeySchema = z.string().min(1).brand<'StakingSessionKey'>();
 

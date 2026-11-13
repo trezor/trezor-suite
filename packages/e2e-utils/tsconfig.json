@@ -5,6 +5,7 @@
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" },
+        { "path": "../zod" },
         { "path": "../eslint" }
     ]
 }

@@ -82,6 +82,7 @@
 !/packages/utils
 !/packages/utxo-lib
 !/packages/websocket-client
+!/packages/zod
 /suite-common/*
 !/suite-common/address
 !/suite-common/analytics

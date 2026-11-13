@@ -47,6 +47,13 @@ export default defineConfig({
 
                 return {
                     ...zodClient,
+                    // Generated schemas import zod through `@trezor/zod`, which turns off zod's JIT.
+                    dependencies: (...args) =>
+                        (zodClient.dependencies?.(...args) ?? []).map(dependency =>
+                            dependency.dependency === 'zod'
+                                ? { ...dependency, dependency: '@trezor/zod' }
+                                : dependency,
+                        ),
                     client: async (verbOptions, options, output) => {
                         const result = await zodClient.client(verbOptions, options, output);
 

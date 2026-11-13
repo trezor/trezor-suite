@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from '@trezor/zod';
 
 import { evmHexString } from '../general';
 

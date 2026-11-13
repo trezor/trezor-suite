@@ -1,11 +1,10 @@
-import { z } from 'zod';
-
 import {
     type StakingProductAdapter,
     type StakingProductId,
     stakingProductDescriptorSchema,
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
+import { z } from '@trezor/zod';
 
 export type StakingProductRepositoryDeps = {
     adapters: readonly StakingProductAdapter[];

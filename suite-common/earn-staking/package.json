@@ -27,7 +27,7 @@
         "@trezor/network-module-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "zod": "4.6.7"
+        "@trezor/zod": "workspace:*"
     },
     "devDependencies": {
         "@suite-common/suite-types": "workspace:*",
