@@ -6,6 +6,7 @@
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/networks" },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/tx-simulation"
         },
@@ -15,6 +16,7 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../assets" },
         { "path": "../intl" },
         { "path": "../../packages/components" },
         {

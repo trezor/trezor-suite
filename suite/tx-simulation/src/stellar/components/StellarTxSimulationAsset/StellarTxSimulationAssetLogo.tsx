@@ -1,8 +1,10 @@
+import { AssetIcon } from '@suite/assets';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type StellarAssetDiff } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
 import { CoinsIcon } from '@trezor/icons';
-import { TokenIcon, type TokenIconSize } from '@trezor/product-components';
+import { type TokenIconSize } from '@trezor/product-components';
 
 interface StellarTxSimulationAssetLogoProps {
     asset: StellarAssetDiff['asset'];
@@ -17,11 +19,10 @@ export function StellarTxSimulationAssetLogo({
 }: StellarTxSimulationAssetLogoProps) {
     if ('address' in asset) {
         return (
-            <TokenIcon
+            <AssetIcon
                 networkSymbol={network.symbol}
-                contractAddress={asset.address}
+                contractAddress={toTokenAddress(asset.address)}
                 size={size}
-                placeholder={asset.name || asset.symbol}
             />
         );
     }
@@ -31,5 +32,5 @@ export function StellarTxSimulationAssetLogo({
         return <IconCircle icon={CoinsIcon} size={size === 20 ? 24 : size} intent="neutral" />;
     }
 
-    return <TokenIcon networkSymbol={network.symbol} size={size} />;
+    return <AssetIcon networkSymbol={network.symbol} size={size} />;
 }

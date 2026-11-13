@@ -1,5 +1,6 @@
+import { AssetValue } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { type StellarAssetDiff, getStellarAssetDiffLabel } from '@suite-common/tx-simulation';
+import { type StellarAssetDiff, getStellarAssetDiffValue } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
@@ -31,7 +32,12 @@ export function StellarTxSimulationAsset({ assetDiff, network }: StellarTxSimula
                     <Translation
                         id="TR_SIMULATION_SENDING_ASSET"
                         values={{
-                            amount: getStellarAssetDiffLabel(assetDiff, sent, network.symbol),
+                            amount: (
+                                <AssetValue
+                                    {...getStellarAssetDiffValue(assetDiff, sent)}
+                                    networkSymbol={network.symbol}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>
@@ -49,7 +55,12 @@ export function StellarTxSimulationAsset({ assetDiff, network }: StellarTxSimula
                     <Translation
                         id="TR_SIMULATION_RECEIVING_ASSET"
                         values={{
-                            amount: getStellarAssetDiffLabel(assetDiff, received, network.symbol),
+                            amount: (
+                                <AssetValue
+                                    {...getStellarAssetDiffValue(assetDiff, received)}
+                                    networkSymbol={network.symbol}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>

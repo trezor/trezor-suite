@@ -1,5 +1,6 @@
 import { isNetworkSymbol } from '@suite-common/wallet-config';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { AssetIcon } from '@suite-native/assets';
+import { Icon } from '@suite-native/icons';
 
 import { type EvmTxSimulationAssetProps } from './EvmTxSimulationAssetTypes';
 
@@ -13,15 +14,14 @@ export const EvmTxSimulationAssetIcon = ({
     const coinSymbol = asset?.symbol?.toLowerCase();
 
     if (assetType === 'NATIVE' && coinSymbol && isNetworkSymbol(coinSymbol)) {
-        return <TokenIcon tokenSymbol={coinSymbol} networkSymbol={coinSymbol} size="small" />;
+        return <AssetIcon networkSymbol={coinSymbol} size="small" />;
     }
 
     if (asset?.symbol && 'address' in asset && network.coingeckoId) {
         return (
-            <TokenIcon
+            <AssetIcon
                 networkSymbol={network.symbol}
-                contractAddress={asset.address.toLowerCase()}
-                tokenSymbol={asset.symbol}
+                contractAddress={asset.address}
                 size="small"
                 showNetworkIcon
             />

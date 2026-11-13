@@ -5,6 +5,7 @@ import { BigNumber } from '@trezor/utils';
 import { EvmTxSimulationAssetAmount } from './EvmTxSimulationAssetAmount';
 import { EvmTxSimulationAssetIcon } from './EvmTxSimulationAssetIcon';
 import { type EvmTxSimulationAssetProps } from './EvmTxSimulationAssetTypes';
+import { EvmTxSimulationSummary } from './EvmTxSimulationSummary';
 
 export const EvmTxSimulationWrappedAsset = ({
     assetDiff,
@@ -33,7 +34,15 @@ export const EvmTxSimulationWrappedAsset = ({
                             : undefined
                     }
                     fiatSign="+ "
-                    summary={inAmount.summary}
+                    summary={
+                        <EvmTxSimulationSummary
+                            assetDiff={assetDiff}
+                            transfer={inAmount}
+                            networkSymbol={network.symbol}
+                            direction="in"
+                            color="contentBrand"
+                        />
+                    }
                     summaryColor="contentBrand"
                 />
             </HStack>
@@ -53,7 +62,15 @@ export const EvmTxSimulationWrappedAsset = ({
                             : undefined
                     }
                     fiatSign="- "
-                    summary={outAmount.summary}
+                    summary={
+                        <EvmTxSimulationSummary
+                            assetDiff={assetDiff}
+                            transfer={outAmount}
+                            networkSymbol={network.symbol}
+                            direction="out"
+                            color="contentCritical"
+                        />
+                    }
                     summaryColor="contentCritical"
                 />
             </HStack>

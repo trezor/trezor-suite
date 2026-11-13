@@ -1,4 +1,6 @@
+import { AssetIcon } from '@suite/assets';
 import { injectHasNetworkIcon } from '@suite-common/networks';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
@@ -28,11 +30,10 @@ export function TxSimulationAssetLogo({
 
     if (asset?.symbol && 'address' in asset) {
         return (
-            <TokenIcon
+            <AssetIcon
                 networkSymbol={network.symbol}
-                contractAddress={asset.address}
+                contractAddress={toTokenAddress(asset.address)}
                 size={size}
-                placeholder={asset.name ?? asset.symbol}
                 // Temp. solution until we extend token defs with Vault tokens
                 customLogoUrl={asset.logo_url}
             />

@@ -1,13 +1,19 @@
-import { type CrossChainAssetDiff, getNetworkByBlockaidChain } from '@suite-common/tx-simulation';
+import {
+    type CrossChainAssetDiff,
+    getEvmAssetDiffValue,
+    getNetworkByBlockaidChain,
+} from '@suite-common/tx-simulation';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { AssetIcon, AssetValue } from '@suite-native/assets';
 import { HStack, VStack } from '@suite-native/atoms';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { EvmTxSimulationAssetAmount } from './EvmTxSimulationAssetAmount';
 
 type CrossChainTransfer = CrossChainAssetDiff['in'][number];
+type SummaryColor = 'contentBrand' | 'contentCritical';
 
 type TxSimulationCrossChainAssetProps = {
     assetDiff: CrossChainAssetDiff;
@@ -18,10 +24,24 @@ export const TxSimulationCrossChainAsset = ({ assetDiff }: TxSimulationCrossChai
     // Blockaid reports on more chains than Suite holds, so fall back to its own chain name.
     const network = getNetworkByBlockaidChain(chain);
 
+    const getAmount = (transfer: CrossChainTransfer, color: SummaryColor) => {
+        const value = network ? getEvmAssetDiffValue(asset, transfer) : null;
+
+        if (network && value) {
+            return <AssetValue {...value} networkSymbol={network.symbol} color={color} />;
+        }
+
+        // Without a Suite network there is no token metadata to render the symbol from.
+        return (
+            transfer.summary ??
+            `${transfer.value ?? transfer.raw_value} ${asset.symbol ?? ''}`.trim()
+        );
+    };
+
     const renderTransfers = (
         transfers: ReadonlyArray<CrossChainTransfer>,
         fiatSign: string,
-        summaryColor: 'contentBrand' | 'contentCritical',
+        summaryColor: SummaryColor,
         key: string,
     ) =>
         transfers.map((transfer, index) => (
@@ -37,9 +57,7 @@ export const TxSimulationCrossChainAsset = ({ assetDiff }: TxSimulationCrossChai
                         <Translation
                             id="moduleConnectPopup.simulation.crossChainAsset"
                             values={{
-                                amount:
-                                    transfer.summary ??
-                                    `${transfer.value ?? transfer.raw_value} ${asset.symbol ?? ''}`.trim(),
+                                amount: getAmount(transfer, summaryColor),
                                 chain: network?.name ?? chain,
                             }}
                         />
@@ -52,10 +70,9 @@ export const TxSimulationCrossChainAsset = ({ assetDiff }: TxSimulationCrossChai
     return (
         <HStack spacing="sp12" padding="sp16" alignItems="center">
             {network && asset.symbol ? (
-                <TokenIcon
+                <AssetIcon
                     networkSymbol={network.symbol}
                     contractAddress={'address' in asset ? asset.address : undefined}
-                    tokenSymbol={asset.symbol}
                     size="small"
                     showNetworkIcon
                 />

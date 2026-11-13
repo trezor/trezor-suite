@@ -215,7 +215,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 10 USDC');
                 await expect(txSimulationModal.sentAssetFiat(0)).toHaveText('-$10.00');
                 await expect(txSimulationModal.receivedAsset(0)).toHaveText(
-                    'Receiving 9.944 trSHUSDCp',
+                    'Receiving 9.94423845… trSHUSDCp',
                 );
                 await expect(txSimulationModal.receivedAssetFiat(0)).toHaveText('+$10.00');
                 await expect(txSimulationModal.maxFeeAmount).toHaveText('0.000108403 ETH');
