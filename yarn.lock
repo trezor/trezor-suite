@@ -18993,6 +18993,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/blockchain-core@workspace:*, @trezor/blockchain-core@workspace:packages/blockchain-core":
+  version: 0.0.0-use.local
+  resolution: "@trezor/blockchain-core@workspace:packages/blockchain-core"
+  dependencies:
+    "@trezor/requirements": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/blockchain-link-types@workspace:*, @trezor/blockchain-link-types@workspace:^, @trezor/blockchain-link-types@workspace:packages/blockchain-link-types":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
