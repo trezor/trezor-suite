@@ -10,6 +10,11 @@ const getConnectMock = () => require('@trezor/connect');
 const call = (method: string) =>
     jest.fn((params: object) => getConnectMock().mockResponse(method, params));
 
+// The events are plain constants, so the tests use the actual ones; the package itself resolves to
+// this mock.
+export const { BLOCKCHAIN, BLOCKCHAIN_EVENT, createBlockchainMessage, isBlockchainEventOfType } =
+    jest.requireActual('@trezor/blockchain-core/src/events');
+
 export const TrezorBlockchain = {
     updateSettings: jest.fn(() => Promise.resolve()),
     dispose: jest.fn(),

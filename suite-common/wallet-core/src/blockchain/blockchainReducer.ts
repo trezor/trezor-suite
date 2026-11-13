@@ -10,12 +10,12 @@ import {
 import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
+    BLOCKCHAIN,
     type BlockchainBlock,
     type BlockchainError,
     type BlockchainInfo,
     type BlockchainReconnecting,
-    BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
-} from '@trezor/connect';
+} from '@trezor/blockchain-core';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -193,25 +193,25 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain)
             .addMatcher(
-                action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT,
+                action => action.type === BLOCKCHAIN.CONNECT,
                 (state, { payload }: PayloadAction<BlockchainInfo>) => {
                     connect(state, payload);
                 },
             )
             .addMatcher(
-                action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR,
+                action => action.type === BLOCKCHAIN.ERROR,
                 (state, { payload }: PayloadAction<BlockchainError>) => {
                     error(state, payload);
                 },
             )
             .addMatcher(
-                action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.RECONNECTING,
+                action => action.type === BLOCKCHAIN.RECONNECTING,
                 (state, { payload }: PayloadAction<BlockchainReconnecting>) => {
                     reconnecting(state, payload);
                 },
             )
             .addMatcher(
-                action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK,
+                action => action.type === BLOCKCHAIN.BLOCK,
                 (state, { payload }: PayloadAction<BlockchainBlock>) => {
                     update(state, payload);
                 },

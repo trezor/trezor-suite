@@ -25,13 +25,13 @@ import {
     shouldUseIdentities,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
-import { TrezorBlockchain } from '@trezor/blockchain-core';
 import {
     BLOCKCHAIN_EVENT,
     type BlockchainBlock,
     type BlockchainError,
     type BlockchainNotification,
-} from '@trezor/connect';
+    TrezorBlockchain,
+} from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type Getter } from '@trezor/dependency-injection';
 import { type WithServices, createThunk } from '@trezor/redux-utils';

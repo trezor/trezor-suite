@@ -11,7 +11,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
-import { type BlockchainBlock, type BlockchainNotification } from '@trezor/connect-common';
+import { type BlockchainBlock, type BlockchainNotification } from '@trezor/blockchain-core';
 import { type DeepPartial } from '@trezor/type-utils';
 
 const DEFAULT_ACCOUNT = {

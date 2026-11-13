@@ -1,21 +1,41 @@
-import type { FeeLevel } from '@trezor/connect-common';
-import type {
-    BlockchainEstimateFee,
-    BlockchainEstimateFeeLevel,
-} from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
+import type { FeeInfo, FeeLevel } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isNotNull } from '@trezor/utils/src/isNotNull';
 import { clamp } from '@trezor/utils/src/number';
 
+import type { TrezorBlockchainResponse } from '../TrezorBlockchain';
 import type { Blockchain, PostMessage } from '../backend/Blockchain';
 import { assertBackendSupported, initCoinBackend } from '../backend/BlockchainLink';
 import { type BackendCoinInfo, getBackendCoinInfo } from '../data/coinInfo';
-import { COIN_PARAMS, validateParams } from '../utils/validateParams';
+import { COIN_PARAMS, type CoinParams, validateParams } from '../utils/validateParams';
 
-export type EstimateFeeParams = { coin: string; identity?: string } & (
-    BlockchainEstimateFee | BlockchainEstimateFeeLevel
-);
+type BackendLevelsParams = CoinParams & {
+    request?: BlockchainLinkParams<'estimateFee'> & { feeLevels?: undefined };
+};
+
+type FeeLevelsParams = CoinParams & {
+    request: BlockchainLinkParams<'estimateFee'> & { feeLevels: 'preloaded' | 'smart' };
+};
+
+export type EstimateFeeParams = BackendLevelsParams | FeeLevelsParams;
+
+type EstimatedFee = Omit<FeeInfo, 'dustLimit'> & {
+    dustLimit?: number; // dustLimit is set only for bitcoin-like coins
+};
+
+export type BlockchainEstimatedFee = EstimatedFee & {
+    levels: BlockchainLinkResponse<'estimateFee'>;
+};
+
+export type BlockchainEstimatedFeeLevel = EstimatedFee & { levels: FeeLevel[] };
+
+/** TrezorBlockchain.estimateFee, whose result depends on whether fee levels are requested. */
+export type EstimateFeeMethod = {
+    (params: BackendLevelsParams): TrezorBlockchainResponse<BlockchainEstimatedFee>;
+    (params: FeeLevelsParams): TrezorBlockchainResponse<BlockchainEstimatedFeeLevel>;
+};
 
 type EstimateFeeRequest = Parameters<Blockchain['estimateFee']>[0];
 type EstimatedFees = Awaited<ReturnType<Blockchain['estimateFee']>>;

@@ -1,8 +1,7 @@
-import type { Proxy } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { BackendManager } from './BackendManager';
-import type { BlockchainOptions as Options, PostMessage } from './Blockchain';
+import type { BlockchainOptions as Options, PostMessage, Proxy } from './Blockchain';
 import {
     type BackendCoinInfo,
     type BlockchainLinkSettings,

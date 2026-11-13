@@ -16,7 +16,10 @@ import {
 } from './feesThunks';
 import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
 
-jest.mock('@trezor/blockchain-core', () => ({ TrezorBlockchain: { estimateFee: jest.fn() } }));
+jest.mock('@trezor/blockchain-core', () => ({
+    ...jest.requireActual('@trezor/blockchain-core/src/events'),
+    TrezorBlockchain: { estimateFee: jest.fn() },
+}));
 
 const blockchainReducer = prepareBlockchainReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },

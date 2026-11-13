@@ -14,7 +14,6 @@
         { "path": "../schema-utils" },
         { "path": "../type-utils" },
         { "path": "../utils" },
-        { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
         { "path": "../eslint" },

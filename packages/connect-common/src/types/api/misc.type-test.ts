@@ -30,26 +30,14 @@ export const cipherKeyValue = async (api: TrezorConnect) => {
 };
 
 export const updateConnectSettings = async (api: TrezorConnect) => {
-    // proxy settings
-    const proxy = await api.updateConnectSettings({ proxy: { uri: 'socks://localhost:9050' } });
-    if (proxy.success) {
-        proxy.payload.message.toLowerCase();
+    const settings = await api.updateConnectSettings({ transports: [] });
+    if (settings.success) {
+        settings.payload.message.toLowerCase();
     } else {
-        proxy.error.message.toLowerCase();
+        settings.error.message.toLowerCase();
     }
-
-    const type = 5;
-    const host = 'localhost';
-    const port = 9050;
-    const username = 'johndoe';
-    api.updateConnectSettings({
-        proxy: {
-            uri: `socks${type}://${username}@${host}:${port}`,
-            opts: { timeout: 100000 },
-        },
-    });
+    // @ts-expect-error - the proxy is a setting of TrezorBlockchain
     api.updateConnectSettings({ proxy: { uri: 'socks://localhost:9050' } });
-    api.updateConnectSettings({ proxy: undefined });
 
     // transports settings — strings are no longer accepted; only pre-built
     // Transport instances (pure DI). An empty array is still valid.
@@ -58,12 +46,6 @@ export const updateConnectSettings = async (api: TrezorConnect) => {
     api.updateConnectSettings({ transports: ['BridgeTransport'] });
     // @ts-expect-error - string transport names are no longer valid
     api.updateConnectSettings({ transports: ['BridgeTransport', 'WebUsbTransport'] });
-
-    // both proxy and transports together
-    api.updateConnectSettings({
-        proxy: { uri: 'socks://localhost:9050' },
-        transports: [],
-    });
 
     // empty object is valid (no-op)
     api.updateConnectSettings({});

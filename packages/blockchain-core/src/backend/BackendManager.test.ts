@@ -1,9 +1,9 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
-import type { CoreEventMessage } from '@trezor/connect-common';
 
 import { BackendManager } from './BackendManager';
 import type { Blockchain } from './Blockchain';
 import type { BackendCoinInfo } from '../data/coinInfo';
+import type { BlockchainEventMessage } from '../events';
 
 const coinInfo = {
     shortcut: 'BTC',
@@ -18,7 +18,7 @@ describe('backend/BackendManager', () => {
 
     const delay = (ms: number) => jest.advanceTimersByTimeAsync(ms);
 
-    const expectExactMessages = (...types: CoreEventMessage['type'][]) => {
+    const expectExactMessages = (...types: BlockchainEventMessage['type'][]) => {
         expect(postMessage).toHaveBeenCalledTimes(types.length);
         types.forEach((type, i) =>
             expect(postMessage).toHaveBeenNthCalledWith(i + 1, expect.objectContaining({ type })),
@@ -103,7 +103,7 @@ describe('backend/BackendManager', () => {
 
     it('grows the reconnect delay while a backend keeps dropping, and resets it once one holds', async () => {
         const delays: number[] = [];
-        postMessage = jest.fn((message: CoreEventMessage) => {
+        postMessage = jest.fn((message: BlockchainEventMessage) => {
             if (message.type === 'blockchain-reconnecting') {
                 delays.push(message.payload.time - Date.now());
             }
@@ -168,7 +168,7 @@ describe('backend/BackendManager', () => {
         const WINDOW = 21_000;
 
         let connects = 0;
-        postMessage = jest.fn((message: CoreEventMessage) => {
+        postMessage = jest.fn((message: BlockchainEventMessage) => {
             if (message.type === 'blockchain-connect') connects += 1;
         });
 

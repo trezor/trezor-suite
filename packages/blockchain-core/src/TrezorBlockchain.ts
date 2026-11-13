@@ -1,34 +1,27 @@
-import {
-    BLOCKCHAIN_EVENT,
-    type BlockchainEvent,
-    type BlockchainEventMessage,
-    type Proxy,
-} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { TrezorConnectBlockchain } from '@trezor/connect-common/src/types/api/blockchain';
-import type { Response } from '@trezor/connect-common/src/types/params';
-import { err, ok } from '@trezor/type-utils';
+import { type Result, err, ok } from '@trezor/type-utils';
 import { TypedEmitter } from '@trezor/utils';
 
 import { disconnect } from './api/disconnect';
-import { estimateFee } from './api/estimateFee';
+import { type EstimateFeeMethod, estimateFee } from './api/estimateFee';
 import { evmRpcCall } from './api/evmRpcCall';
 import { evmRpcGetChainId } from './api/evmRpcGetChainId';
 import { getAccountBalanceHistory } from './api/getAccountBalanceHistory';
-import { type GetAccountInfoParams, getAccountInfo } from './api/getAccountInfo';
+import { getAccountInfo } from './api/getAccountInfo';
 import { getContractInfo } from './api/getContractInfo';
 import { getCurrentFiatRates } from './api/getCurrentFiatRates';
 import { getDefaultBackend } from './api/getDefaultBackend';
 import { getFiatRatesForTimestamps } from './api/getFiatRatesForTimestamps';
 import { getInfo } from './api/getInfo';
-import { getTransactions } from './api/getTransactions';
+import { type GetTransactionsMethod, getTransactions } from './api/getTransactions';
 import { pushTransaction } from './api/pushTransaction';
 import { setCustomBackend } from './api/setCustomBackend';
 import { subscribe, unsubscribe } from './api/subscribe';
 import { subscribeFiatRates } from './api/subscribeFiatRates';
 import { unsubscribeFiatRates } from './api/unsubscribeFiatRates';
+import type { PostMessage, Proxy } from './backend/Blockchain';
 import { dispose as disposeBackends, setDebug, updateProxy } from './backend/BlockchainLink';
-import type { BlockchainLinkSettings } from './data/coinInfo';
+import { BLOCKCHAIN_EVENT, type BlockchainEvent, type BlockchainEventMessage } from './events';
 
 export type TrezorBlockchainSettings = { debug?: boolean; proxy?: Proxy };
 
@@ -36,7 +29,13 @@ type TrezorBlockchainEvents = { [BLOCKCHAIN_EVENT]: BlockchainEventMessage } & {
     [E in BlockchainEvent as E['type']]: E['payload'];
 };
 
-type Api = TrezorConnectBlockchain;
+/** The result of a backend function, or the error it threw. */
+export type TrezorBlockchainResponse<T> = Promise<Result<T, ERRORS.SerializedError>>;
+
+/** A backend function as TrezorBlockchain serves it. */
+type Method<TFn extends (params: never, postMessage: PostMessage) => Promise<unknown>> = (
+    params: Parameters<TFn>[0],
+) => TrezorBlockchainResponse<Awaited<ReturnType<TFn>>>;
 
 export type TrezorBlockchainApi = {
     updateSettings: (settings: TrezorBlockchainSettings) => Promise<void>;
@@ -44,26 +43,24 @@ export type TrezorBlockchainApi = {
     on: TypedEmitter<TrezorBlockchainEvents>['on'];
     off: TypedEmitter<TrezorBlockchainEvents>['off'];
     removeAllListeners: TypedEmitter<TrezorBlockchainEvents>['removeAllListeners'];
-    getInfo: Api['blockchainGetInfo'];
-    getDefaultBackend: (params: { coin: string }) => Response<BlockchainLinkSettings | undefined>;
-    setCustomBackend: Api['blockchainSetCustomBackend'];
-    disconnect: Api['blockchainDisconnect'];
-    subscribe: Api['blockchainSubscribe'];
-    unsubscribe: Api['blockchainUnsubscribe'];
-    subscribeFiatRates: Api['blockchainSubscribeFiatRates'];
-    unsubscribeFiatRates: Api['blockchainUnsubscribeFiatRates'];
-    getCurrentFiatRates: Api['blockchainGetCurrentFiatRates'];
-    getFiatRatesForTimestamps: Api['blockchainGetFiatRatesForTimestamps'];
-    getAccountBalanceHistory: Api['blockchainGetAccountBalanceHistory'];
-    getAccountInfo: (
-        params: GetAccountInfoParams,
-    ) => Response<Awaited<ReturnType<typeof getAccountInfo>>>;
-    getTransactions: Api['blockchainGetTransactions'];
-    getContractInfo: Api['blockchainGetContractInfo'];
-    estimateFee: Api['blockchainEstimateFee'];
-    evmRpcCall: Api['blockchainEvmRpcCall'];
-    evmRpcGetChainId: Api['blockchainEvmRpcGetChainId'];
-    pushTransaction: Api['pushTransaction'];
+    getInfo: Method<typeof getInfo>;
+    getDefaultBackend: Method<typeof getDefaultBackend>;
+    setCustomBackend: Method<typeof setCustomBackend>;
+    disconnect: Method<typeof disconnect>;
+    subscribe: Method<typeof subscribe>;
+    unsubscribe: Method<typeof unsubscribe>;
+    subscribeFiatRates: Method<typeof subscribeFiatRates>;
+    unsubscribeFiatRates: Method<typeof unsubscribeFiatRates>;
+    getCurrentFiatRates: Method<typeof getCurrentFiatRates>;
+    getFiatRatesForTimestamps: Method<typeof getFiatRatesForTimestamps>;
+    getAccountBalanceHistory: Method<typeof getAccountBalanceHistory>;
+    getAccountInfo: Method<typeof getAccountInfo>;
+    getTransactions: GetTransactionsMethod;
+    getContractInfo: Method<typeof getContractInfo>;
+    estimateFee: EstimateFeeMethod;
+    evmRpcCall: Method<typeof evmRpcCall>;
+    evmRpcGetChainId: Method<typeof evmRpcGetChainId>;
+    pushTransaction: Method<typeof pushTransaction>;
 };
 
 /**
@@ -125,9 +122,9 @@ export const TrezorBlockchain: TrezorBlockchainApi = {
     getAccountBalanceHistory: method(getAccountBalanceHistory),
     getAccountInfo: method(getAccountInfo),
     // The overloads narrow the result by the params, which one implementation can't express.
-    getTransactions: method(getTransactions) as Api['blockchainGetTransactions'],
+    getTransactions: method(getTransactions) as GetTransactionsMethod,
     getContractInfo: method(getContractInfo),
-    estimateFee: method(estimateFee) as Api['blockchainEstimateFee'],
+    estimateFee: method(estimateFee) as EstimateFeeMethod,
     evmRpcCall: method(evmRpcCall),
     evmRpcGetChainId: method(evmRpcGetChainId),
     pushTransaction: method(pushTransaction),

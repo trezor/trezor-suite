@@ -4,9 +4,8 @@ import type {
     NotificationEvent,
     ServerInfo,
 } from '@trezor/blockchain-link-types';
+import type { CoinInfo } from '@trezor/connect-common';
 import { createTypeGuardByType } from '@trezor/type-utils';
-
-import type { CoinInfo } from '../types/coinInfo';
 
 export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
 export const BLOCKCHAIN = {

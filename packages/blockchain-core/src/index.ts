@@ -6,3 +6,5 @@ export type {
     TrezorBlockchainSettings,
 } from './TrezorBlockchain';
 export type { BlockchainLinkSettings } from './data/coinInfo';
+export * from './events';
+export type { BlockchainEstimatedFee, BlockchainEstimatedFeeLevel } from './api/estimateFee';

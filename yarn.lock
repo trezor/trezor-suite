@@ -12963,6 +12963,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
     "@testing-library/react": "npm:^16.3.3"
+    "@trezor/blockchain-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -19054,7 +19055,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^, @trezor/blockchain-link@workspace:packages/blockchain-link":
+"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:packages/blockchain-link":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
@@ -19192,7 +19193,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
-    "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:^"

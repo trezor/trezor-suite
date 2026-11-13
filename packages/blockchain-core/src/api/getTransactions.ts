@@ -1,3 +1,6 @@
+import type { Transaction } from '@trezor/blockchain-link';
+
+import type { TrezorBlockchainResponse } from '../TrezorBlockchain';
 import type { PostMessage } from '../backend/Blockchain';
 import { initCoinBackend } from '../backend/BlockchainLink';
 import { COIN_PARAMS, type CoinParams, validateParams } from '../utils/validateParams';
@@ -6,6 +9,15 @@ export type GetTransactionsParams = CoinParams & {
     txs: string[];
     descriptor?: string;
     hexOnly?: boolean;
+};
+
+/** TrezorBlockchain.getTransactions, whose result depends on `hexOnly`. */
+export type GetTransactionsMethod = {
+    (params: GetTransactionsParams & { hexOnly?: false }): TrezorBlockchainResponse<Transaction[]>;
+    // Returns only raw transactions, `descriptor` is ignored.
+    (
+        params: GetTransactionsParams & { descriptor?: undefined; hexOnly: true },
+    ): TrezorBlockchainResponse<{ txid: string; hex: string }[]>;
 };
 
 export const getTransactions = async (params: GetTransactionsParams, postMessage: PostMessage) => {
