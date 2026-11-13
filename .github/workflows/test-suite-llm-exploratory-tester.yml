@@ -1,141 +1,47 @@
 name: "[Test] LLM Exploratory Tester"
-
-# Run from the Actions tab. Locally, put OPENROUTER_API_KEY=... into
-# packages/e2e-utils/.env (gitignored) and run:
-# TARGET=<pr-url> DEVICE_MODEL=T3T1 yarn workspace @trezor/e2e-utils llm-exploratory-tester
-# Optional: LLM_EXPLORATORY_TESTER_MODEL=z-ai/glm-5v-turbo
+run-name: "PR 35052 · T3W1 onboarding ×10 · d31502e36c"
 
 on:
   workflow_dispatch:
-    inputs:
-      confirm_trusted_branch:
-        description: "Are you running this from a trusted branch? An untrusted branch can prompt-inject the tester."
-        required: true
-        type: boolean
-      target:
-        description: "PR or issue URL (https://github.com/trezor/trezor-suite/pull/…)"
-        required: true
-        type: string
-      device_model:
-        description: "Trezor emulator model"
-        required: false
-        default: T3W1
-        type: choice
-        options:
-          - T2T1
-          - T3B1
-          - T3T1
-          - T3W1
-      model:
-        description: "OpenRouter model ID (e.g. z-ai/glm-5.3-flash, z-ai/glm-5v-turbo)"
-        required: false
-        default: z-ai/glm-5.3-flash
-        type: string
-  pull_request:
-    # opened covers PRs created already ready. ready_for_review covers
-    # draft -> ready. reopened covers a closed ready PR coming back.
-    # Drafts still emit opened/reopened; the gate job drops those.
-    types: [opened, ready_for_review, reopened]
 
 permissions:
   contents: read
   issues: read
-
-concurrency:
-  group: ${{ inputs.target || github.event.pull_request.html_url }}
-  cancel-in-progress: true
+  pull-requests: read
 
 jobs:
-  # Manual dispatch runs the tester when the human confirmed a trusted branch.
-  # A non-draft PR runs it on open, reopen, or draft -> ready, and only when
-  # Jev picks "run" and the PR's web preview is built. Drafts and forks never run.
-  gate:
-    if: github.repository == 'trezor/trezor-suite' && !github.event.pull_request.head.repo.fork && github.event.pull_request.draft != true
+  onboarding:
+    name: "T3W1 onboarding ${{ matrix.attempt }}/10"
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
-    outputs:
-      run: ${{ inputs.confirm_trusted_branch || steps.preview.outcome == 'success' }}
-    steps:
-      - id: jev
-        if: github.event_name == 'pull_request'
-        env:
-          OPENROUTER_API_KEY: ${{ secrets.E2E_EXPLORATORY_TESTER_API_KEY }}
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          set -o pipefail
-          body=$(gh pr view "$PR_NUMBER" --json title,body,files --jq '{title, body, files: [.files[].path]}' |
-            jq '{
-              model: "typesafe/jev-1.13",
-              state: {
-                tester: "The LLM exploratory tester black-box tests the PR on the Suite web preview. It cannot open the desktop or mobile app. suite-native/ is mobile. suite-app/desktop-app, suite-app/desktop-app-main, suite-app/desktop-app-renderer, and suite/desktop-app-native-bindings are the desktop shell. packages/suite and suite-app/web-app are the web UI. A run takes hours.",
-                pr: .
-              },
-              questions: { pick: {
-                type: "choice",
-                instructions: "Should CI run the LLM exploratory tester on this pull request?",
-                criteria: {
-                  run: "The diff changes user-facing behavior visible in Suite web, enough to be worth the cost.",
-                  skip: "Desktop-only, mobile-only, test bookkeeping, docs, or other churn the web tester cannot cover."
-                }
-              }}
-            }' |
-            curl -sS --fail-with-body https://openrouter.ai/api/alpha/decisions \
-              -H "Authorization: Bearer $OPENROUTER_API_KEY" -H "Content-Type: application/json" -d @-)
-          echo "$body"
-          pick=$(jq -r .answers.pick.choice <<< "$body")
-          echo "pick=$pick" >> "$GITHUB_OUTPUT"
-
-      # The tester hits dev.suite.sldev.cz/suite-web/<branch>/web, deployed by
-      # test-suite-web-desktop-e2e-pr.yml on push. Wait until that build has
-      # finished for the current PR head, following new commits while waiting
-      # and when rerunning an older workflow run.
-      - name: Wait for web preview
-        id: preview
-        if: steps.jev.outputs.pick == 'run'
-        timeout-minutes: 30
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          until [ "$status" = completed ]; do
-            sleep 30
-            HEAD_SHA=$(gh pr view "$PR_NUMBER" --json headRefOid --jq .headRefOid)
-            read -r status conclusion < <(gh api -X GET "repos/$GH_REPO/commits/$HEAD_SHA/check-runs" \
-              -f check_name='build-web / build-web' --jq '.check_runs[0] | "\(.status) \(.conclusion)"')
-            echo "build-web ($HEAD_SHA): $status $conclusion"
-          done
-          [ "$conclusion" = success ]
-
-  llm-exploratory-tester:
-    permissions:
-      contents: read
-      issues: read
-      pull-requests: write
-    needs: gate
-    runs-on: ubuntu-latest
-    timeout-minutes: 240
-    if: needs.gate.outputs.run == 'true'
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        attempt: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     env:
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
-      TARGET: ${{ inputs.target || github.event.pull_request.html_url }}
-      DEVICE_MODEL: ${{ inputs.device_model || 'T3W1' }}
-      LLM_EXPLORATORY_TESTER_MODEL: ${{ inputs.model }}
-
+      TARGET: https://github.com/trezor/trezor-suite/pull/35052
+      DEVICE_MODEL: T3W1
+      AGENT_GITHUB_ACTION: true
+      EXPECTED_HEAD: d31502e36ca9ee772789b8bf9283ae6d56c7c3f9
+      ATTEMPT: ${{ matrix.attempt }}
+      GH_REPO: trezor/trezor-suite
     steps:
-      # Manual dispatch picks the branch. Do not run this workflow from an
-      # untrusted PR branch — it would execute that branch's harness code.
-      # A pull_request run therefore checks out develop, not the PR.
-      - name: Checkout
+      - name: Checkout tested PR revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
-          ref: ${{ github.event_name == 'pull_request' && 'develop' || '' }}
+          ref: d31502e36ca9ee772789b8bf9283ae6d56c7c3f9
+
+      - name: Verify PR head and preview build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(gh pr view 35052 --json headRefOid --jq .headRefOid)" = "$EXPECTED_HEAD"
+          test "$(gh api -X GET "repos/$GH_REPO/commits/$EXPECTED_HEAD/check-runs" -f check_name='build-web / build-web' --jq '.check_runs[0].conclusion')" = success
 
       - name: Install dependencies
+        id: install
         uses: ./.github/actions/minimal-yarn-install
         with:
           focus: "@trezor/e2e-utils @trezor/suite-e2e @suite-app/desktop-app"
@@ -147,62 +53,73 @@ jobs:
       - name: Install Playwright Chromium
         run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
 
-      # trezor-user-env also serves the trezor-emulator MCP on :9003
-      # (started by src/main.py in the pinned image, host networking).
       - name: Start trezor-user-env
+        id: emulator
         run: docker compose up -d --quiet-pull trezor-user-env-unix
 
-      - name: Run LLM Exploratory Tester
+      - name: Prepare original LLM tester context
         env:
           GH_TOKEN: ${{ github.token }}
-          AGENT_GITHUB_ACTION: true
+        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:context
+
+      - name: Run original LLM tester onboarding
+        id: onboarding
+        timeout-minutes: 12
+        env:
           LLM_EXPLORATORY_TESTER_PASSPHRASE: ${{ secrets.LLM_EXPLORATORY_TESTER_PASSPHRASE }}
-          OPENROUTER_API_KEY: ${{ secrets.E2E_EXPLORATORY_TESTER_API_KEY }}
-        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester
-
-      # Surface the verdict on the job page; the run step's exit code already
-      # fails the job on a fail verdict, this makes the reason visible.
-      - name: Verdict summary
-        if: always() && hashFiles('packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json') != ''
         run: |
-          RESULT=packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
-          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          ## LLM Exploratory Tester: $(jq -r '.result' "$RESULT")
+          set +e
+          yarn workspace @trezor/e2e-utils llm-exploratory-tester:setup > "$RUNNER_TEMP/onboarding.log" 2>&1
+          status=$?
+          set -e
+          export ONBOARDING_STATUS="$status"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
 
-          $(jq -r '.summary' "$RESULT")
+          log = (Path(os.environ['RUNNER_TEMP']) / 'onboarding.log').read_text()
+          ready = Path('packages/e2e-utils/src/llmExploratoryTester/reports/setup-ready').exists()
+          code = int(os.environ['ONBOARDING_STATUS'])
+          category = 'passed' if code == 0 and ready else 'other_failure'
+          if code != 0:
+              if "@passphrase/input" in log and 'toBeHidden() failed' in log:
+                  category = 'passphrase_input_stuck'
+              elif 'OnboardingPage.pairTHP' in log:
+                  category = 'thp_pairing'
+              elif 'expect Suite to load in under 30s' in log:
+                  category = 'app_load'
+              elif 'Discovery ended, but was not successful' in log:
+                  category = 'network_discovery'
+              elif 'onboarding spec timed out' in log:
+                  category = 'onboarding_timeout'
+          result = {
+              'attempt': int(os.environ['ATTEMPT']),
+              'commit': os.environ['EXPECTED_HEAD'],
+              'device': 'T3W1',
+              'retries': 0,
+              'ready': ready,
+              'exitCode': code,
+              'category': category,
+          }
+          print('ONBOARDING_RESULT=' + json.dumps(result))
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write(f"Attempt {result['attempt']}/10: **{category}**; readiness marker: {ready}; commit `{result['commit']}`.\n")
+          if code == 0 and not ready:
+              raise SystemExit('Setup returned without a readiness marker')
+          PY
+          exit "$status"
 
-          $(jq -r '.issues[] | "- **\(.id)** [\(.severity)] \(.title)"' "$RESULT")
-          EOF
-
-      - name: Upload test artifacts
-        id: upload-report
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: llm-exploratory-tester-report
-          retention-days: 30
-          path: |
-            packages/e2e-utils/src/llmExploratoryTester/reports
-            !packages/e2e-utils/src/llmExploratoryTester/reports/opencode-config
-
-      - name: Comment on tested PR
-        if: ${{ !cancelled() && hashFiles('packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json') != '' }}
+      - name: Verify PR head stayed unchanged
+        if: always() && steps.onboarding.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ github.token }}
-          ARTIFACT_URL: ${{ steps.upload-report.outputs.artifact-url }}
-        run: |
-          RESULT=packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
-          PR=$(jq -r '.prNumber' packages/e2e-utils/src/llmExploratoryTester/reports/context.json)
-          {
-            echo "## LLM Exploratory Tester: $(jq -r '.result' "$RESULT")"
-            echo
-            jq -r '.summary' "$RESULT"
-            echo
-            jq -r '.issues[] | "- **\(.id)** [\(.severity)] \(.title)"' "$RESULT"
-            echo
-            echo "[Download report, including screenshots](${ARTIFACT_URL})"
-          } | gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file -
+        run: test "$(gh pr view 35052 --json headRefOid --jq .headRefOid)" = "$EXPECTED_HEAD"
+
+      - name: Stop harness browser
+        if: always() && steps.install.outcome == 'success'
+        run: yarn workspace @trezor/e2e-utils exec tsx -e "import { killHarnessBrowser } from './src/llmExploratoryTester/browserState'; killHarnessBrowser().catch(() => { process.exitCode = 1; });"
 
       - name: Docker Compose Down
-        if: always()
+        if: always() && steps.emulator.outcome == 'success'
         run: docker compose down
