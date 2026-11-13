@@ -1,5 +1,5 @@
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/ripple';
+import { transformRippleTransaction } from '@trezor/network-ripple/constants';
 import type { LedgerStream, TransactionStream } from '@trezor/network-ripple/types';
 
 import type { Context } from '../types';
@@ -35,7 +35,7 @@ export const onTransaction = ({ state, post }: Context, event: TransactionStream
                 type: 'notification',
                 payload: {
                     descriptor,
-                    tx: transformTransaction(hash, tx_json, undefined, descriptor),
+                    tx: transformRippleTransaction(hash, tx_json, undefined, descriptor),
                 },
             },
         });

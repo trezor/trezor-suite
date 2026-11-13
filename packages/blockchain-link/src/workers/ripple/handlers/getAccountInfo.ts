@@ -5,7 +5,7 @@ import type {
     ResponseTypes as Responses,
 } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/ripple';
+import { transformRippleTransaction } from '@trezor/network-ripple/constants';
 import xrpl from '@trezor/network-ripple/runtime';
 import type { XrplAPI } from '@trezor/network-ripple/types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -126,7 +126,7 @@ export const getAccountInfo = async (
 
     account.history.transactions = response.result.transactions.flatMap(raw =>
         raw.tx_json != null
-            ? [transformTransaction(raw.hash, raw.tx_json, raw.meta, payload.descriptor)]
+            ? [transformRippleTransaction(raw.hash, raw.tx_json, raw.meta, payload.descriptor)]
             : [],
     );
 
