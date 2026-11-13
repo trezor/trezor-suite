@@ -9,8 +9,10 @@ export {
 export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
 export { getGasLimitFromGasEstimation } from './utils/getGasLimitFromGasEstimation';
 export {
-    getSolanaAssetDiffLabel,
-    getStellarAssetDiffLabel,
+    getEvmAssetDiffValue,
+    getSolanaAssetDiffValue,
+    getStellarAssetDiffValue,
+    getTxSimulationTokenSources,
 } from './utils/getAssetDiffTransferLabel';
 export { type CrossChainAssetDiff, getCrossChainAssetDiffs } from './utils/getCrossChainAssetDiffs';
 export {

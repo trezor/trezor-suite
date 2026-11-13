@@ -57,6 +57,7 @@
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
+        { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../confirm-on-trezor" },

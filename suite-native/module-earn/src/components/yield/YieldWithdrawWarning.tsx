@@ -1,8 +1,8 @@
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { TokenSymbol } from '@suite-native/tokens';
 
 type YieldWithdrawWarningProps = {
     isAmountTooHigh: boolean;
@@ -19,15 +19,13 @@ export const YieldWithdrawWarning = ({
     networkSymbol,
     tokenContract,
 }: YieldWithdrawWarningProps) => {
-    const vaultTokenSymbol = tokenContract ? (
-        <TokenSymbol
+    const vaultTokenSymbol = (
+        <AssetSymbol
             networkSymbol={networkSymbol}
             contractAddress={tokenContract}
             variant="body-sm"
             color="contentInfo"
         />
-    ) : (
-        getNetworkDisplaySymbol(networkSymbol)
     );
 
     if (isAmountTooHigh) {

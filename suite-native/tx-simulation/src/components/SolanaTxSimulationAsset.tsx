@@ -1,8 +1,8 @@
-import { type SolanaAssetDiff, getSolanaAssetDiffLabel } from '@suite-common/tx-simulation';
+import { type SolanaAssetDiff, getSolanaAssetDiffValue } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { AssetIcon, AssetValue } from '@suite-native/assets';
 import { HStack, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
@@ -19,10 +19,9 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
 
     return (
         <HStack spacing="sp12" padding="sp16" alignItems="center">
-            <TokenIcon
+            <AssetIcon
                 networkSymbol={network.symbol}
                 contractAddress={'address' in asset ? asset.address : undefined}
-                tokenSymbol={'symbol' in asset ? asset.symbol : undefined}
                 size="small"
                 showNetworkIcon={'address' in asset}
             />
@@ -40,10 +39,12 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
                                 <Translation
                                     id="moduleConnectPopup.simulation.sendingAsset"
                                     values={{
-                                        amount: getSolanaAssetDiffLabel(
-                                            assetDiff,
-                                            sent,
-                                            network.symbol,
+                                        amount: (
+                                            <AssetValue
+                                                {...getSolanaAssetDiffValue(assetDiff, sent)}
+                                                networkSymbol={network.symbol}
+                                                color="contentCritical"
+                                            />
                                         ),
                                     }}
                                 />
@@ -65,10 +66,12 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
                                 <Translation
                                     id="moduleConnectPopup.simulation.receivingAsset"
                                     values={{
-                                        amount: getSolanaAssetDiffLabel(
-                                            assetDiff,
-                                            received,
-                                            network.symbol,
+                                        amount: (
+                                            <AssetValue
+                                                {...getSolanaAssetDiffValue(assetDiff, received)}
+                                                networkSymbol={network.symbol}
+                                                color="contentBrand"
+                                            />
                                         ),
                                     }}
                                 />

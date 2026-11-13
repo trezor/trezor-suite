@@ -1,8 +1,8 @@
-import { type StellarAssetDiff, getStellarAssetDiffLabel } from '@suite-common/tx-simulation';
+import { type StellarAssetDiff, getStellarAssetDiffValue } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { AssetIcon, AssetValue } from '@suite-native/assets';
 import { HStack, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
@@ -19,10 +19,9 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
 
     return (
         <HStack spacing="sp12" padding="sp16" alignItems="center">
-            <TokenIcon
+            <AssetIcon
                 networkSymbol={network.symbol}
                 contractAddress={'address' in asset ? asset.address : undefined}
-                tokenSymbol={'symbol' in asset ? asset.symbol : asset.code}
                 size="small"
                 showNetworkIcon={'address' in asset}
             />
@@ -40,10 +39,12 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                 <Translation
                                     id="moduleConnectPopup.simulation.sendingAsset"
                                     values={{
-                                        amount: getStellarAssetDiffLabel(
-                                            assetDiff,
-                                            sent,
-                                            network.symbol,
+                                        amount: (
+                                            <AssetValue
+                                                {...getStellarAssetDiffValue(assetDiff, sent)}
+                                                networkSymbol={network.symbol}
+                                                color="contentCritical"
+                                            />
                                         ),
                                     }}
                                 />
@@ -65,10 +66,12 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                 <Translation
                                     id="moduleConnectPopup.simulation.receivingAsset"
                                     values={{
-                                        amount: getStellarAssetDiffLabel(
-                                            assetDiff,
-                                            received,
-                                            network.symbol,
+                                        amount: (
+                                            <AssetValue
+                                                {...getStellarAssetDiffValue(assetDiff, received)}
+                                                networkSymbol={network.symbol}
+                                                color="contentBrand"
+                                            />
                                         ),
                                     }}
                                 />

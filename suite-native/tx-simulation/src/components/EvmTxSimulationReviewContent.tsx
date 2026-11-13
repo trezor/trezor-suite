@@ -1,11 +1,13 @@
 import { type ReactNode, useState } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
+import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type NetworkTxSimulationResult,
     getSolanaAssetDiffs,
     getStellarAssetDiffs,
     getTxSimulationRiskSummary,
+    getTxSimulationTokenSources,
     isTxSimulationResultWithMethods,
     useTxSimulation,
 } from '@suite-common/tx-simulation';
@@ -165,7 +167,9 @@ export function EvmTxSimulationReviewContent({
             )}
 
             {simulationData && (
-                <>
+                <TokenMetadataProvider
+                    sources={getTxSimulationTokenSources(simulationData, network.symbol)}
+                >
                     {evmSimulation?.status === 'Success' && (
                         <VStack>
                             {title}
@@ -269,7 +273,7 @@ export function EvmTxSimulationReviewContent({
                             setDisclaimerAccepted={setDisclaimerAccepted}
                         />
                     )}
-                </>
+                </TokenMetadataProvider>
             )}
 
             {txSimulationQuery.error && (

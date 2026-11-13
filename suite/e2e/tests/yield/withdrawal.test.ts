@@ -113,7 +113,9 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                 );
                 await yieldFlowSection.withdrawButton.click();
 
-                await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 4.972 trSHUSDCp');
+                await expect(txSimulationModal.sentAsset(0)).toHaveText(
+                    'Sending 4.97211922… trSHUSDCp',
+                );
                 await expect(txSimulationModal.sentAssetFiat(0)).toHaveText(
                     `-$${WITHDRAW_AMOUNT}.00`,
                 );
