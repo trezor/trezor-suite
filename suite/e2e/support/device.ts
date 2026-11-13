@@ -34,7 +34,7 @@ type OpenFeeInfoParams = {
     buttonIndexT3T1?: number;
 };
 
-export type DisplayCheckOptions = { shouldRunOnCanary?: boolean };
+export type DisplayCheckOptions = { shouldRunOnCanary?: boolean; timeout?: number };
 
 export class DeviceFixture {
     public readonly hasTHP: boolean;
@@ -310,6 +310,7 @@ export class DeviceFixture {
         await expect
             .poll(async () => (await TrezorUserEnvLink.getScreenContent()).body as string, {
                 message: `Expected text "${expectedText}" on the device display`,
+                timeout: options?.timeout,
             })
             .toContain(expectedText);
     }
