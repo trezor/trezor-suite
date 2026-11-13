@@ -43,8 +43,19 @@ const BLOCKAID_STELLAR_CHAIN_BY_SYMBOL = {
     txlm: 'testnet',
 } as const satisfies Readonly<Record<StellarNetworkSymbol, BlockaidStellarChain>>;
 
-export const resolveBlockaidEvmChain = (chainId: number | undefined = getNetwork('eth').chainId) =>
-    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId] ?? null;
+// Blockaid accepts a chain ID in place of its chain name.
+type BlockaidEvmChain = TransactionScanSupportedChain | (string & {});
+
+export const resolveBlockaidEvmChain = (
+    chainId: number | undefined = getNetwork('eth').chainId,
+): BlockaidEvmChain | null => {
+    if (chainId in BLOCKAID_EVM_CHAIN_BY_CHAIN_ID) {
+        return BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId] ?? null;
+    }
+
+    // A user-added network is scanned by its chain ID; Blockaid rejects the ones it does not cover.
+    return getNetworkByEvmChainId(chainId) ? `0x${chainId.toString(16)}` : null;
+};
 
 export const resolveBlockaidSolanaChain = (symbol: SolanaNetworkSymbol) =>
     BLOCKAID_SOLANA_CHAIN_BY_SYMBOL[symbol];

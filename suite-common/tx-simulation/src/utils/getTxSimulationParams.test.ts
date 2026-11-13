@@ -1,5 +1,10 @@
 import { base58 } from '@scure/base';
 
+import {
+    asNetworkSymbol,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 import { type TxSimulationMethod } from '@suite-common/wallet-types';
 
 import { getTxSimulationParams, isEvmTxSimulationSupported } from './getTxSimulationParams';
@@ -71,6 +76,28 @@ describe('getTxSimulationParams', () => {
 
     it('returns null for an EVM chain Blockaid cannot scan', () => {
         expect(getTxSimulationParams(createEvmAction(61))).toBeNull();
+    });
+
+    it('scans a user-added network by its chain ID only while it is registered', () => {
+        const symbol = asNetworkSymbol('evm100');
+        const action = createEvmAction(100);
+
+        expect(isEvmTxSimulationSupported(action)).toBe(false);
+
+        registerLegacyCustomEvmNetwork({
+            symbol,
+            chainId: 100,
+            name: 'Gnosis',
+            displaySymbol: 'XDAI',
+            explorerUrl: 'https://gnosisscan.io',
+            testnet: false,
+        });
+        try {
+            expect(isEvmTxSimulationSupported(action)).toBe(true);
+            expect(getTxSimulationParams(action)?.params).toMatchObject({ chain: '0x64' });
+        } finally {
+            unregisterLegacyNetwork(symbol);
+        }
     });
 
     it('re-encodes the Solana transaction from hex to base58', () => {

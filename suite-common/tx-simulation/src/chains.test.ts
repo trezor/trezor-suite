@@ -1,4 +1,9 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import {
+    asNetworkSymbol,
+    getNetwork,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 
 import {
     resolveBlockaidEvmChain,
@@ -31,6 +36,39 @@ describe('resolveBlockaidEvmChain', () => {
 
     it('returns null for a chainId Suite does not know', () => {
         expect(resolveBlockaidEvmChain(1234567)).toBeNull();
+    });
+
+    describe('with a user-added network', () => {
+        const symbol = asNetworkSymbol('evm100');
+
+        beforeEach(() => {
+            registerLegacyCustomEvmNetwork({
+                symbol,
+                chainId: 100,
+                name: 'Gnosis',
+                displaySymbol: 'XDAI',
+                explorerUrl: 'https://gnosisscan.io',
+                testnet: false,
+            });
+        });
+
+        afterEach(() => {
+            unregisterLegacyNetwork(symbol);
+        });
+
+        it('passes its chain ID to Blockaid as hex', () => {
+            expect(resolveBlockaidEvmChain(100)).toBe('0x64');
+        });
+
+        it('returns null again once the network is removed', () => {
+            unregisterLegacyNetwork(symbol);
+
+            expect(resolveBlockaidEvmChain(100)).toBeNull();
+        });
+
+        it('keeps a bundled chain without Blockaid support unscanned', () => {
+            expect(resolveBlockaidEvmChain(getNetwork('etc').chainId)).toBeNull();
+        });
     });
 });
 
