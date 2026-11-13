@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
-import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
+import {
+    selectIsDeviceFirmwareUpdateRequiredAndAvailable,
+    selectIsDeviceReadyToUseAndAuthorized,
+} from '@suite-native/device';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import {
@@ -31,6 +34,9 @@ export const useOnDeviceReadyNavigation = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
+    const isDeviceFirmwareUpdateRequiredAndAvailable = useSelector(
+        selectIsDeviceFirmwareUpdateRequiredAndAvailable,
+    );
     const deviceEnabledDiscoveryNetworkSymbols = useSelector(
         selectDeviceEnabledDiscoveryNetworkSymbols,
     );
@@ -57,7 +63,11 @@ export const useOnDeviceReadyNavigation = () => {
 
             if (
                 (isDeviceReadyToUseAndAuthorized && isTimeoutFinished) ||
-                (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isAnyNetworkEnabled)
+                (deviceEnabledDiscoveryNetworkSymbols.length === 0 && isAnyNetworkEnabled) ||
+                // Device that requires a FW update must not be allowed to be used (Connect API would fail anyway),
+                // so redirect it as well. Note that this only concerns devices that **can** be updated.
+                // Those that cannot (e.g. old T1B1 FW) are handled in useDetectDeviceError
+                isDeviceFirmwareUpdateRequiredAndAvailable
             ) {
                 if (navigation.canGoBack() && isConnectPopupOpened) {
                     // NOTE: we don't want to go back to the home screen if Connect Popup is opened
@@ -76,6 +86,7 @@ export const useOnDeviceReadyNavigation = () => {
             deviceEnabledDiscoveryNetworkSymbols.length,
             isAnyNetworkEnabled,
             isConnectPopupOpened,
+            isDeviceFirmwareUpdateRequiredAndAvailable,
             isDeviceReadyToUseAndAuthorized,
             isFirmwareInstallationRunning,
             isTimeoutFinished,

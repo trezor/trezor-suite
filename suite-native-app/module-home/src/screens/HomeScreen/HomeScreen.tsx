@@ -17,6 +17,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { DiscoveryNotFinished } from './components/DiscoveryNotFinished';
 import { EmptyPortfolioCrossroads } from './components/EmptyPortfolioCrossroads';
 import { EmptyPortfolioTrackerState } from './components/EmptyPortfolioTrackerState';
+import { FirmwareUpdateRequiredDeviceState } from './components/FirmwareUpdateRequiredDeviceState';
 import { NoNetworksConfigured as LegacyNoNetworksConfigured } from './components/NoNetworksConfigured';
 import { PortfolioAssetsContent } from './components/PortfolioAssets/PortfolioAssetsContent';
 import { PortfolioAssetsNoNetworksConfigured } from './components/PortfolioAssets/PortfolioAssetsNoNetworksConfigured';
@@ -46,6 +47,8 @@ const HomeScreenContent = ({
             return <EmptyPortfolioTrackerState />;
         case 'uninitializedDevice':
             return <UninitializedConnectedDeviceState />;
+        case 'firmwareUpdateRequired':
+            return <FirmwareUpdateRequiredDeviceState />;
         case 'noNetworkConfigured':
             return isAssetsFirstHomeScreenEnabled ? (
                 <PortfolioAssetsNoNetworksConfigured />

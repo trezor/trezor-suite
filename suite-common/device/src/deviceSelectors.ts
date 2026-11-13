@@ -430,6 +430,11 @@ export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
     device => !!device && device.firmware !== 'none',
 );
 
+export const selectIsFirmwareUpdateRequired = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device && device.firmware === 'required',
+);
+
 export const selectIsDeviceRemembered = createMemoizedSelector(
     [selectSelectedDevice],
     getIsDeviceRemembered,
