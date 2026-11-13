@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@trezor/zod';
 
 import { timestampSchema } from './primitiveSchemas';
 import { stakingAmountSchema } from './stakingAmount';

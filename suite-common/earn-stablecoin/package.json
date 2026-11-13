@@ -24,8 +24,8 @@
         "@trezor/connect-common": "workspace:^",
         "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
         "react": "19.3.0",
-        "react-redux": "9.3.0",
-        "zod": "4.6.7"
+        "react-redux": "9.3.0"
     }
 }

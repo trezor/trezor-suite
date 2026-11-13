@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { FeeLevel } from '@trezor/connect-common';
+import { z } from '@trezor/zod';
 
 import { stakingAmountSchema } from './stakingAmount';
 

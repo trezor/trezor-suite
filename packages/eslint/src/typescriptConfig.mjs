@@ -75,6 +75,12 @@ const stakingProductsPattern = {
         'Only an application composition root registers staking products. Import @suite-common/earn-staking and take the product repository as an injected dependency.',
 };
 
+// `@trezor/zod` turns zod's JIT off before any schema is constructed, so zod is imported only through it.
+const zodImportPattern = {
+    regex: '^zod(?:/|$)',
+    message: "Import from '@trezor/zod', which turns zod's JIT off.",
+};
+
 /*
  Currently only relevant in @suite-app/desktop-app-main, but if the ipcMain import is to be used elsewhere,
  the wrapper shall be extracted and this should still be a global rule.
@@ -91,6 +97,7 @@ const commonRestrictedImports = {
         buildArtifactPatterns,
         networksPackagePattern,
         stakingProductsPattern,
+        zodImportPattern,
         ...connectDeepImportPatterns,
     ],
 };
@@ -100,6 +107,7 @@ export const restrictedImportsPatterns = [
     suiteInternalPatterns,
     networksPackagePattern,
     stakingProductsPattern,
+    zodImportPattern,
     ...connectDeepImportPatterns,
 ];
 
@@ -221,6 +229,7 @@ export const typescriptConfig = [
                         buildArtifactPatterns,
                         networksAppScopePattern,
                         networksPackagePattern,
+                        zodImportPattern,
                         ...connectDeepImportPatterns,
                         {
                             regex: '^@trezor/connect(?!-common(?:/|$))',

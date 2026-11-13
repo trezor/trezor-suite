@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import { typedObjectKeys } from '@trezor/utils';
+import { z } from '@trezor/zod';
 
 import { firmwareVersionSchema, networkSymbolSchema } from './primitiveSchemas';
 import { stakingAmountSchema } from './stakingAmount';

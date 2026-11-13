@@ -43,6 +43,7 @@
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" },
         { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]

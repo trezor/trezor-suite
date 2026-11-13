@@ -2,7 +2,8 @@ import { config } from 'dotenv';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { prettifyError } from 'zod';
+
+import { prettifyError } from '@trezor/zod';
 
 import { error, log } from '../logger';
 import { loadLedger, runAgent } from './common';

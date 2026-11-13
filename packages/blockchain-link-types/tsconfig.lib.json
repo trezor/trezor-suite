@@ -11,6 +11,7 @@
         },
         { "path": "../type-utils" },
         { "path": "../utils" },
-        { "path": "../utxo-lib" }
+        { "path": "../utxo-lib" },
+        { "path": "../zod" }
     ]
 }

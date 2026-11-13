@@ -49,6 +49,7 @@
         "@trezor/utils",
         "@trezor/utxo-lib",
         "@trezor/websocket-client",
+        "@trezor/zod",
         "@types/web",
         "bignumber.js",
         "cashaddrjs",
