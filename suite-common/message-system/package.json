@@ -42,7 +42,7 @@
         "@trezor/node-utils": "workspace:*",
         "@types/fs-extra": "^11.0.4",
         "jws": "^4.0.1",
-        "tsx": "^4.21.0"
+        "tsx": "^4.23.15"
     },
     "nx": {
         "targets": {

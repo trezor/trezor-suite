@@ -15,14 +15,14 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/bottom-tabs": "7.13.0",
+        "@react-navigation/bottom-tabs": "7.21.0",
         "@suite-native/atoms": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.3.0",
         "react-native": "0.88.1",
         "react-native-keyboard-controller": "1.22.7",
         "react-native-reanimated": "4.7.1",
-        "react-native-teleport": "^1.2.2"
+        "react-native-teleport": "^1.2.3"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*",

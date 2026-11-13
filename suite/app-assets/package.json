@@ -38,7 +38,7 @@
         "simple-git": "^4.0.2",
         "style-loader": "^4.0.0",
         "ts-node": "^10.9.2",
-        "tsx": "^4.21.0",
+        "tsx": "^4.23.15",
         "webpack": "5.111.1",
         "webpack-cli": "^7.2.3"
     },
