@@ -1,3 +1,5 @@
+import type { CryptoId, ExchangeTrade } from 'invity-api';
+
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -5,6 +7,7 @@ import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
+    exchangeInvity,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 
@@ -13,6 +16,7 @@ import {
     type TradingTransactionReviewProps,
 } from './TradingTransactionReview';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+import { createFormStateForSendForm } from '../../utils/tradingFormUtils';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -205,6 +209,80 @@ describe('TradingTransactionReview', () => {
             getByText(new RegExp(getTranslation('transactionManagement.review.outputs.noAccount'))),
         ).toBeOnTheScreen();
         expect(queryByTestId('@trading/transaction-review/skeleton')).not.toBeOnTheScreen();
+    });
+
+    it('renders the outputs of the signed form state instead of the trading form draft', async () => {
+        const quote: ExchangeTrade = {
+            exchange: 'invity',
+            send: 'bitcoin' as CryptoId,
+            sendStringAmount: '0.001',
+            sendAddress: 'PROVIDER_DEPOSIT_ADDRESS',
+            receive: 'ethereum' as CryptoId,
+            receiveStringAmount: '0.03',
+            receiveAddress: 'RECEIVE_ADDRESS',
+            status: 'CONFIRM',
+            orderId: 'ORDER_ID',
+        };
+        const createForm = (isSlip24Active: boolean) =>
+            createFormStateForSendForm({
+                quote,
+                providers: { invity: exchangeInvity },
+                isSlip24Active,
+                networkType: 'bitcoin',
+                sendAccountKey: btc1NormalAccount.key,
+                receiveAccountKey: btc1NormalAccount.key,
+            });
+
+        const { getByText, queryByText } = await renderWithTradingProvider(
+            <TradingTransactionReview
+                orderId="ORDER_ID"
+                accountKey={btc1NormalAccount.key}
+                reportToAnalytics={jest.fn()}
+                tradingType="exchange"
+                isTransactionSendConsentRequested={true}
+                resolveTransactionSendConsent={jest.fn()}
+                signAndSendTransaction={jest.fn()}
+                exchangeFlowType="swap"
+            />,
+            {
+                tradeType: 'exchange',
+                overrides: {
+                    device: {
+                        selectedDevice: {
+                            path: 'device-path',
+                            mode: 'normal',
+                            features: { major_version: 2, minor_version: 9, patch_version: 0 },
+                        },
+                    },
+                    wallet: {
+                        send: {
+                            precomposedTx: {
+                                type: 'final',
+                                outputs: [
+                                    { address: 'PROVIDER_DEPOSIT_ADDRESS', amount: '100000' },
+                                ],
+                                fee: '200',
+                                feePerByte: '1',
+                                bytes: 200,
+                                totalSpent: '100200',
+                            },
+                            precomposedForm: createForm(false),
+                        },
+                        formDrafts: { 'trading-exchange/': createForm(true) },
+                    },
+                },
+                services: { networks: mockNetworksServices() },
+            },
+        );
+
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.addressLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            queryByText(
+                getTranslation('transactionManagement.review.outputs.tradedAssetsOutputLabel'),
+            ),
+        ).toBeNull();
     });
 
     it('renders SignDataMessageReview when exchangeFlowType is sign-data', async () => {

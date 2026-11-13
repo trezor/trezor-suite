@@ -7,12 +7,11 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { ErrorMessage } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
-import { getFormDraftKeyPrefixFromTradingType } from '@suite-native/trading-quote-utils';
 import {
     type TransactionReviewOutputsState,
     getTransactionReviewNetworkOptions,
-    selectReviewSummaryOutput,
-    selectTransactionReviewOutputsFromDraft,
+    selectReviewSummaryOutputFromPrecomposedForm,
+    selectTransactionReviewOutputsFromPrecomposedForm,
 } from '@suite-native/transaction-management';
 import { TransactionReviewScreen } from '@suite-native/transaction-review';
 
@@ -92,20 +91,18 @@ export const TradingTransactionReview = memo(
             contentBuilder,
         });
 
-        const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
-
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
         );
 
         const reviewOutputs =
             useSelector((state: TransactionReviewOutputsState) =>
-                selectTransactionReviewOutputsFromDraft(state, prefix, accountKey, tokenContract),
+                selectTransactionReviewOutputsFromPrecomposedForm(state, accountKey),
             ) || undefined;
 
         const summaryOutput =
             useSelector((state: TransactionReviewOutputsState) =>
-                selectReviewSummaryOutput(state, prefix, accountKey, tokenContract),
+                selectReviewSummaryOutputFromPrecomposedForm(state, accountKey),
             ) || undefined;
 
         // The button resolves the send consent the in-flight sign-and-send
@@ -173,7 +170,6 @@ export const TradingTransactionReview = memo(
                     isSummaryItemEnabled && (
                         <TradingTransactionReviewSummaryCard
                             accountKey={accountKey}
-                            prefix={prefix}
                             summaryOutput={summaryOutput}
                             symbol={account.symbol}
                             tokenContract={tokenContract}

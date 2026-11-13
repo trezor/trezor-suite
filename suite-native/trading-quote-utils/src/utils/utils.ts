@@ -3,13 +3,11 @@ import type { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } f
 import {
     type TradingTradeType,
     type TradingTransaction,
-    type TradingType,
     isBuyTrade,
     isExchangeTrade,
     isSellFiatTrade,
     tradeFinalStatuses,
 } from '@suite-common/trading';
-import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 type UndefinedTradeOperation = {
@@ -179,9 +177,6 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
 };
 
 export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
-
-export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =>
-    `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null;
