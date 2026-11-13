@@ -13,7 +13,8 @@ import {
 } from '../connectClosure';
 
 // version: the closure is released in lockstep (#30575). repository: npm provenance (#30591).
-const UNIFIED_FIELDS = ['version', 'repository'] as const;
+// bugs, author: every package published with connect points at the same tracker and author.
+const UNIFIED_FIELDS = ['version', 'repository', 'bugs', 'author'] as const;
 
 type Drift = {
     readonly pkg: WorkspacePackage;

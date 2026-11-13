@@ -38,5 +38,9 @@
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"
-    }
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "author": "Trezor <info@trezor.io>"
 }
