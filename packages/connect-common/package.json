@@ -72,7 +72,6 @@
         "tslib": "^2.6.2"
     },
     "devDependencies": {
-        "@trezor/blockchain-link": "workspace:^",
         "@trezor/blockchain-link-types": "workspace:^",
         "@trezor/device-authenticity": "workspace:^",
         "@trezor/eslint": "workspace:*",

@@ -10,53 +10,6 @@ const isWebProject = process.env.VITEST_PROJECT === 'browser';
 const nodeRequire = createRequire(import.meta.url);
 const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 
-const alias = [
-    {
-        find: '@trezor/blockchain-link',
-        replacement: path.resolve(e2eDir, '../../blockchain-link'),
-    },
-];
-
-// Plugin to resolve bare module specifiers (e.g. @trezor/blockchain-link/src/workers/blockbook)
-// inside new Worker(new URL(..., import.meta.url)) calls.
-// In dev mode, Vite doesn't bundle — the browser constructs the URL at runtime and has no way to
-// resolve bare package specifiers, so we must expand them to /@fs/ paths that the dev server
-// can serve directly. In production, rolldown resolves them through the alias config at build time.
-const resolveWorkerUrlsPlugin = (): Plugin => ({
-    name: 'resolve-worker-urls',
-    enforce: 'pre',
-    apply: 'serve',
-    transform(code) {
-        if (!code.includes('new Worker') || !code.includes('import.meta.url')) return null;
-
-        let changed = false;
-        const transformed = code.replace(
-            /new URL\(\s*(?:\/\*.*?\*\/)?\s*(['"])(@[^'"]+)\1,\s*import\.meta\.url,?\s*\)/gm,
-            (match, _quote, specifier) => {
-                for (const a of alias) {
-                    if (
-                        typeof a.find === 'string' &&
-                        typeof a.replacement === 'string' &&
-                        specifier.startsWith(a.find)
-                    ) {
-                        const rest = specifier.slice(a.find.length);
-                        const abs = a.replacement + rest;
-                        // Append index.ts if no file extension present
-                        const withExt = /\.[cm]?[jt]sx?$/.test(abs) ? abs : `${abs}/index.ts`;
-                        changed = true;
-
-                        return `new URL('/@fs${withExt}', import.meta.url)`;
-                    }
-                }
-
-                return match;
-            },
-        );
-
-        return changed ? { code: transformed, map: null } : null;
-    },
-});
-
 /**
  * Serves the referenced transaction fixtures as `virtual:ref-txs` so no `fs` reaches the browser
  * (see __fixtures__/refTxs.ts). Walks the fixtures dir at build time into a map keyed by the first
@@ -133,43 +86,6 @@ function commonFixturesPlugin(): Plugin {
         load(id: string) {
             if (id === resolvedVirtualModuleId) {
                 return `export const FIXTURES = ${JSON.stringify(readFixtures(fixturesRoot))};`;
-            }
-        },
-    };
-}
-
-/**
- * Vite plugin that transforms coins.json to redirect blockchain_link URLs
- * to the local WS cache server when TESTS_USE_WS_CACHE is enabled.
- */
-function wsCacheTransformPlugin(): Plugin {
-    return {
-        name: 'ws-cache-transform',
-        transform(code: string, id: string) {
-            if (process.env.TESTS_USE_WS_CACHE !== 'true' || !id.includes('coins.json')) {
-                return;
-            }
-
-            try {
-                const json = JSON.parse(code.replace(/^export default /, '').replace(/;$/, ''));
-                Object.keys(json).forEach(key => {
-                    json[key].forEach(
-                        (coin: {
-                            blockchain_link?: { type: string; url: string[] };
-                            shortcut: string;
-                        }) => {
-                            if (coin.blockchain_link) {
-                                if (coin.blockchain_link.type === 'solana') return;
-                                const query = `?type=${coin.blockchain_link.type}&shortcut=${coin.shortcut}&suffix=/websocket`;
-                                coin.blockchain_link.url = [`ws://localhost:18088/${query}`];
-                            }
-                        },
-                    );
-                });
-
-                return `export default ${JSON.stringify(json)};`;
-            } catch {
-                // not a JSON module we care about
             }
         },
     };
@@ -259,7 +175,6 @@ export default defineConfig(
             plugins: [
                 commonFixturesPlugin(),
                 refTxsPlugin(),
-                resolveWorkerUrlsPlugin(),
                 ...(isWebProject
                     ? [
                           wasm(),
@@ -278,7 +193,6 @@ export default defineConfig(
                                   vm: 'vm-browserify',
                               },
                           }),
-                          wsCacheTransformPlugin(),
                           requireToImportPlugin(),
                       ]
                     : []),
@@ -291,7 +205,6 @@ export default defineConfig(
                 'process.env.TESTS_EXCLUDED_METHODS': JSON.stringify(
                     process.env.TESTS_EXCLUDED_METHODS,
                 ),
-                'process.env.TESTS_USE_WS_CACHE': JSON.stringify(process.env.TESTS_USE_WS_CACHE),
                 'process.env.TESTS_TRANSPORT': JSON.stringify(process.env.TESTS_TRANSPORT),
                 'process.env.EMULATOR_START_OPTS': JSON.stringify(process.env.EMULATOR_START_OPTS),
                 ...(isWebProject
@@ -332,7 +245,6 @@ export default defineConfig(
                     path.resolve(e2eDir, './vitest.setup.ts'),
                     path.resolve(e2eDir, './common.setup.ts'),
                 ],
-                globalSetup: path.resolve(e2eDir, './vitest.globalSetup.ts'),
                 ...(isWebProject
                     ? {
                           browser: {

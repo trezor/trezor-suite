@@ -2,11 +2,6 @@ import { type AbstractTransportParams, BridgeTransport } from '@trezor/transport
 
 import { CoreInModuleNative } from './core-in-module-native';
 
-jest.mock('@trezor/blockchain-core', () => ({
-    ...jest.requireActual('@trezor/blockchain-core'),
-    TrezorBlockchain: { updateSettings: jest.fn(() => Promise.resolve()) },
-}));
-
 class Probe extends CoreInModuleNative {
     public getDefaultTransports(params: AbstractTransportParams) {
         return this.defaultTransports(params);

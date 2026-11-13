@@ -155,8 +155,8 @@ const bitcoinRequestThunk = createThunk<
                 },
             });
             if (!feeLevels.success) {
-                console.error('blockchainEstimateFee error', feeLevels);
-                throw new Error('blockchainEstimateFee error');
+                console.error('TrezorBlockchain.estimateFee error', feeLevels);
+                throw new Error('TrezorBlockchain.estimateFee error');
             }
 
             const precomposedTransaction = await TrezorConnect.composeTransaction({

@@ -1,6 +1,5 @@
 import type { Err } from '@trezor/type-utils';
 
-import type { BlockchainEventMessage } from './blockchain';
 import type { CoreCallCancelMessage, CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
 import type { SetEnabledNetworksMessage } from './networks';
@@ -29,7 +28,6 @@ export type CoreEventMessage = {
     success?: boolean; // response status in ResponseMessage
     channel?: { here: string; peer: string }; // channel name
 } & (
-    | BlockchainEventMessage
     | DeviceEventMessage
     | TransportEventMessage
     | UiEventMessage

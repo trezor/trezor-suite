@@ -1,30 +1,9 @@
 import type { TRANSPORT } from '@trezor/transport-common';
 
-import { BLOCKCHAIN, type BlockchainEvent, createBlockchainMessage } from './blockchain';
 import { DEVICE, type DeviceEvent, createDeviceMessage } from './device';
 import { type TransportEvent, createTransportMessage } from './transport';
 import { UI_EVENTS, type UiEvent, createUiEventMessage } from './ui-event';
 import { UI_REQUESTS, type UiRequestEvent, createUiRequestMessage } from './ui-request';
-
-/* BLOCKCHAIN MESSAGES */
-declare const blockchainError: Extract<
-    BlockchainEvent,
-    { type: typeof BLOCKCHAIN.ERROR }
->['payload'];
-const blockchainMessage = createBlockchainMessage(BLOCKCHAIN.ERROR, blockchainError);
-void (blockchainMessage.type satisfies typeof BLOCKCHAIN.ERROR);
-void (blockchainMessage.payload satisfies typeof blockchainError);
-
-declare const blockchainNotification: Extract<
-    BlockchainEvent,
-    { type: typeof BLOCKCHAIN.NOTIFICATION }
->['payload'];
-const blockchainMessage2 = createBlockchainMessage(BLOCKCHAIN.NOTIFICATION, blockchainNotification);
-void (blockchainMessage2.type satisfies typeof BLOCKCHAIN.NOTIFICATION);
-void (blockchainMessage2.payload satisfies typeof blockchainNotification);
-
-// @ts-expect-error Payload is required for blockchain error messages.
-createBlockchainMessage(BLOCKCHAIN.ERROR);
 
 /* DEVICE MESSAGES */
 declare const deviceButtonRequest: Extract<DeviceEvent, { type: typeof DEVICE.BUTTON }>['payload'];
@@ -37,8 +16,6 @@ const deviceMessage2 = createDeviceMessage(DEVICE.CONNECT, deviceConnect);
 void (deviceMessage2.type satisfies typeof DEVICE.CONNECT);
 void (deviceMessage2.payload satisfies typeof deviceConnect);
 
-// @ts-expect-error Device button payload is not compatible with blockchain error type.
-createDeviceMessage(BLOCKCHAIN.ERROR, deviceButtonRequest);
 // @ts-expect-error Device message type is not compatible with the payload.
 createDeviceMessage(DEVICE.CONNECT, deviceButtonRequest);
 
@@ -49,9 +26,6 @@ declare const transportErrorType: typeof TRANSPORT.ERROR;
 const transportMessage = createTransportMessage(transportErrorType, transportError);
 void (transportMessage.type satisfies typeof TRANSPORT.ERROR);
 void (transportMessage.payload satisfies typeof transportError);
-
-// @ts-expect-error
-void (transportMessage.payload satisfies typeof blockchainError);
 
 declare const transportStartType: typeof TRANSPORT.START;
 declare const transportStart: Extract<TransportEvent, { type: typeof TRANSPORT.START }>['payload'];
