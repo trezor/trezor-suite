@@ -111,8 +111,8 @@ class DeviceOnboardingActions {
         await device.enableSynchronization();
     }
 
-    async waitForUninitializedDeviceLanding() {
-        await waitForVisible(by.id('@screen/UninitializedDeviceLanding'));
+    async waitForDeviceVisualCheck() {
+        await waitForVisible(by.id('@screen/DeviceVisualCheck'));
     }
 
     async waitForDeviceAuthenticitySuccess() {
@@ -129,8 +129,26 @@ class DeviceOnboardingActions {
         await waitForVisible(by.id('@screen/DeviceCompromisedModal'));
     }
 
-    async dismissTheUninitializedDeviceLanding() {
-        await element(by.id('@deviceOnboarding/UninitializedDeviceLandingScreen/confirmBtn')).tap();
+    async dismissTheDeviceVisualCheck() {
+        await element(by.id('@deviceOnboarding/DeviceVisualCheckScreen/confirmBtn')).tap();
+    }
+
+    /**
+     * An initialized device which hasn't passed the interactive device checks yet is sent to the device onboarding
+     * flow on connection: Device Visual Check, then Device Authenticity Check (if supported and enabled).
+     */
+    async passInitializedDeviceChecks() {
+        await this.waitForDeviceVisualCheck();
+        await this.dismissTheDeviceVisualCheck();
+
+        const isDeviceAuthenticityCheckDisplayed = await isElementVisible(
+            by.id('@screen/DeviceAuthenticity'),
+        );
+        if (isDeviceAuthenticityCheckDisplayed) {
+            await TrezorUserEnvLink.pressYes();
+            await this.waitForDeviceAuthenticitySuccess();
+            await this.dismissDeviceAuthenticitySuccess();
+        }
     }
 
     async skipFirmwareUpdate() {
@@ -151,8 +169,8 @@ class DeviceOnboardingActions {
     }
 
     async proceedToCreateOrRecoverCrossroads() {
-        await this.waitForUninitializedDeviceLanding();
-        await this.dismissTheUninitializedDeviceLanding();
+        await this.waitForDeviceVisualCheck();
+        await this.dismissTheDeviceVisualCheck();
         // During our release process, the TrezorUserEnv might not have the latest firmware version.
         // In such cases, the firmware update screen appears here.
         // We want to skip the update in e2e tests as it is not supported.

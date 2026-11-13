@@ -4,6 +4,7 @@ import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs'
 import { type EarnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type ExperimentalFeature = 'suite-sync' | 'slip24';
 
@@ -108,6 +109,17 @@ export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
 export const selectIsDeviceAuthenticityCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isDeviceAuthenticityCheckEnabled;
+
+// Memoized, so that the returned object is stable for `useSelector`.
+export const selectDeviceAuthenticityCheckSettings =
+    createWeakMapSelector.withTypes<SettingsSliceRootState>()(
+        [selectIsDeviceAuthenticityCheckEnabled],
+        isDeviceAuthenticityCheckEnabled => ({
+            isDeviceAuthenticityCheckEnabled,
+            // There is no setting tolerating an unlocked bootloader on mobile → TODO add the debug setting
+            isUnlockedBootloaderAllowed: false,
+        }),
+    );
 
 export const selectShouldShowAutoEjectAlert = (state: SettingsSliceRootState) =>
     state.appSettings.shouldShowAutoEjectAlert;

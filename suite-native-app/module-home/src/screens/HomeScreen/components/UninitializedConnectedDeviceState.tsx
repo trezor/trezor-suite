@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectDeviceModel } from '@suite-common/device';
+import { selectDeviceModel, selectIsDeviceInitialized } from '@suite-common/device';
 import { Box, Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
@@ -36,10 +36,11 @@ export const UninitializedConnectedDeviceState = () => {
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
 
     const deviceModel = useSelector(selectDeviceModel);
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
 
     const navigateToDeviceOnboarding = () => {
         navigation.navigate(RootStackRoutes.DeviceOnboardingStack, {
-            screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
+            screen: DeviceOnboardingStackRoutes.DeviceVisualCheck,
             params: {
                 deviceModel: deviceModel ?? DeviceModelInternal.UNKNOWN,
             },
@@ -53,15 +54,31 @@ export const UninitializedConnectedDeviceState = () => {
                 <Box alignItems="center">
                     <ConfirmOnTrezorAnimation />
                 </Box>
-                <CenteredTitleHeader
-                    title={<Translation id="moduleHome.emptyState.uninitializedDevice.title" />}
-                    subtitle={
-                        <Translation id="moduleHome.emptyState.uninitializedDevice.subtitle" />
-                    }
-                    testID="@homescreen/uninitializedConnectedDeviceText"
-                />
+                {isDeviceInitialized ? (
+                    <CenteredTitleHeader
+                        title={
+                            <Translation id="moduleHome.emptyState.deviceChecksRequired.title" />
+                        }
+                        subtitle={
+                            <Translation id="moduleHome.emptyState.deviceChecksRequired.subtitle" />
+                        }
+                        testID="@homescreen/deviceChecksRequiredText"
+                    />
+                ) : (
+                    <CenteredTitleHeader
+                        title={<Translation id="moduleHome.emptyState.uninitializedDevice.title" />}
+                        subtitle={
+                            <Translation id="moduleHome.emptyState.uninitializedDevice.subtitle" />
+                        }
+                        testID="@homescreen/uninitializedConnectedDeviceText"
+                    />
+                )}
                 <Button onPress={navigateToDeviceOnboarding} style={applyStyle(buttonStyle)}>
-                    <Translation id="moduleHome.emptyState.uninitializedDevice.button" />
+                    {isDeviceInitialized ? (
+                        <Translation id="moduleHome.emptyState.deviceChecksRequired.button" />
+                    ) : (
+                        <Translation id="moduleHome.emptyState.uninitializedDevice.button" />
+                    )}
                 </Button>
             </VStack>
         </Card>

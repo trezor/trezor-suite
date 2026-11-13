@@ -19,6 +19,7 @@
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",
+        "@suite-common/firmware": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/persistent-device-data": "workspace:*",

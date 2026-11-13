@@ -1,6 +1,7 @@
 import { type ExperimentalFeature } from '@suite/experimental';
 import { defaultEarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 import { defaultEarnStakingWorkerBaseUrl } from '@suite-common/earn-staking-api';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type SuiteSettingsRootState } from './settingsSlice';
 
@@ -62,3 +63,13 @@ export const selectShowTranslationKeys = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showTranslationKeys;
 export const selectIsAppsEmbeddingEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isAppsEmbeddingEnabled;
+
+// Memoized, so that the returned object is stable for `useSelector`.
+export const selectDeviceAuthenticityCheckSettings =
+    createWeakMapSelector.withTypes<SuiteSettingsRootState>()(
+        [selectIsDeviceAuthenticityCheckEnabled, selectIsUnlockedBootloaderAllowed],
+        (isDeviceAuthenticityCheckEnabled, isUnlockedBootloaderAllowed) => ({
+            isDeviceAuthenticityCheckEnabled,
+            isUnlockedBootloaderAllowed,
+        }),
+    );

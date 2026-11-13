@@ -79,9 +79,9 @@ export enum OnboardingStackRoutes {
 
 export enum DeviceOnboardingStackRoutes {
     DeviceDisconnected = 'DeviceDisconnected',
-    UninitializedDeviceLanding = 'UninitializedDeviceLanding',
+    DeviceVisualCheck = 'DeviceVisualCheck',
     SuspiciousDevice = 'SuspiciousDevice',
-    SecurityCheck = 'SecurityCheck',
+    PackagingVisualCheck = 'PackagingVisualCheck',
     FirmwareInfo = 'FirmwareInfo',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
@@ -89,7 +89,7 @@ export enum DeviceOnboardingStackRoutes {
     ThpConfirmation = 'ThpConfirmation',
     ThpCodeEntry = 'ThpCodeEntry',
     ThpPairingSuccess = 'ThpPairingSuccess',
-    DeviceAuthenticity = 'DeviceAuthenticity ',
+    DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticitySuccess = 'DeviceAuthenticitySuccess',
     DeviceTutorial = 'DeviceTutorial',
     CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',

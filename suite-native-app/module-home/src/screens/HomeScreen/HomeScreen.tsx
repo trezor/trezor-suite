@@ -45,6 +45,7 @@ const HomeScreenContent = ({
         case 'emptyPortfolioTracker':
             return <EmptyPortfolioTrackerState />;
         case 'uninitializedDevice':
+        case 'deviceChecksRequired':
             return <UninitializedConnectedDeviceState />;
         case 'noNetworkConfigured':
             return isAssetsFirstHomeScreenEnabled ? (

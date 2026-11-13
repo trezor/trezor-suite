@@ -4,6 +4,7 @@ import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -50,6 +51,7 @@ describe('Trade Exchange [@androidOnly]', () => {
                 passphrase_protection: true,
             });
             await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
+            await onDeviceOnboarding.passInitializedDeviceChecks();
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await onHome.waitForScreen();
@@ -89,6 +91,7 @@ describe('Trade Exchange [@androidOnly]', () => {
                 passphrase_protection: true,
             });
             await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
+            await onDeviceOnboarding.passInitializedDeviceChecks();
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
             await tradingExchangeActions.openForm();

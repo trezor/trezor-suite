@@ -1,24 +1,32 @@
 import { useWindowDimensions } from 'react-native';
 
 import { Image } from '@suite-native/atoms';
-import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type DeviceImageSize = 'normal' | 'small';
 
 type DeviceModelImageProps = {
-    deviceModel: SetupSupportingDeviceModel;
+    deviceModel: DeviceModelInternal;
     size: DeviceImageSize;
 };
 
+type DeviceModelWithImage = Exclude<DeviceModelInternal, DeviceModelInternal.UNKNOWN>;
+
 const deviceModelImageMap = {
+    // Note: although T1B1 onboarding is not supported, the Visual Device Check for already initialized device is supported.
+    // That's why don't need T1B1 in SecuritySealImages, but we do need it here.
+    [DeviceModelInternal.T1B1]: require('../assets/t1b1.webp'),
     [DeviceModelInternal.T2T1]: require('../assets/t2t1.webp'),
     [DeviceModelInternal.T2B1]: require('../assets/t3b1.webp'),
     [DeviceModelInternal.T3B1]: require('../assets/t3b1.webp'),
     [DeviceModelInternal.T3T1]: require('../assets/t3t1.webp'),
     [DeviceModelInternal.T3W1]: require('../assets/t3w1.webp'),
-} as const satisfies Record<SetupSupportingDeviceModel, string>;
+} as const satisfies Record<DeviceModelWithImage, string>;
+
+// Get device model with available image → fallback unknown device to T3W1 (unknown device cannot have an image, it's appearance is unknown).
+const getDeviceModelForDisplay = (deviceModel: DeviceModelInternal): DeviceModelWithImage =>
+    deviceModel === DeviceModelInternal.UNKNOWN ? DeviceModelInternal.T3W1 : deviceModel;
 
 const sizeToHeightMap = {
     normal: 360,
@@ -42,7 +50,7 @@ export const DeviceModelImage = ({ deviceModel, size }: DeviceModelImageProps) =
 
     return (
         <Image
-            source={deviceModelImageMap[deviceModel]}
+            source={deviceModelImageMap[getDeviceModelForDisplay(deviceModel)]}
             contentFit="contain"
             style={applyStyle(deviceImageStyle, { size, windowHeight })}
         />

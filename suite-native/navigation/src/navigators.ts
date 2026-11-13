@@ -328,13 +328,13 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceDisconnected]: {
         wasDeviceConnectedViaBluetooth: boolean;
     };
-    [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: {
+    [DeviceOnboardingStackRoutes.DeviceVisualCheck]: {
         deviceModel: DeviceModelInternal;
     };
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
     };
-    [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
+    [DeviceOnboardingStackRoutes.PackagingVisualCheck]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInfo]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;

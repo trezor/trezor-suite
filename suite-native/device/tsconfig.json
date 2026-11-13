@@ -12,6 +12,7 @@
         {
             "path": "../../suite-common/device-authenticity"
         },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/firmware-authenticity"
         },

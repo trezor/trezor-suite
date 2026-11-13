@@ -1,6 +1,7 @@
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
 import { onDeviceManager } from '../pageObjects/deviceManagerActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDeviceSettings } from '../pageObjects/deviceSettingsActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 
@@ -15,6 +16,7 @@ describe('FW update required [@androidOnly @T3T1]', () => {
         await openApp({
             args: { preloadedState: preloadedStateT3T1, isFirmwareUpdateEnabled: true },
         });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     });
 

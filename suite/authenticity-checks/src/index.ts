@@ -12,10 +12,5 @@ export {
     selectShouldDisplayDeviceCompromisedOnRoute,
     selectShouldRetryFirmwareRevisionCheckError,
 } from './authenticityChecksSelectors';
-export {
-    selectIsDeviceAuthenticityCheckSupportedAndEnabled,
-    selectShouldCheckDeviceAuthenticity,
-    selectShouldRouterAppSkipInteractiveDeviceChecks,
-    selectDeviceNeedsInteractiveDeviceChecks,
-} from './interactiveAuthenticityChecksSelectors';
+export { selectShouldRouterAppSkipInteractiveDeviceChecks } from './interactiveAuthenticityChecksSelectors';
 export type { AuthenticityChecksRootState } from './types';

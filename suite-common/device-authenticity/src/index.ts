@@ -7,3 +7,5 @@ export {
 export { selectIsDeviceAuthenticityCheckSupported } from './deviceAuthenticitySelectors';
 export { getIsDeviceReadyForAuthenticityCheck } from './getIsDeviceReadyForAuthenticityCheck';
 export { getIsDeviceAuthenticityCheckSupportedAndEnabled } from './getIsDeviceAuthenticityCheckSupportedAndEnabled';
+export { selectIsAnyDeviceCheckRequired } from './selectIsAnyDeviceCheckRequired';
+export { selectIsDeviceAuthenticityCheckRequired } from './selectIsDeviceAuthenticityCheckRequired';

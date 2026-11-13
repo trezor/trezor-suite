@@ -7,8 +7,16 @@ import { selectHomeScreenState } from './homescreenSelectors';
 
 const TEST_SESSION_ID = 'address@hash:0' as const;
 
+const defaultPreloadedState: Record<string, unknown> = {
+    appSettings: { isDeviceAuthenticityCheckEnabled: true },
+    persistentDeviceData: { devices: [] },
+};
+
 const buildState = (preloadedState: Record<string, unknown>): NativeDeviceRootState =>
-    createStoreFromPreloadedState(preloadedState as NativeDeviceRootState).getState();
+    createStoreFromPreloadedState({
+        ...defaultPreloadedState,
+        ...preloadedState,
+    } as NativeDeviceRootState).getState();
 
 describe('selectHomeScreenState', () => {
     describe('portfolioContent', () => {
@@ -202,6 +210,45 @@ describe('selectHomeScreenState', () => {
             });
 
             expect(selectHomeScreenState(state)).toBe('emptyPortfolioCrossroads');
+        });
+    });
+
+    describe('deviceChecksRequired', () => {
+        const buildInitializedDeviceState = (
+            internalModel: DeviceModelInternal,
+            persistentDeviceData: Record<string, unknown>[] = [],
+        ) =>
+            buildState({
+                device: {
+                    selectedDevice: {
+                        id: 'device_id',
+                        connected: true,
+                        features: { initialized: true, internal_model: internalModel },
+                        state: {},
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+                persistentDeviceData: { devices: persistentDeviceData },
+            });
+
+        it('should return deviceChecksRequired when initialized device has not passed the manual check', () => {
+            const state = buildInitializedDeviceState(DeviceModelInternal.T2T1);
+
+            expect(selectHomeScreenState(state)).toBe('deviceChecksRequired');
+        });
+
+        it('should return deviceChecksRequired for initialized T1B1', () => {
+            const state = buildInitializedDeviceState(DeviceModelInternal.T1B1);
+
+            expect(selectHomeScreenState(state)).toBe('deviceChecksRequired');
+        });
+
+        it('should not return deviceChecksRequired when the manual check has been passed', () => {
+            const state = buildInitializedDeviceState(DeviceModelInternal.T2T1, [
+                { device_id: 'device_id', manualCheckResult: { success: true } },
+            ]);
+
+            expect(selectHomeScreenState(state)).toBe('noNetworkConfigured');
         });
     });
 
