@@ -34,7 +34,7 @@
     "devDependencies": {
         "@sinclair/typebox-codegen": "^0.11.1",
         "@trezor/eslint": "workspace:*",
-        "tsx": "^4.21.0"
+        "tsx": "^4.23.15"
     },
     "dependencies": {
         "@sinclair/typebox": "^0.34.49",
