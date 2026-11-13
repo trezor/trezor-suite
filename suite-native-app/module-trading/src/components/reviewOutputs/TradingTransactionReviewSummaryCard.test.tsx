@@ -38,7 +38,6 @@ describe('TradingTransactionReviewSummaryCard', () => {
                 onLayout={jest.fn()}
                 summaryOutput={summaryOutput}
                 flowType="swap"
-                prefix="trading-exchange"
                 {...props}
             />,
             { tradeType: 'exchange' },
