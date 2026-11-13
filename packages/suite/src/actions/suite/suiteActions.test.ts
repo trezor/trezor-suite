@@ -60,7 +60,7 @@ import suiteReducer, {
 import { discardMockedConnectInitActions } from '#src/utils/suite/storage';
 
 import fixtures from './__fixtures__/suiteActions';
-import { SUITE } from './constants';
+import * as SUITE from './constants/suiteConstants';
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {

@@ -32,7 +32,7 @@ import { isArrayMember, safeParseUrl } from '@trezor/utils';
 
 import type { SendFormState } from '#src/reducers/suite/protocolState';
 
-import { PROTOCOL } from './constants';
+import * as PROTOCOL from './constants/protocolConstants';
 
 export const saveCoinProtocol = createAction(
     PROTOCOL.SAVE_COIN_PROTOCOL,
