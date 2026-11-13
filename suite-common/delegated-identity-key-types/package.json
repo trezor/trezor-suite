@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
+        "@trezor/device": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     }
 }

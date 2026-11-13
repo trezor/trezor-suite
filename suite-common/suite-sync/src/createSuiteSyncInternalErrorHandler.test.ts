@@ -1,15 +1,11 @@
-import { DeviceError } from '@suite-common/device';
 import { type AllocateOwnerQuotaErr } from '@suite-common/suite-sync-quota-manager';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
 import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
-import {
-    type DeviceErrorType,
-    type TrezorDevice,
-    asDelegatedIdentityKey,
-} from '@suite-common/suite-types';
+import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 import { createMockDeps } from '@trezor/dependency-injection';
+import { DeviceError, type DeviceErrorType } from '@trezor/device';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
