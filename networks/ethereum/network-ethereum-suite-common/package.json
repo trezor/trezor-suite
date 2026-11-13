@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1",
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/calldata": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/network-ethereum": "workspace:*",
