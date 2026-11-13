@@ -238,6 +238,7 @@
         { "path": "../../suite/wallet" },
         { "path": "../analytics-uploader" },
         { "path": "../asset-utils" },
+        { "path": "../blockchain-core" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../coinjoin" },

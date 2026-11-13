@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asGetter } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
@@ -23,7 +23,10 @@ import {
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
     ...jest.requireActual('@trezor/connect'),
-    default: {
+    default: {},
+}));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
         pushTransaction: jest.fn(),
     },
 }));
@@ -52,7 +55,7 @@ const signedTransaction: SignedWrappedNativeTokenTransaction = {
     formState: { selectedFee: 'custom', options: ['transactionData'] } as unknown as FormState,
 };
 
-const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const pushTransactionMock = TrezorBlockchain.pushTransaction as jest.Mock;
 const buildStore = (storeAccount: Account) =>
     createTestCompositionRoot<PushWrappedNativeTokenThunkDeps, PushWrappedNativeTokenThunkState>({
         preloadedState: {

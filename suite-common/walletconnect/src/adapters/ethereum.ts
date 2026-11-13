@@ -22,7 +22,8 @@ import {
     getGasLimitWithBuffer,
     sanitizeHex,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, {
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import {
     type CallMethodResponse,
     type EthereumSignTypedData,
     type EthereumSignTypedDataTypes,
@@ -180,7 +181,7 @@ const ethereumRequestThunk = createThunk<
                 (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas);
 
             if (isFeeRateMissing || !transaction.gas) {
-                const feeLevels = await TrezorConnect.blockchainEstimateFee({
+                const feeLevels = await TrezorBlockchain.estimateFee({
                     coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
                     request: {
@@ -256,7 +257,7 @@ const ethereumRequestThunk = createThunk<
             const typedSignPayload =
                 signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
-            const pushResponse = await TrezorConnect.pushTransaction({
+            const pushResponse = await TrezorBlockchain.pushTransaction({
                 tx: typedSignPayload.serializedTx,
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),

@@ -20,6 +20,7 @@ import {
     subunitsToUnits,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
@@ -184,7 +185,7 @@ const getTokenTransferInfo = async (
         return { success: true as const, payload };
     }
 
-    const recipientAccountInfo = await TrezorConnect.getAccountInfo({
+    const recipientAccountInfo = await TrezorBlockchain.getAccountInfo({
         descriptor,
         coin: asCoinSymbol(account.symbol),
         identity: getAccountIdentity(account),
@@ -304,7 +305,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             });
         }
 
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+        const estimatedFee = await TrezorBlockchain.estimateFee({
             coin: asCoinSymbol(account.symbol),
             request: {
                 specific: {
@@ -413,7 +414,7 @@ export const signSolanaSendFormTransactionThunk = createThunk<
             });
         const { token } = precomposedTransaction;
 
-        const blockchainInfo = await TrezorConnect.blockchainGetInfo({
+        const blockchainInfo = await TrezorBlockchain.getInfo({
             coin: asCoinSymbol(selectedAccount.symbol),
             identity: getAccountIdentity(selectedAccount),
         });

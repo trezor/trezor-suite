@@ -159,9 +159,12 @@ const config = {
                 return { filePath: cardanoSerializationLibPath, type: 'sourceFile' };
             }
 
-            if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
-                // Mock some Trezor Connect methods to avoid network flakiness during e2e tests.
-                return getSourceFile('./e2e/mocks/trezor-connect.js');
+            if (
+                process.env.EXPO_PUBLIC_IS_DETOX_BUILD &&
+                moduleName === '@trezor/blockchain-core'
+            ) {
+                // Mock some TrezorBlockchain methods to avoid network flakiness during e2e tests.
+                return getSourceFile('./e2e/mocks/trezor-blockchain-core.js');
             }
 
             // Optionally, chain to the standard Metro resolver.

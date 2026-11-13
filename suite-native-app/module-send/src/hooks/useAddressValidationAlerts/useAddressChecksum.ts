@@ -9,7 +9,7 @@ import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-commo
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 
@@ -50,7 +50,7 @@ export const useAddressChecksum = (addressFieldName: string) => {
                 coin: asCoinSymbol(symbol),
             };
 
-            const addressInfo = await TrezorConnect.getAccountInfo(params);
+            const addressInfo = await TrezorBlockchain.getAccountInfo(params);
 
             if (addressInfo.success) {
                 // Already used addresses are checksumed without displaying the alert.

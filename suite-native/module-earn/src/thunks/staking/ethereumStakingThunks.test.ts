@@ -22,6 +22,7 @@ import {
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
@@ -36,6 +37,10 @@ jest.mock('@trezor/connect', () => ({
             success: true,
             payload: { serializedTx: '0xsignedtx' },
         }),
+    },
+}));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
         pushTransaction: jest.fn().mockResolvedValue({
             success: true,
             payload: { txid: '0xpushedtxid' },
@@ -195,8 +200,8 @@ const buildStore = ({
     }).services.store;
 
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
-const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
-const getAccountInfoMock = TrezorConnect.getAccountInfo as jest.Mock;
+const pushTransactionMock = TrezorBlockchain.pushTransaction as jest.Mock;
+const getAccountInfoMock = TrezorBlockchain.getAccountInfo as jest.Mock;
 
 const dispatchFlow = async (
     store: TestCompositionStore<State, WithServices<NativeAnalyticsDep>>,

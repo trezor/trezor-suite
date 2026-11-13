@@ -361,23 +361,23 @@ In paths above, `i` is the account index (default `0`).
 
 ### EVM Chains (eth, pol, bsc, arb, base, op, avax, etc)
 
-| Field         | Auto-fill method                                                                                                                                                        |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Nonce**     | Silent `getAccountInfo` call → `misc.nonce`                                                                                                                             |
-| **Gas limit** | `21000` for simple transfers, `100000` if `data` is present                                                                                                             |
-| **Fees**      | `blockchainEstimateFee` with `{ blocks: [2], feeLevels: 'smart' }` → picks "normal" tier. Falls back to `0x0` if estimation fails (UI allows adjustment before signing) |
-| **Chain ID**  | Derived from coin config                                                                                                                                                |
-| **Value**     | Converted from native unit (e.g., `"0.1"` ETH) to wei using 18 decimals                                                                                                 |
+| Field         | Auto-fill method                                                                                                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Nonce**     | `getAccountInfo` popup call → `misc.nonce`                                                                                                                                           |
+| **Gas limit** | `21000` for simple transfers, `100000` if `data` is present                                                                                                                          |
+| **Fees**      | `TrezorBlockchain.estimateFeeLevels` with `{ blocks: [2], feeLevels: 'smart' }` → picks "normal" tier. Falls back to `0x0` if estimation fails (UI allows adjustment before signing) |
+| **Chain ID**  | Derived from coin config                                                                                                                                                             |
+| **Value**     | Converted from native unit (e.g., `"0.1"` ETH) to wei using 18 decimals                                                                                                              |
 
 Default mode is EIP-1559 (`maxFeePerGas` + `maxPriorityFeePerGas`). Switches to legacy mode only if `gasPrice` is explicitly provided.
 
 ### XRP
 
-| Field        | Auto-fill method                                                        |
-| ------------ | ----------------------------------------------------------------------- |
-| **Sequence** | Silent `getAccountInfo` call → `misc.sequence`                          |
-| **Fee**      | `blockchainEstimateFee` (no params) → defaults to `12` drops if fails   |
-| **Amount**   | Converted from native unit (e.g., `"10"` XRP) to drops using 6 decimals |
+| Field        | Auto-fill method                                                             |
+| ------------ | ---------------------------------------------------------------------------- |
+| **Sequence** | `getAccountInfo` popup call → `misc.sequence`                                |
+| **Fee**      | `TrezorBlockchain.estimateFee` (no params) → defaults to `12` drops if fails |
+| **Amount**   | Converted from native unit (e.g., `"10"` XRP) to drops using 6 decimals      |
 
 ### UTXO Coins (btc, ltc, bch, doge, zec)
 

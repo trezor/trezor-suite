@@ -4,7 +4,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { prepareBlockchainSubscriptionMiddleware } from './blockchainSubscriptionMiddleware';
@@ -53,7 +53,7 @@ const waitForThunks = () => new Promise(resolve => setTimeout(resolve, 0));
 
 const mockSubscribe = () =>
     jest
-        .spyOn(TrezorConnect, 'blockchainSubscribe')
+        .spyOn(TrezorBlockchain, 'subscribe')
         .mockResolvedValue({ success: true, payload: { subscribed: true } });
 
 describe('prepareBlockchainSubscriptionMiddleware', () => {
@@ -131,7 +131,7 @@ describe('prepareBlockchainSubscriptionMiddleware', () => {
 
     it('disconnects the backend when its last account is removed', async () => {
         const disconnect = jest
-            .spyOn(TrezorConnect, 'blockchainDisconnect')
+            .spyOn(TrezorBlockchain, 'disconnect')
             .mockResolvedValue({ success: true, payload: { disconnected: true } });
         const store = initStore([account]);
 

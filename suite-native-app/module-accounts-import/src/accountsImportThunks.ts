@@ -27,8 +27,9 @@ import {
     shouldUseIdentities,
 } from '@suite-common/wallet-utils';
 import { isNetworkWithTokens } from '@suite-native/tokens';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import TrezorConnect, { type AccountInfo } from '@trezor/connect';
+import { type AccountInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
@@ -141,7 +142,7 @@ export const getAccountInfoThunk = createThunk<
 
         try {
             const [fetchedAccountInfo] = await Promise.all([
-                TrezorConnect.getAccountInfo({
+                TrezorBlockchain.getAccountInfo({
                     coin: asCoinSymbol(symbol),
                     identity: shouldUseIdentities(symbol)
                         ? getAccountIdentity({

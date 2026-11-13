@@ -126,7 +126,7 @@ type DeviceAccountDescriptor = Pick<
 >;
 
 // Returns the account descriptor (xpub for UTXO networks, address for account-based networks)
-// with the device-derived fields which `TrezorConnect.getAccountInfo({ descriptor })` lacks.
+// with the device-derived fields which `TrezorBlockchain.getAccountInfo({ descriptor })` lacks.
 export const getDescriptorForNetworkType = ({
     device,
     networkType,
