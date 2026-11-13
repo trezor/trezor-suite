@@ -1,14 +1,11 @@
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext } from 'react';
 
-import { setConnectionModal, useDevice } from '@suite/device';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
     type TradingUseDetailPropsWithoutAccount,
     useTradingDetail as useTradingDetailCommon,
 } from '@suite-common/trading';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 import { throwError } from '@trezor/utils';
 
 import { useServerEnvironment } from '#src/hooks/wallet/trading/useServerEnviroment';
@@ -26,14 +23,8 @@ export const useTradingDetail = <T extends TradingType>(
 ): TradingUseDetailOutputProps<T> => {
     const { tradeType } = props;
     const { account } = useTradingFormAccount(tradeType);
-    const { device } = useDevice();
-    const { dispatch } = useServices(injectDispatch);
 
     const result = useTradingDetailCommon<T>({ tradeType });
-
-    useEffect(() => {
-        dispatch(setConnectionModal(!device?.connected));
-    }, [device?.connected, dispatch]);
 
     // Setup server environment from suite settings
     useServerEnvironment();
