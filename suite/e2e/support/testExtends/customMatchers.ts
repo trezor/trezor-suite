@@ -10,7 +10,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
 import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
 import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
-import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
+import {
+    mockGetTrezorBlockchain,
+    mockGetTrezorConnect,
+} from '@trezor/network-module-suite-common-types/mocks';
 import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
 import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
 import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
@@ -32,7 +35,10 @@ type TranslationValues = Record<string, string | number | RegExp>;
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 
-const networkModuleDeps = { getTrezorConnect: mockGetTrezorConnect };
+const networkModuleDeps = {
+    getTrezorConnect: mockGetTrezorConnect,
+    getTrezorBlockchain: mockGetTrezorBlockchain,
+};
 const networkModuleRepository = createNetworkModuleRepository({
     networkModules: [
         createBitcoinSuiteCommonNetworkModule(networkModuleDeps),
