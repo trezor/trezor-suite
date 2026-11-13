@@ -19359,11 +19359,6 @@ __metadata:
     "@trezor/schema-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-  peerDependencies:
-    "@trezor/ipc-proxy": "workspace:*"
-  peerDependenciesMeta:
-    "@trezor/ipc-proxy":
-      optional: true
   languageName: unknown
   linkType: soft
 
@@ -19544,6 +19539,7 @@ __metadata:
     "@trezor/network-cardano": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:^"
+    "@trezor/requirements": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -19566,7 +19562,6 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
-    "@trezor/blockchain-core": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"

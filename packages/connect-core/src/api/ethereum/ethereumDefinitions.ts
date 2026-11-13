@@ -1,9 +1,6 @@
 import fetch from 'cross-fetch';
 
-import {
-    type EthereumNetworkInfoDefinitionValues,
-    getEthereumDefinitionsBaseUrl,
-} from '@trezor/connect-common';
+import { type EthereumNetworkInfo, getEthereumDefinitionsBaseUrl } from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
@@ -166,7 +163,7 @@ export const decodeEthereumDefinition = (
 
 export const ethereumNetworkInfoFromDefinition = (
     definition: EthereumNetworkDefinitionDecoded,
-): EthereumNetworkInfoDefinitionValues => ({
+): EthereumNetworkInfo => ({
     ...ethereumNetworkInfoBase,
     chainId: definition.chain_id,
     label: definition.name,
@@ -182,5 +179,4 @@ export const ethereumNetworkInfoFromDefinition = (
         T3W1: '2.0.0',
         UNKNOWN: '0.0.0',
     },
-    blockchainLink: undefined,
 });

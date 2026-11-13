@@ -8,7 +8,7 @@ import {
 } from '@trezor/connect-common';
 import type {
     DeviceButtonRequestCode,
-    EthereumNetworkInfoDefinitionValues,
+    EthereumNetworkInfo,
     PROTO,
     PermissionRequest,
 } from '@trezor/connect-common';
@@ -32,7 +32,7 @@ import {
 type Params = {
     proto: PROTO.EthereumGetAddress;
     address?: string;
-    network?: EthereumNetworkInfoDefinitionValues;
+    network?: EthereumNetworkInfo;
 };
 
 export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddress', Params[]> {

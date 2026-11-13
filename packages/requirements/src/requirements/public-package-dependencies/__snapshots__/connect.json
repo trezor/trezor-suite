@@ -19,10 +19,7 @@
         "@solana/rpc-api",
         "@solana/rpc-types",
         "@stellar/stellar-sdk",
-        "@trezor/blockchain-core",
-        "@trezor/blockchain-link",
         "@trezor/blockchain-link-types",
-        "@trezor/blockchain-link-utils",
         "@trezor/connect",
         "@trezor/connect-common",
         "@trezor/connect-core",
@@ -34,7 +31,6 @@
         "@trezor/logger",
         "@trezor/network-cardano",
         "@trezor/network-cardano-coin-selection",
-        "@trezor/network-ripple",
         "@trezor/network-solana",
         "@trezor/network-solana-types",
         "@trezor/network-stellar",
@@ -49,9 +45,7 @@
         "@trezor/type-utils",
         "@trezor/utils",
         "@trezor/utxo-lib",
-        "@trezor/websocket-client",
         "@trezor/zod",
-        "@types/web",
         "bignumber.js",
         "cashaddrjs",
         "cbor",
@@ -65,8 +59,6 @@
         "varuint-bitcoin",
         "viem",
         "wif",
-        "ws",
-        "xrpl",
         "zod"
     ]
 }
