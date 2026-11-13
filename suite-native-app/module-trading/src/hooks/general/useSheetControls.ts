@@ -20,8 +20,12 @@ type SheetControls<
     setSelectedValue: Dispatch<FieldPathValue<FormValues, Key>>;
 };
 
-export const useSheetControls = <FormValues extends FormUnion, Key extends Path<FormValues>>(
-    { setValue, control }: UseFormReturn<FormValues>,
+export const useSheetControls = <
+    FormValues extends FormUnion,
+    Key extends Path<FormValues>,
+    TTransformedValues = FormValues,
+>(
+    { setValue, control }: UseFormReturn<FormValues, object, TTransformedValues>,
     key: Key,
 ): SheetControls<FormValues, Key> => {
     const bottomSheetControls = useBottomSheetControls();

@@ -8,6 +8,7 @@ export const deviceNameFormValidationSchema = (t: ReturnType<typeof useTranslate
     yup.object({
         deviceName: yup
             .string()
+            .defined()
             .test({
                 test: (value?: string) => {
                     if (!value || isAscii(value)) return true;

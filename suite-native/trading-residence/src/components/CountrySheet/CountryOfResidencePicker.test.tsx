@@ -22,7 +22,6 @@ import {
 } from './CountryOfResidencePicker';
 import { useLocationForm } from '../../hooks/useLocationForm';
 import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
-import { locationFormValidationSchema } from '../../utils/locationFormValidationSchema';
 
 let mockUseCountryFilteredData: jest.Mock;
 
@@ -129,7 +128,6 @@ describe('CountryOfResidencePicker', () => {
                             name: 'California',
                         },
                     },
-                    validation: locationFormValidationSchema,
                 }),
             { services },
         );
@@ -198,7 +196,7 @@ describe('CountryOfResidencePicker', () => {
 
     it('should render even when no value is selected', async () => {
         const formWithoutCountrySet = await renderHookWithBasicProvider(
-            () => useForm<TradingLocationFormValues>({ validation: locationFormValidationSchema }),
+            () => useForm<TradingLocationFormValues>({}),
             { services },
         );
 

@@ -9,7 +9,10 @@ import {
     ethAsset,
     mercuryoFixedWorstQuote,
 } from '@suite-native/trading-fixtures';
-import { type ExchangeFormValues } from '@suite-native/trading-types';
+import {
+    type ExchangeFormValidatedValues,
+    type ExchangeFormValues,
+} from '@suite-native/trading-types';
 
 import { resetExchangeForm } from './exchangeFormResetUtils';
 import { exchangeFormValidationSchema } from './exchangeFormValidationSchema';
@@ -19,7 +22,9 @@ describe('resetExchangeForm', () => {
 
     const renderFilledExchangeForm = async () => {
         const rendered = await renderHookWithBasicProvider(() =>
-            useForm<ExchangeFormValues>({ validation: exchangeFormValidationSchema }),
+            useForm<ExchangeFormValues, object, ExchangeFormValidatedValues>({
+                validation: exchangeFormValidationSchema,
+            }),
         );
 
         await act(() => {

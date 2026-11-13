@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@hookform/resolvers": "^5.4.0",
+        "@hookform/resolvers": "^5.9.2",
         "@suite-common/networks": "workspace:*",
         "@suite-common/receive": "workspace:*",
         "@suite-common/sign-verify": "workspace:*",
@@ -30,7 +30,7 @@
         "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "react": "19.3.0",
-        "react-hook-form": "^7.77.0",
+        "react-hook-form": "^7.91.0",
         "react-redux": "9.3.0",
         "redux": "^5.0.1"
     },

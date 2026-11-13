@@ -52,7 +52,7 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:^",
         "react": "19.3.0",
-        "react-hook-form": "^7.77.0",
+        "react-hook-form": "^7.91.0",
         "react-native": "0.88.1",
         "react-native-reanimated": "4.7.1",
         "react-native-safe-area-context": "~5.10.1",

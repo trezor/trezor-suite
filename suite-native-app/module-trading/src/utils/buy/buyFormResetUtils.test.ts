@@ -5,7 +5,7 @@ import {
     btcAsset,
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
-import { type BuyFormValues } from '@suite-native/trading-types';
+import { type BuyFormValidatedValues, type BuyFormValues } from '@suite-native/trading-types';
 
 import { resetBuyForm } from './buyFormResetUtils';
 import { buyFormValidationSchema } from './buyFormValidationSchema';
@@ -15,7 +15,9 @@ describe('resetBuyForm', () => {
 
     const renderFilledBuyForm = async () => {
         const rendered = await renderHookWithBasicProvider(() =>
-            useForm<BuyFormValues>({ validation: buyFormValidationSchema }),
+            useForm<BuyFormValues, object, BuyFormValidatedValues>({
+                validation: buyFormValidationSchema,
+            }),
         );
 
         await act(() => {

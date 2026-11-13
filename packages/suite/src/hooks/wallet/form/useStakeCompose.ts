@@ -29,7 +29,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     state,
     defaultField,
     getValues,
-    formState: { errors },
+    getErrors,
     clearErrors,
     ...props
 }: Props<TFieldValues>) => {
@@ -60,7 +60,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             // set ref for later use in useEffect
             composeRequestIDRef.current += 1;
             // clear errors from previous compose process
-            const composeErrors = findComposeErrors(errors);
+            const composeErrors = findComposeErrors(getErrors());
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -72,7 +72,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestIDRef.current;
             const result = await debounce(() => {
-                if (Object.keys(errors).length > 0) {
+                if (Object.keys(getErrors()).length > 0) {
                     return Promise.resolve(undefined);
                 }
 
@@ -105,7 +105,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, getErrors, debounce, clearErrors, getValues, dispatch],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
@@ -146,7 +146,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 return;
             }
 
-            const composeErrors = findComposeErrors(errors);
+            const composeErrors = findComposeErrors(getErrors());
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -155,7 +155,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
             setLoading(false);
         },
-        [composeField, getValues, setValue, errors, setError, clearErrors, translationString],
+        [composeField, getValues, setValue, getErrors, setError, clearErrors, translationString],
     );
 
     // called from the useFees sub-hook

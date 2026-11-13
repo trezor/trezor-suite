@@ -4,7 +4,7 @@ import {
     nonSanctionedRegional,
     type useFetchOtc,
 } from '@suite-common/trading';
-import { Form, useForm, yup } from '@suite-native/forms';
+import { Form, useForm } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { type ConciergeFormValues } from '@suite-native/trading-types';
@@ -43,7 +43,6 @@ const ConciergeProviderPickerWrapper = ({ country = 'CZ' }: { country?: TradingC
         defaultValues: {
             country: nonSanctionedRegional.getCountryOptionWithWorldwideFallback(country),
         },
-        validation: yup.object({}),
     });
 
     return (

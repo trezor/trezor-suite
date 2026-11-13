@@ -22,7 +22,11 @@ import {
     selectSellSelectedSendAccount,
     sellActions,
 } from '@suite-native/trading-state';
-import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
+import {
+    type SellFormType,
+    type SellFormValidatedValues,
+    type SellFormValues,
+} from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -156,7 +160,7 @@ export const useSellForm = (): TradingFormWithMetadata<SellFormType> => {
         setAccountKey,
     } = useContextForTradingForm(limits);
 
-    const form = useForm<SellFormValues>({
+    const form = useForm<SellFormValues, object, SellFormValidatedValues>({
         defaultValues,
         validation: sellFormValidationSchema,
         context,

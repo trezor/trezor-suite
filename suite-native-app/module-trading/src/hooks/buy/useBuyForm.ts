@@ -24,7 +24,11 @@ import {
     selectBuySelectedReceiveAccount,
     selectValidTradingBuyQuotesNative,
 } from '@suite-native/trading-state';
-import { type BuyFormType, type BuyFormValues } from '@suite-native/trading-types';
+import {
+    type BuyFormType,
+    type BuyFormValidatedValues,
+    type BuyFormValues,
+} from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -159,7 +163,7 @@ export const useBuyForm = (): BuyFormType => {
     const limits = useSelector(selectBuyAmountLimits);
     const { context, setContractAddress, setSendNetworkSymbol } = useContextForTradingForm(limits);
 
-    const form = useForm<BuyFormValues>({
+    const form = useForm<BuyFormValues, object, BuyFormValidatedValues>({
         defaultValues,
         validation: buyFormValidationSchema,
         context,

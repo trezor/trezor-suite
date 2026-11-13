@@ -39,8 +39,8 @@ export const useSendFormFields = ({
     getValues,
     setValue,
     clearErrors,
+    getErrors,
     network,
-    formState: { errors },
 }: UseSendFormFieldsParams) => {
     const { shouldSendInSats, areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
     const currentRates = useSelector(selectCurrentFiatRates);
@@ -78,7 +78,8 @@ export const useSendFormFields = ({
                 return; // fiat input not registered (testnet or fiat not available)
             }
             const targetInputName = `outputs.${outputId}.${target}` as const;
-            const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
+            const { outputs: outputErrors } = getErrors();
+            const outputError = outputErrors ? outputErrors[outputId] : undefined;
             const error = outputError
                 ? outputError[target === 'fiat' ? 'amount' : 'fiat']
                 : undefined;
@@ -103,7 +104,7 @@ export const useSendFormFields = ({
                 setValue(targetInputName, formattedTargetValue, { shouldValidate: true });
             }
         },
-        [clearErrors, getCurrentFiatRate, getValues, setValue, errors],
+        [clearErrors, getCurrentFiatRate, getValues, setValue, getErrors],
     );
 
     const calculateBaseCurrencyAmountFromCryptoAmount = useCallback(

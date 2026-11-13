@@ -8,7 +8,6 @@ import { screen, userEvent } from '@suite-native/test-utils-store';
 import { CountrySubdivisionPicker } from './CountrySubdivisionPicker';
 import { CountrySubdivisionPickerControlsContext } from './CountrySubdivisionPickerControlsContext';
 import { type TradingLocationFormValues } from '../../types/tradingLocationForm';
-import { locationFormValidationSchema } from '../../utils/locationFormValidationSchema';
 
 const usaCountry = {
     value: 'US',
@@ -53,7 +52,6 @@ describe('CountrySubdivisionPicker', () => {
         const form = await renderHookWithBasicProvider(() =>
             useForm<TradingLocationFormValues>({
                 defaultValues,
-                validation: locationFormValidationSchema,
             }),
         );
 

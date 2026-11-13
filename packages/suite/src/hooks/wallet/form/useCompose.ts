@@ -36,7 +36,7 @@ export const useCompose = <TFieldValues extends FormState>({
     state,
     defaultField,
     getValues,
-    formState: { errors },
+    getErrors,
     clearErrors,
     ...props
 }: Props<TFieldValues>) => {
@@ -78,6 +78,7 @@ export const useCompose = <TFieldValues extends FormState>({
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestIDRef.current;
             const result = await debounce(() => {
+                const errors = getErrors();
                 const errorCount = Object.values(errors).reduce(
                     (count, error) =>
                         count +
@@ -118,7 +119,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
             }
         },
-        [state, errors, debounce, getValues, dispatch],
+        [state, getErrors, debounce, getValues, dispatch],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
@@ -159,7 +160,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 return;
             }
 
-            const composeErrors = findComposeErrors(errors);
+            const composeErrors = findComposeErrors(getErrors());
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -168,7 +169,7 @@ export const useCompose = <TFieldValues extends FormState>({
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
             setLoading(false);
         },
-        [composeField, getValues, setValue, errors, setError, clearErrors, translationString],
+        [composeField, getValues, setValue, getErrors, setError, clearErrors, translationString],
     );
 
     // called from the useFees sub-hook

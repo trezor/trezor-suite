@@ -10,7 +10,6 @@ import {
 
 import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 import { getPreferredCountryOption } from '../utils/getPreferredCountryOption';
-import { locationFormValidationSchema } from '../utils/locationFormValidationSchema';
 
 export const useLocationForm = () => {
     const countryCode = useSelector(selectTradingResidenceCountry);
@@ -37,6 +36,5 @@ export const useLocationForm = () => {
             country: defaultCountry,
             countrySubdivision: defaultCountrySubdivision,
         },
-        validation: locationFormValidationSchema,
     });
 };

@@ -27,6 +27,7 @@ const validateIsPositiveNumber = (value?: string) => {
 const getDustThresholdValidation = (translate: Translate) =>
     yup
         .string()
+        .defined()
         .test({
             name: 'is-empty',
             message: translate('moduleSettings.security.dustPhishing.errors.empty'),

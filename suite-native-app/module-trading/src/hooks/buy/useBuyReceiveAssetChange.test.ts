@@ -6,7 +6,7 @@ import { useForm } from '@suite-native/forms';
 import { act, renderHookWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradingRootState, buyActions } from '@suite-native/trading-state';
-import { type BuyFormValues } from '@suite-native/trading-types';
+import { type BuyFormValidatedValues, type BuyFormValues } from '@suite-native/trading-types';
 
 import { useBuyReceiveAssetChange } from './useBuyReceiveAssetChange';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
@@ -24,7 +24,9 @@ describe('useBuyReceiveAssetChange', () => {
     const renderBuyReceiveAssetChange = () =>
         renderHookWithStoreProvider(
             () => {
-                const form = useForm<BuyFormValues>({ validation: buyFormValidationSchema });
+                const form = useForm<BuyFormValues, object, BuyFormValidatedValues>({
+                    validation: buyFormValidationSchema,
+                });
 
                 return { form, ...useBuyReceiveAssetChange(form) };
             },

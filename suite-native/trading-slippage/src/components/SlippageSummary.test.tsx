@@ -8,7 +8,7 @@ import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 import { SlippageSummary } from './SlippageSummary';
 import { renderWithSlippageTestProvider } from '../test-utils/testUtils';
 
-const validationSchema = yup.object({ slippage: yup.string() });
+const validationSchema = yup.object({ slippage: yup.string().defined() });
 
 type TestWrapperProps = {
     receiveAmount?: string;

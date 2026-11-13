@@ -15,8 +15,8 @@ import { type Control, type FieldValues, type Path, useWatch } from '@suite-nati
 import { selectAccountTokenBalance } from '@suite-native/tokens';
 import { type ExchangeFormValues } from '@suite-native/trading-types';
 
-type UseSendAccountAssetBalanceParams<TFieldValues extends FieldValues> = {
-    control: Control<TFieldValues>;
+type UseSendAccountAssetBalanceParams<TFieldValues extends FieldValues, TTransformedValues> = {
+    control: Control<TFieldValues, object, TTransformedValues>;
     setBalance: (balance: string | undefined) => unknown;
     setSendNetworkSymbol: (networkSymbol: NetworkSymbol | undefined) => unknown;
     setSendAssetSymbol: (symbol: string | undefined) => unknown;
@@ -24,14 +24,17 @@ type UseSendAccountAssetBalanceParams<TFieldValues extends FieldValues> = {
     setAccountKey: (accountKey: AccountKey | undefined) => void;
 };
 
-export const useSendAccountAssetBalance = <TFieldValues extends FieldValues>({
+export const useSendAccountAssetBalance = <
+    TFieldValues extends FieldValues,
+    TTransformedValues = TFieldValues,
+>({
     control,
     setBalance,
     setSendNetworkSymbol,
     setSendAssetSymbol,
     setContractAddress,
     setAccountKey,
-}: UseSendAccountAssetBalanceParams<TFieldValues>) => {
+}: UseSendAccountAssetBalanceParams<TFieldValues, TTransformedValues>) => {
     const [sendAccount, sendAsset] = useWatch({
         control,
         name: ['sendAccount', 'sendAsset'] as Path<TFieldValues>[],
