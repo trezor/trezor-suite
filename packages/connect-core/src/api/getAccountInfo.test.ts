@@ -1,7 +1,8 @@
-import { default as GetAccountInfo } from './getAccountInfo';
-import { getAccountInfo } from '../blockchain/api/getAccountInfo';
+import { getAccountInfo } from '@trezor/blockchain-core/src/api/getAccountInfo';
 
-jest.mock('../blockchain/api/getAccountInfo', () => ({ getAccountInfo: jest.fn() }));
+import { default as GetAccountInfo } from './getAccountInfo';
+
+jest.mock('@trezor/blockchain-core/src/api/getAccountInfo', () => ({ getAccountInfo: jest.fn() }));
 
 const DESCRIPTOR = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
 

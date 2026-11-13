@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/PushTransaction.js
 
+import { pushTransaction } from '@trezor/blockchain-core/src/api/pushTransaction';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { PushTransaction as PushTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { pushTransaction } from '../blockchain/api/pushTransaction';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';

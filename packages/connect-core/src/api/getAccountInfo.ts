@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
+import { getAccountInfo } from '@trezor/blockchain-core/src/api/getAccountInfo';
 import type {
     CoinInfo,
     GetAccountInfo as GetAccountInfoParams,
@@ -7,7 +8,6 @@ import type {
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { getAccountInfo } from '../blockchain/api/getAccountInfo';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';

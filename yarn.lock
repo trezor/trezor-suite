@@ -19335,9 +19335,11 @@ __metadata:
   resolution: "@trezor/blockchain-core@workspace:packages/blockchain-core"
   dependencies:
     "@trezor/blockchain-link": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"
     "@trezor/requirements": "workspace:*"
+    "@trezor/schema-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -19543,7 +19545,6 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
     "@trezor/blockchain-core": "workspace:*"
-    "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"
