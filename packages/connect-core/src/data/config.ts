@@ -131,6 +131,7 @@ export const config: Config = {
             min: {
                 T1B1: '0',
                 T2T1: '0',
+                // Informational only: T3T1 < 2.8.0 is unsupported, because 2.8.0 is marked as required in @trezor/connect-data.
                 T3T1: '2.8.0',
             },
         },
@@ -153,6 +154,7 @@ export const config: Config = {
                 T2B1: '0',
                 T3B1: '0',
                 T3T1: '0',
+                // Informational only: T3W1 < 2.12.1 is unsupported, because 2.12.1 is marked as required in @trezor/connect-data.
                 T3W1: '2.12.1',
             },
         },
