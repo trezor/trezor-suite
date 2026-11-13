@@ -415,9 +415,12 @@ export const runDiscoveryThunk = createThunk<
             assertDeviceIsAcquired(device);
 
             if (isAddingHiddenWallet) {
+                // Scoped flows wait for REQUEST_PASSPHRASE before enabling submission.
                 dispatch(
                     updateDiscoveryThunk({
-                        status: { status: 'enter-passphrase' },
+                        status: callId
+                            ? { status: 'progress', total: Infinity, progress: 0 }
+                            : { status: 'enter-passphrase' },
                         path: device.path,
                     }),
                 );
