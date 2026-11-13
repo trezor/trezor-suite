@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import {
@@ -22,6 +23,7 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
+import { HELP_CENTER_DEFI_YIELD } from '@trezor/urls';
 
 import { DashboardSection } from '#src/components/dashboard';
 import { useSelector } from '#src/hooks/suite';
@@ -173,7 +175,14 @@ export const EarnYieldTable = ({ onReady }: EarnYieldTableProps) => {
 
             <DashboardSection
                 heading={<Translation id="TR_EARN_DEFI_YIELD" />}
-                subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
+                subheading={
+                    <>
+                        <Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />{' '}
+                        <TrezorLink href={HELP_CENTER_DEFI_YIELD}>
+                            <Translation id="TR_LEARN_MORE" />
+                        </TrezorLink>
+                    </>
+                }
                 actions={<PoweredByBadge provider="morpho" />}
                 areActionsBelowSubheading={isCardLayout}
                 ref={anchorRef}
