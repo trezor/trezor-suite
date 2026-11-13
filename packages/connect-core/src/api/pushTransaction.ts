@@ -1,13 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/PushTransaction.js
 
-import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { PushTransaction as PushTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../core/AbstractMethod';
-import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -16,7 +15,7 @@ type Params = {
     identity?: string;
 };
 
-export default class PushTransaction extends AbstractBlockchainMethod<'pushTransaction', Params> {
+export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
     constructor(message: MethodMessage<'pushTransaction'>) {
         const { payload } = message;
 
@@ -39,12 +38,20 @@ export default class PushTransaction extends AbstractBlockchainMethod<'pushTrans
         };
 
         super(message, params);
+        this.useDevice = false;
     }
+
     get requiredPermissions(): PermissionRequest[] {
         return [this.coinPerm('push_tx', this.params.coinInfo)];
     }
 
+    // Broadcast by Trezor Suite's backends instead, see its pushTransaction popup flow.
     run() {
-        return this.callBlockchain(TrezorBlockchain.pushTransaction(this.payload));
+        return Promise.reject(
+            ERRORS.TypedError(
+                'Method_NotAllowed',
+                'pushTransaction is available only through Trezor Suite',
+            ),
+        );
     }
 }

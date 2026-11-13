@@ -1,6 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type {
     CoinInfo,
     GetAccountInfo as GetAccountInfoParams,
@@ -9,14 +8,14 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { MethodMessage } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
-import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
 import { getLabel } from '../utils/pathUtils';
 
 type Params = GetAccountInfoParams & { descriptor: string; coinInfo: CoinInfo };
 
-export default class GetAccountInfo extends AbstractBlockchainMethod<'getAccountInfo', Params> {
+export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Params> {
     constructor(message: MethodMessage<'getAccountInfo'>) {
         const { payload } = message;
 
@@ -52,6 +51,7 @@ export default class GetAccountInfo extends AbstractBlockchainMethod<'getAccount
         const coinInfo = getCoinInfoOrThrow(payload.coin);
 
         super(message, { ...payload, descriptor: payload.descriptor!, coinInfo });
+        this.useDevice = false;
         this.useDeviceState = false;
     }
 
@@ -63,9 +63,13 @@ export default class GetAccountInfo extends AbstractBlockchainMethod<'getAccount
         return getLabel('Export #NETWORK account info', this.params.coinInfo);
     }
 
+    // Read by Trezor Suite's backends instead, see its getAccountInfo popup flow.
     run() {
-        const { coinInfo: _, ...params } = this.params;
-
-        return this.callBlockchain(TrezorBlockchain.getAccountInfo(params));
+        return Promise.reject(
+            ERRORS.TypedError(
+                'Method_NotAllowed',
+                'getAccountInfo is available only through Trezor Suite',
+            ),
+        );
     }
 }
