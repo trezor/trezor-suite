@@ -1,10 +1,7 @@
-import { initCoinBackend } from '@trezor/blockchain-core/src/backend/BlockchainLink';
-
 import { getAccountInfo } from './getAccountInfo';
+import { initCoinBackend } from '../backend/BlockchainLink';
 
-jest.mock('@trezor/blockchain-core/src/backend/BlockchainLink', () => ({
-    initCoinBackend: jest.fn(),
-}));
+jest.mock('../backend/BlockchainLink', () => ({ initCoinBackend: jest.fn() }));
 
 const DESCRIPTOR = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
 const CONTRACT = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';

@@ -1,8 +1,8 @@
+import { evmRpcGetChainId } from '@trezor/blockchain-core/src/api/evmRpcGetChainId';
 import { type PermissionRequest } from '@trezor/connect-common';
 
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import { evmRpcGetChainId } from '../blockchain/api/evmRpcGetChainId';
 import type { MethodMessage } from '../core/AbstractMethod';
 
 type Params = { url: string };

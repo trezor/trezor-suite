@@ -9,7 +9,6 @@
     },
     "references": [
         { "path": "../blockchain-core" },
-        { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },

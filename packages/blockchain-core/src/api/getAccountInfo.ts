@@ -1,12 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
-import type { PostMessage } from '@trezor/blockchain-core/src/backend/Blockchain';
-import { initCoinBackend } from '@trezor/blockchain-core/src/backend/BlockchainLink';
-import { getBackendCoinInfo } from '@trezor/blockchain-core/src/data/coinInfo';
 import type { AccountInfo, Utxo } from '@trezor/blockchain-link-types';
 import type { GetAccountInfo } from '@trezor/connect-common';
 import { toCanonicalDescriptor } from '@trezor/utils';
 
+import type { PostMessage } from '../backend/Blockchain';
+import { initCoinBackend } from '../backend/BlockchainLink';
+import { getBackendCoinInfo } from '../data/coinInfo';
 import { COIN_PARAMS, validateParams } from '../utils/validateParams';
 
 export type GetAccountInfoParams = Omit<GetAccountInfo, 'path' | 'derivationType'> & {
