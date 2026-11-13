@@ -14,8 +14,8 @@ type DeviceModelImageProps = {
 type DeviceModelWithImage = Exclude<DeviceModelInternal, DeviceModelInternal.UNKNOWN>;
 
 const deviceModelImageMap = {
-    // The T1B1 image was copied from @suite-native/device, so it differs slightly. T1B1 is only partially supported on
-    // mobile, so a small visual inconsistency can be tolerated until we get a better image.
+    // Note: although T1B1 onboarding is not supported, the Visual Device Check for already initialized device is supported.
+    // That's why don't need T1B1 in SecuritySealImages, but we do need it here.
     [DeviceModelInternal.T1B1]: require('../assets/t1b1.webp'),
     [DeviceModelInternal.T2T1]: require('../assets/t2t1.webp'),
     [DeviceModelInternal.T2B1]: require('../assets/t3b1.webp'),
