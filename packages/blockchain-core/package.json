@@ -21,6 +21,7 @@
     "dependencies": {
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/connect-data": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },

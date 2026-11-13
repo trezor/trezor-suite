@@ -4,11 +4,12 @@ import type {
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
 import { BlockchainLink } from '@trezor/blockchain-link';
-import type { CoinInfo, CoreEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
+import type { BlockchainEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { type CanonicalDescriptor } from '@trezor/utils';
 
+import type { BackendCoinInfo } from '../data/coinInfo';
 import {
     BlockbookWorker,
     BlockfrostWorker,
@@ -50,9 +51,11 @@ const getNormalizedTrezorShortcut = (shortcut: string) => {
     return shortcut;
 };
 
+export type PostMessage = (message: BlockchainEventMessage) => void;
+
 export type BlockchainOptions = {
-    coinInfo: CoinInfo;
-    postMessage: (message: CoreEventMessage) => void;
+    coinInfo: BackendCoinInfo;
+    postMessage: PostMessage;
     proxy?: Proxy;
     debug?: boolean;
     identity?: string;

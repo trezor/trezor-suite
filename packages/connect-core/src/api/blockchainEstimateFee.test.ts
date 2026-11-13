@@ -1,23 +1,24 @@
-import type { CoinInfo, CoinSymbol, FeeLevel } from '@trezor/connect-common';
+import type { BackendCoinInfo } from '@trezor/blockchain-core/src/data/coinInfo';
+import type { FeeLevel } from '@trezor/connect-common';
 
-import type BlockchainEstimateFeeMethod from './blockchainEstimateFee';
+import type * as EstimateFeeModule from '../blockchain/api/estimateFee';
 
 const mockEstimateFee = jest.fn();
 // Replaces fields of the coin the method resolves, e.g. its default levels.
-let mockCoinInfoPatch: Partial<CoinInfo> = {};
+let mockCoinInfoPatch: Partial<BackendCoinInfo> = {};
 
-jest.mock('@trezor/blockchain-core', () => ({
+jest.mock('@trezor/blockchain-core/src/backend/BlockchainLink', () => ({
     assertBackendSupported: jest.fn(),
-    initBlockchain: () => Promise.resolve({ estimateFee: mockEstimateFee }),
+    initCoinBackend: () => Promise.resolve({ estimateFee: mockEstimateFee }),
 }));
 
-jest.mock('../data/coinInfo', () => {
-    const actual = jest.requireActual('../data/coinInfo');
+jest.mock('@trezor/blockchain-core/src/data/coinInfo', () => {
+    const actual = jest.requireActual('@trezor/blockchain-core/src/data/coinInfo');
 
     return {
         ...actual,
-        getCoinInfoOrThrow: (coin: string) => ({
-            ...actual.getCoinInfoOrThrow(coin),
+        getBackendCoinInfo: (coin: string) => ({
+            ...actual.getBackendCoinInfo(coin),
             ...mockCoinInfoPatch,
         }),
     };
@@ -50,26 +51,27 @@ const eip1559Tier = (
     maxWaitTimeEstimate?: number,
 ) => ({ maxFeePerGas, maxPriorityFeePerGas, maxWaitTimeEstimate });
 
-describe('BlockchainEstimateFee', () => {
-    let BlockchainEstimateFee: typeof BlockchainEstimateFeeMethod;
+describe('estimateFee', () => {
+    let estimateFee: typeof EstimateFeeModule.estimateFee;
 
     // Each test starts without the levels remembered by the earlier ones.
     beforeEach(() => {
         mockEstimateFee.mockReset();
         mockCoinInfoPatch = {};
         jest.isolateModules(() => {
-            ({ default: BlockchainEstimateFee } = require('./blockchainEstimateFee'));
+            ({ estimateFee } = require('../blockchain/api/estimateFee'));
         });
     });
 
     const estimateFeeLevels = async (
-        coin: CoinSymbol,
+        coin: string,
         request: { blocks?: number[] } = {},
         feeLevels: 'preloaded' | 'smart' = 'smart',
     ) => {
-        const { levels } = await new BlockchainEstimateFee({
-            payload: { method: 'blockchainEstimateFee', coin, request: { ...request, feeLevels } },
-        }).run({ sendCoreMessage: jest.fn() } as any);
+        const { levels } = await estimateFee(
+            { coin, request: { ...request, feeLevels } },
+            jest.fn(),
+        );
 
         return levels;
     };

@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetTransactions.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { getTransactions } from '../blockchain/api/getTransactions';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -16,7 +16,7 @@ type Params = {
     hexOnly?: boolean;
 };
 
-export default class BlockchainGetTransactions extends AbstractMethod<
+export default class BlockchainGetTransactions extends AbstractBlockchainMethod<
     'blockchainGetTransactions',
     Params
 > {
@@ -33,8 +33,6 @@ export default class BlockchainGetTransactions extends AbstractMethod<
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             txs: payload.txs,
@@ -45,26 +43,16 @@ export default class BlockchainGetTransactions extends AbstractMethod<
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
+    run({ sendCoreMessage }: MethodContext) {
+        // The payload is a union of the overloads' params, which no single overload accepts.
+        const payload = this.payload as Parameters<typeof getTransactions>[0];
 
-        if (this.params.hexOnly) {
-            const hexes = await backend.getTransactionHexes(this.params.txs);
-
-            return this.params.txs.map((txid, i) => ({ txid, hex: hexes[i]! }));
-        }
-
-        return backend.getTransactions(this.params.txs, this.params.descriptor);
+        return getTransactions(payload, sendCoreMessage);
     }
 }

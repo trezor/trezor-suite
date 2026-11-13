@@ -1,9 +1,9 @@
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { evmRpcCall } from '../blockchain/api/evmRpcCall';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -12,7 +12,10 @@ type Params = {
     request: Omit<Payload<'blockchainEvmRpcCall'>, 'method' | 'coin'>;
 };
 
-export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmRpcCall', Params> {
+export default class BlockchainEvmRpcCall extends AbstractBlockchainMethod<
+    'blockchainEvmRpcCall',
+    Params
+> {
     constructor(message: MethodMessage<'blockchainEvmRpcCall'>) {
         const { payload } = message;
 
@@ -26,8 +29,6 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,
@@ -40,7 +41,6 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
@@ -51,14 +51,7 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
         return 'Blockchain Evm Rpc Call';
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-        const response = await backend.rpcCall(this.params.request);
-
-        return response;
+    run({ sendCoreMessage }: MethodContext) {
+        return evmRpcCall(this.payload, sendCoreMessage);
     }
 }

@@ -1,13 +1,13 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/PushTransaction.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { PushTransaction as PushTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
+import { pushTransaction } from '../blockchain/api/pushTransaction';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -16,7 +16,7 @@ type Params = {
     identity?: string;
 };
 
-export default class PushTransaction extends AbstractMethod<'pushTransaction', Params> {
+export default class PushTransaction extends AbstractBlockchainMethod<'pushTransaction', Params> {
     constructor(message: MethodMessage<'pushTransaction'>) {
         const { payload } = message;
 
@@ -24,8 +24,6 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         Assert(PushTransactionSchema, payload);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         if (
             coinInfo.type === 'bitcoin' &&
@@ -41,22 +39,12 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         };
 
         super(message, params);
-        this.useDevice = false;
     }
     get requiredPermissions(): PermissionRequest[] {
         return [this.coinPerm('push_tx', this.params.coinInfo)];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-        const txid = await backend.pushTransaction(this.params.tx);
-
-        return {
-            txid,
-        };
+    run({ sendCoreMessage }: MethodContext) {
+        return pushTransaction(this.payload, sendCoreMessage);
     }
 }

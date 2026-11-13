@@ -1,13 +1,14 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
-import type { CoinInfo, CoreEventMessage } from '@trezor/connect-common';
+import type { CoreEventMessage } from '@trezor/connect-common';
 
 import { BackendManager } from './BackendManager';
 import type { Blockchain } from './Blockchain';
+import type { BackendCoinInfo } from '../data/coinInfo';
 
 const coinInfo = {
     shortcut: 'BTC',
     blockchainLink: { type: 'blockbook', url: ['url_1', 'url_2', 'url_3'] },
-} as CoinInfo;
+} as BackendCoinInfo;
 
 describe('backend/BackendManager', () => {
     let manager: BackendManager;

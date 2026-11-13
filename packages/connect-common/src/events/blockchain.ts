@@ -18,8 +18,11 @@ export const BLOCKCHAIN = {
     FIAT_RATES_UPDATE: 'fiat-rates-update',
 } as const;
 
+/** The coin of a backend: blockchain events carry only what identifies it. */
+export type BlockchainCoin = Pick<CoinInfo, 'name' | 'shortcut'>;
+
 export interface BlockchainInfo extends ServerInfo {
-    coin: CoinInfo;
+    coin: BlockchainCoin;
     identity?: string;
     misc?: {
         reserve?: string;
@@ -27,29 +30,29 @@ export interface BlockchainInfo extends ServerInfo {
 }
 
 export interface BlockchainReconnecting {
-    coin: CoinInfo;
+    coin: BlockchainCoin;
     identity?: string;
     time: number;
 }
 
 export interface BlockchainError {
-    coin: CoinInfo;
+    coin: BlockchainCoin;
     identity?: string;
     error: string;
     code?: string;
 }
 
 export type BlockchainBlock = BlockEvent['payload'] & {
-    coin: CoinInfo;
+    coin: BlockchainCoin;
 };
 
 export interface BlockchainNotification {
-    coin: CoinInfo;
+    coin: BlockchainCoin;
     notification: NotificationEvent['payload'];
 }
 
 export interface BlockchainFiatRatesUpdate {
-    coin: CoinInfo;
+    coin: BlockchainCoin;
     rates: FiatRatesBySymbol;
 }
 
