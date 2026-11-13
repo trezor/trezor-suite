@@ -189,6 +189,23 @@ describe('useStakingPendingTransaction', () => {
         expect(mockShowAlert).toHaveBeenCalledTimes(1);
     });
 
+    it.each([undefined, 'deviceError'] as const)(
+        'keeps the deferred warning when an older alert finishes closing (type: %s)',
+        async type => {
+            const oldAlert: Alert = { type, primaryButtonTitle: 'Close old alert' };
+            getDefaultStore().set(showAlertAtom, oldAlert);
+            await renderPendingTransaction(pendingTransaction);
+            await act(() => jest.advanceTimersByTime(MISSING_TRANSACTION_GRACE_MS));
+            await act(() => getDefaultStore().set(hideAlertAtom, oldAlert));
+            const warning = getDefaultStore().get(alertAtom);
+            expect(warning?.type).toBe('stakingTransactionNotConfirmed');
+
+            await act(() => getDefaultStore().set(hideAlertAtom, oldAlert));
+
+            expect(getDefaultStore().get(alertAtom)).toBe(warning);
+        },
+    );
+
     it('leaves a replacement alert open when the staking flow unmounts', async () => {
         const { unmount } = await renderPendingTransaction(pendingTransaction);
         await act(() => jest.advanceTimersByTime(MISSING_TRANSACTION_GRACE_MS));

@@ -73,12 +73,18 @@ export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
     const openSheetAnimated = useCallback(() => {
         'worklet';
 
+        animatedTransparency.set(
+            withTiming(transparency, {
+                duration: ANIMATION_DURATION,
+                easing: Easing.out(Easing.cubic),
+            }),
+        );
         // eslint-disable-next-line react-hooks/immutability
         translatePanY.value = withTiming(0, {
             duration: 300,
             easing: Easing.out(Easing.cubic),
         });
-    }, [translatePanY]);
+    }, [animatedTransparency, transparency, translatePanY]);
 
     return {
         animatedSheetWithOverlayStyle,
