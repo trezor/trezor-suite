@@ -3,9 +3,17 @@ import { useSelector, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type DeviceRootState, selectIsDeviceInViewOnlyMode } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectIsDeviceInViewOnlyMode,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectSupportedNetworkByDevice,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -180,7 +188,23 @@ export const useStakingPromoNavigation = () => {
 
     const onPromoItemPress = useCallback(
         (symbol: NetworkSymbol) => {
-            const accounts = selectVisibleDeviceAccounts(store.getState());
+            const state = store.getState();
+            const device = selectSelectedDevice(state);
+            const isNetworkSupported = selectSupportedNetworkByDevice(device, [symbol]).includes(
+                symbol,
+            );
+
+            if (!isPortfolioTrackerDevice && !isNetworkSupported) {
+                showAlert({
+                    title: translate('moduleSettings.notSupported'),
+                    primaryButtonTitle: translate('generic.buttons.gotIt'),
+                    onPressPrimaryButton: hideAlert,
+                });
+
+                return;
+            }
+
+            const accounts = selectVisibleDeviceAccounts(state);
             const resolution = resolveStakingPromoAccounts({
                 symbol,
                 accounts,
@@ -245,6 +269,9 @@ export const useStakingPromoNavigation = () => {
             openEnableNetworkSheet,
             reportStakingNavigate,
             showViewOnlyStakingAlert,
+            showAlert,
+            hideAlert,
+            translate,
         ],
     );
 
