@@ -2,11 +2,14 @@ import type { NetworkAssetsModule } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
 import { isArrayMember } from '@trezor/utils';
 
-import type { AddressValidator } from './AddressValidator';
 import type { IsWrappedNativeToken } from './IsWrappedNativeToken';
-import type { NamedAddressResolver } from './NamedAddressResolver';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
+import type { AddressValidator } from './addressValidator/AddressValidator';
+import type { MessageSigner } from './messageSigner/MessageSigner';
+import { createMessageSigner } from './messageSigner/createMessageSigner';
+import type { NamedAddressResolver } from './namedAddressResolver/NamedAddressResolver';
+import { createNamedAddressResolver } from './namedAddressResolver/createNamedAddressResolver';
 
 /**
  * A module's own capabilities, stated in terms of the symbols that module supports.
@@ -25,6 +28,8 @@ export type NetworkModuleDefinition<TNetworkSymbol extends string> = {
     getNetworkConfig: (symbol: TNetworkSymbol) => SuiteCommonNetworkConfig;
 
     getAccountSyncInterval: (symbol: TNetworkSymbol) => number;
+
+    messageSigner?: MessageSigner<TNetworkSymbol>;
 };
 
 /**
@@ -53,8 +58,7 @@ export const createNetworkModule = <TNetworkSymbol extends string>(
         return symbol;
     };
 
-    const resolver = definition.namedAddressResolver;
-    const { isWrappedNativeToken } = definition;
+    const { isWrappedNativeToken, namedAddressResolver, messageSigner } = definition;
 
     return {
         icon: definition.icon,
@@ -67,18 +71,12 @@ export const createNetworkModule = <TNetworkSymbol extends string>(
             getAddressType: (address, symbol) =>
                 definition.addressValidator.getAddressType(address, narrow(symbol)),
         },
-        namedAddressResolver: resolver && {
-            supportsNamedAddress: symbol =>
-                isSupportedNetwork(symbol) && resolver.supportsNamedAddress(symbol),
-            isNameLike: resolver.isNameLike,
-            isAddressLike: resolver.isAddressLike,
-            resolveNamedAddress: async (value, symbol, options) =>
-                await resolver.resolveNamedAddress(value, narrow(symbol), options),
-            reverseResolveAddress: async (address, symbol, options) =>
-                await resolver.reverseResolveAddress(address, narrow(symbol), options),
-        },
+        namedAddressResolver:
+            namedAddressResolver &&
+            createNamedAddressResolver(namedAddressResolver, isSupportedNetwork, narrow),
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
         getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),
         getAccountSyncInterval: symbol => definition.getAccountSyncInterval(narrow(symbol)),
+        messageSigner: messageSigner && createMessageSigner(messageSigner, narrow),
     };
 };

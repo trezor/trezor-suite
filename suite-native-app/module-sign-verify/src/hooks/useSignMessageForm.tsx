@@ -1,19 +1,31 @@
 import { useMemo, useState } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { MAX_LENGTH_MESSAGE, getHasSelectableSignatureFormat } from '@suite-common/sign-verify';
+import { MAX_LENGTH_MESSAGE, injectSignVerify } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Badge, type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch, yup } from '@suite-native/forms';
-import { useTranslate } from '@suite-native/intl';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { getStakingPath } from '@trezor/network-cardano-suite-common';
+import { type SignatureFormat } from '@trezor/network-module-suite-common-types';
 import { isHex } from '@trezor/utils';
 
-import { type SignatureFormat, useSignMessage } from './useSignMessage';
+import { useSignMessage } from './useSignMessage';
+
+// TODO: Hack: the app labels every network's signature formats itself instead of the network
+// providing the labels. Remove as https://github.com/trezor/trezor-suite/issues/32472
+// progresses.
+const FORMAT_LABELS: Record<SignatureFormat, TxKeyPath> = {
+    trezor: 'signAndVerify.format.values.trezor',
+    electrum: 'signAndVerify.format.values.electrum',
+    raw: 'signAndVerify.format.values.rawKey',
+    cose: 'signAndVerify.format.values.cose',
+};
 
 type FormValues = {
-    format: SignatureFormat;
+    format?: SignatureFormat;
     address: string;
     message: string;
     hex: boolean;
@@ -25,25 +37,22 @@ export const useSignMessageForm = (account: Account) => {
     const isCardano = account.networkType === 'cardano';
 
     const signMessage = useSignMessage();
+    const { signVerify } = useServices(injectSignVerify);
     const { AddressFormatter } = useFormatters();
     const { translate } = useTranslate();
 
     const [isSigned, setIsSigned] = useState(false);
 
     const formats = useMemo((): SelectItemType<SignatureFormat>[] | undefined => {
-        if (getHasSelectableSignatureFormat(account)) {
-            return [
-                { value: 'default', label: translate('signAndVerify.format.values.trezor') },
-                { value: 'electrum', label: translate('signAndVerify.format.values.electrum') },
-            ];
+        const signatureFormats = signVerify.getFormats(account);
+
+        if (signatureFormats.length > 1) {
+            return signatureFormats.map(format => ({
+                value: format,
+                label: translate(FORMAT_LABELS[format]),
+            }));
         }
-        if (isCardano) {
-            return [
-                { value: 'default', label: translate('signAndVerify.format.values.rawKey') },
-                { value: 'cose', label: translate('signAndVerify.format.values.cose') },
-            ];
-        }
-    }, [translate, account, isCardano]);
+    }, [translate, signVerify, account]);
 
     const addresses = useMemo((): (SelectItemType<string> & { path: string })[] => {
         const formatAddress = (address: string) =>
@@ -95,7 +104,7 @@ export const useSignMessageForm = (account: Account) => {
 
     const form = useForm<FormValues>({
         validation: yup.object({
-            format: yup.string<SignatureFormat>().required(),
+            format: yup.string<SignatureFormat>(),
             address: yup.string().required(),
             message: yup
                 .string()
@@ -111,7 +120,7 @@ export const useSignMessageForm = (account: Account) => {
             hex: yup.boolean().required(),
         }),
         defaultValues: {
-            format: 'default',
+            format: signVerify.getDefaultFormat(account),
             address: isAddressBased ? addresses[0]?.value : '',
             message: '',
             hex: false,

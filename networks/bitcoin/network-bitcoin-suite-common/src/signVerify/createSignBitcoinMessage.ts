@@ -1,10 +1,17 @@
 import {
     type DeviceIdentity,
     type GetTrezorConnectDep,
-    type TrezorConnectCallable,
     asCoinSymbol,
 } from '@trezor/connect-common';
 import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
+import {
+    type SignError,
+    type SignedMessage,
+    toSignVerifyDeviceError,
+} from '@trezor/network-module-suite-common-types';
+import { type Result, err, ok } from '@trezor/type-utils';
+
+import { toBitcoinSignatureFormat } from './bitcoinSignatureFormats';
 
 export type SignBitcoinMessageDeps = GetTrezorConnectDep<'signMessage'>;
 
@@ -14,13 +21,12 @@ export type SignBitcoinMessageParams = {
     path: string;
     message: string;
     hex: boolean;
-    /** Signs in the compatibility format, without the script type. */
-    isElectrum: boolean;
+    format?: string;
 };
 
 export type SignBitcoinMessage = (
     params: SignBitcoinMessageParams,
-) => ReturnType<TrezorConnectCallable['signMessage']>;
+) => Promise<Result<SignedMessage, SignError>>;
 
 export type SignBitcoinMessageDep = {
     signBitcoinMessage: SignBitcoinMessage;
@@ -28,15 +34,26 @@ export type SignBitcoinMessageDep = {
 
 export const createSignBitcoinMessage =
     (deps: SignBitcoinMessageDeps): SignBitcoinMessage =>
-    ({ device, symbol, path, message, hex, isElectrum }) =>
-        deps.getTrezorConnect().signMessage({
+    async ({ device, symbol, path, message, hex, format }) => {
+        const signatureFormat = toBitcoinSignatureFormat(format);
+
+        if (!signatureFormat.success) {
+            return signatureFormat;
+        }
+
+        const response = await deps.getTrezorConnect().signMessage({
             device,
             path,
             coin: asCoinSymbol(symbol),
             message,
             hex,
-            no_script_type: isElectrum,
+            no_script_type: signatureFormat.payload === 'electrum',
         });
+
+        return response.success
+            ? ok(response.payload)
+            : err(toSignVerifyDeviceError(response.error));
+    };
 
 export const injectSignBitcoinMessage = (services: any): SignBitcoinMessageDep => ({
     signBitcoinMessage: services.signBitcoinMessage,

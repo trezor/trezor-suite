@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 
-import { isVerifySupported } from '@suite-common/sign-verify';
+import { injectSignVerify } from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
 import { Badge, HStack, type SubTabItem, SubTabs, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { SignMessageCard } from './SignMessageCard';
 import { VerifyMessageCard } from './VerifyMessageCard';
@@ -17,6 +18,8 @@ type SignVerifyFormsProps = {
 };
 
 export const SignVerifyForms = ({ account }: SignVerifyFormsProps) => {
+    const { signVerify } = useServices(injectSignVerify);
+
     const tabs = useMemo(() => {
         const signTab: SubTabItem<Tab> = {
             value: 'sign',
@@ -25,10 +28,10 @@ export const SignVerifyForms = ({ account }: SignVerifyFormsProps) => {
         const verifyTab: SubTabItem<Tab> = {
             value: 'verify',
             label: <Translation id="signAndVerify.tabs.verify" />,
-        };
+        };p
 
-        return isVerifySupported(account) ? [signTab, verifyTab] : [signTab];
-    }, [account]);
+        return signVerify.isVerifySupported(account) ? [signTab, verifyTab] : [signTab];
+    }, [account, signVerify]);
     const [activeTab, setActiveTab] = useState<Tab>('sign');
 
     const signMessageForm = useSignMessageForm(account);

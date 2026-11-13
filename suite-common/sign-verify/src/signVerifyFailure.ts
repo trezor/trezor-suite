@@ -1,32 +1,39 @@
-import { type Dispatch } from 'redux';
-
 import { type EventInstance, type events } from '@suite-common/analytics';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { type ErrorCode, type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type SignVerifyError } from '@trezor/network-module-suite-common-types';
+import { exhaustive } from '@trezor/type-utils';
 
-export const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
-
-export const getFailureAttributes = ({
-    code,
-}: SerializedError): Pick<
+type FailureAttributes = Pick<
     EventInstance<typeof events.coinSignMessageEvent>['payload'],
     'status' | 'error'
-> => ({
-    status: CANCEL_ERROR_CODES.includes(code) ? ('cancelled' as const) : ('error' as const),
-    error: code,
-});
+>;
 
-export const asError = (error: unknown) =>
-    error instanceof Error ? error : new Error(String(error));
+export const getFailureAttributes = (error: SignVerifyError): FailureAttributes => {
+    switch (error.type) {
+        case 'DeviceCancelled':
+            return { status: 'cancelled', error: error.type };
+        case 'DeviceError':
+            return { status: 'error', error: error.code };
+        case 'DeviceNotConnectedError':
+        case 'SignVerifyNotSupported':
+        case 'SignatureFormatNotSupported':
+            return { status: 'error', error: error.type };
+        default:
+            return exhaustive(error);
+    }
+};
 
-export const onError =
-    (dispatch: Dispatch, type: 'sign-message-error' | 'verify-message-error') => (error: Error) => {
-        dispatch(
-            notificationsActions.addToast({
-                type,
-                error: error.message,
-            }),
-        );
-
-        return false as const;
-    };
+export const getErrorMessage = (error: SignVerifyError): string => {
+    switch (error.type) {
+        case 'DeviceError':
+        case 'DeviceNotConnectedError':
+            return error.message;
+        case 'DeviceCancelled':
+            return 'Cancelled';
+        case 'SignVerifyNotSupported':
+            return 'Not supported by this network';
+        case 'SignatureFormatNotSupported':
+            return `Signature format not supported: ${error.format}`;
+        default:
+            return exhaustive(error);
+    }
+};

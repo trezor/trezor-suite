@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
-import {
-    MAX_LENGTH_MESSAGE,
-    MAX_LENGTH_SIGNATURE,
-    type VerifyMessageResult,
-} from '@suite-common/sign-verify';
+import { MAX_LENGTH_MESSAGE, MAX_LENGTH_SIGNATURE } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 import { useForm, yup } from '@suite-native/forms';
 
-import { useVerifyMessage } from './useVerifyMessage';
+import { type VerifyMessageResult, useVerifyMessage } from './useVerifyMessage';
 
 type FormValues = {
     address: string;
