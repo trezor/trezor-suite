@@ -36,30 +36,19 @@ describe('useNavigationRemoveGuard', () => {
         jest.clearAllMocks();
     });
 
-    it.each(DEFAULT_BACK_NAVIGATION_ACTIONS)(
-        'blocks %s by default until explicitly continued',
-        async type => {
-            const onBlocked = jest.fn();
-            const action = { type, [Symbol('navigation metadata')]: new Set(['review']) };
+    it.each(DEFAULT_BACK_NAVIGATION_ACTIONS)('blocks %s by default', async type => {
+        const onBlocked = jest.fn();
+        const action = { type, [Symbol('navigation metadata')]: new Set(['review']) };
 
-            await renderHookWithBasicProvider(() => useNavigationRemoveGuard({ onBlocked }));
-            triggerRemoval(action);
+        await renderHookWithBasicProvider(() => useNavigationRemoveGuard({ onBlocked }));
+        triggerRemoval(action);
 
-            expect(mockDispatch).not.toHaveBeenCalled();
-            expect(onBlocked).toHaveBeenCalledWith({
-                action,
-                continueNavigation: expect.any(Function),
-                forceNavigation: expect.any(Function),
-            });
-
-            const { continueNavigation } = onBlocked.mock.calls[0][0];
-            continueNavigation();
-            continueNavigation();
-
-            expect(mockDispatch).toHaveBeenCalledTimes(1);
-            expect(mockDispatch.mock.calls[0][0]).toBe(action);
-        },
-    );
+        expect(mockDispatch).not.toHaveBeenCalled();
+        expect(onBlocked).toHaveBeenCalledWith({
+            action,
+            forceNavigation: expect.any(Function),
+        });
+    });
 
     it('keeps default actions blocked without a callback', async () => {
         await renderHookWithBasicProvider(() => useNavigationRemoveGuard());
@@ -109,26 +98,30 @@ describe('useNavigationRemoveGuard', () => {
         expect(mockDispatch).not.toHaveBeenCalled();
     });
 
-    it('waits for explicit continuation after asynchronous confirmation', async () => {
+    it('resumes the blocked action through forceNavigation after asynchronous confirmation', async () => {
         let confirm: (() => void) | undefined;
         const confirmation = new Promise<void>(resolve => {
             confirm = resolve;
         });
         const onBlocked: UseNavigationRemoveGuardParams['onBlocked'] = async ({
-            continueNavigation,
+            action: blockedAction,
+            forceNavigation,
         }) => {
             await confirmation;
-            continueNavigation();
+            forceNavigation(() => triggerRemoval(blockedAction));
         };
+        const action = { type: 'GO_BACK' };
         await renderHookWithBasicProvider(() =>
             useNavigationRemoveGuard({ actionTypes: 'all', onBlocked }),
         );
-        triggerRemoval({ type: 'GO_BACK' });
+        triggerRemoval(action);
         expect(mockDispatch).not.toHaveBeenCalled();
 
         confirm?.();
         await confirmation;
+
         expect(mockDispatch).toHaveBeenCalledTimes(1);
+        expect(mockDispatch.mock.calls[0][0]).toBe(action);
     });
 
     it('lets navigation dispatched inside forceNavigation through without calling onBlocked', async () => {
