@@ -1,5 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import { type GeolocationRootState, geolocationInitialState } from '@suite-common/geolocation';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import {
     type MessageSystemRootState,
     messageSystemInitialState,
@@ -17,7 +19,7 @@ import {
 
 import { BiometricsScreen, type BiometricsScreenProps } from './BiometricsScreen';
 
-type State = FeatureFlagsRootState & MessageSystemRootState;
+type State = FeatureFlagsRootState & MessageSystemRootState & GeolocationRootState;
 
 const mockNavigate = jest.fn();
 const mockNavigationDispatch = jest.fn();
@@ -68,6 +70,7 @@ describe('BiometricsScreen', () => {
         store = createLightStore({
             reducer: {
                 featureFlags: featureFlagsReducer,
+                geolocation: createStaticReducer(geolocationInitialState),
                 locale: createStaticReducer({
                     appLocaleCode: 'en-US',
                     systemLocaleCode: 'en-US',
@@ -99,6 +102,7 @@ describe('BiometricsScreen', () => {
         store = createLightStore({
             reducer: {
                 featureFlags: featureFlagsReducer,
+                geolocation: createStaticReducer(mockGeolocationStateInCountry('US')),
                 locale: createStaticReducer({
                     appLocaleCode: 'en-US',
                     systemLocaleCode: 'en-US',
@@ -138,6 +142,7 @@ describe('BiometricsScreen', () => {
         store = createLightStore({
             reducer: {
                 featureFlags: featureFlagsReducer,
+                geolocation: createStaticReducer(geolocationInitialState),
                 locale: createStaticReducer({
                     appLocaleCode: 'en-US',
                     systemLocaleCode: 'en-US',

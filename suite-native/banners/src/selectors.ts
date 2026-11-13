@@ -4,6 +4,7 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectHasOnlyPortfolioDevice,
 } from '@suite-common/device';
+import { type GeolocationRootState } from '@suite-common/geolocation';
 import {
     Feature,
     type MessageSystemRootState,
@@ -34,7 +35,8 @@ type PromoBannersRootState = MessageSystemRootState &
     DeviceRootState &
     FeatureFlagsRootState &
     TradingRootState &
-    LocaleSliceRootState;
+    LocaleSliceRootState &
+    GeolocationRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<PromoBannersRootState>();
 

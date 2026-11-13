@@ -23,6 +23,11 @@ export const createStoreFromPreloadedState = <TState extends object = object>(
             settings: { localCurrency: 'usd', bitcoinAmountUnit: 0, addressDisplayType: 'chunked' },
         },
         locale: { systemLocaleCode: 'en', appLocaleCode: 'system' },
+        geolocation: {
+            countryCode: null,
+            countryCodeFetch: null,
+            deviceSignals: null,
+        },
     };
 
     // Preserve discriminated unions from the input; mergeDeepObject otherwise merges their variants.

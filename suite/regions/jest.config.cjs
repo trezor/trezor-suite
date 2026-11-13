@@ -8,4 +8,5 @@ const baseConfig = require('../../jest.config.base');
 
 module.exports = {
     ...baseConfig,
+    setupFiles: ['../../suite-common/test-utils/src/jsdomGlobalPolyfills.js'],
 };

@@ -205,6 +205,7 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
     connectPopupResponse: response => ipcRenderer.invoke('connect-popup/response', response),
 
     openSystemSettings: settings => ipcRenderer.invoke('system/open-settings', settings),
+    getSystemLocale: () => ipcRenderer.invoke('system/get-locale'),
 
     // bioAuth
     setBioAuthSettings: settings => ipcRenderer.invoke('bio-auth/set-bio-auth-settings', settings),

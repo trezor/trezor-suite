@@ -305,6 +305,7 @@ const createDesktopApiDep = (): InitThunkDesktopApiDep => ({
         getBioAuthSettings: mock(() => Promise.resolve({ enabled: false })),
         getBioAuthStatus: mock(() => Promise.resolve(false)),
         isBioAuthAvailable: mock(() => Promise.resolve(false)),
+        getSystemLocale: mock(() => Promise.resolve({ regionCode: null, preferredLanguages: [] })),
         on: mock(),
     },
 });

@@ -40,6 +40,9 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
+            "path": "../../suite-common/geolocation"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {

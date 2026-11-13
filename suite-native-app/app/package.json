@@ -207,6 +207,7 @@
         "@rozenite/performance-monitor-plugin": "^2.1.0",
         "@rozenite/redux-devtools-plugin": "^2.1.0",
         "@suite-common/e2e-evolu-client": "workspace:*",
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-native-app/storybook": "workspace:*",
         "@suite-native/performance-metrics": "workspace:*",

@@ -41,6 +41,7 @@
     },
     "devDependencies": {
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",

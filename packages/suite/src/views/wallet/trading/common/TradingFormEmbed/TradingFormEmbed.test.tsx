@@ -6,6 +6,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { Feature } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -105,6 +106,7 @@ const renderEmbed = ({ type, onTypeChange, isRegionRestricted = false }: RenderE
             { [Feature.regions.presenceRestriction]: isRegionRestricted },
             { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
         ),
+        geolocation: mockGeolocationStateInCountry('US'),
         wallet: {
             ...mockInitialAppState.wallet,
             trading: {

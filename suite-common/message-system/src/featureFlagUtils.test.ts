@@ -3,7 +3,9 @@ import fs from 'fs';
 import { type Feature, type MessageSystem } from '@suite-common/suite-types';
 
 import {
+    type RegionRestrictionThresholds,
     getRegionRestrictedCountries,
+    getRegionRestrictionThresholds,
     getTradingResidenceWhitelist,
     isYieldFeatureApplicableForVault,
     parseTimeoutThresholdsPerModel,
@@ -163,6 +165,61 @@ describe(getRegionRestrictedCountries.name, () => {
         'returns countries for %s',
         (_description, feature, expected) => {
             expect(getRegionRestrictedCountries(feature)).toEqual(expected);
+        },
+    );
+});
+
+describe(getRegionRestrictionThresholds.name, () => {
+    const regionsFeature = (payload?: Feature['payload']): Feature => ({
+        domain: FeatureDefinitions.regions.presenceRestriction,
+        flag: true,
+        payload,
+    });
+
+    it.each([
+        ['undefined feature', undefined, { strong: 0.5, weak: 0.35 }],
+        ['feature without payload', regionsFeature(), { strong: 0.5, weak: 0.35 }],
+        [
+            'payload without thresholds',
+            regionsFeature({ countries: ['AU'] }),
+            { strong: 0.5, weak: 0.35 },
+        ],
+        [
+            'partial thresholds',
+            regionsFeature({ thresholds: { weak: 0.4 } }),
+            { strong: 0.5, weak: 0.4 },
+        ],
+        [
+            'valid thresholds',
+            regionsFeature({ thresholds: { strong: 0.6, weak: 0.4 } }),
+            { strong: 0.6, weak: 0.4 },
+        ],
+        [
+            'string thresholds',
+            regionsFeature({ thresholds: { strong: '0.6', weak: '0.4' } }),
+            { strong: 0.5, weak: 0.35 },
+        ],
+        [
+            'NaN thresholds',
+            regionsFeature({ thresholds: { strong: NaN, weak: NaN } }),
+            { strong: 0.5, weak: 0.35 },
+        ],
+        [
+            'thresholds on the boundaries',
+            regionsFeature({ thresholds: { strong: 1, weak: 0 } }),
+            { strong: 0.5, weak: 0.35 },
+        ],
+        [
+            'thresholds out of range',
+            regionsFeature({ thresholds: { strong: -0.1, weak: 1.1 } }),
+            { strong: 0.5, weak: 0.35 },
+        ],
+        ['null thresholds', regionsFeature({ thresholds: null }), { strong: 0.5, weak: 0.35 }],
+        ['array thresholds', regionsFeature({ thresholds: [] }), { strong: 0.5, weak: 0.35 }],
+    ] as const satisfies [string, Feature | undefined, RegionRestrictionThresholds][])(
+        'returns thresholds for %s',
+        (_description, feature, expected) => {
+            expect(getRegionRestrictionThresholds(feature)).toEqual(expected);
         },
     );
 });

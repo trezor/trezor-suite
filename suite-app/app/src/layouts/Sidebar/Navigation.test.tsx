@@ -21,6 +21,7 @@ import {
     routerReducer,
 } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { Feature } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -88,6 +89,9 @@ const renderNavigation = ({
                   { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
               )
             : mockInitialAppState.messageSystem,
+        geolocation: isRegionRestricted
+            ? mockGeolocationStateInCountry('US')
+            : mockInitialAppState.geolocation,
         flags: { ...flagsInitialState, seenNewContentIndicators },
         router: routerReducer(
             mockInitialAppState.router,

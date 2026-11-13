@@ -114,6 +114,45 @@ Refresh scheduling lives in the regions packages (`refreshPresenceIpCountryThunk
 
 The `geolocation` slice is not persisted, and its values must not reach logs, Sentry or analytics.
 
+## Device signals
+
+`setDevicePresenceSignals` stores `{ timeZone, primaryRegion, secondaryRegions }`, and `selectDevicePresenceSignals`
+reads it. The platform `refreshDevicePresenceSignalsThunk` in the regions packages reads the signals on the same
+schedule as the IP refresh, in parallel with it so they never wait for the IP, whatever the feature flag (they stay
+on the device). The reducer ignores unchanged signals. If the desktop locale read fails, the time zone is updated and
+the previous regions stay. The builders are in `@suite-common/regions` (`deviceSignals.ts`); Linux POSIX language tags
+such as `en_GB.UTF-8` are accepted:
+
+| Platform | Time zone                                          | Primary region                               | Secondary regions                 |
+| -------- | -------------------------------------------------- | -------------------------------------------- | --------------------------------- |
+| Desktop  | `Intl.DateTimeFormat().resolvedOptions().timeZone` | OS region via `desktopApi.getSystemLocale()` | regions of OS preferred languages |
+| Web      | same                                               | region of `navigator.languages[0]`           | regions of later languages        |
+| Mobile   | `getCalendars()[0].timeZone`                       | `getLocales()[0].regionCode`                 | regions of later locales          |
+
+Desktop and mobile take the OS region (macOS Region, Windows Region, Android/iOS region). It does not depend on the UI
+language, so a Czech user with an English (US) UI usually still has region `CZ`. The web cannot read the OS region, so it
+uses the browser languages.
+
+Web rules:
+
+- When the first language is default English (`en`, `en-US`), there is no primary region.
+- `Atlantic/Reykjavik` is treated as a missing time zone. Firefox resistFingerprinting (Tor Browser, Mullvad Browser,
+  LibreWolf) reports it wherever the user is. Users really in Iceland lose only the time zone signal on web.
+- Those browsers also report the languages `en-US, en`, which carry no region, so they end up with no device signal
+  and, without an IP, `evidence: 'none'`.
+
+## Restriction rule
+
+`selectIsRegionRestricted` in `@suite-common/regions` (re-exported by `@suite/regions` and `@suite-native/regions`)
+applies the estimator to the stored signals and is memoized on the feature entry and the signals. It reads `countries`
+and `thresholds` from the `regions.presenceRestriction` feature payload:
+
+- Flag off, no entry, or no valid country: not restricted, and the estimator does not run.
+- `strong` restricts when `score >= thresholds.strong` (default 0.5). `weak` restricts when `score >= thresholds.weak`
+  (default 0.35). A threshold that is missing or not strictly between 0 and 1 uses its default, so a bad value never
+  turns a path off.
+- `none` is not restricted for now. A one-time self-declaration for this case is still to be built.
+
 ## Time zone table
 
 `src/presence/timeZoneCountries.ts` maps IANA zone names to countries; read it through `getTimeZoneCountry`. It is a

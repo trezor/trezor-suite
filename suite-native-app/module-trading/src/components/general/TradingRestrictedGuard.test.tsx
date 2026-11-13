@@ -1,5 +1,6 @@
 import { Text } from 'react-native';
 
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { Feature } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type Localization } from '@suite-common/suite-types';
@@ -40,6 +41,7 @@ const renderGuard = ({ isRegionRestricted, content }: RenderGuardParams) =>
                     { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
                     content,
                 ),
+                geolocation: mockGeolocationStateInCountry('US'),
             },
         },
     );
