@@ -97,8 +97,13 @@ export const sharedAliases = [
         replacement: require.resolve('stream-browserify'),
     },
     {
+        /**
+         * Mirrors the webpack config's `vm: false`: asn1.js (crypto-browserify) takes its non-eval
+         * fallback when the `vm` call throws, while vm-browserify would `eval`, which a CSP without
+         * 'unsafe-eval' reports as a violation.
+         */
         find: 'vm',
-        replacement: require.resolve('vm-browserify'),
+        replacement: resolve(packageDir, 'viteEmptyModule.ts'),
     },
     ...createWorkspaceAliases(),
 ];
