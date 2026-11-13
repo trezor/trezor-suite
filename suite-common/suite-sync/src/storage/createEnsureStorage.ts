@@ -13,12 +13,12 @@ import {
     type SuiteSyncUnavailableOnDeviceErrorType,
     type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
-import {
-    type DeviceCancelledErrType,
-    type DeviceErrorType,
-    type DeviceNotConnectedErrorType,
-} from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect';
+import type {
+    DeviceCancelledErrType,
+    DeviceErrorType,
+    DeviceNotConnectedErrorType,
+} from '@trezor/device';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';

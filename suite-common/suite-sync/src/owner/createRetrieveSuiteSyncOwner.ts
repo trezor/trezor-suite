@@ -1,18 +1,18 @@
 import { getProofOfDelegatedIdentity } from '@suite-common/delegated-identity-key';
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { DeviceError, DeviceNotConnectedError } from '@suite-common/device';
 import {
     type CreateSuiteSyncOwner,
     type CreateSuiteSyncOwnerError,
     type SuiteSyncOwner,
 } from '@suite-common/suite-sync-storage';
-import {
-    type DelegatedIdentityKey,
-    type DeviceErrorType,
-    type DeviceNotConnectedErrorType,
-    type TrezorDeviceWithState,
-} from '@suite-common/suite-types';
+import { type DelegatedIdentityKey, type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import {
+    DeviceError,
+    type DeviceErrorType,
+    DeviceNotConnectedError,
+    type DeviceNotConnectedErrorType,
+} from '@trezor/device';
 import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result, err } from '@trezor/type-utils';
 

@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../suite-types" },
+        { "path": "../../packages/device" },
         { "path": "../../packages/type-utils" }
     ]
 }

@@ -12210,6 +12210,7 @@ __metadata:
   resolution: "@suite-common/delegated-identity-key-types@workspace:suite-common/delegated-identity-key-types"
   dependencies:
     "@suite-common/suite-types": "workspace:*"
+    "@trezor/device": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -12228,6 +12229,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/device": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -12980,6 +12982,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/device": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -13015,6 +13018,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/device": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/lazy-loading": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -13046,6 +13050,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/device": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/lazy-loading": "workspace:*"

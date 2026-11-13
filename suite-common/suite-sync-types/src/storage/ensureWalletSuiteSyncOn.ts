@@ -1,10 +1,10 @@
 import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import {
-    type DeviceCancelledErrType,
-    type DeviceErrorType,
-    type DeviceNotConnectedErrorType,
-} from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect-common';
+import type {
+    DeviceCancelledErrType,
+    DeviceErrorType,
+    DeviceNotConnectedErrorType,
+} from '@trezor/device';
 import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result } from '@trezor/type-utils';
 
