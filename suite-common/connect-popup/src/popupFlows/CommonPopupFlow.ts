@@ -45,6 +45,9 @@ export type PopupFlowParams<M extends CallMethodKeys> = {
     method: M;
     payload: PopupFlowPayload<M>;
     source: ConnectCallSource;
+    // Token of the call being retried, taken from the stored call the restart spreads. A retry or a
+    // device switch keeps it, so a cancel still names the call it is meant to end.
+    callId?: string;
 };
 
 export type PopupFlowThunkApi = {
@@ -80,16 +83,22 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     protected readonly method: M;
     protected readonly payload: PopupFlowPayload<M>;
     protected readonly source: ConnectCallSource;
+    protected readonly callId: string;
     protected readonly dispatch: Dispatch;
     protected readonly getState: () => any;
 
     constructor(
-        { method, payload, source }: PopupFlowParams<M>,
+        { method, payload, source, callId }: PopupFlowParams<M>,
         { dispatch, getState }: PopupFlowThunkApi,
     ) {
         this.method = method;
         this.payload = payload;
         this.source = source;
+        // Store the caller's token before permissions or device selection so a cancel can be
+        // matched throughout the entire popup flow. A call without a token of its own gets one,
+        // so that its cancel ends only this call. Deeplink payloads are arbitrary JSON, hence `?.`.
+        this.callId =
+            (payload as { callId?: string } | null)?.callId ?? callId ?? crypto.randomUUID();
         this.dispatch = dispatch;
         this.getState = getState;
     }
@@ -147,6 +156,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         const response = await TrezorConnect.call({
             device,
             ...payload,
+            callId: this.callId,
             method: this.method,
         } as CallMethodPayload);
         response.id = undefined;
@@ -210,9 +220,6 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     // Returns the permissions the user is asked to consent to.
     private initiateCall({ info, requiredPermissions, useUi }: MethodInfo) {
         const { method, payload, source } = this;
-        // Store the caller's token before permissions or device selection so a cancel can be
-        // matched throughout the entire popup flow.
-        const { callId } = payload as { callId?: string };
 
         // Permissions the host/dapp declared up front (ConnectSettings.requestedPermissions),
         // sanitized against the same rules as the hard block in assertCallAllowed. Merged with this
@@ -234,7 +241,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
                 },
                 payload,
                 source,
-                callId,
+                callId: this.callId,
             }),
         );
 

@@ -23,6 +23,8 @@ type GetPublicKeyForNetworkTypeParams = {
     showOnTrezor?: boolean;
     // Only meaningful for `cardano`.
     derivationType?: PROTO.CardanoDerivationType;
+    // Correlation token of the call this export belongs to, so a scoped cancel can abort it.
+    callId?: string;
 };
 
 // Single entry point for "show/derive the public key on-device", used both by regular account
@@ -36,9 +38,10 @@ export const getPublicKeyForNetworkType = ({
     coin: symbol,
     showOnTrezor = true,
     derivationType,
+    callId,
 }: GetPublicKeyForNetworkTypeParams) => {
     const coin = symbol && asCoinSymbol(symbol);
-    const params = { device, path, coin, showOnTrezor, derivationType };
+    const params = { device, path, coin, showOnTrezor, derivationType, callId };
 
     switch (networkType) {
         case 'bitcoin':
@@ -72,6 +75,8 @@ type GetAddressForNetworkTypeParams = {
     // Required to resolve `cardano` — omitted callers (e.g. a bare candidate with no derived
     // Account) get the same "not defined" error as a genuinely unsupported network.
     cardano?: CardanoAddressForNetworkTypeParams;
+    // Correlation token of the call this address check belongs to, so a scoped cancel can abort it.
+    callId?: string;
 };
 
 // Single entry point for "show/derive an address on-device". `getAddress` only understands
@@ -85,9 +90,10 @@ export const getAddressForNetworkType = ({
     chunkify = false,
     unlockPath,
     cardano,
+    callId,
 }: GetAddressForNetworkTypeParams) => {
     const coin = symbol && asCoinSymbol(symbol);
-    const params = { device, path, unlockPath, coin, chunkify, showOnTrezor };
+    const params = { device, path, unlockPath, coin, chunkify, showOnTrezor, callId };
 
     switch (networkType) {
         case 'tron':
@@ -96,7 +102,7 @@ export const getAddressForNetworkType = ({
             return TrezorConnect.ethereumGetAddress(params);
         case 'cardano':
             return cardano
-                ? TrezorConnect.cardanoGetAddress({ device, chunkify, ...cardano })
+                ? TrezorConnect.cardanoGetAddress({ device, chunkify, callId, ...cardano })
                 : methodNotDefinedError('getAddress');
         case 'ripple':
             return TrezorConnect.rippleGetAddress(params);
@@ -118,6 +124,8 @@ type GetDescriptorForNetworkTypeParams = {
     coin?: NetworkSymbol;
     // Only meaningful for `cardano`.
     derivationType?: PROTO.CardanoDerivationType;
+    // Correlation token of the call this derivation belongs to, so a scoped cancel can abort it.
+    callId?: string;
 };
 
 type DeviceAccountDescriptor = Pick<
@@ -133,11 +141,12 @@ export const getDescriptorForNetworkType = ({
     path,
     coin: symbol,
     derivationType,
+    callId,
 }: GetDescriptorForNetworkTypeParams): Promise<
     Result<DeviceAccountDescriptor, SerializedError>
 > => {
     const coin = symbol && asCoinSymbol(symbol);
-    const params = { device, path, coin, showOnTrezor: false, derivationType };
+    const params = { device, path, coin, showOnTrezor: false, derivationType, callId };
 
     const extractDescriptor =
         <T, E>(extract: (payload: T) => DeviceAccountDescriptor) =>

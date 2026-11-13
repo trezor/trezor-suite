@@ -1304,6 +1304,8 @@ type PrepareNewAccountPayloadParams = {
     selectedAccount?: NetworkAccount;
     accountTypes?: NetworkAccount[];
     device: TrezorDevice;
+    // Correlation token of the call this derivation belongs to, so a scoped cancel can abort it.
+    callId?: string;
 };
 
 export const prepareNewAccountPayload = async ({
@@ -1314,6 +1316,7 @@ export const prepareNewAccountPayload = async ({
     selectedAccount,
     accountTypes,
     device,
+    callId,
 }: PrepareNewAccountPayloadParams) => {
     const network = getNetwork(networkSymbol);
     const networkAccount =
@@ -1337,6 +1340,7 @@ export const prepareNewAccountPayload = async ({
             state: device.state,
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
+        callId,
     });
 
     if (!descriptorResult.success) return new Error(descriptorResult.error.message);
@@ -1347,6 +1351,7 @@ export const prepareNewAccountPayload = async ({
         coin: asCoinSymbol(networkSymbol),
         details: 'txs',
         protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
+        callId,
     });
 
     if (!res.success) return new Error(res.error.message);
