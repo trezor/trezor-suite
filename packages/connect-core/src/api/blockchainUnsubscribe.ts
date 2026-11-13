@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainUnsubscribe.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { unsubscribe } from '../blockchain/api/subscribe';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -15,7 +15,10 @@ type Params = {
     blocks: boolean;
 };
 
-export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUnsubscribe', Params> {
+export default class BlockchainUnsubscribe extends AbstractBlockchainMethod<
+    'blockchainUnsubscribe',
+    Params
+> {
     constructor(message: MethodMessage<'blockchainUnsubscribe'>) {
         const { payload } = message;
 
@@ -34,8 +37,6 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
         }
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             accounts: payload.accounts,
@@ -45,29 +46,13 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [{ permission: 'internal' }];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-
-        const { accounts } = this.params;
-
-        if (this.params.blocks) {
-            return backend.unsubscribeBlocks();
-        }
-        if (accounts) {
-            return backend.unsubscribeAccounts(accounts);
-        }
-
-        return backend.unsubscribeAll();
+    run({ sendCoreMessage }: MethodContext) {
+        return unsubscribe(this.payload, sendCoreMessage);
     }
 }

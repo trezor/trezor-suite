@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainSubscribeFiatRates.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { subscribeFiatRates } from '../blockchain/api/subscribeFiatRates';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -14,7 +14,7 @@ type Params = {
     identity?: string;
 };
 
-export default class BlockchainSubscribeFiatRates extends AbstractMethod<
+export default class BlockchainSubscribeFiatRates extends AbstractBlockchainMethod<
     'blockchainSubscribeFiatRates',
     Params
 > {
@@ -29,8 +29,6 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             currency: payload.currency,
@@ -39,20 +37,13 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-
-        return backend.subscribeFiatRates(this.params.currency);
+    run({ sendCoreMessage }: MethodContext) {
+        return subscribeFiatRates(this.payload, sendCoreMessage);
     }
 }

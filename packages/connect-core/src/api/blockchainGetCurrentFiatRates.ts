@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetCurrentFiatRates.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { getCurrentFiatRates } from '../blockchain/api/getCurrentFiatRates';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -15,7 +15,7 @@ type Params = {
     token: Payload<'blockchainGetCurrentFiatRates'>['token'];
 };
 
-export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
+export default class BlockchainGetCurrentFiatRates extends AbstractBlockchainMethod<
     'blockchainGetCurrentFiatRates',
     Params
 > {
@@ -31,8 +31,6 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             currencies: payload.currencies,
@@ -42,23 +40,13 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-
-        return backend.getCurrentFiatRates({
-            currencies: this.params.currencies,
-            token: this.params.token,
-        });
+    run({ sendCoreMessage }: MethodContext) {
+        return getCurrentFiatRates(this.payload, sendCoreMessage);
     }
 }
