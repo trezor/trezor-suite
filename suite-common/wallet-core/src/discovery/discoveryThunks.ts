@@ -926,6 +926,16 @@ export const runAdditionalDiscoveryThunk = createThunk<
         TrezorConnect.on(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
         TrezorConnect.on(UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO, onAccountInfoRequest);
 
+        // Accounts start loading now, not with the first bundle progress event.
+        if (!hasDiscoveryEnded(selectDiscoveryByDevicePath(getState(), device.path))) {
+            dispatch(
+                updateDiscoveryThunk({
+                    status: { status: 'progress', total: Infinity, progress: 0 },
+                    path: device.path,
+                }),
+            );
+        }
+
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
         // NOTE: pass only staticSessionId (not the full updatedDevice) to avoid overwriting the freshly-derived

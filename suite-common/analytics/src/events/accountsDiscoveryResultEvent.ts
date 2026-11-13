@@ -6,6 +6,7 @@ import type { AttributeDef, EventDef } from '../eventDefinition';
 type Attributes = {
     outcome: AttributeDef<DiscoveryOutcome>;
     trigger: AttributeDef<DiscoveryTrigger>;
+    durationMs: AttributeDef<number>;
     errorCode?: AttributeDef<string>;
 };
 
@@ -26,6 +27,11 @@ export const accountsDiscoveryResultEvent: EventDef<Attributes, EventType.Accoun
                 changelog: [{ version: '26.11.0', notes: 'added' }],
                 description:
                     'What started the run: `device-connect` (device connected or acquired, including app start), `device-switch` (another device or wallet selected), `device-check` (a failed entropy check was dismissed, or on mobile the compromised device warning was dismissed), `coin-toggle`, `account-update` (an account changed and further accounts may be discoverable), `add-wallet` (standard or hidden wallet, including passphrase retries), `add-account`, `retry` (user retried a failed discovery, or activated an already enabled network from Earn), `reconnect` (connectivity regained, desktop only) or `onboarding` (desktop onboarding finished, or mobile wallet created or recovered). On desktop, a run that had to wait for a screen, flow or device check that blocks discovery reports why discovery was needed instead: `device-connect` for a wallet not discovered yet, `coin-toggle` for an enabled coin without accounts, or `account-update`',
+            },
+            durationMs: {
+                changelog: [{ version: '26.11.0', notes: 'added' }],
+                description:
+                    'How long the run spent loading accounts, in milliseconds: from the moment discovery starts loading accounts until the outcome. Time spent waiting for the user, such as confirming an empty passphrase, is left out, and so is everything before loading starts, such as entering a PIN or passphrase or pairing the device. `0` when the run ends before accounts start loading, e.g. a `passphrase-duplicate` or a run cancelled at the passphrase prompt',
             },
             errorCode: {
                 changelog: [{ version: '26.11.0', notes: 'added' }],

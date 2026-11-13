@@ -22,6 +22,9 @@ type CommonDiscoveryStatus = {
     hasLoadedAnyNonEmptyAccount?: boolean; // NOTE: used to indicate the the discovery started loading actual accounts
     passphraseOnDevice?: boolean;
     startTimestamp?: number;
+    loadStartTimestamp?: number;
+    userWaitStartTimestamp?: number;
+    userWaitDurationMs?: number;
     passphraseSubmitted?: boolean;
     useScopedCallIds?: boolean;
 };

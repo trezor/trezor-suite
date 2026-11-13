@@ -8,6 +8,7 @@ import { type WithServices } from '@trezor/redux-utils';
 
 import { discoveryActions } from './discoveryActions';
 import { prepareDiscoveryReducer } from './discoveryReducer';
+import { selectDiscoveryByDevicePath } from './discoverySelectors';
 import {
     type UpdateDiscoveryThunkState,
     deleteDiscoveryThunk,
@@ -26,6 +27,11 @@ const initStore = () =>
 
 beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers({ now: 0 });
+});
+
+afterEach(() => {
+    jest.useRealTimers();
 });
 
 describe('discovery state thunks', () => {
@@ -44,7 +50,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'device-connect' },
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 0 },
         });
     });
 
@@ -65,7 +71,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'retry', errorCode: 'Backend_Disconnected' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'retry',
+                durationMs: 0,
+                errorCode: 'Backend_Disconnected',
+            },
         });
     });
 
@@ -79,7 +90,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'retry', errorCode: 'Failure_UnknownCode' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'retry',
+                durationMs: 0,
+                errorCode: 'Failure_UnknownCode',
+            },
         });
     });
 
@@ -96,7 +112,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'retry', errorCode: 'Failure_UnknownCode' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'retry',
+                durationMs: 0,
+                errorCode: 'Failure_UnknownCode',
+            },
         });
     });
 
@@ -115,7 +136,7 @@ describe('discovery state thunks', () => {
 
             expect(analytics.report).toHaveBeenCalledWith({
                 type: 'accounts/discovery-result',
-                payload: { outcome: 'cancelled', trigger: 'add-wallet' },
+                payload: { outcome: 'cancelled', trigger: 'add-wallet', durationMs: 0 },
             });
         },
     );
@@ -133,7 +154,12 @@ describe('discovery state thunks', () => {
 
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'add-wallet', errorCode: 'Method_Cancel' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'add-wallet',
+                durationMs: 0,
+                errorCode: 'Method_Cancel',
+            },
         });
     });
 
@@ -149,7 +175,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'passphrase-mismatch', trigger: 'add-wallet' },
+            payload: { outcome: 'passphrase-mismatch', trigger: 'add-wallet', durationMs: 0 },
         });
     });
 
@@ -169,11 +195,16 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(2);
         expect(analytics.report).toHaveBeenNthCalledWith(1, {
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'device-connect' },
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 0 },
         });
         expect(analytics.report).toHaveBeenNthCalledWith(2, {
             type: 'accounts/discovery-result',
-            payload: { outcome: 'failed', trigger: 'coin-toggle', errorCode: 'Transport_Missing' },
+            payload: {
+                outcome: 'failed',
+                trigger: 'coin-toggle',
+                durationMs: 0,
+                errorCode: 'Transport_Missing',
+            },
         });
     });
 
@@ -194,7 +225,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'add-wallet' },
+            payload: { outcome: 'complete', trigger: 'add-wallet', durationMs: 0 },
         });
     });
 
@@ -207,7 +238,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'cancelled', trigger: 'device-switch' },
+            payload: { outcome: 'cancelled', trigger: 'device-switch', durationMs: 0 },
         });
     });
 
@@ -221,7 +252,7 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: 'complete', trigger: 'device-connect' },
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 0 },
         });
     });
 
@@ -241,7 +272,166 @@ describe('discovery state thunks', () => {
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: 'accounts/discovery-result',
-            payload: { outcome: status.status, trigger: 'add-wallet' },
+            payload: { outcome: status.status, trigger: 'add-wallet', durationMs: 0 },
+        });
+    });
+
+    it('reports the time from the start of loading accounts to the outcome', () => {
+        const store = initStore();
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
+        jest.setSystemTime(5_000);
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'progress', total: Infinity, progress: 0 },
+                path: devicePath,
+            }),
+        );
+        jest.setSystemTime(6_000);
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'progress', total: 2, progress: 1 },
+                path: devicePath,
+            }),
+        );
+        jest.setSystemTime(8_000);
+        store.dispatch(updateDiscoveryThunk({ status: { status: 'complete' }, path: devicePath }));
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'complete', trigger: 'device-connect', durationMs: 3_000 },
+        });
+    });
+
+    it('leaves out entering the passphrase before accounts start loading', () => {
+        const store = initStore();
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'add-wallet' }));
+        store.dispatch(
+            updateDiscoveryThunk({ status: { status: 'enter-passphrase' }, path: devicePath }),
+        );
+        jest.setSystemTime(20_000);
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'progress', total: Infinity, progress: 0 },
+                path: devicePath,
+            }),
+        );
+        jest.setSystemTime(21_500);
+        store.dispatch(updateDiscoveryThunk({ status: { status: 'complete' }, path: devicePath }));
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'complete', trigger: 'add-wallet', durationMs: 1_500 },
+        });
+    });
+
+    it.each([
+        { outcome: { status: 'complete' as const } },
+        { outcome: { status: 'passphrase-mismatch' as const } },
+    ])(
+        'leaves out confirming an empty passphrase from a run ending as $outcome.status',
+        ({ outcome }) => {
+            const store = initStore();
+
+            store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'add-wallet' }));
+            jest.setSystemTime(1_000);
+            store.dispatch(
+                updateDiscoveryThunk({
+                    status: { status: 'progress', total: Infinity, progress: 0 },
+                    path: devicePath,
+                }),
+            );
+            jest.setSystemTime(3_000);
+            store.dispatch(
+                updateDiscoveryThunk({
+                    status: { status: 'confirm-empty-passphrase' },
+                    path: devicePath,
+                }),
+            );
+            jest.setSystemTime(10_000);
+            store.dispatch(
+                updateDiscoveryThunk({
+                    status: {
+                        ...selectDiscoveryByDevicePath(store.getState(), devicePath)!,
+                        passphraseSubmitted: true,
+                    },
+                    path: devicePath,
+                }),
+            );
+            jest.setSystemTime(12_000);
+            store.dispatch(updateDiscoveryThunk({ status: outcome, path: devicePath }));
+
+            expect(analytics.report).toHaveBeenCalledWith({
+                type: 'accounts/discovery-result',
+                payload: { outcome: outcome.status, trigger: 'add-wallet', durationMs: 2_000 },
+            });
+        },
+    );
+
+    it('reports 0 for a run that ends before accounts start loading', () => {
+        const store = initStore();
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'add-wallet' }));
+        store.dispatch(
+            updateDiscoveryThunk({ status: { status: 'enter-passphrase' }, path: devicePath }),
+        );
+        jest.setSystemTime(15_000);
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: {
+                    status: 'passphrase-duplicate',
+                    duplicateDeviceStaticSessionId: 'wallet@device:1',
+                },
+                path: devicePath,
+            }),
+        );
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'passphrase-duplicate', trigger: 'add-wallet', durationMs: 0 },
+        });
+    });
+
+    it('reports the loading time of a run that is deleted while it loads', () => {
+        const store = initStore();
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-switch' }));
+        jest.setSystemTime(1_000);
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'progress', total: Infinity, progress: 0 },
+                path: devicePath,
+            }),
+        );
+        jest.setSystemTime(1_750);
+        store.dispatch(deleteDiscoveryThunk(devicePath));
+
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'cancelled', trigger: 'device-switch', durationMs: 750 },
+        });
+    });
+
+    it('measures every run from its own start of loading', () => {
+        const store = initStore();
+
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'device-connect' }));
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'progress', total: Infinity, progress: 0 },
+                path: devicePath,
+            }),
+        );
+        jest.setSystemTime(4_000);
+        store.dispatch(updateDiscoveryThunk({ status: { status: 'complete' }, path: devicePath }));
+        store.dispatch(discoveryActions.startDiscovery(devicePath, { trigger: 'coin-toggle' }));
+        jest.setSystemTime(5_000);
+        store.dispatch(updateDiscoveryThunk({ status: { status: 'cancelled' }, path: devicePath }));
+
+        expect(analytics.report).toHaveBeenNthCalledWith(2, {
+            type: 'accounts/discovery-result',
+            payload: { outcome: 'cancelled', trigger: 'coin-toggle', durationMs: 0 },
         });
     });
 

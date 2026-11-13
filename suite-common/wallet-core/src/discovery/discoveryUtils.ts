@@ -33,6 +33,53 @@ export const getDiscoveryOutcome = (
 export const hasDiscoveryEnded = (discovery: DiscoveryStatus | undefined) =>
     getDiscoveryOutcome(discovery) !== undefined;
 
+const isWaitingForUser = (discovery: DiscoveryStatus) =>
+    discovery.status === 'enter-passphrase' || discovery.status === 'confirm-empty-passphrase';
+
+type DiscoveryLoadTiming = Pick<
+    DiscoveryStatus,
+    'loadStartTimestamp' | 'userWaitStartTimestamp' | 'userWaitDurationMs'
+>;
+
+/**
+ * Loading starts with the first `progress` status of a run. From then on, time spent waiting for the
+ * user, such as confirming an empty passphrase, is tracked so it can be left out of the load duration.
+ * Returns only the timing fields that change.
+ */
+export const getDiscoveryLoadTiming = (
+    previousDiscovery: DiscoveryStatus,
+    nextDiscovery: DiscoveryStatus,
+    now: number,
+): DiscoveryLoadTiming => {
+    if (previousDiscovery.loadStartTimestamp === undefined) {
+        return nextDiscovery.status === 'progress' ? { loadStartTimestamp: now } : {};
+    }
+
+    const { userWaitStartTimestamp, userWaitDurationMs = 0 } = previousDiscovery;
+    const isWaiting = isWaitingForUser(nextDiscovery);
+
+    if (userWaitStartTimestamp === undefined) {
+        return isWaiting ? { userWaitStartTimestamp: now } : {};
+    }
+
+    return isWaiting
+        ? {}
+        : {
+              userWaitStartTimestamp: undefined,
+              userWaitDurationMs: userWaitDurationMs + now - userWaitStartTimestamp,
+          };
+};
+
+export const getDiscoveryLoadDurationMs = (discovery: DiscoveryStatus | undefined, now: number) => {
+    if (discovery?.loadStartTimestamp === undefined) return 0;
+
+    const { loadStartTimestamp, userWaitStartTimestamp, userWaitDurationMs = 0 } = discovery;
+
+    const openUserWaitMs = userWaitStartTimestamp === undefined ? 0 : now - userWaitStartTimestamp;
+
+    return Math.max(0, now - loadStartTimestamp - userWaitDurationMs - openUserWaitMs);
+};
+
 type FirmwareFailureType = keyof typeof PROTO.Enum_FailureType;
 
 // Connect declares the THP error codes only as a type. The mapped type makes adding a code there a
