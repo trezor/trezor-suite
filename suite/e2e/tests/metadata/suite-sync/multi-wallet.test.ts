@@ -181,6 +181,17 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
                     softExpect: true,
                 });
             });
+
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/25438
+            await test.step('Ejecting a wallet keeps the labels of the other wallets', async () => {
+                await dashboardPage.ejectWallet(walletOne.index);
+                await expect(metadataPage.wallet.walletLabel(0)).toHaveText(
+                    expectedDefaultWalletLabel.label,
+                );
+                await expect(metadataPage.wallet.walletLabel(1)).toHaveText(
+                    expectedWalletTwoLabel.label,
+                );
+            });
         },
     );
 });
