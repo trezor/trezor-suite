@@ -7,6 +7,7 @@ import {
     type FormDraftRootState,
     selectAccountByKey,
     selectFormDraft,
+    selectPrecomposedSendForm,
     selectSendFormDraftByKey,
     selectSendFormReviewButtonRequestsCount,
     selectSendPrecomposedTx,
@@ -169,6 +170,11 @@ export const selectTransactionReviewOutputsFromDraft = (
     return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft);
 };
 
+export const selectTransactionReviewOutputsFromPrecomposedForm = (
+    state: TransactionReviewOutputsState,
+    accountKey: AccountKey,
+) => selectTransactionReviewOutputs(state, accountKey, undefined, selectPrecomposedSendForm(state));
+
 export const selectIsTransactionReviewInProgress = (
     state: TransactionReviewOutputsState,
     prefix: FormDraftWithSendKeyPrefix,
@@ -236,66 +242,62 @@ export const selectIsReceiveAddressOutputConfirmed = (
     );
 };
 
-export const selectReviewSummaryOutputState = (
-    state: TransactionReviewOutputsState,
-    prefix: FormDraftWithSendKeyPrefix,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-): TransactionReviewOutputState => {
-    const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
-
-    if (isTransactionAlreadySigned) {
-        return 'success';
-    }
-
-    const reviewOutputs = selectTransactionReviewOutputsFromDraft(
-        state,
-        prefix,
-        accountKey,
-        tokenContract,
-    );
-
-    if (reviewOutputs && A.all(reviewOutputs, output => output.state === 'success')) {
-        return 'active';
-    }
-
-    return undefined;
-};
-
-export const selectReviewSummaryOutput = createSendMemoizedSelector(
-    [selectSendPrecomposedTx, selectReviewSummaryOutputState],
-    (precomposedTx, outputState) => {
+const selectReviewSummaryOutputFromForm = createSendMemoizedSelector(
+    [
+        selectSendPrecomposedTx,
+        selectIsTransactionAlreadySigned,
+        (
+            state: TransactionReviewOutputsState,
+            accountKey: AccountKey,
+            precomposedForm: FormState | null | undefined,
+        ) => selectTransactionReviewOutputs(state, accountKey, undefined, precomposedForm),
+    ],
+    (precomposedTx, isTransactionAlreadySigned, reviewOutputs) => {
         if (!precomposedTx) {
             return null;
         }
 
-        return {
-            state: outputState,
-            totalSpent: precomposedTx.totalSpent,
-            fee: precomposedTx.fee,
-        } satisfies TransactionReviewSummaryOutput;
+        const { totalSpent, fee } = precomposedTx;
+
+        if (isTransactionAlreadySigned) {
+            return { state: 'success', totalSpent, fee } satisfies TransactionReviewSummaryOutput;
+        }
+
+        if (reviewOutputs && A.all(reviewOutputs, output => output.state === 'success')) {
+            return { state: 'active', totalSpent, fee } satisfies TransactionReviewSummaryOutput;
+        }
+
+        return { state: undefined, totalSpent, fee } satisfies TransactionReviewSummaryOutput;
     },
 );
 
+export const selectReviewSummaryOutput = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) =>
+    selectReviewSummaryOutputFromForm(
+        state,
+        accountKey,
+        selectFormDraftByPrefix(state, prefix, accountKey, tokenContract),
+    );
+
+export const selectReviewSummaryOutputFromPrecomposedForm = (
+    state: TransactionReviewOutputsState,
+    accountKey: AccountKey,
+) => selectReviewSummaryOutputFromForm(state, accountKey, selectPrecomposedSendForm(state));
+
 export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
-    [
-        selectAccountByKey,
-        selectSelectedDevice,
-        (
-            state: TransactionReviewOutputsState,
-            accountKey: AccountKey,
-            prefix: FormDraftWithSendKeyPrefix,
-        ) => selectFormDraftByPrefix(state, prefix, accountKey),
-        selectSendPrecomposedTx,
-    ],
-    (account, device, formDraft, precomposedTx) => {
-        if (account && device && formDraft && precomposedTx) {
+    [selectAccountByKey, selectSelectedDevice, selectPrecomposedSendForm, selectSendPrecomposedTx],
+    (account, device, precomposedForm, precomposedTx) => {
+        if (account && device && precomposedForm && precomposedTx) {
             return isClearSignedEvmTradingSwapTransaction({
                 account,
                 device,
                 precomposedTx,
-                transactionData: formDraft.transactionData,
-                trading: formDraft.trading,
+                transactionData: precomposedForm.transactionData,
+                trading: precomposedForm.trading,
             });
         }
 
