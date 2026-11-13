@@ -1,3 +1,5 @@
+import { Keyboard } from 'react-native';
+
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -24,6 +26,7 @@ import { useYieldDepositForm } from '../useYieldDepositForm';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 
+const mockNavigate = jest.fn();
 let mockNavigationRoutes: unknown[];
 const mockBeforeRemove = jest.fn(
     (_name: string, _listener: (event: { data: { action: { type: string } } }) => void) => () =>
@@ -37,7 +40,7 @@ jest.mock('@react-navigation/native', () => ({
         addListener: mockBeforeRemove,
         getParent: () => ({ addListener: mockBeforeRemove }),
         isFocused: () => true,
-        navigate: jest.fn(),
+        navigate: mockNavigate,
         getState: () => ({ routes: mockNavigationRoutes }),
     }),
     useRoute: () => ({ params: { accountKey: 'account-key', tokenContract: '0xtoken' } }),
@@ -128,6 +131,9 @@ const renderApprovalController = () => {
 describe('useYieldDepositApprovalController', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockNavigate.mockReset();
+        mockHandleSubmitApproval.mockReset();
+        jest.spyOn(Keyboard, 'dismiss').mockImplementation(() => undefined);
         mockNavigationRoutes = [{}];
         useYieldFlowScreenBaseMock.mockReturnValue(buildScreenBase());
         useYieldPendingTransactionMock.mockReturnValue(mockYieldPendingTransactionResult());
@@ -151,6 +157,45 @@ describe('useYieldDepositApprovalController', () => {
             selectedFee: undefined,
             updateFeeLevelThunk: jest.fn(),
         } as unknown as ReturnType<typeof useYieldApprovalFees>);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('dismisses the keyboard before submitting approval', async () => {
+        const events: string[] = [];
+        jest.mocked(Keyboard.dismiss).mockImplementation(() => {
+            events.push('dismiss');
+        });
+        mockHandleSubmitApproval.mockImplementationOnce(() => events.push('submit'));
+        const { result } = await renderApprovalController();
+        const controller = result.current;
+        if (controller.status !== 'ready') throw new Error('not ready');
+
+        await act(() => controller.footer.onPress());
+
+        expect(events).toEqual(['dismiss', 'submit']);
+    });
+
+    it.each(['skip', 'revoke'] as const)('dismisses before navigating from %s', async action => {
+        const events: string[] = [];
+        jest.mocked(Keyboard.dismiss).mockImplementation(() => {
+            events.push('dismiss');
+        });
+        mockNavigate.mockImplementationOnce(() => events.push('navigate'));
+        const { result } = await renderApprovalController();
+        const controller = result.current;
+        if (controller.status !== 'ready') throw new Error('not ready');
+        const handler =
+            action === 'skip'
+                ? controller.footer.onSkipPress
+                : controller.approvedAmountCard.onRevoke;
+        if (!handler) throw new Error('missing handler');
+
+        await act(() => handler());
+
+        expect(events).toEqual(['dismiss', 'navigate']);
     });
 
     it('is ready once the flow data resolves, even without a session', async () => {
@@ -245,6 +290,7 @@ describe('useYieldDepositApprovalController', () => {
         expect(controller.footer.isDisabled).toBe(true);
         await act(() => controller.footer.onPress());
 
+        expect(Keyboard.dismiss).not.toHaveBeenCalled();
         expect(mockHandleSubmitApproval).not.toHaveBeenCalled();
         expect(services.analytics.report).not.toHaveBeenCalled();
     });

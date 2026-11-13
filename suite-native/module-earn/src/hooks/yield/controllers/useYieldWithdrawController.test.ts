@@ -1,4 +1,5 @@
 import { createElement } from 'react';
+import { Keyboard } from 'react-native';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
@@ -140,12 +141,18 @@ describe('useYieldWithdrawController', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockNavigate.mockReset();
+        jest.spyOn(Keyboard, 'dismiss').mockImplementation(() => undefined);
         mockRouteParams = { accountKey: yieldFlowData.account.key, tokenContract };
         useYieldFlowScreenBaseMock.mockReturnValue(
             mockYieldFlowScreenBaseResult({ session: null, yieldFlowData }),
         );
         useYieldWithdrawFeesMock.mockReturnValue(withdrawFees);
         useYieldPendingSheetMock.mockReturnValue(pendingSheet);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     it('blocks the continue handler when the selected fee is unavailable', async () => {
@@ -164,30 +171,44 @@ describe('useYieldWithdrawController', () => {
         if (result.current.status !== 'ready') throw new Error('not ready');
         expect(result.current.footer.isDisabled).toBe(true);
         await act(() => result.current.status === 'ready' && result.current.footer.onContinue());
+        expect(Keyboard.dismiss).not.toHaveBeenCalled();
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 
-    it('continues when the shared fee state is ready for the current amount', async () => {
-        useYieldWithdrawFeesMock.mockReturnValue({
-            ...withdrawFees,
-            formDraft: { selectedFee: 'normal' } as NonNullable<typeof withdrawFees.formDraft>,
-            isWithdrawFeeReady: true,
-            preparedAction: { amount: '1', unsignedTransaction: '{}' },
-        });
-        const { result } = await renderWithdrawController();
-        if (result.current.status !== 'ready') throw new Error('not ready');
-        await act(
-            () =>
-                result.current.status === 'ready' && result.current.amountForm.onAmountChange('1'),
-        );
-        if (result.current.status !== 'ready') throw new Error('not ready');
-        expect(result.current.footer.isDisabled).toBe(false);
-        await act(() => result.current.status === 'ready' && result.current.footer.onContinue());
-        expect(mockNavigate).toHaveBeenCalledWith(
-            YieldStackRoutes.YieldWithdrawReview,
-            expect.anything(),
-        );
-    });
+    it.each(['withdraw', 'redeem'] as const)(
+        'dismisses the keyboard before opening the %s review',
+        async operation => {
+            mockRouteParams.withdrawFlowType = operation;
+            const events: string[] = [];
+            jest.mocked(Keyboard.dismiss).mockImplementation(() => {
+                events.push('dismiss');
+            });
+            mockNavigate.mockImplementationOnce(() => events.push('navigate'));
+            useYieldWithdrawFeesMock.mockReturnValue({
+                ...withdrawFees,
+                formDraft: { selectedFee: 'normal' } as NonNullable<typeof withdrawFees.formDraft>,
+                isWithdrawFeeReady: true,
+                preparedAction: { amount: '1', unsignedTransaction: '{}' },
+            });
+            const { result } = await renderWithdrawController();
+            if (result.current.status !== 'ready') throw new Error('not ready');
+            await act(
+                () =>
+                    result.current.status === 'ready' &&
+                    result.current.amountForm.onAmountChange('1'),
+            );
+            if (result.current.status !== 'ready') throw new Error('not ready');
+            expect(result.current.footer.isDisabled).toBe(false);
+            await act(
+                () => result.current.status === 'ready' && result.current.footer.onContinue(),
+            );
+            expect(mockNavigate).toHaveBeenCalledWith(
+                YieldStackRoutes.YieldWithdrawReview,
+                expect.objectContaining({ withdrawFlowType: operation }),
+            );
+            expect(events).toEqual(['dismiss', 'navigate']);
+        },
+    );
 
     it('shows only retry while the retained fee draft cannot be prepared', async () => {
         useYieldWithdrawFeesMock.mockReturnValue({
