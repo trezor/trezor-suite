@@ -14,11 +14,6 @@ declare global {
         result?: any;
         legacyResults?: LegacyResult[];
         customTimeout?: number;
-        /** Coin symbols enabled (via `updateConnectSettings`) before the method call, merged
-         *  on top of the test case's `enabledCoins`. Required for fixtures targeting a coin that
-         *  Connect guards (e.g. `getAccountInfo({ coin: 'ada' })`), which it otherwise rejects
-         *  with `Method_NetworkNotEnabled`. */
-        enabledCoins?: readonly CoinSymbol[];
         setup?: {
             wiped?: boolean;
             mnemonic?: string;
@@ -47,8 +42,7 @@ declare global {
         // TrezorConnect method to call; defaults to `method`.
         apiMethod?: string;
         /** Coin symbols enabled for every test in this case. Cardano fixtures set `['ada']`
-         *  here so the whole file opts into Connect's guard; individual tests can add more via
-         *  their own `enabledCoins`. */
+         *  here so the whole file opts into Connect's guard. */
         enabledCoins?: readonly CoinSymbol[];
         setup: {
             wiped?: boolean;
