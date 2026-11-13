@@ -5,8 +5,9 @@ import {
     type QuotaManagerCommunicationFailedErrType,
     type WriteModeRequiredForAllocationErrType,
 } from '@suite-common/suite-sync-types';
-import { type DelegatedIdentityKey, type DeviceErrorType } from '@suite-common/suite-types';
+import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect';
+import type { DeviceErrorType } from '@trezor/device';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { isNotNull, isNotNullOrUndefined } from '@trezor/utils';
