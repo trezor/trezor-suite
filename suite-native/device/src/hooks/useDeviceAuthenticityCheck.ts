@@ -174,14 +174,6 @@ export const useDeviceAuthenticityCheck = () => {
                 return;
             }
 
-            // Clear previous result
-            dispatch(
-                persistentDeviceDataActions.setDeviceAuthenticityResult({
-                    deviceId: device.id,
-                    result: undefined,
-                }),
-            );
-
             const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
                 TrezorConnect.authenticateDevice({
                     device: {
@@ -206,12 +198,16 @@ export const useDeviceAuthenticityCheck = () => {
 
             const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);
 
-            dispatch(
-                persistentDeviceDataActions.setDeviceAuthenticityResult({
-                    deviceId: device.id,
-                    result: storedResult,
-                }),
-            );
+            // Only a conclusive result overwrites the persisted result of a previous check.
+            // An inconclusive one (e.g. cancelled on device, disconnected) keeps it.
+            if (storedResult !== undefined) {
+                dispatch(
+                    persistentDeviceDataActions.setDeviceAuthenticityResult({
+                        deviceId: device.id,
+                        result: storedResult,
+                    }),
+                );
+            }
 
             if (storedResult?.valid === false) {
                 handleFailure();
