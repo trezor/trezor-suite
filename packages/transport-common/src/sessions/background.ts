@@ -111,7 +111,7 @@ export class SessionsBackground
             // background should never stay in "hanged" state
             return {
                 ...error({ code: ERRORS.UNEXPECTED_ERROR }),
-                id: message.type,
+                id: message.id,
             } as HandleMessageResponse<M>;
         } finally {
             if (result?.success && result.payload) {
@@ -253,13 +253,14 @@ export class SessionsBackground
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        const { descriptors } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const descriptor: Descriptor = descriptors[payload.path];
-        descriptor.session = null;
-        descriptor.sessionOwner = undefined;
-
         this.clearLock();
+        const descriptor = this.descriptors[payload.path];
+
+        // The device might have been disconnected (enumerateDone) since releaseIntent.
+        if (descriptor) {
+            descriptor.session = null;
+            descriptor.sessionOwner = undefined;
+        }
 
         return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
