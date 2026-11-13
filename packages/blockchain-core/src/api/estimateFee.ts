@@ -1,12 +1,3 @@
-import type { Blockchain, PostMessage } from '@trezor/blockchain-core/src/backend/Blockchain';
-import {
-    assertBackendSupported,
-    initCoinBackend,
-} from '@trezor/blockchain-core/src/backend/BlockchainLink';
-import {
-    type BackendCoinInfo,
-    getBackendCoinInfo,
-} from '@trezor/blockchain-core/src/data/coinInfo';
 import type { FeeLevel } from '@trezor/connect-common';
 import type {
     BlockchainEstimateFee,
@@ -17,7 +8,9 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isNotNull } from '@trezor/utils/src/isNotNull';
 import { clamp } from '@trezor/utils/src/number';
 
-
+import type { Blockchain, PostMessage } from '../backend/Blockchain';
+import { assertBackendSupported, initCoinBackend } from '../backend/BlockchainLink';
+import { type BackendCoinInfo, getBackendCoinInfo } from '../data/coinInfo';
 import { COIN_PARAMS, validateParams } from '../utils/validateParams';
 
 export type EstimateFeeParams = { coin: string; identity?: string } & (

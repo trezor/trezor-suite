@@ -1,10 +1,10 @@
-import type { PostMessage } from '@trezor/blockchain-core/src/backend/Blockchain';
-import { initCoinBackend } from '@trezor/blockchain-core/src/backend/BlockchainLink';
-import { getBackendCoinInfo } from '@trezor/blockchain-core/src/data/coinInfo';
 import { PushTransaction } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
+import type { PostMessage } from '../backend/Blockchain';
+import { initCoinBackend } from '../backend/BlockchainLink';
+import { getBackendCoinInfo } from '../data/coinInfo';
 
 export const pushTransaction = async (params: PushTransaction, postMessage: PostMessage) => {
     Assert(PushTransaction, params);

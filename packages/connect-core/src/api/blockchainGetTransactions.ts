@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetTransactions.js
 
+import { getTransactions } from '@trezor/blockchain-core/src/api/getTransactions';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import { getTransactions } from '../blockchain/api/getTransactions';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 

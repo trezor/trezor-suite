@@ -1,9 +1,5 @@
-import {
-    assertBackendSupported,
-    findBackend,
-} from '@trezor/blockchain-core/src/backend/BlockchainLink';
-import { getBackendCoinInfo } from '@trezor/blockchain-core/src/data/coinInfo';
-
+import { assertBackendSupported, findBackend } from '../backend/BlockchainLink';
+import { getBackendCoinInfo } from '../data/coinInfo';
 import { COIN_PARAMS, type CoinParams, validateParams } from '../utils/validateParams';
 
 export const disconnect = (params: CoinParams) => {

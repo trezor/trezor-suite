@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetAccountBalanceHistory.js
 
+import { getAccountBalanceHistory } from '@trezor/blockchain-core/src/api/getAccountBalanceHistory';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import { getAccountBalanceHistory } from '../blockchain/api/getAccountBalanceHistory';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 

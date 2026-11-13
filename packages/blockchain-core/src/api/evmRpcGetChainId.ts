@@ -1,8 +1,8 @@
-import { EvmRpcWorker } from '@trezor/blockchain-core/src/workers/workers';
 import { BlockchainLink } from '@trezor/blockchain-link';
 import { MESSAGES, type ResponseTypes } from '@trezor/blockchain-link-types';
 
 import { validateParams } from '../utils/validateParams';
+import { EvmRpcWorker } from '../workers/workers';
 
 /** Asks an EVM RPC node for its chain ID, e.g. to validate a custom backend before it's used. */
 export const evmRpcGetChainId = async (params: { url: string }) => {

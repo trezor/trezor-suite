@@ -1,8 +1,8 @@
+import { getInfo } from '@trezor/blockchain-core/src/api/getInfo';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import { getInfo } from '../blockchain/api/getInfo';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 

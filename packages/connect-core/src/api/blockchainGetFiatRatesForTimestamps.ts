@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetFiatRatesForTimestamps.js
 
+import { getFiatRatesForTimestamps } from '@trezor/blockchain-core/src/api/getFiatRatesForTimestamps';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import { getFiatRatesForTimestamps } from '../blockchain/api/getFiatRatesForTimestamps';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 

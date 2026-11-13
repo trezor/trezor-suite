@@ -1,8 +1,8 @@
+import { evmRpcCall } from '@trezor/blockchain-core/src/api/evmRpcCall';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
-import { evmRpcCall } from '../blockchain/api/evmRpcCall';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 

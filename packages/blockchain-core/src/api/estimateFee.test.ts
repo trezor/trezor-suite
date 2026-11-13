@@ -1,19 +1,19 @@
-import type { BackendCoinInfo } from '@trezor/blockchain-core/src/data/coinInfo';
 import type { FeeLevel } from '@trezor/connect-common';
 
-import type * as EstimateFeeModule from '../blockchain/api/estimateFee';
+import type * as EstimateFeeModule from './estimateFee';
+import type { BackendCoinInfo } from '../data/coinInfo';
 
 const mockEstimateFee = jest.fn();
 // Replaces fields of the coin the method resolves, e.g. its default levels.
 let mockCoinInfoPatch: Partial<BackendCoinInfo> = {};
 
-jest.mock('@trezor/blockchain-core/src/backend/BlockchainLink', () => ({
+jest.mock('../backend/BlockchainLink', () => ({
     assertBackendSupported: jest.fn(),
     initCoinBackend: () => Promise.resolve({ estimateFee: mockEstimateFee }),
 }));
 
-jest.mock('@trezor/blockchain-core/src/data/coinInfo', () => {
-    const actual = jest.requireActual('@trezor/blockchain-core/src/data/coinInfo');
+jest.mock('../data/coinInfo', () => {
+    const actual = jest.requireActual('../data/coinInfo');
 
     return {
         ...actual,
@@ -59,7 +59,7 @@ describe('estimateFee', () => {
         mockEstimateFee.mockReset();
         mockCoinInfoPatch = {};
         jest.isolateModules(() => {
-            ({ estimateFee } = require('../blockchain/api/estimateFee'));
+            ({ estimateFee } = require('./estimateFee'));
         });
     });
 

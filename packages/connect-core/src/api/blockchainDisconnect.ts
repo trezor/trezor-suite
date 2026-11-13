@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainDisconnect.js
 
+import { disconnect } from '@trezor/blockchain-core/src/api/disconnect';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { CoinObj } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
-import { disconnect } from '../blockchain/api/disconnect';
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
