@@ -26,6 +26,9 @@ import { FiatAmountHeadline } from '#src/views/home/HomeBalance/FiatAmountHeadli
 
 import { AssetDetailPriceChange } from './AssetDetailPriceChange';
 
+/** The line height of the price headline, so its placeholders keep the card from jumping. */
+const PRICE_HEIGHT = 56;
+
 type AssetDetailMarketPriceProps = {
     symbol: NetworkSymbol;
     contractAddress?: TokenAddress;
@@ -113,10 +116,18 @@ export const AssetDetailMarketPrice = ({
                         )}
                         {isRateLoading && (
                             <Row data-testid="@asset-detail/market-price/skeleton">
-                                <Skeleton width={180} height={56} animate={shouldAnimateSkeleton} />
+                                <Skeleton
+                                    width={180}
+                                    height={PRICE_HEIGHT}
+                                    animate={shouldAnimateSkeleton}
+                                />
                             </Row>
                         )}
-                        {isRateMissing && <NoRatesTooltip />}
+                        {isRateMissing && (
+                            <Row height={PRICE_HEIGHT} alignItems="center">
+                                <NoRatesTooltip />
+                            </Row>
+                        )}
                         {weekChange !== undefined && (
                             <AssetDetailPriceChange
                                 change={weekChange.change}
