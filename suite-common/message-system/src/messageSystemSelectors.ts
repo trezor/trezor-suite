@@ -1,5 +1,5 @@
 import { type AnalyticsRootState, selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
-import { type Category, type Message } from '@suite-common/suite-types';
+import { type Category, type Message, type TradingType } from '@suite-common/suite-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { getActiveExperimentGroup } from './experimentUtils';
@@ -9,6 +9,7 @@ import {
     type ContextDomain,
     type ExperimentId,
     type ExperimentsItemType,
+    Feature,
     type FeatureDomain,
     type MessageSystemRootState,
 } from './messageSystemTypes';
@@ -208,6 +209,36 @@ export const selectIsFeatureDisabled = (
     const featureFlag = selectFeatureConfig(state, domain)?.flag;
 
     return featureFlag !== undefined ? !featureFlag : (defaultValue ?? false);
+};
+
+type TradingFormType = Exclude<TradingType, 'concierge'>;
+
+const TRADING_FORM_FEATURES = Object.values({
+    exchange: Feature.trading.exchange,
+    buy: Feature.trading.buy,
+    sell: Feature.trading.sell,
+} satisfies Record<TradingFormType, FeatureDomain>);
+
+export const selectIsAllTradingDisabled = (state: MessageSystemRootState) =>
+    TRADING_FORM_FEATURES.every(domain => selectIsFeatureDisabled(state, domain));
+
+export const selectAllTradingDisabledMessageContent = (
+    state: MessageSystemRootState,
+    language: string,
+) => {
+    if (!selectIsAllTradingDisabled(state)) {
+        return undefined;
+    }
+
+    const [firstMessage, ...otherMessages] = TRADING_FORM_FEATURES.map(domain =>
+        selectFeatureMessage(state, domain),
+    );
+
+    if (!firstMessage || otherMessages.some(message => message?.id !== firstMessage.id)) {
+        return undefined;
+    }
+
+    return resolveMessageContent(firstMessage.content, language);
 };
 
 export const selectActiveKillswitchMessage = createMemoizedSelector(

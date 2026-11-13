@@ -328,9 +328,46 @@ export const messages = defineMessages({
         defaultMessage:
             "Floating-rate offers may result in slight changes to the final amount due to market fluctuations, but they're typically higher, so you could receive more crypto.",
     },
-    TR_TRADING_DISABLED_DEFAULT: {
-        defaultMessage: '{type} is currently disabled.',
-        id: 'TR_TRADING_DISABLED_DEFAULT',
+    TR_TRADING_DISABLED_TITLE_BUY: {
+        defaultMessage: 'Buy is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_BUY',
+    },
+    TR_TRADING_DISABLED_TITLE_SELL: {
+        defaultMessage: 'Sell is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_SELL',
+    },
+    TR_TRADING_DISABLED_TITLE_EXCHANGE: {
+        defaultMessage: 'Swap is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_EXCHANGE',
+    },
+    TR_TRADING_DISABLED_TITLE_CONCIERGE: {
+        defaultMessage: 'Concierge is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_CONCIERGE',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_BUY: {
+        defaultMessage: "We've paused buying for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_BUY',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_SELL: {
+        defaultMessage: "We've paused selling for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_SELL',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_EXCHANGE: {
+        defaultMessage: "We've paused swapping for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_EXCHANGE',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_CONCIERGE: {
+        defaultMessage: "We've paused Concierge for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_CONCIERGE',
+    },
+    TR_TRADING_ALL_DISABLED_TITLE: {
+        defaultMessage: 'Trading is temporarily unavailable',
+        id: 'TR_TRADING_ALL_DISABLED_TITLE',
+    },
+    TR_TRADING_ALL_DISABLED_DESCRIPTION: {
+        defaultMessage:
+            "We've paused buying, selling, and swapping for now. Your funds are safe, so please check back later.",
+        id: 'TR_TRADING_ALL_DISABLED_DESCRIPTION',
     },
     TR_TRADING_RESTRICTED: {
         defaultMessage: 'Trading is not available in your region.',
