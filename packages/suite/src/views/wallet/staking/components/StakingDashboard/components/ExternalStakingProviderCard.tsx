@@ -5,7 +5,7 @@ import { Banner } from '@trezor/components';
 import { PuzzlePieceIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { BaseCurrencyValue } from '#src/components/suite';
 
 type ExternalStakingProviderCardProps = {
