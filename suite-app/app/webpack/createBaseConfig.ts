@@ -275,6 +275,8 @@ export const createBaseConfig = ({
                                                       'istanbul',
                                                       {
                                                           cwd: resolve(__dirname, '../../../'),
+                                                          coverageGlobalScope: 'globalThis',
+                                                          coverageGlobalScopeFunc: false,
                                                           include: [
                                                               'packages/*/src/**/*',
                                                               'suite-common/*/src/**/*',
