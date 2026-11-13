@@ -14,6 +14,7 @@ import type { ReduxModalProps } from '../ReduxModalProps';
 // Eager on purpose: TransactionReviewModal sets state.modal.preserve from a mount effect, which a
 // lazy boundary would delay past UI_EVENTS.CLOSE_UI_WINDOW (see modalReducer).
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
+import { lazyUserContextModals } from '../UserContextModal/lazyUserContextModals';
 
 const ConfirmActionModal = lazy(() =>
     import(/* webpackChunkName: "modals-device" */ './ConfirmActionModal').then(m => ({
@@ -45,25 +46,9 @@ const SignMessageModal = lazy(() =>
         default: m.SignMessageModal,
     })),
 );
-const ConfirmXpubModal = lazy(() =>
-    import(/* webpackChunkName: "modals-device" */ '../ConfirmXpubModal').then(m => ({
-        default: m.ConfirmXpubModal,
-    })),
-);
-const ConnectAddressConfirmation = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-connect-popup" */ '../UserContextModal/ConnectAddressConfirmation'
-    ).then(m => ({
-        default: m.ConnectAddressConfirmation,
-    })),
-);
-const ConnectSelectAccount = lazy(() =>
-    import(
-        /* webpackChunkName: "modals-connect-popup" */ '../UserContextModal/ConnectSelectAccount/ConnectSelectAccount'
-    ).then(m => ({
-        default: m.ConnectSelectAccount,
-    })),
-);
+/** Declared once beside the modals themselves; these three are shared with the user context. */
+const { ConfirmXpubModal, ConnectAddressConfirmation, ConnectSelectAccount } =
+    lazyUserContextModals;
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
