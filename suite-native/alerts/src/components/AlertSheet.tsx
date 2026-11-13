@@ -66,11 +66,11 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         animatedSheetWrapperStyle,
         closeSheetAnimated,
         openSheetAnimated,
-    } = useAlertAnimation({ onClose: hideAlert });
+    } = useAlertAnimation({ onClose: () => hideAlert(alert) });
 
     useEffect(() => {
         openSheetAnimated();
-    }, [openSheetAnimated]);
+    }, [alert, openSheetAnimated]);
 
     const {
         title,
