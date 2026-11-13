@@ -16517,7 +16517,7 @@ __metadata:
   dependencies:
     "@suite-common/apps-embedding": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
-    electron: "npm:44.9.3"
+    electron: "npm:44.11.2"
   languageName: unknown
   linkType: soft
 
@@ -16579,7 +16579,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^6.0.1"
-    electron: "npm:44.9.3"
+    electron: "npm:44.11.2"
     electron-devtools-installer: "npm:^4.0.0"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:11.0.2"
@@ -16600,7 +16600,7 @@ __metadata:
   resolution: "@suite/desktop-app-native-bindings@workspace:suite/desktop-app-native-bindings"
   dependencies:
     "@types/node": "npm:22.13.10"
-    electron: "npm:44.9.3"
+    electron: "npm:44.11.2"
     node-addon-api: "npm:8.9.2"
     node-gyp: "npm:13.1.0"
   languageName: unknown
@@ -16658,7 +16658,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/desktop-app@workspace:suite/desktop-app"
   dependencies:
-    electron: "npm:44.9.3"
+    electron: "npm:44.11.2"
     electron-builder: "npm:27.0.0-alpha.10"
     node-hid: "npm:3.4.0"
     openpgp: "npm:^6.3.2"
@@ -25807,7 +25807,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:44.9.3"
+    electron: "npm:44.11.2"
     electron-builder: "npm:27.0.0-alpha.10"
   languageName: unknown
   linkType: soft
@@ -27988,9 +27988,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:44.9.3":
-  version: 44.9.3
-  resolution: "electron@npm:44.9.3"
+"electron@npm:44.11.2":
+  version: 44.11.2
+  resolution: "electron@npm:44.11.2"
   dependencies:
     "@electron-internal/extract-zip": "npm:^1.0.1"
     "@electron/get": "npm:^5.0.0"
@@ -27998,7 +27998,7 @@ __metadata:
   bin:
     electron: cli.js
     install-electron: install.js
-  checksum: 10/361b55f4eba052b2bc6d22802e77e2e9d779d9ebcea5bf85cfa2b9ba3c7eca460f51a983b399547f606c1d5e2d11bd1df40ffcfc9c7db0c61309ce821e1233d6
+  checksum: 10/4b7c3d77650a9a99206dada2d09517d9494a6f31837ea596d6def310b07e7864545f3204063450fbb55595af4755a1729bcb7d3e59d1c0f4b9d9dd539d2ea264
   languageName: node
   linkType: hard
 
