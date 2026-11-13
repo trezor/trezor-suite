@@ -2,7 +2,6 @@ import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
@@ -10,6 +9,7 @@ import {
 } from '@suite/flags';
 import { selectIsRegionRestricted } from '@suite/regions';
 import { type Route, isTradingRoute, selectRouteName } from '@suite/router';
+import { selectIsAppsEmbeddingAvailable } from '@suite-app/apps-embedding-demo';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';

@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../apps-embedding-demo" },
         {
             "path": "../../suite-common/device-authenticity"
         },
@@ -28,9 +29,6 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../../suite/analytics" },
-        {
-            "path": "../../suite/apps-embedding-demo"
-        },
         { "path": "../../suite/backup" },
         { "path": "../../suite/coinjoin" },
         { "path": "../../suite/device" },

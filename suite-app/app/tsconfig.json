@@ -4,6 +4,7 @@
     "include": ["."],
     "references": [
         { "path": "../app-modal" },
+        { "path": "../apps-embedding-demo" },
         { "path": "../module-onboarding" },
         { "path": "../suite-sync" },
         {
@@ -95,9 +96,6 @@
         },
         { "path": "../../suite/account" },
         { "path": "../../suite/analytics" },
-        {
-            "path": "../../suite/apps-embedding-demo"
-        },
         {
             "path": "../../suite/authenticity-checks"
         },
