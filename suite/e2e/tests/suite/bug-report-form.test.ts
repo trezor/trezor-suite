@@ -7,6 +7,10 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 test.describe('Bug report forms', { tag: ['@T3W1', '@T3T1', '@optional'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
+    test.beforeEach(async ({ onboardingPage }) => {
+        await onboardingPage.completeOnboarding();
+    });
+
     test(
         'Send a bug report',
         {
