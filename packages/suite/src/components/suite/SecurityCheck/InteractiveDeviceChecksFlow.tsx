@@ -7,15 +7,29 @@ import {
     selectShouldCheckDeviceAuthenticity,
     selectShouldRouterAppSkipInteractiveDeviceChecks,
 } from '@suite/authenticity-checks';
-import { selectSelectedDevice } from '@suite-common/device';
+import type { RouterRootState } from '@suite/router/libDev/src';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
     type PersistentDeviceDataRootState,
     selectDeviceNeedsManualCheck,
 } from '@suite-common/persistent-device-data';
 import { Box, Card } from '@trezor/components';
 
+import type { SuiteRootState } from '#src/reducers/suite/suiteReducer';
+import { selectPrerequisite } from '#src/selectors/suite/suiteSelectors';
+
 import { DeviceAuthenticityCheck } from './DeviceAuthenticityCheck';
 import { ManualDeviceCheck } from './ManualDeviceCheck';
+
+const selectAreDeviceChecksExcludedByPrerequisite = (
+    state: SuiteRootState & RouterRootState & DeviceRootState,
+): boolean => {
+    const prerequisite = selectPrerequisite(state);
+    if (prerequisite === null) return false; // no prerequisite – checks are not excluded.
+    const allowedPrerequisites = ['device-initialize', 'firmware-missing'];
+
+    return !allowedPrerequisites.includes(prerequisite);
+};
 
 /**
  * Hook that determines if the Interactive Device Checks Flow should be displayed.
@@ -56,6 +70,8 @@ export const useInteractiveDeviceChecksFlowState = () => {
             setIsAuthenticityCheckStepActive(false);
         }
     }, [isAuthenticityCheckStepActive, isDeviceReadyAndDeviceAuthenticityCheckEnabled]);
+
+    if (useSelector(selectAreDeviceChecksExcludedByPrerequisite)) return false;
 
     // The flow is displayed (entered) when the checks are still required, but the DAC success screen is sticky,
     // so the flow shall be displayed until the user dismisses the DAC success.
