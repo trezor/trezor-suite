@@ -100,9 +100,11 @@ export const PassphraseInputCard = ({
 
     const submit = useCallback(
         (value2: string, passphraseOnDevice?: boolean) => {
+            if (isDeviceLoading) return;
+
             onSubmit(value2, passphraseOnDevice);
         },
-        [onSubmit],
+        [isDeviceLoading, onSubmit],
     );
 
     return (

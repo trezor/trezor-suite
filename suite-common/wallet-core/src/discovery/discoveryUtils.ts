@@ -21,6 +21,7 @@ export const getDiscoveryOutcome = (
         case 'passphrase-duplicate':
             return discovery.status;
         case 'starting':
+        case 'waiting-for-passphrase':
         case 'enter-passphrase':
         case 'progress':
         case 'confirm-empty-passphrase':
