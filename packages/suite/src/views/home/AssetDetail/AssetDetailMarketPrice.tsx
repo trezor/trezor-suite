@@ -124,7 +124,7 @@ export const AssetDetailMarketPrice = ({
                             </Row>
                         )}
                         {isRateMissing && (
-                            <Row height={PRICE_HEIGHT} alignItems="center">
+                            <Row height={PRICE_HEIGHT} alignItems="flex-start">
                                 <NoRatesTooltip />
                             </Row>
                         )}
