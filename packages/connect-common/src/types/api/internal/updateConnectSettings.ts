@@ -1,14 +1,13 @@
 /**
- * Update Connect settings such as proxy and transports configuration.
+ * Update Connect settings such as transports configuration.
  *
  * `enabledNetworks` is applied additively (see `ConnectSettings.enabledNetworks`).
  */
 
 import type { Response } from '../../params';
-import type { ConnectSettingsTransport, EnabledNetwork, Proxy } from '../../settings';
+import type { ConnectSettingsTransport, EnabledNetwork } from '../../settings';
 
 export type UpdateConnectSettings = {
-    proxy?: Proxy;
     transports?: ConnectSettingsTransport[];
     enabledNetworks?: EnabledNetwork[];
 };

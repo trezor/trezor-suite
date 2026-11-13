@@ -109,8 +109,7 @@
         "vite-plugin-node-polyfills": "^0.28.0",
         "vite-plugin-wasm": "^3.6.0",
         "vitest": "^4.1.10",
-        "vm-browserify": "^1.1.2",
-        "ws": "^8.20.0"
+        "vm-browserify": "^1.1.2"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

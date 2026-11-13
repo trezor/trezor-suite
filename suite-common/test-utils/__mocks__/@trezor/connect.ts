@@ -41,15 +41,17 @@ const failedByDefaultMethods = [
 // Background reads fired by display features rather than by the sequence a test scripts. Taking a
 // positional fixture would shift every later call, so adding one such feature would break every
 // test that scripts a device interaction. They are answered from DEFAULT_PAYLOAD alone.
-const unscriptedMethods = ['blockchainEvmRpcCall'];
+const unscriptedMethods = ['evmRpcCall'];
 
-// Override connect methods with specific expected payload
+// Override connect and TrezorBlockchain methods with specific expected payload
 const DEFAULT_PAYLOAD: Record<string, any> = {
-    blockchainEstimateFee: { payload: { levels: [{}] } },
+    estimateFee: { payload: { levels: [{}] } },
+    estimateFeeLevels: { payload: { levels: [{}] } },
     // A revert is how a resolver declines: it reads as "no record" rather than a transport
     // failure, so a name lookup settles on it instead of retrying.
-    blockchainEvmRpcCall: { success: false, error: { message: 'execution reverted' } },
-    blockchainGetTransactions: { payload: { txid: 'foo' } },
+    evmRpcCall: { success: false, error: { message: 'execution reverted' } },
+    getTransactions: { payload: { txid: 'foo' } },
+    getRawTransactions: { payload: { txid: 'foo' } },
     pushTransaction: { payload: { txid: 'txid' } },
     unlockPath: { payload: { address_n: [2147493673], mac: '0MaC' } },
     changePin: { payload: { message: 'Success' } },

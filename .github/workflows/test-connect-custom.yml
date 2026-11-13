@@ -63,8 +63,7 @@ jobs:
             --firmware="$DEVICE_VERSION" \
             --env=${{ inputs.testEnv }} \
             --groups="$TEST_GROUPS" \
-            --transport=${{ inputs.transport }} \
-            --disable_cache_tx=false)" >> "$GITHUB_OUTPUT"
+            --transport=${{ inputs.transport }})" >> "$GITHUB_OUTPUT"
 
   custom-check:
     needs: [set-matrix]
@@ -76,7 +75,6 @@ jobs:
       includeFilter: ${{ matrix.groups.includeFilter }}
       testsFirmware: ${{ matrix.firmware }}
       testDescription: ${{ matrix.env }}-${{ matrix.groups.pattern }}-${{ matrix.groups.name }}
-      disable_cache_tx: ${{ matrix.disable_cache_tx }}
       transport: ${{ matrix.transport }}
       testEnv: ${{ matrix.env }}
       testFirmwareModel: ${{ matrix.model }}

@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
 
-import { TrezorBlockchain } from '@trezor/blockchain-core';
 import {
-    BLOCKCHAIN_EVENT,
     CORE_CALL,
     CORE_CALL_CANCEL,
     CORE_EVENT,
@@ -901,7 +899,6 @@ export class Core extends EventEmitter {
     }
 
     dispose() {
-        TrezorBlockchain.dispose();
         this.removeAllListeners();
         this.abortController.abort();
         this.deviceList.dispose();
@@ -925,8 +922,6 @@ export class Core extends EventEmitter {
             // enabledNetworks has its own store (the single source of truth); keep it out of
             // settingsStore so no reader picks up a stale, unsanitized snapshot.
             settingsStore.set({ ...settings, enabledNetworks: undefined });
-            await TrezorBlockchain.updateSettings({ debug: settings.debug });
-            TrezorBlockchain.on(BLOCKCHAIN_EVENT, message => this.sendCoreMessage(message));
             enabledNetworksStore.set(settings.enabledNetworks ?? []);
 
             const config =

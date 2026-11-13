@@ -12,8 +12,7 @@ export type {
     TrezorBlockchainSettings,
 } from './TrezorBlockchain';
 export type { BlockchainLinkSettings } from './data/coinInfo';
-// The events stay in connect-common as long as Connect emits them too.
-export * from '@trezor/connect-common/src/events/blockchain';
+export * from './events';
 export type { BlockchainEstimatedFee, BlockchainEstimatedFeeLevel } from './api/estimateFee';
 
 let ipcProxy: Promise<TrezorBlockchainApi> | undefined;

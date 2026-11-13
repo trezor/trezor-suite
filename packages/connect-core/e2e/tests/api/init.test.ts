@@ -58,7 +58,7 @@ describe('TrezorConnect.init', () => {
 
         const result = await Promise.all([
             TrezorConnect.getCoinInfo({ coin: 'btc' }),
-            TrezorConnect.blockchainEstimateFee({ request: { blocks: [1] }, coin: 'test' }),
+            TrezorConnect.getCoinInfo({ coin: 'test' }),
         ]);
 
         // success, success

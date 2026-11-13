@@ -28,7 +28,6 @@ show_usage() {
   echo "Usage: run [OPTIONS] [ARGS]"
   echo ""
   echo "Options:"
-  echo "  -c       Disable backend cache. default: enabled"
   echo "  -d       Disable docker. Useful when running own instance of trezor-user-env. default: enabled"
   echo "  -D PATH  Set path to docker executable. Can be replaced with \`podman\`. default: docker"
   echo "  -e       All methods except excluded, example: applySettings,signTransaction"
@@ -52,7 +51,6 @@ FIRMWARE_BTC_ONLY=false
 INCLUDED_METHODS=""
 EXCLUDED_METHODS=""
 DOCKER=true
-USE_WS_CACHE=true
 PATTERN=""
 FIRMWARE_MODEL=""
 RANDOMIZE=false
@@ -61,13 +59,10 @@ TRANSPORT="node-bridge"
 # echo $OPTARG
 # user options
 OPTIND=2
-while getopts ":p:i:e:f:b:u:m:t:hdcro" opt; do
+while getopts ":p:i:e:f:b:u:m:t:hdro" opt; do
   case $opt in
   d)
     DOCKER=false
-    ;;
-  c)
-    USE_WS_CACHE=false
     ;;
   f)
     FIRMWARE=$OPTARG
@@ -126,7 +121,6 @@ fi
 export TESTS_FIRMWARE=$FIRMWARE
 export TESTS_INCLUDED_METHODS=$INCLUDED_METHODS
 export TESTS_EXCLUDED_METHODS=$EXCLUDED_METHODS
-export TESTS_USE_WS_CACHE=$USE_WS_CACHE
 export TESTS_PATTERN=$PATTERN
 export TESTS_SCRIPT=$SCRIPT
 export TESTS_FIRMWARE_URL=$FIRMWARE_URL
@@ -151,7 +145,6 @@ run() {
   echo "  Test pattern: $PATTERN"
   echo "  Included methods: ${INCLUDED_METHODS}"
   echo "  Excluded methods: ${EXCLUDED_METHODS}"
-  echo "  WsCache: ${USE_WS_CACHE}"
   echo "  Random: ${RANDOMIZE}"
   echo "  Transport: ${TRANSPORT}"
 
