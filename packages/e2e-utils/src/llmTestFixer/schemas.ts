@@ -46,7 +46,7 @@ export const AnalysisReportSchema = z.object({
 
 export const FixResultSchema = z.object({
     taskId: z.string(),
-    result: z.enum(['pass', 'partial', 'fail', 'not_duplicated']),
+    result: z.enum(['pass', 'partial', 'fail', 'not_duplicated', 'covered_by_open_pr']),
     passed: z.array(z.string()),
     failed: z.array(z.string()),
     iterations: z.number().int().nonnegative(),

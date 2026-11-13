@@ -265,9 +265,19 @@ jobs:
         timeout-minutes: 2
         run: curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://localhost:8000 -o /dev/null
 
+      # The fix agent checks open PRs with it before pre-flight, well within its one-hour lifetime.
+      - name: Generate read-only GitHub App token for open PR check
+        id: open-prs-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-pull-requests: read
+
       - name: Run LLM test fixer
         id: run-llm-test-fixer
         env:
+          GH_TOKEN: ${{ steps.open-prs-token.outputs.token }}
           ANTHROPIC_API_KEY: ${{ secrets.E2E_FIX_EXECUTION_CLAUDE_API_KEY }}
           PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
           TASK_ID: ${{ matrix.task-id }}
