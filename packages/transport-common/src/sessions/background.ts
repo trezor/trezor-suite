@@ -94,6 +94,9 @@ export class SessionsBackground
                     break;
                 case 'dispose':
                     this.dispose();
+                    // without this the response would be just `{ id }`, which matches neither
+                    // branch of the declared union and traps a consumer checking `success`
+                    result = success(undefined);
                     break;
                 default:
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
@@ -110,7 +113,8 @@ export class SessionsBackground
             // background should never stay in "hanged" state
             return {
                 ...error({ code: ERRORS.UNEXPECTED_ERROR }),
-                id: message.type,
+                // the id is what clients pair the response with, see BrowserSessionsBackground
+                id: message.id,
             } as HandleMessageResponse<M>;
         } finally {
             if (result?.success && result.payload) {
