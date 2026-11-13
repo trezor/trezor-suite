@@ -80,9 +80,12 @@ export class BackendManager {
 
             return backend;
         } catch (error) {
-            // only keep retrying if a reconnection was already in flight
-            const attempts = reconnect ? (this.attempts[coinIdentity] ?? 0) : undefined;
-            this.onDisconnect({ coinInfo, postMessage, identity }, attempts);
+            // a backend replaced while connecting, e.g. by a custom backend change, is not ours to clean up
+            if (this.instances[coinIdentity] === backend) {
+                // only keep retrying if a reconnection was already in flight
+                const attempts = reconnect ? (this.attempts[coinIdentity] ?? 0) : undefined;
+                this.onDisconnect({ coinInfo, postMessage, identity }, attempts);
+            }
             throw error;
         }
     }
