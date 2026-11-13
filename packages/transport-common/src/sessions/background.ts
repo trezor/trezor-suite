@@ -59,6 +59,7 @@ export class SessionsBackground
     // A *Done can come after its lock timed out and another client took over, so the *Intent
     // keeps its own lock and session for it, under the path the *Done carries.
     private pendingAcquires: Record<PathPublic, PendingOperation> = {};
+    private pendingReleases: Record<PathInternal, PendingOperation> = {};
     private lastSessionId = 0;
     private lastPathId = 0;
 
@@ -247,26 +248,30 @@ export class SessionsBackground
         }
         const { path } = pathResult.payload;
 
-        await this.waitInQueue();
+        const lock = await this.waitInQueue();
 
         // Re-check ownership after the lock: the session may have been stolen
-        // while we waited. Without this, releaseDone (which clears the session
-        // unconditionally) would destroy the new owner's session.
+        // while we waited.
         if (this.descriptors[path]?.session !== payload.session) {
-            this.clearLock();
+            this.releaseLock(lock);
 
             return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
+
+        this.pendingReleases[path] = { lock, session: payload.session };
 
         return success({ path });
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        this.clearLock();
+        const pending = this.pendingReleases[payload.path];
+        delete this.pendingReleases[payload.path];
+        if (pending) this.releaseLock(pending.lock);
+
         const descriptor = this.descriptors[payload.path];
 
-        // The device might have been disconnected (enumerateDone) since releaseIntent.
-        if (descriptor) {
+        // The device might be gone (enumerateDone) or stolen after the lock timed out.
+        if (pending && descriptor?.session === pending.session) {
             descriptor.session = null;
             descriptor.sessionOwner = undefined;
         }
@@ -312,11 +317,6 @@ export class SessionsBackground
         this.locksQueue = this.locksQueue.filter(queued => queued !== lock);
     }
 
-    private clearLock() {
-        const [head] = this.locksQueue;
-        if (head) this.releaseLock(head);
-    }
-
     private async waitForUnlocked(myIndex: number) {
         if (myIndex > 0) {
             const beforeMe = this.locksQueue.slice(0, myIndex);
@@ -344,6 +344,7 @@ export class SessionsBackground
         // dispose, and a lock nobody clears anymore would block every later acquire forever.
         this.locksQueue.forEach(lock => this.releaseLock(lock));
         this.pendingAcquires = {};
+        this.pendingReleases = {};
         this.descriptors = {};
         this.lastSessionId = 0;
         this.removeAllListeners();
