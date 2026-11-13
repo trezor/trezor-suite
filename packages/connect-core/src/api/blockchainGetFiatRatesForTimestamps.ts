@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetFiatRatesForTimestamps.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { getFiatRatesForTimestamps } from '../blockchain/api/getFiatRatesForTimestamps';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -16,7 +16,7 @@ type Params = {
     token: Payload<'blockchainGetFiatRatesForTimestamps'>['token'];
 };
 
-export default class BlockchainGetFiatRatesForTimestamps extends AbstractMethod<
+export default class BlockchainGetFiatRatesForTimestamps extends AbstractBlockchainMethod<
     'blockchainGetFiatRatesForTimestamps',
     Params
 > {
@@ -33,8 +33,6 @@ export default class BlockchainGetFiatRatesForTimestamps extends AbstractMethod<
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             currencies: payload.currencies,
@@ -45,24 +43,13 @@ export default class BlockchainGetFiatRatesForTimestamps extends AbstractMethod<
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-
-        return backend.getFiatRatesForTimestamps({
-            currencies: this.params.currencies,
-            timestamps: this.params.timestamps,
-            token: this.params.token,
-        });
+    run({ sendCoreMessage }: MethodContext) {
+        return getFiatRatesForTimestamps(this.payload, sendCoreMessage);
     }
 }

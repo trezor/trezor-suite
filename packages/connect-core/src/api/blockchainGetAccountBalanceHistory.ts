@@ -1,12 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetAccountBalanceHistory.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
-import { toCanonicalDescriptor } from '@trezor/utils';
 
-import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { getAccountBalanceHistory } from '../blockchain/api/getAccountBalanceHistory';
+import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -15,7 +14,7 @@ type Params = {
     request: Omit<Payload<'blockchainGetAccountBalanceHistory'>, 'method' | 'coin'>;
 };
 
-export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
+export default class BlockchainGetAccountBalanceHistory extends AbstractBlockchainMethod<
     'blockchainGetAccountBalanceHistory',
     Params
 > {
@@ -34,8 +33,6 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,
@@ -50,25 +47,13 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-
-        // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the backend
-        // receives the canonical form of the caller-supplied descriptor.
-        return backend.getAccountBalanceHistory({
-            ...this.params.request,
-            descriptor: toCanonicalDescriptor(this.params.request.descriptor),
-        });
+    run({ sendCoreMessage }: MethodContext) {
+        return getAccountBalanceHistory(this.payload, sendCoreMessage);
     }
 }
