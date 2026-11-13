@@ -69,7 +69,6 @@
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
         "@scure/bip39": "^1.5.1",
-        "@trezor/blockchain-core": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-data": "workspace:*",
@@ -94,6 +93,7 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.29.7",
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/requirements": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",

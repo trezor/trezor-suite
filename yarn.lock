@@ -19202,6 +19202,7 @@ __metadata:
     "@trezor/network-cardano": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:^"
+    "@trezor/requirements": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"

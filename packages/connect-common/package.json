@@ -76,6 +76,7 @@
         "@trezor/device-authenticity": "workspace:^",
         "@trezor/eslint": "workspace:*",
         "@trezor/network-cardano": "workspace:*",
+        "@trezor/requirements": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "@types/chrome": "^0.2.2",

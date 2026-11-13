@@ -10,7 +10,6 @@
         ]
     },
     "references": [
-        { "path": "../blockchain-core" },
         { "path": "../blockchain-link-types" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
@@ -37,6 +36,7 @@
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
+        { "path": "../blockchain-core" },
         { "path": "../eslint" },
         { "path": "../requirements" },
         { "path": "../trezor-user-env-link" }

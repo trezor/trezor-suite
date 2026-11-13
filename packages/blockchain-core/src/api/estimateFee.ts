@@ -1,5 +1,5 @@
 import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
-import type { FeeInfo, FeeLevel } from '@trezor/connect-common';
+import type { FeeLevel } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { isNotNull } from '@trezor/utils/src/isNotNull';
@@ -9,6 +9,7 @@ import type { TrezorBlockchainResponse } from '../TrezorBlockchain';
 import type { Blockchain, PostMessage } from '../backend/Blockchain';
 import { assertBackendSupported, initCoinBackend } from '../backend/BlockchainLink';
 import { type BackendCoinInfo, getBackendCoinInfo } from '../data/coinInfo';
+import type { FeeInfo } from '../data/defaultFeeLevels';
 import { COIN_PARAMS, type CoinParams, validateParams } from '../utils/validateParams';
 
 type BackendLevelsParams = CoinParams & {

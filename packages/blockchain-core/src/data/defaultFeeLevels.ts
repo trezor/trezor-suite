@@ -1,4 +1,4 @@
-import type { FeeInfo, FeeLevel } from '@trezor/connect-common/src/types/fees';
+import type { FeeLevel } from '@trezor/connect-common/src/types/fees';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 // this is workaround for the lack of information from 'trezor-common'
@@ -69,6 +69,14 @@ interface CoinsJsonData {
     // only for evm networks
     chain: string;
 }
+
+export type FeeInfo = {
+    blockTime: number;
+    minFee: number;
+    maxFee: number;
+    minPriorityFee: number;
+    dustLimit: number;
+};
 
 export type FeeInfoWithLevels = FeeInfo & { defaultFees: FeeLevel[] };
 

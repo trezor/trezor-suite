@@ -2,8 +2,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import type { Static, StringOptions } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import { FeeLevel } from './fees';
-
 // TODO: refactor in utxo-lib
 // import { Network } from '@trezor/utxo-lib';
 export type Bip32 = Static<typeof Bip32>;
@@ -35,12 +33,6 @@ export const CoinSupport = Type.Record(
     Type.Union([Type.String(), Type.Literal(false)]),
 );
 
-export type BlockchainLink = Static<typeof BlockchainLink>;
-export const BlockchainLink = Type.Object({
-    type: Type.String(),
-    url: Type.Array(Type.String()),
-});
-
 type Common = Static<typeof Common>;
 const Common = Type.Object({
     label: Type.String(),
@@ -49,12 +41,6 @@ const Common = Type.Object({
     slip44: Type.Number(),
     support: CoinSupport,
     decimals: Type.Number(),
-    blockchainLink: Type.Optional(BlockchainLink),
-    blockTime: Type.Number(),
-    minFee: Type.Number(),
-    maxFee: Type.Number(),
-    minPriorityFee: Type.Number(),
-    defaultFees: Type.Array(FeeLevel),
 });
 
 export type BitcoinNetworkInfo = Static<typeof BitcoinNetworkInfo>;
@@ -89,17 +75,6 @@ export const EthereumNetworkInfo = Type.Intersect([
         chainId: Type.Number(),
         network: Type.Optional(Type.Undefined()),
     }),
-]);
-
-export type EthereumNetworkInfoDefinitionValues = Static<
-    typeof EthereumNetworkInfoDefinitionValues
->;
-export const EthereumNetworkInfoDefinitionValues = Type.Omit(EthereumNetworkInfo, [
-    'minFee',
-    'maxFee',
-    'defaultFees',
-    'minPriorityFee',
-    'blockTime',
 ]);
 
 export type MiscNetworkInfo = Static<typeof MiscNetworkInfo>;

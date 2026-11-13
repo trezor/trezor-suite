@@ -7,7 +7,7 @@ import {
     ExperimentalMethod,
 } from '@trezor/connect-common';
 import type {
-    EthereumNetworkInfoDefinitionValues,
+    EthereumNetworkInfo,
     EthereumTransaction,
     EthereumTransactionEIP1559,
     PermissionRequest,
@@ -39,7 +39,7 @@ import * as helper from '../ethereumSignTx';
 
 type Params = {
     path: number[];
-    network?: EthereumNetworkInfoDefinitionValues;
+    network?: EthereumNetworkInfo;
     definitions?: MessagesSchema.EthereumDefinitions;
     chunkify: boolean;
     auth7702?: MessagesSchema.EthereumSignTxEIP1559['auth7702'];
