@@ -41,19 +41,22 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
     }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
-    async ({ device }, { dispatch }) => {
+    async ({ device }, { dispatch, getState }) => {
         const callId = crypto.randomUUID();
         const onUiEvent = (message: UiEventMessage | PopupEventMessage | UiRequestMessage) => {
             const { event: _, ...action } = message;
             if (!('callId' in action) || !action.callId) return;
             if (action.callId !== callId) return;
             if (action.type === UI_REQUESTS.REQUEST_PASSPHRASE) {
-                dispatch(
-                    updateDiscoveryThunk({
-                        status: { status: 'enter-passphrase' },
-                        path: device.path,
-                    }),
-                );
+                const discovery = selectDiscoveryByDevicePath(getState(), device.path);
+                if (discovery?.status === 'progress') {
+                    dispatch(
+                        updateDiscoveryThunk({
+                            status: { status: 'enter-passphrase' },
+                            path: device.path,
+                        }),
+                    );
+                }
 
                 return;
             }
