@@ -54,6 +54,16 @@ jobs:
       - name: Install deps
         run: |
           yarn --immutable --mode=skip-build
+      - name: Prepare native dependencies for validation jobs
+        env:
+          YARN_ENABLE_HARDENED_MODE: "false"
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: yarn --immutable
+      - name: Share prepared installation
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: upload
+          name: validation-yarn-install
 
   type-check:
     name: Type Checking
@@ -66,6 +76,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
+      - name: Restore prepared installation
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: validation-yarn-install
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
         with:
@@ -84,6 +99,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
+      - name: Restore prepared installation
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: validation-yarn-install
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
         with:
@@ -178,6 +198,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
+      - name: Restore prepared installation
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: validation-yarn-install
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
         with:
@@ -206,6 +231,11 @@ jobs:
       - name: "Checkout branches for Nx"
         if: needs.changed-scopes.outputs.default == 'true'
         uses: ./.github/actions/nx-checkout
+      - name: Restore prepared installation
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: validation-yarn-install
       - name: "Minimal yarn install"
         if: needs.changed-scopes.outputs.default == 'true'
         uses: ./.github/actions/minimal-yarn-install
@@ -224,6 +254,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
+      - name: Restore prepared installation
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: validation-yarn-install
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
         with:
@@ -243,6 +278,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
+      - name: Restore prepared installation
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: validation-yarn-install
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
         with:
@@ -338,6 +378,12 @@ jobs:
       - name: "Checkout branches for Nx"
         if: steps.changes.outputs.releases-json == 'true'
         uses: ./.github/actions/nx-checkout
+      - name: Restore prepared installation
+        if: steps.changes.outputs.releases-json == 'true'
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: validation-yarn-install
       - name: "Minimal yarn install"
         if: steps.changes.outputs.releases-json == 'true'
         uses: ./.github/actions/minimal-yarn-install
