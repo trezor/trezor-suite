@@ -6,11 +6,16 @@ import { Row, Text, type TextProps } from '@trezor/components';
 export type AssetGroupLabelProps = {
     label: ReactNode | TranslationKey;
     priority?: TextProps['priority'];
+    'data-testid'?: string;
 };
 
-export function AssetGroupLabel({ label, priority }: AssetGroupLabelProps) {
+export function AssetGroupLabel({
+    label,
+    priority,
+    'data-testid': dataTestId,
+}: AssetGroupLabelProps) {
     return (
-        <Row padding={{ horizontal: 8 }}>
+        <Row padding={{ horizontal: 8 }} data-testid={dataTestId}>
             <Text
                 typographyStyle="body-sm"
                 intent="neutral"
