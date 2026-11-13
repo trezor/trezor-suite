@@ -43,6 +43,7 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     // App frame code that moved out of `packages/suite/src/components` and `views`, where it was
     // compiled. The other files in `suite-app/app/src` were never compiled.
     'suite-app/app-modal',
+    'suite-app/app/src/AppRouter',
     'suite-app/app/src/ModalSwitcher',
     'suite-app/app/src/Preloader',
     'suite-app/app/src/layouts',
