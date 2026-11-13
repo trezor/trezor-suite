@@ -35,7 +35,7 @@
         "react-native": "0.88.1",
         "react-native-mmkv": "~4.3.2",
         "react-native-safe-area-context": "~5.10.1",
-        "react-native-web": "^0.21.0",
+        "react-native-web": "^0.21.4",
         "storybook": "^10.6.2",
         "vite": "^8.3.3",
         "vite-plugin-node-polyfills": "^0.28.0"
