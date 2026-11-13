@@ -1,9 +1,3 @@
-import {
-    BLOCKCHAIN_EVENT,
-    type BlockchainEvent,
-    type BlockchainEventMessage,
-    type Proxy,
-} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { TypedEmitter, promiseRaceWithSignal } from '@trezor/utils';
@@ -25,8 +19,9 @@ import { setCustomBackend } from './api/setCustomBackend';
 import { subscribe, unsubscribe } from './api/subscribe';
 import { subscribeFiatRates } from './api/subscribeFiatRates';
 import { unsubscribeFiatRates } from './api/unsubscribeFiatRates';
-import type { PostMessage } from './backend/Blockchain';
+import type { PostMessage, Proxy } from './backend/Blockchain';
 import { dispose as disposeBackends, setDebug, updateProxy } from './backend/BlockchainLink';
+import { BLOCKCHAIN_EVENT, type BlockchainEvent, type BlockchainEventMessage } from './events';
 
 export type TrezorBlockchainSettings = { debug?: boolean; proxy?: Proxy };
 

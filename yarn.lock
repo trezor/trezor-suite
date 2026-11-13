@@ -19481,7 +19481,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^, @trezor/blockchain-link@workspace:packages/blockchain-link":
+"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:packages/blockchain-link":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
@@ -19619,7 +19619,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
-    "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:^"
@@ -19689,7 +19688,6 @@ __metadata:
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.10"
     vm-browserify: "npm:^1.1.2"
-    ws: "npm:^8.20.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown

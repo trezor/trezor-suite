@@ -33,11 +33,3 @@ Bitcoin-like coins `signTransaction` method requires additional data about trans
 Test fixtures provide them via the [getRefTxs](./__fixtures__/refTxs.ts) helper, which loads them from the `./__fixtures__/refTxs` directory, stored in the same structure as in [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/main/tests/txcache) repository.
 
 Missing tx json? use [this tool](./__fixtures__/refTxs/gen-reftx.ts) to generate it.
-
-## Websocket cache
-
-If `process.env.TESTS_USE_WS_CACHE` is set to `true` (default, disabled by the `-c` option of `docker-connect-test.sh`) then `@trezor/blockchain-link` is conditionally connected to a local websocket server returning cached results from `./__wscache__`.
-
-[Server](./__wscache__/server.js)
-
-[WsCacheServer in vitest.globalSetup](./vitest.globalSetup.ts)

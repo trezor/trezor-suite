@@ -29,11 +29,6 @@ on:
         type: "boolean"
         required: false
         default: false
-      disable_cache_tx:
-        description: "Disable the websocket (blockchain-link) response cache (when `true` passes `-c` to docker-connect-test.sh). Referenced transactions always come from fixtures."
-        type: "string"
-        required: false
-        default: "false"
       transport:
         description: "Transport to use (example: bridge, node-bridge)"
         type: "string"
@@ -84,8 +79,6 @@ jobs:
       - name: Install Playwright chromium
         if: ${{ inputs.testEnv == 'web' }}
         run: yarn workspace @trezor/connect-web exec playwright install --with-deps chromium
-      - if: ${{ inputs.disable_cache_tx == 'true' }}
-        run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
       - if: ${{ inputs.testFirmwareModel }}
         env:
           TEST_FIRMWARE_MODEL: ${{ inputs.testFirmwareModel }}
