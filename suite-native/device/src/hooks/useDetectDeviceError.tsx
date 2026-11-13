@@ -8,6 +8,7 @@ import {
     deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectIsConnectedDeviceUninitialized,
+    selectIsDeviceConnected,
     selectIsDevicePinLocked,
     selectIsDeviceThpLocked,
     selectIsNoPhysicalDeviceConnected,
@@ -23,6 +24,7 @@ import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     AuthorizeDeviceStackRoutes,
+    DeviceSettingsStackRoutes,
     type HomeStackParamList,
     type HomeStackRoutes,
     type RootStackParamList,
@@ -72,6 +74,7 @@ export const useDetectDeviceError = () => {
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const isDevicePinLocked = useSelector(selectIsDevicePinLocked);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
     const deviceError = useSelector(selectDeviceError);
@@ -140,13 +143,11 @@ export const useDetectDeviceError = () => {
     ]);
 
     useEffect(() => {
-        if (
-            !isDeviceFirmwareSupported &&
-            isOnboardingFinished &&
-            !isPortfolioTrackerDevice &&
-            !wasDeviceEjectedByUser &&
-            !isDeviceSetupSupported
-        ) {
+        const canShowFirmwareAlert =
+            isOnboardingFinished && !isPortfolioTrackerDevice && !wasDeviceEjectedByUser;
+
+        // Generic mechanism, but in practice, this is displayed for T1B1 with old FW that Suite Mobile doesn't support.
+        if (!isDeviceFirmwareSupported && !isDeviceSetupSupported && canShowFirmwareAlert) {
             showAlert({
                 title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
                 description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
@@ -165,12 +166,47 @@ export const useDetectDeviceError = () => {
                 testID: '@device/errors/alert/unsupported-firmware',
             });
         }
+        // Device only has outdated FW (either reported by connect, or app's own thresholds) but should be updatable.
+        // Uninitialized devices (incl. bootloader mode) are gated by the device onboarding flow instead.
+        else if (
+            !isDeviceFirmwareSupported &&
+            isDeviceSetupSupported &&
+            canShowFirmwareAlert &&
+            isDeviceConnected &&
+            !isConnectedDeviceUninitialized &&
+            !isFirmwareInstallationRunning
+        ) {
+            showAlert({
+                title: <Translation id="moduleDevice.firmwareUpdateRequiredModal.title" />,
+                description: (
+                    <Translation id="moduleDevice.firmwareUpdateRequiredModal.description" />
+                ),
+                type: 'deviceError',
+                pictogramVariant: 'warning',
+                primaryButtonTitle: (
+                    <Translation id="moduleDevice.firmwareUpdateRequiredModal.primaryButton" />
+                ),
+                onPressPrimaryButton: () => {
+                    navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
+                        screen: DeviceSettingsStackRoutes.DeviceFirmware,
+                        params: { closeActionType: 'close' },
+                    });
+                },
+                secondaryButtonTitle: <Translation id="generic.buttons.eject" />,
+                onPressSecondaryButton: handleDisconnect,
+                testID: '@device/errors/alert/firmware-update-required',
+            });
+        }
     }, [
         isDeviceFirmwareSupported,
         isOnboardingFinished,
         isPortfolioTrackerDevice,
         wasDeviceEjectedByUser,
+        isDeviceConnected,
+        isConnectedDeviceUninitialized,
+        isFirmwareInstallationRunning,
         dispatch,
+        navigation,
         showAlert,
         handleDisconnect,
         isDeviceSetupSupported,

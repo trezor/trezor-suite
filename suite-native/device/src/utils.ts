@@ -20,7 +20,7 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
-export const minimalSupportedFirmwareVersion = {
+export const minimalFirmwareVersionSupportedByApp = {
     UNKNOWN: [0, 0, 0] as VersionArray,
     T1B1: [1, 12, 1] as VersionArray,
     T2T1: [2, 6, 3] as VersionArray,
@@ -30,14 +30,19 @@ export const minimalSupportedFirmwareVersion = {
     T3W1: [2, 6, 3] as VersionArray,
 } as const satisfies Record<DeviceModelInternal, VersionArray>;
 
-export const isFirmwareVersionSupported = (
+/**
+ * Checks whether device firmware version is supported by app's own thresholds.
+ * Note that Connect has its own thresholds and refuses to execute device calls on unsupported versions.
+ * The UI must take that into account as well.
+ */
+export const getIsFirmwareVersionSupportedByApp = (
     version: VersionArray | null,
     model: DeviceModelInternal | null,
 ) => {
     if (G.isNullable(version) || G.isNullable(model)) return true;
     if (model === DeviceModelInternal.UNKNOWN) return true;
 
-    const minimalVersion = minimalSupportedFirmwareVersion[model];
+    const minimalVersion = minimalFirmwareVersionSupportedByApp[model];
 
     if (!minimalVersion) return true;
 
