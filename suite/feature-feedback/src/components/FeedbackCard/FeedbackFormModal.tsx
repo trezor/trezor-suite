@@ -37,7 +37,11 @@ export const FeedbackFormModal = ({
         onCancel={onCancel}
         bottomContent={
             <>
-                <Modal.Button isDisabled={isSubmitDisabled} onClick={onSubmit}>
+                <Modal.Button
+                    isDisabled={isSubmitDisabled}
+                    onClick={onSubmit}
+                    data-testid="@modal/feedback-form/submit-button"
+                >
                     {submitLabel}
                 </Modal.Button>
                 <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
@@ -57,6 +61,7 @@ export const FeedbackFormModal = ({
                 onChange={e => onFeedbackTextChange(e.target.value)}
                 characterCount
                 maxLength={1000}
+                data-testid="@modal/feedback-form/textarea"
             />
         </Column>
     </Modal>

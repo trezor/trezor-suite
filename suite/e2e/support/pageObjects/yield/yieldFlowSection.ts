@@ -1,10 +1,15 @@
 import { type Locator, type Page } from '@playwright/test';
 
+import { type Rating } from '@suite-common/feedback';
+
 export class YieldFlowSection {
+    readonly howItWorksButton: Locator;
     // Approve step
     readonly approvedAmount: Locator;
     readonly amountLabel: Locator;
     readonly amountInput: Locator;
+    readonly fiatInput: Locator;
+    readonly fiatSwitch: Locator;
     readonly amountUnit: Locator;
     readonly summaryLabel: Locator;
     readonly summaryAmount: Locator;
@@ -15,6 +20,8 @@ export class YieldFlowSection {
     readonly approveModalCloseButton: Locator;
     readonly pendingTransactionLabel: Locator;
     readonly pendingTransactionId: Locator;
+    // Transaction detail modal opened from the pending transaction ID
+    readonly transactionDetailTxid: Locator;
     // Wrap step (wrapped-native vaults only)
     readonly wrapButton: Locator;
     readonly wrapSkipButton: Locator;
@@ -52,11 +59,18 @@ export class YieldFlowSection {
     readonly flowCompleteTransferOutputAmount: Locator;
     readonly flowCompleteRewardsList: Locator;
     readonly backToOverviewButton: Locator;
+    readonly feedbackFormTextarea: Locator;
+    readonly feedbackFormSubmitButton: Locator;
+    readonly feedbackRating = (rating: Rating): Locator =>
+        this.page.getByTestId(`@feedback/card/rating/${rating}`);
 
     constructor(private readonly page: Page) {
+        this.howItWorksButton = this.page.getByTestId('@yield/page-header/how-it-works-button');
         this.approvedAmount = this.page.getByTestId('@yield/approve/approved-amount-with-symbol');
         this.amountLabel = this.page.getByTestId('@yield/form/amount-label');
         this.amountInput = this.page.getByTestId('@yield/form/amount-input');
+        this.fiatInput = this.page.getByTestId('@yield/form/fiat-input');
+        this.fiatSwitch = this.page.getByTestId('@yield/form/fiat-switch');
         this.amountUnit = this.page.getByTestId('@yield/form/amount-unit');
         this.summaryLabel = this.page.getByTestId('@yield/form/summary-label');
         this.summaryAmount = this.page.getByTestId('@yield/form/summary-amount-with-symbol');
@@ -66,6 +80,7 @@ export class YieldFlowSection {
         this.approveModalCloseButton = this.page.getByTestId('@modal/close-button');
         this.pendingTransactionLabel = this.page.getByTestId('@pending-transaction/title');
         this.pendingTransactionId = this.page.getByTestId('@pending-transaction/txid/value');
+        this.transactionDetailTxid = this.page.getByTestId('@tx-detail/txid-value');
         this.wrapButton = this.page.getByTestId('@yield/form/wrap-button');
         this.wrapSkipButton = this.page.getByTestId('@yield/form/wrap-skip-button');
         this.wrapReceivingAmount = this.page.getByTestId(
@@ -109,6 +124,8 @@ export class YieldFlowSection {
         this.backToOverviewButton = this.page.getByTestId(
             '@yield/flow-complete/back-to-overview-button',
         );
+        this.feedbackFormTextarea = this.page.getByTestId('@modal/feedback-form/textarea');
+        this.feedbackFormSubmitButton = this.page.getByTestId('@modal/feedback-form/submit-button');
     }
 
     // Token symbol shown in the claim review modal's "Reward tokens" step.
