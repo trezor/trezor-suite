@@ -104,7 +104,7 @@ export const connectPopupCallInnerThunk = createThunk<
     const { signal } = callAbortController;
     const params = { ...declaredParams, source: sanitizeCallSource(declaredParams.source) };
     const paramsCompat = applyRequestCompatibility(params);
-    const flow = createPopupFlow(paramsCompat, { dispatch, getState });
+    const flow = createPopupFlow(paramsCompat, { dispatch, getState, signal });
 
     try {
         const responseOriginal = await flow.run();

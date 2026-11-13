@@ -8,7 +8,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import {
     type ComposeEthereumCancelTransactionThunkState,
@@ -104,7 +104,7 @@ const compose = (
 
 describe(composeEthereumCancelTransactionThunk.name, () => {
     beforeEach(() => {
-        jest.spyOn(TrezorConnect, 'blockchainEstimateFee').mockResolvedValue({
+        jest.spyOn(TrezorBlockchain, 'estimateFee').mockResolvedValue({
             success: true,
             payload: { blockTime: 12, minFee: 1, maxFee: 1000, levels: [{ feeLimit: '21000' }] },
         } as any);

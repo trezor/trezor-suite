@@ -1,6 +1,7 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { getUnusedChangeAddress } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type PrecomposeResultFinal,
     UI_REQUESTS,
@@ -56,7 +57,7 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
                 },
                 source: this.source,
             },
-            { dispatch: this.dispatch, getState: this.getState },
+            { dispatch: this.dispatch, getState: this.getState, signal: this.signal },
         );
 
         return (await this.signFlow.process(tx)).response;
@@ -69,7 +70,8 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
         isPicked = false,
     ): Promise<PrecomposeResultFinal> {
         const { dispatch, getState } = this;
-        // The app's callId lets its cancel abort whichever of these calls is in flight.
+        // The app's callId lets its cancel interrupt whichever Connect call is in flight, the signal
+        // stops waiting for the backends.
         const { outputs, identity, baseFee, sequence, sortingStrategy, callId } = this.payload;
         const coin = this.getCoin();
         const coinInfo = await TrezorConnect.getCoinInfo({ coin, callId }).then(getPayloadOrThrow);
@@ -103,20 +105,15 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
             callId,
         }).then(getPayloadOrThrow);
 
-        const account = await TrezorConnect.getAccountInfo({
-            coin,
-            descriptor: xpubSegwit ?? xpub,
-            details: 'tokens',
-            identity,
-            callId,
-        }).then(getPayloadOrThrow);
+        const account = await TrezorBlockchain.getAccountInfo(
+            { coin, descriptor: xpubSegwit ?? xpub, details: 'tokens', identity },
+            { signal: this.signal },
+        ).then(getPayloadOrThrow);
 
-        const { levels } = await TrezorConnect.blockchainEstimateFee({
-            coin,
-            identity,
-            request: { feeLevels: 'smart' },
-            callId,
-        }).then(getPayloadOrThrow);
+        const { levels } = await TrezorBlockchain.estimateFeeLevels(
+            { coin, identity, request: { feeLevels: 'smart' } },
+            { signal: this.signal },
+        ).then(getPayloadOrThrow);
 
         const compose = async (feeLevels: { feePerUnit: string }[]) =>
             await TrezorConnect.composeTransaction({

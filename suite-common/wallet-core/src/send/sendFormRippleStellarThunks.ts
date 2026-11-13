@@ -17,6 +17,7 @@ import {
     resolveStellarContractId,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type AccountInfo,
     type FeeLevel,
@@ -287,7 +288,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         // additional check if recipient address is empty
         // it will set requiredAmount to recipient account reserve value
         if (address) {
-            const accountResponse = await TrezorConnect.getAccountInfo({
+            const accountResponse = await TrezorBlockchain.getAccountInfo({
                 descriptor: address,
                 coin: asCoinSymbol(account.symbol),
                 stellarClassicTokens:
@@ -519,7 +520,7 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 });
             }
 
-            const destinationAccount = await TrezorConnect.getAccountInfo({
+            const destinationAccount = await TrezorBlockchain.getAccountInfo({
                 descriptor: firstSignOutput.address,
                 coin: asCoinSymbol(selectedAccount.symbol),
             });

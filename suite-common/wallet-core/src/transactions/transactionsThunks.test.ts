@@ -21,7 +21,8 @@ import {
     networkSpecificDefaultStellar,
 } from '@suite-common/wallet-types/mocks';
 import { isPending } from '@suite-common/wallet-utils';
-import TrezorConnect, { type AccountInfo } from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import { type AccountInfo } from '@trezor/connect';
 import {
     SOLANA_BLOCKHASH_VALIDITY_BLOCKS,
     SOLANA_SLOT_TIME_MS,
@@ -48,13 +49,12 @@ import { prepareAccountsReducer } from '../accounts/accountsReducer';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 import { stellarContractTokensInitialState } from '../token/stellarContractTokensSlice';
 
-jest.mock('@trezor/connect', () => {
-    const actual = jest.requireActual('@trezor/connect');
+jest.mock('@trezor/blockchain-core', () => {
+    const actual = jest.requireActual('@trezor/blockchain-core');
 
     return {
         ...actual,
-        __esModule: true,
-        default: { ...actual.default, getAccountInfo: jest.fn() },
+        TrezorBlockchain: { ...actual.TrezorBlockchain, getAccountInfo: jest.fn() },
     };
 });
 
@@ -717,7 +717,7 @@ describe('fetchTransactionsPageThunk after an account sync', () => {
             transactionsActions.addTransaction({ account: syncedAccount, transactions: PAGE_1 }),
         );
 
-        const getAccountInfoMock = jest.mocked(TrezorConnect.getAccountInfo);
+        const getAccountInfoMock = jest.mocked(TrezorBlockchain.getAccountInfo);
         // Without a cursor the backend serves the history from its top again.
         getAccountInfoMock.mockResolvedValue({
             success: true,
@@ -747,7 +747,7 @@ describe('fetchTransactionsPageThunk after an account sync', () => {
     };
 
     afterEach(() => {
-        jest.mocked(TrezorConnect.getAccountInfo).mockReset();
+        jest.mocked(TrezorBlockchain.getAccountInfo).mockReset();
     });
 
     it('stops a cursor-paged history at its first empty page', async () => {

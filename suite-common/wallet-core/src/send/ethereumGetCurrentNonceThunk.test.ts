@@ -1,5 +1,5 @@
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { type EthAccount, ethAccount, evmTx } from './__fixtures__/evmFixtures';
 import {
@@ -23,7 +23,7 @@ const storeWithTxs = (accountTransactions: ReturnType<typeof evmTx>[]) =>
 
 describe(ethereumGetCurrentNonceThunk.name, () => {
     beforeEach(() => {
-        jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+        jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
             success: true,
             payload: { misc: { nonce: '0' } },
         } as any);
@@ -63,7 +63,7 @@ describe(ethereumGetCurrentNonceThunk.name, () => {
     });
 
     it('fetches the authoritative confirmed nonce from the backend when opted in', async () => {
-        const getAccountInfo = jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+        const getAccountInfo = jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
             success: true,
             payload: { misc: { nonce: '10', confirmedNonce: '9' } },
         } as any);

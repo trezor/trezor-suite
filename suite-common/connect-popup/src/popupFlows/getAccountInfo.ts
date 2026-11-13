@@ -1,5 +1,6 @@
 import { asNetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { getDescriptorForNetworkType } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type CommonParams,
     type GetAccountInfo as GetAccountInfoParams,
@@ -17,10 +18,11 @@ import {
 import { connectPopupActions } from '../connectPopupActions';
 import { mergePermissions } from '../permissions';
 
-// Connect reads an account only by its descriptor, so it's derived on the device for a path.
+// The backend reads an account only by its descriptor, so it's derived on the device for a path.
 const getAccount = async (
     { path, ...request }: Params<GetAccountInfoParams>,
     device: NonNullable<CommonParams['device']>,
+    signal: AbortSignal,
     isBundle = false,
 ) => {
     // A coin which isn't a Suite network is a bitcoin-like one only Connect has a backend for.
@@ -36,10 +38,14 @@ const getAccount = async (
               }).then(getPayloadOrThrow)
             : undefined;
 
-    const response = await TrezorConnect.getAccountInfo({
-        ...request,
-        descriptor: derived?.descriptor ?? request.descriptor,
-    });
+    const response = await TrezorBlockchain.getAccountInfo(
+        {
+            ...request,
+            // The method info of Connect has rejected an account given by neither.
+            descriptor: (derived?.descriptor ?? request.descriptor)!,
+        },
+        { signal },
+    );
     // An account of a bundle the backend fails to read is answered with null, unless cancelled.
     if (isBundle && !response.success && response.error.code !== 'Method_Cancel') return null;
 
@@ -80,9 +86,12 @@ export class GetAccountInfo extends CommonPopupFlow<'getAccountInfo'> {
         const { bundle, ...common } = payload;
         const accounts = bundle
             ? await promiseAllSequence(
-                  bundle.map(request => () => getAccount({ ...common, ...request }, device, true)),
+                  bundle.map(
+                      request => () =>
+                          getAccount({ ...common, ...request }, device, this.signal, true),
+                  ),
               )
-            : await getAccount(payload, device);
+            : await getAccount(payload, device, this.signal);
 
         return { success: true, payload: accounts } as PopupFlowAnswer;
     }

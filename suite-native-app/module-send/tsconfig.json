@@ -79,6 +79,9 @@
             "path": "../../suite-native/transactions"
         },
         {
+            "path": "../../packages/blockchain-core"
+        },
+        {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },

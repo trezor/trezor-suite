@@ -37,6 +37,7 @@ const createFlow = (path: string, dispatch: jest.Mock) =>
         {
             dispatch,
             getState: () => ({ networks: null }),
+            signal: new AbortController().signal,
         },
     );
 

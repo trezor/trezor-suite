@@ -1,14 +1,17 @@
 import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectConsensusBranchId } from '@suite-common/wallet-core';
 import { type FormOptions, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { getOriginalTxids, getPreviousTxids } from '@trezor/connect-common';
 
 import { AbstractSignTransactionFlow } from './AbstractSignTransactionFlow';
 import { type PopupFlowPayload, type PopupFlowResponse } from './CommonPopupFlow';
 
-const fetchRefTransactions = async (payload: PopupFlowPayload<'signTransaction'>) => {
-    const { coin, refTxs, account, inputs, outputs, identity, version, callId } = payload;
+const fetchRefTransactions = async (
+    payload: PopupFlowPayload<'signTransaction'>,
+    signal: AbortSignal,
+) => {
+    const { coin, refTxs, account, inputs, outputs, identity, version } = payload;
 
     if (!refTxs?.length && !account?.transactions?.length) {
         const prevTxids = getPreviousTxids(inputs, coin, { version });
@@ -19,14 +22,7 @@ const fetchRefTransactions = async (payload: PopupFlowPayload<'signTransaction'>
             return;
         }
 
-        const hexOnly = true;
-        const res = await TrezorConnect.blockchainGetTransactions({
-            coin,
-            txs,
-            identity,
-            hexOnly,
-            callId,
-        });
+        const res = await TrezorBlockchain.getRawTransactions({ coin, txs, identity }, { signal });
 
         if (res.success) {
             return res.payload;
@@ -40,7 +36,7 @@ const fetchRefTransactions = async (payload: PopupFlowPayload<'signTransaction'>
 export class SignTransaction extends AbstractSignTransactionFlow<'signTransaction'> {
     protected async preCall(txSigningPrecomposed?: PrecomposedTransactionFinal) {
         const [transactions] = await Promise.all([
-            fetchRefTransactions(this.payload).catch(error => {
+            fetchRefTransactions(this.payload, this.signal).catch(error => {
                 if (error?.code === 'Method_Cancel') throw error;
                 console.error('Error in Connect Popup %s hook:', this.method, error);
             }),
@@ -92,15 +88,14 @@ export class SignTransaction extends AbstractSignTransactionFlow<'signTransactio
     }
 
     protected async postCall(response: PopupFlowResponse<'signTransaction'>) {
-        const { push, coin, identity, callId } = this.payload;
+        const { push, coin, identity } = this.payload;
 
         if (push && response.success && response.payload.serializedTx) {
-            const res = await TrezorConnect.pushTransaction({
-                coin,
-                identity,
-                tx: response.payload.serializedTx,
-                callId,
-            });
+            const tx = response.payload.serializedTx;
+            const res = await TrezorBlockchain.pushTransaction(
+                { coin, identity, tx },
+                { signal: this.signal },
+            );
 
             if (!res.success) {
                 // Fails the call the same way as if the signing itself failed

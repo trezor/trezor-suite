@@ -87,6 +87,9 @@
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
         {
+            "path": "../../packages/blockchain-core"
+        },
+        {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },

@@ -38,6 +38,7 @@ import {
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 import {
@@ -392,7 +393,7 @@ export const synchronizeSentTransactionThunk = createThunk<
                 // on the next account sync.
                 if ('prevTxid' in precomposedTransaction && precomposedTransaction.prevTxid) {
                     const { prevTxid } = precomposedTransaction;
-                    void TrezorConnect.blockchainGetTransactions({
+                    void TrezorBlockchain.getTransactions({
                         txs: [prevTxid],
                         coin: asCoinSymbol(selectedAccount.symbol),
                     });
@@ -515,7 +516,7 @@ export const pushSendFormTransactionThunk = createThunk<
                 message: 'Transaction not found.',
             });
 
-        const pushTxResponse = await TrezorConnect.pushTransaction({
+        const pushTxResponse = await TrezorBlockchain.pushTransaction({
             tx: serializedTx.tx,
             coin: asCoinSymbol(serializedTx.symbol),
             identity: tryGetAccountIdentity(selectedAccount),
@@ -670,7 +671,7 @@ export const pushSendFormRawTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async (payload, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
-        const sentTx = await TrezorConnect.pushTransaction({
+        const sentTx = await TrezorBlockchain.pushTransaction({
             tx: payload.tx,
             coin: asCoinSymbol(payload.symbol),
             identity: payload.identity,
@@ -821,7 +822,7 @@ export const signTransactionThunk = createThunk<
                 : undefined;
 
         if (response?.payload?.serializedTx)
-            // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in TransactionReviewModal and pushTransaction method
+            // store serializedTx in reducer (TrezorBlockchain.pushTransaction params) to be used in TransactionReviewModal and pushTransaction method
             dispatch(
                 sendFormActions.storeSignedTransaction({
                     serializedTx: {

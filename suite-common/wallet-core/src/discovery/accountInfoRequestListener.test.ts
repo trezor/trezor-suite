@@ -1,10 +1,8 @@
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type AccountInfo,
     type DiscoveryAccountInfoParams,
-    type GetAccountInfo,
-    type Params,
-    type Response,
     type StaticSessionId,
     UI_RESPONSE,
 } from '@trezor/connect';
@@ -19,13 +17,14 @@ jest.mock('@trezor/connect', () => {
     return {
         ...actual,
         __esModule: true,
-        default: { ...actual.default, getAccountInfo: jest.fn(), uiResponse: jest.fn() },
+        default: { ...actual.default, uiResponse: jest.fn() },
     };
 });
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: { getAccountInfo: jest.fn() },
+}));
 
-// The overload for a single account, which jest.mocked doesn't pick by itself.
-type GetSingleAccountInfo = (params: Params<GetAccountInfo>) => Response<AccountInfo>;
-const getAccountInfo = jest.mocked<GetSingleAccountInfo>(TrezorConnect.getAccountInfo);
+const getAccountInfo = jest.mocked(TrezorBlockchain.getAccountInfo);
 
 const CALL_ID = 'discovery-call';
 const REQUEST_ID = 'request-id';
