@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",

@@ -1,6 +1,12 @@
 import { ContentSecurityPolicyRules } from '../types/securityHeaders';
 
-const quotedDirectivesValues = new Set(['self', 'none', 'unsafe-inline', 'unsafe-eval']);
+const quotedDirectivesValues = new Set([
+    'self',
+    'none',
+    'unsafe-inline',
+    'unsafe-eval',
+    'wasm-unsafe-eval',
+]);
 
 function quoteDirectiveValue(value: string) {
     return quotedDirectivesValues.has(value) ? `'${value}'` : value;

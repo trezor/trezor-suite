@@ -6,8 +6,8 @@ const SENTRY_REPORT_URL =
     'https://o117836.ingest.us.sentry.io/api/5193825/security/?sentry_key=6d91ca6e6a5d4de7b47989455858b5f6';
 
 /**
- * Response security headers applied during `yarn build:preview` / `yarn preview` command.
- * - There's equal to the ones deployed in production (https://suite.trezor.io).
+ * Response security headers applied during `yarn build:preview` / `yarn preview`.
+ * Deployed environment headers are managed separately in infrastructure.
  */
 const PRODUCTION_SECURITY_HEADERS = {
     /**
@@ -66,7 +66,8 @@ const PRODUCTION_SECURITY_HEADERS = {
         // Note that connect-src is a CSP policy that has nothing to do with the former TrezorConnect parameter of the same name
         'connect-src': ['data:', '*'],
         'upgrade-insecure-requests': true,
-        'script-src': ['self'],
+        // Cardano transaction composition loads WebAssembly; JavaScript string evaluation stays blocked.
+        'script-src': ['self', 'wasm-unsafe-eval'],
         'form-action': ['self'],
         'frame-ancestors': ['self'],
         'base-uri': ['none'],
