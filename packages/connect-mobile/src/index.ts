@@ -180,10 +180,14 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
                 success: false,
                 error: 'Error parsing deeplink params.',
             });
+
+            return;
         }
 
-        const { success, payload } = parsedParams;
-        this.messages.resolve(id, { id, payload, success });
+        // A failed call answers with `error`, not `payload`, so both are passed through —
+        // dropping `error` would leave the caller with `success: false` and nothing to act on.
+        const { success, payload, error } = parsedParams;
+        this.messages.resolve(id, { id, success, payload, error });
     }
 
     private resolveMessagePromises(payload: Record<string, any>) {

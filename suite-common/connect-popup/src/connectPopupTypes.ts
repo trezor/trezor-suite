@@ -255,6 +255,9 @@ type ConnectPopupCallLoaded = {
           state: 'call-error';
           error: ConnectSerializedError;
           payload: any;
+          // The deeplink callback answering the failed call, held until the popup showing the
+          // error closes.
+          callbackUrl?: string;
       }
     | TxSimulationConnectPopupCallLoaded
     | {
@@ -268,6 +271,10 @@ type ConnectPopupCallLoaded = {
 type ConnectPopupCallError = {
     state: 'error';
     error: ConnectSerializedError;
+    // The deeplink callback answering a call that failed before `initiateCall`, so this call has
+    // no `method` and no `payload`. `finishCall` and `deeplinkCallback` keep it that way: a
+    // reader of `deeplink-callback` gets those fields from the type but must not rely on them.
+    callbackUrl?: string;
 };
 
 type ConnectPopupCallDeviceMeta = {
