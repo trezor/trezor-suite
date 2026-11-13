@@ -1,6 +1,6 @@
 ---
 name: assertions
-description: 'Assertion rules for Suite E2E tests: custom matchers, translation validation, display assertions. Use every time you write an expect() call or wait for a condition.'
+description: 'Use when writing or reviewing Suite E2E assertions, including text, translation and device-display checks. Covers custom matchers and web-first assertions.'
 ---
 
 # Assertions Strategy - AI Instructions

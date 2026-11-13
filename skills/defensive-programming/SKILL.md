@@ -1,6 +1,6 @@
 ---
 name: defensive-programming
-description: Type safety practices including exhaustive checks, explicit return types, Result-based error handling, and non-mutating array methods. Use when writing TypeScript logic that handles multiple cases or error conditions, or when sorting, reversing, splicing, or replacing an element (indexed assignment) in an array you did not create.
+description: 'Use when writing or reviewing TypeScript branching, error handling or transformations of existing arrays. Covers exhaustiveness, explicit return types, Result errors and non-mutating array methods.'
 ---
 
 # Defensive Programming

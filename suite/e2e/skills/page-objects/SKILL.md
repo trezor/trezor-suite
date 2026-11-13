@@ -1,6 +1,6 @@
 ---
 name: page-objects
-description: 'Page object structure and patterns for Suite E2E tests: naming suffixes, composition, @step decorators, fixture registration. Use when building locators or actions for test scenarios.'
+description: 'Use when creating, extending, refactoring or reviewing Suite E2E page objects. Covers class structure, locators, actions and fixture registration.'
 ---
 
 # Page Objects: Structure and Patterns

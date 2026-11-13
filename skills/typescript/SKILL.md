@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: TypeScript-specific conventions including ts-expect-error usage, unknown vs any, typed helpers instead of `as` casts on native API results, const assertions, and type vs interface preferences. Use when writing TypeScript code.
+description: 'Use when writing or reviewing Trezor Suite TypeScript, including native API result types. Covers suppression comments, unknown vs any, typed helpers instead of casts, const assertions and types vs interfaces.'
 ---
 
 # TypeScript

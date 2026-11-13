@@ -1,6 +1,6 @@
 ---
 name: tests-common
-description: TDD practices and test utilities for suite-common packages, including Red-Green-Refactor workflow and @suite-common/test-utils usage. Use when writing tests for suite-common packages.
+description: 'Use before implementing features in suite-common, or when writing or reviewing its unit tests. Covers TDD and @suite-common/test-utils.'
 ---
 
 # Writing Common Tests (TDD)

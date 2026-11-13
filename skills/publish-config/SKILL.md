@@ -1,6 +1,6 @@
 ---
 name: publish-config
-description: publishConfig rules for public npm packages in the Trezor Suite monorepo. Use when adding or editing publishConfig, exports, or preparing a package for npm publishing.
+description: 'Use when adding, changing or reviewing publishConfig, package.json exports or related publishing metadata in Trezor Suite. Applies to packages with publishConfig.'
 ---
 
 # Publish Config
