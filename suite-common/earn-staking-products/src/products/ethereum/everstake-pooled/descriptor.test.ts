@@ -30,13 +30,19 @@ describe('createEthereumEverstakePooledProductDescriptor', () => {
             operations: ['stake', 'unstake', 'withdraw'],
             exclusivity: 'none',
             rateKind: 'apy',
-            limits: { minStakeAmount, minStakeAmountForDashboard: minStakeAmount },
+            rewardsKind: 'compounded',
+            limits: {
+                minStakeAmount,
+                minStakeAmountForDashboard: minStakeAmount,
+                registrationDeposit: '0',
+            },
             options: [{ key: 'instant', kind: 'boolean' }],
             consentKey: 'staking:everstake',
             platforms: {
                 desktop: { access: 'manage' },
                 mobile: { access: 'manage' },
             },
+            minFirmware: {},
             isCountedInAccountTotals: true,
         });
     });

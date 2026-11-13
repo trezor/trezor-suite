@@ -5,6 +5,7 @@ import {
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
+import { TRON_CLAIM_MIN_FIRMWARE } from './constants';
 import { TRON_NATIVE_PRODUCT_LIMITS } from './limits';
 import { curatedProvider } from '../../../providers/curated';
 
@@ -30,6 +31,7 @@ export const createTronNativeProductDescriptor = ({
         operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
         exclusivity: 'none',
         rateKind: 'apr',
+        rewardsKind: 'claimable',
         limits: TRON_NATIVE_PRODUCT_LIMITS,
         options: [{ key: 'resource', kind: 'choice' }],
         consentKey: `staking:${curatedProvider.id}`,
@@ -38,6 +40,7 @@ export const createTronNativeProductDescriptor = ({
             mobile: { access: 'read-only' },
         },
         messageSystemFeatures,
+        minFirmware: { claim: TRON_CLAIM_MIN_FIRMWARE },
         isCountedInAccountTotals: true,
     });
 };

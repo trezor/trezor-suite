@@ -40,6 +40,7 @@ describe('fetchTronNativeProductInfo', () => {
             rate: 3.266833,
             entryPeriodDays: null,
             exitPeriodDays: 14,
+            rewardPeriodDays: null,
             nextRewardAt: null,
             targets: [
                 {

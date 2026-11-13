@@ -477,4 +477,54 @@ describe('solana delegation products parity with the P0.1 snapshots', () => {
             ),
         ).toEqual(['0', '0.495', '0.995', '1.98', '4.98', '99.98', '10000000']);
     });
+
+    describe('read-side contract additions', () => {
+        it.each<{ scenario: SolanaStakingScenario; activations: { amount: string }[] }>([
+            { scenario: 'none', activations: [] },
+            { scenario: 'activating', activations: [{ amount: '2' }] },
+            { scenario: 'active', activations: [] },
+            { scenario: 'deactivating', activations: [] },
+            { scenario: 'deactivated', activations: [] },
+            { scenario: 'mixed', activations: [{ amount: '1' }] },
+            { scenario: 'externalOnly', activations: [] },
+            { scenario: 'everstakeAndExternal', activations: [] },
+        ])('$scenario activations, without a known time', async ({ scenario, activations }) => {
+            const account = mockSolanaStakingAccount(scenario);
+            const { positions } = await readPositions({ products: sol, account });
+
+            expect(
+                (positions.everstake?.activations ?? []).map(({ amount, availableAt }) => ({
+                    amount: fromLamports(amount),
+                    availableAt,
+                })),
+            ).toEqual(activations.map(({ amount }) => ({ amount, availableAt: null })));
+            expect(positions.external?.activations ?? []).toEqual([]);
+        });
+
+        it.each(['sol', 'dsol'])('%s rewards are an estimate of the next epoch', symbol => {
+            const { everstake, external } = createProducts(symbol);
+
+            expect(
+                [everstake, external].map(({ descriptor }) => ({
+                    rewardsKind: descriptor.rewardsKind,
+                    registrationDeposit: fromLamports(descriptor.limits.registrationDeposit),
+                    minFirmware: descriptor.minFirmware,
+                })),
+            ).toEqual([
+                { rewardsKind: 'expected', registrationDeposit: '0', minFirmware: {} },
+                { rewardsKind: 'expected', registrationDeposit: '0', minFirmware: {} },
+            ]);
+        });
+
+        // SOLANA_EPOCH_DAYS: rewards are paid every epoch, counted as one day.
+        it('pays rewards every epoch', async () => {
+            const [everstakeInfo, externalInfo] = await Promise.all([
+                sol.everstake.fetchProductInfo({}),
+                sol.external.fetchProductInfo({}),
+            ]);
+
+            expect(everstakeInfo.rewardPeriodDays).toBe(1);
+            expect(externalInfo.rewardPeriodDays).toBeNull();
+        });
+    });
 });

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
-import { networkSymbolSchema } from './primitiveSchemas';
+import { typedObjectKeys } from '@trezor/utils';
+
+import { firmwareVersionSchema, networkSymbolSchema } from './primitiveSchemas';
 import { stakingAmountSchema } from './stakingAmount';
 import { stakingOperationSchema } from './stakingOperation';
 import { stakingProductPlatformsSchema } from './stakingPlatform';
@@ -15,6 +17,7 @@ export const stakingProductLimitsSchema = z.strictObject({
     feeBufferBalance: stakingAmountSchema,
     minBalanceForStaking: stakingAmountSchema,
     minStakeAmountForDashboard: stakingAmountSchema,
+    registrationDeposit: stakingAmountSchema,
 });
 
 export type StakingProductLimits = z.infer<typeof stakingProductLimitsSchema>;
@@ -36,6 +39,19 @@ export const STAKING_PRODUCT_EXCLUSIVITIES = ['none', 'account'] as const;
 
 export const STAKING_RATE_KINDS = ['apy', 'apr'] as const;
 
+export type StakingRateKind = (typeof STAKING_RATE_KINDS)[number];
+
+/**
+ * `compounded`: rewards are restaked into `balances.staked`. `claimable`: rewards accrue apart
+ * from the stake and are paid out by `claim`. `expected`: rewards are an estimate, since the
+ * chain pays them into the stake without reporting them.
+ */
+export const STAKING_REWARDS_KINDS = ['compounded', 'claimable', 'expected'] as const;
+
+export const stakingRewardsKindSchema = z.enum(STAKING_REWARDS_KINDS);
+
+export type StakingRewardsKind = z.infer<typeof stakingRewardsKindSchema>;
+
 export const stakingProductDescriptorObjectSchema = z.strictObject({
     id: stakingProductIdSchema,
     networkSymbol: networkSymbolSchema,
@@ -45,11 +61,13 @@ export const stakingProductDescriptorObjectSchema = z.strictObject({
     operations: z.array(stakingOperationSchema).readonly(),
     exclusivity: z.enum(STAKING_PRODUCT_EXCLUSIVITIES),
     rateKind: z.enum(STAKING_RATE_KINDS),
+    rewardsKind: stakingRewardsKindSchema,
     limits: stakingProductLimitsSchema,
     options: z.array(stakingOptionFieldSchema).readonly(),
     consentKey: stakingConsentKeySchema.nullable(),
     platforms: stakingProductPlatformsSchema,
     messageSystemFeatures: z.partialRecord(stakingOperationSchema, z.string()),
+    minFirmware: z.partialRecord(stakingOperationSchema, firmwareVersionSchema),
     isCountedInAccountTotals: z.boolean(),
 });
 
@@ -82,6 +100,14 @@ export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSche
         {
             error: 'Expected the platform operations to be a subset of the product operations',
             path: ['platforms'],
+        },
+    )
+    .refine(
+        ({ operations, minFirmware }) =>
+            typedObjectKeys(minFirmware).every(operation => operations.includes(operation)),
+        {
+            error: 'Expected a minimum firmware only for operations the product offers',
+            path: ['minFirmware'],
         },
     );
 

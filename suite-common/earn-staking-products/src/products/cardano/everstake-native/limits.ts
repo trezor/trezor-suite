@@ -9,4 +9,5 @@ export const CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS = stakingProductLimitsSchem
     feeBufferBalance: '0',
     minBalanceForStaking: '0',
     minStakeAmountForDashboard: '2000000',
+    registrationDeposit: '2000000',
 });

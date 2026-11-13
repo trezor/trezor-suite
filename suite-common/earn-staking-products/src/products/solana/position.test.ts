@@ -82,6 +82,7 @@ describe('getSolanaProductPosition', () => {
             status: 'active',
             lockup: 'locked',
             balances: balances({ staked: `5${SOL}`, rewards: '854795' }),
+            activations: [],
             unlocks: [],
             targets: [
                 {
@@ -122,6 +123,7 @@ describe('getSolanaProductPosition', () => {
                 withdrawable: '500000000',
                 rewards: '1025753',
             }),
+            activations: [{ amount: `1${SOL}`, availableAt: null }],
             unlocks: [{ amount: '2300000000', availableAt: null }],
             operations: ['stake', 'unstake', 'withdraw'],
         });
@@ -251,6 +253,7 @@ describe('getSolanaProductPosition', () => {
             status: 'active',
             lockup: 'locked',
             balances: balances({ staked: `10${SOL}`, withdrawable: `1${SOL}` }),
+            activations: [],
             unlocks: [],
             targets: [
                 {

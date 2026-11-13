@@ -6,6 +6,7 @@ import {
     type StakingProductInfo,
     type StakingTransaction,
     assertStakingPosition,
+    getStakingPositionPrincipal,
 } from '@suite-common/earn-staking-common';
 import { mockStakingTransaction } from '@suite-common/earn-staking-common/mocks';
 import {
@@ -318,9 +319,143 @@ describe('everstake pooled product parity with the P0.1 snapshots', () => {
         expect(position).not.toBeNull();
         expect(pool).toBeDefined();
         expect(
-            new BigNumber(position?.balances.staked ?? '0')
-                .minus(position?.balances.rewards ?? '0')
-                .toFixed(),
+            position === null
+                ? null
+                : getStakingPositionPrincipal(position, eth.descriptor.rewardsKind),
         ).toBe(pool?.depositedBalance);
+    });
+
+    describe('read-side contract additions', () => {
+        const DAY_MS = SECONDS_IN_DAY * 1000;
+
+        const minedEverstakeTransaction = (
+            methodId: string,
+            name: string,
+            blockTime: number,
+        ): StakingTransaction =>
+            mockStakingTransaction({
+                txid: `0x${name}mined`,
+                blockHeight: 21_000_000,
+                blockTime,
+                ethereumSpecific: {
+                    status: 1,
+                    nonce: 5,
+                    gasLimit: 300_000,
+                    parsedData: { methodId, name },
+                },
+            });
+
+        // getDaysToAddToPool and getDaysToUnstake in the legacy ethereumStaking.ts: the days from
+        // the latest transaction's block time plus the queue, rounded, at least one.
+        const daysUntil = (availableAt: number | null) =>
+            availableAt === null
+                ? null
+                : Math.max(1, Math.round((availableAt - Date.now()) / DAY_MS));
+
+        const readSchedule = (
+            scenario: EthereumStakingScenario,
+            transactions: readonly StakingTransaction[] = [],
+        ) => {
+            const position = eth.getPosition({
+                account: mockEthereumStakingAccount(scenario),
+                productInfo,
+                transactions,
+            });
+
+            return {
+                activations: (position?.activations ?? []).map(({ amount, availableAt }) => ({
+                    amount: fromWei(amount),
+                    days: daysUntil(availableAt),
+                })),
+                unlocks: (position?.unlocks ?? []).map(({ amount, availableAt }) => ({
+                    amount: fromWei(amount),
+                    days: daysUntil(availableAt),
+                })),
+            };
+        };
+
+        it.each<{
+            scenario: EthereumStakingScenario;
+            activations: { amount: string; days: number | null }[];
+            unlocks: { amount: string; days: number | null }[];
+        }>([
+            { scenario: 'none', activations: [], unlocks: [] },
+            { scenario: 'pending', activations: [{ amount: '0.75', days: null }], unlocks: [] },
+            {
+                scenario: 'pendingDeposited',
+                activations: [{ amount: '0.25', days: null }],
+                unlocks: [],
+            },
+            { scenario: 'active', activations: [], unlocks: [] },
+            { scenario: 'unstaking', activations: [], unlocks: [{ amount: '0.5', days: null }] },
+            { scenario: 'claimable', activations: [], unlocks: [] },
+            {
+                scenario: 'partiallyClaimable',
+                activations: [],
+                unlocks: [{ amount: '0.5', days: null }],
+            },
+            { scenario: 'otherPool', activations: [], unlocks: [] },
+        ])(
+            '$scenario schedule without a mined transaction',
+            ({ scenario, activations, unlocks }) => {
+                expect(readSchedule(scenario)).toEqual({ activations, unlocks });
+            },
+        );
+
+        // Legacy: a stake mined a day ago plus a 1 + 3 day queue leaves 3 days.
+        it('days until the pending stake is added to the pool', () => {
+            const minedStake = minedEverstakeTransaction(
+                '0x3a29dbae',
+                'stake',
+                MOCK_STAKING_NOW_SECONDS - SECONDS_IN_DAY,
+            );
+
+            expect(readSchedule('pending', [minedStake])).toEqual({
+                activations: [{ amount: '0.75', days: 3 }],
+                unlocks: [],
+            });
+        });
+
+        // Legacy: an unstake mined a day ago plus a 1 + 2 day queue leaves 2 days.
+        it('days until the unstake request is filled', () => {
+            const minedUnstake = minedEverstakeTransaction(
+                '0x76ec871c',
+                'unstake',
+                MOCK_STAKING_NOW_SECONDS - SECONDS_IN_DAY,
+            );
+
+            expect(readSchedule('unstaking', [minedUnstake])).toEqual({
+                activations: [],
+                unlocks: [{ amount: '0.5', days: 2 }],
+            });
+        });
+
+        // Legacy returns 1 once the queue has run out, as the reading does for a time in the past.
+        it('at least one day while the pool still reports the amount', () => {
+            const minedStake = minedEverstakeTransaction(
+                '0x3a29dbae',
+                'stake',
+                MOCK_STAKING_NOW_SECONDS - 10 * SECONDS_IN_DAY,
+            );
+
+            expect(readSchedule('pending', [minedStake]).activations).toEqual([
+                { amount: '0.75', days: 1 },
+            ]);
+        });
+
+        it.each(['eth', 'thod'])('%s rewards compound into the stake', symbol => {
+            const { descriptor } = createProduct(symbol);
+
+            expect({
+                rewardsKind: descriptor.rewardsKind,
+                registrationDeposit: fromWei(descriptor.limits.registrationDeposit),
+                minFirmware: descriptor.minFirmware,
+            }).toEqual({ rewardsKind: 'compounded', registrationDeposit: '0', minFirmware: {} });
+        });
+
+        it('has a next payout time instead of a reward period', () => {
+            expect(productInfo.rewardPeriodDays).toBeNull();
+            expect(productInfo.nextRewardAt).not.toBeNull();
+        });
     });
 });

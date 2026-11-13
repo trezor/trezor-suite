@@ -1,4 +1,5 @@
 import type { StakingDeviceAccess } from './createStakingDeviceAccess';
+import type { StakingSchedulerDep } from './createStakingScheduler';
 import type { StakingProductRepositoryDep } from './repository/createStakingProductRepository';
 
 export type LoadStakingProducts = () => void;
@@ -8,7 +9,8 @@ export type LoadStakingProductsDep = {
 };
 
 export type StakingServices = StakingProductRepositoryDep &
-    LoadStakingProductsDep & {
+    LoadStakingProductsDep &
+    StakingSchedulerDep & {
         deviceAccess: StakingDeviceAccess;
     };
 

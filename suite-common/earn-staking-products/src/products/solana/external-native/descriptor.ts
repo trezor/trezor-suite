@@ -24,6 +24,7 @@ export const createSolanaExternalNativeProductDescriptor = (
         operations: [],
         exclusivity: 'none',
         rateKind: 'apy',
+        rewardsKind: 'expected',
         limits: SOLANA_EXTERNAL_NATIVE_PRODUCT_LIMITS,
         options: [],
         consentKey: null,
@@ -32,6 +33,7 @@ export const createSolanaExternalNativeProductDescriptor = (
             mobile: { access: 'read-only' },
         },
         messageSystemFeatures: {},
+        minFirmware: {},
         // Suite shows stake delegated to other validators only as a notice, never in balances.
         isCountedInAccountTotals: false,
     });

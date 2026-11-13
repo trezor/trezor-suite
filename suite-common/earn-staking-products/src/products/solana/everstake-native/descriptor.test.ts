@@ -27,6 +27,7 @@ describe('createSolanaNativeDelegationDescriptor', () => {
             operations: ['stake', 'unstake', 'withdraw'],
             exclusivity: 'none',
             rateKind: 'apy',
+            rewardsKind: 'expected',
             limits: SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
             options: [],
             consentKey: 'staking:everstake',
@@ -35,6 +36,7 @@ describe('createSolanaNativeDelegationDescriptor', () => {
                 mobile: { access: 'manage' },
             },
             messageSystemFeatures: {},
+            minFirmware: {},
             isCountedInAccountTotals: true,
         });
     });
@@ -47,6 +49,7 @@ describe('createSolanaNativeDelegationDescriptor', () => {
             feeBufferBalance: '5000000',
             minBalanceForStaking: '1020000000',
             minStakeAmountForDashboard: '1000000000',
+            registrationDeposit: '0',
         });
     });
 

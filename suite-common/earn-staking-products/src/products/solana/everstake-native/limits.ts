@@ -10,4 +10,5 @@ export const SOLANA_EVERSTAKE_NATIVE_PRODUCT_LIMITS = stakingProductLimitsSchema
     feeBufferBalance: '5000000',
     minBalanceForStaking: '1020000000',
     minStakeAmountForDashboard: '1000000000',
+    registrationDeposit: '0',
 });

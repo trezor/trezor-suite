@@ -91,6 +91,9 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../../suite/account" },
@@ -139,6 +142,9 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/logger" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         {
             "path": "../../packages/product-components"
         },

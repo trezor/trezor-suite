@@ -125,6 +125,7 @@ describe('getCardanoProductPosition', () => {
             status: 'active',
             lockup: 'liquid',
             balances: balances({ staked: '994750000', rewards: '5250000' }),
+            activations: [],
             unlocks: [],
             targets: [
                 {
@@ -241,6 +242,7 @@ describe('getCardanoProductPosition', () => {
             status: 'active',
             lockup: 'liquid',
             balances: balances({ staked: `999${ADA}`, rewards: `1${ADA}` }),
+            activations: [],
             unlocks: [],
             targets: [
                 {
@@ -360,6 +362,7 @@ describe('getCardanoProductPosition', () => {
                 status: 'activating',
                 lockup: 'liquid',
                 balances: balances({ pending: account.balance }),
+                activations: [{ amount: account.balance, availableAt: null }],
                 unlocks: [],
                 targets: [],
                 operations: [],

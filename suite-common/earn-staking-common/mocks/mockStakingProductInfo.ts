@@ -6,6 +6,7 @@ export const mockStakingProductInfo = (
     rate: 3.08,
     entryPeriodDays: 1,
     exitPeriodDays: 5,
+    rewardPeriodDays: null,
     nextRewardAt: 1_777_000_000_000,
     targets: [
         {

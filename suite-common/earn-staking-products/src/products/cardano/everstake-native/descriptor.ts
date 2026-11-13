@@ -32,6 +32,7 @@ export const createCardanoEverstakeNativeProductDescriptor = ({
         operations: ['stake', 'unstake', 'claim', 'vote'],
         exclusivity: 'account',
         rateKind: 'apy',
+        rewardsKind: 'claimable',
         limits: CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
         options: [],
         consentKey: `staking:${provider.id}`,
@@ -40,6 +41,7 @@ export const createCardanoEverstakeNativeProductDescriptor = ({
             mobile: { access: 'read-only' },
         },
         messageSystemFeatures,
+        minFirmware: {},
         isCountedInAccountTotals: true,
     });
 };

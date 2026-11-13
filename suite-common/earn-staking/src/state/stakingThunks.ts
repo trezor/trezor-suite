@@ -26,7 +26,9 @@ import {
 } from './stakingProductInfoQuery';
 import { type StakingRootState, stakingActions } from './stakingReducer';
 import {
+    selectEarliestStakingRevalidateAt,
     selectIsStakingSupportedSymbol,
+    selectStakingAccountKeysToRevalidate,
     selectStakingProductDescriptors,
 } from './stakingSelectors';
 
@@ -95,6 +97,37 @@ export const syncStakingPositionsThunk = createThunk<
         });
 
         dispatch(stakingActions.positionsSynced({ accountKey, positions }));
+
+        extra.services.staking.stakingScheduler.scheduleRevalidation(
+            selectEarliestStakingRevalidateAt(getState()),
+        );
+    },
+);
+
+type RevalidateStakingPositionsParams = {
+    now: number;
+};
+
+export type RevalidateStakingPositionsThunkState = SyncStakingPositionsThunkState;
+
+export type RevalidateStakingPositionsThunkDeps = SyncStakingPositionsThunkDeps;
+
+export const revalidateStakingPositionsThunk = createThunk<
+    void,
+    RevalidateStakingPositionsParams,
+    { state: RevalidateStakingPositionsThunkState; extra: RevalidateStakingPositionsThunkDeps }
+>(
+    `${STAKING_MODULE_PREFIX}/revalidateStakingPositions`,
+    async ({ now }, { dispatch, getState, extra }) => {
+        const accountKeys = selectStakingAccountKeysToRevalidate(getState(), now);
+
+        await Promise.all(
+            accountKeys.map(accountKey => dispatch(syncStakingPositionsThunk({ accountKey }))),
+        );
+
+        extra.services.staking.stakingScheduler.scheduleRevalidation(
+            selectEarliestStakingRevalidateAt(getState()),
+        );
     },
 );
 

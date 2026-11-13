@@ -646,4 +646,53 @@ describe('cardano delegation products parity with the P0.1 snapshots', () => {
             { access: 'read-only' },
         ]);
     });
+
+    describe('read-side contract additions', () => {
+        it.each(SCENARIOS)('$scenario has no activations', async ({ scenario }) => {
+            const { position } = await readPositions(mockCardanoStakingAccount(scenario));
+
+            expect(position?.activations ?? []).toEqual([]);
+        });
+
+        it('activates the whole balance while the first stake is pending', async () => {
+            const account = mockCardanoStakingAccount('notDelegated');
+            const pendingRegistration = mockStakingTransaction({
+                txid: 'pending-registration',
+                blockHeight: undefined,
+                cardanoSpecific: { subtype: 'stake_registration' },
+            });
+            const { position } = await readPositions(account, [pendingRegistration]);
+
+            expect(
+                position?.activations.map(({ amount, availableAt }) => ({
+                    amount: fromLovelace(amount),
+                    availableAt,
+                })),
+            ).toEqual([{ amount: '1000', availableAt: null }]);
+        });
+
+        // The 2 ADA stake key registration deposit of the legacy constants.
+        it('pays claimable rewards and takes the registration deposit on Everstake only', () => {
+            expect(
+                CARDANO_PRODUCT_KEYS.map(key => ({
+                    rewardsKind: products[key].descriptor.rewardsKind,
+                    registrationDeposit: fromLovelace(
+                        products[key].descriptor.limits.registrationDeposit,
+                    ),
+                    minFirmware: products[key].descriptor.minFirmware,
+                })),
+            ).toEqual([
+                { rewardsKind: 'claimable', registrationDeposit: '2', minFirmware: {} },
+                { rewardsKind: 'claimable', registrationDeposit: '0', minFirmware: {} },
+                { rewardsKind: 'claimable', registrationDeposit: '0', minFirmware: {} },
+            ]);
+        });
+
+        // CARDANO_EPOCH_DAYS: rewards are paid every epoch on every pool.
+        it('pays rewards every epoch', async () => {
+            const { infos } = await readPositions(mockCardanoStakingAccount('everstake'));
+
+            expect(CARDANO_PRODUCT_KEYS.map(key => infos[key].rewardPeriodDays)).toEqual([5, 5, 5]);
+        });
+    });
 });

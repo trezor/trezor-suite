@@ -2,6 +2,7 @@ import {
     type StakingAccount,
     type StakingOperation,
     type StakingPosition,
+    type StakingPositionActivation,
     type StakingPositionBalances,
     type StakingPositionPendingTransaction,
     type StakingPositionTarget,
@@ -21,6 +22,8 @@ import {
     toStakingAmount,
 } from '../../../utils/stakingAmounts';
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 export const findEverstakePoolByAccount = (account: StakingAccount): EverstakePool | undefined => {
     const pool = account.misc?.stakingPools?.find(({ name }) =>
         everstakeProvider.identities[account.symbol]?.includes(name),
@@ -31,20 +34,55 @@ export const findEverstakePoolByAccount = (account: StakingAccount): EverstakePo
     return parsedPool.success ? parsedPool.data : undefined;
 };
 
+const getEverstakeOperation = ({
+    ethereumSpecific,
+}: StakingTransaction): StakingOperation | undefined => {
+    const methodId = ethereumSpecific?.parsedData?.methodId?.toLowerCase() ?? '';
+
+    return ETHEREUM_EVERSTAKE_OPERATIONS_BY_METHOD_ID[methodId];
+};
+
 export const getEverstakePendingTransactions = (
     transactions: readonly StakingTransaction[],
 ): StakingPositionPendingTransaction[] => {
     const pendingStakingTransactions = transactions.filter(isPendingStakingTransaction);
 
-    return pendingStakingTransactions.flatMap(({ txid, ethereumSpecific }) => {
-        const methodId = ethereumSpecific?.parsedData?.methodId?.toLowerCase() ?? '';
-        const operation = ETHEREUM_EVERSTAKE_OPERATIONS_BY_METHOD_ID[methodId];
+    return pendingStakingTransactions.flatMap(transaction => {
+        const operation = getEverstakeOperation(transaction);
 
         if (operation === undefined) return [];
 
-        return [{ txid, operation }];
+        return [{ txid: transaction.txid, operation }];
     });
 };
+
+type GetLatestEverstakeOperationTimeParams = {
+    operation: StakingOperation;
+    transactions: readonly StakingTransaction[];
+};
+
+export const getLatestEverstakeOperationTime = ({
+    operation,
+    transactions,
+}: GetLatestEverstakeOperationTimeParams): number | null => {
+    const blockTimes = transactions.flatMap(transaction => {
+        if (isPendingStakingTransaction(transaction)) return [];
+
+        if (getEverstakeOperation(transaction) !== operation) return [];
+
+        return transaction.blockTime ? [transaction.blockTime] : [];
+    });
+
+    return blockTimes.length === 0 ? null : Math.max(...blockTimes) * 1000;
+};
+
+type GetPeriodEndParams = {
+    startedAt: number | null;
+    periodDays: number | null;
+};
+
+export const getPeriodEnd = ({ startedAt, periodDays }: GetPeriodEndParams): number | null =>
+    startedAt === null || periodDays === null ? null : startedAt + periodDays * DAY_MS;
 
 type GetEverstakePoolBalancesParams = {
     pool?: EverstakePool | undefined;
@@ -163,12 +201,35 @@ export const getPositionTargets = ({
     return [target];
 };
 
+type GetPositionActivationsParams = {
+    balances: StakingPositionBalances;
+    availableAt: number | null;
+};
+
+export const getPositionActivations = ({
+    balances,
+    availableAt,
+}: GetPositionActivationsParams): StakingPositionActivation[] => {
+    if (!isPositiveStakingAmount(balances.pending)) {
+        return [];
+    }
+
+    const activation: StakingPositionActivation = {
+        amount: balances.pending,
+        availableAt,
+    };
+
+    return [activation];
+};
+
 type GetPositionUnlocksParams = {
     balances: StakingPositionBalances;
+    availableAt: number | null;
 };
 
 export const getPositionUnlocks = ({
     balances,
+    availableAt,
 }: GetPositionUnlocksParams): StakingPositionUnlock[] => {
     if (!isPositiveStakingAmount(balances.unstaking)) {
         return [];
@@ -176,7 +237,7 @@ export const getPositionUnlocks = ({
 
     const unlock: StakingPositionUnlock = {
         amount: balances.unstaking,
-        availableAt: null,
+        availableAt,
     };
 
     return [unlock];

@@ -9,8 +9,9 @@ import {
 import type { AccountKey } from '@suite-common/wallet-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
-import { BigNumber, isNotUndefined } from '@trezor/utils';
+import { BigNumber, isNotNull, isNotUndefined, typedObjectEntries } from '@trezor/utils';
 
+import type { StakingAccountPositions } from './stakingPositionsReducer';
 import type { StakingRootState } from './stakingReducer';
 
 const selectStakingState = (state: StakingRootState) => state.earn.staking;
@@ -47,8 +48,10 @@ export const selectIsStakingSupportedSymbol = (
     networkSymbol: NetworkSymbol,
 ) => selectStakingProductDescriptorsBySymbol(state, networkSymbol).length > 0;
 
+const selectStakingPositions = (state: StakingRootState) => selectStakingState(state).positions;
+
 const selectAccountPositions = (state: StakingRootState, accountKey: AccountKey) =>
-    selectStakingState(state).positions[accountKey];
+    selectStakingPositions(state)[accountKey];
 
 export const selectStakingPositionsByAccount = createWeakMapSelector(
     [selectAccountPositions],
@@ -113,3 +116,34 @@ export const selectStakingAccountTotals = createWeakMapSelector(
         rewards: sumBalance(countedPositions, 'rewards'),
     }),
 );
+
+const getRevalidationTimes = (positions: StakingAccountPositions): number[] =>
+    Object.values(positions)
+        .map(position => position?.revalidateAt ?? null)
+        .filter(isNotNull);
+
+export const selectEarliestStakingRevalidateAt = createWeakMapSelector(
+    [selectStakingPositions],
+    (positions): number | null => {
+        const revalidationTimes = Object.values(positions).flatMap(accountPositions =>
+            accountPositions === undefined ? [] : getRevalidationTimes(accountPositions),
+        );
+
+        if (revalidationTimes.length === 0) {
+            return null;
+        }
+
+        return Math.min(...revalidationTimes);
+    },
+);
+
+export const selectStakingAccountKeysToRevalidate = (
+    state: StakingRootState,
+    now: number,
+): AccountKey[] =>
+    typedObjectEntries(selectStakingPositions(state)).flatMap(([accountKey, accountPositions]) =>
+        accountPositions !== undefined &&
+        getRevalidationTimes(accountPositions).some(revalidateAt => revalidateAt <= now)
+            ? [accountKey]
+            : [],
+    );

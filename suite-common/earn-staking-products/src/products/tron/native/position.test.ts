@@ -102,6 +102,7 @@ describe('getTronNativeProductPosition', () => {
             status: 'active',
             lockup: 'locked',
             balances: balances({ staked: `1000${TRX}`, rewards: '1500000' }),
+            activations: [],
             unlocks: [],
             targets: [
                 {
