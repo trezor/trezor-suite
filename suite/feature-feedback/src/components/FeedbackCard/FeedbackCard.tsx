@@ -92,6 +92,7 @@ export const FeedbackCard = ({
                         options={ratingOptions}
                         value={rating}
                         onChange={handleRatingSelect}
+                        data-testid="@feedback/card/rating"
                     />
                 </Flex>
             </Card>

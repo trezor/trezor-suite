@@ -255,6 +255,7 @@ export const YieldPageHeader = ({
                                 aria-label={translationString('TR_EARN_HOW_IT_WORKS')}
                                 onClick={onHowItWorksClick}
                                 isDisabled={!account || !vault}
+                                data-testid="@yield/page-header/how-it-works-button"
                                 tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
                             />
                         ) : (
@@ -263,6 +264,7 @@ export const YieldPageHeader = ({
                                 priority="secondary"
                                 onClick={onHowItWorksClick}
                                 isDisabled={!account || !vault}
+                                data-testid="@yield/page-header/how-it-works-button"
                             >
                                 <Translation id="TR_EARN_HOW_IT_WORKS" />
                             </Button>
