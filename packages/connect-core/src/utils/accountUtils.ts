@@ -3,7 +3,23 @@
 import type { BitcoinNetworkInfo, CoinInfo } from '@trezor/connect-common';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
 
-import { getCoinName } from '../data/coinInfo';
+import { getCoinInfoOfPath, getCoinName } from '../data/coinInfo';
+
+// `crossChain` derives a key at a path outside `coinInfo` and serialises it in `coinInfo`'s format,
+// and the permission names the network of the path (`getCoinInfoOfPath`).
+// The dialog title names both, so that the user does not read "Export Bitcoin address" under an
+// "Ethereum" permission heading.
+export const getLabelWithPathNetwork = (
+    label: string,
+    path: number[],
+    coinInfo: Readonly<BitcoinNetworkInfo>,
+) => {
+    const pathNetwork = getCoinInfoOfPath(path, coinInfo);
+
+    return pathNetwork.shortcut === coinInfo.shortcut
+        ? label
+        : `${label} (${pathNetwork.name} path)`;
+};
 
 export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo) => {
     let hasSegwit = false;
