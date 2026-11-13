@@ -425,14 +425,16 @@ describe('transaction-management selectors', () => {
             trading: { isSlip24Active: false },
         } as unknown as FormState;
 
-        const buildState = (): TransactionReviewOutputsState =>
+        const buildState = ({
+            includePrecomposedForm = true,
+        } = {}): TransactionReviewOutputsState =>
             ({
                 wallet: {
                     ...getWalletState(),
                     send: {
                         ...getWalletState().send,
                         precomposedTx: { totalSpent: '10', fee: '1' },
-                        precomposedForm: signedForm,
+                        precomposedForm: includePrecomposedForm ? signedForm : undefined,
                     },
                     formDrafts: { 'trading-exchange/': draftForm },
                 },
@@ -447,11 +449,10 @@ describe('transaction-management selectors', () => {
             mockConstructTransactionReviewOutputs.mockReturnValue([
                 { type: 'address', value: 'addr' },
             ]);
+            mockGetTransactionReviewOutputState.mockReturnValue('success');
         });
 
         it('builds review outputs from the precomposed form instead of the form draft', () => {
-            mockGetTransactionReviewOutputState.mockReturnValue('active');
-
             selectTransactionReviewOutputsFromPrecomposedForm(buildState(), BTC_ACCOUNT_KEY);
 
             expect(mockConstructTransactionReviewOutputs).toHaveBeenCalledWith(
@@ -459,12 +460,20 @@ describe('transaction-management selectors', () => {
             );
         });
 
-        it('marks the summary active once every precomposed form output is confirmed', () => {
-            mockGetTransactionReviewOutputState.mockReturnValue('success');
-
+        it('marks the summary active once every output of the precomposed form is confirmed', () => {
             expect(
                 selectReviewSummaryOutputFromPrecomposedForm(buildState(), BTC_ACCOUNT_KEY),
             ).toEqual({ state: 'active', totalSpent: '10', fee: '1' });
+        });
+
+        it('does not derive the summary state from the form draft', () => {
+            const state = buildState({ includePrecomposedForm: false });
+
+            expect(selectReviewSummaryOutputFromPrecomposedForm(state, BTC_ACCOUNT_KEY)).toEqual({
+                state: undefined,
+                totalSpent: '10',
+                fee: '1',
+            });
         });
     });
 });

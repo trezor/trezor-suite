@@ -97,12 +97,12 @@ export const TradingTransactionReview = memo(
 
         const reviewOutputs =
             useSelector((state: TransactionReviewOutputsState) =>
-                selectTransactionReviewOutputsFromPrecomposedForm(state, accountKey, tokenContract),
+                selectTransactionReviewOutputsFromPrecomposedForm(state, accountKey),
             ) || undefined;
 
         const summaryOutput =
             useSelector((state: TransactionReviewOutputsState) =>
-                selectReviewSummaryOutputFromPrecomposedForm(state, accountKey, tokenContract),
+                selectReviewSummaryOutputFromPrecomposedForm(state, accountKey),
             ) || undefined;
 
         // The button resolves the send consent the in-flight sign-and-send
