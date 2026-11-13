@@ -42,7 +42,7 @@ export * from './Button/IconButton';
 export * from './Button/TextButton';
 export * from './Flag/Flag';
 export { buttonSizeToDimensionsMap } from './Button/utils';
-export { useButtonPressAnimatedStyle } from './Button/useButtonPressAnimatedStyle';
+export { useButtonPressAnimatedStyles } from './Button/useButtonPressAnimatedStyles';
 export * from './Select/Select';
 export * from './Select/SelectItem';
 export * from './Spinner/Spinner';

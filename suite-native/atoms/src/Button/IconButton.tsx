@@ -12,7 +12,7 @@ import {
 
 import { type ButtonStyleProps, buttonStyle } from './Button';
 import { type ButtonColorProps, type ButtonSize } from './types';
-import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import { useButtonPressAnimatedStyles } from './useButtonPressAnimatedStyles';
 import { AnimatedPressable } from '../Animated/AnimatedPressable';
 import { Loader } from '../Loader';
 import {
@@ -66,7 +66,7 @@ export const IconButton = ({
         isDisabled: hasDisabledState,
     });
 
-    const animatedPressStyle = useButtonPressAnimatedStyle(
+    const animatedPressStyles = useButtonPressAnimatedStyles(
         isPressed,
         hasDisabledState,
         backgroundColor,
@@ -82,7 +82,7 @@ export const IconButton = ({
             onPressOut={handlePressOut}
             disabled={hasDisabledState}
             style={[
-                animatedPressStyle,
+                ...animatedPressStyles,
                 applyStyle(iconButtonStyle, {
                     size,
                     isFullWidth: false,

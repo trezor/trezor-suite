@@ -6,11 +6,11 @@ import {
 } from 'react-native-reanimated';
 
 import { useNativeStyles } from '@trezor/styles-native';
-import { type Color } from '@trezor/theme';
+import { type CSSColor, type Color } from '@trezor/theme';
 
 import { pressTimingConfig } from '../constants';
 
-export const useButtonPressAnimatedStyle = (
+export const useButtonPressAnimatedStyles = (
     isPressed: boolean,
     isDisabled: boolean,
     backgroundColor: Color,
@@ -23,16 +23,16 @@ export const useButtonPressAnimatedStyle = (
             : withTiming(0, pressTimingConfig),
     );
 
-    return useAnimatedStyle(() => ({
+    const buttonPressStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: 1 - (1 - 0.95) * pressAnimationValue.value }],
+    }));
+    const buttonColorStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
             pressAnimationValue.value,
             [0, 1],
             [utils.colors[backgroundColor], utils.colors[onPressColor]],
-        ),
-        transform: [
-            {
-                scale: 1 - (1 - 0.95) * pressAnimationValue.value,
-            },
-        ],
+        ) as CSSColor,
     }));
+
+    return [buttonPressStyle, buttonColorStyle];
 };
