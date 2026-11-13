@@ -65,7 +65,12 @@ export const AccountDetailsCard = ({ accountKey, tokenContract }: AccountDetails
                 {tokenContract ? (
                     <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
                 ) : (
-                    <AccountsListItem account={account} shouldShowExactAmount />
+                    <AccountsListItem
+                        account={account}
+                        shouldShowExactAmount
+                        shouldAlwaysShowCryptoAmount
+                        shouldLimitFiatToNativeBalance
+                    />
                 )}
             </Card>
         </VStack>
