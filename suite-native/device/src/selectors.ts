@@ -70,7 +70,7 @@ import { type Device } from '@trezor/connect';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
-import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
+import { getIsDeviceSetupSupported, getIsFirmwareVersionSupportedByApp } from './utils';
 
 export type NativeDeviceRootState = DeviceRootState &
     PersistentDeviceDataRootState &
@@ -90,8 +90,14 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootS
 export const selectIsDeviceFirmwareSupported = (state: DeviceRootState) => {
     const deviceFwVersion = selectDeviceFirmwareVersionArray(state);
     const deviceModel = selectDeviceModel(state);
+    const device = selectSelectedDevice(state);
+    const isFirmwareVersionSupportedByConnect = device?.firmware !== 'required';
+    const isFirmwareVersionSupportedByApp = getIsFirmwareVersionSupportedByApp(
+        deviceFwVersion,
+        deviceModel,
+    );
 
-    return isFirmwareVersionSupported(deviceFwVersion, deviceModel);
+    return isFirmwareVersionSupportedByConnect && isFirmwareVersionSupportedByApp;
 };
 
 export const selectIsDeviceReadyToUse = (

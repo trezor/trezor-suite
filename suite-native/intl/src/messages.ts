@@ -806,6 +806,12 @@ export const messages = {
             description:
                 'To continue using your Trezor with this app, update it using Trezor Suite for Desktop or Web.',
         },
+        firmwareUpdateRequiredModal: {
+            title: 'Firmware update required',
+            description:
+                'The firmware on your Trezor is out of date and no longer supported. Update it to continue using your Trezor with this app.',
+            primaryButton: 'Update firmware',
+        },
         noBackupModal: {
             title: "Your Trezor isn't backed up.",
             subtitle: 'If your Trezor is lost or damaged, your funds may be irreversibly lost.',
