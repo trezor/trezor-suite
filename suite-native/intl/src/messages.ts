@@ -69,6 +69,7 @@ export const messages = {
             },
         },
         tokens: '+ Tokens',
+        unknownToken: 'Unknown token',
         warning: 'Warning',
     },
     icons: {
