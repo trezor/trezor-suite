@@ -10,8 +10,6 @@ import {
 
 type OnBlockedParams = {
     action: NavigationAction;
-    /** Resumes the original action once, without triggering this route's guard again. */
-    continueNavigation: () => void;
     forceNavigation: (navigate: () => void) => void;
 };
 
@@ -25,8 +23,7 @@ export type UseNavigationRemoveGuardParams = {
 };
 
 /**
- * Blocks selected screen-removal attempts until continueNavigation is called explicitly.
- * Other removal actions continue automatically.
+ * Blocks selected screen-removal attempts. Other removal actions continue automatically.
  *
  * Returns forceNavigation, which runs a new navigation without this guard.
  */
@@ -59,20 +56,7 @@ export const useNavigationRemoveGuard = ({
             return;
         }
 
-        let hasContinued = false;
-
-        onBlocked?.({
-            action: data.action,
-            continueNavigation: () => {
-                if (hasContinued) {
-                    return;
-                }
-
-                hasContinued = true;
-                navigation.dispatch(data.action);
-            },
-            forceNavigation,
-        });
+        onBlocked?.({ action: data.action, forceNavigation });
     });
 
     return { forceNavigation };

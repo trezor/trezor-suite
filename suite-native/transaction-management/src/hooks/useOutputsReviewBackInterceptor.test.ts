@@ -23,7 +23,7 @@ describe('useOutputsReviewBackInterceptor', () => {
         'only calls the existing cancellation handler when confirmed: %s',
         async wasReviewCanceled => {
             const onReviewCanceled = jest.fn();
-            const continueNavigation = jest.fn();
+            const forceNavigation = jest.fn();
             mockShowReviewCancellationAlert.mockResolvedValue({ wasReviewCanceled });
             await renderHookWithBasicProvider(() =>
                 useOutputsReviewBackInterceptor(onReviewCanceled),
@@ -32,13 +32,12 @@ describe('useOutputsReviewBackInterceptor', () => {
 
             await options?.onBlocked?.({
                 action: { type: 'POP' },
-                continueNavigation,
-                forceNavigation: jest.fn(),
+                forceNavigation,
             });
 
             expect(mockShowReviewCancellationAlert).toHaveBeenCalledTimes(1);
             expect(onReviewCanceled).toHaveBeenCalledTimes(wasReviewCanceled ? 1 : 0);
-            expect(continueNavigation).not.toHaveBeenCalled();
+            expect(forceNavigation).not.toHaveBeenCalled();
         },
     );
 });
