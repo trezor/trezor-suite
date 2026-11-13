@@ -28,6 +28,8 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1'] }, () =
         async ({ walletPage, dashboardPage }) => {
             await test.step('Cycle thru all time range filters', async () => {
                 await walletPage.openAccount({ symbol: asNetworkSymbol('btc') });
+                // The graph is lazy-loaded and pushes the range selector down once it mounts.
+                await expect(dashboardPage.transactionsGraphChart).toBeVisible();
                 for (const { range, label } of rangeData) {
                     await dashboardPage.graphRangeSelector(range).click();
                     const labelElement = walletPage.transactionSummaryTitle.getByText(label);
