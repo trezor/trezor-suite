@@ -5,6 +5,7 @@ import { createThunk } from '@trezor/redux-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
+import { updateDiscoveryThunk } from './discoveryStateThunks';
 import {
     type RunDiscoveryThunkDeps,
     type RunDiscoveryThunkState,
@@ -46,7 +47,16 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
             const { event: _, ...action } = message;
             if (!('callId' in action) || !action.callId) return;
             if (action.callId !== callId) return;
-            if (action.type === UI_REQUESTS.REQUEST_PASSPHRASE) return;
+            if (action.type === UI_REQUESTS.REQUEST_PASSPHRASE) {
+                dispatch(
+                    updateDiscoveryThunk({
+                        status: { status: 'enter-passphrase' },
+                        path: device.path,
+                    }),
+                );
+
+                return;
+            }
             dispatch(defaultTrezorUIEventHandlerThunk(action));
         };
 
