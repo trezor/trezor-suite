@@ -1,0 +1,96 @@
+appId: io.trezor.suite.debug
+name: Onboard and connect an emulated Trezor
+tags:
+    - suite-native
+    - android
+    - device
+---
+# Device setup via the HTTP->WS shim (mirrors prepareTrezorEmulator).
+# Requires the shim on :9011 and `adb reverse tcp:21328 tcp:21328`.
+- runScript: ../scripts/setupDevice.js
+
+# App onboarding (mirrors onOnboarding.finishOnboarding)
+- launchApp:
+      clearState: true
+- extendedWaitUntil:
+      visible:
+          id: '@onboarding/Welcome/nextBtn'
+      timeout: 35000
+- tapOn:
+      id: '@onboarding/Welcome/nextBtn'
+      retryTapIfNoChange: true
+- tapOn:
+      id: '@onboarding/AnalyticsConsent/nextBtn'
+      retryTapIfNoChange: true
+- tapOn:
+      id: '@onboarding/Biometrics/skipBtn'
+      retryTapIfNoChange: true
+- waitForAnimationToEnd
+
+# Dismiss the trading-residence prompt if the build shows it
+- runFlow:
+      when:
+          visible:
+              id: '@trading-residence'
+      commands:
+          - tapOn:
+                text: 'Not now'
+                retryTapIfNoChange: true
+
+# Open coin enabling via the Get started button (mirrors onCoinEnabling.handleCoinEnablingInit).
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 35000
+- waitForAnimationToEnd
+# Coin enabling opens via Get started, unless a connected device routed straight to it.
+- runFlow:
+      when:
+          notVisible:
+              id: '@screen/CoinEnablingInit'
+      commands:
+          - extendedWaitUntil:
+                visible:
+                    id: '@home/get-started-button'
+                timeout: 20000
+          - tapOn:
+                id: '@home/get-started-button'
+                retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/CoinEnablingInit'
+      timeout: 30000
+
+# Enable Bitcoin only, then save. Coins start disabled, so one tap enables it.
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-btc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-btc'
+      retryTapIfNoChange: true
+- tapOn:
+      id: '@coin-enabling/button-save'
+      retryTapIfNoChange: true
+
+# Wait for Bitcoin discovery to finish: the discovered account shows up in the assets
+# tab. Reaching it confirms the device connected and discovery completed.
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Home'
+      timeout: 60000
+- tapOn:
+      id: '@tabBar/AccountsStack'
+      retryTapIfNoChange: true
+- extendedWaitUntil:
+      visible:
+          id: '@screen/Accounts'
+      timeout: 30000
+- extendedWaitUntil:
+      visible:
+          id: '@accountList/item/title'
+      timeout: 60000
+
+- runScript: ../scripts/cleanupDevice.js

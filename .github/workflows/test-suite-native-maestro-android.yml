@@ -1,0 +1,150 @@
+name: "[Test] suite-native Android Maestro PoC"
+
+permissions:
+  id-token: write
+  contents: read
+  actions: write
+
+on:
+  pull_request:
+    paths:
+      - ".maestro/**"
+      - ".github/workflows/test-suite-native-maestro-android.yml"
+      - ".github/workflows/template-suite-native-prepare-test-app-android.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare_android_test_app:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
+    secrets:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+  run_android_maestro_test:
+    if: github.repository == 'trezor/trezor-suite'
+    needs: prepare_android_test_app
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          submodules: "true"
+
+      - name: Install node and yarn
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Setup Java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Load node modules cache
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: |
+            node_modules
+            suite-native/app/node_modules
+            .yarn/install-state.gz
+          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
+
+      - name: Install Socket Firewall
+        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+        continue-on-error: true
+        with:
+          mode: firewall-free
+          job-summary: errors
+          firewall-version: 1.11.0
+
+      - name: Install Yarn dependencies
+        run: |
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+
+      - name: Install Maestro 2.6.1
+        env:
+          MAESTRO_VERSION: 2.6.1
+          MAESTRO_SHA256: 3440825f514f537c6a96bcf5de995780c2a4a7f83a43208fdc95d4f1fecfad3b
+        run: |
+          curl --fail --location --silent --show-error \
+            "https://github.com/mobile-dev-inc/maestro/releases/download/cli-${MAESTRO_VERSION}/maestro.zip" \
+            --output maestro.zip
+          echo "${MAESTRO_SHA256}  maestro.zip" | sha256sum --check
+          unzip -q maestro.zip -d "$HOME/.maestro"
+          echo "$HOME/.maestro/maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Run trezor-user-env
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+        run: |
+          docker compose pull trezor-user-env-unix
+          docker compose up --detach trezor-user-env-unix
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:9002 > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs trezor-user-env.unix
+          exit 1
+
+      - name: Download Android build artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: android-test-build-${{ github.run_id }}
+          path: suite-native/app/android/app/build/
+
+      - name: Enable Android emulator KVM optimization
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run Maestro Android test
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        env:
+          MAESTRO_CLI_NO_ANALYTICS: 1
+        with:
+          api-level: 34
+          profile: pixel_6
+          arch: x86_64
+          ram-size: 4096M
+          force-avd-creation: true
+          avd-name: Pixel_6_API_34
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot-load -no-snapshot-save -noaudio -no-boot-anim -grpc 8554 -memory 4096
+          disable-animations: true
+          cores: 4
+          heap-size: 512M
+          script: yarn tsx .maestro/run-android-ci.ts
+
+      - name: Extract trezor-user-env logs
+        if: ${{ !cancelled() }}
+        run: |
+          mkdir -p artifacts
+          docker cp trezor-user-env.unix:/trezor-user-env/logs/debugging.log artifacts/trezor-user-env-debugging.log || true
+          docker cp trezor-user-env.unix:/trezor-user-env/logs/emulator_bridge.log artifacts/trezor-user-env-emulator-bridge.log || true
+          docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log artifacts/trezor-user-env-tropic-model.log || true
+          docker cp trezor-user-env.unix:/trezor-user-env/docker/version.txt artifacts/trezor-user-env-version.txt || true
+          docker logs trezor-user-env.unix > artifacts/trezor-user-env-container.log 2>&1 || true
+
+      - name: Stop trezor-user-env
+        if: ${{ always() }}
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+        run: docker compose down
+
+      - name: Store Maestro test artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: android-maestro-test
+          path: artifacts
+          retention-days: 14
