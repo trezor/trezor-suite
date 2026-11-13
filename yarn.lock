@@ -20122,6 +20122,7 @@ __metadata:
   resolution: "@trezor/network-ethereum-suite-common@workspace:networks/ethereum/network-ethereum-suite-common"
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
+    "@trezor/blockchain-core": "workspace:*"
     "@trezor/calldata": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"

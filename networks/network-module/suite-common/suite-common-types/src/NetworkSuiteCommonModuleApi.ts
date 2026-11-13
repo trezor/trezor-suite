@@ -7,8 +7,6 @@ import type { GetTrezorConnectDep } from '@trezor/connect-common';
  * runtimes themselves.
  */
 export type NetworkSuiteCommonModuleApi = GetTrezorConnectDep<
-    | 'getAccountInfo'
-    | 'blockchainEvmRpcCall'
     | 'signMessage'
     | 'verifyMessage'
     | 'ethereumSignMessage'

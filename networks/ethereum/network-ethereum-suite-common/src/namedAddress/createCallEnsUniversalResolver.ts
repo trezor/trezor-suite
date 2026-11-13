@@ -1,6 +1,6 @@
 import type { Hex } from 'viem';
 
-import type { GetTrezorConnectDep } from '@trezor/connect-common';
+import type { GetTrezorBlockchainDep } from '@trezor/blockchain-core';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 
 import { asHex } from './ensUniversalResolverUtils';
@@ -13,7 +13,7 @@ const UNIVERSAL_RESOLVER_ADDRESS = '0xeeeeeeee14d718c2b47d9923deab1335e144eeee';
 // `eth_call` needs a sender; a read against the resolver does not care which.
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-export type CallEnsUniversalResolverDeps = GetTrezorConnectDep<'blockchainEvmRpcCall'>;
+export type CallEnsUniversalResolverDeps = GetTrezorBlockchainDep<'evmRpcCall'>;
 
 export type CallEnsUniversalResolver = (
     symbol: EthereumNetworkSymbol,
@@ -34,7 +34,7 @@ export const createCallEnsUniversalResolver =
 
         try {
             const response = await Promise.race([
-                deps.getTrezorConnect().blockchainEvmRpcCall({
+                deps.getTrezorBlockchain().evmRpcCall({
                     coin: symbol,
                     identity,
                     from: ZERO_ADDRESS,

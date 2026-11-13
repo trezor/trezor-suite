@@ -3,7 +3,7 @@ import { createResolveNamedAddressViaBlockbook } from './createResolveNamedAddre
 const mockGetAccountInfo = jest.fn();
 
 const resolveViaBlockbook = createResolveNamedAddressViaBlockbook({
-    getTrezorConnect: () => ({ getAccountInfo: mockGetAccountInfo }),
+    getTrezorBlockchain: () => ({ getAccountInfo: mockGetAccountInfo }),
 });
 
 const VITALIK_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
