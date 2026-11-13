@@ -55,6 +55,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
         expect(result.current).toEqual({
             currencySymbol: '$',
+            currencySymbolSeparator: '',
             wholeNumber: '1,234',
             decimalNumber: '.56',
             isCurrencySymbolFirst: true,
@@ -69,6 +70,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
         expect(result.current).toEqual({
             currencySymbol: 'CZK',
+            currencySymbolSeparator: '\u00a0',
             wholeNumber: '1,234',
             decimalNumber: '.56',
             isCurrencySymbolFirst: true,
@@ -83,6 +85,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('1234.56');
         expect(result.current).toEqual({
             currencySymbol: 'Kč',
+            currencySymbolSeparator: '\u00a0',
             wholeNumber: '1\u00a0234', // non-breaking space
             decimalNumber: ',56',
             isCurrencySymbolFirst: false,
@@ -97,6 +100,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('2000');
         expect(result.current).toEqual({
             currencySymbol: '€',
+            currencySymbolSeparator: '',
             wholeNumber: '2,000',
             decimalNumber: '.00',
             isCurrencySymbolFirst: true,
@@ -111,6 +115,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('0.99');
         expect(result.current).toEqual({
             currencySymbol: 'CZK',
+            currencySymbolSeparator: '\u00a0',
             wholeNumber: '0',
             decimalNumber: '.99',
             isCurrencySymbolFirst: true,
@@ -139,6 +144,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('0.01');
         expect(result.current).toEqual({
             currencySymbol: 'BTC',
+            currencySymbolSeparator: '\u00a0',
             wholeNumber: '0',
             decimalNumber: '.01',
             isCurrencySymbolFirst: true,
@@ -153,6 +159,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('0.00124009');
         expect(result.current).toEqual({
             currencySymbol: 'BTC',
+            currencySymbolSeparator: '\u00a0',
             wholeNumber: '0',
             decimalNumber: '.00',
             isCurrencySymbolFirst: true,
@@ -167,6 +174,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('0.01477571');
         expect(result.current).toEqual({
             currencySymbol: 'sat',
+            currencySymbolSeparator: '\u00a0',
             wholeNumber: '1,477,571',
             decimalNumber: '',
             isCurrencySymbolFirst: false,
@@ -181,6 +189,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
         const { result } = await renderUseFormattedGraphHeaderValues('0.01477571');
         expect(result.current).toEqual({
             currencySymbol: 'sat',
+            currencySymbolSeparator: '\u00a0',
             wholeNumber: '1.477.571',
             decimalNumber: '',
             isCurrencySymbolFirst: false,
