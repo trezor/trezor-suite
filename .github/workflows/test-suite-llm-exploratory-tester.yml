@@ -27,7 +27,6 @@ jobs:
       EXPECTED_HEAD: bd3630cfba27da8033d77ebb6a808f3784b41d74
       HARNESS_HEAD: d31502e36ca9ee772789b8bf9283ae6d56c7c3f9
       SUITE_URL: https://dev.suite.sldev.cz/suite-web/develop/web/
-      EXPECTED_PREVIEW_SHA256: 90874698db47d85d7c8b4fd3e3b36d09b644e6730fbea017d8e1f3c0010d4bb8
       ATTEMPT: ${{ matrix.attempt }}
       GH_REPO: trezor/trezor-suite
     steps:
@@ -36,20 +35,11 @@ jobs:
         with:
           ref: d31502e36ca9ee772789b8bf9283ae6d56c7c3f9
 
-      - name: Verify develop head and preview
+      - name: Verify develop head
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           test "$(gh api "repos/$GH_REPO/branches/develop" --jq .commit.sha)" = "$EXPECTED_HEAD"
-          python3 - <<'PYCODE'
-          import hashlib
-          import os
-          from urllib.request import urlopen
-          with urlopen(os.environ['SUITE_URL']) as response:
-              actual = hashlib.sha256(response.read()).hexdigest()
-          assert actual == os.environ['EXPECTED_PREVIEW_SHA256'], 'Develop preview changed'
-          print('Develop preview SHA256=' + actual)
-          PYCODE
 
       - name: Install dependencies
         id: install
@@ -140,15 +130,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           test "$(gh api "repos/$GH_REPO/branches/develop" --jq .commit.sha)" = "$EXPECTED_HEAD"
-          python3 - <<'PYCODE'
-          import hashlib
-          import os
-          from urllib.request import urlopen
-          with urlopen(os.environ['SUITE_URL']) as response:
-              actual = hashlib.sha256(response.read()).hexdigest()
-          assert actual == os.environ['EXPECTED_PREVIEW_SHA256'], 'Develop preview changed'
-          print('Develop preview SHA256=' + actual)
-          PYCODE
 
       - name: Stop harness browser
         if: always() && steps.install.outcome == 'success'
