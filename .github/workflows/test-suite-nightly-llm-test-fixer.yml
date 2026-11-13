@@ -122,6 +122,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Pull Cardano Serialization Lib asm.js from LFS
+        shell: bash
+        run: git lfs pull --include "networks/cardano/network-cardano/generated/csl-asmjs/*"
+
       - name: Cache node_modules
         id: node-modules-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5

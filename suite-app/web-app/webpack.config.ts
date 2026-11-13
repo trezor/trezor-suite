@@ -14,6 +14,10 @@ const repoRoot = path.join(baseDir, '..', '..');
 const appAssets = path.join(repoRoot, 'suite', 'app-assets', 'files');
 const buildDir = path.join(baseDir, 'build');
 const browserslistConfigPath = path.resolve(baseDir, 'browserslist');
+const cardanoSerializationLibPath = path.join(
+    repoRoot,
+    'networks/cardano/network-cardano/generated/csl-asmjs/cardano_serialization_lib.js',
+);
 
 const DEV_PORT = 8000;
 
@@ -37,6 +41,16 @@ const webConfig: webpack.Configuration = {
     },
     output: {
         path: buildDir,
+    },
+    resolve: {
+        alias: {
+            /**
+             * Coin selection runs in the page, so its WebAssembly build would need 'wasm-unsafe-eval' in the CSP.
+             * The asm.js build is plain JavaScript; the mobile app resolves the same names to it.
+             */
+            '@emurgo/cardano-serialization-lib-nodejs$': cardanoSerializationLibPath,
+            '@emurgo/cardano-serialization-lib-browser$': cardanoSerializationLibPath,
+        },
     },
     plugins: [
         new CopyWebpackPlugin({

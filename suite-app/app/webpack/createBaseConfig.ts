@@ -213,7 +213,11 @@ export const createBaseConfig = ({
                 // TypeScript/JavaScript
                 {
                     test: /\.(j|t)sx?$/,
-                    exclude: /node_modules/i,
+                    exclude: [
+                        /node_modules/i,
+                        // Generated asm.js build of Cardano Serialization Lib, already plain JS (~7 s of babel per cold build).
+                        /[\\/]generated[\\/]csl-asmjs[\\/]/,
+                    ],
                     use: {
                         loader: 'babel-loader',
                         options: {
@@ -362,14 +366,7 @@ export const createBaseConfig = ({
                   ]
                 : []),
         ],
-        // We are using WASM package - it's much faster (https://github.com/Emurgo/cardano-serialization-lib)
-        // This option makes it possible
-        experiments: { asyncWebAssembly: true },
         ignoreWarnings: [
-            // Unfortunately Cardano Serialization Lib triggers webpack warning:
-            // "Critical dependency: the request of a dependency is an expression" due to require in generated wasm module
-            // https://github.com/Emurgo/cardano-serialization-lib/issues/119
-            { module: /cardano-serialization-lib-browser/ },
             // checkAuthenticityProof (see comment on how subtle is used there), should be safe to suppress this message
             warning =>
                 warning.message.includes(
