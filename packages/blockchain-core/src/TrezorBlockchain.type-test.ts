@@ -1,4 +1,4 @@
-import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '@trezor/connect-common';
 
 export const blockchainEstimateFee = async (api: TrezorConnect) => {
     const simple = await api.blockchainEstimateFee({ coin: 'btc' });
