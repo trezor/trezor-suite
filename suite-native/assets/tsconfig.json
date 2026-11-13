@@ -41,7 +41,6 @@
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../tokens" },
         { "path": "../transactions" },

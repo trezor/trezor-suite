@@ -35,7 +35,6 @@
         "@suite-native/formatters": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/module-earn": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transactions": "workspace:*",
