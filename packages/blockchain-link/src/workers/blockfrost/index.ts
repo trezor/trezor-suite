@@ -21,7 +21,11 @@ type Request<T> = T & Context;
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
     const api = await request.connect();
-    const info = await api.getServerInfo();
+    // The backend stays usable without protocol parameters; composing falls back to defaults.
+    const [info, cardanoProtocolParameters] = await Promise.all([
+        api.getServerInfo(),
+        api.getProtocolParameters().then(transformProtocolParameters, () => undefined),
+    ]);
 
     return {
         type: RESPONSES.GET_INFO,
@@ -29,6 +33,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
             url: api.options.url,
             network: info.shortcut,
             ...info,
+            cardanoProtocolParameters,
         },
     } as const;
 };
@@ -84,18 +89,6 @@ const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     } as const;
 };
 
-const getCardanoProtocolParameters = async (
-    request: Request<MessageTypes.GetCardanoProtocolParameters>,
-) => {
-    const api = await request.connect();
-    const parameters = await api.getProtocolParameters();
-
-    return {
-        type: RESPONSES.GET_CARDANO_PROTOCOL_PARAMETERS,
-        payload: transformProtocolParameters(parameters),
-    } as const;
-};
-
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const api = await request.connect();
     const payload = await api.pushTransaction(request.payload.hex);
@@ -136,6 +129,7 @@ const onNewBlock = ({ post }: Context, event: BlockContent) => {
             payload: {
                 blockHeight: event.height || 0,
                 blockHash: event.hash,
+                epoch: event.epoch ?? undefined,
             },
         },
     });
@@ -299,8 +293,6 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return getTransaction(request);
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
-        case MESSAGES.GET_CARDANO_PROTOCOL_PARAMETERS:
-            return getCardanoProtocolParameters(request);
         case MESSAGES.PUSH_TRANSACTION:
             return pushTransaction(request);
         case MESSAGES.SUBSCRIBE:

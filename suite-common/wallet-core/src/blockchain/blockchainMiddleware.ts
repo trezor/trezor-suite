@@ -9,6 +9,7 @@ import {
     onBlockchainConnectThunk,
     onBlockchainDisconnectThunk,
     onBlockchainNotificationThunk,
+    updateCardanoProtocolParametersThunk,
 } from './blockchainThunks';
 
 type BlockchainMiddlewareState = void;
@@ -28,6 +29,7 @@ export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps<
             break;
         case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
             dispatch(onBlockMinedThunk(action.payload));
+            dispatch(updateCardanoProtocolParametersThunk(action.payload));
             break;
         case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
             dispatch(onBlockchainNotificationThunk(action.payload));

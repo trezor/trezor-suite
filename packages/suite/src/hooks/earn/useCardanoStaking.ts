@@ -4,6 +4,7 @@ import {
     hasPendingStakeTypeTransaction,
     isCardanoWithdrawalBlockedByMissingDrep,
     selectCardanoPoolsInfo,
+    selectCardanoProtocolParameters,
     selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
 import {
@@ -50,6 +51,9 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
 
     const cardanoPools = useSelector(selectCardanoPoolsInfo);
     const votingDelegation = useSelector(selectStakeVotingDelegation);
+    const protocolParameters = useSelector(state =>
+        selectCardanoProtocolParameters(state, account.symbol),
+    );
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
 
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
@@ -90,6 +94,7 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
                     action,
                     cardanoPools,
                     votingDelegation,
+                    protocolParameters,
                 });
                 if (composeRes?.txPlan) {
                     if (composeRes.txPlan.type !== 'error') {
@@ -113,7 +118,7 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
 
             setLoading(false);
         },
-        [account, cardanoPools, votingDelegation],
+        [account, cardanoPools, votingDelegation, protocolParameters],
     );
 
     // TODO: improve this hook for non-cardano accounts
