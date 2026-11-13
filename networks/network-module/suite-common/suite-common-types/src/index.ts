@@ -88,7 +88,6 @@ export type {
 export { defineTransactionDetails } from './capabilities/transactionDetails/defineTransactionDetails';
 export type {
     ClosedTransactionFactsParams,
-    FeeRateUnit,
     OpenTransaction,
     TransactionDetails,
     TransactionDetailsDefinition,

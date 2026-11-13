@@ -8,8 +8,6 @@ import type { Label } from '../Label';
  */
 export type OpenTransaction = Transaction;
 
-export type FeeRateUnit = 'sat/vB' | 'Gwei';
-
 /** The value of one fact, in a form any platform renders without knowing the network. */
 export type TransactionFactValue =
     | {
@@ -19,8 +17,12 @@ export type TransactionFactValue =
           readonly isUserProvided?: boolean;
       }
     | { readonly kind: 'count'; readonly value: number }
-    /** `rate` is already rounded the way the network presents it. */
-    | { readonly kind: 'feeRate'; readonly rate: string; readonly unit: FeeRateUnit }
+    /**
+     * `rate` is already rounded the way the network presents it, and `unit` is the symbol the
+     * network writes after it, such as `sat/vB` or `Gwei`. The family states both, so a network
+     * with another unit changes nothing here.
+     */
+    | { readonly kind: 'feeRate'; readonly rate: string; readonly unit: string }
     | { readonly kind: 'usage'; readonly limit: number; readonly used?: number }
     /** Known only once the transaction is in a block, such as the base fee it paid. */
     | { readonly kind: 'pendingUntilConfirmed' };
