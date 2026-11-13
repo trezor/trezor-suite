@@ -39,6 +39,8 @@ const createRate = (rate: number | undefined): CurrentRate => {
 type RenderAccountOptions = {
     account?: Account;
     isNativeCoinOnly?: boolean;
+    shouldAlwaysShowCryptoAmount?: boolean;
+    shouldLimitFiatToNativeBalance?: boolean;
     nativeRate?: CurrentRate | null;
     hiddenTokens?: string[];
 };
@@ -46,11 +48,18 @@ type RenderAccountOptions = {
 const renderAccount = ({
     account = ethAccount,
     isNativeCoinOnly = false,
+    shouldAlwaysShowCryptoAmount = false,
+    shouldLimitFiatToNativeBalance = false,
     nativeRate = createRate(2000),
     hiddenTokens = [contract],
 }: RenderAccountOptions = {}) =>
     renderWithStoreProvider(
-        <AccountsListItem account={account} isNativeCoinOnly={isNativeCoinOnly} />,
+        <AccountsListItem
+            account={account}
+            isNativeCoinOnly={isNativeCoinOnly}
+            shouldAlwaysShowCryptoAmount={shouldAlwaysShowCryptoAmount}
+            shouldLimitFiatToNativeBalance={shouldLimitFiatToNativeBalance}
+        />,
         {
             preloadedState: {
                 device: mockStakeRootState({ accounts: [account] }).device,
@@ -121,6 +130,43 @@ describe('AccountsListItem', () => {
         expect(
             queryByLabelText(getTranslation('accountList.numberOfTokens', { numberOfTokens: 1 })),
         ).not.toBeOnTheScreen();
+    });
+
+    it('adds the native amount to the account total when requested', async () => {
+        const { getByText, getByLabelText, getByTestId } = await renderAccount({
+            hiddenTokens: [],
+            shouldAlwaysShowCryptoAmount: true,
+        });
+
+        expect(getByText(/7,350/)).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('accountList.numberOfTokens', { numberOfTokens: 1 })),
+        ).toBeOnTheScreen();
+        expect(getByTestId('@accountList/item/native-balance')).toBeOnTheScreen();
+    });
+
+    it('limits the fiat to the liquid native balance while keeping the token badge', async () => {
+        const { getByText, queryByText, getByLabelText, getByTestId } = await renderAccount({
+            hiddenTokens: [],
+            shouldAlwaysShowCryptoAmount: true,
+            shouldLimitFiatToNativeBalance: true,
+        });
+
+        expect(getByText(/3,000/)).toBeOnTheScreen();
+        expect(queryByText(/7,350/)).not.toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('accountList.numberOfTokens', { numberOfTokens: 1 })),
+        ).toBeOnTheScreen();
+        expect(getByTestId('@accountList/item/native-balance')).toBeOnTheScreen();
+    });
+
+    it('excludes staking from the fiat of a native-balance-only account without tokens', async () => {
+        const { getByText, queryByText } = await renderAccount({
+            shouldLimitFiatToNativeBalance: true,
+        });
+
+        expect(getByText(/3,000/)).toBeOnTheScreen();
+        expect(queryByText(/7,100/)).not.toBeOnTheScreen();
     });
 
     it.each([

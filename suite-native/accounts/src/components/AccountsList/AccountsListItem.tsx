@@ -45,6 +45,8 @@ type AccountListItemProps = {
     showDivider?: boolean;
     badges?: React.ReactNode;
     shouldShowExactAmount?: boolean;
+    shouldAlwaysShowCryptoAmount?: boolean;
+    shouldLimitFiatToNativeBalance?: boolean;
 };
 
 const AccountsListItemComponent = ({
@@ -58,6 +60,8 @@ const AccountsListItemComponent = ({
     showDivider = false,
     badges,
     shouldShowExactAmount = false,
+    shouldAlwaysShowCryptoAmount = false,
+    shouldLimitFiatToNativeBalance = false,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -86,7 +90,9 @@ const AccountsListItemComponent = ({
     const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
     const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
-    const fiatBalanceValue = shouldShowTokenBadge ? (
+    const shouldShowTotalFiat = shouldShowTokenBadge && !shouldLimitFiatToNativeBalance;
+    const shouldIncludeStakingInFiat = shouldShowStakingBadge && !shouldLimitFiatToNativeBalance;
+    const fiatBalanceValue = shouldShowTotalFiat ? (
         <BaseCurrencyAmountFormatter
             numberOfLines={1}
             adjustsFontSizeToFit
@@ -96,7 +102,7 @@ const AccountsListItemComponent = ({
     ) : (
         <CryptoToFiatAmountFormatter
             value={
-                shouldShowStakingBadge
+                shouldIncludeStakingInFiat
                     ? getAccountCryptoBalanceWithStaking(account)
                     : account.formattedBalance
             }
@@ -105,6 +111,8 @@ const AccountsListItemComponent = ({
         />
     );
     const isFailed = isAccountFailed(account);
+    const isCryptoAmountHidden =
+        !shouldAlwaysShowCryptoAmount && (shouldShowTokenBadge || shouldShowStakingBadge);
     const CryptoAmountFormatter = shouldShowExactAmount
         ? ExactCryptoAmountFormatter
         : CompactCryptoAmountFormatter;
@@ -155,7 +163,7 @@ const AccountsListItemComponent = ({
                 )
             }
             secondaryValue={
-                isFailed || shouldShowTokenBadge || shouldShowStakingBadge ? undefined : (
+                isFailed || isCryptoAmountHidden ? undefined : (
                     <CryptoAmountFormatter
                         testID="@accountList/item/native-balance"
                         value={account.formattedBalance}
