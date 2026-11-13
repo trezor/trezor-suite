@@ -1,13 +1,17 @@
+import { Suspense } from 'react';
+
 import {
     TurnOnSuiteSyncModals,
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
 import { ReduxModal } from '@suite-app/app-modal';
+import { ModalSkeleton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     ConnectionGlobalModalManager,
+    ModalErrorBoundary,
     ThpGlobalModalManager,
     WipedBleDeviceNeedsManualOsRemovalModalManager,
     usePreferredModal,
@@ -23,7 +27,14 @@ type InnerProps = { modal: ModalParams };
 const Inner = ({ modal }: InnerProps) => {
     switch (modal.type) {
         case 'redux-modal':
-            return <ReduxModal {...modal.payload} />;
+            // ReduxModal's switches load their modals lazily; this is their only render site.
+            return (
+                <ModalErrorBoundary>
+                    <Suspense fallback={<ModalSkeleton />}>
+                        <ReduxModal {...modal.payload} />
+                    </Suspense>
+                </ModalErrorBoundary>
+            );
         default:
             return null;
     }

@@ -13,10 +13,8 @@
     "dependencies": {
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite/metadata": "workspace:*",
         "@suite/modal": "workspace:*",
         "@suite/tor": "workspace:*",
-        "@suite/tor-desktop": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/redux-utils": "workspace:*",

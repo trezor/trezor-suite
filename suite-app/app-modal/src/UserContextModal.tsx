@@ -1,17 +1,19 @@
-import { MetadataProviderModal } from '@suite/metadata';
 import { type MODAL_CONTEXT_USER, closeModal as closeModalAction } from '@suite/modal';
 import { isOnionUrl } from '@suite/tor';
-import {
-    DisableTorModal,
-    DisableTorStopCoinjoinModal,
-    RequestEnableTorModal,
-} from '@suite/tor-desktop';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_EVENTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import {
+import { type ReduxModalProps, lazyUserContextModals, useSelector } from '@trezor/suite';
+import { exhaustive } from '@trezor/type-utils';
+
+/**
+ * Destructured rather than imported one by one from `@trezor/suite`: these are the lazy wrappers
+ * declared beside the modals themselves, so the switch below names them exactly as it would the
+ * components, while their code stays out of the boot bundle.
+ */
+const {
     ActivateAssetsModal,
     AddAccountModal,
     AddTokenModal,
@@ -33,17 +35,20 @@ import {
     CopyAddressModal,
     CriticalCoinjoinPhaseModal,
     DeviceAuthenticityOptOutModal,
+    DisableTorModal,
+    DisableTorStopCoinjoinModal,
     EarnClaimModal,
     EarnInANutshellModal,
     EarnProviderConsentModal,
     EarnYieldTxSimulationModal,
     FirmwareRevisionOptOutModal,
     ImportTransactionModal,
+    MetadataProviderModal,
     MoreRoundsNeededModal,
     PinInvalidModal,
     PinMismatchModal,
     QrScannerModal,
-    type ReduxModalProps,
+    RequestEnableTorModal,
     SafetyChecksModal,
     StakeChangeDelegateModal,
     StakeModal,
@@ -59,9 +64,7 @@ import {
     WalletConnectProposalModal,
     WalletConnectSwitchAccountModal,
     WipeDeviceSuccessModal,
-    useSelector,
-} from '@trezor/suite';
-import { exhaustive } from '@trezor/type-utils';
+} = lazyUserContextModals;
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {

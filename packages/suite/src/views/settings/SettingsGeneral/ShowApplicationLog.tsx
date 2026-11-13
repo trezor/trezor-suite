@@ -1,14 +1,14 @@
 import { Translation } from '@suite/intl';
-import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
-import { injectDispatch } from '@trezor/redux-utils';
+
+import { useModalLoader } from '#src/hooks/suite/useModalLoader';
 
 export const ShowApplicationLog = () => {
-    const { dispatch } = useServices(injectDispatch);
+    const { open, preload, isLoading } = useModalLoader();
 
-    const handleClick = () => dispatch(openModal({ type: 'application-log' }));
+    const handleClick = () => open({ type: 'application-log' });
+    const handlePreload = () => preload('application-log');
 
     return (
         <Anchor anchorId={SettingsAnchor.ShowLog}>
@@ -22,6 +22,9 @@ export const ShowApplicationLog = () => {
                     actions={
                         <SectionItem.Button
                             onClick={handleClick}
+                            onMouseEnter={handlePreload}
+                            onFocus={handlePreload}
+                            isLoading={isLoading}
                             intent="brand"
                             data-testid="@settings/show-log-button"
                         >

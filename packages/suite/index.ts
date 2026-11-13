@@ -328,16 +328,9 @@ export { DeviceCompromisedContent } from './src/components/suite/SecurityCheck/D
 export { ConnectionGlobalModalManager } from './src/components/connection/ConnectionGlobalModalManager';
 export { ThpGlobalModalManager } from './src/components/connection/thp/ThpGlobalModalManager';
 export { WipedBleDeviceNeedsManualOsRemovalModalManager } from './src/components/suite/bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
-export { MultiShareBackupModal } from './src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
-export { Backup } from './src/views/backup/Backup';
-export { FirmwareCustom } from './src/views/firmware/FirmwareCustom';
-export { FirmwareUpdate } from './src/views/firmware/FirmwareUpdate';
-export { Recovery } from './src/views/recovery';
-export { BridgeUnavailable } from './src/views/suite/bridge';
-export { BridgeDeprecated } from './src/views/suite/bridge-deprecated';
-export { BridgeRequested } from './src/views/suite/bridge-requested';
-export { UdevRules } from './src/views/suite/udev';
-export { Version } from './src/views/suite/version';
+export { getForegroundApp } from './src/components/suite/modals/ModalSwitcher/lazyForegroundApps';
+export { ModalErrorBoundary } from './src/components/suite/modals/ModalSwitcher/ModalErrorBoundary';
+export { lazyUserContextModals } from './src/components/suite/modals/ReduxModal/UserContextModal/lazyUserContextModals';
 export {
     Body,
     Columns,
@@ -357,53 +350,7 @@ export {
     SIDEBAR_MAX_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from './src/components/suite/layouts/SuiteLayout/Sidebar/consts';
-export { EarnClaimModal } from './src/components/earn/modals/EarnClaimModal/EarnClaimModal';
-export { EarnInANutshellModal } from './src/components/earn/modals/EarnInANutshell/EarnInANutshellModal';
-export { EarnProviderConsentModal } from './src/components/earn/modals/EarnProviderConsent/EarnProviderConsentModal';
-export { StakeModal } from './src/components/earn/modals/StakeModal/StakeModal';
-export { TronStakeInANutshellModal } from './src/components/earn/modals/EarnInANutshell/TronStakeInANutshellModal';
-export { TronVoteConsentModal } from './src/components/earn/staking/tron/vote/TronVoteConsentModal';
-export { UnstakeModal } from './src/components/earn/modals/UnstakeModal/UnstakeModal';
-export { TronStakeConsentModal } from './src/components/earn/staking/tron/TronStakeConsentModal';
-export { ConnectPopupTxSimulationModal } from './src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModal';
-export { EarnYieldTxSimulationModal } from './src/components/tx-simulation/earn-stablecoin/EarnYieldTxSimulationModal';
-export { ConfirmXpubModal } from './src/components/suite/modals/ReduxModal/ConfirmXpubModal';
-export { CopyAddressModal } from './src/components/suite/modals/ReduxModal/CopyAddressModal';
-export { PinInvalidModal } from './src/components/suite/modals/ReduxModal/DeviceContextModal/PinInvalidModal';
 export { type ReduxModalProps } from './src/components/suite/modals/ReduxModal/ReduxModalProps';
-export { TransactionReviewModal } from './src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal';
-export { UnhideTokenModal } from './src/components/suite/modals/ReduxModal/UnhideTokenModal';
-export { ActivateAssetsModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ActivateAssetsModal';
-export { AddAccountModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
-export { AddTokenModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AddTokenModal';
-export { AdvancedCoinSettingsModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
-export { ApplicationLogModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ApplicationLogModal';
-export { AutoStartBeforeQuitModal } from './src/components/suite/modals/ReduxModal/UserContextModal/AutoStartBeforeQuitModal';
-export { BackgroundGalleryModal } from './src/components/suite/modals/ReduxModal/UserContextModal/BackgroundGalleryModal';
-export { CancelCoinjoinModal } from './src/components/suite/modals/ReduxModal/UserContextModal/CancelCoinjoinModal';
-export { CoinjoinSuccessModal } from './src/components/suite/modals/ReduxModal/UserContextModal/CoinjoinSuccessModal';
-export { ConfirmUnverifiedProceedModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ConfirmUnverifiedProceedModal';
-export { ConfirmUnverifiedXpubModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ConfirmUnverifiedXpubModal';
-export { ConnectAddressConfirmation } from './src/components/suite/modals/ReduxModal/UserContextModal/ConnectAddressConfirmation';
-export { ConnectErrorModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ConnectErrorModal';
-export { ConnectLoadingModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ConnectLoadingModal';
-export { ConnectPermissionsModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ConnectPermissionsModal';
-export { ConnectSelectAccount } from './src/components/suite/modals/ReduxModal/UserContextModal/ConnectSelectAccount/ConnectSelectAccount';
-export { CriticalCoinjoinPhaseModal } from './src/components/suite/modals/ReduxModal/UserContextModal/CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
-export { DeviceAuthenticityOptOutModal } from './src/components/suite/modals/ReduxModal/UserContextModal/DeviceAuthenticityOptOutModal';
-export { FirmwareRevisionOptOutModal } from './src/components/suite/modals/ReduxModal/UserContextModal/FirmwareRevisionOptOutModal';
-export { ImportTransactionModal } from './src/components/suite/modals/ReduxModal/UserContextModal/ImportTransactionModal/ImportTransactionModal';
-export { MoreRoundsNeededModal } from './src/components/suite/modals/ReduxModal/UserContextModal/MoreRoundsNeededModal';
-export { PinMismatchModal } from './src/components/suite/modals/ReduxModal/UserContextModal/PinMismatchModal';
-export { QrScannerModal } from './src/components/suite/modals/ReduxModal/UserContextModal/QrScannerModal/QrScannerModal';
-export { SafetyChecksModal } from './src/components/suite/modals/ReduxModal/UserContextModal/SafetyChecksModal';
-export { StakeChangeDelegateModal } from './src/components/suite/modals/ReduxModal/UserContextModal/StakeChangeDelegateModal/StakeChangeDelegateModal';
-export { TorLoadingModal } from './src/components/suite/modals/ReduxModal/UserContextModal/TorLoadingModal';
-export { TxDetailModal } from './src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/TxDetailModal';
-export { UnecoCoinjoinModal } from './src/components/suite/modals/ReduxModal/UserContextModal/UnecoCoinjoinModal';
-export { WalletConnectProposalModal } from './src/components/suite/modals/ReduxModal/UserContextModal/WalletConnectProposalModal';
-export { WalletConnectSwitchAccountModal } from './src/components/suite/modals/ReduxModal/UserContextModal/WalletConnectSwitchAccountModal';
-export { WipeDeviceSuccessModal } from './src/components/suite/modals/ReduxModal/UserContextModal/WipeDeviceSuccessModal';
 export { DeviceConfirmationModal } from './src/components/suite/modals/ReduxModal/DeviceConfirmationModal/DeviceConfirmationModal';
 export { DeviceContextModal } from './src/components/suite/modals/ReduxModal/DeviceContextModal/DeviceContextModal';
 export { OnboardingProgressBar } from './src/components/onboarding/OnboardingProgressBar';

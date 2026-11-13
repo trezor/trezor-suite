@@ -1,16 +1,26 @@
+import { Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 
-import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { ModalSkeleton } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
+const FirmwareUpgradeNeededModal = lazy(() =>
+    import(/* webpackChunkName: "modals-firmware" */ '@suite/firmware-upgrade').then(m => ({
+        default: m.FirmwareUpgradeNeededModal,
+    })),
+);
+const SuiteSyncTurnOnModal = lazy(() =>
+    import(/* webpackChunkName: "modals-connection" */ './SuiteSyncTurnOnModal').then(m => ({
+        default: m.SuiteSyncTurnOnModal,
+    })),
+);
 
 type TurnOnSuiteSyncModalsProps = {
     onClose: () => void;
@@ -40,21 +50,26 @@ export const TurnOnSuiteSyncModals = ({
         case 'unsupported':
             return null;
 
+        // This component has several render sites, so each lazy modal carries its own boundary.
         case 'suite-sync-off':
             return (
-                <SuiteSyncTurnOnModal
-                    onClose={onClose}
-                    onSuccess={onSuccess}
-                    deviceStaticSessionId={deviceStaticSessionId}
-                />
+                <Suspense fallback={<ModalSkeleton />}>
+                    <SuiteSyncTurnOnModal
+                        onClose={onClose}
+                        onSuccess={onSuccess}
+                        deviceStaticSessionId={deviceStaticSessionId}
+                    />
+                </Suspense>
             );
 
         case 'firmware-upgrade-needed':
             return (
-                <FirmwareUpgradeNeededModal
-                    onClose={onClose}
-                    featureName={translationString('TR_LABELING_SECURE_SYNC')}
-                />
+                <Suspense fallback={<ModalSkeleton />}>
+                    <FirmwareUpgradeNeededModal
+                        onClose={onClose}
+                        featureName={translationString('TR_LABELING_SECURE_SYNC')}
+                    />
+                </Suspense>
             );
 
         default:

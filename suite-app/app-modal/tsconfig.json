@@ -9,10 +9,8 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        { "path": "../../suite/metadata" },
         { "path": "../../suite/modal" },
         { "path": "../../suite/tor" },
-        { "path": "../../suite/tor-desktop" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"

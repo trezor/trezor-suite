@@ -1,16 +1,12 @@
-import {
-    ThpAutoconnectInfoModal,
-    ThpPairingFailedModal,
-    ThpPairingPinEntryModal,
-} from '@suite/thp';
+import { Suspense } from 'react';
+
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
-import { exhaustive } from '@trezor/type-utils';
+import { ModalSkeleton } from '@trezor/components';
 
 import { useSelector } from '#src/hooks/suite';
 
-import { ThpAutoconnectionModal } from './ThpAutoconnectionModal';
-import { ThpConnectionModal } from './ThpConnectionModal';
+import { ThpStepModal } from './ThpStepModal';
 
 export const ThpGlobalModalManager = () => {
     const device = useSelector(selectSelectedFirstThpDevice);
@@ -21,31 +17,13 @@ export const ThpGlobalModalManager = () => {
         return null;
     }
 
-    if (thpStep !== null) {
-        switch (thpStep) {
-            // handled in FirmwareModal and onboarding FirmwareStep
-            case 'BeforeConnectionInfo':
-                return null;
-            case 'ConfirmConnectionBeforePairing':
-                return <ThpConnectionModal device={device} />;
-            case 'ConfirmOnlyConnection':
-                return <ThpConnectionModal device={device} />;
-            case 'CodeEntry':
-                return <ThpPairingPinEntryModal />;
-            case 'CodeInvalid':
-                return <ThpPairingFailedModal />;
-            default:
-                return exhaustive(thpStep);
-        }
-    }
-
-    if (thpAutoconnectStep === 'AutoconnectInfo') {
-        return <ThpAutoconnectInfoModal device={device} />;
-    }
-
-    if (thpAutoconnectStep === 'Autoconnect') {
-        return <ThpAutoconnectionModal device={device} />;
-    }
-
-    return null;
+    return (
+        <Suspense fallback={<ModalSkeleton />}>
+            <ThpStepModal
+                device={device}
+                thpStep={thpStep}
+                thpAutoconnectStep={thpAutoconnectStep}
+            />
+        </Suspense>
+    );
 };
