@@ -176,7 +176,7 @@
         "react-native-screens": "~4.30.1",
         "react-native-svg": "15.16.0",
         "react-native-tcp-socket": "6.4.3",
-        "react-native-teleport": "^1.2.2",
+        "react-native-teleport": "^1.2.3",
         "react-native-webview": "patch:react-native-webview@npm%3A14.0.1#~/.yarn/patches/react-native-webview-npm-14.0.1-5188b52144.patch",
         "react-native-worklets": "0.13.0",
         "react-redux": "9.3.0",
