@@ -72,6 +72,8 @@ export const createWebDesktopApi = (): DesktopApi => ({
     mcpSetEnabled: unavailableAsync('mcpSetEnabled'),
     mcpRegenerateToken: unavailableAsync('mcpRegenerateToken'),
     reloadBrowserWindow: unavailableAsync('reloadBrowserWindow'),
+    pullLegacyOriginStorage: unavailableAsync('pullLegacyOriginStorage'),
+    reportLegacyOriginStorageImport: unavailableAsync('reportLegacyOriginStorageImport'),
     inAppBrowserOpenView: unavailableAsync('inAppBrowserOpenView'),
     inAppBrowserCloseView: unavailableAsync('inAppBrowserCloseView'),
     inAppBrowserSetBounds: unavailableAsync('inAppBrowserSetBounds'),

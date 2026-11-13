@@ -21,6 +21,7 @@ import * as externalLinks from './external-links';
 import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
 import * as appsEmbedding from './in-app-browser';
+import * as legacyOriginStorage from './legacy-origin-storage';
 import * as mcpServer from './mcp-server';
 import * as menu from './menu';
 import * as metadata from './metadata';
@@ -68,6 +69,7 @@ const MODULES: Module[] = [
     customProtocols,
     autoUpdater,
     store,
+    legacyOriginStorage,
     userData,
     trezorConnect,
     devTools,

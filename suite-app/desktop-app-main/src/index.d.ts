@@ -80,3 +80,12 @@ declare type McpSettings = {
     port: number;
     token?: string;
 };
+
+declare type LegacyOriginStorageSettings = {
+    /**
+     * The renderer's storage has moved from the legacy `file://` origin to the renderer origin,
+     * there was nothing to move, or the user chose to start without it after the move failed.
+     * Set once per user-data directory, see modules/legacy-origin-storage.ts.
+     */
+    isMigrated: boolean;
+};

@@ -32,8 +32,10 @@ const appAssets = path.join(repoRoot, 'suite', 'app-assets', 'files');
 const DEV_PORT = 8000;
 
 /**
- * The packaged application loads from `file://`, so assets must resolve relative to the
- * application directory rather than the filesystem root.
+ * Asset paths relative to the page, which keeps them independent of where the page is served.
+ * The main process serves `build/` as the root of the `suite://app` origin
+ * (see desktop-app-main's libs/renderer-protocol.ts),
+ * where a relative and an absolute path name the same file.
  */
 const DESKTOP_ASSET_PREFIX = '.';
 
@@ -102,6 +104,12 @@ const rendererConfig: webpack.Configuration = {
                     from: path.join(appAssets, 'release-notes.md'),
                     to: buildDir,
                 },
+                // The main process loads it hidden from `file://` to export the storage of that
+                // legacy origin, see desktop-app-main's legacy-origin-storage module.
+                {
+                    from: path.join(rendererDir, 'src', 'static', 'legacy-origin-storage.html'),
+                    to: buildDir,
+                },
                 {
                     from: path.join(
                         path.dirname(require.resolve('@suite-common/flags/package.json')),
@@ -119,9 +127,7 @@ const rendererConfig: webpack.Configuration = {
             minify: !isDev,
             template: path.join(rendererDir, 'src', 'static', 'index.html'),
             templateParameters: {
-                // This needs to be set as `.` so it loads from appDir of the Electron app.
-                // For example (in case of AppImage): `file:///tmp/.mount_TrezorAvGo8g/resources/app.asar/build`,
-                // where the  requested asset (for example: `static/fonts/fonts.css`) is located.
+                // Loads the page's assets (for example `static/fonts/fonts.css`) from next to it.
                 assetPrefix: DESKTOP_ASSET_PREFIX,
                 isOnionLocation: FLAGS.ONION_LOCATION_META,
             },

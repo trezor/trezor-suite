@@ -15,6 +15,7 @@ import {
     ConnectedIntlProvider,
     ErrorScreen,
     LoadingScreen,
+    type MigrateLegacyOriginStorageDep,
     storageConstants as STORAGE,
     desktopHandshake,
 } from '@trezor/suite';
@@ -23,9 +24,10 @@ import { MainDesktop } from './MainDesktop';
 import { initSentry } from './sentry';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
-type DesktopAppDeps = DesktopApiDep & {
-    services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
-};
+type DesktopAppDeps = DesktopApiDep &
+    MigrateLegacyOriginStorageDep & {
+        services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
+    };
 
 export type DesktopApp = (container: HTMLElement) => Promise<void>;
 
@@ -34,11 +36,25 @@ export type DesktopAppDep = { desktopApp: DesktopApp };
 export const createDesktopApp =
     (deps: DesktopAppDeps): DesktopApp =>
     async container => {
-        initSentry();
-
         // render simple loader with theme provider without redux, wait for indexedDB
         const root = createRoot(container);
         root.render(<LoadingScreen />);
+
+        // Storage left on the legacy `file://` origin has to be here before Sentry reads the
+        // analytics consent from localStorage and before the preload store opens IndexedDB.
+        const migration = await deps.migrateLegacyOriginStorage();
+        if (!migration.success) {
+            // The app stops before it uses this origin, so a restart can move the storage again.
+            root.render(
+                <ServicesProvider services={deps.services}>
+                    <ErrorScreen error={`Moving the app storage failed: ${migration.error}`} />
+                </ServicesProvider>,
+            );
+
+            return;
+        }
+
+        initSentry();
 
         const preloadAction = await deps.services.hydrateReduxStore();
 
