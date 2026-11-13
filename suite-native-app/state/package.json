@@ -65,6 +65,7 @@
         "@suite-native/storage": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/env-utils": "workspace:*",

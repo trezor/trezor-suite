@@ -2,7 +2,12 @@ import { createIpcProxy } from '@trezor/ipc-proxy';
 
 import type { TrezorBlockchainApi } from './TrezorBlockchain';
 
-export type { TrezorBlockchainApi, TrezorBlockchainSettings } from './TrezorBlockchain';
+export type {
+    GetTrezorBlockchain,
+    GetTrezorBlockchainDep,
+    TrezorBlockchainApi,
+    TrezorBlockchainSettings,
+} from './TrezorBlockchain';
 export type { BlockchainLinkSettings } from './data/coinInfo';
 
 let ipcProxy: Promise<TrezorBlockchainApi> | undefined;

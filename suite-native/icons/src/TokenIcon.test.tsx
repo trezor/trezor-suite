@@ -18,7 +18,7 @@ import { createDeferred } from '@trezor/utils';
 import { TokenIcon } from './TokenIcon';
 
 const ethSymbol = asNetworkSymbol('eth');
-const networkModules = createNetworkModulesCompositionRoot({ getTrezorConnect: mock() });
+const networkModules = createNetworkModulesCompositionRoot({ getTrezorBlockchain: mock() });
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 const ethereumModule = networkModuleRepository.get(ethSymbol);
 const getTokenLogoIdentifiers = mock<GetTokenLogoIdentifiers>();

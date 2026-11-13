@@ -17,7 +17,7 @@ import {
 it('preserves the account sync cadence of every registered network', () => {
     const networkModuleRepository = createNetworkModuleRepository({
         networkModules: createNetworkModulesCompositionRoot(
-            createMockDeps<NetworkSuiteCommonModuleApi>({ getTrezorConnect: null }),
+            createMockDeps<NetworkSuiteCommonModuleApi>({ getTrezorBlockchain: null }),
         ),
     });
     const getAccountSyncInterval = createGetAccountSyncInterval(
@@ -68,7 +68,7 @@ it('preserves the account sync cadence of every registered network', () => {
 
 it('exposes the service through the networks composition root and injector', () => {
     const networks = createNetworksCompositionRoot(
-        createMockDeps<NetworksCompositionRootDeps>({ getTrezorConnect: null, dispatch: null }),
+        createMockDeps<NetworksCompositionRootDeps>({ getTrezorBlockchain: null, dispatch: null }),
     );
     const { getAccountSyncInterval } = injectGetAccountSyncInterval({ networks });
 
@@ -79,7 +79,7 @@ it('exposes the service through the networks composition root and injector', () 
 it('rejects a network without a registered module', () => {
     const networkModuleRepository = createNetworkModuleRepository({
         networkModules: createNetworkModulesCompositionRoot(
-            createMockDeps<NetworkSuiteCommonModuleApi>({ getTrezorConnect: null }),
+            createMockDeps<NetworkSuiteCommonModuleApi>({ getTrezorBlockchain: null }),
         ),
     });
     const getAccountSyncInterval = createGetAccountSyncInterval(

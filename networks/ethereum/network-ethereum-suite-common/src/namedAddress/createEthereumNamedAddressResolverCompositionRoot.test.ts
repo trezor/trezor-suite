@@ -5,12 +5,12 @@ import {
     createEthereumNamedAddressResolverCompositionRoot,
 } from './createEthereumNamedAddressResolverCompositionRoot';
 
-const mockBlockchainEvmRpcCall = jest.fn();
+const mockEvmRpcCall = jest.fn();
 const mockGetAccountInfo = jest.fn();
 
 const deps: EthereumNamedAddressResolverCompositionRootDeps = {
-    getTrezorConnect: () => ({
-        blockchainEvmRpcCall: mockBlockchainEvmRpcCall,
+    getTrezorBlockchain: () => ({
+        evmRpcCall: mockEvmRpcCall,
         getAccountInfo: mockGetAccountInfo,
     }),
 };
@@ -31,19 +31,19 @@ const RESOLVED_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 
 describe('resolution request cost', () => {
     beforeEach(() => {
-        mockBlockchainEvmRpcCall.mockReset();
+        mockEvmRpcCall.mockReset();
         mockGetAccountInfo.mockReset();
     });
 
     it('costs one request and no error for a name that does not exist', async () => {
-        mockBlockchainEvmRpcCall.mockResolvedValue({
+        mockEvmRpcCall.mockResolvedValue({
             success: false,
             error: { message: 'execution reverted' },
         });
 
         const resolved = await resolveNamedAddress('cult.et', 'eth');
 
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
         // A definitive answer, so no Blockbook fallback.
         expect(mockGetAccountInfo).not.toHaveBeenCalled();
         // Resolving to `null` rather than rejecting is what keeps this out of the error log.
@@ -51,7 +51,7 @@ describe('resolution request cost', () => {
     });
 
     it('costs one request for a name that resolves', async () => {
-        mockBlockchainEvmRpcCall.mockResolvedValue({
+        mockEvmRpcCall.mockResolvedValue({
             success: true,
             payload: {
                 data:
@@ -65,14 +65,14 @@ describe('resolution request cost', () => {
         const resolved = await resolveNamedAddress('vitalik.eth', 'eth');
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
         expect(mockGetAccountInfo).not.toHaveBeenCalled();
     });
 
     // An offchain (CCIP-read) name is not a name that does not exist. Reporting it as one is how
     // a perfectly valid L2/gasless name ends up telling the user to check their spelling.
     it('hands an offchain name to Blockbook rather than calling it unresolvable', async () => {
-        mockBlockchainEvmRpcCall.mockResolvedValue({
+        mockEvmRpcCall.mockResolvedValue({
             success: false,
             error: {
                 message: `execution reverted: ${encodeErrorResult({
@@ -102,7 +102,7 @@ describe('resolution request cost', () => {
     });
 
     it('falls back to Blockbook only when the backend is genuinely unreachable', async () => {
-        mockBlockchainEvmRpcCall.mockResolvedValue({
+        mockEvmRpcCall.mockResolvedValue({
             success: false,
             error: { message: 'Backend not connected' },
         });
@@ -120,12 +120,12 @@ describe('resolution request cost', () => {
 
 describe('backend identity', () => {
     beforeEach(() => {
-        mockBlockchainEvmRpcCall.mockReset();
+        mockEvmRpcCall.mockReset();
         mockGetAccountInfo.mockReset();
     });
 
     it('sends both the onchain lookup and the Blockbook fallback on the given identity', async () => {
-        mockBlockchainEvmRpcCall.mockResolvedValue({
+        mockEvmRpcCall.mockResolvedValue({
             success: false,
             error: { message: 'Backend not connected' },
         });
@@ -136,7 +136,7 @@ describe('backend identity', () => {
 
         await resolveNamedAddress('vitalik.eth', 'eth', { identity: 'account-identity' });
 
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+        expect(mockEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'account-identity' }),
         );
         expect(mockGetAccountInfo).toHaveBeenCalledWith(
@@ -145,14 +145,14 @@ describe('backend identity', () => {
     });
 
     it('sends the reverse lookup on the given identity', async () => {
-        mockBlockchainEvmRpcCall.mockResolvedValue({
+        mockEvmRpcCall.mockResolvedValue({
             success: false,
             error: { message: 'execution reverted' },
         });
 
         await reverseResolveAddress(RESOLVED_ADDRESS, 'eth', { identity: 'account-identity' });
 
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+        expect(mockEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'account-identity' }),
         );
     });

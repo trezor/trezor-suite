@@ -66,6 +66,19 @@ export type TrezorBlockchainApi = {
     pushTransaction: Api['pushTransaction'];
 };
 
+/**
+ * Reads TrezorBlockchain at call time, so the app chooses its implementation. The generic limits
+ * each consumer to the methods it actually requires.
+ */
+export type GetTrezorBlockchain<TMethod extends keyof TrezorBlockchainApi> = () => Pick<
+    TrezorBlockchainApi,
+    TMethod
+>;
+
+export type GetTrezorBlockchainDep<TMethod extends keyof TrezorBlockchainApi> = {
+    getTrezorBlockchain: GetTrezorBlockchain<TMethod>;
+};
+
 const emitter = new TypedEmitter<TrezorBlockchainEvents>();
 
 const postMessage = (message: BlockchainEventMessage) => {

@@ -5,7 +5,7 @@
     },
     "references": [
         {
-            "path": "../../../../packages/connect-common"
+            "path": "../../../../packages/blockchain-core"
         },
         {
             "path": "../../../../packages/crypto-utils"

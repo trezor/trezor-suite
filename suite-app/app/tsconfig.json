@@ -129,6 +129,9 @@
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/tor" },
         { "path": "../../suite/trading" },
+        {
+            "path": "../../packages/blockchain-core"
+        },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {

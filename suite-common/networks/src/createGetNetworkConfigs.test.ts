@@ -43,7 +43,7 @@ describe('with registered network modules', () => {
     const getRegisteredNetworkConfigs = () => {
         const networkModuleRepository = createNetworkModuleRepository({
             networkModules: createNetworkModulesCompositionRoot(
-                createMockDeps<NetworkSuiteCommonModuleApi>({ getTrezorConnect: null }),
+                createMockDeps<NetworkSuiteCommonModuleApi>({ getTrezorBlockchain: null }),
             ),
         });
         const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });

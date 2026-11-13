@@ -3,11 +3,11 @@ import { decodeFunctionData, encodeErrorResult, parseAbi } from 'viem';
 import { createCallEnsUniversalResolver } from './createCallEnsUniversalResolver';
 import { createResolveNamedAddressViaEnsUniversalResolver } from './createResolveNamedAddressViaEnsUniversalResolver';
 
-const mockBlockchainEvmRpcCall = jest.fn();
+const mockEvmRpcCall = jest.fn();
 
 const resolveNamedAddressOnchain = createResolveNamedAddressViaEnsUniversalResolver({
     callEnsUniversalResolver: createCallEnsUniversalResolver({
-        getTrezorConnect: () => ({ blockchainEvmRpcCall: mockBlockchainEvmRpcCall }),
+        getTrezorBlockchain: () => ({ evmRpcCall: mockEvmRpcCall }),
     }),
 });
 
@@ -40,17 +40,17 @@ const asRevert = (revertData: string) => ({
 });
 
 const revertWith = (revertData: string) => {
-    mockBlockchainEvmRpcCall.mockResolvedValue(asRevert(revertData));
+    mockEvmRpcCall.mockResolvedValue(asRevert(revertData));
 };
 
 const succeedWith = (...responses: string[]) => {
     responses.forEach(data =>
-        mockBlockchainEvmRpcCall.mockResolvedValueOnce({ success: true, payload: { data } }),
+        mockEvmRpcCall.mockResolvedValueOnce({ success: true, payload: { data } }),
     );
 };
 
 const failWith = (message: string) => {
-    mockBlockchainEvmRpcCall.mockResolvedValue({ success: false, error: { message } });
+    mockEvmRpcCall.mockResolvedValue({ success: false, error: { message } });
 };
 
 const RESOLVER_NOT_FOUND = encodeRevert('error ResolverNotFound(bytes name)', 'ResolverNotFound', [
@@ -77,7 +77,7 @@ const OFFCHAIN_LOOKUP = encodeRevert(
 
 describe('resolveNamedAddressOnchain', () => {
     beforeEach(() => {
-        mockBlockchainEvmRpcCall.mockReset();
+        mockEvmRpcCall.mockReset();
     });
 
     it('resolves a name to its address in a single request', async () => {
@@ -86,7 +86,7 @@ describe('resolveNamedAddressOnchain', () => {
         await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).resolves.toBe(
             VITALIK_ADDRESS,
         );
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
     it('calls the UniversalResolver on the requested network', async () => {
@@ -94,7 +94,7 @@ describe('resolveNamedAddressOnchain', () => {
 
         await resolveNamedAddressOnchain('vitalik.eth', 'tsep');
 
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+        expect(mockEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({
                 coin: 'tsep',
                 to: '0xeeeeeeee14d718c2b47d9923deab1335e144eeee',
@@ -107,7 +107,7 @@ describe('resolveNamedAddressOnchain', () => {
 
         await resolveNamedAddressOnchain('vitalik.eth', 'eth', { identity: 'deviceState' });
 
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+        expect(mockEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'deviceState' }),
         );
     });
@@ -116,10 +116,10 @@ describe('resolveNamedAddressOnchain', () => {
         succeedWith(ADDRESS_PROFILE, ADDRESS_PROFILE);
 
         await resolveNamedAddressOnchain('VITALIK.eth', 'eth');
-        const upperCaseCallData = mockBlockchainEvmRpcCall.mock.calls[0]?.[0].data;
+        const upperCaseCallData = mockEvmRpcCall.mock.calls[0]?.[0].data;
 
         await resolveNamedAddressOnchain('vitalik.eth', 'eth');
-        const lowerCaseCallData = mockBlockchainEvmRpcCall.mock.calls[1]?.[0].data;
+        const lowerCaseCallData = mockEvmRpcCall.mock.calls[1]?.[0].data;
 
         expect(upperCaseCallData).toBe(lowerCaseCallData);
     });
@@ -140,7 +140,7 @@ describe('resolveNamedAddressOnchain', () => {
         revertWith(revertData);
 
         await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
     // Both backends strip revert data, so a bare "execution reverted" is the common case
@@ -150,7 +150,7 @@ describe('resolveNamedAddressOnchain', () => {
         failWith('execution reverted');
 
         await expect(resolveNamedAddressOnchain('cult.et', 'eth')).resolves.toBeNull();
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
     it('returns null for revert data no known resolver error matches', async () => {
@@ -176,7 +176,7 @@ describe('resolveNamedAddressOnchain', () => {
         );
 
         await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
     // A call that never reached a resolver says nothing about the name, so it has to reach
@@ -187,7 +187,7 @@ describe('resolveNamedAddressOnchain', () => {
         await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).rejects.toThrow(
             'Backend not connected',
         );
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
     // EIP-3668: the record exists but lives offchain and the gateway hop is not implemented
@@ -212,7 +212,7 @@ describe('resolveNamedAddressOnchain', () => {
     // hold them, so spending a request — here or on the Blockbook fallback — buys nothing.
     it.each([['.eth'], ['foo_bar.eth']])('answers %s without a request', async invalidName => {
         await expect(resolveNamedAddressOnchain(invalidName, 'eth')).resolves.toBeNull();
-        expect(mockBlockchainEvmRpcCall).not.toHaveBeenCalled();
+        expect(mockEvmRpcCall).not.toHaveBeenCalled();
     });
 });
 
@@ -243,8 +243,8 @@ const resolveAbi = parseAbi([
 
 describe('universalResolver mainnet vectors', () => {
     beforeEach(() => {
-        mockBlockchainEvmRpcCall.mockReset();
-        mockBlockchainEvmRpcCall.mockResolvedValue({
+        mockEvmRpcCall.mockReset();
+        mockEvmRpcCall.mockResolvedValue({
             success: true,
             payload: { data: RESOLVE_RETURN },
         });
@@ -253,7 +253,7 @@ describe('universalResolver mainnet vectors', () => {
     it('sends the DNS-encoded name and addr profile captured from mainnet', async () => {
         await resolveNamedAddressOnchain('vitalik.eth', 'eth');
 
-        const sentCalldata = mockBlockchainEvmRpcCall.mock.calls[0]?.[0].data;
+        const sentCalldata = mockEvmRpcCall.mock.calls[0]?.[0].data;
         const { args } = decodeFunctionData({ abi: resolveAbi, data: sentCalldata });
         const [name, data] = args;
 
