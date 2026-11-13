@@ -1,9 +1,8 @@
 import { Address } from '@suite/address';
+import { useExternalLink } from '@suite/external-links';
 import { openModal } from '@suite/modal';
-import {
-    selectAccountByKey,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
+import { selectTradingTxAccountKey, selectTradingTxExplorerUrl } from '@suite-common/trading';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Icon, Link, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -16,6 +15,11 @@ import { type Account } from '#src/types/wallet';
 type TradingDetailTxIdProps = {
     value: string;
     account: Account;
+    /**
+     * The other side of a swap. `receiveTxHash` holds the signed send transaction until a status
+     * refresh replaces it with the provider's payout on the receive network, so only the store says
+     * which account the transaction belongs to.
+     */
     receiveAccountKey?: AccountKey;
 };
 
@@ -26,28 +30,39 @@ export const TradingDetailTxId = ({
 }: TradingDetailTxIdProps) => {
     const { dispatch } = useServices(injectDispatch);
 
-    const payoutAccount = useSelector(state =>
-        receiveAccountKey && selectTransactionByAccountKeyAndTxid(state, receiveAccountKey, value)
-            ? selectAccountByKey(state, receiveAccountKey)
-            : null,
+    const txAccount = useSelector(state => {
+        const txAccountKey = selectTradingTxAccountKey(
+            state,
+            value,
+            account.key,
+            receiveAccountKey,
+        );
+
+        return txAccountKey ? selectAccountByKey(state, txAccountKey) : null;
+    });
+    const txExplorerUrl = useSelector(state =>
+        selectTradingTxExplorerUrl(state, value, account.key),
     );
-    const txAccount = payoutAccount ?? account;
+    // The transaction detail reads the transaction from the store, so it opens only for a
+    // transaction an account has loaded. Anything else goes to the explorer of its network.
+    const explorerUrl = useExternalLink(txAccount ? undefined : txExplorerUrl);
+
+    const openTransactionDetail = txAccount
+        ? () =>
+              dispatch(
+                  openModal({
+                      type: 'transaction-detail',
+                      txid: value,
+                      descriptor: txAccount.descriptor,
+                      symbol: txAccount.symbol,
+                      deviceState: txAccount.deviceState,
+                      flow: 'detail',
+                  }),
+              )
+        : undefined;
 
     return (
-        <Link
-            onClick={() =>
-                dispatch(
-                    openModal({
-                        type: 'transaction-detail',
-                        txid: value,
-                        descriptor: txAccount.descriptor,
-                        symbol: txAccount.symbol,
-                        deviceState: txAccount.deviceState,
-                        flow: 'detail',
-                    }),
-                )
-            }
-        >
+        <Link href={explorerUrl} onClick={openTransactionDetail}>
             <Row gap={4}>
                 <Address
                     isTruncated

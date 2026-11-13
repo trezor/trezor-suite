@@ -29,15 +29,19 @@ import { toTokenAddress } from '@suite-common/tokens';
 import {
     type NetworkSymbolExtended,
     getNetwork,
+    getTxExplorerUrl,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type ExplorerState,
     type TransactionsRootState,
     selectAccountByKey,
     selectAccountTransactions,
     selectAccounts,
     selectDeviceAccounts,
+    selectExplorer,
+    selectTransactionByAccountKeyAndTxid,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
@@ -482,6 +486,49 @@ export const selectTradeApiInstallSalt = (state: TradingRootState) =>
 
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.trading.trades);
+
+export const selectTradingTxNetworkSymbol = createMemoizedSelector(
+    [selectTradingTrades, (_state: TradingRootState, txid: string) => txid],
+    (trades, txid) => {
+        const trade = trades.find(
+            (t): t is TradingTransactionExchange =>
+                t.tradeType === 'exchange' && t.data.receiveTxHash === txid,
+        );
+
+        if (!trade || trade.data.isDex || trade.sendTxid === txid) {
+            return undefined;
+        }
+
+        return cryptoIdToNetworkSymbol(trade.data.receive);
+    },
+);
+
+export type TradingTxRootState = TradingRootStateWithAccounts &
+    TransactionsRootState &
+    ExplorerState;
+
+export const selectTradingTxAccountKey = (
+    state: TransactionsRootState,
+    txid: string,
+    sendAccountKey: AccountKey | undefined,
+    receiveAccountKey: AccountKey | undefined,
+): AccountKey | undefined =>
+    [receiveAccountKey, sendAccountKey].find(
+        (accountKey): accountKey is AccountKey =>
+            !!accountKey && !!selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
+    );
+
+export const selectTradingTxExplorerUrl = (
+    state: TradingTxRootState,
+    txid: string,
+    sendAccountKey: AccountKey | undefined,
+) => {
+    const networkSymbol =
+        selectTradingTxNetworkSymbol(state, txid) ??
+        (sendAccountKey ? selectAccountByKey(state, sendAccountKey)?.symbol : undefined);
+
+    return getTxExplorerUrl(selectExplorer(state, networkSymbol), txid);
+};
 
 export const selectTradingTradeApiKey = (state: TradingRootState, tradeKey: string | undefined) =>
     state.wallet.trading.trades.find(trade => trade.key === tradeKey)?.apiKey;

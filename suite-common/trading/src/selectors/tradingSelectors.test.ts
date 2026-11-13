@@ -11,14 +11,21 @@ import {
 
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type NetworkSymbol, asNetworkSymbol, getTxExplorerUrl } from '@suite-common/wallet-config';
+import { explorerInitialState, transactionsInitialState } from '@suite-common/wallet-core';
+import {
+    type Account,
+    type AccountKey,
+    type WalletAccountTransaction,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
 import {
     type TradingFormAccountRootState,
     type TradingRootStateWithDeviceAndAccounts,
+    type TradingTxRootState,
     bestBuyQuotePerPaymentMethodProjection,
     bestSellQuotePerPaymentMethodProjection,
     selectDeviceHasTradingTrades,
@@ -113,6 +120,9 @@ import {
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
     selectTradingTrades,
+    selectTradingTxAccountKey,
+    selectTradingTxExplorerUrl,
+    selectTradingTxNetworkSymbol,
     selectValidTradingBuyQuotes,
     selectValidTradingSellQuotes,
 } from './tradingSelectors';
@@ -770,6 +780,159 @@ describe('tradingSelectors', () => {
             ['a transactionId matching no trade', 'unknown'],
         ])('should return undefined for %s', (_, transactionId) => {
             expect(selectTradingSellActiveTrade(buildState(transactionId))).toBeUndefined();
+        });
+    });
+
+    describe('selectTradingTxNetworkSymbol', () => {
+        const sendTxid = 'sendTxid';
+        const payoutTxid = 'payoutTxid';
+        const crossChainSwap: TradingTransactionExchange = {
+            tradeType: 'exchange',
+            key: 'exchange1',
+            date: '2024-01-01T00:00:00.000Z',
+            sendAccountKey: undefined,
+            sendTxid,
+            data: {
+                send: 'bitcoin' as CryptoId,
+                receive: 'ethereum' as CryptoId,
+                receiveTxHash: payoutTxid,
+            },
+        };
+        const buildState = (trade: TradingTransactionExchange): TradingRootState => ({
+            wallet: { trading: { ...initialState, trades: [trade] } },
+        });
+
+        it('places a provider payout on the receive network', () => {
+            expect(selectTradingTxNetworkSymbol(buildState(crossChainSwap), payoutTxid)).toBe(
+                'eth',
+            );
+        });
+
+        it('leaves the send transaction on the send network', () => {
+            const sendTxState = buildState({
+                ...crossChainSwap,
+                data: { ...crossChainSwap.data, receiveTxHash: sendTxid },
+            });
+
+            expect(selectTradingTxNetworkSymbol(sendTxState, sendTxid)).toBeUndefined();
+        });
+
+        it('leaves a DEX swap hash on the send network', () => {
+            const dexState = buildState({
+                ...crossChainSwap,
+                sendTxid: undefined,
+                data: { ...crossChainSwap.data, isDex: true },
+            });
+
+            expect(selectTradingTxNetworkSymbol(dexState, payoutTxid)).toBeUndefined();
+        });
+
+        it('has no network for a transaction no swap references', () => {
+            expect(
+                selectTradingTxNetworkSymbol(buildState(crossChainSwap), 'unknownTxid'),
+            ).toBeUndefined();
+        });
+    });
+
+    describe('trade transaction location', () => {
+        const sendAccount = mockWalletAccount({
+            symbol: asNetworkSymbol('btc'),
+            descriptor: asAccountDescriptor('btcDescriptor'),
+        });
+        const receiveAccount = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            descriptor: asAccountDescriptor('ethDescriptor'),
+        });
+        const sendTxid = 'sendTxid';
+        const loadedPayoutTxid = 'loadedPayoutTxid';
+        const notLoadedPayoutTxid = 'notLoadedPayoutTxid';
+        const crossChainSwap: TradingTransactionExchange = {
+            tradeType: 'exchange',
+            key: 'exchange1',
+            date: '2024-01-01T00:00:00.000Z',
+            sendAccountKey: sendAccount.key,
+            receiveAccountKey: receiveAccount.key,
+            sendTxid,
+            data: {
+                send: 'bitcoin' as CryptoId,
+                receive: 'ethereum' as CryptoId,
+                receiveTxHash: notLoadedPayoutTxid,
+            },
+        };
+        const txLocationState: TradingTxRootState = {
+            wallet: {
+                trading: { ...initialState, trades: [crossChainSwap] },
+                accounts: [sendAccount, receiveAccount],
+                explorer: explorerInitialState,
+                transactions: {
+                    ...transactionsInitialState,
+                    transactions: {
+                        [sendAccount.key]: [{ txid: sendTxid } as WalletAccountTransaction],
+                        [receiveAccount.key]: [
+                            { txid: loadedPayoutTxid } as WalletAccountTransaction,
+                        ],
+                    },
+                },
+            },
+        };
+
+        describe('selectTradingTxAccountKey', () => {
+            it('prefers the receive account when it holds the transaction', () => {
+                expect(
+                    selectTradingTxAccountKey(
+                        txLocationState,
+                        loadedPayoutTxid,
+                        sendAccount.key,
+                        receiveAccount.key,
+                    ),
+                ).toBe(receiveAccount.key);
+            });
+
+            it('falls back to the send account when it holds the transaction', () => {
+                expect(
+                    selectTradingTxAccountKey(
+                        txLocationState,
+                        sendTxid,
+                        sendAccount.key,
+                        receiveAccount.key,
+                    ),
+                ).toBe(sendAccount.key);
+            });
+
+            it('has no account for a transaction neither account has loaded', () => {
+                expect(
+                    selectTradingTxAccountKey(
+                        txLocationState,
+                        notLoadedPayoutTxid,
+                        sendAccount.key,
+                        receiveAccount.key,
+                    ),
+                ).toBeUndefined();
+            });
+        });
+
+        describe('selectTradingTxExplorerUrl', () => {
+            it('links a swap payout to the explorer of the receive network', () => {
+                expect(
+                    selectTradingTxExplorerUrl(
+                        txLocationState,
+                        notLoadedPayoutTxid,
+                        sendAccount.key,
+                    ),
+                ).toBe(getTxExplorerUrl(explorerInitialState.eth.default, notLoadedPayoutTxid));
+            });
+
+            it('links any other transaction to the explorer of the send network', () => {
+                expect(
+                    selectTradingTxExplorerUrl(txLocationState, 'otherTxid', sendAccount.key),
+                ).toBe(getTxExplorerUrl(explorerInitialState.btc.default, 'otherTxid'));
+            });
+
+            it('has no link without a payout network or a send account', () => {
+                expect(
+                    selectTradingTxExplorerUrl(txLocationState, 'otherTxid', undefined),
+                ).toBeUndefined();
+            });
         });
     });
 

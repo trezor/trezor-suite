@@ -6,12 +6,12 @@ import {
 } from '@suite-common/trading';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { TradeStatusProviderLink, TradeStatusSubItem } from '@suite-native/trading-atoms';
 import { type TradingRootState } from '@suite-native/trading-state';
 import { exhaustive } from '@trezor/type-utils';
 
 import { TradeStatusCard } from './TradeStatusCard';
+import { useOpenTradeTransaction } from '../../../hooks/useOpenTradeTransaction';
 import { getTradeStatusUrl } from '../../../utils/tradeStatusUtils';
 
 type TradeStatusTerminalContentProps = {
@@ -32,7 +32,6 @@ const getTransactionId = (trade: TradingTransaction): string | undefined => {
 };
 
 export const TradeStatusTerminalContent = ({ trade }: TradeStatusTerminalContentProps) => {
-    const navigateToTransactionDetail = useNavigateToTransactionDetail();
     const provider = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, trade.data.exchange ?? '', trade.tradeType),
     );
@@ -43,22 +42,15 @@ export const TradeStatusTerminalContent = ({ trade }: TradeStatusTerminalContent
     const hasTransactionId =
         !!transactionId && (trade.tradeType === 'sell' || trade.tradeType === 'exchange');
     const hasProviderStatusLink = !!statusUrl && !!providerName;
-    const canOpenTransactionDetail = hasTransactionId && !!trade.sendAccountKey;
+    const handleTxIdPress = useOpenTradeTransaction({
+        txid: hasTransactionId ? transactionId : undefined,
+        sendAccountKey: trade.tradeType === 'buy' ? undefined : trade.sendAccountKey,
+        receiveAccountKey: trade.tradeType === 'exchange' ? trade.receiveAccountKey : undefined,
+    });
 
     if (!hasTransactionId && !hasProviderStatusLink) {
         return null;
     }
-
-    const handleTxIdPress = () => {
-        if (!transactionId || trade.tradeType === 'buy' || !trade.sendAccountKey) {
-            return;
-        }
-
-        navigateToTransactionDetail({
-            txid: transactionId,
-            accountKey: trade.sendAccountKey,
-        });
-    };
 
     return (
         <TradeStatusCard>
@@ -69,7 +61,7 @@ export const TradeStatusTerminalContent = ({ trade }: TradeStatusTerminalContent
                             <Translation id="moduleTrading.tradeHistory.detail.statusStepper.transactionId" />
                         }
                         value={transactionId}
-                        onPress={canOpenTransactionDetail ? handleTxIdPress : undefined}
+                        onPress={handleTxIdPress}
                     />
                 )}
                 {hasProviderStatusLink && (
