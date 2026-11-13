@@ -18,6 +18,7 @@ export class ToastSection {
     readonly yieldDeposit: Locator;
     readonly yieldDepositMessage: Locator;
     readonly yieldWithdrawMessage: Locator;
+    readonly feedbackSent: Locator;
     readonly wrappedMessage: Locator;
     readonly wrappedSendAmount: Locator;
     readonly wrappedReceiveAmount: Locator;
@@ -35,6 +36,7 @@ export class ToastSection {
         this.yieldDeposit = this.page.getByTestId('@toast/tx-yield-deposit');
         this.yieldDepositMessage = this.page.getByTestId('@toast/tx-yield-deposit/message');
         this.yieldWithdrawMessage = this.page.getByTestId('@toast/tx-yield-withdraw/message');
+        this.feedbackSent = this.page.getByTestId('@toast/user-feedback-send-success');
         this.wrappedMessage = this.page.getByTestId('@toast/tx-wrap/message');
         this.wrappedSendAmount = this.page.getByTestId('@toast/tx-wrap/send-amount');
         this.wrappedReceiveAmount = this.page.getByTestId('@toast/tx-wrap/receive-amount');
