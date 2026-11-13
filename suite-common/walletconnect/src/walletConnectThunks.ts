@@ -26,7 +26,12 @@ import {
     processNamespaces,
 } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
-import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
+import {
+    GENERIC_REQUEST_ERROR_CODE,
+    PROJECT_ID,
+    WALLETCONNECT_METADATA,
+    WALLETCONNECT_MODULE,
+} from './walletConnectConstants';
 import { type WalletConnectStateRootState, selectPendingProposal } from './walletConnectReducer';
 import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
 
@@ -205,13 +210,16 @@ const sessionRequestThunk = createThunk<
             },
         });
     } catch (error) {
+        // A rejected adapter thunk throws its rejectWithValue payload, which carries a JSON-RPC
+        // code. Other errors are serialized by Redux Toolkit, which may set a string code.
+        const code = typeof error.code === 'number' ? error.code : GENERIC_REQUEST_ERROR_CODE;
         await walletKit.respondSessionRequest({
             topic: event.topic,
             response: {
                 id: event.id,
                 jsonrpc: '2.0',
                 error: {
-                    code: 1,
+                    code,
                     message: error.message,
                 },
             },

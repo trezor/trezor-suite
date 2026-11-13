@@ -18,6 +18,11 @@ export interface WalletConnectAdapter {
     ) => void;
 }
 
+export type WalletConnectRequestError = {
+    code: number;
+    message: string;
+};
+
 export interface WalletConnectNamespace {
     chains: string[];
     methods: string[];
