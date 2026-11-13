@@ -1,6 +1,7 @@
 import {
     type StaticSessionId,
     createStaticSessionId,
+    isSameWallet,
     isStaticSessionId,
     parseStaticSessionId,
 } from './staticSessionIdUtils';
@@ -56,6 +57,29 @@ describe('staticSessionIdUtils', () => {
             const id = 'mzPx@c4d10fab:7' as StaticSessionId;
 
             expect(parseStaticSessionId(id).deviceId).toBe('c4d10fab');
+        });
+    });
+
+    describe(isSameWallet.name, () => {
+        it.each([
+            ['identical ids', 'mzPx@c4d10fab:0', 'mzPx@c4d10fab:0'],
+            // Wiping and recovering the same seed mints a new hardware device_id.
+            ['same wallet, different deviceId', 'mzPx@c4d10fab:0', 'mzPx@6b2e9a71:0'],
+            ['same wallet, different instance', 'mzPx@c4d10fab:0', 'mzPx@c4d10fab:3'],
+            ['same wallet, different deviceId and instance', 'mzPx@c4d10fab:0', 'mzPx@6b2e9a71:2'],
+        ])('%s are the same wallet', (_label, first, second) => {
+            expect(isSameWallet(first as StaticSessionId, second as StaticSessionId)).toBe(true);
+        });
+
+        it.each([
+            ['different walletDescriptor', 'mzPx@c4d10fab:0', 'n2Rs@c4d10fab:0'],
+            [
+                'different walletDescriptor, same everything else',
+                'mzPx@c4d10fab:1',
+                'n2Rs@c4d10fab:1',
+            ],
+        ])('%s are not the same wallet', (_label, first, second) => {
+            expect(isSameWallet(first as StaticSessionId, second as StaticSessionId)).toBe(false);
         });
     });
 
