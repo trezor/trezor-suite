@@ -11322,7 +11322,7 @@ __metadata:
     "@types/webpack-plugin-serve": "npm:^1.4.7"
     babel-loader: "npm:^10.1.1"
     babel-plugin-react-compiler: "npm:^1.0.0"
-    babel-plugin-styled-components: "npm:^2.3.0"
+    babel-plugin-styled-components: "npm:^2.3.1"
     buffer: "npm:^6.0.3"
     core-js: "npm:^3.50.0"
     crypto-browserify: "npm:3.12.1"
@@ -19435,7 +19435,7 @@ __metadata:
     "@types/redux-logger": "npm:^3.0.13"
     "@types/web": "npm:^0.0.345"
     "@uiw/react-codemirror": "npm:^4.25.9"
-    babel-plugin-styled-components: "npm:^2.3.0"
+    babel-plugin-styled-components: "npm:^2.3.1"
     codemirror-json-schema: "npm:^0.8.1"
     codemirror-json5: "npm:^1.0.3"
     copy-webpack-plugin: "npm:^14.0.0"
@@ -20666,7 +20666,7 @@ __metadata:
     "@trezor/transport-common": "workspace:*"
     "@trezor/utils": "workspace:*"
     babel-loader: "npm:^10.1.1"
-    babel-plugin-styled-components: "npm:^2.3.0"
+    babel-plugin-styled-components: "npm:^2.3.1"
     esbuild: "npm:^0.28.0"
     html-inline-script-webpack-plugin: "npm:^3.2.1"
     html-webpack-plugin: "npm:5.6.8"
@@ -24603,9 +24603,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-styled-components@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "babel-plugin-styled-components@npm:2.3.0"
+"babel-plugin-styled-components@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "babel-plugin-styled-components@npm:2.3.1"
   dependencies:
     "@babel/helper-annotate-as-pure": "npm:^7.25.9"
     "@babel/helper-module-imports": "npm:^7.25.9"
@@ -24614,7 +24614,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0
     styled-components: ">= 2"
-  checksum: 10/30453bb7dee5d782d417a29332b09d865da6759951f340a865b1c29c5ab8aad50dd9de984aba014cbac451924faf702aba72bb42c9e5a81c475e1de84d0bb7a4
+  checksum: 10/d413ae4ef7a5280d316d06037389239ef443b0d66dcde2b12b3eda2a74ed0979cc28b96e81fdb1c7910b5b3c65f885b07dbcbec691fcf83a65149eef543965b1
   languageName: node
   linkType: hard
 
