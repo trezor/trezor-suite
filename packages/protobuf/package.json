@@ -49,7 +49,7 @@
         "@bufbuild/protoc-gen-es": "2.11.0",
         "@bufbuild/protoplugin": "2.11.0",
         "@trezor/eslint": "workspace:*",
-        "tsx": "^4.21.0"
+        "tsx": "^4.23.15"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

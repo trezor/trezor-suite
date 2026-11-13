@@ -89,7 +89,7 @@
         "lighthouse": "^13.4.1",
         "lodash": "^4.18.1",
         "puppeteer-core": "^25.3.0",
-        "tsx": "^4.21.0",
+        "tsx": "^4.23.15",
         "type-fest": "5.5.0",
         "viem": "^2.57.2",
         "xvfb-maybe": "^0.2.1",
