@@ -1985,6 +1985,14 @@ export const messages = defineMessages({
             'This token appears to be suspicious and may be a scam. Unhiding will show it in your asset list again.',
         id: 'TR_HOME_ASSET_UNHIDE_UNRECOGNIZED_TEXT',
     },
+    TR_ACCOUNT_ASSETS_BALANCE: {
+        defaultMessage: 'Account balance',
+        id: 'TR_ACCOUNT_ASSETS_BALANCE',
+    },
+    TR_ACCOUNT_ASSETS_COUNT: {
+        defaultMessage: '{count, plural, one {# asset} other {# assets}}',
+        id: 'TR_ACCOUNT_ASSETS_COUNT',
+    },
     TR_ASSET: {
         defaultMessage: 'Asset',
         id: 'TR_ASSET',

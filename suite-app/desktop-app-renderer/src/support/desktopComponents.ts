@@ -51,7 +51,7 @@ import {
     TradingTransactionsPage,
     WalletTradePage,
 } from '@suite-app/module-trading';
-import { TransactionsPage } from '@suite-app/module-transactions';
+import { AccountOverviewPage } from '@suite-app/module-transactions';
 
 /*
  Note 1: Currently, this list contains the same components as webComponents.ts, but there could be Desktop-specific
@@ -90,7 +90,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-connect-popup': ConnectPopupPage,
     'notifications-index': NotificationPage,
 
-    'wallet-index': TransactionsPage,
+    'wallet-index': AccountOverviewPage,
     'wallet-receive': ReceivePage,
     'wallet-details': WalletDetailsPage,
     // Debug only: trading form embed preview

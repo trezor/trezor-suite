@@ -27,6 +27,8 @@ import {
     getEvmPrivatePendingHint,
     getFiatRateKey,
     getHistoryCoveredSince,
+    getOlderHistoryFrom,
+    isDirectRpcHistoryUnscanned,
     isNftTokenTransfer,
     isPending,
     isStakeTypeTx,
@@ -381,6 +383,31 @@ export const selectHistoryCoveredSince = createMemoizedSelector(
         );
     },
 );
+
+/**
+ * Whether the account's overview has a history to list. A direct-RPC backend has only scanned a
+ * recent window, or nothing yet, so an empty list is not proof that history is unavailable: the
+ * list shows the progress and the way further back.
+ */
+export const selectHasAccountHistory = (
+    state: TransactionsRootState & AccountsRootState,
+    accountKey: AccountKey | null,
+) => {
+    if (
+        selectAccountTransactionsWithNulls(state, accountKey).length > 0 ||
+        selectIsLoadingAccountTransactions(state, accountKey)
+    ) {
+        return true;
+    }
+
+    const account = selectAccountByKey(state, accountKey);
+
+    return (
+        account !== null &&
+        !account.empty &&
+        (isDirectRpcHistoryUnscanned(account) || getOlderHistoryFrom(account) !== undefined)
+    );
+};
 
 export const selectAccountTransactionsFromNowUntilTimestamp = createMemoizedSelector(
     [selectAccountTransactions, (_state, _accountKey: AccountKey, timestamp: number) => timestamp],
