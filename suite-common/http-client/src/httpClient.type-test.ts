@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { Fetch } from '@trezor/type-utils';
+import { z } from '@trezor/zod';
 
 import { type HttpClientDep, createHttpClient } from './httpClient';
 

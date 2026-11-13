@@ -24,7 +24,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/react-utils": "workspace:^",
         "@trezor/utils": "workspace:^",
-        "react": "19.3.0",
-        "zod": "4.6.7"
+        "@trezor/zod": "workspace:*",
+        "react": "19.3.0"
     }
 }

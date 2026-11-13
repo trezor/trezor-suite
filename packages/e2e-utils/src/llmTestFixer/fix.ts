@@ -1,9 +1,9 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { prettifyError } from 'zod';
 
 import { readJson } from '@trezor/node-utils';
+import { prettifyError } from '@trezor/zod';
 
 import { error, log } from '../logger';
 import { runAgent } from './common';

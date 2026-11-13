@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-import { z } from 'zod';
-
 import { createHttpClient, isResponseError } from '@suite-common/http-client';
+import { z } from '@trezor/zod';
 
 import { sleep } from './sleep';
 import {

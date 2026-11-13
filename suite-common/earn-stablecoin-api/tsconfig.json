@@ -15,6 +15,7 @@
         },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/react-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" }
     ]
 }

@@ -12,6 +12,7 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" },
         { "path": "../wallet-types" },
         {
             "path": "../../packages/dependency-injection"

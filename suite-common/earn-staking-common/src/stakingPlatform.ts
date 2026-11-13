@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@trezor/zod';
 
 import { stakingOperationSchema } from './stakingOperation';
 

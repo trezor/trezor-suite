@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import { type HttpsUrl } from '@trezor/type-utils';
+import { z } from '@trezor/zod';
 
 export type AppsEmbeddingCommCapability = 'callbackUrls' | 'postMessage';
 

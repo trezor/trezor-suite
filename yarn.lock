@@ -11991,7 +11991,7 @@ __metadata:
   dependencies:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    zod: "npm:4.6.7"
+    "@trezor/zod": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12237,8 +12237,8 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:^"
     "@trezor/utils": "workspace:^"
+    "@trezor/zod": "workspace:*"
     react: "npm:19.3.0"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12246,9 +12246,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin-defs@workspace:suite-common/earn-stablecoin-defs"
   dependencies:
+    "@trezor/zod": "workspace:*"
     orval: "npm:8.45.0"
     prettier: "npm:^3.9.9"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12267,9 +12267,9 @@ __metadata:
     "@trezor/connect-common": "workspace:^"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12284,9 +12284,9 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     orval: "npm:8.45.0"
     prettier: "npm:^3.9.9"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12299,7 +12299,7 @@ __metadata:
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/requirements": "workspace:*"
-    zod: "npm:4.6.7"
+    "@trezor/zod": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12316,7 +12316,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    zod: "npm:4.6.7"
+    "@trezor/zod": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12342,7 +12342,7 @@ __metadata:
     "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/utils": "workspace:*"
-    zod: "npm:4.6.7"
+    "@trezor/zod": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12514,8 +12514,8 @@ __metadata:
   resolution: "@suite-common/http-client@workspace:suite-common/http-client"
   dependencies:
     "@trezor/type-utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     up-fetch: "npm:2.6.1"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12530,11 +12530,11 @@ __metadata:
     "@trezor/logger": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     fantasticon: "npm:4.1.0"
     prettier: "npm:^3.9.9"
     sharp: "npm:^0.35.5"
     svgo: "npm:^4.1.0"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -12786,7 +12786,7 @@ __metadata:
   resolution: "@suite-common/schemas@workspace:suite-common/schemas"
   dependencies:
     "@trezor/utils": "workspace:*"
-    zod: "npm:4.6.7"
+    "@trezor/zod": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -13109,10 +13109,10 @@ __metadata:
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     ajv: "npm:^8.20.0"
     jws: "npm:^4.0.1"
     toml: "npm:^5.0.0"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -13176,12 +13176,12 @@ __metadata:
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     "@types/invity-api": "npm:^1.1.23"
     react: "npm:19.3.0"
     react-intl: "npm:^12.1.4"
     react-redux: "npm:9.3.0"
     yup: "npm:1.7.1"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -17240,8 +17240,8 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     react: "npm:19.3.0"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -17417,7 +17417,7 @@ __metadata:
     "@suite/tor-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    zod: "npm:4.6.7"
+    "@trezor/zod": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -17814,13 +17814,13 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     dropbox: "npm:^10.47.0"
     immer: "npm:11.1.18"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     styled-components: "npm:^6.5.3"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -19067,8 +19067,8 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/zod": "workspace:*"
     socks-proxy-agent: "npm:8.0.5"
-    zod: "npm:4.6.7"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -19342,6 +19342,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     "@types/react": "npm:19.3.0"
     clsx: "npm:^2.1.1"
     concurrently: "npm:^10.0.3"
@@ -19363,7 +19364,6 @@ __metadata:
     scroll-into-view-if-needed: "npm:^3.1.0"
     styled-components: "npm:^6.5.3"
     tailwindcss: "npm:^3.4.10"
-    zod: "npm:4.6.7"
   peerDependencies:
     next: ">=15.0.0"
     nextra: ^3.3.1
@@ -19623,13 +19623,13 @@ __metadata:
     "@trezor/node-utils": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     claude-pretty-printer: "npm:1.5.0"
     dotenv: "npm:18.0.6"
     express: "npm:^5.2.1"
     opencode-ai: "npm:1.18.23"
     tsx: "npm:^4.21.0"
     ws: "npm:^8.20.0"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 
@@ -20834,6 +20834,14 @@ __metadata:
     ws: "npm:^8.20.0"
   peerDependencies:
     tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
+"@trezor/zod@workspace:*, @trezor/zod@workspace:packages/zod":
+  version: 0.0.0-use.local
+  resolution: "@trezor/zod@workspace:packages/zod"
+  dependencies:
+    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 

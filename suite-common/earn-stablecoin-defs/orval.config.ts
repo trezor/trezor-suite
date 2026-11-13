@@ -22,7 +22,16 @@ export default defineConfig({
             tsconfig: './tsconfig.json',
             packageJson: './package.json',
             fileExtension: '.ts',
-            client: 'zod',
+            client: clients => ({
+                ...clients.zod,
+                // Generated schemas import zod through `@trezor/zod`, which turns off zod's JIT.
+                dependencies: (...args) =>
+                    (clients.zod.dependencies?.(...args) ?? []).map(dependency =>
+                        dependency.dependency === 'zod'
+                            ? { ...dependency, dependency: '@trezor/zod' }
+                            : dependency,
+                    ),
+            }),
             override: {
                 // Prepend the ESLint directive (followed by orval's standard "do not edit"
                 // notice) to the top of the generated file. A `header` returning a string is

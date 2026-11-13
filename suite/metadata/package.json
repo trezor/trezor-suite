@@ -43,13 +43,13 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
         "dropbox": "^10.47.0",
         "immer": "11.1.18",
         "react": "19.3.0",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
-        "styled-components": "^6.5.3",
-        "zod": "4.6.7"
+        "styled-components": "^6.5.3"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"

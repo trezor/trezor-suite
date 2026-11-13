@@ -1,8 +1,7 @@
-import z from 'zod';
-
 import { type TorStatus } from '@suite/tor-types';
 import { appsEmbeddingEntryId } from '@suite-common/apps-embedding';
 import { httpsUrl } from '@suite-common/schemas/src/general/url';
+import { z } from '@trezor/zod';
 
 import { type ExtractUndefined } from './methods';
 

@@ -33,9 +33,9 @@
     "devDependencies": {
         "@suite-common/http-client": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/zod": "workspace:*",
         "ajv": "^8.20.0",
         "jws": "^4.0.1",
-        "toml": "^5.0.0",
-        "zod": "4.6.7"
+        "toml": "^5.0.0"
     }
 }

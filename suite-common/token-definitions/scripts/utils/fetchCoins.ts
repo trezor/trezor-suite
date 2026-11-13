@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import * as toml from 'toml';
-import { z } from 'zod';
 
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
+import { z } from '@trezor/zod';
 
 import {
     coinGeckoApi,

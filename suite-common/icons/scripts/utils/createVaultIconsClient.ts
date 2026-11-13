@@ -1,8 +1,7 @@
-import { z } from 'zod';
-
 import { createHttpClient } from '@suite-common/http-client';
 import type { Logger } from '@trezor/logger';
 import type { FetchDep } from '@trezor/type-utils';
+import { z } from '@trezor/zod';
 
 import { ICONS_URL_BASE } from '../../src/coinImages';
 import { YIELD_VAULTS_URL } from '../constants';

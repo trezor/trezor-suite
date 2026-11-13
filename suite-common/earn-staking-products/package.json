@@ -19,7 +19,7 @@
         "@trezor/network-tron": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "zod": "4.6.7"
+        "@trezor/zod": "workspace:*"
     },
     "devDependencies": {
         "@suite-common/wallet-types": "workspace:*",

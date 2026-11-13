@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import type { NetworkSymbol } from '@trezor/network-module-types';
+import { z } from '@trezor/zod';
 
 import { NETWORK_SYMBOL_PATTERN, networkSymbolSchema } from './primitiveSchemas';
 import {
