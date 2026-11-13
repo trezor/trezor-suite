@@ -31,8 +31,7 @@ export const paramDescriptions = {
     utxo: 'account utxos to select from, partial result of [getAccountInfo method](../common/getAccountInfo#result). Optional fields are described [below](#accepted-utxo-objects)',
     changeAddress:
         'address where the change is sent, typically an unused change address from [getAccountInfo method](../common/getAccountInfo#result). Optional in the type, but composing without it always fails with the `ADDRESSES-NOT-SET` error.',
-    feeLevels:
-        'Array of objects. set of requested variants, partial result of `blockchainEstimateFee method`',
+    feeLevels: 'Array of objects. set of requested variants, e.g. as estimated by a backend',
     baseFee:
         'base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE',
     sequence: 'transaction input field used in RBF or locktime transactions',

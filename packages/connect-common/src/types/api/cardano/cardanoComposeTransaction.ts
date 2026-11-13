@@ -73,7 +73,7 @@ export type CardanoComposeTransactionParams = {
     changeAddress: { address: string; path: string };
     addressParameters: CardanoAddressParameters;
     testnet?: boolean;
-    /** Live protocol parameters, as reported by `blockchainGetInfo`; compiled-in defaults when omitted. */
+    /** Live protocol parameters, as reported by a Blockfrost backend; compiled-in defaults when omitted. */
     protocolParameters?: CardanoProtocolParameters;
 };
 

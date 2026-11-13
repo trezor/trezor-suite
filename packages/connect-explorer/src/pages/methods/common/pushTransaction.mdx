@@ -21,6 +21,9 @@ export const paramDescriptions = {
 
 Broadcast the transaction to the selected network.
 
+This method works only through Trezor Suite on desktop and web, which broadcasts the transaction
+through its backend.
+
 ```javascript
 const result = await TrezorConnect.pushTransaction(params);
 ```
