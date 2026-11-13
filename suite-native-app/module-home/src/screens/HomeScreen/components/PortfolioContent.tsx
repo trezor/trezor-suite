@@ -4,6 +4,7 @@ import { LinearTransition } from 'react-native-reanimated';
 import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { PromoBanners } from '@suite-native/banners';
+import { FiveBinariesHomeBanner } from '@suite-native/module-earn';
 
 import { HomescreenAlerts } from './HomescreenAlerts';
 import { PortfolioGraph, type PortfolioGraphRef } from './PortfolioGraph';
@@ -19,6 +20,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => (
                 <VStack spacing="sp24">
                     <TransferButtons />
                     <PromoBanners />
+                    <FiveBinariesHomeBanner />
                     <Assets />
                 </VStack>
                 <ReferralButton />
