@@ -20,6 +20,7 @@
         {
             "path": "../../networks/cardano/network-cardano"
         },
+        { "path": "../requirements" },
         { "path": "../transport-common" },
         { "path": "../utxo-lib" }
     ]

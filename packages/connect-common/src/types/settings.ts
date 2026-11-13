@@ -47,8 +47,7 @@ export interface ConnectSettings {
     manifest?: Manifest;
     // Enables connect logs. NOTE: connect core no longer uses this to gate its COMPONENT loggers
     // (Core/Device/DeviceCommands/@trezor/transport) — those are driven by `createLogger`. It is still
-    // read by core's backend layer (BackendManager → BlockchainLink worker debug logging), by the
-    // connect-web/connect-mobile host wrappers (their own `@trezor/connect-web` logger + popup URL),
+    // read by the connect-web/connect-mobile host wrappers (their own `@trezor/connect-web` logger + popup URL),
     // and serves as the desktop IPC enabled hint that desktop-app-main's trezor-connect.ts uses to
     // build the core's `createLogger` factory.
     debug?: boolean;

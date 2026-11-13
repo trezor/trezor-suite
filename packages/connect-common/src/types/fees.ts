@@ -1,15 +1,6 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-export type FeeInfo = Static<typeof FeeInfo>;
-export const FeeInfo = Type.Object({
-    blockTime: Type.Number(),
-    minFee: Type.Number(),
-    maxFee: Type.Number(),
-    minPriorityFee: Type.Number(),
-    dustLimit: Type.Number(),
-});
-
 export type FeeLevel = Static<typeof FeeLevel>;
 export const FeeLevel = Type.Object({
     label: Type.Union([

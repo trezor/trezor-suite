@@ -25,7 +25,7 @@ const getAccount = async (
     signal: AbortSignal,
     isBundle = false,
 ) => {
-    // A coin which isn't a Suite network is a bitcoin-like one only Connect has a backend for.
+    // A coin which isn't a Suite network is a bitcoin-like one only TrezorBlockchain has a backend for.
     const networkType = getNetworkOptional(request.coin.toLowerCase())?.networkType ?? 'bitcoin';
     const derived =
         path && typeof request.descriptor !== 'string'
