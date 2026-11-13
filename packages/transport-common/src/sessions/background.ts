@@ -284,12 +284,11 @@ export class SessionsBackground
         // todo: create a deferred with built-in timeout functionality (util)
         const dfd = createDeferred();
 
-        // to ensure that communication with device will not get stuck forever,
-        // lock times out:
-        // - if cleared by client (enumerateDone)
-        // - after n second automatically
+        // To ensure that communication with device will not get stuck forever, the lock times
+        // out automatically. It also leaves the queue, so that the queue holds only the locks
+        // that are still held or awaited.
         const lock: Lock = {
-            id: setTimeout(() => dfd.resolve(undefined), lockDuration),
+            id: setTimeout(() => this.releaseLock(lock), lockDuration),
             dfd,
         };
         this.locksQueue.push(lock);
