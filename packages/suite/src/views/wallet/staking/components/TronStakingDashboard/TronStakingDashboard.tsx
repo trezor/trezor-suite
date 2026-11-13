@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import {
     fetchAllTransactionsForAccountThunk,
+    getTronStakingRewards,
     selectAccountIsStakingActive,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -9,6 +10,7 @@ import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { useNow } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite';
 
@@ -34,6 +36,8 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, accountKey));
 
+    const hasUnclaimedRewards = new BigNumber(getTronStakingRewards(account)).gt(0);
+
     const nowSeconds = useNow(UNSTAKING_REFRESH_INTERVAL_MS) / 1000;
 
     useEffect(() => {
@@ -45,7 +49,7 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
             selectedAccount={selectedAccount}
             dashboard={
                 <Column gap={48} alignItems="stretch">
-                    {isStakingActive ? (
+                    {isStakingActive || hasUnclaimedRewards ? (
                         <Column
                             gap={12}
                             alignItems="stretch"
