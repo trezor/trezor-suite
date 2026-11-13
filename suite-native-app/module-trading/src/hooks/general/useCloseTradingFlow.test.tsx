@@ -70,7 +70,7 @@ describe('useCloseTradingFlow', () => {
 
         await fireEvent.press(getByText('close'));
 
-        expect(navigationRef.getRootState().routes.map(route => route.name)).toEqual(['Tabs']);
+        expect(navigationRef.getRootState()?.routes.map(route => route.name)).toEqual(['Tabs']);
     });
 
     it('leaves the whole flow when a screen re-dispatches the allowed remove action', async () => {
@@ -79,6 +79,6 @@ describe('useCloseTradingFlow', () => {
 
         await fireEvent.press(getByText('close'));
 
-        expect(navigationRef.getRootState().routes.map(route => route.name)).toEqual(['Tabs']);
+        expect(navigationRef.getRootState()?.routes.map(route => route.name)).toEqual(['Tabs']);
     });
 });
