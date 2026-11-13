@@ -21,7 +21,7 @@ export const paramDescriptions = {
         'Recipient address. In case of token transfer, this still means the owner address of the token account. The associated token account is created automatically.',
     amount: 'Amount to send in decimal string format',
     priorityFees:
-        'Fee configuration. If not set, it defaults to hardcoded values. It is recommended to simulate the transaction using `blockchainEstimateFee`',
+        'Fee configuration. If not set, it defaults to hardcoded values. It is recommended to simulate the transaction on a Solana backend',
     tokenTransfer: 'Token details in case of token transfer',
     recipientAccountOwner:
         'Program owning the recipient account, i.e. `misc.owner` of `toAddress` as returned by a Solana RPC `getAccountInfo` call, or `null` if the account does not exist yet. `null` or the System Program means the associated token account is created, unless `recipientTokenAccounts` already contains it.',
