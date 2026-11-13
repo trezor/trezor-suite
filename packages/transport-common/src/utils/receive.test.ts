@@ -133,6 +133,115 @@ describe('receive', () => {
         expect(spyWarn).toHaveBeenCalledTimes(1);
     });
 
+    test('protocol-v1 handle packet loss', async () => {
+        const apiRead = getApiRead([
+            '3f23230002000000060a',
+            '3f046d65',
+            '3f23230002000000060a', // first chunk again
+            '3f046d65',
+            '3f6f77',
+        ]);
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
+        const result = await receive(apiRead, protocolV1);
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 2 },
+        });
+        expect(apiRead).toHaveBeenCalledTimes(5);
+        expect(spyWarn).toHaveBeenCalledTimes(1);
+        if (result.success) {
+            expect(result.payload.payload.subarray(0, result.payload.length).toString('hex')).toBe(
+                '0a046d656f77',
+            );
+        }
+    });
+
+    test('protocol-v1 continuation chunk that coincidentally starts with the message header bytes is not mistaken for a restart', async () => {
+        // Regression test: comparing only the 3-byte protocol-v1 header (3f 23 23) against a
+        // continuation chunk's leading bytes would false-positive on any genuine continuation
+        // chunk whose payload happens to start with 23 23, discarding real data. The fix must
+        // compare against the full saved first-packet bytes, so a match on only the first 3
+        // bytes is not enough to trigger a restart.
+        const apiRead = getApiRead([
+            '3f23230002000000060a', // first packet: header 3f2323, type 0002, length 6, payload byte 0a
+            '3f232301020304', // continuation: chunkHeader 3f + payload 23 23 01 02 03 04 (7 bytes)
+        ]);
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
+        const result = await receive(apiRead, protocolV1);
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 2 },
+        });
+        expect(apiRead).toHaveBeenCalledTimes(2);
+        expect(spyWarn).not.toHaveBeenCalled();
+        if (result.success) {
+            // 1 payload byte from the first packet (0a) + 5 bytes from the continuation
+            // (23 23 01 02 03 - Buffer.copy truncates to the remaining 5-byte capacity of the
+            // 6-byte result buffer, dropping the continuation's trailing 04, which is expected
+            // and unrelated to this fix)
+            expect(result.payload.payload.subarray(0, result.payload.length).toString('hex')).toBe(
+                '0a2323010203',
+            );
+        }
+    });
+
+    test('protocol-v1 SHORT continuation chunk that coincidentally shares the header prefix is not mistaken for a restart', async () => {
+        // Regression test: comparing only a length-capped prefix (min(chunk length, first
+        // packet length)) would still false-positive when a short continuation chunk's entire
+        // content happens to equal the first bytes of a longer first packet. Real chunked
+        // transports pad every packet - first and continuation alike - to the same fixed chunk
+        // size (see `createChunks`), so a genuine retransmit is always the SAME length as the
+        // original first packet; the fix must require an exact length match (not just a
+        // prefix match) before comparing content, so a differently-sized continuation - even
+        // one that is a byte-for-byte prefix of the first packet - is never mistaken for one.
+        const apiRead = getApiRead([
+            '3f23230002000000030a', // first packet (10 bytes): header 3f2323, type 0002, length 3, payload byte 0a
+            '3f2323', // SHORT continuation (3 bytes): chunkHeader 3f + payload 23 23 - identical prefix, different length
+        ]);
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
+        const result = await receive(apiRead, protocolV1);
+        expect(result).toMatchObject({
+            success: true,
+            payload: { messageType: 2 },
+        });
+        expect(apiRead).toHaveBeenCalledTimes(2);
+        expect(spyWarn).not.toHaveBeenCalled();
+        if (result.success) {
+            expect(result.payload.payload.subarray(0, result.payload.length).toString('hex')).toBe(
+                '0a2323',
+            );
+        }
+    });
+
+    test('protocol-bridge multi-read message is not mistaken for a restart on every chunk', async () => {
+        // Regression test: protocol-bridge has no chunk framing at all (getHeaders returns two
+        // empty buffers), so a naive header-match restart check (empty buffer compared against
+        // an empty slice) is always "equal" and would treat every single chunk as a restart,
+        // resetting offset forever and never completing reception.
+        const result = buildMessage({
+            name: 'StellarPaymentOp',
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            data: fixtures[0].in,
+            protocol: bridgeProtocol,
+        });
+        // split the encoded message into two reads, well past the 6-byte bridge header
+        const splitAt = 10;
+        const apiRead = getApiRead([
+            result.subarray(0, splitAt).toString('hex'),
+            result.subarray(splitAt).toString('hex'),
+        ]);
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
+        const decoded = await receiveAndParse(apiRead, bridgeProtocol);
+        expect(apiRead).toHaveBeenCalledTimes(2);
+        expect(spyWarn).not.toHaveBeenCalled();
+        if (!decoded.success) {
+            throw new Error('Decoding failed');
+        }
+        expect(decoded.payload.type).toEqual('StellarPaymentOp');
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        expect(decoded.payload.message).toEqual(fixtures[0].in);
+    });
+
     test('protocol-v2 receive one chunk', async () => {
         const result = await receive(getApiRead(['2833da0004527eb068']), protocolV2);
         expect(result).toMatchObject({
