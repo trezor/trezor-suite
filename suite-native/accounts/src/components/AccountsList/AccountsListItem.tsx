@@ -44,6 +44,7 @@ type AccountListItemProps = {
     showDivider?: boolean;
     badges?: React.ReactNode;
     shouldShowExactAmount?: boolean;
+    shouldLimitFiatToNativeBalance?: boolean;
 };
 
 const AccountsListItemComponent = ({
@@ -57,6 +58,7 @@ const AccountsListItemComponent = ({
     showDivider = false,
     badges,
     shouldShowExactAmount = false,
+    shouldLimitFiatToNativeBalance = false,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -85,8 +87,9 @@ const AccountsListItemComponent = ({
     const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
     const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
+    const shouldShowTotalFiat = shouldShowTokenBadge && !shouldLimitFiatToNativeBalance;
     const fiatBalanceValue =
-        shouldShowTokenBadge && fiatBalance !== undefined ? (
+        shouldShowTotalFiat && fiatBalance !== undefined ? (
             <BaseCurrencyAmountFormatter
                 numberOfLines={1}
                 adjustsFontSizeToFit
@@ -154,6 +157,7 @@ const AccountsListItemComponent = ({
             secondaryValue={
                 isFailed ? undefined : (
                     <CryptoAmountFormatter
+                        testID="@accountList/item/native-balance"
                         value={account.formattedBalance}
                         symbol={account.symbol}
                         numberOfLines={1}
