@@ -302,6 +302,42 @@ describe('createFormStateForSendForm', () => {
             expect(formState.transactionData).toBe('');
         });
 
+        it('should not mark DEX quotes as SLIP-24 even when SLIP-24 is active', () => {
+            const dexQuote = {
+                exchange: 'swapkit',
+                send: 'solana' as any,
+                sendStringAmount: '0.045469788',
+                sendAddress: 'sender',
+                receive: 'ethereum' as any,
+                receiveStringAmount: '3.22882164',
+                receiveAddress: 'receiver',
+                status: 'CONFIRM',
+                orderId: 'dex-order-123',
+                quoteId: 'dex-quote-456',
+                isDex: true,
+                dexTx: {
+                    from: 'sender',
+                    to: 'depositAddress',
+                    value: '0.045469788',
+                },
+            } as ExchangeTrade;
+
+            const formState = createFormStateForSendForm({
+                quote: dexQuote,
+                networkType: 'solana',
+                providers: { swapkit: exchangeInvity },
+                isSlip24Active: true,
+                sendAccountKey,
+                receiveAccountKey: mockAccountKey({ descriptor: 'receiveAccountKey' }),
+            });
+
+            expect(formState.trading).toMatchObject({
+                activeSection: 'exchange',
+                recipientName: 'Invity Finance',
+                isSlip24Active: false,
+            });
+        });
+
         it('should apply gas limit adjustment for DEX approval transactions', () => {
             const dexApprovalQuote: ExchangeTrade = {
                 exchange: '1inch',

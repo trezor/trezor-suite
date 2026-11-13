@@ -705,6 +705,67 @@ describe('getTradingFormState', () => {
             });
         });
 
+        it('should disable SLIP-24 for a DEX trade and keep the complete form state', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                receive: 'ethereum' as CryptoId,
+                receiveStringAmount: '1',
+                send: 'solana' as CryptoId,
+                sendStringAmount: '0.5',
+                isDex: true,
+            } as ExchangeTrade;
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers: { 'test-exchange': mockProvider },
+                isSlip24Active: true,
+                sendAccountKey,
+                receiveAccountKey,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+                recipientName: 'Test Exchange',
+                isSlip24Active: false,
+                send: {
+                    accountKey: sendAccountKey,
+                    cryptoId: 'solana',
+                    symbol: 'sol',
+                    contractAddress: undefined,
+                    amount: '0.5',
+                },
+                receive: {
+                    accountKey: receiveAccountKey,
+                    cryptoId: 'ethereum',
+                    symbol: 'eth',
+                    contractAddress: undefined,
+                    amount: '1',
+                },
+            });
+        });
+
+        it('should disable SLIP-24 in the default state of a DEX trade', () => {
+            const trade = {
+                exchange: 'test-exchange',
+                isDex: true,
+            } as ExchangeTrade;
+
+            const result = getTradingFormState({
+                activeSection,
+                trade,
+                providers: { 'test-exchange': mockProvider },
+                isSlip24Active: true,
+                sendAccountKey,
+                receiveAccountKey,
+            });
+
+            expect(result).toEqual({
+                activeSection: 'exchange',
+                isSlip24Active: false,
+            });
+        });
+
         it('should propagate trade.receiveAddress', () => {
             const trade = {
                 exchange: 'test-exchange',

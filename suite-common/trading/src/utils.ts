@@ -336,9 +336,10 @@ export const getTradingFormState = ({
             };
         }
         case 'exchange': {
+            const isTradeSlip24Active = isSlip24Active && !trade.isDex;
             const defaultState = {
                 activeSection,
-                isSlip24Active,
+                isSlip24Active: isTradeSlip24Active,
             };
 
             if (
@@ -361,7 +362,7 @@ export const getTradingFormState = ({
             return {
                 activeSection,
                 recipientName: provider.companyName,
-                isSlip24Active: isSlip24Active && !!receiveAccountKey,
+                isSlip24Active: isTradeSlip24Active && !!receiveAccountKey,
                 receiveAddress: trade.receiveAddress,
                 send: {
                     cryptoId: trade.send,
