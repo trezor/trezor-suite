@@ -68,7 +68,7 @@ export const FeedbackCard = ({
                 <Row gap={20} margin={{ vertical: 8 }}>
                     <IconCircle icon={CheckIcon} size={40} />
                     <Column gap={8}>
-                        <H3>{successHeading}</H3>
+                        <H3 data-testid="@feedback/card/success-heading">{successHeading}</H3>
                         <Paragraph typographyStyle="body-sm">{successDescription}</Paragraph>
                     </Column>
                 </Row>
@@ -92,6 +92,7 @@ export const FeedbackCard = ({
                         options={ratingOptions}
                         value={rating}
                         onChange={handleRatingSelect}
+                        data-testid="@feedback/card/rating"
                     />
                 </Flex>
             </Card>
