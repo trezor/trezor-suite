@@ -55,7 +55,9 @@ export class UsbApi extends AbstractApi {
      * calling device.reset over other calls often leads to segfault
      */
     private synchronizeResetDevice = getSynchronize();
-    private deviceResetMap: Record<string, boolean> = {};
+    // null prototype: paths are raw USB serial numbers, so inherited keys
+    // ('toString', '__proto__', ...) must not read as a reset already running
+    private deviceResetMap: Record<string, boolean> = Object.create(null);
     private devicePendingTransferIn = new Map<UsbDeviceLike, Promise<UsbInTransferResultLike>>();
     /**
      * paths currently inside device.open(). usb 3.x reports opened===false until open() resolves,
