@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { AnimatedPressable, Box, useButtonPressAnimatedStyle } from '@suite-native/atoms';
+import { AnimatedPressable, Box, useButtonPressAnimatedStyles } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import {
     ActivityCenterStackRoutes,
@@ -45,7 +45,7 @@ export const ActivityCenterButton = ({
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-    const animatedPressStyle = useButtonPressAnimatedStyle(
+    const animatedPressStyles = useButtonPressAnimatedStyles(
         isPressed,
         false,
         'surfaceFillAction',
@@ -62,7 +62,7 @@ export const ActivityCenterButton = ({
             onPress={handlePress}
             onPressIn={() => setIsPressed(true)}
             onPressOut={() => setIsPressed(false)}
-            style={[animatedPressStyle, applyStyle(buttonStyle)]}
+            style={[...animatedPressStyles, applyStyle(buttonStyle)]}
         >
             <Icon name="bell" size="large" color="contentPrimary" />
             {hasUnseenNotifications && (
