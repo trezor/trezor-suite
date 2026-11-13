@@ -38,7 +38,7 @@ export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_term
 export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
 export const TREZOR_TRADING_DEX_SLIPPAGE_URL: Url =
     'https://trezor.io/learn/advanced/defi/what-is-a-dex#fees-and-slippage';
-export const MORPHO_DISCLAIMER_URL: Url = 'https://morpho.org/disclaimers/';
+export const MORPHO_DISCLAIMER_URL: Url = 'https://morpho.org/disclaimers';
 
 // =====================
 // 🆘 SUPPORT
