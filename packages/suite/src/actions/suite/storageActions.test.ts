@@ -57,7 +57,7 @@ import {
 } from '#src/middlewares/wallet/storageMiddleware';
 import suiteReducer, { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
 import graphReducer from '#src/reducers/wallet/graphReducer';
-import { type Db, type DbDep } from '#src/storage/createDb';
+import { type Db, type DbDep } from '#src/storage/Db';
 import { type PreloadStore, createPreloadStore } from '#src/support/suite/createPreloadStore';
 import { type AcquiredDevice } from '#src/types/suite';
 

@@ -1,10 +1,10 @@
 import { DotIndicator, Icon } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
 
-import { type TransactionReviewOutputElementProps } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
+export type TransactionReviewOutputState = 'active' | 'confirmed' | 'unconfirmed';
 
 type TransactionReviewOutputStatusProps = {
-    state: TransactionReviewOutputElementProps['state'];
+    state: TransactionReviewOutputState;
 };
 
 export const TransactionReviewOutputStatus = ({ state }: TransactionReviewOutputStatusProps) => {
