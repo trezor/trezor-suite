@@ -1,4 +1,4 @@
-import { useCallback, useId, useMemo, useRef } from 'react';
+import { useCallback, useId, useLayoutEffect, useMemo, useRef } from 'react';
 import ReactSelect, {
     type ControlProps,
     type OptionProps,
@@ -45,10 +45,25 @@ export const SelectInner = ({
     'data-testid': dataTest,
     // Only the failed-load control uses it, so it stays out of the props passed to react-select.
     onLoadFailed,
+    isPressedWhileLoading,
     ...rest
 }: SelectInnerProps) => {
     const selectRef = useRef<SelectInstance<OptionType, boolean>>(null);
     const autoInstanceId = useId();
+
+    /**
+     * Does what react-select does on a click: focus, which opens the menu with `openMenuOnFocus`,
+     * otherwise open it explicitly with `openMenuOnClick`. The press can only happen before this mounts.
+     */
+    useLayoutEffect(() => {
+        const select = selectRef.current;
+        if (!isPressedWhileLoading || !select) return;
+
+        select.focus();
+        if (select.props.openMenuOnClick && !select.props.openMenuOnFocus) {
+            select.openMenu('first');
+        }
+    }, [isPressedWhileLoading]);
 
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled, hasError } = formCellProps;
