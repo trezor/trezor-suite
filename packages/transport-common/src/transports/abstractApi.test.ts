@@ -333,6 +333,25 @@ describe('Usb', () => {
             });
         });
 
+        it('releaseSync frees the device for the next acquire', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes.success).toEqual(true);
+            if (!acquireRes.success) return;
+
+            transport.releaseSync(acquireRes.payload);
+            // releaseSync does not return its promise, let its chain settle.
+            await new Promise(resolve => setTimeout(resolve, 0));
+
+            const nextAcquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(nextAcquireRes).toEqual({ success: true, payload: '2' });
+        });
+
         // CURRENTLY LEAKS — see PR #27978 for the fix.
         //
         // AbstractApiTransport.listen() registers three event handlers (one on the api emitter,

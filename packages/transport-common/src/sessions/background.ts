@@ -30,6 +30,10 @@ import { error, success } from '../utils/result';
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
 
+type Lock = { id: TimerId; dfd: Deferred<void> };
+
+type PendingOperation = { lock: Lock; session: Session };
+
 // in nodeusb, enumeration operation takes ~3 seconds
 const lockDuration = 1000 * 4;
 
@@ -51,8 +55,11 @@ export class SessionsBackground
     private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: { id: TimerId; dfd: Deferred<void> }[] = [];
-    private locksTimeoutQueue: TimerId[] = [];
+    private locksQueue: Lock[] = [];
+    // A *Done can come after its lock timed out and another client took over, so the *Intent
+    // keeps its own lock and session for it, under the path the *Done carries.
+    private pendingAcquires: Record<PathPublic, PendingOperation> = {};
+    private pendingReleases: Record<PathInternal, PendingOperation> = {};
     private lastSessionId = 0;
     private lastPathId = 0;
 
@@ -110,7 +117,7 @@ export class SessionsBackground
             // background should never stay in "hanged" state
             return {
                 ...error({ code: ERRORS.UNEXPECTED_ERROR }),
-                id: message.type,
+                id: message.id,
             } as HandleMessageResponse<M>;
         } finally {
             if (result?.success && result.payload) {
@@ -190,17 +197,18 @@ export class SessionsBackground
         // concurrent acquires of a free device both pass the guard below.
         const previousSession = previous.session;
 
-        await this.waitInQueue();
+        const lock = await this.waitInQueue();
 
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
         if (previousSession !== this.descriptors[pathInternal]?.session) {
-            this.clearLock();
+            this.releaseLock(lock);
 
             return error({ code: ERRORS.SESSION_WRONG_PREVIOUS });
         }
 
         this.lastSessionId++;
         const session = Session(`${this.lastSessionId}`);
+        this.pendingAcquires[payload.path] = { lock, session };
         const releaseRequest =
             previous.session !== null ? this.descriptors[pathInternal] : undefined;
 
@@ -212,7 +220,10 @@ export class SessionsBackground
      * - assign client a new "session". this session will be used in all subsequent communication
      */
     private acquireDone(payload: AcquireDoneRequest) {
-        this.clearLock();
+        const pending = this.pendingAcquires[payload.path];
+        delete this.pendingAcquires[payload.path];
+        if (pending) this.releaseLock(pending.lock);
+
         const pathInternal = this.getInternal(payload.path);
 
         if (!pathInternal || !this.descriptors[pathInternal]) {
@@ -221,8 +232,8 @@ export class SessionsBackground
 
         // abort: openDevice failed after acquireIntent reserved the session. The
         // lock is already released above; do not commit a phantom session.
-        if (!payload.abort) {
-            this.descriptors[pathInternal].session = Session(`${this.lastSessionId}`);
+        if (pending && !payload.abort) {
+            this.descriptors[pathInternal].session = pending.session;
             this.descriptors[pathInternal].sessionOwner = payload.sessionOwner;
         }
 
@@ -237,28 +248,33 @@ export class SessionsBackground
         }
         const { path } = pathResult.payload;
 
-        await this.waitInQueue();
+        const lock = await this.waitInQueue();
 
         // Re-check ownership after the lock: the session may have been stolen
-        // while we waited. Without this, releaseDone (which clears the session
-        // unconditionally) would destroy the new owner's session.
+        // while we waited.
         if (this.descriptors[path]?.session !== payload.session) {
-            this.clearLock();
+            this.releaseLock(lock);
 
             return error({ code: ERRORS.SESSION_NOT_FOUND });
         }
+
+        this.pendingReleases[path] = { lock, session: payload.session };
 
         return success({ path });
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        const { descriptors } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const descriptor: Descriptor = descriptors[payload.path];
-        descriptor.session = null;
-        descriptor.sessionOwner = undefined;
+        const pending = this.pendingReleases[payload.path];
+        delete this.pendingReleases[payload.path];
+        if (pending) this.releaseLock(pending.lock);
 
-        this.clearLock();
+        const descriptor = this.descriptors[payload.path];
+
+        // The device might be gone (enumerateDone) or stolen after the lock timed out.
+        if (pending && descriptor?.session === pending.session) {
+            descriptor.session = null;
+            descriptor.sessionOwner = undefined;
+        }
 
         return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
@@ -283,28 +299,22 @@ export class SessionsBackground
         // todo: create a deferred with built-in timeout functionality (util)
         const dfd = createDeferred();
 
-        // to ensure that communication with device will not get stuck forever,
-        // lock times out:
-        // - if cleared by client (enumerateDone)
-        // - after n second automatically
-        const timeout = setTimeout(() => {
-            dfd.resolve(undefined);
-        }, lockDuration);
+        // To ensure that communication with device will not get stuck forever, the lock times
+        // out automatically. It also leaves the queue, so that the queue holds only the locks
+        // that are still held or awaited.
+        const lock: Lock = {
+            id: setTimeout(() => this.releaseLock(lock), lockDuration),
+            dfd,
+        };
+        this.locksQueue.push(lock);
 
-        this.locksQueue.push({ id: timeout, dfd });
-        this.locksTimeoutQueue.push(timeout);
-
-        return this.locksQueue.length - 1;
+        return lock;
     }
 
-    private clearLock() {
-        const lock = this.locksQueue[0];
-        if (lock) {
-            lock.dfd.resolve(undefined);
-            this.locksQueue.shift();
-            clearTimeout(this.locksTimeoutQueue[0]);
-            this.locksTimeoutQueue.shift();
-        }
+    private releaseLock(lock: Lock) {
+        lock.dfd.resolve(undefined);
+        clearTimeout(lock.id);
+        this.locksQueue = this.locksQueue.filter(queued => queued !== lock);
     }
 
     private async waitForUnlocked(myIndex: number) {
@@ -317,8 +327,10 @@ export class SessionsBackground
     }
 
     private async waitInQueue() {
-        const myIndex = this.startLock();
-        await this.waitForUnlocked(myIndex);
+        const lock = this.startLock();
+        await this.waitForUnlocked(this.locksQueue.indexOf(lock));
+
+        return lock;
     }
 
     private getInternal(pathPublic: PathPublic): PathInternal | undefined {
@@ -328,8 +340,11 @@ export class SessionsBackground
     }
 
     dispose() {
-        this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
+        // Release the locks too: AbstractApiTransport.init() keeps using this instance after
+        // dispose, and a lock nobody clears anymore would block every later acquire forever.
+        this.locksQueue.forEach(lock => this.releaseLock(lock));
+        this.pendingAcquires = {};
+        this.pendingReleases = {};
         this.descriptors = {};
         this.lastSessionId = 0;
         this.removeAllListeners();

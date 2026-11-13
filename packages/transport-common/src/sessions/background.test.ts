@@ -3,11 +3,33 @@ import { SessionsBackground } from './background';
 import { SessionsClient } from './client';
 import { type SessionsBackgroundInterface } from './types';
 
+const usbDevice = (path: string) => ({
+    path: PathInternal(path),
+    type: 1,
+    apiType: 'usb' as const,
+});
+
+// Mirrors the lock timeout in background.ts.
+const lockDuration = 4000;
+
+// Lets the background process every message that does not have to wait for a lock.
+const flushMicrotasks = async () => {
+    for (let i = 0; i < 16; i += 1) {
+        await Promise.resolve();
+    }
+};
+
 describe('sessions', () => {
     let background: SessionsBackground;
 
     beforeEach(() => {
         background = new SessionsBackground();
+    });
+
+    afterEach(() => {
+        // Clears the timers of locks that a test leaves held.
+        background.dispose();
+        jest.useRealTimers();
     });
 
     test('acquire without previous enumerate', async () => {
@@ -233,6 +255,135 @@ describe('sessions', () => {
         // cleanup: release the lock acquireAgain just took, otherwise it stays
         // held with the 4s safety-net timer pending after the test ends
         await client1.acquireDone({ path: PathPublic('1'), abort: true });
+    });
+
+    test('dispose releases a held lock, so a reused background does not deadlock', async () => {
+        const client = new SessionsClient(background);
+        await client.enumerateDone({ descriptors: [usbDevice('1')] });
+        // The intent takes the lock but its acquireDone never comes.
+        await client.acquireIntent({ path: PathPublic('1'), previous: null });
+
+        // AbstractApiTransport.init() disposes and then keeps using the same background.
+        client.setBackground(background);
+        await client.enumerateDone({ descriptors: [usbDevice('1')] });
+
+        const onAcquireIntent = jest.fn();
+        client.acquireIntent({ path: PathPublic('1'), previous: null }).then(onAcquireIntent);
+        await flushMicrotasks();
+
+        expect(onAcquireIntent).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+    });
+
+    test('a timed out lock leaves the queue, so it does not delay later operations', async () => {
+        jest.useFakeTimers();
+        const client = new SessionsClient(background);
+        await client.enumerateDone({ descriptors: [usbDevice('1')] });
+        await client.acquireIntent({ path: PathPublic('1'), previous: null });
+        await client.acquireDone({ path: PathPublic('1') });
+        // Like releaseSync: the intent takes the lock but its releaseDone never comes.
+        await client.releaseIntent({ session: Session('1') });
+        jest.advanceTimersByTime(lockDuration);
+
+        await client.acquireIntent({ path: PathPublic('1'), previous: Session('1') });
+        await client.acquireDone({ path: PathPublic('1') });
+
+        const onReleaseIntent = jest.fn();
+        client.releaseIntent({ session: Session('2') }).then(onReleaseIntent);
+        await flushMicrotasks();
+
+        expect(onReleaseIntent).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+    });
+
+    test('releaseDone of a device disconnected during the release still releases the lock', async () => {
+        const client = new SessionsClient(background);
+        await client.enumerateDone({ descriptors: [usbDevice('1')] });
+        await client.acquireIntent({ path: PathPublic('1'), previous: null });
+        await client.acquireDone({ path: PathPublic('1') });
+        await client.releaseIntent({ session: Session('1') });
+        await client.enumerateDone({ descriptors: [] });
+
+        const releaseDone = await client.releaseDone({ path: PathInternal('1') });
+        expect(releaseDone).toMatchObject({ success: true });
+
+        // The reconnected device gets a new public path.
+        await client.enumerateDone({ descriptors: [usbDevice('1')] });
+        const onAcquireIntent = jest.fn();
+        client.acquireIntent({ path: PathPublic('2'), previous: null }).then(onAcquireIntent);
+        await flushMicrotasks();
+
+        expect(onAcquireIntent).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
+    });
+
+    test('an unexpected error reply carries the id of its request', async () => {
+        const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        // @ts-expect-error: a message type the background does not know
+        const reply = await background.handleMessage({ type: 'unknown', id: 7 });
+        consoleError.mockRestore();
+
+        expect(reply).toMatchObject({ success: false, id: 7 });
+    });
+
+    describe('a *Done that comes after its lock timed out', () => {
+        beforeEach(() => {
+            jest.useFakeTimers();
+        });
+
+        test('acquireDone commits its own session, not the session of the next client', async () => {
+            const client = new SessionsClient(background);
+            await client.enumerateDone({ descriptors: [usbDevice('1'), usbDevice('2')] });
+            await client.acquireIntent({ path: PathPublic('1'), previous: null });
+            jest.advanceTimersByTime(lockDuration);
+            await client.acquireIntent({ path: PathPublic('2'), previous: null });
+            await client.acquireDone({ path: PathPublic('2') });
+
+            await client.acquireDone({ path: PathPublic('1') });
+
+            const sessions = await client.getSessions();
+            expect(sessions.payload.descriptors).toMatchObject([
+                { path: '1', session: '1' },
+                { path: '2', session: '2' },
+            ]);
+        });
+
+        test('acquireDone does not release the lock of the next client', async () => {
+            const client = new SessionsClient(background);
+            await client.enumerateDone({
+                descriptors: [usbDevice('1'), usbDevice('2'), usbDevice('3')],
+            });
+            await client.acquireIntent({ path: PathPublic('1'), previous: null });
+            jest.advanceTimersByTime(lockDuration);
+            await client.acquireIntent({ path: PathPublic('2'), previous: null });
+
+            await client.acquireDone({ path: PathPublic('1') });
+
+            const onAcquireIntent = jest.fn();
+            client.acquireIntent({ path: PathPublic('3'), previous: null }).then(onAcquireIntent);
+            await flushMicrotasks();
+            expect(onAcquireIntent).not.toHaveBeenCalled();
+
+            await client.acquireDone({ path: PathPublic('2') });
+            await flushMicrotasks();
+            expect(onAcquireIntent).toHaveBeenCalledWith(
+                expect.objectContaining({ success: true }),
+            );
+        });
+
+        test('releaseDone does not clear the session of a client that stole the device', async () => {
+            const client = new SessionsClient(background);
+            await client.enumerateDone({ descriptors: [usbDevice('1')] });
+            await client.acquireIntent({ path: PathPublic('1'), previous: null });
+            await client.acquireDone({ path: PathPublic('1') });
+            await client.releaseIntent({ session: Session('1') });
+            jest.advanceTimersByTime(lockDuration);
+            await client.acquireIntent({ path: PathPublic('1'), previous: Session('1') });
+            await client.acquireDone({ path: PathPublic('1') });
+
+            await client.releaseDone({ path: PathInternal('1') });
+
+            const sessions = await client.getSessions();
+            expect(sessions.payload.descriptors).toMatchObject([{ path: '1', session: '2' }]);
+        });
     });
 
     // CURRENTLY LEAKS — see PR #27978 for the fix.
