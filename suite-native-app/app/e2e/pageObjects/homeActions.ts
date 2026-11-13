@@ -15,7 +15,7 @@ class HomeActions {
 
     async waitForDiscoveryComplete() {
         await waitFor(element(by.id('@assets/discovery/loading')))
-            .not.toBeVisible()
+            .not.toExist()
             .withTimeout(60_000);
     }
 
