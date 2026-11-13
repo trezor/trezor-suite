@@ -42,6 +42,7 @@ on:
       - "packages/transport-web/**"
       - "packages/utxo-lib/**"
       - "packages/websocket-client/**"
+      - "packages/zod/**"
       - "scripts/ci/helpers.ts"
       - "scripts/ci/pack-packages.ts"
       - "scripts/ci/publish-closure.ts"

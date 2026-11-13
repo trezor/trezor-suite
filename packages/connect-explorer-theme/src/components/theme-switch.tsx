@@ -4,9 +4,9 @@ import cn from 'clsx';
 import { useTheme } from 'next-themes';
 import { useMounted } from 'nextra/hooks';
 import { MoonIcon, SunIcon } from 'nextra/icons';
-import { type z } from 'zod';
 
 import { Select } from '@trezor/components';
+import { type z } from '@trezor/zod';
 
 import { useThemeConfig } from '../contexts/theme-config';
 import { type themeOptionsSchema } from '../schema';

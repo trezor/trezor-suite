@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@trezor/zod';
 
 // A corrupt entry falls back to { updatedAt: 0 } (and thus gets reprocessed) instead of
 // discarding the whole checkpoint, matching the leniency of the previous unvalidated fetch.

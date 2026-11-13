@@ -46,6 +46,7 @@ on:
       - "packages/utils/**"
       - "packages/utxo-lib/**"
       - "packages/websocket-client/**"
+      - "packages/zod/**"
       # The harness of the connect-core e2e tests, not published with connect.
       - "packages/trezor-user-env-link/**"
       - "submodules/trezor-common/**"

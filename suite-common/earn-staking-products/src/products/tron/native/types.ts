@@ -1,11 +1,10 @@
-import z from 'zod';
-
 import {
     type StakingAmount,
     type StakingProvider,
     type TronResourceAmounts,
 } from '@suite-common/earn-staking-common';
 import { tronAddressToBytes } from '@trezor/network-tron/utils';
+import { z } from '@trezor/zod';
 
 import { type TRON_RESOURCES } from './constants';
 

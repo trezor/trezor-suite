@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@trezor/zod';
 
 // Strip the top-level `$schema` which breaks Agent's attempt of JSON output.
 const toJsonSchema = (schema: z.ZodType) => {
