@@ -67,6 +67,9 @@ export const permissionsAreCovered = (
     requested: PermissionRequest[],
     granted: PermissionRequest[],
 ): boolean =>
+    // On native, an app remembered before 26.7.1 rehydrates without `allowedPermissions` (formerly
+    // `types`), so `granted` can be undefined. It must cover nothing, so the user is asked again.
+    Array.isArray(granted) &&
     requested.every(req =>
         granted.some(g => g.permission === req.permission && g.coin === req.coin),
     );
