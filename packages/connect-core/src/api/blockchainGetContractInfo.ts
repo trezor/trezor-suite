@@ -1,6 +1,6 @@
+import { getContractInfo } from '@trezor/blockchain-core/src/api/getContractInfo';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import { getContractInfo } from '../blockchain/api/getContractInfo';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';

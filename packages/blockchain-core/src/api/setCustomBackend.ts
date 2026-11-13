@@ -1,12 +1,5 @@
-import {
-    reconnectAllBackends,
-    setCustomBackend as setCustom,
-} from '@trezor/blockchain-core/src/backend/BlockchainLink';
-import {
-    type BlockchainLinkSettings,
-    getBackendCoinInfo,
-} from '@trezor/blockchain-core/src/data/coinInfo';
-
+import { reconnectAllBackends, setCustomBackend as setCustom } from '../backend/BlockchainLink';
+import { type BlockchainLinkSettings, getBackendCoinInfo } from '../data/coinInfo';
 import { validateParams } from '../utils/validateParams';
 
 export type SetCustomBackendParams = { coin: string; blockchainLink?: BlockchainLinkSettings };

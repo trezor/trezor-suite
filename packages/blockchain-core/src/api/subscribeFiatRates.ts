@@ -1,6 +1,5 @@
-import type { PostMessage } from '@trezor/blockchain-core/src/backend/Blockchain';
-import { initCoinBackend } from '@trezor/blockchain-core/src/backend/BlockchainLink';
-
+import type { PostMessage } from '../backend/Blockchain';
+import { initCoinBackend } from '../backend/BlockchainLink';
 import { COIN_PARAMS, type CoinParams, validateParams } from '../utils/validateParams';
 
 export const subscribeFiatRates = async (
