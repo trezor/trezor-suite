@@ -1,4 +1,4 @@
-import { useCallback, useEffectEvent } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -37,13 +37,15 @@ export const DeviceAuthenticityScreen = ({ navigation }: { navigation: Navigatio
         checkDeviceAuthenticity({ handleSuccess, handleFailure });
     }, [checkDeviceAuthenticity, handleSuccess, handleFailure]);
 
-    // Must not rerun `checkDeviceAuthenticity` on every device update, but should use current device (not cache outdated device, like useCallback with ignored deps would).
-    const startCheckOnFocus = useEffectEvent(startCheckDeviceAuthenticity);
+    // The check must not restart on every device update, but must not use an outdated device either
+    // (as useCallback with ignored deps would). The ref is updated in an effect, as writing it during render is unsafe,
+    // and before `useFocusEffect`, so that the focus effect always calls the latest version.
+    const startCheckDeviceAuthenticityRef = useRef(startCheckDeviceAuthenticity);
+    useEffect(() => {
+        startCheckDeviceAuthenticityRef.current = startCheckDeviceAuthenticity;
+    });
 
-    // rules-of-hooks false negative: useEffectEvent must be only used in effect, but `useFocusEffect` is an effect too (not recognized by ESLint).
-    // react-compiler is unfortunately disabled on this file; it cannot tell that the empty deps are correct (startCheckOnFocus not stable, but ref inside is).
-    // eslint-disable-next-line react-hooks/rules-of-hooks, react-hooks/preserve-manual-memoization
-    useFocusEffect(useCallback(() => startCheckOnFocus(), []));
+    useFocusEffect(useCallback(() => startCheckDeviceAuthenticityRef.current(), []));
 
     return (
         <DeviceOnboardingScreenWithExitButton
