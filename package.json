@@ -114,7 +114,7 @@
         "@types/jest": "30.0.0",
         "prettier": "^3.9.9",
         "react-native": "0.88.1",
-        "type-fest": "5.5.0",
+        "type-fest": "5.10.0",
         "bcrypto": "5.4.0",
         "electron": "44.9.3",
         "react": "19.3.0",

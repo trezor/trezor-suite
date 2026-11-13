@@ -15105,7 +15105,7 @@ __metadata:
     react-native-svg: "npm:15.16.0"
     react-native-worklets: "npm:0.13.0"
     storybook: "npm:^10.6.2"
-    type-fest: "npm:5.5.0"
+    type-fest: "npm:5.10.0"
   languageName: unknown
   linkType: soft
 
@@ -15508,7 +15508,7 @@ __metadata:
     react-native-svg: "npm:15.16.0"
     react-redux: "npm:9.3.0"
     semver: "npm:^7.7.1"
-    type-fest: "npm:5.5.0"
+    type-fest: "npm:5.10.0"
   languageName: unknown
   linkType: soft
 
@@ -15752,7 +15752,7 @@ __metadata:
     react-hook-form: "npm:^7.77.0"
     react-native: "npm:0.88.1"
     react-native-reanimated: "npm:4.7.1"
-    type-fest: "npm:5.5.0"
+    type-fest: "npm:5.10.0"
     yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
@@ -15934,7 +15934,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.3.0"
-    type-fest: "npm:5.5.0"
+    type-fest: "npm:5.10.0"
   peerDependencies:
     react-native: "*"
     react-native-reanimated: "*"
@@ -16114,7 +16114,7 @@ __metadata:
     react-native-reanimated: "npm:4.7.1"
     react-native-safe-area-context: "npm:~5.10.1"
     react-redux: "npm:9.3.0"
-    type-fest: "npm:5.5.0"
+    type-fest: "npm:5.10.0"
   languageName: unknown
   linkType: soft
 
@@ -16557,7 +16557,7 @@ __metadata:
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
     react-native-reanimated: "npm:4.7.1"
-    type-fest: "npm:5.5.0"
+    type-fest: "npm:5.10.0"
   languageName: unknown
   linkType: soft
 
@@ -20297,7 +20297,7 @@ __metadata:
     lodash: "npm:^4.18.1"
     puppeteer-core: "npm:^25.3.0"
     tsx: "npm:^4.23.15"
-    type-fest: "npm:5.5.0"
+    type-fest: "npm:5.10.0"
     viem: "npm:^2.57.2"
     xvfb-maybe: "npm:^0.2.1"
     zxing-wasm: "npm:3.0.0"
@@ -47588,12 +47588,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:5.5.0":
-  version: 5.5.0
-  resolution: "type-fest@npm:5.5.0"
+"type-fest@npm:5.10.0":
+  version: 5.10.0
+  resolution: "type-fest@npm:5.10.0"
   dependencies:
     tagged-tag: "npm:^1.0.0"
-  checksum: 10/b5423e991f29dd8cb6ba1bf613f6ab95065673706bf6ffbc8319a457256af8e9844de013801b4ab94572cee32eb35e3ebc9ff67db2bd4b2937cc153a2b91a093
+  checksum: 10/299a575a3d2bbc74f70da508629c448806dd5c51cbd2c5adf05b1755636f9f3b12c803b2c52c0eac561d4472ddc5e8ab42b88954cb238b101c9d4595906aea7f
   languageName: node
   linkType: hard
 
