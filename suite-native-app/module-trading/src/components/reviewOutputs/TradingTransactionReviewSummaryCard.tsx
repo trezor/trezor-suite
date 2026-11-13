@@ -4,11 +4,7 @@ import { useSelector } from 'react-redux';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type SendRootState, selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FormDraftWithSendKeyPrefix,
-    type TransactionReviewSummaryOutput,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type TransactionReviewSummaryOutput } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import type { ExchangeFlowType } from '@suite-native/navigation';
@@ -30,7 +26,6 @@ export interface TradingTransactionReviewSummaryCardProps {
     tokenContract?: TokenAddress;
     summaryOutput?: TransactionReviewSummaryOutput;
     flowType?: ExchangeFlowType;
-    prefix: FormDraftWithSendKeyPrefix;
 }
 
 type BitcoinValuesProps = {
@@ -100,12 +95,11 @@ export const TradingTransactionReviewSummaryCard = ({
     tokenContract,
     summaryOutput,
     flowType,
-    prefix,
 }: TradingTransactionReviewSummaryCardProps) => {
     const { translate } = useTranslate();
 
     const isClearSignedTradingSwap = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsClearSignedTradingSwap(state, accountKey, prefix),
+        selectIsClearSignedTradingSwap(state, accountKey),
     );
     const composedTokenContract = useSelector(
         (state: SendRootState) => selectSendPrecomposedTx(state)?.token?.contract,
