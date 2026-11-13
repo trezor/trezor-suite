@@ -37,6 +37,7 @@
 /packages/*
 !/packages/analytics-uploader
 !/packages/asset-utils
+!/packages/blockchain-core
 !/packages/blockchain-link
 !/packages/blockchain-link-types
 !/packages/blockchain-link-utils
