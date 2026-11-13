@@ -7,7 +7,7 @@ import {
     type PrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { findToken, getAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber, typedObjectFromEntries } from '@trezor/utils';
@@ -47,7 +47,7 @@ export const composeAllowanceTransactionThunk = createThunk<
             });
         }
 
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+        const estimatedFee = await TrezorBlockchain.estimateFee({
             coin: asCoinSymbol(account.symbol),
             identity: getAccountIdentity(account),
             request: {

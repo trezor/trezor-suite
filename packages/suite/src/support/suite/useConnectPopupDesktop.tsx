@@ -16,9 +16,9 @@ import {
     selectIsConnectAppSilentModeByOrigin,
     toConnectV9ErrorPayload,
 } from '@suite-common/connect-popup';
-import TrezorConnect, {
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import {
     type CallMethodKeys,
-    type CallMethodPayload,
     type PermissionRequest,
     UI_EVENTS,
     UI_REQUESTS,
@@ -56,22 +56,26 @@ export const useConnectPopupDesktop = () => {
             // Only methods which need neither the device nor user confirmation are allowed to
             // bypass the connect-popup UI. Everything else must go through the full approval flow
             // to prevent a caller from silently signing transactions or extracting keys.
-            const SILENT_ALLOWED_METHODS = new Set(['blockchainEstimateFee']);
+            const SILENT_ALLOWED_METHOD = 'blockchainEstimateFee';
 
             desktopApi.on('connect-popup/call', async params => {
-                // Silent calls bypass the connect-popup flow entirely and call
-                // TrezorConnect directly.
-                if (params.silent && SILENT_ALLOWED_METHODS.has(params.method)) {
+                // Silent calls bypass the connect-popup flow entirely and call the backends
+                // directly.
+                if (params.silent && params.method === SILENT_ALLOWED_METHOD) {
                     try {
                         const { method: _m, device: _d, ...safePayload } = params.payload ?? {};
-                        const response = await TrezorConnect.call({
-                            method: params.method,
-                            ...safePayload,
-                        } as CallMethodPayload);
-                        desktopApi.connectPopupResponse({
-                            ...response,
-                            id: params.id,
-                        });
+                        const response = await TrezorBlockchain.estimateFee(
+                            safePayload as Parameters<typeof TrezorBlockchain.estimateFee>[0],
+                        );
+                        desktopApi.connectPopupResponse(
+                            response.success
+                                ? { ...response, id: params.id }
+                                : {
+                                      ...response,
+                                      payload: toConnectV9ErrorPayload(response.error),
+                                      id: params.id,
+                                  },
+                        );
                     } catch (error) {
                         desktopApi.connectPopupResponse({
                             success: false,

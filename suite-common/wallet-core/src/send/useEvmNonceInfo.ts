@@ -11,7 +11,7 @@ import {
     getEvmNonceInfoFromConfirmedNonce,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -62,7 +62,7 @@ export const useEvmNonceInfo = (
             // Unreachable while disabled — `enabled` below is false whenever `account` is undefined.
             if (!account) throw new Error('useEvmNonceInfo: missing account');
 
-            const response = await TrezorConnect.getAccountInfo({
+            const response = await TrezorBlockchain.getAccountInfo({
                 coin: asCoinSymbol(account.symbol),
                 descriptor: account.descriptor,
                 identity: tryGetAccountIdentity(account),

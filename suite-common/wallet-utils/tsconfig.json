@@ -16,6 +16,9 @@
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         {
+            "path": "../../packages/blockchain-core"
+        },
+        {
             "path": "../../packages/blockchain-link-types"
         },
         {

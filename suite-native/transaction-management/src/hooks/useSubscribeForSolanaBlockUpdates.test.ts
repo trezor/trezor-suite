@@ -1,14 +1,11 @@
 import type { Account } from '@suite-common/wallet-types';
 import { renderHook } from '@suite-native/test-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { useSubscribeForSolanaBlockUpdates } from './useSubscribeForSolanaBlockUpdates';
 
-// Mock TrezorConnect
-jest.mock('@trezor/connect', () => ({
-    ...jest.requireActual('@trezor/connect'),
-    blockchainSubscribe: jest.fn(),
-    blockchainUnsubscribe: jest.fn(),
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: { subscribe: jest.fn(), unsubscribe: jest.fn() },
 }));
 
 describe('useSubscribeForSolanaBlockUpdates', () => {
@@ -25,7 +22,7 @@ describe('useSubscribeForSolanaBlockUpdates', () => {
 
         await renderHook(() => useSubscribeForSolanaBlockUpdates(solanaAccount));
 
-        const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;
+        const mockBlockchainSubscribe = TrezorBlockchain.subscribe;
 
         expect(mockBlockchainSubscribe).toHaveBeenCalledWith({
             coin: 'sol',
@@ -41,14 +38,14 @@ describe('useSubscribeForSolanaBlockUpdates', () => {
         } as unknown as Account;
 
         await renderHook(() => useSubscribeForSolanaBlockUpdates(btcAccount));
-        const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;
+        const mockBlockchainSubscribe = TrezorBlockchain.subscribe;
 
         expect(mockBlockchainSubscribe).not.toHaveBeenCalled();
     });
 
     it('should not subscribe when account is null', async () => {
         await renderHook(() => useSubscribeForSolanaBlockUpdates(null));
-        const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;
+        const mockBlockchainSubscribe = TrezorBlockchain.subscribe;
 
         expect(mockBlockchainSubscribe).not.toHaveBeenCalled();
     });
@@ -64,14 +61,14 @@ describe('useSubscribeForSolanaBlockUpdates', () => {
             useSubscribeForSolanaBlockUpdates(solanaAccount),
         );
 
-        const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;
+        const mockBlockchainSubscribe = TrezorBlockchain.subscribe;
 
         expect(mockBlockchainSubscribe).toHaveBeenCalledWith({
             coin: 'sol',
             blocks: true,
         });
 
-        const mockBlockchainUnsubscribe = TrezorConnect.blockchainUnsubscribe;
+        const mockBlockchainUnsubscribe = TrezorBlockchain.unsubscribe;
         await unmount();
 
         expect(mockBlockchainUnsubscribe).toHaveBeenCalledWith({

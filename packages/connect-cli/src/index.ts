@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type Device,
     ThpPairingMethod,
@@ -111,12 +112,12 @@ const runTestCase = async (device: Device) => {
             result = await TrezorConnect.thpGetCredentials({ device });
             break;
         case 'get-account-info': {
-            // Connect reads an account only by its descriptor, so a bitcoin account path is
+            // The backend reads an account only by its descriptor, so a bitcoin account path is
             // derived on the device first.
             const { coin = 'btc', path: accountPath = "m/84'/0'/0'", ...rest } = params;
             const publicKey = await TrezorConnect.getPublicKey({ device, coin, path: accountPath });
             result = publicKey.success
-                ? await TrezorConnect.getAccountInfo({
+                ? await TrezorBlockchain.getAccountInfo({
                       coin,
                       descriptor: publicKey.payload.xpubSegwit ?? publicKey.payload.xpub,
                       ...rest,
@@ -313,6 +314,7 @@ const run = async () => {
     await initDebugLink();
     const transport = await getTransport();
 
+    await TrezorBlockchain.updateSettings({ debug: args.debug });
     await TrezorConnect.init({
         manifest: { appUrl: 'a', appName: 'TrezorConnect Cli', email: 'b' },
         transports: [transport],

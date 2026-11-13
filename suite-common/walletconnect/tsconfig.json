@@ -15,6 +15,9 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/blockchain-core"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

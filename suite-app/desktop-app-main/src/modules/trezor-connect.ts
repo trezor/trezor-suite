@@ -9,7 +9,6 @@ import { ERRORS, initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BridgeTransport } from '@trezor/transport-common';
-import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';
 import { getStoredFirmwares } from './firmware';
@@ -91,12 +90,7 @@ export const getTransportsParam = (
     ];
 };
 
-export const initBackground: ModuleInitBackground = ({
-    mainThreadEmitter,
-    store,
-    powerSaveBlocker,
-    logger,
-}) => {
+export const initBackground: ModuleInitBackground = ({ store, powerSaveBlocker, logger }) => {
     let createLogger: ConnectSettings['createLogger'];
 
     // Mirror the bridge's clamp (see modules/bridge.ts): an unknown/undefined persisted value falls
@@ -105,16 +99,6 @@ export const initBackground: ModuleInitBackground = ({
         store.getBridgeSettings().usbImplementation === 'nusb' ? 'nusb' : 'legacy';
 
     logger.info(SERVICE_NAME, `Starting service`);
-
-    const setProxy = () => {
-        const { running, host, port, externalPort, useExternalTor } = store.getTorSettings();
-        const proxyUri = running ? `socks://${host}:${useExternalTor ? externalPort : port}` : '';
-        const payload = { proxy: { uri: proxyUri } };
-
-        logger.info(SERVICE_NAME, `${running ? 'Enable' : 'Disable'} proxy ${payload.proxy}`);
-
-        return TrezorConnect.updateConnectSettings(payload);
-    };
 
     const ipcProxyOptions: IpcProxyHandlerOptions<typeof TrezorConnect> = {
         onCreateInstance: () => ({
@@ -158,34 +142,7 @@ export const initBackground: ModuleInitBackground = ({
                         getUsbImplementation(),
                     );
 
-                    const response = await TrezorConnect.init(settings);
-                    await setProxy();
-
-                    return response;
-                }
-
-                if (method === 'blockchainSetCustomBackend') {
-                    const { coin, blockchainLink: { url: urls } = {} } = params[0];
-                    if (urls) {
-                        const domains = urls.map(
-                            url => parseElectrumUrl(url)?.host ?? new URL(url).hostname,
-                        );
-
-                        mainThreadEmitter.emit('module/request-interceptor', {
-                            type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
-                            coin,
-                            domains,
-                        });
-                    }
-                }
-
-                if (method === 'blockchainEvmRpcGetChainId') {
-                    const { url } = params[0];
-
-                    mainThreadEmitter.emit('module/request-interceptor', {
-                        type: 'ADD_WHITELISTED_DOMAIN',
-                        domain: new URL(url).hostname,
-                    });
+                    return TrezorConnect.init(settings);
                 }
 
                 if (method === 'firmwareUpdate') {

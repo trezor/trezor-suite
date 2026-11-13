@@ -50,6 +50,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { BLOCKCHAIN, BLOCKCHAIN_EVENT, PROTO } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-common-types';
@@ -178,7 +179,7 @@ describe('Blockchain Actions', () => {
             const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(initBlockchainThunk());
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
-            expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
+            expect(TrezorBlockchain.setCustomBackend).toHaveBeenCalledTimes(
                 f.blockchainSetCustomBackend,
             );
         });
@@ -198,10 +199,8 @@ describe('Blockchain Actions', () => {
             const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(onBlockchainConnectThunk(f.symbol));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
-            expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(
-                f.blockchainEstimateFee,
-            );
-            expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(f.blockchainSubscribe);
+            expect(TrezorBlockchain.estimateFee).toHaveBeenCalledTimes(f.blockchainEstimateFee);
+            expect(TrezorBlockchain.subscribe).toHaveBeenCalledTimes(f.blockchainSubscribe);
         });
     });
 
@@ -259,7 +258,7 @@ describe('Blockchain Actions', () => {
             const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(onBlockchainNotificationThunk(f.params as any));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
-            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(f.getAccountInfo);
+            expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(f.getAccountInfo);
         });
     });
 
@@ -314,7 +313,7 @@ describe('Blockchain Actions', () => {
         it(`customBackend: ${f.description}`, async () => {
             const store = mockStore(getInitialState(f.initialState as any));
             await store.dispatch(setCustomBackendThunk(asNetworkSymbol(f.symbol)));
-            expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
+            expect(TrezorBlockchain.setCustomBackend).toHaveBeenCalledTimes(
                 f.blockchainSetCustomBackend,
             );
         });

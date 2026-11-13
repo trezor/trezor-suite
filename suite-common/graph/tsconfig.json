@@ -9,6 +9,9 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
+            "path": "../../packages/blockchain-core"
+        },
+        {
             "path": "../../packages/blockchain-link"
         },
         {

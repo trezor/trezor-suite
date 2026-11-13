@@ -38,6 +38,7 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/tokens": "workspace:*",
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/react-utils": "workspace:*",

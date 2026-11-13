@@ -3,6 +3,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type EvmSelectedFee, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 
 import {
@@ -115,7 +116,7 @@ describe('sendYieldTransaction', () => {
             success: true,
             payload: { v: '0x1', r: '0x2', s: '0x3', serializedTx: '0xsigned' },
         });
-        jest.spyOn(TrezorConnect, 'pushTransaction').mockResolvedValue({
+        jest.spyOn(TrezorBlockchain, 'pushTransaction').mockResolvedValue({
             success: true,
             payload: { txid: '0xtxid' },
         });
@@ -156,7 +157,7 @@ describe('sendYieldTransaction', () => {
                     }),
                 }),
             );
-            expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.pushTransaction).not.toHaveBeenCalled();
         },
     );
 
@@ -180,7 +181,7 @@ describe('sendYieldTransaction', () => {
             status: 'cancelled',
             stage: 'review',
         });
-        expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
+        expect(TrezorBlockchain.pushTransaction).not.toHaveBeenCalled();
     });
 
     it('throws with the connect code as cause for other signing failures', async () => {

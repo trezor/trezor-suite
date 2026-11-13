@@ -1,12 +1,9 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { estimateYieldFeeLevel } from './yieldFeeEstimation';
 
-jest.mock('@trezor/connect', () => ({
-    __esModule: true,
-    default: { blockchainEstimateFee: jest.fn() },
-}));
+jest.mock('@trezor/blockchain-core', () => ({ TrezorBlockchain: { estimateFee: jest.fn() } }));
 
 const params = {
     coin: asNetworkSymbol('eth'),
@@ -19,7 +16,7 @@ const params = {
 const feeLevel = { feeLimit: '750000', feePerUnit: '1' };
 
 const mockEstimateFeeResponse = (response: unknown) => {
-    (TrezorConnect.blockchainEstimateFee as jest.Mock).mockResolvedValue(response);
+    (TrezorBlockchain.estimateFee as jest.Mock).mockResolvedValue(response);
 };
 
 describe(estimateYieldFeeLevel.name, () => {

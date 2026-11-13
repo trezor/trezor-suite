@@ -31,6 +31,7 @@ class PopupOnlyFlow extends CommonPopupFlow<'selectAccount'> {
                     connectPopup: { permissions: [] },
                     device: { selectedDevice: mockSuiteDevice({ connected: true }) },
                 }),
+                signal: new AbortController().signal,
             },
         );
     }

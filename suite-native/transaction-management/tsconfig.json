@@ -36,6 +36,9 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../tokens" },
+        {
+            "path": "../../packages/blockchain-core"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"

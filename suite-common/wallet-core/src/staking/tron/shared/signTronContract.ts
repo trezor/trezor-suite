@@ -1,6 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
@@ -32,7 +33,7 @@ export const signTronContract = async ({
     device,
     contract,
 }: SignTronContractParams): Promise<SignTronContractResult> => {
-    const blockchainInfo = await TrezorConnect.blockchainGetInfo({
+    const blockchainInfo = await TrezorBlockchain.getInfo({
         coin: asCoinSymbol(account.symbol),
         identity: getAccountIdentity(account),
     });

@@ -25,7 +25,12 @@ import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { createThunk } from '@trezor/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
+import {
+    abortPopupCall,
+    createPopupCallSignal,
+    getPermissionDeferred,
+    getPopupCallDeferred,
+} from './connectPopupPromiseManager';
 import { type ConnectPopupStateRootState, selectConnectPopupCall } from './connectPopupReducer';
 import {
     CALL_SOURCE_DEEPLINK,
@@ -34,7 +39,7 @@ import {
     isDeviceReconnectError,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { type PopupFlowParams } from './popupFlows/CommonPopupFlow';
+import { type PopupFlowAnswer, type PopupFlowParams } from './popupFlows/CommonPopupFlow';
 import { createPopupFlow } from './popupFlows/createPopupFlow';
 import {
     applyRequestCompatibility,
@@ -77,7 +82,12 @@ export const connectPopupCallInnerThunk = createThunk<
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(`${CONNECT_POPUP_MODULE}/callThunk`, async (params, { dispatch, getState, extra }) => {
     const paramsCompat = applyRequestCompatibility(params);
-    const flow = createPopupFlow(paramsCompat, { dispatch, getState });
+    const signal = createPopupCallSignal();
+    const flow = createPopupFlow(paramsCompat, { dispatch, getState, signal });
+    // A cancelled call is answered by its cancel, a later answer would go to the next call.
+    const answer = (response: PopupFlowAnswer) => {
+        if (!signal.aborted) getPopupCallDeferred().resolve(response);
+    };
 
     try {
         const responseOriginal = await flow.run();
@@ -90,7 +100,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
         // Not returned from the thunk, the response may hold confidential data which would then pass
         // through Redux.
-        getPopupCallDeferred().resolve(response);
+        answer(response);
     } catch (error) {
         console.error('connectPopupCallThunk', error);
         if (error?.error === 'switching-device') {
@@ -113,10 +123,7 @@ export const connectPopupCallInnerThunk = createThunk<
             payload: { ...getCallAttributes(params), error: error?.code },
         });
 
-        getPopupCallDeferred().resolve({
-            success: false,
-            error: serializeError(error),
-        });
+        answer({ success: false, error: serializeError(error) });
     } finally {
         // Only after the error handling above, so the active call never refers to a removed
         // placeholder account.
@@ -919,6 +926,7 @@ export const connectPopupCancelThunk = createThunk<
 
     getPermissionDeferred().reject(TypedError('Method_Cancel'));
     TrezorConnect.cancel({ reason: error, callId });
+    abortPopupCall(TypedError('Method_Cancel'));
     // Clear now instead of when the aborted call settles. No-op before the call reaches a device.
     dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
 

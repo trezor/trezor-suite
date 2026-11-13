@@ -23,7 +23,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asGetter } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
@@ -64,7 +64,7 @@ jest.mock('@trezor/connect', () => {
     };
 });
 
-const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const pushTransactionMock = TrezorBlockchain.pushTransaction as jest.Mock;
 
 const SIGNED_TX = 'signed-cardano-tx';
 const TXID = 'pushed-txid';

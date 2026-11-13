@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 import { isNotUndefined, resolveAfter, typedObjectFromEntries } from '@trezor/utils';
@@ -37,7 +37,7 @@ export const preloadFeeInfoThunk = createThunk<void, void, { state: PreloadFeeIn
 
         const levels = await Promise.all(
             networks.map(async network => {
-                const result = await TrezorConnect.blockchainEstimateFee({
+                const result = await TrezorBlockchain.estimateFee({
                     coin: asCoinSymbol(network.symbol),
                     request: { feeLevels: 'preloaded' },
                 });

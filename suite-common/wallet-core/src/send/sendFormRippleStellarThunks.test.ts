@@ -1,7 +1,7 @@
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { composeRippleStellarTransactionFeeLevelsThunk } from './sendFormRippleStellarThunks';
 import { type BlockchainRootState } from '../blockchain/blockchainReducer';
@@ -120,7 +120,7 @@ describe(composeRippleStellarTransactionFeeLevelsThunk.name, () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockGetAccountInfo = jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+        mockGetAccountInfo = jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
             success: true,
             payload: {
                 descriptor: DESTINATION,

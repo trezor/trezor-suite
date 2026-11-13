@@ -5,8 +5,9 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { injectAddressValidator } from '@suite-common/networks';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { Input, Modal } from '@trezor/components';
-import TrezorConnect, { type TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -36,7 +37,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
         async (acc: Account, contractAddress: string) => {
             if (!acc) return;
             setIsFetching(true);
-            const response = await TrezorConnect.getAccountInfo({
+            const response = await TrezorBlockchain.getAccountInfo({
                 coin: asCoinSymbol(acc.symbol),
                 identity: tryGetAccountIdentity(acc),
                 descriptor: acc.descriptor,

@@ -2,16 +2,14 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { composeSolanaStakingTransactionFeeLevelsThunk } from './solanaStakingThunks';
 
-jest.mock('@trezor/connect', () => ({
-    __esModule: true,
-    ...jest.requireActual('@trezor/connect'),
-    default: {
-        blockchainGetInfo: jest.fn(),
-        blockchainEstimateFee: jest.fn().mockResolvedValue({
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
+        getInfo: jest.fn(),
+        estimateFee: jest.fn().mockResolvedValue({
             success: true,
             payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },
         }),
@@ -112,8 +110,8 @@ const buildStore = ({
         }),
     }).services.store;
 
-const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
-const blockchainEstimateFeeMock = TrezorConnect.blockchainEstimateFee as jest.Mock;
+const blockchainGetInfoMock = TrezorBlockchain.getInfo as jest.Mock;
+const blockchainEstimateFeeMock = TrezorBlockchain.estimateFee as jest.Mock;
 
 const dispatchCompose = async (
     store: TestCompositionStore<State, void>,

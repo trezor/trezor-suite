@@ -50,6 +50,8 @@ export type PopupFlowParams<M extends CallMethodKeys> = {
 export type PopupFlowThunkApi = {
     dispatch: Dispatch;
     getState: () => any;
+    /** Aborted when the caller cancels the call. */
+    signal: AbortSignal;
 };
 
 export type PopupFlowResponse<M extends CallMethodKeys> =
@@ -82,16 +84,18 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     protected readonly source: ConnectCallSource;
     protected readonly dispatch: Dispatch;
     protected readonly getState: () => any;
+    protected readonly signal: AbortSignal;
 
     constructor(
         { method, payload, source }: PopupFlowParams<M>,
-        { dispatch, getState }: PopupFlowThunkApi,
+        { dispatch, getState, signal }: PopupFlowThunkApi,
     ) {
         this.method = method;
         this.payload = payload;
         this.source = source;
         this.dispatch = dispatch;
         this.getState = getState;
+        this.signal = signal;
     }
 
     /**

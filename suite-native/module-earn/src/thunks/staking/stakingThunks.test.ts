@@ -31,6 +31,7 @@ import {
 import { mockAccountKey, mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
@@ -49,11 +50,15 @@ jest.mock('@trezor/connect', () => ({
             success: true,
             payload: { signature: 'ed25519signature' },
         }),
-        blockchainGetInfo: jest.fn().mockResolvedValue({
+    },
+}));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
+        getInfo: jest.fn().mockResolvedValue({
             success: true,
             payload: { url: 'http://localhost:8899' },
         }),
-        blockchainEstimateFee: jest.fn().mockResolvedValue({
+        estimateFee: jest.fn().mockResolvedValue({
             success: true,
             payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },
         }),
@@ -255,7 +260,7 @@ const buildSolanaPrecomposedTransaction = (): PrecomposedTransactionFinal =>
 
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
 const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mock;
-const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const pushTransactionMock = TrezorBlockchain.pushTransaction as jest.Mock;
 
 const dispatchDispatcher = async (
     store: TestCompositionStore<State, PushStakeTransactionThunkDeps>,

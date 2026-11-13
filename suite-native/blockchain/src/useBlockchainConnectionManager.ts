@@ -8,7 +8,7 @@ import {
     reconnectBlockchainThunk,
     selectBlockchainBackendType,
 } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -31,7 +31,7 @@ export const useBlockchainConnectionManager = () => {
             // connection. So we need to manage the connection based on the app state.
             const subscription = AppState.addEventListener('change', nextAppState => {
                 if (nextAppState === 'background') {
-                    TrezorConnect.blockchainDisconnect({ coin: asCoinSymbol(symbol) });
+                    TrezorBlockchain.disconnect({ coin: asCoinSymbol(symbol) });
                 } else if (nextAppState === 'active') {
                     dispatch(reconnectBlockchainThunk({ symbol }));
                 }

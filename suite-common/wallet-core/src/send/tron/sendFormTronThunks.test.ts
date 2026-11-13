@@ -6,6 +6,7 @@ import {
     type PrecomposedTransaction,
     type PrecomposedTransactionError,
 } from '@suite-common/wallet-types';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 
 import {
@@ -70,7 +71,7 @@ describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee
             success: true,
             payload: { bandwidth: 300 },
         } as any);
-        getAccountInfo = jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+        getAccountInfo = jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
             success: true,
             payload: { descriptor: COLD_RECIPIENT, empty: true },
         } as any);
@@ -113,7 +114,7 @@ describe('signTronSendFormTransactionThunk', () => {
     let signMock: jest.SpyInstance;
 
     beforeEach(() => {
-        jest.spyOn(TrezorConnect, 'blockchainGetInfo').mockResolvedValue({
+        jest.spyOn(TrezorBlockchain, 'getInfo').mockResolvedValue({
             success: true,
             payload: { blockHash: '00'.repeat(32), blockHeight: 1 },
         } as any);

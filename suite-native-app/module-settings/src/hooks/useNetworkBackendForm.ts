@@ -20,7 +20,8 @@ import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -157,12 +158,12 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
     useFocusEffect(
         useCallback(() => {
             if (isConnecting) {
-                TrezorConnect.on(BLOCKCHAIN.CONNECT, onConnectionSuccess);
-                TrezorConnect.on(BLOCKCHAIN.ERROR, onConnectionError);
+                TrezorBlockchain.on(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+                TrezorBlockchain.on(BLOCKCHAIN.ERROR, onConnectionError);
 
                 return () => {
-                    TrezorConnect.off(BLOCKCHAIN.CONNECT, onConnectionSuccess);
-                    TrezorConnect.off(BLOCKCHAIN.ERROR, onConnectionError);
+                    TrezorBlockchain.off(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+                    TrezorBlockchain.off(BLOCKCHAIN.ERROR, onConnectionError);
                 };
             }
         }, [isConnecting, onConnectionSuccess, onConnectionError]),

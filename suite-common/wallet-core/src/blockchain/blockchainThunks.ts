@@ -26,7 +26,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import TrezorConnect, {
+import {
     BLOCKCHAIN_EVENT,
     type BlockchainBlock,
     type BlockchainError,
@@ -73,7 +73,7 @@ type ReconnectBlockchainThunkParams = {
 export const reconnectBlockchainThunk = createThunk<unknown, ReconnectBlockchainThunkParams, void>(
     `${BLOCKCHAIN_MODULE_PREFIX}/reconnectBlockchainThunk`,
     payload =>
-        TrezorConnect.blockchainUnsubscribeFiatRates({
+        TrezorBlockchain.unsubscribeFiatRates({
             coin: asCoinSymbol(payload.symbol),
             identity: payload.identity,
         }),
@@ -82,7 +82,7 @@ export const reconnectBlockchainThunk = createThunk<unknown, ReconnectBlockchain
 const setBackendsToConnect = (backends: CustomBackend[]) =>
     Promise.all(
         backends.map(({ symbol, type, urls }) =>
-            TrezorConnect.blockchainSetCustomBackend({
+            TrezorBlockchain.setCustomBackend({
                 coin: asCoinSymbol(symbol),
                 blockchainLink: {
                     type,
@@ -184,7 +184,7 @@ export const subscribeBlockchainThunk = createThunk<
         const blocks = shouldSubscribeBlocks(symbol);
 
         if (onConnect && useIdentities) {
-            await TrezorConnect.blockchainSubscribe({ coin: asCoinSymbol(symbol), blocks });
+            await TrezorBlockchain.subscribe({ coin: asCoinSymbol(symbol), blocks });
         }
 
         // do NOT subscribe if there are no accounts
@@ -206,7 +206,7 @@ export const subscribeBlockchainThunk = createThunk<
               )
             : [{ accounts: accountsToSubscribe, coin: asCoinSymbol(symbol), blocks }];
 
-        return Promise.all(paramsArray.map(params => TrezorConnect.blockchainSubscribe(params)));
+        return Promise.all(paramsArray.map(params => TrezorBlockchain.subscribe(params)));
     },
 );
 
@@ -265,9 +265,9 @@ export const unsubscribeBlockchainThunk = createThunk<
 
             return accounts.length
                 ? // there are some accounts left, update subscription
-                  TrezorConnect.blockchainSubscribe({ ...params, accounts })
+                  TrezorBlockchain.subscribe({ ...params, accounts })
                 : // there are no accounts left for this coin, disconnect backend
-                  TrezorConnect.blockchainDisconnect(params);
+                  TrezorBlockchain.disconnect(params);
         }),
     );
 });
@@ -404,7 +404,7 @@ export const updateCardanoProtocolParametersThunk = createThunk<
     `${BLOCKCHAIN_MODULE_PREFIX}/updateCardanoProtocolParametersThunk`,
     async (block, { dispatch }) => {
         const symbol = asNetworkSymbol(block.coin.shortcut.toLowerCase());
-        const response = await TrezorConnect.blockchainGetInfo({ coin: asCoinSymbol(symbol) });
+        const response = await TrezorBlockchain.getInfo({ coin: asCoinSymbol(symbol) });
 
         if (!response.success) return;
 

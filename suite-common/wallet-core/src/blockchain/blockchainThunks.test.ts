@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
@@ -56,10 +56,10 @@ describe(setCustomBackendThunk.name, () => {
 
     it('requests a connection after applying a custom backend', async () => {
         const setCustomBackend = jest
-            .spyOn(TrezorConnect, 'blockchainSetCustomBackend')
+            .spyOn(TrezorBlockchain, 'setCustomBackend')
             .mockResolvedValue({ success: true, payload: true });
         const reconnect = jest
-            .spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates')
+            .spyOn(TrezorBlockchain, 'unsubscribeFiatRates')
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
         const store = initStore([asNetworkSymbol('btc')]);
 
@@ -78,10 +78,10 @@ describe(setCustomBackendThunk.name, () => {
 
     it('applies the custom backend of a disabled network without connecting to it', async () => {
         const setCustomBackend = jest
-            .spyOn(TrezorConnect, 'blockchainSetCustomBackend')
+            .spyOn(TrezorBlockchain, 'setCustomBackend')
             .mockResolvedValue({ success: true, payload: true });
         const reconnect = jest
-            .spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates')
+            .spyOn(TrezorBlockchain, 'unsubscribeFiatRates')
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
         const store = initStore([]);
 

@@ -7,6 +7,7 @@ import { getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getUnusedChangeAddress } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -143,7 +144,7 @@ const bitcoinRequestThunk = createThunk<
                     address: changeAddress,
                 });
             }
-            const feeLevels = await TrezorConnect.blockchainEstimateFee({
+            const feeLevels = await TrezorBlockchain.estimateFee({
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 request: {
@@ -201,7 +202,7 @@ const bitcoinRequestThunk = createThunk<
             }
             const typedPayload = signResponse.payload as CallMethodResponse<'signTransaction'>;
 
-            const pushResponse = await TrezorConnect.pushTransaction({
+            const pushResponse = await TrezorBlockchain.pushTransaction({
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
                 tx: typedPayload.serializedTx,

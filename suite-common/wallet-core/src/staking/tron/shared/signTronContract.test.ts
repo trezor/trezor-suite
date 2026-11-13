@@ -1,6 +1,7 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 
 import { signTronContract } from './signTronContract';
@@ -10,7 +11,7 @@ const device = mockSuiteDevice();
 
 beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(TrezorConnect, 'blockchainGetInfo').mockResolvedValue({
+    jest.spyOn(TrezorBlockchain, 'getInfo').mockResolvedValue({
         success: true,
         payload: { blockHash: 'a'.repeat(64), blockHeight: 1 },
     } as never);

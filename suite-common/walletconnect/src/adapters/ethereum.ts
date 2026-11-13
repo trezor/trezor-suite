@@ -23,7 +23,8 @@ import {
     getMevProtectedTxData,
     sanitizeHex,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, {
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import {
     type CallMethodResponse,
     type EthereumSignTypedData,
     type EthereumSignTypedDataTypes,
@@ -181,7 +182,7 @@ const ethereumRequestThunk = createThunk<
                 (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas);
 
             if (isFeeRateMissing || !transaction.gas) {
-                const feeLevels = await TrezorConnect.blockchainEstimateFee({
+                const feeLevels = await TrezorBlockchain.estimateFee({
                     coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
                     request: {
@@ -263,7 +264,7 @@ const ethereumRequestThunk = createThunk<
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             );
 
-            const pushResponse = await TrezorConnect.pushTransaction({
+            const pushResponse = await TrezorBlockchain.pushTransaction({
                 tx: txData,
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),

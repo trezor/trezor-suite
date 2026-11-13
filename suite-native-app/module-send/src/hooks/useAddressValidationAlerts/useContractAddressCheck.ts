@@ -7,7 +7,7 @@ import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import { createContractAlert } from './alertBuilders';
@@ -30,7 +30,7 @@ export const useContractAddressCheck = (addressValue: string) => {
     const handleContractAddressCheck = useCallback(async () => {
         if (!symbol || !networkType) return;
 
-        const result = await TrezorConnect.getAccountInfo({
+        const result = await TrezorBlockchain.getAccountInfo({
             descriptor: addressValue,
             coin: asCoinSymbol(symbol),
         });

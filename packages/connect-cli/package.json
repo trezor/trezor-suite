@@ -16,6 +16,7 @@
         "bluetooth": "tsx ./src/index.ts --bluetooth"
     },
     "dependencies": {
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/transport": "workspace:*",

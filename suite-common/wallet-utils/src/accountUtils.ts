@@ -25,11 +25,12 @@ import {
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import {
     type BaseCurrencyCode,
     NON_DELEGATED_CARDANO_STAKING_INFO,
 } from '@trezor/blockchain-link-types';
-import TrezorConnect, {
+import {
     type AccountAddress,
     type AccountAddresses,
     type AccountInfo,
@@ -1342,7 +1343,7 @@ export const prepareNewAccountPayload = async ({
     if (!descriptorResult.success) return new Error(descriptorResult.error.message);
 
     const { descriptor, ...deviceAccountDetails } = descriptorResult.payload;
-    const res = await TrezorConnect.getAccountInfo({
+    const res = await TrezorBlockchain.getAccountInfo({
         descriptor,
         coin: asCoinSymbol(networkSymbol),
         details: 'txs',

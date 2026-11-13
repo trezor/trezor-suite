@@ -21,7 +21,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asGetter } from '@trezor/dependency-injection';
 import { type StaticSessionId } from '@trezor/device-utils';
 
@@ -30,7 +30,10 @@ import { type PushYieldClaimReviewThunkDeps, pushYieldClaimReviewThunk } from '.
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
     ...jest.requireActual('@trezor/connect'),
-    default: {
+    default: {},
+}));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
         pushTransaction: jest.fn().mockResolvedValue({
             success: true,
             payload: { txid: '0xpushedtxid' },
@@ -121,7 +124,7 @@ const services = (): PushYieldClaimReviewThunkDeps['services'] => ({
     },
 });
 
-const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const pushTransactionMock = TrezorBlockchain.pushTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
 
 // Other thunk dependencies are mocked; only the yield reducer is needed for review-state assertions.
