@@ -12726,7 +12726,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/react-query@workspace:suite-common/react-query"
   dependencies:
-    "@tanstack/react-query": "npm:5.104.2"
+    "@tanstack/react-query": "npm:5.105.0"
     "@tanstack/react-query-devtools": "npm:5.104.2"
     react: "npm:19.3.0"
   languageName: unknown
@@ -18764,6 +18764,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.105.0":
+  version: 5.105.0
+  resolution: "@tanstack/query-core@npm:5.105.0"
+  checksum: 10/1a52f339f4e05cae0667b41e091fa6ec4c12b159a95cf54fde9d39204aff461e214a9f59513fdbb4b715ba9cbed60b31012d058ac8d22cd88b59247be6e890fc
+  languageName: node
+  linkType: hard
+
 "@tanstack/query-devtools@npm:5.104.2":
   version: 5.104.2
   resolution: "@tanstack/query-devtools@npm:5.104.2"
@@ -18796,14 +18803,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:5.104.2":
-  version: 5.104.2
-  resolution: "@tanstack/react-query@npm:5.104.2"
+"@tanstack/react-query@npm:5.105.0":
+  version: 5.105.0
+  resolution: "@tanstack/react-query@npm:5.105.0"
   dependencies:
-    "@tanstack/query-core": "npm:5.104.2"
+    "@tanstack/query-core": "npm:5.105.0"
   peerDependencies:
+    "@types/react": ^18 || ^19
     react: ^18 || ^19
-  checksum: 10/664a72b9047af976cdde495084ed8134c74bdc4e491abd2afd49275c40c160e0d5cc2eb23ccfe1ecadea82e9c7b46e945b701508233a31d6fd149b2282af2f2e
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10/a7655514d0778fd3e58fe27f9d5b0aaac1d399336f3cbfaf98de99c0b240368395501e95dc1b5d89e0980f40a3754fdac7a216b92d2d8b520199e91a697fff1b
   languageName: node
   linkType: hard
 
@@ -20539,7 +20550,7 @@ __metadata:
     "@suite/tx-simulation": "workspace:^"
     "@suite/ui-animations": "workspace:*"
     "@suite/wallet": "workspace:*"
-    "@tanstack/react-query": "npm:5.104.2"
+    "@tanstack/react-query": "npm:5.105.0"
     "@testing-library/jest-dom": "npm:7.0.1"
     "@testing-library/react": "npm:^16.3.3"
     "@testing-library/user-event": "npm:^14.6.7"
