@@ -143,6 +143,8 @@ export const useWrappedNativeTokenFees = ({
         formDraftKey: fees.formDraftKey,
         hasFeeEstimationError: fees.hasFeeEstimationError,
         isComposingFeeLevels: fees.isFeePreparing,
+        isCustomFeeReplaced: fees.isCustomFeeReplaced,
+        onFeeConfirmed: fees.onFeeConfirmed,
         isFeePreparing: fees.isFeePreparing,
         isFeeReady: fees.isFeeReady,
         preparedAction,

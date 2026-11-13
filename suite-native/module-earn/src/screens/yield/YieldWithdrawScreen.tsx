@@ -19,6 +19,7 @@ import { FeeSelector } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnApproximateFiatAmount } from '../../components/earn/EarnApproximateFiatAmount';
+import { EarnCustomFeeReplacedBanner } from '../../components/earn/EarnCustomFeeReplacedBanner';
 import { EarnFeeEstimationErrorAlert } from '../../components/earn/EarnFeeEstimationErrorAlert';
 import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
@@ -248,6 +249,7 @@ export const YieldWithdrawScreen = () => {
                             accountKey={account.key}
                             tokenContract={tokenContract}
                             updateThunk={feeSelector.updateFeeLevelThunk}
+                            onFeeConfirmed={feeSelector.onFeeConfirmed}
                             selectedFee={feeSelector.selectedFee}
                             selectedFeePerUnit={feeSelector.formDraft.feePerUnit}
                             formDraft={feeSelector.formDraft}
@@ -256,6 +258,8 @@ export const YieldWithdrawScreen = () => {
                             isLoading={footer.isLoading}
                         />
                     )}
+
+                    {feeSelector?.isCustomFeeReplaced && <EarnCustomFeeReplacedBanner />}
 
                     <YieldWithdrawWarning
                         isAmountTooHigh={warning.isAmountTooHigh}

@@ -2914,6 +2914,8 @@ export const messages = {
         max: 'Max',
         feeEstimationFailed:
             "The network fee couldn't be estimated, so the transaction can't be prepared. Try again later.",
+        customFeeReplaced:
+            'Your custom fee no longer covers the gas this transaction needs, so the Normal fee is used instead. Tap the fee to change it.',
         stakingOperatedByProviders: 'Staking is operated by independent providers',
         portfolioTracker: {
             alert: {

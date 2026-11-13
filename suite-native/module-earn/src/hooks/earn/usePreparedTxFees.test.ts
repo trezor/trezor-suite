@@ -359,10 +359,10 @@ describe('usePreparedTxFees', () => {
         expect(result.current.preparedTx?.transaction.unsignedTransaction).toBe('0xfresh');
     });
 
-    it('clears the stored draft and its own fee levels when the context turns invalid', async () => {
+    it('clears its own fee levels but keeps the stored draft when the context turns invalid', async () => {
         const composeTransaction = jest.fn().mockResolvedValue(composeReady());
         const props = createProps({ composeTransaction });
-        const { rerender, store } = await renderPreparedTxFees(props);
+        const { result, rerender, store } = await renderPreparedTxFees(props);
 
         await settleDebounce();
 
@@ -372,7 +372,82 @@ describe('usePreparedTxFees', () => {
         await rerender({ ...props, amount: undefined, hasInvalidContext: true });
 
         expect(store.getState().wallet.send.feeLevels).toEqual({});
-        expect(store.getState().wallet.formDrafts[FORM_DRAFT_KEY]).toBeUndefined();
+        expect(store.getState().wallet.formDrafts[FORM_DRAFT_KEY]).toEqual(FORM_DRAFT);
+        expect(result.current.formDraft).toBeUndefined();
+    });
+
+    it('keeps the stored draft after a failed compose so a retry starts from the confirmed fee', async () => {
+        const composeTransaction = jest
+            .fn()
+            .mockResolvedValueOnce(composeReady())
+            .mockResolvedValueOnce({ type: 'error' })
+            .mockResolvedValue(composeReady());
+        const props = createProps({ composeTransaction });
+        const { result, rerender, store } = await renderPreparedTxFees(props);
+
+        await settleDebounce();
+        await rerender({ ...props, amount: '2' });
+        await settleDebounce();
+
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(store.getState().wallet.formDrafts[FORM_DRAFT_KEY]).toEqual(FORM_DRAFT);
+
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(buildFeeDraftStateMock).toHaveBeenLastCalledWith(
+            expect.objectContaining({ amount: '2', currentFormDraft: FORM_DRAFT }),
+        );
+    });
+
+    it('flags a replaced Custom fee until the user picks another fee', async () => {
+        buildFeeDraftStateMock.mockReturnValue({ ...FEE_DRAFT_STATE, isCustomFeeReplaced: true });
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const props = createProps({ composeTransaction });
+        const { result, rerender } = await renderPreparedTxFees(props);
+
+        await settleDebounce();
+
+        expect(result.current.isCustomFeeReplaced).toBe(true);
+
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await rerender({ ...props, amount: '2' });
+        await settleDebounce();
+
+        expect(result.current.isCustomFeeReplaced).toBe(true);
+
+        buildFeeDraftStateMock.mockReturnValue({
+            ...FEE_DRAFT_STATE,
+            formDraft: { ...FORM_DRAFT, selectedFee: 'high' },
+        });
+        await rerender({ ...props, amount: '3' });
+        await settleDebounce();
+
+        expect(result.current.isCustomFeeReplaced).toBe(false);
+    });
+
+    it('dismisses the replacement notice when the user explicitly confirms Normal', async () => {
+        buildFeeDraftStateMock.mockReturnValue({ ...FEE_DRAFT_STATE, isCustomFeeReplaced: true });
+        const props = createProps({
+            composeTransaction: jest.fn().mockResolvedValue(composeReady()),
+        });
+        const { result, rerender } = await renderPreparedTxFees(props);
+        await settleDebounce();
+        expect(result.current.isCustomFeeReplaced).toBe(true);
+
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await rerender({ ...props, amount: '2' });
+        await settleDebounce();
+        expect(result.current.selectedFee).toBe('normal');
+        expect(result.current.isCustomFeeReplaced).toBe(true);
+
+        await act(() => result.current.onFeeConfirmed());
+        expect(result.current.isCustomFeeReplaced).toBe(false);
+
+        await rerender({ ...props, amount: '3' });
+        await settleDebounce();
+        expect(result.current.isCustomFeeReplaced).toBe(false);
     });
 
     it('keeps the fee store intact when only isEnabled turns false', async () => {

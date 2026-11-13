@@ -51,6 +51,7 @@ type BuildPreparedTxSelectedFeeUnsignedTransactionParams = {
 type BuildPreparedTxFeeDraftStateResult = {
     feeLevels: PrecomposedLevels;
     formDraft: FormState;
+    isCustomFeeReplaced: boolean;
     selectedFeeUnsignedTransaction: string;
 };
 
@@ -289,18 +290,15 @@ export const buildPreparedTxFeeDraftState = ({
 }: BuildPreparedTxFeeDraftStateParams): BuildPreparedTxFeeDraftStateResult | null => {
     try {
         const feeLevels = buildPreparedTxFeeLevels(feeLevelParams);
-        let { selectedFee } = getPreparedTxFeeState(
+        const feeState = getPreparedTxFeeState(
             currentFormDraft,
             isPreparedTxEip1559FeeInfo(feeLevelParams.feeInfo),
         );
-
         // An amount change may need more gas than the confirmed Custom limit.
-        if (
-            selectedFee === 'custom' &&
-            new BigNumber(currentFormDraft?.feeLimit ?? 0).lt(feeLevelParams.gasLimit)
-        ) {
-            selectedFee = 'normal';
-        }
+        const isCustomFeeReplaced =
+            feeState.selectedFee === 'custom' &&
+            new BigNumber(currentFormDraft?.feeLimit ?? 0).lt(feeLevelParams.gasLimit);
+        const selectedFee = isCustomFeeReplaced ? 'normal' : feeState.selectedFee;
 
         const selectedFeeUnsignedTransaction = buildPreparedTxSelectedFeeUnsignedTransaction({
             currentFormDraft: currentFormDraft && { ...currentFormDraft, selectedFee },
@@ -335,6 +333,7 @@ export const buildPreparedTxFeeDraftState = ({
                 ]),
             ),
             formDraft: { ...formState, estimatedFeeLimit: feeLevelParams.gasLimit },
+            isCustomFeeReplaced,
             selectedFeeUnsignedTransaction,
         };
     } catch {
