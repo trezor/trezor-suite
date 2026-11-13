@@ -33,6 +33,7 @@ import {
     createSuiteNativeNetworkModuleRepository,
 } from '@suite-native-app/networks';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sync';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
@@ -109,11 +110,15 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         getTrezorConnect: deps.getTrezorConnect,
         fetch: globalThis.fetch.bind(globalThis),
     });
+    const networkModuleDeps = {
+        getTrezorConnect: deps.getTrezorConnect,
+        getTrezorBlockchain: () => TrezorBlockchain,
+    };
     const suiteNativeNetworkModules: SuiteNativeNetworkModule[] = [
-        createBitcoinSuiteNativeNetworkModule(deps),
-        createEthereumSuiteNativeNetworkModule(deps),
+        createBitcoinSuiteNativeNetworkModule(networkModuleDeps),
+        createEthereumSuiteNativeNetworkModule(networkModuleDeps),
         createRippleSuiteNativeNetworkModule(),
-        createCardanoSuiteNativeNetworkModule(deps),
+        createCardanoSuiteNativeNetworkModule(networkModuleDeps),
         createSolanaSuiteNativeNetworkModule(),
         createStellarSuiteNativeNetworkModule(),
         createTronSuiteNativeNetworkModule(),

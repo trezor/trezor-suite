@@ -55,6 +55,7 @@ import {
     selectAccountsByDeviceState,
     selectAccountsTransactions,
 } from '@suite-common/wallet-core';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -162,11 +163,15 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         fetch: globalThis.fetch.bind(globalThis),
     });
 
+    const networkModuleDeps = {
+        getTrezorConnect: deps.getTrezorConnect,
+        getTrezorBlockchain: () => TrezorBlockchain,
+    };
     const suiteNetworkModules: SuiteNetworkModule[] = [
-        createBitcoinSuiteNetworkModule(deps),
-        createEthereumSuiteNetworkModule(deps),
+        createBitcoinSuiteNetworkModule(networkModuleDeps),
+        createEthereumSuiteNetworkModule(networkModuleDeps),
         createRippleSuiteNetworkModule(),
-        createCardanoSuiteNetworkModule(deps),
+        createCardanoSuiteNetworkModule(networkModuleDeps),
         createSolanaSuiteNetworkModule(),
         createStellarSuiteNetworkModule(),
         createTronSuiteNetworkModule(),
