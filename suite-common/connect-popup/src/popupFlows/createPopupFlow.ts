@@ -11,6 +11,7 @@ import { CardanoComposeTransaction } from './cardanoComposeTransaction';
 import { EthereumSignTransaction } from './ethereumSignTransaction';
 import { EthereumSignTypedData } from './ethereumSignTypedData';
 import { GetAccountInfo } from './getAccountInfo';
+import { PushTransaction } from './pushTransaction';
 import { RequestLogin } from './requestLogin';
 import { SelectAccount } from './selectAccount';
 import { SendTransaction } from './sendTransaction';
@@ -33,6 +34,7 @@ const POPUP_FLOWS: { [M in CallMethodKeys]?: PopupFlowConstructor<M> } = {
     solanaSignTransaction: SolanaSignTransaction,
     stellarSignTransaction: StellarSignTransaction,
     getAccountInfo: GetAccountInfo,
+    pushTransaction: PushTransaction,
     cardanoComposeTransaction: CardanoComposeTransaction,
     getAddress: AddressConfirmationFlow,
     ethereumGetAddress: AddressConfirmationFlow,
