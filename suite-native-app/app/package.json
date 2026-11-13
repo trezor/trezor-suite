@@ -170,7 +170,7 @@
         "react-native-mmkv": "~4.3.2",
         "react-native-nitro-modules": "^0.36.3",
         "react-native-permissions": "5.6.3",
-        "react-native-quick-crypto": "1.1.8",
+        "react-native-quick-crypto": "1.1.9",
         "react-native-reanimated": "4.7.1",
         "react-native-safe-area-context": "~5.10.1",
         "react-native-screens": "~4.30.1",
