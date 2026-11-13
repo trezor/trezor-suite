@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
@@ -22,8 +23,12 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     default: {
         solanaSignTransaction: jest.fn(),
-        blockchainGetInfo: jest.fn(),
-        blockchainEstimateFee: jest.fn().mockResolvedValue({
+    },
+}));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
+        getInfo: jest.fn(),
+        estimateFee: jest.fn().mockResolvedValue({
             success: true,
             payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },
         }),
@@ -169,7 +174,7 @@ const buildSolanaPrecomposedTransaction = (): PrecomposedTransactionFinal =>
     }) as unknown as PrecomposedTransactionFinal;
 
 const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mock;
-const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
+const blockchainGetInfoMock = TrezorBlockchain.getInfo as jest.Mock;
 
 const dispatchSign = async (
     store: TestCompositionStore<State, WithServices<NativeAnalyticsDep>>,

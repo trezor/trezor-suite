@@ -5,8 +5,7 @@ import { PushTransaction as PushTransactionSchema } from '@trezor/connect-common
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
@@ -24,8 +23,6 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         Assert(PushTransactionSchema, payload);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         if (
             coinInfo.type === 'bitcoin' &&
@@ -43,20 +40,18 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         super(message, params);
         this.useDevice = false;
     }
+
     get requiredPermissions(): PermissionRequest[] {
         return [this.coinPerm('push_tx', this.params.coinInfo)];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
+    // Broadcast by Trezor Suite's backends instead, see its pushTransaction popup flow.
+    run() {
+        return Promise.reject(
+            ERRORS.TypedError(
+                'Method_NotAllowed',
+                'pushTransaction is available only through Trezor Suite',
+            ),
         );
-        const txid = await backend.pushTransaction(this.params.tx);
-
-        return {
-            txid,
-        };
     }
 }

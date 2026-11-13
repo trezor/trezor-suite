@@ -1,1 +1,1 @@
-export { mockGetTrezorConnect } from './mockGetTrezorConnect';
+export { mockGetTrezorBlockchain } from './mockGetTrezorBlockchain';

@@ -1,7 +1,4 @@
-import {
-    type BlockchainEvent,
-    BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
-} from '@trezor/connect';
+import { BLOCKCHAIN, type BlockchainEvent } from '@trezor/blockchain-core';
 import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
@@ -23,18 +20,18 @@ export const prepareBlockchainMiddleware = createMiddlewareWithExtraDeps<
     next(action);
 
     switch (action.type) {
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
+        case BLOCKCHAIN.CONNECT:
             dispatch(onBlockchainConnectThunk(action.payload.coin.shortcut));
 
             break;
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK:
+        case BLOCKCHAIN.BLOCK:
             dispatch(onBlockMinedThunk(action.payload));
             dispatch(updateCardanoProtocolParametersThunk(action.payload));
             break;
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
+        case BLOCKCHAIN.NOTIFICATION:
             dispatch(onBlockchainNotificationThunk(action.payload));
             break;
-        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR:
+        case BLOCKCHAIN.ERROR:
             dispatch(onBlockchainDisconnectThunk(action.payload));
             break;
         default:

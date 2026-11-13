@@ -1,5 +1,5 @@
 import { type RbfTransactionParams } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { type EthAccount, FOREIGN_SIGNER, ethAccount, evmTx } from './__fixtures__/evmFixtures';
 import { resolveEthereumNonce } from './sendFormEthereumThunks';
@@ -15,7 +15,7 @@ describe('resolveEthereumNonce', () => {
 
     beforeEach(() => {
         getAccountInfo = jest
-            .spyOn(TrezorConnect, 'getAccountInfo')
+            .spyOn(TrezorBlockchain, 'getAccountInfo')
             .mockResolvedValue({ success: true, payload: { misc: { nonce: '0' } } } as any);
         jest.spyOn(console, 'warn').mockImplementation(() => {});
     });

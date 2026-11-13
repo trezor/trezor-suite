@@ -8,7 +8,7 @@ const ZCASH_NU5_VERSION_GROUP_ID = 0x26a7270a;
 // It must track the currently active Zcash network upgrade: signing with a stale value
 // produces a transaction the network rejects and never confirms. Because this constant
 // only reaches users through the (slow) release train, callers should pass the backend value
-// (`consensusBranchId` of `blockchainGetInfo`) as `branchId`, as Suite does, and this is
+// (`consensusBranchId` of the Blockbook info) as `branchId`, as Suite does, and this is
 // a last resort.
 // NU7 (active since mainnet height 3543405, testnet height 4465026): 0x77190ad9.
 // https://zips.z.cash/zip-0259
@@ -38,7 +38,7 @@ export const applyZcashSignTxDefaultsIfZcash = (
     // use branch_id passed by the caller or fallback to default
     if (typeof options.branch_id !== 'number') {
         console.warn(
-            `Zcash: no branchId passed, using hardcoded fallback 0x${ZCASH_FALLBACK_BRANCH_ID.toString(16)}. If the network has upgraded since this release, the transaction may be rejected; pass consensusBranchId of blockchainGetInfo as branchId to override.`,
+            `Zcash: no branchId passed, using hardcoded fallback 0x${ZCASH_FALLBACK_BRANCH_ID.toString(16)}. If the network has upgraded since this release, the transaction may be rejected; pass the consensusBranchId of the network as branchId to override.`,
         );
         options.branch_id = ZCASH_FALLBACK_BRANCH_ID;
     }

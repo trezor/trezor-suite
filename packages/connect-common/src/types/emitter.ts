@@ -1,10 +1,5 @@
 import { type EventReceiver, TypedEmitter } from '@trezor/utils';
 
-import type {
-    BLOCKCHAIN_EVENT,
-    BlockchainEvent,
-    BlockchainEventMessage,
-} from '../events/blockchain';
 import type { DEVICE_EVENT, DeviceEvent, DeviceEventMessage } from '../events/device';
 import type { PopupEvent, PopupEventMessage } from '../events/popup';
 import type { TRANSPORT_EVENT, TransportEvent, TransportEventMessage } from '../events/transport';
@@ -18,12 +13,10 @@ type EventPayloadMap<T extends { type: string; payload?: any }, Extra = unknown>
 type ConnectEventMap = {
     [DEVICE_EVENT]: DeviceEventMessage;
     [TRANSPORT_EVENT]: TransportEventMessage;
-    [BLOCKCHAIN_EVENT]: BlockchainEventMessage;
     [UI_EVENT]: UiEventMessage | PopupEventMessage;
     [UI_REQUEST]: UiRequestMessage;
 } & EventPayloadMap<DeviceEvent> &
     EventPayloadMap<TransportEvent> &
-    EventPayloadMap<BlockchainEvent> &
     EventPayloadMap<UiEvent> &
     EventPayloadMap<UiRequestEvent, { requestId: string; callId?: string }> &
     EventPayloadMap<PopupEvent>;

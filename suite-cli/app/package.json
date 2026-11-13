@@ -14,7 +14,7 @@
     "dependencies": {
         "@suite-common/icons": "workspace:*",
         "@suite-common/networks": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/logger": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*"
     }

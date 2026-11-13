@@ -1,0 +1,97 @@
+import type {
+    BlockEvent,
+    FiatRatesBySymbol,
+    NotificationEvent,
+    ServerInfo,
+} from '@trezor/blockchain-link-types';
+import { createTypeGuardByType } from '@trezor/type-utils';
+
+import type { BackendCoinInfo } from './data/coinInfo';
+
+export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
+export const BLOCKCHAIN = {
+    CONNECT: 'blockchain-connect',
+    RECONNECTING: 'blockchain-reconnecting',
+    ERROR: 'blockchain-error',
+    BLOCK: 'blockchain-block',
+    NOTIFICATION: 'blockchain-notification',
+    FIAT_RATES_UPDATE: 'fiat-rates-update',
+} as const;
+
+/** The coin of a backend: blockchain events carry only what identifies it. */
+export type BlockchainCoin = Pick<BackendCoinInfo, 'name' | 'shortcut'>;
+
+export interface BlockchainInfo extends ServerInfo {
+    coin: BlockchainCoin;
+    identity?: string;
+    misc?: {
+        reserve?: string;
+    };
+}
+
+export interface BlockchainReconnecting {
+    coin: BlockchainCoin;
+    identity?: string;
+    time: number;
+}
+
+export interface BlockchainError {
+    coin: BlockchainCoin;
+    identity?: string;
+    error: string;
+    code?: string;
+}
+
+export type BlockchainBlock = BlockEvent['payload'] & {
+    coin: BlockchainCoin;
+};
+
+export interface BlockchainNotification {
+    coin: BlockchainCoin;
+    notification: NotificationEvent['payload'];
+}
+
+export interface BlockchainFiatRatesUpdate {
+    coin: BlockchainCoin;
+    rates: FiatRatesBySymbol;
+}
+
+export type BlockchainEvent =
+    | {
+          type: typeof BLOCKCHAIN.CONNECT;
+          payload: BlockchainInfo;
+      }
+    | {
+          type: typeof BLOCKCHAIN.RECONNECTING;
+          payload: BlockchainReconnecting;
+      }
+    | {
+          type: typeof BLOCKCHAIN.ERROR;
+          payload: BlockchainError;
+      }
+    | {
+          type: typeof BLOCKCHAIN.BLOCK;
+          payload: BlockchainBlock;
+      }
+    | {
+          type: typeof BLOCKCHAIN.NOTIFICATION;
+          payload: BlockchainNotification;
+      }
+    | {
+          type: typeof BLOCKCHAIN.FIAT_RATES_UPDATE;
+          payload: BlockchainFiatRatesUpdate;
+      };
+
+export const isBlockchainEventOfType = createTypeGuardByType<BlockchainEvent>();
+
+export type BlockchainEventMessage = BlockchainEvent & { event: typeof BLOCKCHAIN_EVENT };
+
+export const createBlockchainMessage = <T extends BlockchainEvent['type']>(
+    type: T,
+    payload: Extract<BlockchainEvent, { type: T }>['payload'],
+) =>
+    ({
+        event: BLOCKCHAIN_EVENT,
+        type,
+        payload,
+    }) as Extract<BlockchainEventMessage, { type: T }>;

@@ -10,7 +10,6 @@ import {
     unregisterScopedCallId,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
-    BLOCKCHAIN_EVENT,
     DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -228,9 +227,6 @@ describe('TrezorConnect Actions', () => {
 
         emitTestEvent(TRANSPORT_EVENT, { type: TRANSPORT_EVENT });
         expect(actions.at(-1)).toEqual({ type: TRANSPORT_EVENT });
-
-        emitTestEvent(BLOCKCHAIN_EVENT, { type: BLOCKCHAIN_EVENT });
-        expect(actions.at(-1)).toEqual({ type: BLOCKCHAIN_EVENT });
     });
 
     it('Wrapped method', async () => {

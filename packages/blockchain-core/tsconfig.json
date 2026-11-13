@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../blockchain-link" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../connect-common" },
+        { "path": "../connect-data" },
+        { "path": "../ipc-proxy" },
+        { "path": "../schema-utils" },
+        { "path": "../type-utils" },
+        { "path": "../utils" },
+        { "path": "../requirements" }
+    ]
+}

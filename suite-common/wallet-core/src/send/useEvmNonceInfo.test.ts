@@ -9,7 +9,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { evmTx } from './__fixtures__/evmFixtures';
 import { useEvmNonceInfo } from './useEvmNonceInfo';
@@ -99,7 +99,7 @@ describe('useEvmNonceInfo', () => {
 
         it('returns a trusted nonce from the backend confirmedNonce', async () => {
             const getAccountInfoSpy = jest
-                .spyOn(TrezorConnect, 'getAccountInfo')
+                .spyOn(TrezorBlockchain, 'getAccountInfo')
                 .mockResolvedValue({
                     success: true,
                     payload: { misc: { confirmedNonce: '9' } },
@@ -119,7 +119,7 @@ describe('useEvmNonceInfo', () => {
         });
 
         it('falls back to the (untrusted) account nonce when the backend omits confirmedNonce', async () => {
-            jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+            jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
                 success: true,
                 payload: { misc: {} },
             } as any);
@@ -131,7 +131,7 @@ describe('useEvmNonceInfo', () => {
         });
 
         it('throws when the backend request fails', async () => {
-            jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+            jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
                 success: false,
                 error: { message: 'backend down' },
             } as any);

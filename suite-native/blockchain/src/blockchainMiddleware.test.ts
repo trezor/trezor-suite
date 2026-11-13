@@ -4,7 +4,7 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import type { accountsActions as AccountsActions } from '@suite-common/wallet-core';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import type TrezorConnectType from '@trezor/connect';
+import type { TrezorBlockchainApi } from '@trezor/blockchain-core';
 import { type StaticSessionId } from '@trezor/connect';
 
 import type { blockchainMiddleware as BlockchainMiddleware } from './blockchainMiddleware';
@@ -16,7 +16,7 @@ type BlockchainModules = {
     blockchainMiddleware: typeof BlockchainMiddleware;
     polledNetworkSync: typeof PolledNetworkSync;
     thunks: typeof BlockchainThunks;
-    TrezorConnect: typeof TrezorConnectType;
+    TrezorBlockchain: TrezorBlockchainApi;
 };
 
 // The scheduled timeouts live in polledNetworkSync's module scope, so every test gets fresh modules.
@@ -28,7 +28,7 @@ const loadModules = () => {
             blockchainMiddleware: require('./blockchainMiddleware').blockchainMiddleware,
             polledNetworkSync: require('./polledNetworkSync'),
             thunks: require('./blockchainThunks'),
-            TrezorConnect: require('@trezor/connect').default,
+            TrezorBlockchain: require('@trezor/blockchain-core').TrezorBlockchain,
         };
     });
 
@@ -44,10 +44,10 @@ type InitStoreParams = {
 };
 
 const initStore = ({ symbol, deviceState = SELECTED_DEVICE_STATE }: InitStoreParams) => {
-    const { accountsActions, blockchainMiddleware, polledNetworkSync, thunks, TrezorConnect } =
+    const { accountsActions, blockchainMiddleware, polledNetworkSync, thunks, TrezorBlockchain } =
         loadModules();
     // Failing the account lookup keeps the test independent of the account refresh itself.
-    jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+    jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
         success: false,
         error: { message: 'offline', code: 'Backend_Error' },
     });

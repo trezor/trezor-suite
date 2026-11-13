@@ -55,7 +55,7 @@ export const networkConfigBySymbol = {
         testnet: true,
         explorer: getExplorerUrls('https://test.bithomp.com'),
         features: ['tokens'],
-        backendOptions: [],
+        backendOptions: [{ type: 'ripple' }],
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: 'test-ripple', // fake, coingecko does not have testnets

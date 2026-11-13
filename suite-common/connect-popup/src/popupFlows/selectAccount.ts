@@ -110,7 +110,7 @@ export const buildOptions = (payload: PopupFlowPayload<'selectAccount'>): Select
 // Shows the account picker, either fresh or as it was left, and resolves to its state once the user
 // has confirmed the selection. A cancel rejects instead, which the call flow maps to Method_Cancel.
 export const pickAccounts = async (
-    { dispatch, getState }: PopupFlowThunkApi,
+    { dispatch, getState }: Pick<PopupFlowThunkApi, 'dispatch' | 'getState'>,
     options: SelectAccountOptions,
     previousPicker?: ConnectPopupCallWithState<'select-account'>,
 ) => {

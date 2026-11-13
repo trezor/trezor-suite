@@ -39,12 +39,6 @@ import {
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     default: {
-        blockchainEstimateFee: jest.fn().mockResolvedValue({
-            success: true,
-            payload: {
-                levels: [{ feeLimit: '52000' }],
-            },
-        }),
         composeTransaction: jest.fn().mockResolvedValue({
             success: true,
             payload: [

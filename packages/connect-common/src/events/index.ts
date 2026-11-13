@@ -1,4 +1,3 @@
-export * from './blockchain';
 export * from './call';
 export * from './core';
 export * from './device';

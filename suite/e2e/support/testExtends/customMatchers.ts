@@ -11,7 +11,7 @@ import {
     createNetworkModulesCompositionRoot,
 } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
-import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
+import { mockGetTrezorBlockchain } from '@trezor/network-module-suite-common-types/mocks';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { formatAddress, formatEvmAddress, normalizeWhitespace } from '../common';
@@ -30,7 +30,7 @@ const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 
 const networkModules = createNetworkModulesCompositionRoot({
-    getTrezorConnect: mockGetTrezorConnect,
+    getTrezorBlockchain: mockGetTrezorBlockchain,
 });
 const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 const addressValidator = createAddressValidator({ networkModuleRepository });

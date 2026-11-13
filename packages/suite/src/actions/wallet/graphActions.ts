@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 
@@ -90,7 +90,7 @@ const fetchAccountGraphDataThunk =
         // recomputed, regardless of how backend bucket boundaries align with the local timezone
         const lastCachedPoint = cachedData && cachedData.length > 2 ? cachedData.at(-1) : undefined;
 
-        const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
+        const response = await TrezorBlockchain.getAccountBalanceHistory({
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,

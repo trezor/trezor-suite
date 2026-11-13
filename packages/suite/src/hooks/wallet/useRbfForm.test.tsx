@@ -33,6 +33,8 @@ global.ResizeObserver = class MockedResizeObserver {
 
 // do not mock
 jest.unmock('@trezor/connect');
+// The backends of the real Connect run on the mocked blockchain-link below.
+jest.unmock('@trezor/blockchain-core');
 
 // !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
 const translationStringMock = (id: string) => id;

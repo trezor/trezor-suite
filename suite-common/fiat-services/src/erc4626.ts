@@ -1,6 +1,6 @@
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -19,7 +19,7 @@ export const fetchErc4626UnderlyingAsset = async ({
     coin,
     contract,
 }: FetchErc4626UnderlyingAssetParams): Promise<Erc4626UnderlyingAsset> => {
-    const response = await TrezorConnect.blockchainGetContractInfo({
+    const response = await TrezorBlockchain.getContractInfo({
         coin: asCoinSymbol(coin),
         contract,
         protocols: ['erc4626'],

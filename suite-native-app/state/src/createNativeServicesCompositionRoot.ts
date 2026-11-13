@@ -24,6 +24,7 @@ import { reportSecurityCheck } from '@suite-native/sentry';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sync';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
@@ -85,7 +86,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
     const networks = createNetworksCompositionRoot({
-        getTrezorConnect: deps.getTrezorConnect,
+        getTrezorBlockchain: () => TrezorBlockchain,
         dispatch: deps.dispatch,
     });
 

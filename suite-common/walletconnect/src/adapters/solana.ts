@@ -7,7 +7,8 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import { type CallMethodResponse } from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 import { type Result } from '@trezor/type-utils';
 
@@ -52,7 +53,7 @@ const solanaSignTransactionThunk = createThunk<
 
         const device = selectSelectedDevice(getState());
         const accounts = selectAccounts(getState());
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+        const estimatedFee = await TrezorBlockchain.estimateFee({
             coin: isDevnet ? 'dsol' : 'sol',
             request: {
                 specific: {
@@ -157,7 +158,7 @@ const solanaRequestThunk = createThunk<
                 solanaSignTransactionThunk({ session, transaction, origin, isDevnet }),
             ).unwrap();
 
-            const pushResponse = await TrezorConnect.pushTransaction({
+            const pushResponse = await TrezorBlockchain.pushTransaction({
                 coin: isDevnet ? 'dsol' : 'sol',
                 tx: signResponse.transaction,
             });

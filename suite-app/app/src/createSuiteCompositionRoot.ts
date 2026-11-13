@@ -48,6 +48,7 @@ import {
     selectAccountsByDeviceState,
     selectAccountsTransactions,
 } from '@suite-common/wallet-core';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -138,7 +139,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const networks = createNetworksCompositionRoot({
-        getTrezorConnect: deps.getTrezorConnect,
+        getTrezorBlockchain: () => TrezorBlockchain,
         dispatch: deps.dispatch,
     });
 

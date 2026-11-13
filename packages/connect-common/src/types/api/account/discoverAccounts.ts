@@ -92,7 +92,7 @@ type DiscoverAccountsParams = {
     entropyCheckResult?: EntropyCheckResult;
 };
 
-type ProgressBaseType = AccountTypeKey & { index: number; path: string; backendType?: string };
+type ProgressBaseType = AccountTypeKey & { index: number; path: string };
 type DiscoveryError = { failed: true; error: string; code?: string };
 export type DiscoverAccountsProgressOk = ProgressBaseType &
     AccountInfo & { failed: false; last: boolean };
@@ -106,8 +106,10 @@ type DiscoverAccountsResult = {
 };
 
 /** Params of a getAccountInfo call that discoverAccounts asks its caller to make. */
-export type DiscoveryAccountInfoParams = Pick<GetAccountInfo, 'coin' | 'details'> & {
+export type DiscoveryAccountInfoParams = Pick<GetAccountInfo, 'coin'> & {
     descriptor: string;
+    /** Set when only whether the account is used matters; otherwise the caller picks the details. */
+    details?: 'basic';
 };
 
 /**

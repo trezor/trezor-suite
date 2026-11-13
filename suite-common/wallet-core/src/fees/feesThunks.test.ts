@@ -4,7 +4,7 @@ import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { DEFAULT_FEE_INFO } from './feesConstants';
@@ -16,15 +16,10 @@ import {
 } from './feesThunks';
 import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
 
-jest.mock('@trezor/connect', () => {
-    const actual = jest.requireActual('@trezor/connect');
-
-    return {
-        ...actual,
-        __esModule: true,
-        default: { ...actual.default, blockchainEstimateFee: jest.fn() },
-    };
-});
+jest.mock('@trezor/blockchain-core', () => ({
+    ...jest.requireActual('@trezor/blockchain-core/src/events'),
+    TrezorBlockchain: { estimateFee: jest.fn() },
+}));
 
 const blockchainReducer = prepareBlockchainReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -103,11 +98,11 @@ describe(getOrFetchRawFeeInfoThunk.name, () => {
 
         expect(response.meta.requestStatus).toBe('fulfilled');
         expect(response.payload).toEqual(ethFeeInfo);
-        expect(TrezorConnect.blockchainEstimateFee).not.toHaveBeenCalled();
+        expect(TrezorBlockchain.estimateFee).not.toHaveBeenCalled();
     });
 
     it('fetches and stores fee info when it is missing', async () => {
-        (TrezorConnect.blockchainEstimateFee as jest.Mock).mockResolvedValue({
+        (TrezorBlockchain.estimateFee as jest.Mock).mockResolvedValue({
             success: true,
             payload: {
                 blockTime: 12,
@@ -132,7 +127,7 @@ describe(getOrFetchRawFeeInfoThunk.name, () => {
     });
 
     it('returns undefined when fee info is missing and the fetch fails', async () => {
-        (TrezorConnect.blockchainEstimateFee as jest.Mock).mockResolvedValue({
+        (TrezorBlockchain.estimateFee as jest.Mock).mockResolvedValue({
             success: false,
             payload: { error: 'error' },
         });

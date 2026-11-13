@@ -24,6 +24,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -39,6 +40,10 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     default: {
         ethereumSignTransaction: jest.fn(),
+    },
+}));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
         pushTransaction: jest.fn().mockResolvedValue({
             success: true,
             payload: { txid: '0xpushedtxid' },
@@ -131,7 +136,7 @@ const services = (): PushYieldActionReviewThunkDeps['services'] => ({
     },
 });
 
-const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const pushTransactionMock = TrezorBlockchain.pushTransaction as jest.Mock;
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
 const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;

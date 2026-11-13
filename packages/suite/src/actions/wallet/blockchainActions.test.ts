@@ -27,6 +27,7 @@ import {
     type BlockchainRootState,
     type BlockchainState,
     type FeesRootState,
+    type InitBlockchainThunkDeps,
     type StellarContractTokensRootState,
     type SyncAccountsWithBlockchainThunkDeps,
     type TransactionsRootState,
@@ -49,6 +50,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { BLOCKCHAIN, BLOCKCHAIN_EVENT, TrezorBlockchain } from '@trezor/blockchain-core';
 import { PROTO } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-common-types';
@@ -139,30 +141,33 @@ const getInitialState = (
 });
 
 const mockStore = (preloadedState: State) =>
-    createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps, State>({
-        reducer: (currentState = preloadedState, action) => {
-            const state = currentState as State;
+    createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps & InitBlockchainThunkDeps, State>(
+        {
+            reducer: (currentState = preloadedState, action) => {
+                const state = currentState as State;
 
-            return {
-                ...state,
-                wallet: {
-                    ...state.wallet,
-                    accounts: accountsReducer(state.wallet.accounts, action),
-                    transactions: transactionsReducer(state.wallet.transactions, action),
-                    blockchain: blockchainReducer(state.wallet.blockchain, action),
-                    fees: feesReducer(state.wallet.fees, action),
-                },
-                notifications: notificationsReducer(state.notifications, action),
-            };
+                return {
+                    ...state,
+                    wallet: {
+                        ...state.wallet,
+                        accounts: accountsReducer(state.wallet.accounts, action),
+                        transactions: transactionsReducer(state.wallet.transactions, action),
+                        blockchain: blockchainReducer(state.wallet.blockchain, action),
+                        fees: feesReducer(state.wallet.fees, action),
+                    },
+                    notifications: notificationsReducer(state.notifications, action),
+                };
+            },
+            preloadedState,
+            services: () => ({
+                analytics: mockAnalytics<AnalyticsSharedEvents>(),
+                networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+                getIsWindowVisible: asGetter(() => true),
+                getTradedAccountKeys: asGetter(() => []),
+                getDebugSettings: asGetter(() => ({ showConnectLogs: false })),
+            }),
         },
-        preloadedState,
-        services: () => ({
-            analytics: mockAnalytics<AnalyticsSharedEvents>(),
-            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
-            getIsWindowVisible: asGetter(() => true),
-            getTradedAccountKeys: asGetter(() => []),
-        }),
-    }).services.store;
+    ).services.store;
 
 describe('Blockchain Actions', () => {
     afterEach(() => {
@@ -174,10 +179,18 @@ describe('Blockchain Actions', () => {
             const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(initBlockchainThunk());
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
-            expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
+            expect(TrezorBlockchain.setCustomBackend).toHaveBeenCalledTimes(
                 f.blockchainSetCustomBackend,
             );
         });
+    });
+
+    it('init: dispatches the events of the backends', async () => {
+        const store = mockStore(getInitialState());
+        await store.dispatch(initBlockchainThunk());
+
+        TrezorConnect.emitTestEvent(BLOCKCHAIN_EVENT, { type: BLOCKCHAIN.CONNECT });
+        expect(store.getActions().at(-1)).toEqual({ type: BLOCKCHAIN.CONNECT });
     });
 
     fixtures.onConnect.forEach(f => {
@@ -186,10 +199,8 @@ describe('Blockchain Actions', () => {
             const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(onBlockchainConnectThunk(f.symbol));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
-            expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(
-                f.blockchainEstimateFee,
-            );
-            expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(f.blockchainSubscribe);
+            expect(TrezorBlockchain.estimateFee).toHaveBeenCalledTimes(f.blockchainEstimateFee);
+            expect(TrezorBlockchain.subscribe).toHaveBeenCalledTimes(f.blockchainSubscribe);
         });
     });
 
@@ -247,7 +258,7 @@ describe('Blockchain Actions', () => {
             const store = mockStore(getInitialState(f.initialState as Args));
             await store.dispatch(onBlockchainNotificationThunk(f.params as any));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
-            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(f.getAccountInfo);
+            expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(f.getAccountInfo);
         });
     });
 
@@ -302,7 +313,7 @@ describe('Blockchain Actions', () => {
         it(`customBackend: ${f.description}`, async () => {
             const store = mockStore(getInitialState(f.initialState as any));
             await store.dispatch(setCustomBackendThunk(asNetworkSymbol(f.symbol)));
-            expect(TrezorConnect.blockchainSetCustomBackend).toHaveBeenCalledTimes(
+            expect(TrezorBlockchain.setCustomBackend).toHaveBeenCalledTimes(
                 f.blockchainSetCustomBackend,
             );
         });

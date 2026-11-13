@@ -2,10 +2,10 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../../packages/calldata" },
         {
-            "path": "../../../packages/connect-common"
+            "path": "../../../packages/blockchain-core"
         },
+        { "path": "../../../packages/calldata" },
         { "path": "../network-ethereum" },
         { "path": "../network-ethereum-assets" },
         { "path": "../network-ethereum-types" },

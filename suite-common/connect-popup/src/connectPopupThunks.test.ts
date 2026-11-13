@@ -14,7 +14,11 @@ import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
+import {
+    abortPopupCall,
+    getPermissionDeferred,
+    getPopupCallDeferred,
+} from './connectPopupPromiseManager';
 import {
     prepareConnectPopupReducer,
     selectConnectPopupCall,
@@ -397,6 +401,22 @@ describe('connectPopupCallInnerThunk', () => {
             cleanup.mock.invocationCallOrder[0]!,
         );
         expect(lockDevice).toHaveBeenCalledWith(false);
+    });
+
+    it('leaves a cancelled call to its cancel, so that it does not answer the next call', async () => {
+        let nextCallAnswer: Promise<unknown> = Promise.resolve();
+        jest.spyOn(CommonPopupFlow.prototype, 'run').mockImplementation(() => {
+            // The caller cancels the call and the next call starts before the flow settles.
+            abortPopupCall(TypedError('Method_Cancel'));
+            nextCallAnswer = getPopupCallDeferred(true).promise;
+
+            return Promise.resolve({ success: true, payload: { message: 'stale' } });
+        });
+
+        await runCallThunk(interactiveComposeParams);
+
+        const pending = Symbol('pending');
+        await expect(Promise.race([nextCallAnswer, pending])).resolves.toBe(pending);
     });
 
     it('neither answers nor reports a call waiting for the device to be reconnected', async () => {

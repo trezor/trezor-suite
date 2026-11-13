@@ -48,33 +48,12 @@ describe('data/coinInfo', () => {
         expect(() => getBitcoinNetworkOrThrow('ada')).toThrow('Coin not found');
     });
 
-    it('uses the production Robinhood Blockbook', () => {
-        expect(getCoinInfoOrThrow('rhc').blockchainLink).toEqual({
-            type: 'blockbook',
-            url: ['https://rhc.trezor.io'],
-        });
-    });
-
-    it('uses the HyperEVM Blockbook backend', () => {
-        expect(getCoinInfoOrThrow('hype').blockchainLink).toEqual({
-            type: 'blockbook',
-            url: ['https://hype.trezor.io'],
-        });
-    });
-
-    it('serves Arc testnet over the RPC worker, with no blockbook involved', () => {
-        // First network whose default backend is not blockbook. The coin-data parser copies
-        // blockchain_link through untouched, and Blockchain.getWorker() dispatches on that type,
-        // so a typo here silently becomes Backend_NotSupported at runtime.
+    it('parses Arc testnet', () => {
         expect(getCoinInfoOrThrow('tarc')).toMatchObject({
             shortcut: 'tARC',
             chainId: 5042002,
             slip44: 60,
             decimals: 18,
-            blockchainLink: {
-                type: 'evm-rpc',
-                url: ['https://rpc.testnet.arc.network'],
-            },
         });
     });
 
@@ -129,12 +108,5 @@ describe('data/coinInfo', () => {
         ];
         const result = [getCoinInfoOrThrow('btc'), getCoinInfoOrThrow('ltc')];
         expect(getUniqueNetworks(inputs)).toEqual(result);
-    });
-
-    it('bitcoin network blocktime', () => {
-        const bitcoinNetworks = getAllNetworks().filter(({ type }) => type === 'bitcoin');
-        bitcoinNetworks.forEach(network => {
-            expect(network.blockTime).toBeGreaterThan(0);
-        });
     });
 });

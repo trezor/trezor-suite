@@ -11,6 +11,9 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../packages/blockchain-core"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

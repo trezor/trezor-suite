@@ -43,3 +43,14 @@ export const queuePopupCall: AwaitDeferred = callDeferredWrapper.awaitDeferred;
 const permissionDeferredWrapper = createDeferredWrapper<SelectFeeChoice | void>('popup-permission');
 export const getPermissionDeferred: GetDeferred<SelectFeeChoice | void> =
     permissionDeferredWrapper.getDeferred;
+
+// Aborted by the cancel of the current call, so that its flow stops wherever it waits.
+let callAbortController = new AbortController();
+
+export const createPopupCallSignal = () => {
+    callAbortController = new AbortController();
+
+    return callAbortController.signal;
+};
+
+export const abortPopupCall = (reason: unknown) => callAbortController.abort(reason);

@@ -1,0 +1,349 @@
+import type {
+    BlockchainLinkParams,
+    ServerInfo,
+    SubscriptionAccountInfo,
+} from '@trezor/blockchain-link';
+import { BlockchainLink } from '@trezor/blockchain-link';
+import type { BlockchainSettings } from '@trezor/blockchain-link-types';
+import type { PushTransaction } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { type CanonicalDescriptor } from '@trezor/utils';
+
+import type { BackendCoinInfo } from '../data/coinInfo';
+import { BLOCKCHAIN, type BlockchainEventMessage, createBlockchainMessage } from '../events';
+import {
+    BlockbookWorker,
+    BlockfrostWorker,
+    ElectrumWorker,
+    EvmRpcWorker,
+    RippleWorker,
+    SolanaWorker,
+    StellarWorker,
+} from '../workers/workers';
+
+const getWorker = (type: string) => {
+    switch (type) {
+        case 'blockbook':
+            return BlockbookWorker;
+        case 'ripple':
+            return RippleWorker;
+        case 'blockfrost':
+            return BlockfrostWorker;
+        case 'electrum':
+            return ElectrumWorker;
+        case 'solana':
+            return SolanaWorker;
+        case 'stellar':
+            return StellarWorker;
+        case 'evm-rpc':
+            return EvmRpcWorker;
+        default:
+            return null;
+    }
+};
+
+const getNormalizedTrezorShortcut = (shortcut: string) => {
+    // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
+    // see: https://xrpl.org/parallel-networks.html
+    if (shortcut === 'tXRP') {
+        return 'XRP';
+    }
+
+    return shortcut;
+};
+
+export type PostMessage = (message: BlockchainEventMessage) => void;
+
+export type Proxy = BlockchainSettings['proxy'];
+
+export type BlockchainOptions = {
+    coinInfo: BackendCoinInfo;
+    postMessage: PostMessage;
+    proxy?: Proxy;
+    debug?: boolean;
+    identity?: string;
+    onDisconnected?: (pendingSubscriptions?: boolean) => void;
+};
+
+export class Blockchain {
+    readonly link: BlockchainLink;
+    serverInfo?: ServerInfo;
+
+    readonly identity?: string;
+    readonly coinInfo: BlockchainOptions['coinInfo'];
+    readonly postMessage: BlockchainOptions['postMessage'];
+
+    private onDisconnected: BlockchainOptions['onDisconnected'];
+    private initPromise?: Promise<ServerInfo>;
+
+    constructor(options: BlockchainOptions) {
+        this.identity = options.identity;
+        this.coinInfo = options.coinInfo;
+        this.postMessage = options.postMessage;
+        this.onDisconnected = options.onDisconnected;
+
+        const { blockchainLink } = options.coinInfo;
+        if (!blockchainLink) {
+            throw ERRORS.TypedError('Backend_NotSupported');
+        }
+
+        const worker = getWorker(blockchainLink.type);
+        if (!worker) {
+            throw ERRORS.TypedError(
+                'Backend_WorkerMissing',
+                `BlockchainLink worker not found ${blockchainLink.type}`,
+            );
+        }
+
+        const server = blockchainLink.url;
+
+        this.link = new BlockchainLink({
+            name: this.coinInfo.shortcut,
+            worker,
+            server,
+            debug: options.debug,
+            proxy: options.proxy,
+            // register EVM and Tron blocks once per 12+ seconds
+            ...(this.coinInfo.type === 'ethereum' ||
+            ['TRX', 'tTRX'].includes(this.coinInfo.shortcut)
+                ? { throttleBlockEvent: 12 * 1000 }
+                : {}),
+            ...(['ripple', 'stellar'].includes(blockchainLink.type)
+                ? { throttleBlockEvent: 60 * 1000 }
+                : {}),
+        });
+    }
+
+    private onBackendDisconnected(pendingSubscriptions = false) {
+        this.postMessage(
+            createBlockchainMessage(BLOCKCHAIN.ERROR, {
+                coin: this.coinInfo,
+                identity: this.identity,
+                error: ERRORS.ERROR_CODES.Backend_Disconnected,
+                code: 'Backend_Disconnected',
+            }),
+        );
+        this.onDisconnected?.(!!pendingSubscriptions);
+    }
+
+    /** should be called only once, from Blockchain.init() method */
+    private async initLink() {
+        let info;
+        try {
+            await this.link.connect();
+            info = await this.link.getInfo();
+        } catch (error) {
+            throw ERRORS.TypedError('Backend_Error', error.message);
+        }
+
+        this.serverInfo = info;
+
+        const trezorNetworkShortcut = getNormalizedTrezorShortcut(this.coinInfo.shortcut);
+        const backendNetworkShortcut = this.serverInfo.network;
+
+        if (backendNetworkShortcut.toLowerCase() !== trezorNetworkShortcut.toLowerCase()) {
+            throw ERRORS.TypedError('Backend_Invalid');
+        }
+
+        this.link.on('disconnected', () => {
+            const pendingSubscriptions =
+                this.link.listenerCount('block') ||
+                this.link.listenerCount('notification') ||
+                this.link.listenerCount('fiatRates');
+
+            this.link.dispose();
+            this.onBackendDisconnected(!!pendingSubscriptions);
+        });
+
+        return info;
+    }
+
+    /** Method is idempotent (only the first call really starts the init process, subsequent calls just return the promise) */
+    init() {
+        if (!this.initPromise) {
+            this.initPromise = this.initLink()
+                .then(info => {
+                    this.postMessage(
+                        createBlockchainMessage(BLOCKCHAIN.CONNECT, {
+                            coin: this.coinInfo,
+                            identity: this.identity,
+                            ...info,
+                        }),
+                    );
+                    this.initPromise = Promise.resolve(info);
+
+                    return info;
+                })
+                .catch(error => {
+                    this.postMessage(
+                        createBlockchainMessage(BLOCKCHAIN.ERROR, {
+                            coin: this.coinInfo,
+                            identity: this.identity,
+                            error: error.message,
+                            code: error.code,
+                        }),
+                    );
+                    this.initPromise = Promise.reject(error);
+                    this.link.dispose();
+
+                    return this.initPromise;
+                });
+        }
+
+        return this.initPromise;
+    }
+
+    getTransactions(txs: string[], descriptor?: string) {
+        return Promise.all(txs.map(txid => this.link.getTransaction({ txid, descriptor })));
+    }
+
+    getTransactionHexes(txids: string[]) {
+        return Promise.all(txids.map(id => this.link.getTransactionHex(id)));
+    }
+
+    getCurrentFiatRates(params: { currencies?: string[]; token?: string }) {
+        return this.link.getCurrentFiatRates(params);
+    }
+
+    getContractInfo(params: BlockchainLinkParams<'getContractInfo'>) {
+        return this.link.getContractInfo(params);
+    }
+
+    getFiatRatesForTimestamps(params: {
+        currencies?: string[];
+        timestamps: number[];
+        token?: string;
+    }) {
+        return this.link.getFiatRatesForTimestamps(params);
+    }
+
+    // Same canonical-descriptor requirement as `getAccountInfo` below.
+    getAccountBalanceHistory(
+        params: Omit<BlockchainLinkParams<'getAccountBalanceHistory'>, 'descriptor'> & {
+            descriptor: CanonicalDescriptor;
+        },
+    ) {
+        return this.link.getAccountBalanceHistory(params);
+    }
+
+    getNetworkInfo() {
+        return this.link.getInfo();
+    }
+
+    // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the descriptor sent
+    // to the backend must be canonical (apostrophe form). The CanonicalDescriptor brand forces every
+    // caller to normalize via `toCanonicalDescriptor`, turning that requirement into a compiler check.
+    // The brand is not exhaustive: `getTransactions` and `subscribeAccounts`/`unsubscribeAccounts`
+    // still take plain strings, so read it as a guarantee for the branded methods only.
+    getAccountInfo(
+        request: Omit<BlockchainLinkParams<'getAccountInfo'>, 'descriptor'> & {
+            descriptor: CanonicalDescriptor;
+        },
+    ) {
+        return this.link.getAccountInfo(request);
+    }
+
+    getAccountUtxo(descriptor: CanonicalDescriptor) {
+        return this.link.getAccountUtxo(descriptor);
+    }
+
+    rpcCall(params: BlockchainLinkParams<'rpcCall'>) {
+        return this.link.rpcCall(params);
+    }
+
+    estimateFee(request: Parameters<typeof this.link.estimateFee>[0]) {
+        return this.link.estimateFee(request);
+    }
+
+    subscribeBlocks() {
+        // set block listener if it wasn't set before
+        if (this.link.listenerCount('block') === 0) {
+            this.link.on('block', block => {
+                this.postMessage(
+                    createBlockchainMessage(BLOCKCHAIN.BLOCK, {
+                        coin: this.coinInfo,
+                        ...block,
+                    }),
+                );
+            });
+        }
+
+        return this.link.subscribe({ type: 'block' });
+    }
+
+    subscribeAccounts(accounts: SubscriptionAccountInfo[]) {
+        // set notification listener if it wasn't set before
+        if (this.link.listenerCount('notification') === 0) {
+            this.link.on('notification', notification => {
+                this.postMessage(
+                    createBlockchainMessage(BLOCKCHAIN.NOTIFICATION, {
+                        coin: this.coinInfo,
+                        notification,
+                    }),
+                );
+            });
+        }
+
+        return this.link.subscribe({
+            type: 'accounts',
+            accounts,
+        });
+    }
+
+    subscribeFiatRates(_currency?: string) {
+        // set block listener if it wasn't set before
+        if (this.link.listenerCount('fiatRates') === 0) {
+            this.link.on('fiatRates', ({ rates }) => {
+                this.postMessage(
+                    createBlockchainMessage(BLOCKCHAIN.FIAT_RATES_UPDATE, {
+                        coin: this.coinInfo,
+                        rates,
+                    }),
+                );
+            });
+        }
+
+        return this.link.subscribe({
+            type: 'fiatRates',
+        });
+    }
+
+    unsubscribeBlocks() {
+        this.link.removeAllListeners('block');
+
+        return this.link.unsubscribe({ type: 'block' });
+    }
+
+    unsubscribeAccounts(accounts: SubscriptionAccountInfo[]) {
+        // unsubscribe only requested accounts
+        return this.link.unsubscribe({ type: 'accounts', accounts });
+    }
+
+    unsubscribeFiatRates() {
+        this.link.removeAllListeners('fiatRates');
+
+        return this.link.unsubscribe({ type: 'fiatRates' });
+    }
+
+    async unsubscribeAll() {
+        this.link.removeAllListeners('notification');
+        await this.unsubscribeFiatRates();
+
+        return this.unsubscribeBlocks();
+    }
+
+    pushTransaction(tx: PushTransaction['tx']) {
+        const data = typeof tx === 'string' ? { hex: tx } : tx;
+
+        return this.link.pushTransaction(data);
+    }
+
+    disconnect() {
+        this.link.removeAllListeners();
+        this.link
+            .disconnect()
+            .catch(() => {})
+            .finally(() => this.link.dispose());
+        this.onBackendDisconnected();
+    }
+}

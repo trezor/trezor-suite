@@ -3,11 +3,11 @@ import { decodeFunctionData, encodeErrorResult, parseAbi } from 'viem';
 import { createCallEnsUniversalResolver } from './createCallEnsUniversalResolver';
 import { createReverseResolveAddressViaEnsUniversalResolver } from './createReverseResolveAddressViaEnsUniversalResolver';
 
-const mockBlockchainEvmRpcCall = jest.fn();
+const mockEvmRpcCall = jest.fn();
 
 const reverseResolveAddressOnchain = createReverseResolveAddressViaEnsUniversalResolver({
     callEnsUniversalResolver: createCallEnsUniversalResolver({
-        getTrezorConnect: () => ({ blockchainEvmRpcCall: mockBlockchainEvmRpcCall }),
+        getTrezorBlockchain: () => ({ evmRpcCall: mockEvmRpcCall }),
     }),
 });
 
@@ -41,17 +41,17 @@ const asRevert = (revertData: string) => ({
 });
 
 const revertWith = (revertData: string) => {
-    mockBlockchainEvmRpcCall.mockResolvedValue(asRevert(revertData));
+    mockEvmRpcCall.mockResolvedValue(asRevert(revertData));
 };
 
 const succeedWith = (...responses: string[]) => {
     responses.forEach(data =>
-        mockBlockchainEvmRpcCall.mockResolvedValueOnce({ success: true, payload: { data } }),
+        mockEvmRpcCall.mockResolvedValueOnce({ success: true, payload: { data } }),
     );
 };
 
 const failWith = (message: string) => {
-    mockBlockchainEvmRpcCall.mockResolvedValue({ success: false, error: { message } });
+    mockEvmRpcCall.mockResolvedValue({ success: false, error: { message } });
 };
 
 const OFFCHAIN_LOOKUP = encodeRevert(
@@ -68,7 +68,7 @@ const OFFCHAIN_LOOKUP = encodeRevert(
 
 describe('reverseResolveAddressOnchain', () => {
     beforeEach(() => {
-        mockBlockchainEvmRpcCall.mockReset();
+        mockEvmRpcCall.mockReset();
     });
 
     const reverseAbi = parseAbi([
@@ -78,7 +78,7 @@ describe('reverseResolveAddressOnchain', () => {
     const getSentCoinType = () => {
         const { args } = decodeFunctionData({
             abi: reverseAbi,
-            data: mockBlockchainEvmRpcCall.mock.calls[0]?.[0].data,
+            data: mockEvmRpcCall.mock.calls[0]?.[0].data,
         });
 
         return args[1];
@@ -89,7 +89,7 @@ describe('reverseResolveAddressOnchain', () => {
 
         await reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth', { identity: 'deviceState' });
 
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+        expect(mockEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'deviceState' }),
         );
     });
@@ -129,7 +129,7 @@ describe('reverseResolveAddressOnchain', () => {
         failWith('execution reverted');
 
         await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBeNull();
-        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
+        expect(mockEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
     // Nothing blocks on a primary name, so an offchain hop we cannot follow is simply no

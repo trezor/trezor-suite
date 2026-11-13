@@ -49,7 +49,7 @@ it.each([
 
 it('exposes the composed icon dependency through its injectors', () => {
     const networks = createNetworksCompositionRoot(
-        createMockDeps<NetworksCompositionRootDeps>({ getTrezorConnect: null, dispatch: null }),
+        createMockDeps<NetworksCompositionRootDeps>({ getTrezorBlockchain: null, dispatch: null }),
     );
 
     expect(injectNetworkIcon({ networks }).networkIcon).toBe(networks.networkIcon);

@@ -8,7 +8,7 @@ import {
     type StakeType,
 } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getSuiteVersion } from '@trezor/env-utils';
 import solana from '@trezor/network-solana/runtime';
@@ -80,7 +80,7 @@ const resolveSolanaBlockchainUrl = async (
     const connectedUrl = selectBlockchainUrlBySymbol(state, symbol);
     if (connectedUrl) return connectedUrl;
 
-    const info = await TrezorConnect.blockchainGetInfo({ coin: asCoinSymbol(symbol) });
+    const info = await TrezorBlockchain.getInfo({ coin: asCoinSymbol(symbol) });
 
     return info.success ? info.payload.url : undefined;
 };

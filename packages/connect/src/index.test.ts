@@ -18,10 +18,6 @@ jest.mock('@trezor/connect-core/src/core', () => ({
     }),
 }));
 
-jest.mock('@trezor/connect-core/src/backend/BlockchainLink', () => ({
-    updateProxy: jest.fn(() => Promise.resolve()),
-}));
-
 jest.mock('usb', () => ({ WebUSB: class {} }));
 
 import TrezorConnect, { TRANSPORT } from './index';

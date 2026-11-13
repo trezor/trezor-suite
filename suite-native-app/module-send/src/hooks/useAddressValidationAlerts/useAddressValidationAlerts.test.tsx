@@ -5,7 +5,7 @@ import { type AddressValidatorDep } from '@suite-common/networks';
 import { useAlert } from '@suite-native/alerts';
 import { Form, useWatch } from '@suite-native/forms';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 
 import { useAddressValidationAlerts } from './useAddressValidationAlerts';
 
@@ -64,7 +64,7 @@ const mockedUseRoute = useRoute as jest.MockedFunction<any>;
 const mockedUseAlert = useAlert as jest.MockedFunction<any>;
 const mockedUseWatch = useWatch as unknown as jest.Mock;
 
-const getAccountInfoSpy = jest.spyOn(TrezorConnect, 'getAccountInfo');
+const getAccountInfoSpy = jest.spyOn(TrezorBlockchain, 'getAccountInfo');
 const services: { networks: AddressValidatorDep } = {
     networks: {
         addressValidator: mockAddressValidator({
@@ -112,7 +112,7 @@ describe('useAddressValidationAlerts', () => {
             },
         );
 
-        // allow async TrezorConnect.getAccountInfo to resolve
+        // allow async TrezorBlockchain.getAccountInfo to resolve
         await act(async () => {
             await Promise.resolve();
         });
@@ -150,7 +150,7 @@ describe('useAddressValidationAlerts', () => {
             await renderHookWithForm();
 
             expect(mockShowAlert).not.toHaveBeenCalled();
-            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
         });
     });
 
@@ -246,7 +246,7 @@ describe('useAddressValidationAlerts', () => {
             await renderHookWithForm(btcPreloadedState);
 
             expect(mockShowAlert).not.toHaveBeenCalled();
-            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
         });
 
         it('should not auto-convert checksum for invalid mixed case address', async () => {
@@ -341,7 +341,7 @@ describe('useAddressValidationAlerts', () => {
 
             await renderHookWithForm(btcPreloadedState);
 
-            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
         });
     });
 
@@ -431,7 +431,7 @@ describe('useAddressValidationAlerts', () => {
     });
 
     describe('Error handling', () => {
-        it('should handle TrezorConnect.getAccountInfo error gracefully', async () => {
+        it('should handle TrezorBlockchain.getAccountInfo error gracefully', async () => {
             mockWatch.mockReturnValue(contractAddressLowercase);
 
             getAccountInfoSpy.mockResolvedValue(mockAccountInfoResponses.networkError);

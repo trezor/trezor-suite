@@ -24,6 +24,7 @@ import {
     type FeeLevelLabel,
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
@@ -178,7 +179,7 @@ export const sendYieldTransaction = async ({
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
         const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
 
-        const pushResponse = await TrezorConnect.pushTransaction({
+        const pushResponse = await TrezorBlockchain.pushTransaction({
             tx: getMevProtectedTxData(
                 account.symbol,
                 signingResponse.payload.serializedTx,

@@ -1,5 +1,4 @@
 import {
-    BLOCKCHAIN_EVENT,
     CORE_CALL,
     DEVICE_EVENT,
     RESPONSE_EVENT,
@@ -31,7 +30,6 @@ import { type Logger, noopLogger } from '@trezor/logger';
 import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
 import { cloneObject } from '@trezor/utils';
 
-import { updateProxy } from '../backend/BlockchainLink';
 import { initCoreState } from '../core';
 
 export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings> {
@@ -111,11 +109,6 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
                 this.eventEmitter.emit(type, payload);
                 break;
 
-            case BLOCKCHAIN_EVENT:
-                this.eventEmitter.emit(event, message);
-                this.eventEmitter.emit(type, payload);
-                break;
-
             case UI_EVENT:
                 this.eventEmitter.emit(event, message);
                 this.eventEmitter.emit(type, payload);
@@ -156,21 +149,8 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
         await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }
 
-    // Default proxy handling delegates to the blockchain backends. Web overrides this to reject
-    // (proxy is unsupported in a browser); node, native and the platform-neutral local root all
-    // share this implementation.
-    protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        await updateProxy(proxy);
-    }
-
     public async updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports: newTransports, enabledNetworks } = params;
-
-        try {
-            await this.updateProxy(proxy);
-        } catch (err) {
-            return Promise.resolve(createErrorMessage(err));
-        }
+        const { transports: newTransports, enabledNetworks } = params;
 
         // Mirror `call`: if init() is in progress but not yet complete, wait for it. Otherwise a
         // settings update issued during the init window hits the empty-Core window and

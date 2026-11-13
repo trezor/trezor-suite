@@ -119,10 +119,11 @@ const applyCardanoGetPublicKeyResponseCompatibility = (
     // Both the single and bundled (array) forms are handled.
     const payload = response.payload as CardanoPublicKey | CardanoPublicKey[];
 
+    // Still a `cardanoGetPublicKey` response, which the union of all responses can't tell.
     return {
         ...response,
         payload: Array.isArray(payload) ? payload.map(toV9PublicKey) : toV9PublicKey(payload),
-    };
+    } as PopupFlowAnswer;
 };
 
 /** Rewrites a response for a host app using a legacy API. */

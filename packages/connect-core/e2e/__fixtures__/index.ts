@@ -19,7 +19,6 @@ export { default as ethereumSignTransactionEip7702 } from './ethereumSignTransac
 export { default as ethereumSignTransactionDefinitions } from './ethereumSignTransactionDefinitions';
 export { default as ethereumSignTypedData } from './ethereumSignTypedData';
 export { default as ethereumVerifyMessage } from './ethereumVerifyMessage';
-export { default as getAccountInfo } from './getAccountInfo';
 export { default as getAddress } from './getAddress';
 export { default as getAddressMultisig } from './getAddressMultisig';
 export { default as getAddressMultisigPubkeysOrder } from './getAddressMultisigPubkeysOrder';
@@ -72,16 +71,6 @@ export { default as loadDevice } from './loadDevice';
 
 // TODO: add fixtures for missing dependencies https://github.com/trezor/trezor-suite/issues/5353
 // backupDevice
-// blockchainDisconnect
-// blockchainEstimateFee
-// blockchainGetAccountBalanceHistory
-// blockchainGetFiatRates
-// blockchainGetTransactions
-// blockchainSetCustomBackend
-// blockchainSubscribe
-// blockchainSubscribeFiatRates
-// blockchainUnsubscribe
-// blockchainUnsubscribeFiatRates
 // changePin
 // cipherKeyValue
 // evoluGetNode
@@ -89,7 +78,6 @@ export { default as loadDevice } from './loadDevice';
 // getCoinInfo
 // getDeviceState
 // getSettings
-// pushTransaction
 // recoveryDevice
 // requestLogin
 // wipeDevice

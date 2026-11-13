@@ -15,7 +15,7 @@ import {
     subscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type BlockchainNotification } from '@trezor/connect';
+import { type BlockchainNotification } from '@trezor/blockchain-core';
 import { createThunk } from '@trezor/redux-utils';
 
 const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';

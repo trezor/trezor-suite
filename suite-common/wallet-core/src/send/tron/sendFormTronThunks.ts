@@ -10,6 +10,7 @@ import {
     subunitsToUnits,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
@@ -223,7 +224,7 @@ export const signTronSendFormTransactionThunk = createThunk<
             });
         }
 
-        const blockchainInfo = await TrezorConnect.blockchainGetInfo({
+        const blockchainInfo = await TrezorBlockchain.getInfo({
             coin: asCoinSymbol(selectedAccount.symbol),
             identity: getAccountIdentity(selectedAccount),
         });

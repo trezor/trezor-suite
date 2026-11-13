@@ -38,8 +38,8 @@ import {
     isProgramDerivedAccount,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { BottomText, Column, Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
@@ -472,7 +472,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     return translationString('TR_ENS_RESOLVE_FAILED');
                 }
 
-                const result = await TrezorConnect.getAccountInfo({
+                const result = await TrezorBlockchain.getAccountInfo({
                     descriptor: resolvedAddress ?? checkedAddress,
                     coin: asCoinSymbol(symbol),
                     identity,
@@ -529,7 +529,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');
                     }
 
-                    const result = await TrezorConnect.getAccountInfo({
+                    const result = await TrezorBlockchain.getAccountInfo({
                         descriptor: value,
                         coin: asCoinSymbol(symbol),
                         identity,

@@ -26,7 +26,11 @@ import {
 } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type TrezorConnectBackendType, asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type BackendType,
+    type TrezorConnectBackendType,
+    asNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     type DiscoveryOutcome,
     type DiscoveryStatus,
@@ -64,6 +68,7 @@ import {
     reportAccountInfoThunk,
     reportWalletBalanceThunk,
 } from '../accounts/accountsThunks';
+import { selectEffectiveBackendType } from '../blockchain/blockchainSelectors';
 import {
     type WalletCoreCompoundRootState,
     selectAccountsToBeForgotten,
@@ -215,8 +220,9 @@ const transformProgressEventData = (
     { response, progress, total }: ProgressEvent,
     deviceState: StaticSessionId,
     discovery: DiscoveryStatus,
+    backendType: BackendType | undefined,
 ) => {
-    const { index, symbol, type: accountType, path, backendType } = response;
+    const { index, symbol, type: accountType, path } = response;
 
     const accountInfo: AccountInfo = !response.failed
         ? response
@@ -539,6 +545,7 @@ export const runDiscoveryThunk = createThunk<
                     event,
                     deviceState.staticSessionId,
                     currentDiscovery,
+                    selectEffectiveBackendType(getState(), asNetworkSymbol(event.response.symbol)),
                 );
 
                 // no non-empty account encountered and not the last event, enqueue account for postponed creation
@@ -894,6 +901,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
                 event,
                 device.state.staticSessionId,
                 discovery,
+                selectEffectiveBackendType(getState(), asNetworkSymbol(event.response.symbol)),
             );
 
             dispatch(

@@ -8,8 +8,8 @@ import type {
     TickerId,
     Timestamp,
 } from '@suite-common/wallet-types';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import type { BaseCurrencyCode, FiatRatesBySymbol } from '@trezor/blockchain-link-types';
-import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import {
     SCHEDULE_ACTION_ABORTED_ERROR_MESSAGE,
@@ -38,13 +38,13 @@ const getConnectFiatRatesForTimestamp = async (
     timestamps: number[],
     baseCurrencyCode: BaseCurrencyCode,
 ): Promise<
-    | ReturnType<typeof TrezorConnect.blockchainGetFiatRatesForTimestamps>
+    | ReturnType<typeof TrezorBlockchain.getFiatRatesForTimestamps>
     | { success: false; payload: null }
 > => {
     try {
         return await scheduleAction(
             () =>
-                TrezorConnect.blockchainGetFiatRatesForTimestamps({
+                TrezorBlockchain.getFiatRatesForTimestamps({
                     coin: asCoinSymbol(ticker.symbol),
                     token: ticker.tokenAddress,
                     timestamps,
@@ -107,7 +107,7 @@ export const fetchCurrentFiatRates = ({
                 if (backendType !== 'electrum') {
                     const result = await scheduleAction(
                         () =>
-                            TrezorConnect.blockchainGetCurrentFiatRates({
+                            TrezorBlockchain.getCurrentFiatRates({
                                 coin: asCoinSymbol(ticker.symbol),
                                 token: ticker.tokenAddress,
                                 // Dollars ride along in the same request, so every current rate has them.

@@ -1,6 +1,7 @@
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { isDirectRpcBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type DiscoveryAccountInfoParams,
     ERRORS,
@@ -9,6 +10,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 
 import { type BlockchainRootState, selectGapLimit } from '../blockchain/blockchainReducer';
+import { selectEffectiveBackendType } from '../blockchain/blockchainSelectors';
 
 type CreateAccountInfoRequestListenerParams = {
     callId: string;
@@ -28,9 +30,13 @@ export const createAccountInfoRequestListener =
         if (requestCallId !== callId) return;
 
         const { symbol, networkType } = getNetwork(params.coin);
+        const backendType = selectEffectiveBackendType(getState(), symbol);
         // Connect waits for the answer while holding the device, so even a rejection is answered.
-        TrezorConnect.getAccountInfo({
+        TrezorBlockchain.getAccountInfo({
             ...params,
+            // A plain RPC node cannot list tokens or transactions the way blockbook does, so only
+            // whether the account is used is read; Suite fetches the rest once it takes it on.
+            details: params.details ?? (isDirectRpcBackendType(backendType) ? 'basic' : 'txs'),
             pageSize: getTxsPerPage(networkType),
             identity: tryGetAccountIdentity({ networkType, deviceState }),
             protocols: networkType === 'ethereum' ? ['erc4626'] : undefined,

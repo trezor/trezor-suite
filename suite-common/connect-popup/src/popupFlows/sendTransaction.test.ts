@@ -1,5 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type PrecomposeResultFinal,
     UI_REQUESTS,
@@ -20,11 +21,15 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     __esModule: true,
     default: {
-        getCoinInfo: () =>
-            Promise.resolve({ success: true, payload: { type: 'bitcoin', minFee: 1 } }),
+        getCoinInfo: () => Promise.resolve({ success: true, payload: { type: 'bitcoin' } }),
         getPublicKey: jest.fn(() =>
             Promise.resolve({ success: true, payload: { xpub: 'xpub', xpubSegwit: 'descriptor' } }),
         ),
+        composeTransaction: jest.fn(),
+    },
+}));
+jest.mock('@trezor/blockchain-core', () => ({
+    TrezorBlockchain: {
         getAccountInfo: jest.fn(() =>
             Promise.resolve({
                 success: true,
@@ -39,17 +44,18 @@ jest.mock('@trezor/connect', () => ({
                 },
             }),
         ),
-        blockchainEstimateFee: () =>
+        estimateFee: () =>
             Promise.resolve({
                 success: true,
                 payload: {
+                    minFee: 1,
+                    blockTime: 10,
                     levels: [
                         { label: 'high', feePerUnit: '5', blocks: 1 },
                         { label: 'normal', feePerUnit: '2', blocks: 6 },
                     ],
                 },
             }),
-        composeTransaction: jest.fn(),
     },
 }));
 
@@ -112,6 +118,7 @@ const createFlow = (dispatch: jest.Mock, source: ConnectCallSource = WEB_SOURCE,
                 device: { selectedDevice: mockSuiteDevice() },
                 connectPopup: { activeCall: PICKER },
             }),
+            signal: new AbortController().signal,
         },
     );
 
@@ -148,10 +155,10 @@ describe('SendTransaction', () => {
         expect(TrezorConnect.getPublicKey).toHaveBeenCalledWith(
             expect.objectContaining({ coin: 'btc', path: "m/84'/0'/0'" }),
         );
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledWith(
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ coin: 'btc', descriptor: 'descriptor', details: 'tokens' }),
         );
-        expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalledWith(
+        expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalledWith(
             expect.objectContaining({ path: expect.anything() }),
         );
         expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(

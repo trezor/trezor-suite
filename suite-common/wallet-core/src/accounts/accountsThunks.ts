@@ -29,7 +29,8 @@ import {
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, {
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import {
     type AccountInfo,
     type GetAccountInfo as GetAccountInfoParams,
     type TokenInfo,
@@ -97,7 +98,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
         ) ?? [];
 
     const promises = customTokens.map(t =>
-        TrezorConnect.getAccountInfo({
+        TrezorBlockchain.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
@@ -211,7 +212,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 ? selectGapLimit(getState(), account.symbol)
                 : undefined;
 
-        const basic = await TrezorConnect.getAccountInfo({
+        const basic = await TrezorBlockchain.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
@@ -244,7 +245,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 ? account.history.unconfirmed
                 : getTxsPerPage(account.networkType);
 
-        const response = await TrezorConnect.getAccountInfo({
+        const response = await TrezorBlockchain.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,

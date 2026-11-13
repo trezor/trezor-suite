@@ -21,12 +21,10 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "browser": {
-        "./src/utils/assets": "./src/utils/assets.browser.ts",
-        "./src/workers/workers": "./src/workers/workers.browser.ts"
+        "./src/utils/assets": "./src/utils/assets.browser.ts"
     },
     "react-native": {
-        "./src/utils/assets": "./src/utils/assets.native.ts",
-        "./src/workers/workers": "./src/workers/workers.native.ts"
+        "./src/utils/assets": "./src/utils/assets.native.ts"
     },
     "publishConfig": {
         "main": "./lib/index.js",
@@ -40,7 +38,6 @@
         },
         "browser": {
             "./lib/utils/assets.js": "./lib/utils/assets.browser.js",
-            "./lib/workers/workers.js": "./lib/workers/workers.browser.js",
             "./lib/data/*": "./lib/data/*",
             "./lib/exports.js": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*",
@@ -48,7 +45,6 @@
         },
         "react-native": {
             "./lib/utils/assets.js": "./lib/utils/assets.native.js",
-            "./lib/workers/workers.js": "./lib/workers/workers.native.js",
             "./lib/data/*": "./lib/data/*",
             "./lib/exports.js": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*",
@@ -73,7 +69,6 @@
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
         "@scure/bip39": "^1.5.1",
-        "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/connect-data": "workspace:*",
@@ -98,6 +93,7 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.29.7",
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/requirements": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",

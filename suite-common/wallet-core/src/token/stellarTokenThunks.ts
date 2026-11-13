@@ -13,6 +13,7 @@ import {
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import stellar from '@trezor/network-stellar/runtime';
@@ -123,7 +124,7 @@ const manageTrustline = async (
     const serializedTx = transaction.toEnvelope().toXdr('hex');
 
     // Submit transaction to the network
-    const pushResponse = await TrezorConnect.pushTransaction({
+    const pushResponse = await TrezorBlockchain.pushTransaction({
         tx: serializedTx,
         coin: asCoinSymbol(account.symbol),
         identity: tryGetAccountIdentity(account),

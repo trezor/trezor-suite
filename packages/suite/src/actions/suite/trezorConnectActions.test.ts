@@ -19,7 +19,7 @@ import { type LockDevice } from '@suite-common/suite-types';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
+import { DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 import { mock } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
 
@@ -82,8 +82,6 @@ describe('TrezorConnect Actions', () => {
         expect(actions.pop()).toEqual({ type: UI_EVENT });
         emitTestEvent(TRANSPORT_EVENT, { type: TRANSPORT_EVENT });
         expect(actions.pop()).toEqual({ type: TRANSPORT_EVENT });
-        emitTestEvent(BLOCKCHAIN_EVENT, { type: BLOCKCHAIN_EVENT });
-        expect(actions.pop()).toEqual({ type: BLOCKCHAIN_EVENT });
 
         process.env.SUITE_TYPE = defaultSuiteType;
     });

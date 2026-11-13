@@ -13,8 +13,6 @@ import coins from '@trezor/connect-data/files/coins.json';
 import { fromHardenedPathPart, toHardenedPathPart } from '@trezor/crypto-utils';
 import { cloneObject } from '@trezor/utils';
 
-import { getBitcoinFeeLevels, getEthereumFeeLevels, getMiscFeeLevels } from './defaultFeeLevels';
-
 const bitcoinNetworks: BitcoinNetworkInfo[] = [];
 const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
@@ -184,7 +182,7 @@ const parseBitcoinNetworksJson = (json: any) => {
             // bip115: not used
             // bitcore: not used,
             // blockbook: not used,
-            blockchainLink: coin.blockchain_link,
+            // blockchain_link in @trezor/blockchain-core
             cashAddrPrefix: coin.cashaddr_prefix,
             label: coin.coin_label,
             name: coin.coin_name,
@@ -220,7 +218,7 @@ const parseBitcoinNetworksJson = (json: any) => {
             isBitcoin,
 
             decimals: coin.decimals,
-            ...getBitcoinFeeLevels(coin),
+            dustLimit: coin.dust_limit,
         });
     });
 };
@@ -236,8 +234,6 @@ const parseEthereumNetworksJson = (json: any) => {
 
         ethereumNetworks.push({
             ...ethereumNetworkInfoBase,
-            ...getEthereumFeeLevels(network),
-            blockchainLink: network.blockchain_link,
             chainId: network.chain_id,
             label: network.label,
             name: network.name,
@@ -253,7 +249,6 @@ const parseMiscNetworksJSON = (json: any) => {
         const network = json[key];
         miscNetworks.push({
             type: 'misc',
-            blockchainLink: network.blockchain_link,
             curve: network.curve,
             label: network.name,
             name: network.name,
@@ -261,7 +256,6 @@ const parseMiscNetworksJSON = (json: any) => {
             slip44: network.slip44,
             support: network.support,
             decimals: network.decimals,
-            ...getMiscFeeLevels(network),
         });
     });
 };

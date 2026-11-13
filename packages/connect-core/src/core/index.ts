@@ -44,7 +44,6 @@ import { createLazy, throwError } from '@trezor/utils';
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
-import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import { getLocalFirmwareConfig, getRemoteFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
@@ -900,7 +899,6 @@ export class Core extends EventEmitter {
     }
 
     dispose() {
-        disposeBackend();
         this.removeAllListeners();
         this.abortController.abort();
         this.deviceList.dispose();

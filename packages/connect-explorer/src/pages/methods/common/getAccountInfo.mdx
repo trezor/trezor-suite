@@ -112,9 +112,8 @@ export const paramDescriptions = {
 
 Gets an info of specified account.
 
-An account given by `path` and a `bundle` of accounts are available only through Trezor Suite. Suite
-derives the descriptor of the account on the device and then reads it from the backend by the
-descriptor.
+This method works only through Trezor Suite on desktop and web. Suite reads the account from its
+backend by the descriptor; an account given by `path` is derived on the device first.
 
 ```javascript
 const result = await TrezorConnect.getAccountInfo(params);
@@ -124,7 +123,7 @@ const result = await TrezorConnect.getAccountInfo(params);
 
 <CommonParamsLink />
 
-#### Using path (only through Trezor Suite)
+#### Using path
 
 <ParamsTable schema={UsingPathSchema} />
 

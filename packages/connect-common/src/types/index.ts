@@ -85,7 +85,7 @@ export type {
     FiatRatesBySymbol,
     Target as TransactionTarget,
     AccountBalanceHistory as BlockchainAccountBalanceHistory,
-} from '@trezor/blockchain-link';
+} from '@trezor/blockchain-link-types';
 
 // direct targeted import, we need to avoid protocol barrel file (#27772)
 export { ThpPairingMethod } from '@trezor/protocol/src/protocol-thp/messages';

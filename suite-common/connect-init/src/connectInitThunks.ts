@@ -25,7 +25,6 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
-    BLOCKCHAIN_EVENT,
     type CallMethodPayload,
     DEVICE,
     DEVICE_EVENT,
@@ -145,11 +144,6 @@ export const connectInitThunk = createThunk<
     });
 
     TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {
-        // dispatch event as action
-        dispatch(action);
-    });
-
-    TrezorConnect.on(BLOCKCHAIN_EVENT, ({ event: _, ...action }) => {
         // dispatch event as action
         dispatch(action);
     });

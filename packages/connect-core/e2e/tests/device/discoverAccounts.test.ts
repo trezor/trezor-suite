@@ -1,3 +1,4 @@
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import {
     UI_EVENTS,
     UI_REQUEST,
@@ -33,6 +34,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
     }, 40000);
 
     afterAll(() => {
+        TrezorBlockchain.dispose();
         // reset controller at the end
         controller?.dispose();
         controller = undefined;
@@ -81,7 +83,10 @@ describe(`TrezorConnect.discoverAccounts`, () => {
 
             TrezorConnect.uiResponse({
                 type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
-                payload: await TrezorConnect.getAccountInfo(message.payload),
+                payload: await TrezorBlockchain.getAccountInfo({
+                    ...message.payload,
+                    details: message.payload.details ?? 'txs',
+                }),
                 requestId: message.requestId,
             });
         };

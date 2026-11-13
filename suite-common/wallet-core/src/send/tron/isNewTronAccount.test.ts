@@ -1,13 +1,11 @@
 import { type Account } from '@suite-common/wallet-types';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
-import TrezorConnect, { type AccountInfo } from '@trezor/connect';
+import { type AccountInfo } from '@trezor/connect';
 
 import { isNewTronAccount } from './isNewTronAccount';
 
-jest.mock('@trezor/connect', () => ({
-    __esModule: true,
-    default: { getAccountInfo: jest.fn() },
-}));
+jest.mock('@trezor/blockchain-core', () => ({ TrezorBlockchain: { getAccountInfo: jest.fn() } }));
 
 const RECIPIENT_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
 
@@ -41,7 +39,7 @@ const buildAccountInfo = (overrides?: Partial<AccountInfo>): AccountInfo => ({
 });
 
 const mockGetAccountInfoSuccess = (accountInfo: AccountInfo) => {
-    (TrezorConnect.getAccountInfo as jest.Mock).mockResolvedValue({
+    (TrezorBlockchain.getAccountInfo as jest.Mock).mockResolvedValue({
         success: true,
         payload: accountInfo,
     });
@@ -50,11 +48,11 @@ const mockGetAccountInfoSuccess = (accountInfo: AccountInfo) => {
 describe('isNewTronAccount', () => {
     it('returns false when no address is provided', async () => {
         expect(await isNewTronAccount('', account)).toBe(false);
-        expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+        expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
     });
 
     it('returns false when account info cannot be fetched', async () => {
-        (TrezorConnect.getAccountInfo as jest.Mock).mockResolvedValue({
+        (TrezorBlockchain.getAccountInfo as jest.Mock).mockResolvedValue({
             success: false,
             payload: { error: 'Network error' },
         });

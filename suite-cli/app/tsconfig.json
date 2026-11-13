@@ -11,7 +11,7 @@
             "path": "../../suite-common/networks"
         },
         {
-            "path": "../../packages/connect"
+            "path": "../../packages/blockchain-core"
         },
         {
             "path": "../../packages/logger"

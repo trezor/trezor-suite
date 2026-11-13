@@ -1,4 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 
 import { type PopupFlowParams } from './CommonPopupFlow';
@@ -11,14 +12,17 @@ jest.mock('@trezor/connect', () => ({
         call: jest.fn(),
         getPublicKey: jest.fn(),
         rippleGetAddress: jest.fn(),
-        getAccountInfo: jest.fn(),
     },
 }));
+jest.mock('@trezor/blockchain-core', () => ({ TrezorBlockchain: { getAccountInfo: jest.fn() } }));
 
 const PATH = "m/84'/0'/0'";
 const ok = <T>(payload: T) => Promise.resolve({ success: true as const, payload });
 
-const createFlow = (payload: PopupFlowParams<'getAccountInfo'>['payload']) =>
+const createFlow = (
+    payload: PopupFlowParams<'getAccountInfo'>['payload'],
+    signal = new AbortController().signal,
+) =>
     new GetAccountInfo(
         {
             method: 'getAccountInfo',
@@ -28,13 +32,14 @@ const createFlow = (payload: PopupFlowParams<'getAccountInfo'>['payload']) =>
         {
             dispatch: jest.fn(),
             getState: () => ({ device: { selectedDevice: mockSuiteDevice() } }),
+            signal,
         },
     );
 
 describe('GetAccountInfo', () => {
     beforeEach(() => {
         jest.resetAllMocks();
-        jest.mocked(TrezorConnect.getAccountInfo).mockImplementation((params: any) =>
+        jest.mocked(TrezorBlockchain.getAccountInfo).mockImplementation((params: any) =>
             ok({ descriptor: params.descriptor, balance: '1' } as any),
         );
     });
@@ -107,7 +112,7 @@ describe('GetAccountInfo', () => {
         expect(TrezorConnect.getPublicKey).toHaveBeenCalledWith(
             expect.objectContaining({ coin: 'btc', path: PATH, showOnTrezor: false }),
         );
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledWith({
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledWith({
             coin: 'btc',
             descriptor: 'zpub',
         });
@@ -144,11 +149,11 @@ describe('GetAccountInfo', () => {
             payload: { descriptor: 'zpub', balance: '1', path: undefined },
         });
         expect(TrezorConnect.getPublicKey).not.toHaveBeenCalled();
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledWith(payload);
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledWith(payload);
     });
 
     it('answers an account of a bundle the backend fails to read with null', async () => {
-        jest.mocked(TrezorConnect.getAccountInfo)
+        jest.mocked(TrezorBlockchain.getAccountInfo)
             .mockReturnValueOnce(
                 Promise.resolve({
                     success: false,
@@ -171,9 +176,13 @@ describe('GetAccountInfo', () => {
 
     it('stops answering a bundle once the call is cancelled', async () => {
         const error = { code: 'Method_Cancel', message: 'cancelled' };
-        jest.mocked(TrezorConnect.getAccountInfo).mockReturnValueOnce(
-            Promise.resolve({ success: false, error } as any),
-        );
+        const abortController = new AbortController();
+        // The call is cancelled while the backend reads the first account, which never answers.
+        jest.mocked(TrezorBlockchain.getAccountInfo).mockImplementationOnce(() => {
+            abortController.abort(error);
+
+            return new Promise(() => {});
+        });
         const payload: PopupFlowParams<'getAccountInfo'>['payload'] = {
             bundle: [
                 { coin: 'btc', descriptor: 'xpub' },
@@ -181,8 +190,10 @@ describe('GetAccountInfo', () => {
             ],
         };
 
-        await expect(createFlow(payload)['callMethod'](payload)).rejects.toEqual(error);
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(1);
+        await expect(
+            createFlow(payload, abortController.signal)['callMethod'](payload),
+        ).rejects.toEqual(error);
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(1);
     });
 
     it('fails a bundle once an account cannot be derived on the device', async () => {
@@ -203,7 +214,7 @@ describe('GetAccountInfo', () => {
 
     it('fails a single account with the error of Connect', async () => {
         const error = { code: 'Backend_Error', message: 'error' };
-        jest.mocked(TrezorConnect.getAccountInfo).mockReturnValue(
+        jest.mocked(TrezorBlockchain.getAccountInfo).mockReturnValue(
             Promise.resolve({ success: false, error } as any),
         );
         const payload = { coin: 'btc', descriptor: 'zpub' } as const;
