@@ -20,6 +20,7 @@ import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
+import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite';
 import { FiatAmountHeadline } from '#src/views/home/HomeBalance/FiatAmountHeadline';
 
@@ -115,6 +116,7 @@ export const AssetDetailMarketPrice = ({
                                 <Skeleton width={180} height={56} animate={shouldAnimateSkeleton} />
                             </Row>
                         )}
+                        {isRateMissing && <NoRatesTooltip />}
                         {weekChange !== undefined && (
                             <AssetDetailPriceChange
                                 change={weekChange.change}
