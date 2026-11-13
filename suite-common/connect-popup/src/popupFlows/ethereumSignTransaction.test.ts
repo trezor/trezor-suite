@@ -1,4 +1,9 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import {
+    asNetworkSymbol,
+    getNetwork,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
@@ -170,6 +175,43 @@ describe('EthereumSignTransaction.preCall', () => {
         expect(dispatch).not.toHaveBeenCalledWith(
             expect.objectContaining({ type: connectPopupActions.txSimulation.type }),
         );
+    });
+
+    describe('on a user-added network', () => {
+        const symbol = asNetworkSymbol('evm100');
+        const registerGnosis = () =>
+            registerLegacyCustomEvmNetwork({
+                symbol,
+                chainId: 100,
+                name: 'Gnosis',
+                displaySymbol: 'XDAI',
+                explorerUrl: 'https://gnosisscan.io',
+                testnet: false,
+            });
+
+        afterEach(() => {
+            unregisterLegacyNetwork(symbol);
+        });
+
+        it('opens the simulation modal while the network is registered', async () => {
+            registerGnosis();
+
+            const { run, dispatch } = runSimulationPreCall(100);
+            await run;
+
+            expect(dispatch).toHaveBeenCalledWith(
+                connectPopupActions.txSimulation({ fromAddress: '0xabc' }),
+            );
+        });
+
+        it('skips the simulation modal for the same chain when it is not registered', async () => {
+            const { run, dispatch } = runSimulationPreCall(100);
+            await run;
+
+            expect(dispatch).not.toHaveBeenCalledWith(
+                expect.objectContaining({ type: connectPopupActions.txSimulation.type }),
+            );
+        });
     });
 
     it('stores a token transfer connect could not decode with the account token', async () => {
