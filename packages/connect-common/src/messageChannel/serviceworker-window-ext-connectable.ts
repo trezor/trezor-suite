@@ -70,11 +70,13 @@ export class ServiceWorkerWindowExtConnectableChannel<
                 // Enqueue message into the serialization chain.
                 // Each send waits for the previous one to finish + settle time.
                 this.sendChain = this.sendChain
-                    .catch(() => {})
                     .then(() => this.doSend(message))
                     .then(() =>
                         resolveAfter(ServiceWorkerWindowExtConnectableChannel.SEND_SETTLE_MS),
-                    );
+                    )
+                    // doSend logs its own failures. Catching here keeps a failed send from
+                    // becoming an unhandled rejection and from blocking the next one.
+                    .catch(() => {});
             },
             logger,
         });
@@ -141,6 +143,12 @@ export class ServiceWorkerWindowExtConnectableChannel<
             }
 
             const currentUrl = new URL(tab.url);
+            // Firefox reports `about:blank` until the tab commits its first navigation, and updating
+            // it then cancels the Suite Web load. The user may also have navigated the tab elsewhere.
+            if (this.allowedOrigin && currentUrl.origin !== new URL(this.allowedOrigin).origin) {
+                throw new Error(`Trezor suite tab is not on ${this.allowedOrigin}`);
+            }
+
             const encodedMessage = encodeURIComponent(JSON.stringify(message));
 
             // todo: we should negotiate some token and send it instead of extension-id I think.
