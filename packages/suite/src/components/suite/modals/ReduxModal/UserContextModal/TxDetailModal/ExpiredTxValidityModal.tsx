@@ -16,6 +16,7 @@ export const ExpiredTxValidityModal = ({ onTryAgain, onCancel }: ExpiredTxValidi
                     intent="critical"
                     priority="primary"
                     onClick={() => onTryAgain(false)}
+                    data-testid="@modal/tx-expired/try-again-button"
                 >
                     <Translation id="TR_TRY_AGAIN" />
                 </Modal.Button>
