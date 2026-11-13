@@ -15,7 +15,7 @@ import type {
 } from '@trezor/utxo-lib';
 import { composeTx, networks } from '@trezor/utxo-lib';
 
-import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
+const DEFAULT_BITCOIN_LONGTERM_FEE_RATE = '1'; // [sat/vB]
 
 type Options = {
     txType: DiscoveryAccountType;

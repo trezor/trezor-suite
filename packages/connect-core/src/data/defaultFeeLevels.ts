@@ -22,8 +22,6 @@ const getDefaultBlocksForFeeLevel = (shortcut: string, label: string) =>
         ? BLOCKS_FOR_FEE_LEVEL[shortcut][label]
         : DEFAULT_BLOCK_FOR_FEE_LEVEL;
 
-export const DEFAULT_BITCOIN_LONGTERM_FEE_RATE = '1'; // [sat/vB]
-
 const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     string,
     { min: number; max: number; defaultGas: number; minPriorityFee: number }
