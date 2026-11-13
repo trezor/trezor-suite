@@ -92,7 +92,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                     <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
                 </Text>
                 <Card noPadding>
-                    <AccountsListItem account={account} />
+                    <AccountsListItem account={account} shouldAlwaysShowCryptoAmount />
                 </Card>
             </VStack>
 
