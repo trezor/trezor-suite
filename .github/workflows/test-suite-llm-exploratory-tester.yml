@@ -1,5 +1,5 @@
 name: "[Test] LLM Exploratory Tester"
-run-name: "PR 35052 · T3W1 onboarding ×10 · d31502e36c"
+run-name: "Develop control · T3W1 onboarding ×10 · bd3630cfba"
 
 on:
   workflow_dispatch:
@@ -24,21 +24,32 @@ jobs:
       TARGET: https://github.com/trezor/trezor-suite/pull/35052
       DEVICE_MODEL: T3W1
       AGENT_GITHUB_ACTION: true
-      EXPECTED_HEAD: d31502e36ca9ee772789b8bf9283ae6d56c7c3f9
+      EXPECTED_HEAD: bd3630cfba27da8033d77ebb6a808f3784b41d74
+      HARNESS_HEAD: d31502e36ca9ee772789b8bf9283ae6d56c7c3f9
+      SUITE_URL: https://dev.suite.sldev.cz/suite-web/develop/web/
+      EXPECTED_PREVIEW_SHA256: 90874698db47d85d7c8b4fd3e3b36d09b644e6730fbea017d8e1f3c0010d4bb8
       ATTEMPT: ${{ matrix.attempt }}
       GH_REPO: trezor/trezor-suite
     steps:
-      - name: Checkout tested PR revision
+      - name: Checkout identical onboarding harness revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           ref: d31502e36ca9ee772789b8bf9283ae6d56c7c3f9
 
-      - name: Verify PR head and preview build
+      - name: Verify develop head and preview
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          test "$(gh pr view 35052 --json headRefOid --jq .headRefOid)" = "$EXPECTED_HEAD"
-          test "$(gh api -X GET "repos/$GH_REPO/commits/$EXPECTED_HEAD/check-runs" -f check_name='build-web / build-web' --jq '.check_runs[0].conclusion')" = success
+          test "$(gh api "repos/$GH_REPO/branches/develop" --jq .commit.sha)" = "$EXPECTED_HEAD"
+          python3 - <<'PYCODE'
+          import hashlib
+          import os
+          from urllib.request import urlopen
+          with urlopen(os.environ['SUITE_URL']) as response:
+              actual = hashlib.sha256(response.read()).hexdigest()
+          assert actual == os.environ['EXPECTED_PREVIEW_SHA256'], 'Develop preview changed'
+          print('Develop preview SHA256=' + actual)
+          PYCODE
 
       - name: Install dependencies
         id: install
@@ -60,7 +71,18 @@ jobs:
       - name: Prepare original LLM tester context
         env:
           GH_TOKEN: ${{ github.token }}
-        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester:context
+        run: |
+          yarn workspace @trezor/e2e-utils llm-exploratory-tester:context
+          python3 - <<'PYCODE'
+          import json
+          import os
+          from pathlib import Path
+          path = Path('packages/e2e-utils/src/llmExploratoryTester/reports/context.json')
+          context = json.loads(path.read_text())
+          context['suiteUrl'] = os.environ['SUITE_URL']
+          path.write_text(json.dumps(context))
+          print('Onboarding target: ' + context['suiteUrl'])
+          PYCODE
 
       - name: Run original LLM tester onboarding
         id: onboarding
@@ -96,6 +118,8 @@ jobs:
           result = {
               'attempt': int(os.environ['ATTEMPT']),
               'commit': os.environ['EXPECTED_HEAD'],
+              'harnessCommit': os.environ['HARNESS_HEAD'],
+              'target': os.environ['SUITE_URL'],
               'device': 'T3W1',
               'retries': 0,
               'ready': ready,
@@ -110,11 +134,21 @@ jobs:
           PY
           exit "$status"
 
-      - name: Verify PR head stayed unchanged
+      - name: Verify develop stayed unchanged
         if: always() && steps.onboarding.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: test "$(gh pr view 35052 --json headRefOid --jq .headRefOid)" = "$EXPECTED_HEAD"
+        run: |
+          test "$(gh api "repos/$GH_REPO/branches/develop" --jq .commit.sha)" = "$EXPECTED_HEAD"
+          python3 - <<'PYCODE'
+          import hashlib
+          import os
+          from urllib.request import urlopen
+          with urlopen(os.environ['SUITE_URL']) as response:
+              actual = hashlib.sha256(response.read()).hexdigest()
+          assert actual == os.environ['EXPECTED_PREVIEW_SHA256'], 'Develop preview changed'
+          print('Develop preview SHA256=' + actual)
+          PYCODE
 
       - name: Stop harness browser
         if: always() && steps.install.outcome == 'success'
