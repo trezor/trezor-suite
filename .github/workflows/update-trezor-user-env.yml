@@ -63,7 +63,7 @@ jobs:
       - name: Generate GitHub App token
         if: steps.check.outputs.needs_update == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -74,7 +74,7 @@ jobs:
 
       - name: Create Pull Request
         if: steps.check.outputs.needs_update == 'true'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8
         with:
           token: ${{ steps.trezor-bot-token.outputs.token }}
           commit-message: "ci: update trezor-user-env to ${{ steps.latest.outputs.image_tag }}"
