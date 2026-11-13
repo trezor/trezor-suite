@@ -331,7 +331,9 @@ export class SessionsBackground
     }
 
     dispose() {
-        this.locksQueue.forEach(lock => clearTimeout(lock.id));
+        // Release the locks too: AbstractApiTransport.init() keeps using this instance after
+        // dispose, and a lock nobody clears anymore would block every later acquire forever.
+        this.locksQueue.forEach(lock => this.releaseLock(lock));
         this.descriptors = {};
         this.lastSessionId = 0;
         this.removeAllListeners();
