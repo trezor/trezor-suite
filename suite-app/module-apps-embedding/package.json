@@ -15,7 +15,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite/apps-embedding-demo": "workspace:*",
+        "@suite-app/apps-embedding-demo": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/suite": "workspace:*",
         "react": "19.3.0"

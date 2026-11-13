@@ -1,4 +1,3 @@
-import { AppsEmbeddingSwitch } from '@suite/apps-embedding-demo';
 import { Translation } from '@suite/intl';
 import {
     ContextMessage,
@@ -6,6 +5,7 @@ import {
     MessageSystemDebug,
 } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
+import { AppsEmbeddingSwitch } from '@suite-app/apps-embedding-demo';
 import { Context } from '@suite-common/message-system';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';

@@ -1,5 +1,5 @@
 {
-    "name": "@suite/apps-embedding-demo",
+    "name": "@suite-app/apps-embedding-demo",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

@@ -8,10 +8,12 @@
         {
             "path": "../../suite-common/react-query"
         },
-        { "path": "../apps-embedding-web" },
-        { "path": "../debug" },
-        { "path": "../desktop-app-api" },
-        { "path": "../settings" },
+        {
+            "path": "../../suite/apps-embedding-web"
+        },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-app-api" },
+        { "path": "../../suite/settings" },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/dependency-injection"

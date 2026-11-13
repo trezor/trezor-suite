@@ -5,7 +5,7 @@ switch between the inline WebView and the system browser, and an event log. Open
 "Apps embedding" card in Dev utils.
 
 This workspace is temporary and intended for demonstration purposes only, like
-`@suite/apps-embedding-demo` on web and desktop. The feature support table is in
+`@suite-app/apps-embedding-demo` on web and desktop. The feature support table is in
 [the package README](../apps-embedding/README.md).
 
 The UI copy is hardcoded English on purpose and is not translated: like Dev utils, this workspace is

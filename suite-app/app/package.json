@@ -22,6 +22,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
         "@suite-app/app-modal": "workspace:*",
+        "@suite-app/apps-embedding-demo": "workspace:*",
         "@suite-app/module-onboarding": "workspace:*",
         "@suite-app/suite-sync": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
@@ -61,7 +62,6 @@
         "@suite-common/walletconnect": "workspace:*",
         "@suite/account": "workspace:*",
         "@suite/analytics": "workspace:*",
-        "@suite/apps-embedding-demo": "workspace:*",
         "@suite/authenticity-checks": "workspace:*",
         "@suite/backup": "workspace:*",
         "@suite/bluetooth": "workspace:*",
