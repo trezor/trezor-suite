@@ -511,7 +511,7 @@ const getOutputLines = ({
                               nativeSymbol: getNetworkDisplaySymbol(symbol),
                               tokenSymbol: getWrappedNativeSymbol(symbol),
                           })
-                        : '',
+                        : value,
                 },
             ];
         case 'amount': {

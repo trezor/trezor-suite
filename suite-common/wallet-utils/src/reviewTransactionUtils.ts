@@ -18,6 +18,8 @@ import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-util
 import {
     Calldata,
     type ClearSigningCoverage,
+    MAX_CLEAR_SIGNING_DATA_LENGTH,
+    type ResolvedDisplayFormat,
     getEvmClearSignedSwapCoverage,
     getWrappedNativeSymbol,
     isEvmClearSigningTx,
@@ -33,6 +35,7 @@ import {
 import { fromGwei, fromWei } from './ethConverter';
 import {
     getEvmTransactionPurpose,
+    getResolvedDisplayFormat,
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
     isUnwrapNativeTx,
@@ -138,6 +141,34 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
             )
             .flat();
     }
+};
+
+type ClearSignedDisplayFormatParams = {
+    account: Pick<Account, 'networkType' | 'descriptor'>;
+    device: TrezorDevice | undefined;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
+    transactionData?: string;
+};
+
+/**
+ * The contract call decoded with the display format Connect found for it, when the device will
+ * clear-sign the call with that definition rather than blind-sign it.
+ */
+export const getClearSignedDisplayFormat = ({
+    account,
+    device,
+    precomposedTx,
+    transactionData,
+}: ClearSignedDisplayFormatParams): ResolvedDisplayFormat | undefined => {
+    if (
+        !isEvmClearSigningSupportedByDevice(device) ||
+        // The firmware blind-signs calldata it cannot keep in memory whole.
+        (transactionData?.length ?? 0) > MAX_CLEAR_SIGNING_DATA_LENGTH * 2
+    ) {
+        return undefined;
+    }
+
+    return getResolvedDisplayFormat({ account, precomposedTx, transactionData });
 };
 
 type ConstructOutputsParams = {
@@ -452,12 +483,14 @@ const constructNewFlow = ({
     isClearSignedEvmClaimFlow,
     isUpdatedEthereumSendFlow,
     isUpdatedStellarSendFlow,
+    displayFormat,
 }: ConstructOutputsParams & {
     isClearSignedWrapUnwrap: boolean;
     isUpdatedEthereumSendFlow: boolean;
     isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
     isClearSignedEvmClaimFlow: boolean;
+    displayFormat: ResolvedDisplayFormat | undefined;
 }): TransactionReviewOutput[] => {
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
     const outputs: TransactionReviewOutput[] = [];
@@ -519,6 +552,24 @@ const constructNewFlow = ({
                 outputs.push({ type: 'amount', value: o.amount.toString() });
             }
         });
+
+        return outputs;
+    }
+
+    if (displayFormat) {
+        // The firmware shows a clear-signed call as the provider, the intent, all decoded fields
+        // on one screen, then the fee summary (`confirm_ethereum_clear_signing`). The summary is
+        // the review's own total row, and the `data` row shows the decoded fields.
+        outputs.push(
+            {
+                type: 'recipient_name',
+                value: displayFormat.providerName ?? displayFormat.contractAddress,
+            },
+            { type: 'contract_intent', value: displayFormat.intent },
+        );
+        if (displayFormat.rows.length > 0) {
+            outputs.push({ type: 'data', value: precomposedForm.transactionData ?? '' });
+        }
 
         return outputs;
     }
@@ -883,6 +934,12 @@ export const constructTransactionReviewOutputs = ({
         isApprovalFlowSupported: isApprovalSupported(device),
         isClearSignedEvmClaimFlow: getIsClearSignedEvmClaimFlow(device, params.account.networkType),
         isUpdatedStellarSendFlow,
+        displayFormat: getClearSignedDisplayFormat({
+            account: params.account,
+            device,
+            precomposedTx: params.precomposedTx,
+            transactionData: params.precomposedForm.transactionData,
+        }),
     });
 };
 

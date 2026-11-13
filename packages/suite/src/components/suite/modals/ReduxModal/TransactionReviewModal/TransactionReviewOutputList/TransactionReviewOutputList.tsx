@@ -21,10 +21,12 @@ import {
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
+import { type ResolvedDisplayFormat } from '@trezor/network-ethereum-suite-common';
 
 import { useSelector } from '#src/hooks/suite';
 import type { Account } from '#src/types/wallet';
 
+import { TransactionReviewDisplayFormat } from './TransactionReviewDisplayFormat';
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { TransactionReviewVerifyAddress } from './TransactionReviewVerifyAddress';
@@ -36,6 +38,8 @@ export type TransactionReviewOutputListProps = {
     precomposedForm: FormState | StakeFormState;
     signedTx?: { tx: string };
     outputs: TransactionReviewOutputType[];
+    // Replaces the raw data of a contract call the device clear-signs.
+    displayFormat?: ResolvedDisplayFormat;
     buttonRequestsCount: number;
     isRbfAction: boolean;
     reviewStep: number;
@@ -75,6 +79,7 @@ export const TransactionReviewOutputList = ({
     precomposedForm,
     signedTx,
     outputs,
+    displayFormat,
     buttonRequestsCount,
     isRbfAction,
     stakeType,
@@ -196,6 +201,11 @@ export const TransactionReviewOutputList = ({
                 const recipientIndex = outputs
                     .filter(({ type }) => ['address', 'opreturn'].includes(type))
                     .indexOf(output);
+                const outputState = getTransactionReviewState({
+                    index,
+                    currentStep: reviewStep,
+                    hasSignedTx: !!signedTx,
+                });
 
                 return (
                     <Wrapper
@@ -209,21 +219,26 @@ export const TransactionReviewOutputList = ({
                                 <SectionHeading output={output} index={recipientIndex} />
                             )}
 
-                            <TransactionReviewOutput
-                                {...output}
-                                state={getTransactionReviewState({
-                                    index,
-                                    currentStep: reviewStep,
-                                    hasSignedTx: !!signedTx,
-                                })}
-                                account={account}
-                                isRbf={isRbfAction}
-                                isTrading={!!isTrading}
-                                stakeType={stakeType}
-                                evmTxType={evmTxType}
-                                nativeToken={nativeToken}
-                                isTronStakeFreeze={isTronStakeFreeze}
-                            />
+                            {output.type === 'data' && displayFormat ? (
+                                <TransactionReviewDisplayFormat
+                                    displayFormat={displayFormat}
+                                    state={outputState}
+                                    account={account}
+                                    nativeToken={nativeToken}
+                                />
+                            ) : (
+                                <TransactionReviewOutput
+                                    {...output}
+                                    state={outputState}
+                                    account={account}
+                                    isRbf={isRbfAction}
+                                    isTrading={!!isTrading}
+                                    stakeType={stakeType}
+                                    evmTxType={evmTxType}
+                                    nativeToken={nativeToken}
+                                    isTronStakeFreeze={isTronStakeFreeze}
+                                />
+                            )}
                         </Column>
                     </Wrapper>
                 );

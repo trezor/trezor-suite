@@ -14096,6 +14096,14 @@ export const messages = defineMessages({
         id: 'TR_APPROVE_AMOUNT_UNLIMITED',
         defaultMessage: 'Unlimited',
     },
+    TR_DISPLAY_FORMAT_UNKNOWN_TOKEN: {
+        id: 'TR_DISPLAY_FORMAT_UNKNOWN_TOKEN',
+        defaultMessage: 'Unknown token',
+    },
+    TR_DISPLAY_FORMAT_UNLIMITED: {
+        id: 'TR_DISPLAY_FORMAT_UNLIMITED',
+        defaultMessage: 'Unlimited',
+    },
     TR_APPROVE_AMOUNT_TITLE: {
         id: 'TR_APPROVE_AMOUNT_TITLE',
         defaultMessage: 'Amount allowance',

@@ -1,11 +1,14 @@
 import fetch from 'cross-fetch';
 
 import {
+    type EthereumDisplayFormat,
+    type EthereumDisplayFormatAbiValue,
+    type EthereumDisplayFormatField,
+    type EthereumDisplayFormatPath,
     type EthereumNetworkInfoDefinitionValues,
     getEthereumDefinitionsBaseUrl,
 } from '@trezor/connect-common';
-import type { MessagesSchema } from '@trezor/protobuf';
-import { protobufManager } from '@trezor/protobuf';
+import { MessagesSchema, protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';
 import { Assert, Type } from '@trezor/schema-utils';
@@ -162,6 +165,98 @@ export const decodeEthereumDefinition = (
     });
 
     return decoded;
+};
+
+// protobufManager decodes enums to their names, bytes to unprefixed hex, an absent scalar to null
+// and an absent sub-message to {}.
+type DecodedMessage = Record<string, any>;
+
+const isPresent = (message: DecodedMessage | null | undefined): message is DecodedMessage =>
+    !!message && Object.keys(message).length > 0;
+
+const toHex = (bytes: string) => `0x${bytes}`;
+
+const decodeAbiValue = (value: DecodedMessage): EthereumDisplayFormatAbiValue => {
+    if (value.atomic !== null) {
+        return { type: 'atomic', abiType: value.atomic };
+    }
+    if (value.dynamic !== null) {
+        return { type: 'dynamic', abiType: value.dynamic };
+    }
+    if (isPresent(value.tuple)) {
+        return { type: 'tuple', fields: value.tuple.fields.map(decodeAbiValue) };
+    }
+    if (isPresent(value.array)) {
+        return { type: 'array', element: decodeAbiValue(value.array) };
+    }
+    throw new Error('ABI value without a type');
+};
+
+// Mirrors the firmware: a container path wins over a constant, which wins over a data path.
+const decodeDisplayFormatPath = (path: DecodedMessage): EthereumDisplayFormatPath => {
+    if (path.container_path !== null) {
+        return { type: 'container', container: path.container_path };
+    }
+    if (path.const_value !== null) {
+        return { type: 'const', value: path.const_value };
+    }
+    if (path.slice_end !== null) {
+        return {
+            type: 'data',
+            steps: path.path,
+            slice: { start: path.slice_start ?? 0, end: path.slice_end },
+        };
+    }
+    if (path.slice_start !== null) {
+        return { type: 'data', steps: path.path, slice: { start: path.slice_start } };
+    }
+
+    return { type: 'data', steps: path.path };
+};
+
+const decodeDisplayFormatField = (field: DecodedMessage): EthereumDisplayFormatField => ({
+    label: field.label,
+    formatter: field.formatter,
+    path: decodeDisplayFormatPath(field.path),
+    tokenPath: isPresent(field.token_path) ? decodeDisplayFormatPath(field.token_path) : undefined,
+    constTokenAddress: field.const_token_address ? toHex(field.const_token_address) : undefined,
+    nativeCurrencyAddresses: field.native_currency_address.map(toHex),
+    threshold: field.threshold ? toHex(field.threshold) : undefined,
+    thresholdMessage: field.threshold_message ?? undefined,
+    decimals: field.decimals ?? undefined,
+    base: field.base ?? undefined,
+    prefix: field.prefix ?? undefined,
+    calleePath: isPresent(field.callee_path)
+        ? decodeDisplayFormatPath(field.callee_path)
+        : undefined,
+    enumValues: field.enum_values,
+});
+
+/**
+ * Decodes the clear-signing definition of a contract call. Its schema is recursive, so it is not
+ * part of the generated protobuf types and is decoded by hand.
+ */
+export const decodeEthereumDisplayFormat = (encodedHex: string): EthereumDisplayFormat => {
+    const encoded = Buffer.from(encodedHex, 'hex');
+    const { definitionType, protobufPayload } = trzd.decode(
+        encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength),
+    );
+    if (definitionType !== MessagesSchema.DefinitionType.ETHEREUM_DISPLAY_FORMAT) {
+        throw new Error(`unexpected definition type: ${definitionType}`);
+    }
+
+    const { message } = protobufManager.decode('EthereumDisplayFormatInfo', protobufPayload);
+    const info = message as DecodedMessage;
+
+    return {
+        chainId: info.chain_id,
+        address: toHex(info.address),
+        functionSignature: toHex(info.func_sig),
+        intent: info.intent,
+        providerName: info.provider_name ?? undefined,
+        parameters: info.parameter_definitions.map(decodeAbiValue),
+        fields: info.field_definitions.map(decodeDisplayFormatField),
+    };
 };
 
 export const ethereumNetworkInfoFromDefinition = (

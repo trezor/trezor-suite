@@ -5,9 +5,10 @@ import {
     unregisterLegacyNetwork,
 } from '@suite-common/wallet-config';
 import { sendFormActions } from '@suite-common/wallet-core';
-import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
-import TrezorConnect from '@trezor/connect';
+import { getResolvedDisplayFormat } from '@suite-common/wallet-utils';
+import TrezorConnect, { type EthereumDisplayFormat } from '@trezor/connect';
 
 import { type PopupFlowPayload } from './CommonPopupFlow';
 import { EthereumSignTransaction } from './ethereumSignTransaction';
@@ -112,20 +113,34 @@ const contractCallPrecomposedTx: PrecomposedTransactionFinal = {
     isTokenKnown: false,
 };
 
-const runTokenTransferPreCall = async () => {
+type RunContractCallPreCallParams = {
+    to: string;
+    value?: string;
+    data: string;
+    chainId: number;
+    txSigningPrecomposed: PrecomposedTransactionFinal;
+};
+
+const runContractCallPreCall = async ({
+    to,
+    value = '0x0',
+    data,
+    chainId,
+    txSigningPrecomposed,
+}: RunContractCallPreCallParams) => {
     const dispatch = jest.fn(action => action);
 
     await runPreCall({
         payload: {
             path: "m/44'/60'/0'/0/0",
             transaction: {
-                to: TOKEN_CONTRACT,
-                value: '0x0',
-                data: TRANSFER_DATA,
+                to,
+                value,
+                data,
                 gasPrice: '0x1',
                 gasLimit: '0xa410',
                 nonce: '0x5',
-                chainId: getNetwork('arc').chainId,
+                chainId,
             },
         },
         source: {
@@ -135,7 +150,7 @@ const runTokenTransferPreCall = async () => {
             manifest: { appName: 'app' },
         },
         dispatch,
-        txSigningPrecomposed: contractCallPrecomposedTx,
+        txSigningPrecomposed,
     });
 
     return dispatch.mock.calls
@@ -215,7 +230,12 @@ describe('EthereumSignTransaction.preCall', () => {
     });
 
     it('stores a token transfer connect could not decode with the account token', async () => {
-        const storeAction = await runTokenTransferPreCall();
+        const storeAction = await runContractCallPreCall({
+            to: TOKEN_CONTRACT,
+            data: TRANSFER_DATA,
+            chainId: getNetwork('arc').chainId,
+            txSigningPrecomposed: contractCallPrecomposedTx,
+        });
 
         expect(storeAction?.payload.precomposedTransaction).toMatchObject({
             outputs: [{ address: RECIPIENT, amount: '1500000' }],
@@ -225,6 +245,81 @@ describe('EthereumSignTransaction.preCall', () => {
         expect(storeAction?.payload.formState).toMatchObject({
             transactionData: TRANSFER_DATA.slice(2),
             ethereumNonce: '5',
+        });
+    });
+
+    it('stores the display format connect found, for the review to show the decoded call', async () => {
+        const gateway = '0x721b9abab6511b46b9ee83a1aba23bdacb004149';
+        const signer = '0x000000000000000000000000000000000000abcd';
+        const depositEthData = `0x474cf53d${[gateway, signer, '0x0']
+            .map(word => word.slice(2).padStart(64, '0'))
+            .join('')}`;
+        const displayFormat: EthereumDisplayFormat = {
+            chainId: getNetwork('arc').chainId,
+            address: gateway,
+            functionSignature: '0x474cf53d',
+            intent: 'Supply',
+            providerName: 'Aave',
+            parameters: [
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_UINT16' },
+            ],
+            fields: [
+                {
+                    label: 'Amount to supply',
+                    formatter: 'FORMATTER_AMOUNT',
+                    path: { type: 'container', container: 'VALUE' },
+                    nativeCurrencyAddresses: [],
+                    enumValues: [],
+                },
+                {
+                    label: 'Collateral recipient',
+                    formatter: 'FORMATTER_ADDRESS_NAME',
+                    path: { type: 'data', steps: [1] },
+                    nativeCurrencyAddresses: [],
+                    enumValues: [],
+                },
+            ],
+        };
+
+        // Shaped as connect's `__info` preview of the call.
+        const storeAction = await runContractCallPreCall({
+            to: gateway,
+            value: '0xde0b6b3a7640000',
+            data: depositEthData,
+            chainId: getNetwork('arc').chainId,
+            txSigningPrecomposed: {
+                ...contractCallPrecomposedTx,
+                outputs: [
+                    {
+                        address: gateway,
+                        amount: '1000000000000000000',
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+                displayFormat,
+            },
+        });
+
+        expect(
+            storeAction &&
+                getResolvedDisplayFormat({
+                    account: { networkType: 'ethereum', descriptor: asAccountDescriptor(signer) },
+                    precomposedTx: storeAction.payload.precomposedTransaction,
+                    transactionData: storeAction.payload.formState.transactionData,
+                }),
+        ).toMatchObject({
+            providerName: 'Aave',
+            intent: 'Supply',
+            rows: [
+                { values: [{ type: 'nativeAmount', amount: '1000000000000000000' }] },
+                {
+                    values: [
+                        { type: 'address', address: '0x000000000000000000000000000000000000ABcD' },
+                    ],
+                },
+            ],
         });
     });
 });

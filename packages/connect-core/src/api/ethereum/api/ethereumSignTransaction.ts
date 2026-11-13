@@ -32,6 +32,7 @@ import {
 } from '../../../utils/paymentRequest';
 import {
     decodeEthereumDefinition,
+    decodeEthereumDisplayFormat,
     ethereumNetworkInfoFromDefinition,
     getEthereumDefinitions,
 } from '../ethereumDefinitions';
@@ -69,6 +70,9 @@ const normalizeDelegate = (delegate: string) => {
 
     return getAddress(delegate);
 };
+
+// 4-byte function selector
+const SC_FUNC_SIG_HEX_LENGTH = 8;
 
 const strip = deepTransform(value => {
     let stripped = stripHexPrefix(value);
@@ -173,7 +177,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    private async getDefinitions(version?: DefinitionsVersion) {
+    private async getDefinitions(version?: DefinitionsVersion, functionSignature?: string) {
         // eth && token => yes
         // evm && token => yes
         // eth && !token => no
@@ -188,14 +192,15 @@ export default class EthereumSignTransaction extends AbstractMethod<
             slip44,
             contractAddress:
                 this.params.tx.data && this.params.tx.to != null ? this.params.tx.to : undefined,
+            functionSignature,
             version,
         });
     }
 
     // Only `__info` names the network and token and previews the transfer, so only `__info`
-    // downloads their definitions to decode them.
+    // downloads their definitions to decode them. The device requests the display format itself.
     async getMethodInfo() {
-        const definitions = await this.getDefinitions();
+        const definitions = await this.getDefinitions(undefined, this.getFunctionSignature());
         if (definitions) {
             this.params.definitions = definitions;
 
@@ -206,6 +211,37 @@ export default class EthereumSignTransaction extends AbstractMethod<
         }
 
         return super.getMethodInfo();
+    }
+
+    private getFunctionSignature() {
+        const { data } = this.params.tx;
+
+        return data && data.length >= SC_FUNC_SIG_HEX_LENGTH
+            ? data.slice(0, SC_FUNC_SIG_HEX_LENGTH)
+            : undefined;
+    }
+
+    // The display format the device will use for this call, kept only when it is the one requested.
+    private getDisplayFormat() {
+        const encoded = this.params.definitions?.encoded_display_format;
+        const { chainId, to } = this.params.tx;
+        const functionSignature = this.getFunctionSignature();
+        if (!encoded || !to || !functionSignature) {
+            return;
+        }
+
+        try {
+            const displayFormat = decodeEthereumDisplayFormat(encoded);
+            const isRequested =
+                displayFormat.chainId === chainId &&
+                displayFormat.address.toLowerCase() === addHexPrefix(to).toLowerCase() &&
+                displayFormat.functionSignature.toLowerCase() ===
+                    addHexPrefix(functionSignature).toLowerCase();
+
+            return isRequested ? displayFormat : undefined;
+        } catch (err) {
+            console.warn(`unable to decode the display-format definition. detail: ${err.message}`);
+        }
     }
 
     get info() {
@@ -286,6 +322,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
                       }
                     : undefined,
                 network: this.params.network,
+                displayFormat: this.getDisplayFormat(),
             };
 
             return Promise.resolve(result);

@@ -4,8 +4,10 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
+import { type EthereumDisplayFormat } from '@trezor/connect';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -15,6 +17,7 @@ import {
     getEvmTransactionTextSignature,
     getNativeWrapTxKind,
     getPrecomposedTxWithAccountToken,
+    getResolvedDisplayFormat,
     getUnwrapAmountByEthereumDataHex,
     getWrappedNativeTxTarget,
     isUnwrapNativeTx,
@@ -593,6 +596,92 @@ describe('eth utils', () => {
                     accountTokens: [accountToken],
                 }),
             ).toBe(precomposedTx);
+        });
+    });
+
+    describe(getResolvedDisplayFormat.name, () => {
+        const GATEWAY = '0x721B9abAb6511b46b9ee83A1aba23BDAcB004149';
+        const ACCOUNT = {
+            networkType: 'ethereum',
+            descriptor: asAccountDescriptor(GATEWAY),
+        } as const;
+        // depositETH(GATEWAY, GATEWAY, 0)
+        const DEPOSIT_ETH_DATA = `474cf53d${GATEWAY.slice(2).toLowerCase().padStart(64, '0').repeat(2)}${'0'.repeat(64)}`;
+
+        const displayFormat: EthereumDisplayFormat = {
+            chainId: 100,
+            address: GATEWAY.toLowerCase(),
+            functionSignature: '0x474cf53d',
+            intent: 'Supply',
+            providerName: 'Aave',
+            parameters: [
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_UINT16' },
+            ],
+            fields: [
+                {
+                    label: 'Amount to supply',
+                    formatter: 'FORMATTER_AMOUNT',
+                    path: { type: 'container', container: 'VALUE' },
+                    nativeCurrencyAddresses: [],
+                    enumValues: [],
+                },
+            ],
+        };
+
+        const precomposedTx: PrecomposedTransactionFinal = {
+            type: 'final',
+            inputs: [],
+            outputsPermutation: [0],
+            outputs: [{ address: GATEWAY, amount: '1000', script_type: 'PAYTOADDRESS' }],
+            totalSpent: '43000',
+            fee: '42000',
+            feePerByte: '20',
+            bytes: 0,
+            max: undefined,
+            displayFormat,
+        };
+
+        it('resolves the call with the value Connect previews it with', () => {
+            expect(
+                getResolvedDisplayFormat({
+                    account: ACCOUNT,
+                    precomposedTx,
+                    transactionData: DEPOSIT_ETH_DATA,
+                }),
+            ).toMatchObject({
+                providerName: 'Aave',
+                intent: 'Supply',
+                rows: [
+                    {
+                        label: 'Amount to supply',
+                        values: [{ type: 'nativeAmount', amount: '1000' }],
+                    },
+                ],
+            });
+        });
+
+        it.each([
+            ['without a display format', ACCOUNT, { ...precomposedTx, displayFormat: undefined }],
+            [
+                'for a decoded token transfer',
+                ACCOUNT,
+                { ...precomposedTx, token: mockAccountToken({}) },
+            ],
+            [
+                'on another network type',
+                { ...ACCOUNT, networkType: 'bitcoin' } as const,
+                precomposedTx,
+            ],
+        ])('returns undefined %s', (_name, account, tx) => {
+            expect(
+                getResolvedDisplayFormat({
+                    account,
+                    precomposedTx: tx,
+                    transactionData: DEPOSIT_ETH_DATA,
+                }),
+            ).toBeUndefined();
         });
     });
 });
