@@ -15,6 +15,7 @@ import { useCompose } from '#src/hooks/wallet/form/useCompose';
 import { useFees } from '#src/hooks/wallet/form/useFees';
 
 import { TradingExchangeNetworkFeeModalLayout } from './TradingExchangeNetworkFeeModalLayout';
+import { TradingExchangeTronFeeLimit } from './TradingExchangeTronFeeLimit';
 
 export type TradingExchangeNetworkFeeModalProps = {
     account: Account;
@@ -75,6 +76,7 @@ export const TradingExchangeNetworkFeeModal = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [feeInfo]);
 
+    const isTrc20Transfer = account.networkType === 'tron' && !!composeFormState.outputs[0]?.token;
     const composedLevel = composedLevels?.[fees.selectedFee];
     const isConfirmDisabled = isLoading || !isComposedFeeLevel(composedLevel);
 
@@ -98,6 +100,11 @@ export const TradingExchangeNetworkFeeModal = ({
                 isConfirmDisabled={isConfirmDisabled}
                 onConfirm={onConfirmClick}
                 onClose={onClose}
+                feeLevels={
+                    isTrc20Transfer ? (
+                        <TradingExchangeTronFeeLimit composeRequest={composeRequest} />
+                    ) : undefined
+                }
             />
         </FormProvider>
     );

@@ -32,6 +32,7 @@ import { calculate } from './calculate';
 import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
+import { type EstimateFeeLevel } from './types';
 
 type ComposeTronTransactionFeeLevelsThunkState = void;
 
@@ -177,17 +178,20 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             });
         }
 
-        const tx = calculate(
-            account.availableBalance,
-            output,
-            feeLevel,
-            account.symbol,
-            bytes,
-            noteHex !== undefined,
-            token,
-            isNewAccount,
-            userCallDataHex,
-        );
+        const calculateWithFeeLevel = (level: EstimateFeeLevel) =>
+            calculate(
+                account.availableBalance,
+                output,
+                level,
+                account.symbol,
+                bytes,
+                noteHex !== undefined,
+                token,
+                isNewAccount,
+                userCallDataHex,
+            );
+
+        const tx = calculateWithFeeLevel(feeLevel);
 
         if (tx.type !== 'error' && tx.max !== undefined) {
             tx.max = subunitsToUnits({
@@ -200,7 +204,33 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             tx.estimatedFeeLimit = tx.fee;
         }
 
-        return { normal: tx };
+        const levels: PrecomposedLevels = { normal: tx };
+
+        if (formState.selectedFee !== 'custom') {
+            return levels;
+        }
+
+        if (calldata.data === null || tx.type === 'error') {
+            return { ...levels, custom: tx };
+        }
+
+        const custom = calculateWithFeeLevel({
+            ...feeLevel,
+            feePerTx: formState.feeLimit || tx.fee,
+        });
+
+        return {
+            ...levels,
+            custom:
+                custom.type === 'error'
+                    ? custom
+                    : {
+                          ...custom,
+                          max: tx.max,
+                          energyConsumed: tx.energyConsumed,
+                          estimatedFeeLimit: tx.fee,
+                      },
+        };
     },
 );
 

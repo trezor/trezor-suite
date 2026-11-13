@@ -97,5 +97,33 @@ describe('exchangeUtils', () => {
                 `${window.location.origin}/coinmarket-redirect#exchange-offers/sol/normal/1/bitcoin/litecoin/1/quoteId/normal/1/2/3/4`,
             );
         });
+
+        it('should keep the normal fee level for tron when the fee limit was not edited', async () => {
+            expect(
+                await createQuoteLink(
+                    deps,
+                    mockQuotesRequest,
+                    { ...mockAccount, symbol: 'trx', networkType: 'tron' } as Account,
+                    { ...mockComposedInfo, selectedFee: 'normal' },
+                    mockQuoteId,
+                ),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/trx/normal/1/bitcoin/litecoin/1/quoteId/normal/1/2/3/4`,
+            );
+        });
+
+        it('should keep the custom fee level for tron when the fee limit was edited', async () => {
+            expect(
+                await createQuoteLink(
+                    deps,
+                    mockQuotesRequest,
+                    { ...mockAccount, symbol: 'trx', networkType: 'tron' } as Account,
+                    { ...mockComposedInfo, selectedFee: 'custom' },
+                    mockQuoteId,
+                ),
+            ).toStrictEqual(
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/trx/normal/1/bitcoin/litecoin/1/quoteId/custom/1/2/3/4`,
+            );
+        });
     });
 });

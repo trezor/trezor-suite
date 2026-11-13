@@ -1018,8 +1018,8 @@ describe('recomposeAndSignTxThunk', () => {
                 composed: {
                     feePerByte: '100',
                     // offers-page estimate against a placeholder (warm) recipient
-                    estimatedFeeLimit: '6428500', // SUN
-                    feeLimit: '64285', // energy units
+                    estimatedFeeLimit: '6428500',
+                    feeLimit: '6428500',
                     token: { contract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' } as TokenInfo,
                     fee: '6428500',
                 },
@@ -1041,7 +1041,7 @@ describe('recomposeAndSignTxThunk', () => {
                         normal: {
                             type: 'final',
                             // recompose against the real (cold) recipient — higher energy
-                            feeLimit: '120000',
+                            feeLimit: '12000000',
                             estimatedFeeLimit: '12000000',
                             fee: '12000000',
                             outputs: [{ amount: '10000000' }],
@@ -1064,6 +1064,66 @@ describe('recomposeAndSignTxThunk', () => {
         expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
         expect(mockSignAndPushSendFormTransaction.mock.calls[0][0].formState.feeLimit).toBe(
             '12000000',
+        );
+    });
+
+    it('should sign the edited Tron fee limit of the custom level', async () => {
+        const { store, tradingFormState } = getMocks({
+            composedTransactionInfo: {
+                selectedFee: 'custom',
+                composed: {
+                    feePerByte: '100',
+                    estimatedFeeLimit: '6428500',
+                    feeLimit: '9000000',
+                    token: { contract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' } as TokenInfo,
+                    fee: '9000000',
+                },
+            },
+        });
+
+        const account = { ...accountBtc, symbol: trxSymbol, networkType: 'tron' } as Account;
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: { txid: 'txid' },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            feeLimit: '6428500',
+                            estimatedFeeLimit: '6428500',
+                            fee: '6428500',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                        custom: {
+                            type: 'final',
+                            feeLimit: '9000000',
+                            estimatedFeeLimit: '6428500',
+                            fee: '9000000',
+                            outputs: [{ amount: '10000000' }],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account,
+                address: 'address',
+                amount: '0.1',
+                tradingFormState,
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(mockSignAndPushSendFormTransaction.mock.calls[0][0].formState.feeLimit).toBe(
+            '9000000',
         );
     });
 

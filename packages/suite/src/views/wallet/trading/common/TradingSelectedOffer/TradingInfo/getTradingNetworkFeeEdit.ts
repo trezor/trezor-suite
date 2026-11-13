@@ -24,8 +24,10 @@ export const getTradingNetworkFeeEdit = ({
     isTokenTransfer,
     hasFixedFee = false,
 }: GetTradingNetworkFeeEditParams): TradingNetworkFeeInfoItemProps['edit'] => {
+    const isTronRecipientUnknown = account.networkType === 'tron' && !!assumeNewAccount;
     const isEditable =
         !hasFixedFee &&
+        !isTronRecipientUnknown &&
         getSupportsAdjustableFees({ networkType: account.networkType, isTokenTransfer });
 
     if (!isEditable || !feeInfo || !composeFormState) {

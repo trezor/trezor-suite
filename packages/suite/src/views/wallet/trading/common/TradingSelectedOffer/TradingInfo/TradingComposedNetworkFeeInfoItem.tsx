@@ -37,6 +37,7 @@ export const TradingComposedNetworkFeeInfoItem = ({
             tooltipTextId={getFeeTooltipTextId({
                 networkType: account.networkType,
                 isTronAccountActivation: !!composed?.accountActivationFee,
+                isTokenTransfer: !!composed?.token,
             })}
             edit={edit}
         />

@@ -10,6 +10,7 @@ type FeeNetworkParams = {
 type FeeTooltipParams = {
     networkType: NetworkType;
     isTronAccountActivation?: boolean;
+    isTokenTransfer?: boolean;
 };
 
 type GetSupportsAdjustableFeesParams = {
@@ -33,6 +34,7 @@ export const getSupportsAdjustableFees = ({
 export const getFeeTooltipTextId = ({
     networkType,
     isTronAccountActivation,
+    isTokenTransfer,
 }: FeeTooltipParams): TranslationKey => {
     switch (networkType) {
         case 'ethereum':
@@ -44,6 +46,10 @@ export const getFeeTooltipTextId = ({
         case 'ripple':
             return 'TR_XRP_FEE_DESC';
         case 'tron':
+            if (isTokenTransfer) {
+                return 'TR_TRON_MAX_FEE_DESC';
+            }
+
             return isTronAccountActivation ? 'TR_TRON_FEE_ACTIVATION_DESC' : 'TR_TRON_FEE_DESC';
         default:
             return 'TR_TRANSACTION_FEE_DESC';
