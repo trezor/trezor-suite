@@ -77,6 +77,14 @@ export const sharedAliases = [
         replacement: 'lodash-es',
     },
     {
+        // Mirrors the webpack config: coin selection runs the asm.js build of Cardano Serialization Lib.
+        find: /^@emurgo\/cardano-serialization-lib-(nodejs|browser)$/,
+        replacement: resolve(
+            packageDir,
+            '../../networks/cardano/network-cardano/generated/csl-asmjs/cardano_serialization_lib.js',
+        ),
+    },
+    {
         find: 'crypto',
         replacement: require.resolve('crypto-browserify'),
     },

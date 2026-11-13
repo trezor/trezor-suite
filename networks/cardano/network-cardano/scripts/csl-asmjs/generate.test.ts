@@ -23,6 +23,25 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
         },
     );
 
+    /**
+     * Webpack skips unused modules of a package without side effects in production,
+     * which would drop the entry's `__wbg_set_wasm(wasm)` call and break coin selection on web.
+     */
+    it('is listed in sideEffects, so bundlers keep the call that wires it into the glue', () => {
+        const packageJson = JSON.parse(
+            fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf8'),
+        );
+        const entry = fs.readFileSync(
+            path.join(committedDir, 'cardano_serialization_lib.js'),
+            'utf8',
+        );
+
+        expect(entry).toContain('__wbg_set_wasm(wasm)');
+        expect(packageJson.sideEffects).toContain(
+            './generated/csl-asmjs/cardano_serialization_lib.js',
+        );
+    });
+
     it('was generated from the current inputs', () => {
         expect(readInputs(__dirname, require).inputsHash).toBe(manifest.inputsHash);
     });
