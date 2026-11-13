@@ -35,6 +35,13 @@ export const useModalLoader = () => {
             await getModalChunkLoader(payload.type)?.();
         },
         retry: CHUNK_LOAD_RETRIES,
+        /**
+         * Declared on the mutation rather than passed to `mutate()`, so they still run when the
+         * opener unmounted while the chunk was in flight; react-query drops the per-call callbacks
+         * in that case. That is the behaviour this wants: the modal lives in redux and not in the
+         * opener, so a click outliving its button still opens the modal it asked for, and a chunk
+         * that never arrives is still reported instead of failing silently.
+         */
         onSuccess: (_, payload) => dispatch(openModal(payload)),
         onError: () =>
             dispatch(
