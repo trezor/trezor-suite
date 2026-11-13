@@ -329,6 +329,7 @@ export { ConnectionGlobalModalManager } from './src/components/connection/Connec
 export { ThpGlobalModalManager } from './src/components/connection/thp/ThpGlobalModalManager';
 export { WipedBleDeviceNeedsManualOsRemovalModalManager } from './src/components/suite/bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
 export { getForegroundApp } from './src/components/suite/modals/ModalSwitcher/lazyForegroundApps';
+export { ModalErrorBoundary } from './src/components/suite/modals/ModalSwitcher/ModalErrorBoundary';
 export { lazyUserContextModals } from './src/components/suite/modals/ReduxModal/UserContextModal/lazyUserContextModals';
 export {
     Body,
