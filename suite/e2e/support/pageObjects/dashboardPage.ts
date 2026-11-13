@@ -18,6 +18,7 @@ export class DashboardPage {
     readonly assetHomeRow = (symbol: NetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/home-asset-item/${symbol}/coin`);
     readonly graph: Locator;
+    readonly transactionsGraphChart: Locator;
     readonly graphRangeSelector = (range: graphRangeOptions) =>
         this.page.getByTestId(`@graph/range-selector/${range}`);
     readonly deviceSwitchingOpenButton: Locator;
@@ -83,6 +84,7 @@ export class DashboardPage {
         this.assetHome = this.page.getByTestId('@dashboard/home-asset');
         this.assetHomeTable = this.page.getByTestId('@dashboard/home-asset-table');
         this.graph = this.page.getByTestId('@dashboard/graph');
+        this.transactionsGraphChart = this.page.getByTestId('@graph/transactions/chart');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
         this.deviceSwitchingCloseButton = this.page.getByTestId('@modal/backdrop').first();
         this.modal = this.page.modal;

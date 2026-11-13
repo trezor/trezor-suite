@@ -105,7 +105,7 @@ export const TransactionsGraph = memo(
         const isSkeletonShown = isLoading && !data?.length;
 
         return (
-            <Wrapper>
+            <Wrapper data-testid="@graph/transactions/chart">
                 <Description>
                     {isSkeletonShown ? (
                         <GraphSkeleton animate />
