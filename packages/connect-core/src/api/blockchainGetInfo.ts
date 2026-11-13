@@ -1,9 +1,9 @@
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { getInfo } from '../blockchain/api/getInfo';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -11,7 +11,10 @@ type Params = {
     identity?: string;
 };
 
-export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo', Params> {
+export default class BlockchainGetInfo extends AbstractBlockchainMethod<
+    'blockchainGetInfo',
+    Params
+> {
     constructor(message: MethodMessage<'blockchainGetInfo'>) {
         const { payload } = message;
 
@@ -22,8 +25,6 @@ export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,
@@ -31,20 +32,13 @@ export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-        );
-
-        return backend.getNetworkInfo();
+    run({ sendCoreMessage }: MethodContext) {
+        return getInfo(this.payload, sendCoreMessage);
     }
 }

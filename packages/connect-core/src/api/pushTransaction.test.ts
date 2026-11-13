@@ -1,8 +1,6 @@
-import { setCustomBackend } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import PushTransactionBase from './pushTransaction';
-import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 class PushTransaction extends PushTransactionBase {
     getTransactionData() {
@@ -14,17 +12,6 @@ const createMethod = (coin: string, tx: string, disableAlternativeRPC?: boolean)
     new PushTransaction({
         payload: { method: 'pushTransaction', coin: asCoinSymbol(coin), tx, disableAlternativeRPC },
     });
-
-beforeAll(() => {
-    setCustomBackend(getCoinInfoOrThrow(asCoinSymbol('regtest')), {
-        type: 'blockbook',
-        url: ['http://localhost:19121'],
-    });
-});
-
-afterAll(() => {
-    setCustomBackend(getCoinInfoOrThrow(asCoinSymbol('regtest')), undefined);
-});
 
 describe.each(['btc', 'test', 'regtest', 'ltc', 'doge', 'zec', 'bch'])(
     'pushTransaction %s Bitcoin-family payload',

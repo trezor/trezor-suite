@@ -2,8 +2,12 @@ import type { Proxy } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { BackendManager } from './BackendManager';
-import type { BlockchainOptions as Options } from './Blockchain';
-import type { BackendCoinInfo, BlockchainLinkSettings } from '../data/coinInfo';
+import type { BlockchainOptions as Options, PostMessage } from './Blockchain';
+import {
+    type BackendCoinInfo,
+    type BlockchainLinkSettings,
+    getBackendCoinInfo,
+} from '../data/coinInfo';
 
 export { Blockchain } from './Blockchain';
 
@@ -32,6 +36,18 @@ export const initBlockchain = (
     identity?: string,
     options?: { force?: boolean },
 ) => backends.getOrConnect({ coinInfo, identity, postMessage }, options);
+
+/** Connects the backend of the coin for the identity, or reuses its connection. */
+export const initCoinBackend = (
+    { coin, identity }: { coin: string; identity?: string },
+    postMessage: PostMessage,
+    options?: { force?: boolean },
+) => {
+    const coinInfo = getBackendCoinInfo(coin);
+    assertBackendSupported(coinInfo);
+
+    return initBlockchain(coinInfo, postMessage, identity, options);
+};
 
 export const reconnectAllBackends = (coinInfo?: BackendCoinInfo) => backends.reconnectAll(coinInfo);
 

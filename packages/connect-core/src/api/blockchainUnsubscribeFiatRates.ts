@@ -1,11 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainUnsubscribeFiatRates.js
 
-import { assertBackendSupported, initBlockchain } from '@trezor/blockchain-core';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
-import { AbstractMethod } from '../core/AbstractMethod';
+import { AbstractBlockchainMethod } from './common/AbstractBlockchainMethod';
 import { validateParams } from './common/paramsValidator';
+import { unsubscribeFiatRates } from '../blockchain/api/unsubscribeFiatRates';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -13,7 +13,7 @@ type Params = {
     identity?: string;
 };
 
-export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
+export default class BlockchainUnsubscribeFiatRates extends AbstractBlockchainMethod<
     'blockchainUnsubscribeFiatRates',
     Params
 > {
@@ -27,8 +27,6 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
-        // validate backend
-        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,
@@ -36,23 +34,13 @@ export default class BlockchainUnsubscribeFiatRates extends AbstractMethod<
         };
 
         super(message, params);
-        this.useDevice = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
-        const backend = await initBlockchain(
-            this.params.coinInfo,
-            sendCoreMessage,
-            this.params.identity,
-            // Suite reconnects a backend through this method (reconnectBlockchainThunk), including
-            // from the reconnect button, so it connects now instead of awaiting the retry delay.
-            { force: true },
-        );
-
-        return backend.unsubscribeFiatRates();
+    run({ sendCoreMessage }: MethodContext) {
+        return unsubscribeFiatRates(this.payload, sendCoreMessage);
     }
 }
