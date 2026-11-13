@@ -4,7 +4,7 @@ import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config'
 import { isProgramDerivedAccount } from '@suite-common/wallet-utils';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 export const useSolAssociatedTokenAddress = () => {
@@ -23,7 +23,7 @@ export const useSolAssociatedTokenAddress = () => {
     }) => {
         const networkType = getNetworkType(symbol);
         if (networkType !== 'solana') return;
-        const response = await TrezorConnect.getAccountInfo({
+        const response = await TrezorBlockchain.getAccountInfo({
             descriptor: value,
             coin: asCoinSymbol(symbol),
             details: 'basic',

@@ -1,6 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
@@ -41,7 +42,7 @@ export const pushYieldTransaction = ({
     account,
     isMevProtectionEnabled,
 }: PushYieldTransactionParams) =>
-    TrezorConnect.pushTransaction({
+    TrezorBlockchain.pushTransaction({
         tx,
         coin: asCoinSymbol(account.symbol),
         identity: getAccountIdentity(account),

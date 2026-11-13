@@ -160,7 +160,7 @@ export const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => 
  * `accountNonce` here is treated as *untrusted* (e.g. `account.misc.nonce`, which can be
  * stale/pending-inclusive — trezor/blockbook#1562) and is reconciled against local tx data. When
  * a properly mined-only nonce is already available (fetched live via
- * `TrezorConnect.getAccountInfo({ confirmedNonce: true })`), use `getEvmNonceInfoFromConfirmedNonce`
+ * `TrezorBlockchain.getAccountInfo({ confirmedNonce: true })`), use `getEvmNonceInfoFromConfirmedNonce`
  * instead — running an already-trustworthy value through this reconciliation is not just
  * redundant, it's actively harmful: a single bad locally-known nonce (e.g. corrupted/malformed tx
  * data) can override an otherwise-correct backend answer.

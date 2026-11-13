@@ -2,7 +2,7 @@ import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
@@ -151,7 +151,7 @@ export const submitTronFreezeThunk = createThunk<
                 return;
             }
 
-            const pushResult = await TrezorConnect.pushTransaction({
+            const pushResult = await TrezorBlockchain.pushTransaction({
                 tx: signResult.serializedTx,
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),

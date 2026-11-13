@@ -52,6 +52,7 @@ import {
     isRbfBumpFeeTransaction,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -157,7 +158,7 @@ const pushTransactionThunk =
 
         if (!serializedTx || !precomposedTx || !account) return;
 
-        const sentTx = await TrezorConnect.pushTransaction({
+        const sentTx = await TrezorBlockchain.pushTransaction({
             tx: serializedTx.tx,
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
@@ -382,7 +383,7 @@ export const signTransactionThunk =
             return;
         }
 
-        // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in TransactionReviewModal and pushTransaction method
+        // store serializedTx in reducer (TrezorBlockchain.pushTransaction params) to be used in TransactionReviewModal and pushTransaction method
         dispatch(
             stakeActions.requestPushTransaction({
                 tx: serializedTx,

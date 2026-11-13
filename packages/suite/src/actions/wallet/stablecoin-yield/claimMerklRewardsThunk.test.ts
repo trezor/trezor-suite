@@ -11,6 +11,7 @@ import { type EthereumGetCurrentNonceThunkState, yieldActions } from '@suite-com
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 
@@ -136,7 +137,7 @@ describe('claimMerklRewardsThunk', () => {
             success: true,
             payload: { v: '0x1', r: '0x2', s: '0x3', serializedTx: '0xsigned' },
         });
-        jest.spyOn(TrezorConnect, 'pushTransaction').mockResolvedValue({
+        jest.spyOn(TrezorBlockchain, 'pushTransaction').mockResolvedValue({
             success: true,
             payload: { txid: '0xclaim' },
         });
@@ -207,7 +208,7 @@ describe('claimMerklRewardsThunk', () => {
                 payload: expect.objectContaining({ type: 'error' }),
             }),
         );
-        expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
+        expect(TrezorBlockchain.pushTransaction).not.toHaveBeenCalled();
     });
 
     it('aborts without reporting when the simulation modal is torn down', async () => {

@@ -28,7 +28,7 @@ export type SendState = {
     precomposedTx?: GeneralPrecomposedTransactionFinal;
     precomposedForm?: FormState; // Used to pass the form state to the review modal. Holds similar data as drafts, but drafts are not used in RBF form.
     signedTx?: BlockbookTransaction;
-    serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction).
+    serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorBlockchain.pushTransaction).
     accountKey?: AccountKey; // Account key for the transaction being processed.
     resolvedEthereumNonce?: string; // EVM nonce resolved at signing time, shown in the review modal.
 };
