@@ -17,6 +17,8 @@ import { BluetoothProcess } from '../libs/processes/BluetoothProcess';
 
 export const SERVICE_NAME = '@trezor/transport-bluetooth';
 
+const EARLY_START_RETRIES = 1;
+
 // Export module state and use it trezor-connect module to override init + updateConnectSettings params
 // getTransport function is reassigned in onLoad, onQuit
 type BluetoothModuleState = {
@@ -64,16 +66,28 @@ export const init: ModuleInit = ({ logger }) => {
     let earlyStartError: unknown;
     let isQuitting = false;
 
-    // The helper takes a few hundred milliseconds to come up, so it starts here, in parallel with the
-    // window and the renderer boot, instead of once the renderer asks for it. A failed start is not
-    // fatal: the renderer's init request starts it again and reports the failure to the user.
-    lazyBluetooth.getOrInit().catch(error => {
-        // Quitting rejects a start that is still in progress, which is not a failure.
-        if (isQuitting) return;
+    /**
+     * The helper takes a few hundred milliseconds to come up, so it starts here,
+     * in parallel with the window and the renderer boot, instead of once the renderer asks for it.
+     * A failed start is retried once. If the retry fails too,
+     * the renderer's init request starts the helper again and reports the failure to the user.
+     */
+    const startEarly = (retriesLeft: number) => {
+        lazyBluetooth.getOrInit().catch(error => {
+            // Quitting rejects a start that is still in progress, which is not a failure.
+            if (isQuitting) return;
 
-        earlyStartError = error;
-        logger.warn(SERVICE_NAME, `Early helper start failed: ${error}`);
-    });
+            earlyStartError = error;
+            logger.warn(SERVICE_NAME, `Early helper start failed: ${error}`);
+
+            /**
+             * This handler is the first to learn about the failure,
+             * so the retry is already pending when anyone else waiting for the start resumes.
+             */
+            if (retriesLeft > 0) startEarly(retriesLeft - 1);
+        });
+    };
+    startEarly(EARLY_START_RETRIES);
 
     const getClient = () =>
         (lazyBluetooth.get() ?? throwError('BluetoothIpc api not initialized')).client;
@@ -93,9 +107,22 @@ export const init: ModuleInit = ({ logger }) => {
             : undefined;
     };
 
+    /**
+     * Settles once no helper start is in progress.
+     * A settled start may be followed by another one, like the retry of a failed early start,
+     * so the wait repeats until nothing is pending.
+     */
+    const waitForPendingStart = async () => {
+        let pending = lazyBluetooth.getPending();
+        while (pending) {
+            await pending.catch(() => undefined);
+            pending = lazyBluetooth.getPending();
+        }
+    };
+
     const getBluetoothTransportWhenStarted = async () => {
         // A start the renderer did not wait for may still be in progress.
-        await lazyBluetooth.getPending()?.catch(() => undefined);
+        await waitForPendingStart();
 
         return getBluetoothTransport();
     };
@@ -115,9 +142,13 @@ export const init: ModuleInit = ({ logger }) => {
             return {
                 onRequest: async (method, params) => {
                     logger.debug(SERVICE_NAME, `call ${method}`);
+                    /**
+                     * The app renders without waiting for the init request,
+                     * so any request may arrive while the helper is still starting.
+                     * That start settles first, and init starts the helper again if it failed.
+                     */
+                    await waitForPendingStart();
                     if (method === 'init') {
-                        // A start in progress settles first, so its failure is retried too.
-                        await lazyBluetooth.getPending()?.catch(() => undefined);
                         await lazyBluetooth.getOrInit();
                     }
 

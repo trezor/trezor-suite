@@ -10,6 +10,7 @@ import type { ILogger } from '../libs/logger';
 const mockHelperStart = jest.fn((): Promise<void> => Promise.resolve());
 const mockHelperStop = jest.fn((): Promise<void> => Promise.resolve());
 const mockClientInit = jest.fn();
+const mockClientGetInfo = jest.fn();
 const mockProxy: { options?: IpcProxyHandlerOptions<BluetoothIpcApi> } = {};
 
 jest.mock('child_process', () => ({ exec: jest.fn() }));
@@ -31,6 +32,7 @@ jest.mock('@trezor/ipc-proxy', () => ({
 jest.mock('@trezor/transport-bluetooth', () => ({
     BluetoothIpc: class {
         init = mockClientInit;
+        getInfo = mockClientGetInfo;
         on = jest.fn();
         removeAllListeners = jest.fn();
     },
@@ -84,6 +86,7 @@ describe('bluetooth module', () => {
         mockHelperStart.mockReset().mockResolvedValue(undefined);
         mockHelperStop.mockReset().mockResolvedValue(undefined);
         mockClientInit.mockReset().mockResolvedValue({ success: true, payload: undefined });
+        mockClientGetInfo.mockReset().mockResolvedValue({ success: true, payload: {} });
     });
 
     afterEach(async () => {
@@ -123,8 +126,10 @@ describe('bluetooth module', () => {
         expect(bluetoothModuleState.getTransport()).toBeInstanceOf(BluetoothTransport);
     });
 
-    it('logs a failed early start and starts the helper again on the init request', async () => {
-        mockHelperStart.mockRejectedValueOnce(new Error('spawn ENOENT'));
+    it('logs a failed early start and its retry, then starts the helper again on the init request', async () => {
+        mockHelperStart
+            .mockRejectedValueOnce(new Error('spawn ENOENT'))
+            .mockRejectedValueOnce(new Error('spawn ENOENT'));
         const { logger, onLoad, onQuit: quit } = initModule();
         onQuit = quit;
         onLoad({} as HandshakeClient);
@@ -134,13 +139,15 @@ describe('bluetooth module', () => {
             '@trezor/transport-bluetooth',
             expect.stringContaining('spawn ENOENT'),
         );
+        expect(logger.warn).toHaveBeenCalledTimes(2);
         expect(await bluetoothModuleState.getTransportWhenStarted()).toBeUndefined();
+        expect(mockHelperStart).toHaveBeenCalledTimes(2);
 
         const instance = await mockProxy.options?.onCreateInstance();
         const state = { knownDevices: [] };
         await instance?.onRequest('init', [state]);
 
-        expect(mockHelperStart).toHaveBeenCalledTimes(2);
+        expect(mockHelperStart).toHaveBeenCalledTimes(3);
         expect(mockClientInit).toHaveBeenCalledWith(state);
         expect(bluetoothModuleState.getTransport()).toBeInstanceOf(BluetoothTransport);
     });
@@ -173,6 +180,7 @@ describe('bluetooth module', () => {
         await quitting;
 
         expect(logger.warn).not.toHaveBeenCalled();
+        expect(mockHelperStart).toHaveBeenCalledTimes(1);
         expect(mockHelperStop).toHaveBeenCalledTimes(1);
     });
 
@@ -189,7 +197,9 @@ describe('bluetooth module', () => {
     });
 
     it('logs a failed early start again once the module is loaded', async () => {
-        mockHelperStart.mockRejectedValueOnce(new Error('spawn ENOENT'));
+        mockHelperStart
+            .mockRejectedValueOnce(new Error('spawn ENOENT'))
+            .mockRejectedValueOnce(new Error('spawn ENOENT'));
         const { logger, onLoad, onQuit: quit } = initModule();
         onQuit = quit;
         await flushPromises();
@@ -216,5 +226,66 @@ describe('bluetooth module', () => {
 
         expect(mockHelperStart).toHaveBeenCalledTimes(1);
         expect(mockClientInit).toHaveBeenCalledTimes(1);
+    });
+
+    it('retries a failed early start once, and getTransportWhenStarted waits for the retry', async () => {
+        const earlyStart = createDeferred<void>();
+        const retriedStart = createDeferred<void>();
+        mockHelperStart
+            .mockReturnValueOnce(earlyStart.promise)
+            .mockReturnValueOnce(retriedStart.promise);
+        const { onLoad, onQuit: quit } = initModule();
+        onQuit = quit;
+        onLoad({} as HandshakeClient);
+
+        let transport: BluetoothTransport | undefined;
+        const waiting = bluetoothModuleState.getTransportWhenStarted().then(result => {
+            transport = result;
+        });
+        earlyStart.reject(new Error('spawn ENOENT'));
+        await flushPromises();
+
+        expect(mockHelperStart).toHaveBeenCalledTimes(2);
+        expect(transport).toBeUndefined();
+
+        retriedStart.resolve();
+        await waiting;
+
+        expect(transport).toBeInstanceOf(BluetoothTransport);
+    });
+
+    it('moves the init request and connect, waiting in boot order, onto the early start retry', async () => {
+        const earlyStart = createDeferred<void>();
+        mockHelperStart.mockReturnValueOnce(earlyStart.promise);
+        const { onLoad, onQuit: quit } = initModule();
+        onQuit = quit;
+        onLoad({} as HandshakeClient);
+
+        const instance = await mockProxy.options?.onCreateInstance();
+        const request = instance?.onRequest('init', [{ knownDevices: [] }]);
+        const transport = bluetoothModuleState.getTransportWhenStarted();
+
+        earlyStart.reject(new Error('spawn ENOENT'));
+        await request;
+
+        expect(mockHelperStart).toHaveBeenCalledTimes(2);
+        expect(mockClientInit).toHaveBeenCalledTimes(1);
+        expect(await transport).toBeInstanceOf(BluetoothTransport);
+    });
+
+    it('holds a request other than init until the start in progress settles', async () => {
+        const helperStart = createDeferred<void>();
+        mockHelperStart.mockReturnValue(helperStart.promise);
+        ({ onQuit } = initModule());
+
+        const instance = await mockProxy.options?.onCreateInstance();
+        const request = instance?.onRequest('getInfo', []);
+        await flushPromises();
+        expect(mockClientGetInfo).not.toHaveBeenCalled();
+
+        helperStart.resolve();
+
+        expect(await request).toEqual({ success: true, payload: {} });
+        expect(mockClientGetInfo).toHaveBeenCalledTimes(1);
     });
 });
