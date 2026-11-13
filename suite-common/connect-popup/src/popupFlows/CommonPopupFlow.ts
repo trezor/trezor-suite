@@ -24,6 +24,7 @@ import {
     CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
+    getCallSourceName,
 } from '../connectPopupTypes';
 import {
     canRememberPermissions,
@@ -299,7 +300,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
         this.dispatch(
             notificationsActions.addToast({
                 type: 'connect-popup-success',
-                appName: this.source.manifest.appName,
+                appName: getCallSourceName(this.source),
             }),
         );
     }

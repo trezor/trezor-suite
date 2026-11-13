@@ -1,4 +1,8 @@
-import { type ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
+import {
+    type ConnectCallSource,
+    connectPopupActions,
+    getCallSourceName,
+} from '@suite-common/connect-popup';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
@@ -79,7 +83,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                         size="medium"
                     />
                     <VStack flex={1} spacing="sp4">
-                        <Text>{source.manifest?.appName ?? source.origin}</Text>
+                        <Text>{getCallSourceName(source)}</Text>
                         {source.manifest?.appName && (
                             <Text color="contentSecondary">{source.origin}</Text>
                         )}

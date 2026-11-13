@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     canRememberPermissions,
     connectPopupActions,
+    getCallSourceName,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import {
@@ -78,7 +79,7 @@ export const PermissionConfirmation = () => {
                         size="large"
                     />
                     <VStack flex={1} spacing="sp4">
-                        <Text>{popupCall.source.manifest?.appName ?? popupCall.source.origin}</Text>
+                        <Text>{getCallSourceName(popupCall.source)}</Text>
                         {popupCall.source.manifest?.appName && (
                             <Text color="contentSecondary">{popupCall.source.origin}</Text>
                         )}
