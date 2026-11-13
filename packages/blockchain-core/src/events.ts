@@ -4,8 +4,9 @@ import type {
     NotificationEvent,
     ServerInfo,
 } from '@trezor/blockchain-link-types';
-import type { CoinInfo } from '@trezor/connect-common';
 import { createTypeGuardByType } from '@trezor/type-utils';
+
+import type { BackendCoinInfo } from './data/coinInfo';
 
 export const BLOCKCHAIN_EVENT = 'BLOCKCHAIN_EVENT';
 export const BLOCKCHAIN = {
@@ -18,7 +19,7 @@ export const BLOCKCHAIN = {
 } as const;
 
 /** The coin of a backend: blockchain events carry only what identifies it. */
-export type BlockchainCoin = Pick<CoinInfo, 'name' | 'shortcut'>;
+export type BlockchainCoin = Pick<BackendCoinInfo, 'name' | 'shortcut'>;
 
 export interface BlockchainInfo extends ServerInfo {
     coin: BlockchainCoin;
