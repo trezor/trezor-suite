@@ -116,7 +116,7 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
             this.signal,
         ).then(getPayloadOrThrow);
 
-        const { levels } = await promiseRaceWithSignal(
+        const { levels, minFee, blockTime } = await promiseRaceWithSignal(
             TrezorBlockchain.estimateFee({ coin, identity, request: { feeLevels: 'smart' } }),
             this.signal,
         ).then(getPayloadOrThrow);
@@ -138,7 +138,7 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
         let feeLevels = levels.filter(level => level.feePerUnit !== '0');
         let txs = await compose(feeLevels);
         if (!txs.some(tx => tx.type === 'final')) {
-            feeLevels = [{ label: 'custom', feePerUnit: String(coinInfo.minFee), blocks: -1 }];
+            feeLevels = [{ label: 'custom', feePerUnit: String(minFee), blocks: -1 }];
             txs = await compose(feeLevels);
         }
         const finalFeeLevels = feeLevels.filter((_, index) => txs[index]?.type === 'final');
@@ -154,7 +154,7 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
         const feeDeferred = getPermissionDeferred(true);
         dispatch({
             type: UI_REQUESTS.REQUEST_FEE,
-            payload: { feeLevels: finalFeeLevels, coinInfo },
+            payload: { feeLevels: finalFeeLevels, coinInfo, blockTime },
         } satisfies UiRequestSelectFee);
         dispatch(connectPopupActions.selectAccount(picker));
         const choice = await feeDeferred.promise;

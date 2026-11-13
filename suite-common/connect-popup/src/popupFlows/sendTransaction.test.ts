@@ -21,8 +21,7 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     __esModule: true,
     default: {
-        getCoinInfo: () =>
-            Promise.resolve({ success: true, payload: { type: 'bitcoin', minFee: 1 } }),
+        getCoinInfo: () => Promise.resolve({ success: true, payload: { type: 'bitcoin' } }),
         getPublicKey: jest.fn(() =>
             Promise.resolve({ success: true, payload: { xpub: 'xpub', xpubSegwit: 'descriptor' } }),
         ),
@@ -49,6 +48,8 @@ jest.mock('@trezor/blockchain-core', () => ({
             Promise.resolve({
                 success: true,
                 payload: {
+                    minFee: 1,
+                    blockTime: 10,
                     levels: [
                         { label: 'high', feePerUnit: '5', blocks: 1 },
                         { label: 'normal', feePerUnit: '2', blocks: 6 },
