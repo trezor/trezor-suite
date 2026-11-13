@@ -44,7 +44,7 @@ import { createLazy, throwError } from '@trezor/utils';
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
-import { dispose as disposeBackend } from '../backend/BlockchainLink';
+import { dispose as disposeBackend, setDebug as setBackendDebug } from '../backend/BlockchainLink';
 import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import { getLocalFirmwareConfig, getRemoteFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
@@ -924,6 +924,7 @@ export class Core extends EventEmitter {
             // enabledNetworks has its own store (the single source of truth); keep it out of
             // settingsStore so no reader picks up a stale, unsanitized snapshot.
             settingsStore.set({ ...settings, enabledNetworks: undefined });
+            setBackendDebug(settings.debug);
             enabledNetworksStore.set(settings.enabledNetworks ?? []);
 
             const config =

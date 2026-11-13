@@ -33,4 +33,6 @@ export const reconnectAllBackends = (coinInfo?: CoinInfo) => backends.reconnectA
 
 export const updateProxy = (proxy?: Proxy) => backends.updateProxy(proxy);
 
+export const setDebug = (debug = false) => backends.setDebug(debug);
+
 export const dispose = () => backends.dispose();

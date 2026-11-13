@@ -6,7 +6,6 @@ import { deepEqual } from '@trezor/utils';
 
 import type { BlockchainOptions } from './Blockchain';
 import { Blockchain } from './Blockchain';
-import * as settingsStore from '../data/settingsStore';
 
 type CoinShortcut = CoinInfo['shortcut'];
 type Identity = string;
@@ -25,6 +24,7 @@ const STABLE_CONNECTION_TIME = 30000;
 
 export class BackendManager {
     private proxy?: Proxy;
+    private debug = false;
 
     private readonly instances: { [shortcut: CoinShortcutIdentity]: Blockchain } = {};
     private readonly reconnect: { [shortcut: CoinShortcutIdentity]: Reconnect } = {};
@@ -58,7 +58,7 @@ export class BackendManager {
             backend = new Blockchain({
                 coinInfo: this.patchCoinInfo(coinInfo),
                 identity,
-                debug: settingsStore.get('debug'),
+                debug: this.debug,
                 proxy: this.proxy,
                 postMessage,
                 onDisconnected: pendingSubscriptions => {
@@ -125,6 +125,10 @@ export class BackendManager {
         } else {
             delete this.custom[shortcut];
         }
+    }
+
+    setDebug(debug: boolean) {
+        this.debug = debug;
     }
 
     async updateProxy(proxy: Proxy | undefined) {
