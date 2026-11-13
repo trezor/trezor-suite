@@ -73,6 +73,8 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             <Card>
                                 {output.type === 'opreturn' ? (
                                     <OpReturn outputId={index} />
+                                ) : output.type === 'name-op' ? (
+                                    <NameOp outputId={index} />
                                 ) : (
                                     <Column gap={16}>
                                         <Address
@@ -88,7 +90,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 )}
                             </Card>
 
-                            {output.type !== 'opreturn' && (
+                            {output.type !== 'opreturn' && output.type !== 'name-op' && (
                                 <DestinationTag networkSymbol={symbol} />
                             )}
                         </Column>
