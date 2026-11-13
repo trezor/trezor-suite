@@ -184,7 +184,29 @@ describe('sellSelectors', () => {
             );
         });
 
-        it('should fall back to USD if base currency is not supported', () => {
+        it('should use suggested fiat currency if base currency is not supported', () => {
+            state.wallet.settings.localCurrency = 'czk';
+            state.wallet.trading.sell.sellInfo!.suggestedFiatCurrency = 'EUR';
+
+            expect(selectSellFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    fiatCurrency: 'eur',
+                }),
+            );
+        });
+
+        it('should prefer supported base currency over suggested fiat currency', () => {
+            state.wallet.settings.localCurrency = 'usd';
+            state.wallet.trading.sell.sellInfo!.suggestedFiatCurrency = 'EUR';
+
+            expect(selectSellFormDefaultValues(state)).toEqual(
+                expect.objectContaining({
+                    fiatCurrency: 'usd',
+                }),
+            );
+        });
+
+        it('should fall back to USD if base currency is not supported and no fiat is suggested', () => {
             state.wallet.settings.localCurrency = 'czk';
 
             expect(selectSellFormDefaultValues(state)).toEqual(

@@ -56,6 +56,7 @@ describe('loadSellInfoThunk', () => {
         const sellInfoApi: SellListResponse = {
             providers: [sellProvider],
             country: 'CZ',
+            suggestedFiatCurrency: 'CZK',
         };
 
         tradeApi.getSellList = () => Promise.resolve(sellInfoApi);
@@ -70,6 +71,7 @@ describe('loadSellInfoThunk', () => {
                 sellProvider.tradedFiatCurrencies?.map(currency => currency.toLowerCase()) ?? [],
             supportedCryptoCurrencies: sellProvider.tradedCoins,
             country: sellInfoApi.country,
+            suggestedFiatCurrency: sellInfoApi.suggestedFiatCurrency,
         });
     });
 

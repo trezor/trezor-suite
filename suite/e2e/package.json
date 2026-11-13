@@ -75,7 +75,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "@types/invity-api": "^1.1.23",
+        "@types/invity-api": "^1.1.24",
         "@types/lodash": "^4.17.16",
         "@walletconnect/sign-client": "^2.25.0",
         "@walletconnect/types": "^2.25.0",
