@@ -30,6 +30,8 @@ import { error, success } from '../utils/result';
 
 type DescriptorsDict = Record<PathInternal, Descriptor>;
 
+type Lock = { id: TimerId; dfd: Deferred<void> };
+
 // in nodeusb, enumeration operation takes ~3 seconds
 const lockDuration = 1000 * 4;
 
@@ -51,8 +53,7 @@ export class SessionsBackground
     private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: { id: TimerId; dfd: Deferred<void> }[] = [];
-    private locksTimeoutQueue: TimerId[] = [];
+    private locksQueue: Lock[] = [];
     private lastSessionId = 0;
     private lastPathId = 0;
 
@@ -287,24 +288,24 @@ export class SessionsBackground
         // lock times out:
         // - if cleared by client (enumerateDone)
         // - after n second automatically
-        const timeout = setTimeout(() => {
-            dfd.resolve(undefined);
-        }, lockDuration);
+        const lock: Lock = {
+            id: setTimeout(() => dfd.resolve(undefined), lockDuration),
+            dfd,
+        };
+        this.locksQueue.push(lock);
 
-        this.locksQueue.push({ id: timeout, dfd });
-        this.locksTimeoutQueue.push(timeout);
+        return lock;
+    }
 
-        return this.locksQueue.length - 1;
+    private releaseLock(lock: Lock) {
+        lock.dfd.resolve(undefined);
+        clearTimeout(lock.id);
+        this.locksQueue = this.locksQueue.filter(queued => queued !== lock);
     }
 
     private clearLock() {
-        const lock = this.locksQueue[0];
-        if (lock) {
-            lock.dfd.resolve(undefined);
-            this.locksQueue.shift();
-            clearTimeout(this.locksTimeoutQueue[0]);
-            this.locksTimeoutQueue.shift();
-        }
+        const [head] = this.locksQueue;
+        if (head) this.releaseLock(head);
     }
 
     private async waitForUnlocked(myIndex: number) {
@@ -317,8 +318,10 @@ export class SessionsBackground
     }
 
     private async waitInQueue() {
-        const myIndex = this.startLock();
-        await this.waitForUnlocked(myIndex);
+        const lock = this.startLock();
+        await this.waitForUnlocked(this.locksQueue.indexOf(lock));
+
+        return lock;
     }
 
     private getInternal(pathPublic: PathPublic): PathInternal | undefined {
@@ -329,7 +332,6 @@ export class SessionsBackground
 
     dispose() {
         this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
         this.descriptors = {};
         this.lastSessionId = 0;
         this.removeAllListeners();
