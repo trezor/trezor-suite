@@ -62,7 +62,8 @@ export const paramDescriptions = {
     versionGroupId: 'only for Zcash, nVersionGroupId when overwintered is set,',
     overwintered: 'only for Zcash',
     timestamp: 'only for Capricoin, transaction timestamp,',
-    branchId: 'only for Zcash, BRANCH_ID when overwintered is set',
+    branchId:
+        'only for Zcash, BRANCH_ID when overwintered is set, e.g. `consensusBranchId` of `blockchainGetInfo`. A compiled-in value when omitted, which may be outdated after a network upgrade',
     push: 'Deprecated. Supported only when called through Trezor Suite (web/desktop/mobile); throws in @trezor/connect for Node. Use pushTransaction.',
     amountUnit: 'show amounts in BTC, mBTC, uBTC, sat',
     serialize:

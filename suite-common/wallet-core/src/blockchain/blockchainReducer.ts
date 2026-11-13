@@ -96,6 +96,7 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         cardanoProtocolParameters:
             info.cardanoProtocolParameters ??
             draft[network.symbol as LegacyNetworkSymbol].cardanoProtocolParameters,
+        consensusBranchId: info.consensusBranchId,
         backends: draft[network.symbol as LegacyNetworkSymbol].backends,
         identityConnections: draft[network.symbol as LegacyNetworkSymbol].identityConnections,
     };
@@ -260,6 +261,9 @@ export const selectCardanoProtocolParameters = (
     state: BlockchainRootState,
     symbol: NetworkSymbol,
 ) => selectNetworkBlockchainInfo(state, symbol)?.cardanoProtocolParameters;
+
+export const selectConsensusBranchId = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    selectNetworkBlockchainInfo(state, symbol)?.consensusBranchId;
 
 const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
     BlockchainRootState & WalletSettingsRootState & NetworksRootState

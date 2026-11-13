@@ -38,7 +38,6 @@ class BlockchainLink {
             name: this.name,
             shortcut: this.name,
             network: this.name,
-            consensusBranchId: 1001,
         });
     }
     estimateFee(params: { blocks: number[] }) {
