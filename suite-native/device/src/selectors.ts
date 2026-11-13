@@ -11,9 +11,11 @@ import {
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInBootloader,
+    selectIsDeviceInitialized,
     selectIsDeviceThpLocked,
     selectIsDiscoveryEntropyCheckDismissed,
     selectIsFirmwareAuthenticityCheckDismissed,
+    selectIsFirmwareUpdateRequired,
     selectIsPortfolioTrackerDevice,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
@@ -67,7 +69,7 @@ import { type Device } from '@trezor/connect';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
+import { getIsDeviceSetupSupported, getIsFirmwareVersionSupportedByApp } from './utils';
 
 export type NativeDeviceRootState = DeviceRootState &
     PersistentDeviceDataRootState &
@@ -85,21 +87,27 @@ export type NativeDeviceRootState = DeviceRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
-export const selectIsDeviceFirmwareSupported = (state: DeviceRootState) => {
+export const selectIsFirmwareUpdateRequiredInApp = (state: DeviceRootState) => {
     const deviceFwVersion = selectDeviceFirmwareVersionArray(state);
     const deviceModel = selectDeviceModel(state);
+    const isFirmwareUpdateRequiredByConnect = selectIsFirmwareUpdateRequired(state);
+    const isFirmwareVersionSupportedByApp = getIsFirmwareVersionSupportedByApp(
+        deviceFwVersion,
+        deviceModel,
+    );
+    const isFirmwareUpdateRequiredByApp = !isFirmwareVersionSupportedByApp;
 
-    return isFirmwareVersionSupported(deviceFwVersion, deviceModel);
+    return isFirmwareUpdateRequiredByConnect || isFirmwareUpdateRequiredByApp;
 };
 
 export const selectIsDeviceReadyToUse = (
     state: DeviceRootState & AccountsRootState & DiscoveryRootState,
 ) => {
     const isUnacquiredDevice = selectIsUnacquiredDevice(state);
-    const isDeviceFirmwareSupported = selectIsDeviceFirmwareSupported(state);
+    const isFirmwareUpdateRequired = selectIsFirmwareUpdateRequiredInApp(state);
     const isDeviceUninitialized = selectIsConnectedDeviceUninitialized(state);
 
-    return !isUnacquiredDevice && !isDeviceUninitialized && isDeviceFirmwareSupported;
+    return !isUnacquiredDevice && !isDeviceUninitialized && !isFirmwareUpdateRequired;
 };
 
 export const selectIsDeviceReadyToUseAndAuthorized = (
@@ -290,6 +298,12 @@ export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [selectDeviceModel],
     model => isNotNullOrUndefined(model) && getIsDeviceSetupSupported(model),
 );
+
+export const selectIsDeviceFirmwareUpdateRequiredAndAvailable = (state: NativeDeviceRootState) =>
+    selectIsDeviceConnected(state) &&
+    selectIsDeviceSetupSupported(state) &&
+    selectIsDeviceInitialized(state) &&
+    selectIsFirmwareUpdateRequiredInApp(state);
 
 export const selectShouldFactoryResetBeVisible = createMemoizedSelector(
     [selectIsDeviceInBootloader, selectHasDeviceFirmwareInstalled],

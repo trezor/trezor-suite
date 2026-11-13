@@ -19,7 +19,7 @@ import {
 import {
     type NativeDeviceRootState,
     selectCompromisedDeviceFailedCheck,
-    selectIsDeviceFirmwareSupported,
+    selectIsFirmwareUpdateRequiredInApp,
 } from '@suite-native/device';
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -52,7 +52,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     const device = selectSelectedDevice(getState());
     if (!device) return action;
 
-    const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
+    const isFirmwareUpdateRequired = selectIsFirmwareUpdateRequiredInApp(getState());
     const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
     const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
 
@@ -105,7 +105,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     if (trigger !== undefined) {
         if (
             isAnyNetworkEnabled &&
-            isDeviceFirmwareVersionSupported &&
+            !isFirmwareUpdateRequired &&
             device.connected &&
             isDeviceAcquired(device)
         ) {

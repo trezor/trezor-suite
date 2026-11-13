@@ -26,7 +26,11 @@ import {
     selectIsAnyNetworkEnabled,
     selectIsDiscoveredDeviceAccountless,
 } from '@suite-common/wallet-core';
-import { type NativeDeviceRootState, selectIsDeviceSetupSupported } from '@suite-native/device';
+import {
+    type NativeDeviceRootState,
+    selectIsDeviceFirmwareUpdateRequiredAndAvailable,
+    selectIsDeviceSetupSupported,
+} from '@suite-native/device';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { selectDeviceHistoryIgnoredNetworkSymbols } from '@suite-native/graph';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -113,6 +117,13 @@ export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenS
     const hasOnlyEmptyPortfolioTracker = selectHasOnlyEmptyPortfolioTracker(state);
     const isDiscoveredDeviceAccountless = selectIsDiscoveredDeviceAccountless(state);
     const hasRunningDiscovery = selectHasRunningDiscovery(state);
+    const isDeviceFirmwareUpdateRequiredAndAvailable =
+        selectIsDeviceFirmwareUpdateRequiredAndAvailable(state);
+
+    // Checked before crossroads: Connect refuses device calls on FW it marks as required, so the device may stay locked.
+    if (isDeviceFirmwareUpdateRequiredAndAvailable && !isReconnectRequested) {
+        return 'firmwareUpdateRequired';
+    }
 
     // Crossroads is displayed either when there is no real device connected and the portfolio tracker
     // has no accounts, or when a device is connected but PIN entry or THP confirmation was canceled.

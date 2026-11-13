@@ -129,6 +129,68 @@ describe('selectHomeScreenState', () => {
         });
     });
 
+    describe('firmwareRequired', () => {
+        it('should return firmwareRequired when connected initialized device is locked and has FW required by Connect', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        connected: true,
+                        firmware: 'required',
+                        features: {
+                            initialized: true,
+                            unlocked: false,
+                            internal_model: DeviceModelInternal.T3T1,
+                        },
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe('firmwareUpdateRequired');
+        });
+
+        // No special handling is needed or desired for this case, because onboarding has its own FW update flow and it cannot be skipped, so this case is handled like normal onboarding.
+        it('should return uninitializedDevice when uninitialized device has FW required by Connect', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        connected: true,
+                        firmware: 'required',
+                        state: {},
+                        features: {
+                            initialized: false,
+                            unlocked: true,
+                            internal_model: DeviceModelInternal.T3T1,
+                        },
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe('uninitializedDevice');
+        });
+
+        it('should not return firmwareRequired when device with FW required by Connect is disconnected', () => {
+            const state = buildState({
+                device: {
+                    selectedDevice: {
+                        connected: false,
+                        firmware: 'required',
+                        state: { staticSessionId: TEST_SESSION_ID },
+                        features: { initialized: true, internal_model: DeviceModelInternal.T3T1 },
+                    },
+                    devices: [{ id: 'device_id' }],
+                },
+                wallet: {
+                    settings: { enabledNetworks: ['btc'] },
+                    accounts: [{ deviceState: TEST_SESSION_ID, visible: true }],
+                },
+            });
+
+            expect(selectHomeScreenState(state)).toBe('portfolioContent');
+        });
+    });
+
     describe('emptyPortfolioCrossroads', () => {
         it('should return emptyPortfolioCrossroads when device is connected, not initialized, but model does not support setup', () => {
             const state = buildState({

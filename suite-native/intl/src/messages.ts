@@ -166,6 +166,11 @@ export const messages = {
                 subtitle: 'You can do this anytime.',
                 button: 'Set up my Trezor',
             },
+            firmwareUpdateRequired: {
+                title: 'Firmware update required',
+                subtitle: 'Update the firmware to continue using your Trezor with this app.',
+                button: 'Update firmware',
+            },
             initializedDevice: {
                 title: 'Your wallet is ready',
                 subtitle: 'Add the networks you want to use.',
