@@ -4,8 +4,10 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
+import { type EthereumDisplayFormat } from '@trezor/connect';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -15,6 +17,7 @@ import {
     getEvmTransactionTextSignature,
     getNativeWrapTxKind,
     getPrecomposedTxWithAccountToken,
+    getResolvedDisplayFormat,
     getUnwrapAmountByEthereumDataHex,
     getWrappedNativeTxTarget,
     isUnwrapNativeTx,
@@ -593,6 +596,155 @@ describe('eth utils', () => {
                     accountTokens: [accountToken],
                 }),
             ).toBe(precomposedTx);
+        });
+    });
+
+    describe(getResolvedDisplayFormat.name, () => {
+        const GATEWAY = '0x721B9abAb6511b46b9ee83A1aba23BDAcB004149';
+        const ACCOUNT = {
+            networkType: 'ethereum',
+            descriptor: asAccountDescriptor(GATEWAY),
+            symbol: ethSymbol,
+        } as const;
+        // depositETH(GATEWAY, GATEWAY, 0)
+        const DEPOSIT_ETH_DATA = `474cf53d${GATEWAY.slice(2).toLowerCase().padStart(64, '0').repeat(2)}${'0'.repeat(64)}`;
+
+        const displayFormat: EthereumDisplayFormat = {
+            chainId: 100,
+            address: GATEWAY.toLowerCase(),
+            functionSignature: '0x474cf53d',
+            intent: 'Supply',
+            providerName: 'Aave',
+            parameters: [
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_UINT16' },
+            ],
+            fields: [
+                {
+                    label: 'Amount to supply',
+                    formatter: 'FORMATTER_AMOUNT',
+                    path: { type: 'container', container: 'VALUE' },
+                    nativeCurrencyAddresses: [],
+                    enumValues: [],
+                },
+            ],
+        };
+
+        const precomposedTx: PrecomposedTransactionFinal = {
+            type: 'final',
+            inputs: [],
+            outputsPermutation: [0],
+            outputs: [{ address: GATEWAY, amount: '1000', script_type: 'PAYTOADDRESS' }],
+            totalSpent: '43000',
+            fee: '42000',
+            feePerByte: '20',
+            bytes: 0,
+            max: undefined,
+            displayFormat,
+        };
+
+        it('resolves the call with the value Connect previews it with', () => {
+            expect(
+                getResolvedDisplayFormat({
+                    account: ACCOUNT,
+                    precomposedTx,
+                    transactionData: DEPOSIT_ETH_DATA,
+                }),
+            ).toMatchObject({
+                providerName: 'Aave',
+                intent: 'Supply',
+                rows: [
+                    {
+                        label: 'Amount to supply',
+                        values: [{ type: 'nativeAmount', amount: '1000' }],
+                    },
+                ],
+            });
+        });
+
+        it.each([
+            ['without a display format', ACCOUNT, { ...precomposedTx, displayFormat: undefined }],
+            [
+                'for a decoded token transfer',
+                ACCOUNT,
+                { ...precomposedTx, token: mockAccountToken({}) },
+            ],
+            [
+                'on another network type',
+                { ...ACCOUNT, networkType: 'bitcoin' } as const,
+                precomposedTx,
+            ],
+        ])('returns undefined %s', (_name, account, tx) => {
+            expect(
+                getResolvedDisplayFormat({
+                    account,
+                    precomposedTx: tx,
+                    transactionData: DEPOSIT_ETH_DATA,
+                }),
+            ).toBeUndefined();
+        });
+
+        describe('embedded calls', () => {
+            const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+            const word = (hex: string) => hex.padStart(64, '0');
+            // execute(address target, bytes data)
+            const executeData = (target: string, call: string) =>
+                `1cff79cd${word(target.slice(2).toLowerCase())}${word('40')}${word((call.length / 2).toString(16))}${call.padEnd(Math.ceil(call.length / 64) * 64, '0')}`;
+            const executeFormat: EthereumDisplayFormat = {
+                ...displayFormat,
+                functionSignature: '0x1cff79cd',
+                intent: 'Execute',
+                parameters: [
+                    { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                    { type: 'dynamic', abiType: 'ABI_BYTES' },
+                ],
+                fields: [
+                    {
+                        label: 'Call',
+                        formatter: 'FORMATTER_CALLDATA',
+                        path: { type: 'data', steps: [1] },
+                        calleePath: { type: 'data', steps: [0] },
+                        nativeCurrencyAddresses: [],
+                        enumValues: [],
+                    },
+                ],
+            };
+            const resolveIntents = (
+                transactionData: string,
+                subcallDisplayFormats?: EthereumDisplayFormat[],
+            ) =>
+                getResolvedDisplayFormat({
+                    account: ACCOUNT,
+                    precomposedTx: {
+                        ...precomposedTx,
+                        displayFormat: executeFormat,
+                        subcallDisplayFormats,
+                    },
+                    transactionData,
+                })?.rows.flatMap(row => (row.type === 'subcallIntent' ? row.values : []));
+
+            it('decodes them with the definitions Connect downloaded', () => {
+                const sweepFormat: EthereumDisplayFormat = {
+                    ...displayFormat,
+                    functionSignature: '0x01681a62',
+                    intent: 'Sweep',
+                    parameters: [{ type: 'atomic', abiType: 'ABI_ADDRESS' }],
+                    fields: [],
+                };
+                const data = executeData(GATEWAY, `01681a62${word(GATEWAY.slice(2))}`);
+
+                expect(resolveIntents(data, [sweepFormat])).toEqual([
+                    { type: 'text', text: 'Sweep' },
+                ]);
+                expect(resolveIntents(data)).toEqual([]);
+            });
+
+            it("decodes the account network's WETH withdraw like the device", () => {
+                expect(resolveIntents(executeData(WETH, `2e1a7d4d${word('9')}`))).toEqual([
+                    { type: 'text', text: 'Unwrap WETH to ETH' },
+                ]);
+            });
         });
     });
 });

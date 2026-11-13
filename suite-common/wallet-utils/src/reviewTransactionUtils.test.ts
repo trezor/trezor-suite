@@ -11,7 +11,7 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import type { TokenInfo } from '@trezor/connect';
+import type { EthereumDisplayFormat, TokenInfo } from '@trezor/connect';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -812,6 +812,93 @@ describe('constructTransactionReviewOutputs', () => {
                 expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
             ]),
         );
+    });
+
+    describe('contract call with a display format from connect', () => {
+        const gateway = '0x721B9abAb6511b46b9ee83A1aba23BDAcB004149';
+        // depositETH(gateway, gateway, 0)
+        const transactionData = `0x474cf53d${gateway.slice(2).toLowerCase().padStart(64, '0').repeat(2)}${'0'.repeat(64)}`;
+        const buildDisplayFormat = (
+            fields: EthereumDisplayFormat['fields'],
+            overrides: Partial<EthereumDisplayFormat> = {},
+        ): EthereumDisplayFormat => ({
+            chainId: 1,
+            address: gateway.toLowerCase(),
+            functionSignature: '0x474cf53d',
+            intent: 'Supply',
+            providerName: 'Aave',
+            parameters: [
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_ADDRESS' },
+                { type: 'atomic', abiType: 'ABI_UINT16' },
+            ],
+            fields,
+            ...overrides,
+        });
+        const amountField: EthereumDisplayFormat['fields'][number] = {
+            label: 'Amount to supply',
+            formatter: 'FORMATTER_AMOUNT',
+            path: { type: 'container', container: 'VALUE' },
+            nativeCurrencyAddresses: [],
+            enumValues: [],
+        };
+        const buildOutputs = (displayFormat: EthereumDisplayFormat, reviewDevice = device) =>
+            constructTransactionReviewOutputs({
+                account,
+                device: reviewDevice,
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ transactionData }),
+                precomposedTx: {
+                    ...buildPrecomposedTransaction({ to: gateway }),
+                    displayFormat,
+                } as GeneralPrecomposedTransactionFinal,
+            });
+
+        it('mirrors the device screens: provider, intent, then the decoded fields', () => {
+            // `confirm_ethereum_clear_signing` walks provider → intent → fields → summary; the
+            // summary is the review's own total row.
+            expect(buildOutputs(buildDisplayFormat([amountField]))).toEqual([
+                { type: 'recipient_name', value: 'Aave' },
+                { type: 'contract_intent', value: 'Supply' },
+                { type: 'data', value: transactionData },
+            ]);
+        });
+
+        it('names the contract by its address without a provider name', () => {
+            expect(
+                buildOutputs(buildDisplayFormat([amountField], { providerName: undefined }))[0],
+            ).toEqual({
+                type: 'recipient_name',
+                value: gateway,
+            });
+        });
+
+        it('skips the fields step when the definition has no fields, as the device does', () => {
+            expect(buildOutputs(buildDisplayFormat([]))).toEqual([
+                { type: 'recipient_name', value: 'Aave' },
+                { type: 'contract_intent', value: 'Supply' },
+            ]);
+        });
+
+        it('keeps the blind-signing rows on firmware without clear signing', () => {
+            const outputs = buildOutputs(
+                buildDisplayFormat([amountField]),
+                mockSuiteDevice(
+                    { unavailableCapabilities: { evmClearSigning: 'update-required' } },
+                    { major_version: 2, minor_version: 8, patch_version: 0 },
+                ),
+            );
+
+            expect(outputs).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({ type: 'data', value: transactionData }),
+                    expect.objectContaining({ type: 'contract', value: gateway }),
+                ]),
+            );
+            expect(outputs).not.toEqual(
+                expect.arrayContaining([expect.objectContaining({ type: 'contract_intent' })]),
+            );
+        });
     });
 
     it('renders one tron-vote line per representative with its own vote count', () => {

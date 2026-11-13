@@ -5,8 +5,13 @@ import { getAddress, isAddress } from 'viem';
 import {
     EthereumSignTransaction as EthereumSignTransactionSchema,
     ExperimentalMethod,
+    createDisplayFormatPathWalker,
+    getDisplayFormatSubcalls,
+    hexToDisplayFormatBytes,
+    parseDisplayFormatCalldata,
 } from '@trezor/connect-common';
 import type {
+    EthereumDisplayFormat,
     EthereumNetworkInfoDefinitionValues,
     EthereumTransaction,
     EthereumTransactionEIP1559,
@@ -16,7 +21,7 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotUndefined } from '@trezor/utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
@@ -32,8 +37,10 @@ import {
 } from '../../../utils/paymentRequest';
 import {
     decodeEthereumDefinition,
+    decodeEthereumDisplayFormat,
     ethereumNetworkInfoFromDefinition,
     getEthereumDefinitions,
+    getEthereumDisplayFormatDefinition,
 } from '../ethereumDefinitions';
 import * as helper from '../ethereumSignTx';
 
@@ -70,6 +77,28 @@ const normalizeDelegate = (delegate: string) => {
     return getAddress(delegate);
 };
 
+// 4-byte function selector
+const SC_FUNC_SIG_HEX_LENGTH = 8;
+// The device clear-signs only calldata it can hold whole (firmware `_MAX_DATA_STORED`).
+const MAX_CLEAR_SIGNING_DATA_LENGTH = 6144;
+
+type DisplayFormatCall = {
+    chainId: number;
+    address: string;
+    functionSignature: string;
+};
+
+const isDisplayFormatFor = (
+    displayFormat: EthereumDisplayFormat,
+    { chainId, address, functionSignature }: DisplayFormatCall,
+) =>
+    displayFormat.chainId === chainId &&
+    displayFormat.address.toLowerCase() === addHexPrefix(address).toLowerCase() &&
+    displayFormat.functionSignature.toLowerCase() === addHexPrefix(functionSignature).toLowerCase();
+
+// Bare hex, as the definition URLs and the transaction fields carry it.
+const toHex = (bytes: Uint8Array) => Buffer.from(bytes).toString('hex');
+
 const strip = deepTransform(value => {
     let stripped = stripHexPrefix(value);
     // pad left even
@@ -84,6 +113,9 @@ export default class EthereumSignTransaction extends AbstractMethod<
     'ethereumSignTransaction',
     Params
 > {
+    private displayFormat?: EthereumDisplayFormat;
+    private subcallDisplayFormats: EthereumDisplayFormat[] = [];
+
     constructor(message: MethodMessage<'ethereumSignTransaction'>) {
         const { payload } = message;
         // validate incoming parameters
@@ -173,7 +205,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    private async getDefinitions(version?: DefinitionsVersion) {
+    private async getDefinitions(version?: DefinitionsVersion, functionSignature?: string) {
         // eth && token => yes
         // evm && token => yes
         // eth && !token => no
@@ -188,14 +220,15 @@ export default class EthereumSignTransaction extends AbstractMethod<
             slip44,
             contractAddress:
                 this.params.tx.data && this.params.tx.to != null ? this.params.tx.to : undefined,
+            functionSignature,
             version,
         });
     }
 
     // Only `__info` names the network and token and previews the transfer, so only `__info`
-    // downloads their definitions to decode them.
+    // downloads their definitions to decode them. The device requests the display format itself.
     async getMethodInfo() {
-        const definitions = await this.getDefinitions();
+        const definitions = await this.getDefinitions(undefined, this.getFunctionSignature());
         if (definitions) {
             this.params.definitions = definitions;
 
@@ -204,8 +237,108 @@ export default class EthereumSignTransaction extends AbstractMethod<
                 this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
             }
         }
+        this.displayFormat = this.getDisplayFormat();
+        this.subcallDisplayFormats = this.displayFormat
+            ? await this.getSubcallDisplayFormats(this.displayFormat)
+            : [];
 
         return super.getMethodInfo();
+    }
+
+    private getFunctionSignature() {
+        const { data } = this.params.tx;
+
+        return data && data.length >= SC_FUNC_SIG_HEX_LENGTH
+            ? data.slice(0, SC_FUNC_SIG_HEX_LENGTH)
+            : undefined;
+    }
+
+    // The display format the device will use for this call, kept only when it is the one requested.
+    private getDisplayFormat() {
+        const encoded = this.params.definitions?.encoded_display_format;
+        const { chainId, to } = this.params.tx;
+        const functionSignature = this.getFunctionSignature();
+        if (!encoded || !to || !functionSignature) {
+            return;
+        }
+
+        try {
+            const displayFormat = decodeEthereumDisplayFormat(encoded);
+
+            return isDisplayFormatFor(displayFormat, { chainId, address: to, functionSignature })
+                ? displayFormat
+                : undefined;
+        } catch (err) {
+            console.warn(`unable to decode the display-format definition. detail: ${err.message}`);
+        }
+    }
+
+    // The calls the transaction embeds (e.g. a multicall), as the device finds them to show each.
+    private getSubcalls(displayFormat: EthereumDisplayFormat) {
+        const { data, to, value } = this.params.tx;
+        const calldata = data ? hexToDisplayFormatBytes(data) : undefined;
+        const callee = to ? hexToDisplayFormatBytes(to) : undefined;
+        if (!calldata || !callee || calldata.length > MAX_CLEAR_SIGNING_DATA_LENGTH) {
+            return [];
+        }
+
+        try {
+            const parameters = parseDisplayFormatCalldata(
+                displayFormat.parameters,
+                calldata.subarray(SC_FUNC_SIG_HEX_LENGTH / 2),
+            );
+            const walkPath = createDisplayFormatPathWalker(parameters, {
+                to: callee,
+                value: value ? BigInt(addHexPrefix(value)) : 0n,
+            });
+
+            return displayFormat.fields
+                .filter(({ formatter }) => formatter === 'FORMATTER_CALLDATA')
+                .flatMap(field => {
+                    try {
+                        return getDisplayFormatSubcalls(field, walkPath);
+                    } catch {
+                        return [];
+                    }
+                });
+        } catch {
+            return [];
+        }
+    }
+
+    // The device requests the definition of each embedded call while showing it.
+    private async getSubcallDisplayFormats(displayFormat: EthereumDisplayFormat) {
+        const { chainId } = this.params.tx;
+        const calls = new Map<string, DisplayFormatCall>();
+        this.getSubcalls(displayFormat).forEach(({ callee, selector }) => {
+            if (!selector) return;
+            const call = { chainId, address: toHex(callee), functionSignature: toHex(selector) };
+            calls.set(`${call.address}-${call.functionSignature}`, call);
+        });
+
+        const displayFormats = await Promise.all(
+            Array.from(calls.values()).map(async call => {
+                const encoded = await getEthereumDisplayFormatDefinition({
+                    chainId,
+                    contractAddress: call.address,
+                    functionSignature: call.functionSignature,
+                });
+                if (!encoded) return;
+                try {
+                    const subcallDisplayFormat = decodeEthereumDisplayFormat(encoded);
+
+                    return isDisplayFormatFor(subcallDisplayFormat, call)
+                        ? subcallDisplayFormat
+                        : undefined;
+                } catch (err) {
+                    console.warn(
+                        `unable to decode the display-format definition. detail: ${err.message}`,
+                    );
+                }
+            }),
+        );
+
+        return displayFormats.filter(isNotUndefined);
     }
 
     get info() {
@@ -286,6 +419,8 @@ export default class EthereumSignTransaction extends AbstractMethod<
                       }
                     : undefined,
                 network: this.params.network,
+                displayFormat: this.displayFormat,
+                subcallDisplayFormats: this.subcallDisplayFormats,
             };
 
             return Promise.resolve(result);
