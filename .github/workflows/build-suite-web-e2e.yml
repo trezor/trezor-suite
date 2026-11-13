@@ -22,6 +22,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
+      - name: Pull Cardano Serialization Lib asm.js from LFS
+        shell: bash
+        run: git lfs pull --include "networks/cardano/network-cardano/generated/csl-asmjs/*"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:

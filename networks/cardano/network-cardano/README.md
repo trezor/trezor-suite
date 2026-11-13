@@ -3,11 +3,13 @@
 Cardano network definition, runtime (transaction composing via
 `@trezor/network-cardano-coin-selection`) and types.
 
-## Cardano Serialization Lib on mobile
+## Cardano Serialization Lib on mobile and web
 
 `@trezor/network-cardano-coin-selection` calls Cardano Serialization Lib (CSL), which ships as WASM.
-Desktop and web run the WASM build. Hermes (React Native) cannot run WASM, so the mobile app
-uses a pure-JS (asm.js) build of the same CSL version, reduced to the parts coin selection uses.
+Desktop runs the WASM build in its main process. Hermes (React Native) cannot run WASM, and web
+runs coin selection in the page, where WASM would need `'wasm-unsafe-eval'` in the CSP. So the
+mobile and web apps use a pure-JS (asm.js) build of the same CSL version, reduced to the parts
+coin selection uses.
 
 ### Layout
 
@@ -20,10 +22,12 @@ uses a pure-JS (asm.js) build of the same CSL version, reduced to the parts coin
 | `scripts/csl-asmjs/generate.test.ts`        | Fails when the committed build is stale or edited, by comparing hashes with `manifest.json`.        |
 | `scripts/csl-asmjs/verify.sh`               | Rebuilds `generated/csl-asmjs/` from scratch and fails unless it matches the committed files.       |
 | `jest.config.cjs`                           | Project `wasm`: all tests against the desktop (WASM) build. Includes `jest.config.asmjs.cjs`.       |
-| `jest.config.asmjs.cjs`                     | Project `asmjs`: parity and scenario tests against the generated (mobile) build.                    |
+| `jest.config.asmjs.cjs`                     | Project `asmjs`: parity and scenario tests against the generated (mobile and web) build.            |
 
-`suite-native-app/app/metro.config.js` resolves `@emurgo/cardano-serialization-lib-{nodejs,browser}`
-to `generated/csl-asmjs/cardano_serialization_lib.js`.
+`suite-native-app/app/metro.config.js` and `suite-app/web-app/webpack.config.ts` resolve
+`@emurgo/cardano-serialization-lib-{nodejs,browser}` to `generated/csl-asmjs/cardano_serialization_lib.js`.
+That entry passes the asm.js module to the glue as a side effect, which is why `package.json` lists it in
+`sideEffects`; webpack would otherwise skip it in production builds.
 
 ### How the build is made
 
