@@ -1,5 +1,6 @@
 import { type ComponentType, type ReactNode } from 'react';
 
+import { type NetworkFamilyId } from '@suite-common/networks';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import type { TransactionFact } from '@trezor/network-module-suite-common-types';
 
@@ -26,6 +27,7 @@ export type TransactionFactsOverrideProps = {
     DefaultFacts: ComponentType<DefaultTransactionFactsProps>;
 };
 
+/** Keyed by family id, so a misspelled family does not compile and a family without one needs no entry. */
 export type TransactionFactsOverrides = Readonly<
-    Partial<Record<string, ComponentType<TransactionFactsOverrideProps>>>
+    Partial<Record<NetworkFamilyId, ComponentType<TransactionFactsOverrideProps>>>
 >;

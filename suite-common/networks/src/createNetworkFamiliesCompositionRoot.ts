@@ -7,6 +7,19 @@ import { solanaFamily } from '@trezor/network-solana-suite-common';
 import { stellarFamily } from '@trezor/network-stellar-suite-common';
 import { tronFamily } from '@trezor/network-tron-suite-common';
 
+const networkFamilies = [
+    bitcoinFamily,
+    ethereumFamily,
+    rippleFamily,
+    cardanoFamily,
+    solanaFamily,
+    stellarFamily,
+    tronFamily,
+] as const;
+
+/** The id of every family the apps serve, for anything an app keys by family, such as overrides. */
+export type NetworkFamilyId = (typeof networkFamilies)[number]['family'];
+
 type NetworkFamiliesCompositionRootDeps = BitcoinFamilyDeps &
     CardanoFamilyDeps &
     EthereumFamilyDeps;
@@ -14,12 +27,4 @@ type NetworkFamiliesCompositionRootDeps = BitcoinFamilyDeps &
 /** The only place that names concrete families; everything else resolves networks through them. */
 export const createNetworkFamiliesCompositionRoot = (
     deps: NetworkFamiliesCompositionRootDeps,
-): readonly BoundNetworkFamily[] => [
-    bitcoinFamily.bind(deps),
-    ethereumFamily.bind(deps),
-    rippleFamily.bind({}),
-    cardanoFamily.bind(deps),
-    solanaFamily.bind({}),
-    stellarFamily.bind({}),
-    tronFamily.bind({}),
-];
+): readonly BoundNetworkFamily[] => networkFamilies.map(family => family.bind(deps));

@@ -1,3 +1,5 @@
+import { type ComponentType } from 'react';
+
 import { CapabilityLabel } from '@suite/intl';
 import { useTransactionFacts } from '@suite-common/transaction-details';
 import { type IconComponent, Row } from '@trezor/components';
@@ -11,6 +13,7 @@ import { transactionFactsOverrides } from './transactionFactsOverrides';
 import {
     type DefaultTransactionFactsProps,
     type TransactionFactsContext,
+    type TransactionFactsOverrideProps,
 } from './transactionFactsTypes';
 import { TxDetailItem } from '../TxDetailItem';
 
@@ -51,6 +54,11 @@ type TransactionFactsProps = {
     context: TransactionFactsContext;
 };
 
+// The registry is keyed by family id; a resolved network names its family as a plain string.
+const overridesByFamily: Readonly<
+    Partial<Record<string, ComponentType<TransactionFactsOverrideProps>>>
+> = transactionFactsOverrides;
+
 /** The network-specific rows of the transaction detail, rendered from the network's facts. */
 export const TransactionFacts = ({ tx, isConfirmed, context }: TransactionFactsProps) => {
     const transactionFacts = useTransactionFacts({
@@ -64,7 +72,7 @@ export const TransactionFacts = ({ tx, isConfirmed, context }: TransactionFactsP
     }
 
     const { family, facts } = transactionFacts;
-    const Override = transactionFactsOverrides[family];
+    const Override = overridesByFamily[family];
 
     return Override ? (
         <Override facts={facts} context={context} DefaultFacts={DefaultTransactionFacts} />
