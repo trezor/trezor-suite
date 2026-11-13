@@ -96,3 +96,13 @@ export type {
     TransactionFactValue,
     TransactionFactsParams,
 } from './capabilities/transactionDetails/TransactionDetails';
+export type {
+    SendData,
+    SendMemo,
+    SendNonceOverride,
+    SendOptionSet,
+    SendOptionUnavailable,
+    SendOptions,
+    SendOptionsParams,
+    SendToken,
+} from './capabilities/sendOptions/SendOptions';

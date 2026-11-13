@@ -12,6 +12,9 @@
             "path": "../../network-module/suite-common/suite-common-types"
         },
         {
+            "path": "../network-solana"
+        },
+        {
             "path": "../network-solana-assets"
         },
         {

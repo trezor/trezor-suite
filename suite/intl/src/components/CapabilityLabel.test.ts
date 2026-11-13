@@ -113,14 +113,48 @@ const getTransactionFactLabels = (): Label[] =>
             .map(fact => fact.label);
     });
 
+// Every send option label, with a token that makes the options explain why they are unavailable.
+const getSendOptionLabels = (): Label[] =>
+    ['xrp', 'xlm', 'sol', 'trx', 'eth', 'btc', 'ada'].flatMap(symbol => {
+        const account = createAccount(symbol);
+        const sendOptions = createGetNetworkForBackend('blockbook')({ symbol: account.symbol })
+            ?.capabilities.sendOptions;
+
+        if (sendOptions === undefined) {
+            throw new Error(`${symbol} is expected to describe its send options.`);
+        }
+
+        return [undefined, { contract: 'token', standard: 'STELLAR-CONTRACT' }].flatMap(token => {
+            const { memo } = sendOptions.getOptions({ account, token });
+
+            return memo
+                ? [
+                      memo.label,
+                      memo.addLabel,
+                      ...[
+                          memo.tooltip,
+                          memo.note,
+                          memo.tooLongMessage,
+                          memo.requiredMessage,
+                      ].filter((label): label is Label => label !== undefined),
+                      ...(memo.unavailable?.reason ? [memo.unavailable.reason] : []),
+                      ...[memo.validate('x'), memo.validate('99999999999')].filter(
+                          (label): label is Label => label !== undefined,
+                      ),
+                  ]
+                : [];
+        });
+    });
+
 describe('capability labels', () => {
-    it.each([...getMessageSigningLabels(), ...getTransactionFactLabels()])(
-        '$id is in the desktop catalog as the family wrote it',
-        label => {
-            expect(isTranslationKey(label.id)).toBe(true);
-            expect(isTranslationKey(label.id) && messages[label.id].defaultMessage).toBe(
-                label.defaultMessage,
-            );
-        },
-    );
+    it.each([
+        ...getMessageSigningLabels(),
+        ...getTransactionFactLabels(),
+        ...getSendOptionLabels(),
+    ])('$id is in the desktop catalog as the family wrote it', label => {
+        expect(isTranslationKey(label.id)).toBe(true);
+        expect(isTranslationKey(label.id) && messages[label.id].defaultMessage).toBe(
+            label.defaultMessage,
+        );
+    });
 });

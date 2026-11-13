@@ -33,3 +33,4 @@ export {
     type DecodedClearSignedSwap,
     type ClearSignedSwapLeg,
 } from './calldata/clearSigningSwap';
+export { ethereumSendOptions } from './sendOptions/ethereumSendOptions';

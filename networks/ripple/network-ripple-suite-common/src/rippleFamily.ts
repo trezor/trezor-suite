@@ -2,6 +2,7 @@ import { defineCapability, defineFamily } from '@trezor/network-module-suite-com
 import { supportedRippleNetworks } from '@trezor/network-ripple-types';
 
 import { getNetworkConfig } from './networkConfig';
+import { rippleSendOptions } from './sendOptions/rippleSendOptions';
 import { rippleTransactionDetails } from './transactionDetails/rippleTransactionDetails';
 
 /** The Ripple family: no message signing yet, and the transaction facts its backend reports. */
@@ -14,5 +15,6 @@ export const rippleFamily = defineFamily<Record<never, never>>()({
             requires: {},
             create: () => rippleTransactionDetails,
         }),
+        sendOptions: defineCapability({ requires: {}, create: () => rippleSendOptions }),
     },
 });

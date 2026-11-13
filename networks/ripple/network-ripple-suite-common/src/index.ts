@@ -2,3 +2,4 @@ export { createRippleSuiteCommonNetworkModule } from './RippleNetworkSuiteCommon
 export { rippleFamily } from './rippleFamily';
 
 export { networkConfigBySymbol } from './networkConfig';
+export { rippleSendOptions } from './sendOptions/rippleSendOptions';
