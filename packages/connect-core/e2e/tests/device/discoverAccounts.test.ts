@@ -75,16 +75,22 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             */
         };
 
-        // Reads the accounts the way Suite does.
-        const onRequest = async (message: UiRequestMessage) => {
+        // Suite reads the accounts from its backends; empty accounts stand in for them.
+        const onRequest = (message: UiRequestMessage) => {
             if (message.type !== UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO) return;
 
             TrezorConnect.uiResponse({
                 type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
-                payload: await TrezorConnect.getAccountInfo({
-                    ...message.payload,
-                    details: message.payload.details ?? 'txs',
-                }),
+                payload: {
+                    success: true,
+                    payload: {
+                        descriptor: message.payload.descriptor,
+                        balance: '0',
+                        availableBalance: '0',
+                        empty: true,
+                        history: { total: 0, unconfirmed: 0 },
+                    },
+                },
                 requestId: message.requestId,
             });
         };

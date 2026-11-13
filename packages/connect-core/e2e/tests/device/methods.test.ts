@@ -122,16 +122,10 @@ describe(`TrezorConnect methods`, () => {
                             await initTrezorConnect(controller);
                         }
 
-                        // Coins enabled for this call's session: the test case's defaults (e.g.
-                        // Cardano fixtures declare `['ada']`) plus any the single test opts into.
-                        // Connect's guard rejects guarded coins unless enabled; keeping this opt-in
-                        // leaves unrelated tests off the slower Initialize path.
-                        const enabledCoins = [
-                            ...new Set([
-                                ...(testCase.enabledCoins ?? []),
-                                ...(t.enabledCoins ?? []),
-                            ]),
-                        ];
+                        // Coins enabled for this call's session (e.g. Cardano fixtures declare
+                        // `['ada']`). Connect's guard rejects guarded coins unless enabled; keeping
+                        // this opt-in leaves unrelated tests off the slower Initialize path.
+                        const enabledCoins = testCase.enabledCoins ?? [];
                         await TrezorConnect.updateConnectSettings({
                             enabledNetworks: enabledCoins.map(coin => ({ coin })),
                         });
