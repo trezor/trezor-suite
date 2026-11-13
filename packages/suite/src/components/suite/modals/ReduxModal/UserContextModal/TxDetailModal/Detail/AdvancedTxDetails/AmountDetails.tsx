@@ -128,6 +128,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                         value={amount.abs().toString()}
                                         symbol={tx.symbol}
                                         signValue={getAmountSignValue()}
+                                        data-testid="@modal/tx-details/amount"
                                     />
                                 </Text>
                             </Table.Cell>
@@ -350,6 +351,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     value={fee}
                                     symbol={tx.symbol}
                                     signValue={new BigNumber(fee).isZero() ? undefined : 'negative'}
+                                    data-testid="@modal/tx-details/fee"
                                 />
                             </Text>
                         </Table.Cell>

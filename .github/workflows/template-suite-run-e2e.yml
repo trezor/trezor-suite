@@ -222,6 +222,42 @@ jobs:
         run: |
           yarn workspace @trezor/suite-e2e exec playwright install-deps
 
+      # Provides `anvil` for the tests that run Suite against a local Ethereum mainnet fork.
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@908c540300062bd5a7e473851cdb4282204cee09 # v1.9.1
+        with:
+          version: v1.5.1
+          # The fork follows the latest mainnet block, so cached RPC responses are never reused.
+          cache: false
+
+      # Blockbook indexing the Anvil fork. Building it compiles RocksDB, so the image is cached and
+      # rebuilt only when its Dockerfile changes.
+      - name: Restore Anvil Blockbook image
+        id: anvil-blockbook-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: ${{ runner.temp }}/anvil-blockbook.tar
+          key: anvil-blockbook-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('docker/anvil-blockbook/Dockerfile') }}
+
+      - name: Build Anvil Blockbook image
+        if: steps.anvil-blockbook-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          docker build --tag anvil-blockbook docker/anvil-blockbook
+          docker save anvil-blockbook --output ${{ runner.temp }}/anvil-blockbook.tar
+
+      - name: Save Anvil Blockbook image
+        if: steps.anvil-blockbook-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: ${{ runner.temp }}/anvil-blockbook.tar
+          key: ${{ steps.anvil-blockbook-cache.outputs.cache-primary-key }}
+
+      - name: Load Anvil Blockbook image
+        if: steps.anvil-blockbook-cache.outputs.cache-hit == 'true'
+        shell: bash
+        run: docker load --input ${{ runner.temp }}/anvil-blockbook.tar
+
       - name: Build Message System Config
         shell: bash
         run: |
