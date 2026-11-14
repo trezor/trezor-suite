@@ -18,9 +18,22 @@ const defaultProps: TronFeeSummaryRowProps = {
 };
 
 describe('TronFeeSummaryRow', () => {
-    const getPreloadedState = () => ({
-        wallet: getWalletState(),
-    });
+    const getPreloadedState = () => {
+        const walletState = getWalletState();
+
+        return {
+            wallet: {
+                ...walletState,
+                fiat: {
+                    ...walletState.fiat,
+                    current: {
+                        ...walletState.fiat.current,
+                        'trx-usd': { rate: 0.3, usdRate: 0.3 },
+                    },
+                },
+            },
+        };
+    };
 
     const renderRow = (props: Partial<TronFeeSummaryRowProps> = {}) =>
         renderWithStoreProvider(<TronFeeSummaryRow {...defaultProps} {...props} />, {
@@ -67,5 +80,21 @@ describe('TronFeeSummaryRow', () => {
         const { queryByText } = await renderRow({ trxBurned: null, resourceLabel: '120 Energy' });
 
         expect(queryByText('+ 120 Energy')).toBeNull();
+    });
+
+    it('should render fee in both crypto and base currency by default', async () => {
+        const { getByTestId } = await renderRow();
+
+        expect(getByTestId('@transactionManagement/tron-fee-crypto-amount')).toBeOnTheScreen();
+        expect(getByTestId('@transactionManagement/tron-fee-base-amount')).toBeOnTheScreen();
+    });
+
+    it('should render only base currency value when baseValueOnly is true', async () => {
+        const { getByTestId, queryByTestId } = await renderRow({ baseValueOnly: true });
+
+        expect(getByTestId('@transactionManagement/tron-fee-base-amount')).toBeOnTheScreen();
+        expect(
+            queryByTestId('@transactionManagement/tron-fee-crypto-amount'),
+        ).not.toBeOnTheScreen();
     });
 });

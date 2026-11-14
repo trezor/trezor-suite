@@ -5,7 +5,9 @@ import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider, within } from '@suite-native/test-utils-store';
 
 import { FeeSelectorRow } from './FeeSelectorRow';
-import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
+import { FeeSummaryRow } from './FeeSummaryRow';
+import { TronFeeSummaryRow } from './TronFeeSummaryCard/TronFeeSummaryRow';
+import { BTC_ACCOUNT_KEY, getSolAccount, getWalletState } from '../../__fixtures__/walletState';
 
 const noopThunk = jest.fn();
 const mockOpenModal = jest.fn();
@@ -19,7 +21,31 @@ jest.mock('@suite-native/atoms', () => ({
     }),
 }));
 
+jest.mock('./FeeSummaryRow', () => {
+    const actual = jest.requireActual('./FeeSummaryRow');
+
+    return { ...actual, FeeSummaryRow: jest.fn(actual.FeeSummaryRow) };
+});
+
+jest.mock('./TronFeeSummaryCard/TronFeeSummaryRow', () => {
+    const actual = jest.requireActual('./TronFeeSummaryCard/TronFeeSummaryRow');
+
+    return { ...actual, TronFeeSummaryRow: jest.fn(actual.TronFeeSummaryRow) };
+});
+
 const btcSymbol = asNetworkSymbol('btc');
+const trxSymbol = asNetworkSymbol('trx');
+
+const TRX_ACCOUNT_KEY = mockAccountKey({ symbol: trxSymbol, descriptor: 'trxAccount' });
+
+const getTrxAccount = () => ({
+    ...getSolAccount(),
+    key: TRX_ACCOUNT_KEY,
+    descriptor: 'trxAccount',
+    symbol: trxSymbol,
+    networkType: 'tron' as const,
+    misc: {},
+});
 
 describe('FeeSelectorRow', () => {
     const getPreloadedState = () => ({
@@ -135,6 +161,52 @@ describe('FeeSelectorRow', () => {
                     getTranslation(message, { networkDisplaySymbol: 'BTC' }),
                 ),
             ).toBeOnTheScreen();
+        },
+    );
+
+    it.each([true, false])('should pass baseValueOnly=%s to FeeSummaryRow', async baseValueOnly => {
+        await renderWithStoreProvider(
+            <FeeSelectorRow
+                accountKey={BTC_ACCOUNT_KEY}
+                updateThunk={noopThunk}
+                selectedFee="normal"
+                formDraft={null}
+                baseValueOnly={baseValueOnly}
+            />,
+            { preloadedState: getPreloadedState() },
+        );
+
+        expect(jest.mocked(FeeSummaryRow).mock.lastCall?.[0]).toMatchObject({
+            baseValueOnly,
+        });
+    });
+
+    it.each([true, false])(
+        'should pass baseValueOnly=%s to TronFeeSummaryRow',
+        async baseValueOnly => {
+            const walletState = getWalletState();
+
+            await renderWithStoreProvider(
+                <FeeSelectorRow
+                    accountKey={TRX_ACCOUNT_KEY}
+                    updateThunk={noopThunk}
+                    selectedFee="normal"
+                    formDraft={null}
+                    baseValueOnly={baseValueOnly}
+                />,
+                {
+                    preloadedState: {
+                        wallet: {
+                            ...walletState,
+                            accounts: [...walletState.accounts, getTrxAccount()],
+                        },
+                    },
+                },
+            );
+
+            expect(jest.mocked(TronFeeSummaryRow).mock.lastCall?.[0]).toMatchObject({
+                baseValueOnly,
+            });
         },
     );
 });
