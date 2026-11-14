@@ -15,13 +15,13 @@ import { loadSellInfoThunk } from '../sell/loadSellInfoThunk';
 export type TradingCatalog = 'info' | 'buy' | 'sell' | 'exchange';
 
 /**
- * The catalogs each section reads.
- * The swap catalog is megabytes, so only the swap section loads it.
+ * The catalogs each section reads: the coin info and the section's own catalog.
+ * The screens of one trade, such as its detail, read the catalogs of the trade's section.
  */
 export const TRADING_SECTION_CATALOGS: Record<TradingType, readonly TradingCatalog[]> = {
-    buy: ['info', 'buy', 'sell'],
-    sell: ['info', 'buy', 'sell'],
-    exchange: ['info', 'buy', 'sell', 'exchange'],
+    buy: ['info', 'buy'],
+    sell: ['info', 'sell'],
+    exchange: ['info', 'exchange'],
 };
 
 export const TRADING_CATALOGS: readonly TradingCatalog[] = ['info', 'buy', 'sell', 'exchange'];
