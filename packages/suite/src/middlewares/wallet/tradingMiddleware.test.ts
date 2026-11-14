@@ -88,10 +88,7 @@ type State = {
 
 const getInitialState = ({ trading, selectedAccount, router }: Args = {}): State => ({
     wallet: {
-        trading: trading ?? {
-            isLoading: false,
-            lastLoadedTimestamp: 0,
-        },
+        trading: trading ?? {},
         selectedAccount:
             selectedAccount ??
             ({

@@ -1,7 +1,12 @@
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectTradingSellLoadingTimestampAndStatus, tradingThunks } from '@suite-common/trading';
+import {
+    TRADING_SECTION_CATALOGS,
+    selectIsTradingSellFullyLoaded,
+    tradingThunks,
+    useTradingCatalogStatus,
+} from '@suite-common/trading';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -27,7 +32,10 @@ export const useSellData = () => {
         loadData(false);
     }, [descriptor, loadData]);
 
-    const loadingStatus = useSelector(selectTradingSellLoadingTimestampAndStatus);
+    const { isLoading, lastLoadedTimestamp } = useTradingCatalogStatus(
+        TRADING_SECTION_CATALOGS.sell,
+    );
+    const isFullyLoaded = useSelector(selectIsTradingSellFullyLoaded);
 
-    return { ...loadingStatus, refetch: loadData };
+    return { isLoading, lastLoadedTimestamp, isFullyLoaded, refetch: loadData };
 };

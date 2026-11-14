@@ -40,7 +40,10 @@ export const AssetDetailActions = () => {
     );
 
     useEffect(() => {
-        const request = dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'buy' }));
+        // The trade buttons read only the coin info.
+        const request = dispatch(
+            tradingThunks.loadInitialDataThunk({ activeSection: 'buy', catalogs: ['info'] }),
+        );
 
         return () => {
             request.abort();

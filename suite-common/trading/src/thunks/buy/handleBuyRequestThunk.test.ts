@@ -147,7 +147,7 @@ describe('handleBuyRequestThunk', () => {
             wantCrypto: false,
         });
         expect(selectTradingBuyPaymentMethods(store.getState()).length).toEqual(1);
-        expect(state.isLoading).toBe(false);
+        expect(state.buy.isLoading).toBe(false);
         expect(state.quoteRefetchingState.status).toBe('running');
         expect(state.quoteRefetchingState.lastFetchTimestamp).toBeGreaterThan(0);
         expect(quotesResponse).toEqual([
@@ -201,7 +201,7 @@ describe('handleBuyRequestThunk', () => {
 
         expect(state.buy.quotesRequest).toBeUndefined();
         expect(state.buy.quotes?.length).toEqual(0);
-        expect(state.isLoading).toBe(false);
+        expect(state.buy.isLoading).toBe(false);
         await expect(() => promise.unwrap()).rejects.toEqual('Invalid request data');
     });
 
@@ -274,7 +274,7 @@ describe('handleBuyRequestThunk', () => {
             receiveAddress: 'RECEIVE_ADDRESS',
             wantCrypto: false,
         });
-        expect(state.isLoading).toBe(false);
+        expect(state.buy.isLoading).toBe(false);
         expect(state.quoteRefetchingState.status).toBe('stopped');
         expect(state.quoteRefetchingState.lastFetchTimestamp).toBeUndefined();
         expect(quotesResponse).toEqual([]);
@@ -294,7 +294,7 @@ describe('handleBuyRequestThunk', () => {
 
         expect(state.buy.quotes?.length).toEqual(0);
         expect(state.buy.quotesRequest).toBeUndefined();
-        expect(state.isLoading).toBe(false);
+        expect(state.buy.isLoading).toBe(false);
         expect(state.quoteRefetchingState.status).toBe('stopped');
         expect(state.quoteRefetchingState.lastFetchTimestamp).toBeUndefined();
         await expect(() => promise.unwrap()).rejects.toEqual({

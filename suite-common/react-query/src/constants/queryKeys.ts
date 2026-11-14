@@ -90,4 +90,11 @@ export const desktopQueryKeys = {
 
 export const tradingQueryKeys = {
     otcData: () => ['trading', 'otc-data'],
+    catalogs: () => ['trading', 'catalog'],
+    // Keyed by server, so switching the trade API server never serves another server's catalog.
+    catalog: (serverUrl: string, catalog: string): string[] => [
+        ...tradingQueryKeys.catalogs(),
+        serverUrl,
+        catalog,
+    ],
 } as const satisfies Record<string, AllowedQueryKey>;
