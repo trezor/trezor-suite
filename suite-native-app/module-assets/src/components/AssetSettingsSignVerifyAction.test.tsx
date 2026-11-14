@@ -6,7 +6,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { RootStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 
-import { AssetSettingsSignAndVerifyAction } from './AssetSettingsSignAndVerifyAction';
+import { AssetSettingsSignVerifyAction } from './AssetSettingsSignVerifyAction';
 
 const mockNavigate = jest.fn();
 
@@ -26,7 +26,7 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 const ETH = asNetworkSymbol('eth');
-const SIGN_AND_VERIFY_BUTTON = '@asset-detail/settings/sign-and-verify-button';
+const SIGN_VERIFY_BUTTON = '@asset-detail/settings/sign-verify-button';
 
 const firstAccount = mockWalletAccount({
     descriptor: asAccountDescriptor('ethfirst'),
@@ -37,64 +37,64 @@ const secondAccount = mockWalletAccount({
     symbol: ETH,
 });
 
-const mockSignAndVerifyAccounts = jest.mocked(selectWalletAssetSignVerifyAccounts);
+const mockSignVerifyAccounts = jest.mocked(selectWalletAssetSignVerifyAccounts);
 const mockIsPortfolioTrackerDevice = jest.mocked(selectIsPortfolioTrackerDevice);
 
 const renderAction = async () => {
-    const onOpenSignAndVerifyAccounts = jest.fn();
+    const onOpenSignVerifyAccounts = jest.fn();
     const onClose = jest.fn();
 
     await renderWithStoreProvider(
-        <AssetSettingsSignAndVerifyAction
+        <AssetSettingsSignVerifyAction
             networkSymbol={ETH}
-            onOpenSignAndVerifyAccounts={onOpenSignAndVerifyAccounts}
+            onOpenSignVerifyAccounts={onOpenSignVerifyAccounts}
             onClose={onClose}
         />,
     );
 
-    return { onOpenSignAndVerifyAccounts, onClose };
+    return { onOpenSignVerifyAccounts, onClose };
 };
 
-describe('AssetSettingsSignAndVerifyAction', () => {
+describe('AssetSettingsSignVerifyAction', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockSignAndVerifyAccounts.mockReturnValue([firstAccount]);
+        mockSignVerifyAccounts.mockReturnValue([firstAccount]);
         mockIsPortfolioTrackerDevice.mockReturnValue(false);
     });
 
     it('opens sign & verify directly when one account can sign', async () => {
-        const { onOpenSignAndVerifyAccounts, onClose } = await renderAction();
+        const { onOpenSignVerifyAccounts, onClose } = await renderAction();
 
-        fireEvent.press(screen.getByTestId(SIGN_AND_VERIFY_BUTTON));
+        fireEvent.press(screen.getByTestId(SIGN_VERIFY_BUTTON));
 
         expect(onClose).toHaveBeenCalled();
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.SignAndVerify, {
+        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.SignVerify, {
             accountKey: firstAccount.key,
         });
-        expect(onOpenSignAndVerifyAccounts).not.toHaveBeenCalled();
+        expect(onOpenSignVerifyAccounts).not.toHaveBeenCalled();
     });
 
     it('asks which account to use when several can sign', async () => {
-        mockSignAndVerifyAccounts.mockReturnValue([firstAccount, secondAccount]);
-        const { onOpenSignAndVerifyAccounts } = await renderAction();
+        mockSignVerifyAccounts.mockReturnValue([firstAccount, secondAccount]);
+        const { onOpenSignVerifyAccounts } = await renderAction();
 
-        fireEvent.press(screen.getByTestId(SIGN_AND_VERIFY_BUTTON));
+        fireEvent.press(screen.getByTestId(SIGN_VERIFY_BUTTON));
 
-        expect(onOpenSignAndVerifyAccounts).toHaveBeenCalled();
+        expect(onOpenSignVerifyAccounts).toHaveBeenCalled();
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     it('is left out when no account of the network can sign', async () => {
-        mockSignAndVerifyAccounts.mockReturnValue([]);
+        mockSignVerifyAccounts.mockReturnValue([]);
         await renderAction();
 
-        expect(screen.queryByTestId(SIGN_AND_VERIFY_BUTTON)).toBeNull();
+        expect(screen.queryByTestId(SIGN_VERIFY_BUTTON)).toBeNull();
     });
 
     it('is left out for the portfolio tracker, which has no device to sign with', async () => {
         mockIsPortfolioTrackerDevice.mockReturnValue(true);
         await renderAction();
 
-        expect(screen.queryByTestId(SIGN_AND_VERIFY_BUTTON)).toBeNull();
+        expect(screen.queryByTestId(SIGN_VERIFY_BUTTON)).toBeNull();
     });
 });

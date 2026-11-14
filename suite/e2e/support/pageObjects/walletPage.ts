@@ -76,7 +76,7 @@ export class WalletPage {
     readonly addressCopiedModalVerifyButton: Locator;
     readonly addressCopiedModalSkipButton: Locator;
     readonly stakingButton: Locator;
-    readonly signAndVerifyButton: Locator;
+    readonly signVerifyButton: Locator;
     readonly stakingCardano: Locator;
     readonly transactionSummaryTitle: Locator;
     readonly transactionItem: Locator;
@@ -157,7 +157,7 @@ export class WalletPage {
             '@wallet/receive/address-copied-modal/skip-button',
         );
         this.stakingButton = this.page.getByTestId('@wallet/menu/staking');
-        this.signAndVerifyButton = this.page.getByTestId('@wallet/menu/wallet-sign-verify');
+        this.signVerifyButton = this.page.getByTestId('@wallet/menu/wallet-sign-verify');
         this.stakingCardano = this.page.getByTestId('@wallet/cardano/staking');
         this.transactionSummaryTitle = this.page.getByTestId(
             '@wallet/transactions/summary-card/title',

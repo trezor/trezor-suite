@@ -31,7 +31,7 @@ export const useVerifyMessage = () => {
         message,
         signature,
     }: VerifyMessageArgs): Promise<VerifyMessageResult> => {
-        navigation.navigate(RootStackRoutes.SignAndVerifyStack);
+        navigation.navigate(RootStackRoutes.SignVerifyStack);
 
         const isDeviceReady = await waitForDevice();
         if (!isDeviceReady) {

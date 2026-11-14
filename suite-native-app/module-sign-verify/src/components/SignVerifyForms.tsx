@@ -12,11 +12,11 @@ import { useVerifyMessageForm } from '../hooks/useVerifyMessageForm';
 
 type Tab = 'sign' | 'verify';
 
-type SignAndVerifyFormsProps = {
+type SignVerifyFormsProps = {
     account: Account;
 };
 
-export const SignAndVerifyForms = ({ account }: SignAndVerifyFormsProps) => {
+export const SignVerifyForms = ({ account }: SignVerifyFormsProps) => {
     const tabs = useMemo(() => {
         const signTab: SubTabItem<Tab> = {
             value: 'sign',

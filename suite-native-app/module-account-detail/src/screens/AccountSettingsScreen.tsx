@@ -89,7 +89,7 @@ export const AccountSettingsScreen = ({
         account,
         isSuiteSyncEnabled,
     });
-    const isSignAndVerifyAvailable = hasNetworkFeatures(account, 'sign-verify');
+    const isSignVerifyAvailable = hasNetworkFeatures(account, 'sign-verify');
 
     return (
         <Screen
@@ -148,10 +148,10 @@ export const AccountSettingsScreen = ({
                     {isPortfolioTrackerDevice ? (
                         <AccountSettingsRemoveCoinButton accountKey={account.key} />
                     ) : (
-                        isSignAndVerifyAvailable && (
+                        isSignVerifyAvailable && (
                             <Button
                                 onPress={() =>
-                                    navigation.navigate(RootStackRoutes.SignAndVerify, {
+                                    navigation.navigate(RootStackRoutes.SignVerify, {
                                         accountKey: account.key,
                                     })
                                 }

@@ -21,8 +21,8 @@ export enum RootStackRoutes {
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
     AppsEmbedding = 'AppsEmbedding',
-    SignAndVerify = 'SignAndVerify',
-    SignAndVerifyStack = 'SignAndVerifyStack',
+    SignVerify = 'SignVerify',
+    SignVerifyStack = 'SignVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
@@ -245,7 +245,7 @@ export enum AccountsStackRoutes {
     Accounts = 'Accounts',
 }
 
-export enum SignAndVerifyStackRoutes {
+export enum SignVerifyStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ContinueOnTrezor = 'ContinueOnTrezor',
 }

@@ -25,7 +25,7 @@ test.describe('Sign and verify ADA', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
         async ({ page, walletPage, devicePrompt, device }) => {
             await walletPage.openAccount({ symbol: asNetworkSymbol('ada') });
             await walletPage.walletExtraDropDown.click();
-            await walletPage.signAndVerifyButton.click();
+            await walletPage.signVerifyButton.click();
             await page.getByTestId('@sign-verify/message').fill(MESSAGE);
             await page.getByTestId('@sign-verify/sign-address/input').click();
             await page.getByTestId(`@sign-verify/sign-address/option/${STAKE_PATH}`).click();
