@@ -17,7 +17,6 @@ export type VerifyMessageParams<TNetworkSymbol extends string> = {
     hex: boolean;
 };
 
-/** Everything verifying a signed message can fail with. */
 export type VerifyError =
     | DeviceCancelledErrType
     | DeviceErrorType

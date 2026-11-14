@@ -37,7 +37,6 @@ describe('signVerify.verify', () => {
         verifyMessage = mock<VerifyMessage>();
         deps = {
             analytics: mockAnalytics(),
-            // The account's network module, which verifies on the device.
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
@@ -49,7 +48,6 @@ describe('signVerify.verify', () => {
         };
     });
 
-    // The device's answer, in the shape of the Connect fixtures these cases were written against.
     const setVerifyResponse = (response: any) => verifyMessage.mockResolvedValue(response);
 
     const verify = (

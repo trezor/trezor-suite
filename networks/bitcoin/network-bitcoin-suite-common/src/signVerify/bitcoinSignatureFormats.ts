@@ -18,7 +18,6 @@ export const BITCOIN_DEFAULT_SIGNATURE_FORMAT: BitcoinSignatureFormat = 'trezor'
 // TODO: Hack: the shared contract passes any network's SignatureFormat, so Bitcoin narrows it back
 // to its own formats at runtime. Remove as https://github.com/trezor/trezor-suite/issues/32472
 // progresses.
-/** The default format when missing; an error for a format Bitcoin does not sign in. */
 export const toBitcoinSignatureFormat = (
     format: string | undefined,
 ): Result<BitcoinSignatureFormat, SignatureFormatNotSupportedErrorType> => {

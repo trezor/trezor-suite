@@ -30,7 +30,6 @@ export type VerifyParams = {
 };
 
 export type VerifyMessage = {
-    /** A signature that does not verify is a `DeviceError`. */
     verify: (params: VerifyParams) => Promise<Result<void, VerifyError>>;
     isVerifySupported: (account: Account) => boolean;
 };

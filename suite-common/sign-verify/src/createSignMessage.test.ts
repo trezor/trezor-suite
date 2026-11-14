@@ -42,12 +42,10 @@ describe('signVerify.sign', () => {
         signMessage = mock<NetworkSignVerify<NetworkSymbol>['signMessage']>();
         deps = {
             analytics: mockAnalytics(),
-            // The account's network module, which signs on the device.
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
                         signVerify: {
-                            // As Bitcoin: no choice for legacy accounts or other networks.
                             getFormats: (symbol, accountType) =>
                                 symbol === 'btc' && accountType !== 'legacy'
                                     ? ['trezor', 'electrum']
@@ -62,7 +60,6 @@ describe('signVerify.sign', () => {
         };
     });
 
-    // The device's answer, in the shape of the Connect fixtures these cases were written against.
     const setSignResponse = (response: any) => signMessage.mockResolvedValue(response);
 
     const sign = (

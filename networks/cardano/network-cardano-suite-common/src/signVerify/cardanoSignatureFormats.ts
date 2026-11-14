@@ -14,7 +14,6 @@ export const CARDANO_DEFAULT_SIGNATURE_FORMAT: CardanoSignatureFormat = 'raw';
 // TODO: Hack: the shared contract passes any network's SignatureFormat, so Cardano narrows it back
 // to its own formats at runtime. Remove as https://github.com/trezor/trezor-suite/issues/32472
 // progresses.
-/** The default format when missing; an error for a format Cardano does not sign in. */
 export const toCardanoSignatureFormat = (
     format: string | undefined,
 ): Result<CardanoSignatureFormat, SignatureFormatNotSupportedErrorType> => {

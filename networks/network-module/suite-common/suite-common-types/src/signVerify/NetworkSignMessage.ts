@@ -14,9 +14,6 @@ import type { SignVerifyNotSupportedErrorType } from './signVerifyErrors';
 // progresses.
 export type SignatureFormat = 'trezor' | 'electrum' | 'raw' | 'cose';
 
-/**
- * One set of parameters for every network: each network reads the ones it understands.
- */
 export type SignMessageParams<TNetworkSymbol extends string> = {
     device: DeviceIdentity;
     symbol: TNetworkSymbol;
@@ -25,17 +22,14 @@ export type SignMessageParams<TNetworkSymbol extends string> = {
     path: string;
     message: string;
     hex: boolean;
-    /** One of the network's `getFormats`; missing when it offers none. */
     format?: SignatureFormat;
 };
 
 export type SignedMessage = {
     signature: string;
-    /** Only for networks that return the public key with the signature. */
     pubKey?: string;
 };
 
-/** The network does not sign in the requested format. */
 export type SignatureFormatNotSupportedErrorType = {
     type: 'SignatureFormatNotSupported';
     format: string;
@@ -45,7 +39,6 @@ export const SignatureFormatNotSupportedError = (
     format: string,
 ): SignatureFormatNotSupportedErrorType => ({ type: 'SignatureFormatNotSupported', format });
 
-/** Everything signing an account's message can fail with. */
 export type SignError =
     | DeviceCancelledErrType
     | DeviceErrorType
@@ -54,7 +47,6 @@ export type SignError =
     | SignatureFormatNotSupportedErrorType;
 
 export type NetworkSignMessage<TNetworkSymbol extends string> = {
-    /** The formats the user picks from, the default first; missing for networks with no choice. */
     getFormats?: (symbol: TNetworkSymbol, accountType: AccountType) => readonly SignatureFormat[];
     getDefaultFormat?: (symbol: TNetworkSymbol, accountType: AccountType) => SignatureFormat;
     signMessage: (

@@ -16,7 +16,6 @@ export type DeviceCancelledErrType = { type: 'DeviceCancelled' };
 export type DeviceErrorType = {
     type: 'DeviceError';
     message: string;
-    /** The Connect error code, where the caller keeps it (for analytics, for example). */
     code?: string;
 };
 
