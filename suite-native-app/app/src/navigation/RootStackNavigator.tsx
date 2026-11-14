@@ -59,10 +59,7 @@ import { PassphraseStackNavigator } from '@suite-native-app/module-passphrase';
 import { ReceiveStackNavigator } from '@suite-native-app/module-receive';
 import { SendStackNavigator } from '@suite-native-app/module-send';
 import { SettingsStackNavigator } from '@suite-native-app/module-settings';
-import {
-    SignAndVerifyScreen,
-    SignAndVerifyStackNavigator,
-} from '@suite-native-app/module-sign-verify';
+import { SignVerifyScreen, SignVerifyStackNavigator } from '@suite-native-app/module-sign-verify';
 import { StellarManageTokenStackNavigator } from '@suite-native-app/module-stellar-token-management';
 import { TradingStackNavigator } from '@suite-native-app/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native-app/module-transactions';
@@ -250,13 +247,10 @@ export const RootStackNavigator = () => {
                     name={RootStackRoutes.AddCoinAccountStack}
                     component={AddCoinAccountStackNavigator}
                 />
+                <RootStack.Screen name={RootStackRoutes.SignVerify} component={SignVerifyScreen} />
                 <RootStack.Screen
-                    name={RootStackRoutes.SignAndVerify}
-                    component={SignAndVerifyScreen}
-                />
-                <RootStack.Screen
-                    name={RootStackRoutes.SignAndVerifyStack}
-                    component={SignAndVerifyStackNavigator}
+                    name={RootStackRoutes.SignVerifyStack}
+                    component={SignVerifyStackNavigator}
                 />
                 <RootStack.Screen
                     name={RootStackRoutes.ReceiveStack}

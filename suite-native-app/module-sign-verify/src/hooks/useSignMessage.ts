@@ -29,7 +29,7 @@ export const useSignMessage = () => {
     const { dispatch } = useServices(injectDispatch);
 
     return async ({ account, format, path, message, hex }: SignMessageArgs) => {
-        navigation.navigate(RootStackRoutes.SignAndVerifyStack);
+        navigation.navigate(RootStackRoutes.SignVerifyStack);
 
         const isDeviceReady = await waitForDevice();
         if (!isDeviceReady) {

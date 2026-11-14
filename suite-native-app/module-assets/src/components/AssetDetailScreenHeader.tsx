@@ -4,15 +4,15 @@ import { ScreenHeader } from '@suite-native/navigation';
 
 import { useOpenAssetDetailAccounts } from './AssetDetailAccountsBottomSheetProvider';
 import { AssetDetailScreenHeaderContent } from './AssetDetailScreenHeaderContent';
-import { AssetDetailSignAndVerifyBottomSheet } from './AssetDetailSignAndVerifyBottomSheet';
+import { AssetDetailSignVerifyBottomSheet } from './AssetDetailSignVerifyBottomSheet';
 import { AssetSettingsBottomSheet } from './AssetSettingsBottomSheet';
 
 export const AssetDetailScreenHeader = () => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const {
-        bottomSheetRef: signAndVerifyBottomSheetRef,
-        openModal: openSignAndVerifyModal,
-        closeModal: closeSignAndVerifyModal,
+        bottomSheetRef: signVerifyBottomSheetRef,
+        openModal: openSignVerifyModal,
+        closeModal: closeSignVerifyModal,
     } = useBottomSheetModal();
     const openAccountsModal = useOpenAssetDetailAccounts();
     const { translate } = useTranslate();
@@ -39,12 +39,12 @@ export const AssetDetailScreenHeader = () => {
             <AssetSettingsBottomSheet
                 ref={bottomSheetRef}
                 onOpenAccounts={openAccountsModal}
-                onOpenSignAndVerifyAccounts={openSignAndVerifyModal}
+                onOpenSignVerifyAccounts={openSignVerifyModal}
                 onClose={closeModal}
             />
-            <AssetDetailSignAndVerifyBottomSheet
-                ref={signAndVerifyBottomSheetRef}
-                onClose={closeSignAndVerifyModal}
+            <AssetDetailSignVerifyBottomSheet
+                ref={signVerifyBottomSheetRef}
+                onClose={closeSignVerifyModal}
             />
         </>
     );

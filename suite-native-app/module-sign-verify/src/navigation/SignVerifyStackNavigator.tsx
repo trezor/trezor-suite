@@ -5,30 +5,30 @@ import {
     useDeviceConnectionGuard,
 } from '@suite-native/device-authorization';
 import {
-    type SignAndVerifyStackParamList,
-    SignAndVerifyStackRoutes,
+    type SignVerifyStackParamList,
+    SignVerifyStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 
-const SignAndVerifyStack = createNativeStackNavigator<SignAndVerifyStackParamList>();
+const SignVerifyStack = createNativeStackNavigator<SignVerifyStackParamList>();
 
-export const SignAndVerifyStackNavigator = () => {
+export const SignVerifyStackNavigator = () => {
     const { isDeviceConnectionGuardVisible } = useDeviceConnectionGuard();
 
     return (
-        <SignAndVerifyStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+        <SignVerifyStack.Navigator screenOptions={stackNavigationOptionsConfig}>
             {isDeviceConnectionGuardVisible && (
-                <SignAndVerifyStack.Screen
-                    name={SignAndVerifyStackRoutes.DeviceConnectionGuard}
+                <SignVerifyStack.Screen
+                    name={SignVerifyStackRoutes.DeviceConnectionGuard}
                     component={DeviceConnectionGuardScreen}
                 />
             )}
-            <SignAndVerifyStack.Screen
-                name={SignAndVerifyStackRoutes.ContinueOnTrezor}
+            <SignVerifyStack.Screen
+                name={SignVerifyStackRoutes.ContinueOnTrezor}
                 component={ContinueOnTrezorScreen}
             />
-        </SignAndVerifyStack.Navigator>
+        </SignVerifyStack.Navigator>
     );
 };
