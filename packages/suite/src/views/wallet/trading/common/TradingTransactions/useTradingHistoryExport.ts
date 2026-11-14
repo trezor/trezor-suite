@@ -1,16 +1,20 @@
 import { useStore } from 'react-redux';
 
 import { type TranslationFunction, useTranslation } from '@suite/intl';
+import { useMutation } from '@suite-common/react-query';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TRADING_SECTION_CATALOGS,
     type TradingHistoryCsvColumnLabels,
     type TradingRootStateWithDeviceAndAccounts,
     prepareTradingHistoryCsv,
     selectDeviceTradingTradesOrderedByDate,
+    tradingThunks,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
+import { unique } from '@trezor/utils';
 
 import { getExportedFileName } from '#src/utils/wallet/exportTransactionsUtils';
 
@@ -45,12 +49,19 @@ export const useTradingHistoryExport = () => {
     const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
 
-    return () => {
+    const exportTradeHistory = async () => {
         try {
-            const state = store.getState();
-            const trades = selectDeviceTradingTradesOrderedByDate(state);
+            const trades = selectDeviceTradingTradesOrderedByDate(store.getState());
+            // The provider names come from the catalogs of the trades' sections, which only their pages load.
+            await dispatch(
+                tradingThunks.loadTradingCatalogsThunk({
+                    catalogs: unique(
+                        trades.flatMap(trade => TRADING_SECTION_CATALOGS[trade.tradeType]),
+                    ),
+                }),
+            );
             const csvContent = prepareTradingHistoryCsv(getCsvColumnLabels(translationString))(
-                state,
+                store.getState(),
                 trades,
             );
 
@@ -67,4 +78,7 @@ export const useTradingHistoryExport = () => {
             );
         }
     };
+
+    // The export waits for the catalogs, so the button shows it as pending and ignores clicks meanwhile.
+    return useMutation({ mutationFn: exportTradeHistory });
 };

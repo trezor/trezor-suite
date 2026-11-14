@@ -134,23 +134,30 @@ describe('useBuyData', () => {
     });
 
     it.each([
-        { section: 'exchange', useData: useExchangeData },
-        { section: 'sell', useData: useSellData },
-        { section: 'buy', useData: useBuyData },
+        {
+            section: 'exchange',
+            useData: useExchangeData,
+            catalogPaths: ['/api/info', '/api/v3/exchange/list'],
+        },
+        { section: 'sell', useData: useSellData, catalogPaths: ['/api/info', '/api/v3/sell/list'] },
+        { section: 'buy', useData: useBuyData, catalogPaths: ['/api/info', '/api/v3/buy/list'] },
     ])(
         'reuses the catalog when remounting $section and refetches on Retry',
-        async ({ section, useData }) => {
-            const sharedCatalogPaths = ['/api/info', '/api/v3/buy/list', '/api/v3/sell/list'];
-            const exchangeCatalogPaths = section === 'exchange' ? ['/api/v3/exchange/list'] : [];
+        async ({ useData, catalogPaths }) => {
+            const buyCatalogPaths = ['/api/info', '/api/v3/buy/list'];
             const services = initServices();
             const buy = await renderUseBuyData(services);
             await buy.unmount();
-            expect(global.fetch).toHaveBeenCalledTimes(sharedCatalogPaths.length);
+            expect(global.fetch).toHaveBeenCalledTimes(buyCatalogPaths.length);
 
             const tab = await renderHookWithStoreProvider(useData, { services });
             await act(() => Promise.resolve());
             await tab.unmount();
-            const initialPaths = [...sharedCatalogPaths, ...exchangeCatalogPaths];
+            // The tab reuses the coin info from the cache, and the buy tab its whole catalog set.
+            const initialPaths = [
+                ...buyCatalogPaths,
+                ...catalogPaths.filter(path => !buyCatalogPaths.includes(path)),
+            ];
             expect(global.fetch).toHaveBeenCalledTimes(initialPaths.length);
 
             const retry = await renderHookWithStoreProvider(useData, { services });
@@ -159,9 +166,7 @@ describe('useBuyData', () => {
                 await retry.result.current.refetch();
             });
             expect(jest.mocked(global.fetch).mock.calls.map(([url]) => url)).toEqual(
-                [...initialPaths, ...sharedCatalogPaths, ...exchangeCatalogPaths].map(path =>
-                    expect.stringContaining(path),
-                ),
+                [...initialPaths, ...catalogPaths].map(path => expect.stringContaining(path)),
             );
         },
     );

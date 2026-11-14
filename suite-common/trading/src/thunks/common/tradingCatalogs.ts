@@ -27,13 +27,13 @@ export const TRADING_CATALOGS = ['info', 'buy', 'sell', 'exchange'] as const;
 export type TradingCatalog = (typeof TRADING_CATALOGS)[number];
 
 /**
- * The catalogs each section reads.
- * The swap catalog is megabytes, so only the swap section loads it.
+ * The catalogs each section reads: the coin info and the section's own catalog.
+ * The screens of one trade, such as its detail, read the catalogs of the trade's section.
  */
 export const TRADING_SECTION_CATALOGS: Record<TradingType, readonly TradingCatalog[]> = {
-    buy: ['info', 'buy', 'sell'],
-    sell: ['info', 'buy', 'sell'],
-    exchange: ['info', 'buy', 'sell', 'exchange'],
+    buy: ['info', 'buy'],
+    sell: ['info', 'sell'],
+    exchange: ['info', 'exchange'],
 };
 
 const CATALOG_QUERY_KEY_PREFIX = tradingQueryKeys.catalogs();
