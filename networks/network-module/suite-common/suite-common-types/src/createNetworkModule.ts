@@ -14,17 +14,17 @@ import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
  * Network behavior takes the module's closed symbol type rather than the open `NetworkSymbol`.
  * `createNetworkModule` narrows behavior calls at the boundary; the repository routes icon calls.
  */
-export type NetworkModuleDefinition<TSymbol extends string> = {
-    icon: NetworkAssetsModule<TSymbol>;
-    addressValidator: AddressValidator<TSymbol>;
-    isWrappedNativeToken?: IsWrappedNativeToken<TSymbol>;
+export type NetworkModuleDefinition<TNetworkSymbol extends string> = {
+    icon: NetworkAssetsModule<TNetworkSymbol>;
+    addressValidator: AddressValidator<TNetworkSymbol>;
+    isWrappedNativeToken?: IsWrappedNativeToken<TNetworkSymbol>;
 
     /** Only for networks with a name system; see `NamedAddressResolver`. */
-    namedAddressResolver?: NamedAddressResolver<TSymbol>;
+    namedAddressResolver?: NamedAddressResolver<TNetworkSymbol>;
 
-    getNetworkConfig: (symbol: TSymbol) => SuiteCommonNetworkConfig;
+    getNetworkConfig: (symbol: TNetworkSymbol) => SuiteCommonNetworkConfig;
 
-    getAccountSyncInterval: (symbol: TSymbol) => number;
+    getAccountSyncInterval: (symbol: TNetworkSymbol) => number;
 };
 
 /**
@@ -36,14 +36,14 @@ export type NetworkModuleDefinition<TSymbol extends string> = {
  * therefore rejected at its edge, and the capabilities themselves are written against the closed
  * symbol type with no per-call conversion.
  */
-export const createNetworkModule = <TSymbol extends string>(
-    supportedNetworks: readonly TSymbol[],
-    definition: NetworkModuleDefinition<TSymbol>,
+export const createNetworkModule = <TNetworkSymbol extends string>(
+    supportedNetworks: readonly TNetworkSymbol[],
+    definition: NetworkModuleDefinition<TNetworkSymbol>,
 ): SuiteCommonNetworkModule => {
-    const isSupportedNetwork = (symbol: string): symbol is TSymbol =>
+    const isSupportedNetwork = (symbol: string): symbol is TNetworkSymbol =>
         isArrayMember(symbol, supportedNetworks);
 
-    const narrow = (symbol: NetworkSymbol): TSymbol => {
+    const narrow = (symbol: NetworkSymbol): TNetworkSymbol => {
         if (!isSupportedNetwork(symbol)) {
             throw new Error(
                 `Unsupported network symbol: ${symbol}. Supported: ${supportedNetworks.join(', ')}.`,
