@@ -55,4 +55,23 @@ describe('FeeSummaryRow', () => {
 
         expect(getByTestId('@transactionManagement/fee-crypto-amount')).toBeOnTheScreen();
     });
+
+    it('should render fee in base currency', async () => {
+        const { getByTestId } = await renderRow();
+
+        expect(getByTestId('@transactionManagement/fee-base-amount')).toBeOnTheScreen();
+    });
+
+    it('should render only base currency value when baseValueOnly is true', async () => {
+        const { getByTestId, queryByTestId } = await renderRow({ baseValueOnly: true });
+
+        expect(getByTestId('@transactionManagement/fee-base-amount')).toBeOnTheScreen();
+        expect(queryByTestId('@transactionManagement/fee-crypto-amount')).not.toBeOnTheScreen();
+    });
+
+    it('should not render ≈ when fees are not composed yet', async () => {
+        const { queryByText } = await renderRow({ areFeesLoading: true });
+
+        expect(queryByText('≈')).not.toBeOnTheScreen();
+    });
 });

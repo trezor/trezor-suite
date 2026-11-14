@@ -10,11 +10,16 @@ import { useTronFeeBreakdown } from '../../hooks/fees/useTronFeeBreakdown';
 
 type FeeSelectorRowProps = UseFeeSelectorParams & {
     isReadOnly?: boolean;
+    baseValueOnly?: boolean;
 };
 
 export const FEE_SELECTOR_ROW_TEST_ID = '@transactionManagement/fee-selector-row';
 
-export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowProps) => {
+export const FeeSelectorRow = ({
+    isReadOnly = false,
+    baseValueOnly = false,
+    ...props
+}: FeeSelectorRowProps) => {
     const {
         form,
         fee,
@@ -64,6 +69,7 @@ export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowP
                         areFeesLoading={tronBreakdown.areFeesLoading}
                         resourceLabel={tronBreakdown.resourceLabel}
                         isAccountActivation={tronBreakdown.isAccountActivation}
+                        baseValueOnly={baseValueOnly}
                     />
                 ) : (
                     <FeeSummaryRow
@@ -72,6 +78,7 @@ export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowP
                         networkType={networkType}
                         areFeesLoading={areFeesLoading}
                         withCaret={!isTron && !isReadOnly}
+                        baseValueOnly={baseValueOnly}
                     />
                 )}
             </Pressable>
