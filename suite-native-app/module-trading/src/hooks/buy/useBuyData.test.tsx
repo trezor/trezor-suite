@@ -134,37 +134,29 @@ describe('useBuyData', () => {
         { section: 'buy', useData: useBuyData },
     ])(
         'reuses the catalog when remounting $section and refetches on Retry',
-        async ({ useData }) => {
+        async ({ section, useData }) => {
+            const sharedCatalogPaths = ['/api/info', '/api/v3/buy/list', '/api/v3/sell/list'];
+            const exchangeCatalogPaths = section === 'exchange' ? ['/api/v3/exchange/list'] : [];
             const store = initStore();
             const buy = await renderUseBuyData(store);
             await buy.unmount();
-            expect(global.fetch).toHaveBeenCalledTimes(4);
+            expect(global.fetch).toHaveBeenCalledTimes(sharedCatalogPaths.length);
 
             const tab = await renderHookWithStoreProvider(useData, { services: { store } });
-            expect(global.fetch).toHaveBeenCalledTimes(4);
+            await act(() => Promise.resolve());
             await tab.unmount();
+            const initialPaths = [...sharedCatalogPaths, ...exchangeCatalogPaths];
+            expect(global.fetch).toHaveBeenCalledTimes(initialPaths.length);
 
             const retry = await renderHookWithStoreProvider(useData, { services: { store } });
-            expect(global.fetch).toHaveBeenCalledTimes(4);
+            expect(global.fetch).toHaveBeenCalledTimes(initialPaths.length);
             await act(async () => {
                 await retry.result.current.refetch();
             });
-            expect(global.fetch).toHaveBeenCalledTimes(8);
             expect(jest.mocked(global.fetch).mock.calls.map(([url]) => url)).toEqual(
-                [
-                    ...[
-                        '/api/info',
-                        '/api/v3/buy/list',
-                        '/api/v3/exchange/list',
-                        '/api/v3/sell/list',
-                    ],
-                    ...[
-                        '/api/info',
-                        '/api/v3/buy/list',
-                        '/api/v3/exchange/list',
-                        '/api/v3/sell/list',
-                    ],
-                ].map(path => expect.stringContaining(path)),
+                [...initialPaths, ...sharedCatalogPaths, ...exchangeCatalogPaths].map(path =>
+                    expect.stringContaining(path),
+                ),
             );
         },
     );

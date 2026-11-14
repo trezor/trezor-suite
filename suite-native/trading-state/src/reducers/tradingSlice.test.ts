@@ -148,6 +148,8 @@ describe('tradingSlice', () => {
                 isFromRedirect: false,
                 isLoading: false,
                 formStep: 'RECEIVING_ADDRESS',
+                isExchangeInfoLoading: false,
+                exchangeInfoLoadedTimestamp: 0,
             });
         });
 

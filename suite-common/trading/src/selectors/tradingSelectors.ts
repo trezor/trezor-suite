@@ -186,7 +186,10 @@ export const bestSellQuotePerPaymentMethodProjection = (quotes: SellFiatTrade[])
         (aRate, bRate) => bRate - aRate,
     );
 
-export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
+/**
+ * Loading state of the coin info and the buy and sell catalogs, which always load together.
+ */
+export const selectTradingSharedCatalogLoadingAndTimestamp = createMemoizedSelector(
     [
         (state: TradingRootState) => state.wallet.trading.isLoading,
         (state: TradingRootState) => state.wallet.trading.lastLoadedTimestamp,
@@ -197,9 +200,37 @@ export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
     }),
 );
 
+/**
+ * Loading state of the swap catalog, which loads only for the swap section.
+ */
+export const selectTradingExchangeCatalogLoadingAndTimestamp = createMemoizedSelector(
+    [
+        (state: TradingRootState) => state.wallet.trading.exchange.isExchangeInfoLoading,
+        (state: TradingRootState) => state.wallet.trading.exchange.exchangeInfoLoadedTimestamp,
+    ],
+    (isLoading, lastLoadedTimestamp) => ({
+        isLoading,
+        lastLoadedTimestamp,
+    }),
+);
+
+/**
+ * The form inputs are busy while any catalog loads; the timestamp is the shared catalog's.
+ */
+export const selectTradingLoadingAndTimestamp = createMemoizedSelector(
+    [
+        selectTradingSharedCatalogLoadingAndTimestamp,
+        selectTradingExchangeCatalogLoadingAndTimestamp,
+    ],
+    (sharedCatalog, exchangeCatalog) => ({
+        isLoading: sharedCatalog.isLoading || exchangeCatalog.isLoading,
+        lastLoadedTimestamp: sharedCatalog.lastLoadedTimestamp,
+    }),
+);
+
 export const selectTradingBuyLoadingTimestampAndStatus = createMemoizedSelector(
     [
-        selectTradingLoadingAndTimestamp,
+        selectTradingSharedCatalogLoadingAndTimestamp,
         (state: TradingRootState) => state.wallet.trading.info,
         (state: TradingRootState) => state.wallet.trading.buy.buyInfo,
     ],
@@ -328,13 +359,18 @@ export const selectTradingSell = createMemoizedSelector(
 
 export const selectTradingExchangeLoadingTimestampAndStatus = createMemoizedSelector(
     [
-        selectTradingLoadingAndTimestamp,
+        selectTradingSharedCatalogLoadingAndTimestamp,
+        selectTradingExchangeCatalogLoadingAndTimestamp,
         (state: TradingRootState) => state.wallet.trading.info,
         selectTradingExchangeInfo,
     ],
-    (loadingAndTimestamp, info, exchangeInfo) => ({
-        isLoading: loadingAndTimestamp.isLoading,
-        lastLoadedTimestamp: loadingAndTimestamp.lastLoadedTimestamp,
+    (sharedCatalog, exchangeCatalog, info, exchangeInfo) => ({
+        isLoading: sharedCatalog.isLoading || exchangeCatalog.isLoading,
+        // Zero until both catalogs have been loaded at least once.
+        lastLoadedTimestamp: Math.min(
+            sharedCatalog.lastLoadedTimestamp,
+            exchangeCatalog.lastLoadedTimestamp,
+        ),
         isFullyLoaded:
             !!(info?.coins && info?.platforms && exchangeInfo) &&
             Object.keys(exchangeInfo.providerInfos).length > 0,
@@ -343,7 +379,7 @@ export const selectTradingExchangeLoadingTimestampAndStatus = createMemoizedSele
 
 export const selectTradingSellLoadingTimestampAndStatus = createMemoizedSelector(
     [
-        selectTradingLoadingAndTimestamp,
+        selectTradingSharedCatalogLoadingAndTimestamp,
         (state: TradingRootState) => state.wallet.trading.info,
         selectTradingSellInfo,
     ],

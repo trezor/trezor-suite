@@ -28,6 +28,15 @@ export interface ExchangeInfo {
 
 export interface TradingExchangeState {
     exchangeInfo?: ExchangeInfo;
+    /**
+     * The swap catalog is several megabytes, so it loads only for the swap section,
+     * with its own loading flag and lifetime instead of the shared catalog's.
+     */
+    isExchangeInfoLoading: boolean;
+    /**
+     * When the swap catalog was last loaded; zero when it has never loaded or was invalidated.
+     */
+    exchangeInfoLoadedTimestamp: number;
     quotesRequest?: ExchangeTradeQuoteRequest;
     formValues?: TradingExchangeFormProps;
     quotes: ExchangeTrade[];
@@ -49,6 +58,8 @@ export interface TradingExchangeState {
 
 export const exchangeInitialState: TradingExchangeState = {
     exchangeInfo: undefined,
+    isExchangeInfoLoading: false,
+    exchangeInfoLoadedTimestamp: 0,
     transactionId: undefined,
     quotesRequest: undefined,
     formValues: undefined,
@@ -72,6 +83,13 @@ const tradingExchangeSlice = createSlice({
     reducers: {
         saveExchangeInfo(state: TradingExchangeState, action: PayloadAction<ExchangeInfo>) {
             state.exchangeInfo = action.payload;
+        },
+        setExchangeInfoLoading(
+            state: TradingExchangeState,
+            action: PayloadAction<{ isLoading: boolean; lastLoadedTimestamp: number }>,
+        ) {
+            state.isExchangeInfoLoading = action.payload.isLoading;
+            state.exchangeInfoLoadedTimestamp = action.payload.lastLoadedTimestamp;
         },
         saveTransactionId(state: TradingExchangeState, action: PayloadAction<string | undefined>) {
             state.transactionId = action.payload;
