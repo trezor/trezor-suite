@@ -3,7 +3,7 @@ import { type Coins } from 'invity-api';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
-    type LoadInitialDataThunkDeps,
+    type LoadTradingCatalogsThunkDeps,
     prepareTradingReducer,
     tradeApi,
     initialState as tradingInitialState,
@@ -39,7 +39,7 @@ const renderCoinInfoSettled = (trading = tradingInitialState) => {
         ...mockInitialAppState,
         wallet: { ...mockInitialAppState.wallet, trading },
     };
-    const { services } = createTestCompositionRoot<LoadInitialDataThunkDeps, MockSuiteState>({
+    const { services } = createTestCompositionRoot<LoadTradingCatalogsThunkDeps, MockSuiteState>({
         // Only the trading state changes, when the coin info is saved.
         reducer: (currentState = state, action) => ({
             ...currentState,
@@ -50,7 +50,6 @@ const renderCoinInfoSettled = (trading = tradingInitialState) => {
         }),
         preloadedState: state,
         services: () => ({
-            getSelectedAccount: () => ({ status: 'none', account: undefined }),
             getTradingEnvironment: mockGetTradingEnvironment(),
             queryClient: mockTradingQueryClient(),
         }),
@@ -60,9 +59,7 @@ const renderCoinInfoSettled = (trading = tradingInitialState) => {
     return {
         result,
         loadCoinInfo: () =>
-            services.store.dispatch(
-                tradingThunks.loadInitialDataThunk({ activeSection: 'buy', catalogs: ['info'] }),
-            ),
+            services.store.dispatch(tradingThunks.loadTradingCatalogsThunk({ catalogs: ['info'] })),
     };
 };
 

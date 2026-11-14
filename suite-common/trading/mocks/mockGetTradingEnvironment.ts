@@ -1,3 +1,3 @@
-import { type GetTradingEnvironment } from '../src/thunks/common/loadInitialDataThunk';
+import { type GetTradingEnvironment } from '../src/thunks/common/loadTradingCatalogsThunk';
 
 export const mockGetTradingEnvironment = (): GetTradingEnvironment => () => 'localhost';

@@ -1,13 +1,12 @@
-import { type QueryClientDep } from '@suite-common/react-query';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { type SetTradeApiKeyThunkState, setTradeApiKeyThunk } from './setTradeApiKeyThunk';
 import {
-    TRADING_SECTION_CATALOGS,
-    type TradingCatalog,
-    loadTradingCatalog,
-} from './tradingCatalogs';
+    type LoadTradingCatalogsThunkDeps,
+    loadTradingCatalogsThunk,
+} from './loadTradingCatalogsThunk';
+import { type SetTradeApiKeyThunkState, setTradeApiKeyThunk } from './setTradeApiKeyThunk';
+import { TRADING_SECTION_CATALOGS, type TradingCatalog } from './tradingCatalogs';
 import { TRADING_ANONYMOUS_ID, TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
@@ -15,7 +14,7 @@ import {
     selectTradeApiKeyAccount,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { type TradeServerEnvironment, type TradingType } from '../../types';
+import { type TradingType } from '../../types';
 
 export interface LoadInitialDataThunkProps {
     activeSection: TradingType;
@@ -30,14 +29,10 @@ export interface LoadInitialDataThunkProps {
 
 export type LoadInitialDataThunkState = TradingRootStateWithAccounts & SetTradeApiKeyThunkState;
 
-export type LoadInitialDataThunkDeps = WithServices<
-    QueryClientDep & {
+export type LoadInitialDataThunkDeps = LoadTradingCatalogsThunkDeps &
+    WithServices<{
         getSelectedAccount: () => SelectedAccountStatus;
-        getTradingEnvironment: GetTradingEnvironment;
-    }
->;
-
-export type GetTradingEnvironment = () => TradeServerEnvironment | undefined;
+    }>;
 
 export const loadInitialDataThunk = createThunk<
     void,
@@ -54,7 +49,6 @@ export const loadInitialDataThunk = createThunk<
         },
         { dispatch, getState, extra },
     ) => {
-        const { queryClient } = extra.services;
         const account = selectTradeApiKeyAccount(
             getState(),
             activeSection,
@@ -69,15 +63,6 @@ export const loadInitialDataThunk = createThunk<
             tradeApi.createAnonymousApiKey(forcedAnonymousId || TRADING_ANONYMOUS_ID);
         }
 
-        const tradeServerEnvironment = extra.services.getTradingEnvironment();
-        if (tradeServerEnvironment) {
-            tradeApi.setServersEnvironment(tradeServerEnvironment);
-        }
-
-        await Promise.all(
-            catalogs.map(catalog =>
-                loadTradingCatalog(catalog, { dispatch, queryClient, forceReload }),
-            ),
-        );
+        await dispatch(loadTradingCatalogsThunk({ catalogs, forceReload })).unwrap();
     },
 );

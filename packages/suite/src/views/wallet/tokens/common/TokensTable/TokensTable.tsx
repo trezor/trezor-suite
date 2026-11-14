@@ -55,7 +55,8 @@ export const TokensTable = ({
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
 
     useEffect(() => {
-        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'buy' }));
+        // The token actions read only the coin info.
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'buy', catalogs: ['info'] }));
     }, [dispatch]);
 
     return (

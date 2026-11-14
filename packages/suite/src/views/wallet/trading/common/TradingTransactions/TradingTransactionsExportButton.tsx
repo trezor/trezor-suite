@@ -10,7 +10,7 @@ import { useTradingHistoryExport } from './useTradingHistoryExport';
 export const TradingTransactionsExportButton = () => {
     const hasTrades = useSelector(selectDeviceHasTradingTrades);
 
-    const exportTradeHistory = useTradingHistoryExport();
+    const { mutate: exportTradeHistory, isPending: isExporting } = useTradingHistoryExport();
 
     if (!hasTrades) {
         return null;
@@ -22,7 +22,8 @@ export const TradingTransactionsExportButton = () => {
                 intent="neutral"
                 priority="secondary"
                 iconLeft={DownloadSimpleIcon}
-                onClick={exportTradeHistory}
+                isLoading={isExporting}
+                onClick={() => exportTradeHistory()}
                 data-testid="@trading/transactions/export-button"
             >
                 <Translation id="TR_TRADING_TRADE_HISTORY_EXPORT_BUTTON" />
