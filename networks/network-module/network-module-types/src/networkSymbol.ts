@@ -9,9 +9,9 @@ import type { Branded } from '@trezor/type-utils';
  */
 export type NetworkSymbol = string & Branded<'NetworkSymbol'>;
 
-export const asNetworkSymbol = <TSymbol extends string>(
-    networkSymbol: TSymbol,
-): TSymbol & NetworkSymbol => networkSymbol as TSymbol & NetworkSymbol;
+export const asNetworkSymbol = <TNetworkSymbol extends string>(
+    networkSymbol: TNetworkSymbol,
+): TNetworkSymbol & NetworkSymbol => networkSymbol as TNetworkSymbol & NetworkSymbol;
 
 /** Brands a network module's supported-symbol list when it crosses into a shared layer. */
 export const asNetworkSymbols = (networkSymbols: readonly string[]): readonly NetworkSymbol[] =>
