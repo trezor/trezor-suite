@@ -77,6 +77,9 @@ export const messages = {
         tokenIconHint: 'Token Icon',
         cryptoIconHint: 'Crypto Icon',
     },
+    stepCards: {
+        stepper: 'Step {stepNumber} of {stepCount}',
+    },
     messageSystem: {
         killswitch: {
             title: 'Update required',

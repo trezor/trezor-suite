@@ -16608,6 +16608,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/step-cards@workspace:suite-native/step-cards":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/step-cards@workspace:suite-native/step-cards"
+  dependencies:
+    "@storybook/react-native": "npm:^10.6.2"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    react: "npm:19.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/storage@workspace:*, @suite-native/storage@workspace:suite-native/storage":
   version: 0.0.0-use.local
   resolution: "@suite-native/storage@workspace:suite-native/storage"
