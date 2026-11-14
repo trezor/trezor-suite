@@ -1,15 +1,21 @@
-import { getSynchronize, isArrayMember } from '@trezor/utils';
+import { getSynchronize, isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { connectPublicCallableMethods } from '../callableMethods';
 import { ERRORS } from '../constants';
+import type { SerializedError } from '../constants/errors';
 import { parseManifest, parseVersion } from '../data/connectSettings';
-import { type CallMethodPayload, createErrorMessage } from '../events';
+import { type CallMethodAnyResponse, type CallMethodPayload, createErrorMessage } from '../events';
 import type { ConnectDynamicSettings, ConnectImplSettings, TrezorConnectCore } from '../types';
 import { type CancelParams } from '../utils/cancelParams';
 
 type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
 
-export type ConnectImpl = TrezorConnectCore<ConnectImplSettings>;
+export type ConnectImpl = TrezorConnectCore<ConnectImplSettings> & {
+    /**
+     * Called on every implementation when a call fails after the fallback was tried.
+     */
+    onCallFailed?(error: SerializedError): void;
+};
 
 type TrezorConnectDynamicParams = {
     implementations: Record<ImplType, ConnectImpl>;
@@ -109,6 +115,7 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
             );
         }
 
+        let response: Awaited<CallMethodAnyResponse>;
         try {
             // Edge case - if there are simultaneous calls, we only want to call `handleBeforeCall` once
             if (this.callPending === 0) {
@@ -117,20 +124,23 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
                     await this.handleBeforeCall();
                 });
             }
-            const response = await this.getTarget().call(params);
-            if (!response.success) {
-                if (await this.handleErrorFallback(response.error.code)) {
-                    return await this.getTarget().call(params);
-                }
+            response = await this.getTarget().call(params);
+            if (!response.success && (await this.handleErrorFallback(response.error.code))) {
+                response = await this.getTarget().call(params);
             }
-
-            return response;
         } catch (error) {
             // Don't throw but return error payload
-            return createErrorMessage(error);
+            response = createErrorMessage(error);
         } finally {
             this.callPending--;
         }
+
+        if (!response.success) {
+            const { error } = response;
+            typedObjectValues(this.implementations).forEach(impl => impl.onCallFailed?.(error));
+        }
+
+        return response;
     }
 
     public cancel(params?: CancelParams) {

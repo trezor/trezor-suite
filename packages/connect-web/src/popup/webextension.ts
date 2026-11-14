@@ -11,6 +11,14 @@ import { Popup } from './abstract';
 export const canSuiteWebReplyToExtension = () =>
     !chrome.runtime.getURL('').startsWith('moz-extension://');
 
+export const openSuiteWebErrorTab = (popupSrc: string, errorCode: string) => {
+    const url = new URL(popupSrc);
+    // Suite Web redirects to the trailing slash path and drops the query.
+    if (!url.pathname.endsWith('/')) url.pathname += '/';
+    url.searchParams.set('connect-popup-err', errorCode);
+    chrome.tabs.create({ url: url.toString() });
+};
+
 export class WebExtensionPopup extends Popup {
     private popupWindow?: chrome.tabs.Tab;
     private popupWindowPromise = createDeferred<chrome.tabs.Tab>();
