@@ -10,8 +10,8 @@ export const addressType = {
 
 export type AddressType = (typeof addressType)[keyof typeof addressType];
 
-export type AddressValidator<TSymbol extends string> = {
-    isAddressValid(address: string, symbol: TSymbol): boolean;
+export type AddressValidator<TNetworkSymbol extends string> = {
+    isAddressValid(address: string, symbol: TNetworkSymbol): boolean;
 
-    getAddressType(address: string, symbol: TSymbol): AddressType | undefined;
+    getAddressType(address: string, symbol: TNetworkSymbol): AddressType | undefined;
 };
