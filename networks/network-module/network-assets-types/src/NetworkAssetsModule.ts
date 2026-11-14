@@ -22,14 +22,14 @@ export type NetworkIconAsset = {
 };
 
 /** @serviceContract */
-export type NetworkAssetsModule<TSymbol extends string = string> = {
+export type NetworkAssetsModule<TNetworkSymbol extends string = string> = {
     /** Bundled icon sources for rendering, loaded only when requested. */
-    getIcons(symbol: TSymbol): NetworkIcons;
+    getIcons(symbol: TNetworkSymbol): NetworkIcons;
     /** Original SVG file paths for Node tools, without loading the SVG modules. */
-    getIconPaths(symbol: TSymbol): NetworkIconPaths;
+    getIconPaths(symbol: TNetworkSymbol): NetworkIconPaths;
     /** Family-specific logo keys; the shared lookup defaults to the original contract. */
     getTokenLogoIdentifiers?(
-        symbol: TSymbol,
+        symbol: TNetworkSymbol,
         contract: string,
     ): readonly string[] | Promise<readonly string[]>;
 };
