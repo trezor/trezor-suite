@@ -27,28 +27,28 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-type AssetDetailSignAndVerifyBottomSheetProps = {
+type AssetDetailSignVerifyBottomSheetProps = {
     ref: BottomSheetModalRef;
     onClose: () => void;
 };
 
-export const AssetDetailSignAndVerifyBottomSheet = ({
+export const AssetDetailSignVerifyBottomSheet = ({
     ref,
     onClose,
-}: AssetDetailSignAndVerifyBottomSheetProps) => {
+}: AssetDetailSignVerifyBottomSheetProps) => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const signAndVerifyAccounts = useSelector((state: HomeAssetTableState) =>
+    const signVerifyAccounts = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetSignVerifyAccounts(state, assetKey),
     );
     const navigation = useNavigation<NavigationProps>();
 
     const handleAccountPress = (accountKey: AccountKey) => {
         onClose();
-        navigation.navigate(RootStackRoutes.SignAndVerify, { accountKey });
+        navigation.navigate(RootStackRoutes.SignVerify, { accountKey });
     };
 
     return (
@@ -62,7 +62,7 @@ export const AssetDetailSignAndVerifyBottomSheet = ({
         >
             <VStack marginTop="sp16">
                 <Card noPadding>
-                    {signAndVerifyAccounts.map(account => (
+                    {signVerifyAccounts.map(account => (
                         <AssetDetailAccountListItem
                             key={account.key}
                             accountKey={account.key}

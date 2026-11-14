@@ -10,11 +10,11 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 
-import { SignAndVerifyForms } from '../components/SignAndVerifyForms';
+import { SignVerifyForms } from '../components/SignVerifyForms';
 
-export const SignAndVerifyScreen = ({
+export const SignVerifyScreen = ({
     route,
-}: StackProps<RootStackParamList, RootStackRoutes.SignAndVerify>) => {
+}: StackProps<RootStackParamList, RootStackRoutes.SignVerify>) => {
     const { accountKey } = route.params;
 
     const account = useSelector((state: AccountsRootState) =>
@@ -34,7 +34,7 @@ export const SignAndVerifyScreen = ({
                 />
             }
         >
-            <SignAndVerifyForms account={account} />
+            <SignVerifyForms account={account} />
         </Screen>
     );
 };

@@ -31,7 +31,7 @@ export const HeaderActions = () => {
 
     return (
         <Row gap={12} alignItems="center">
-            <HeaderDropdown isDisabled={isAccountLoading} showSignAndVerify />
+            <HeaderDropdown isDisabled={isAccountLoading} showSignVerify />
 
             {isTradingAvailable && (
                 <TradeActions
