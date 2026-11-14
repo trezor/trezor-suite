@@ -69,11 +69,6 @@ describe('LimitPicker', () => {
         const picker = getByTestId('ExchangeApproval/LimitPicker');
 
         expect(within(picker).getByText('100 USDC')).toBeOnTheScreen();
-        expect(
-            within(picker).getByText(
-                getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
-            ),
-        ).toBeOnTheScreen();
     });
 
     it('should render Unlimited when selected by user', async () => {
@@ -95,18 +90,6 @@ describe('LimitPicker', () => {
                 getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel'),
             ),
         ).toBeOnTheScreen();
-        expect(
-            within(picker).getByText(
-                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),
-            ),
-        ).toBeOnTheScreen();
-        expect(
-            within(picker).getByText(
-                getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.alert', {
-                    coinSymbol: 'USDC',
-                }),
-            ),
-        ).toBeOnTheScreen();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'INFINITE' }),
         );
@@ -123,11 +106,6 @@ describe('LimitPicker', () => {
         expect(mockOnApprovalTypeChange).toHaveBeenCalledTimes(1);
         expect(mockOnApprovalTypeChange).toHaveBeenCalledWith('MINIMAL');
         expect(within(picker).getByText('100 USDC')).toBeOnTheScreen();
-        expect(
-            within(picker).getByText(
-                getTranslation('moduleTrading.exchangeApprovalLimitSheet.limitedCard.info'),
-            ),
-        ).toBeOnTheScreen();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toEqual(
             expect.objectContaining({ approvalType: 'MINIMAL' }),
         );

@@ -4,12 +4,10 @@ import { useSelector } from 'react-redux';
 import type { DexApprovalType } from 'invity-api';
 
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { Text, useBottomSheetControls } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { useBottomSheetControls } from '@suite-native/atoms';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
 import { LimitInfoRow } from './LimitInfoRow';
-import { LimitPickerUnlimitedAlert } from './LimitPickerUnlimitedAlert';
 
 type LimitPickerProps = {
     onApprovalTypeChange: (approvalType: DexApprovalType) => void;
@@ -35,20 +33,9 @@ export const LimitPicker = ({ onApprovalTypeChange }: LimitPickerProps) => {
         return null;
     }
 
-    const isInfinite = approvalType === 'INFINITE';
-
     return (
         <>
-            <LimitInfoRow onPress={showSheet} testID="ExchangeApproval/LimitPicker" withCaret>
-                <Text variant="body-sm" color="contentSecondary">
-                    {isInfinite ? (
-                        <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />
-                    ) : (
-                        <Translation id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.info" />
-                    )}
-                </Text>
-                {isInfinite && <LimitPickerUnlimitedAlert cryptoId={quote.send} />}
-            </LimitInfoRow>
+            <LimitInfoRow onPress={showSheet} testID="ExchangeApproval/LimitPicker" withCaret />
             <ExchangeApprovalLimitSheet
                 isVisible={isSheetVisible}
                 onDismiss={hideSheet}
