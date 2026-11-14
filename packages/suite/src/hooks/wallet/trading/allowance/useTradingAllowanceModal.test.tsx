@@ -75,13 +75,15 @@ const getCryptoInfo = mock<GetTradingExchangeCryptoInfo>(() => ({
     selectedFee: 'normal',
 }));
 
+type RenderAllowanceModalParams = {
+    isOpen?: boolean;
+    selectedQuote?: ExchangeTrade;
+};
+
 const renderAllowanceModal = ({
     isOpen = true,
     selectedQuote = QUOTE,
-}: {
-    isOpen?: boolean;
-    selectedQuote?: ExchangeTrade;
-}) => {
+}: RenderAllowanceModalParams) => {
     const preloadedState: MockSuiteState = {
         ...mockInitialAppState,
         wallet: {

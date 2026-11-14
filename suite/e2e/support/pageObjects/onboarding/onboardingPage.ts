@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+// eslint-disable-next-line local-rules/no-package-deep-imports -- e2e tests load only this module, not the whole package, in the Playwright runtime
 import { debugActions } from '@suite/debug/src/debugSlice';
 import { setFlag } from '@suite/flags';
 import { suiteSettingsActions } from '@suite/settings';

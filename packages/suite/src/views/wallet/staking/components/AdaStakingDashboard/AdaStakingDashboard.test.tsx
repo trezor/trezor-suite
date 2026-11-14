@@ -17,6 +17,8 @@ import {
     mockInitialAppState,
 } from '../../../../../../mocks/mockInitialAppState';
 
+type StakingDashboardProps = { dashboard: ReactNode };
+
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     fetchAllTransactionsForAccountThunk: () => ({ type: 'test/fetchAllTransactionsForAccount' }),
@@ -25,7 +27,7 @@ jest.mock('#src/components/dashboard', () => ({
     DashboardSection: ({ children }: PropsWithChildren) => children,
 }));
 jest.mock('../StakingDashboard/StakingDashboard', () => ({
-    StakingDashboard: ({ dashboard }: { dashboard: ReactNode }) => dashboard,
+    StakingDashboard: ({ dashboard }: StakingDashboardProps) => dashboard,
 }));
 jest.mock('./CardanoNewProviderCard', () => ({ CardanoNewProviderCard: () => null }));
 jest.mock('../StakingDashboard/components/ApyCard', () => ({ ApyCard: () => null }));

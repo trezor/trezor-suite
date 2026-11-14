@@ -8,12 +8,14 @@ import { electronOrigin } from '../../config';
 import type { ILogger } from '../logger';
 import { getSwitchValue } from '../process-switches';
 
+type BluetoothProcessParams = { port?: number; logger: ILogger };
+
 export class BluetoothProcess extends BaseProcess {
     private readonly port;
     private readonly debug;
     private readonly token;
 
-    constructor({ port = 21327, logger }: { port?: number; logger: ILogger }) {
+    constructor({ port = 21327, logger }: BluetoothProcessParams) {
         const debug = isDevEnv || getSwitchValue('log-level') === 'debug';
         const token = randomBytes(32).toString('hex');
 
