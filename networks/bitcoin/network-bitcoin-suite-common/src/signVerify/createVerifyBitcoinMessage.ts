@@ -1,10 +1,14 @@
 import {
     type DeviceIdentity,
     type GetTrezorConnectDep,
-    type TrezorConnectCallable,
     asCoinSymbol,
 } from '@trezor/connect-common';
 import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
+import {
+    type VerifyError,
+    connectErrorToSignVerifyError,
+} from '@trezor/network-module-suite-common-types';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 export type VerifyBitcoinMessageDeps = GetTrezorConnectDep<'verifyMessage'>;
 
@@ -19,7 +23,7 @@ export type VerifyBitcoinMessageParams = {
 
 export type VerifyBitcoinMessage = (
     params: VerifyBitcoinMessageParams,
-) => ReturnType<TrezorConnectCallable['verifyMessage']>;
+) => Promise<Result<void, VerifyError>>;
 
 export type VerifyBitcoinMessageDep = {
     verifyBitcoinMessage: VerifyBitcoinMessage;
@@ -27,8 +31,8 @@ export type VerifyBitcoinMessageDep = {
 
 export const createVerifyBitcoinMessage =
     (deps: VerifyBitcoinMessageDeps): VerifyBitcoinMessage =>
-    ({ device, symbol, address, message, signature, hex }) =>
-        deps.getTrezorConnect().verifyMessage({
+    async ({ device, symbol, address, message, signature, hex }) => {
+        const response = await deps.getTrezorConnect().verifyMessage({
             device,
             address,
             coin: asCoinSymbol(symbol),
@@ -36,6 +40,9 @@ export const createVerifyBitcoinMessage =
             signature,
             hex,
         });
+
+        return response.success ? ok() : err(connectErrorToSignVerifyError(response.error));
+    };
 
 export const injectVerifyBitcoinMessage = (services: any): VerifyBitcoinMessageDep => ({
     verifyBitcoinMessage: services.verifyBitcoinMessage,

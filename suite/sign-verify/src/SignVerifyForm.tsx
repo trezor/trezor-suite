@@ -3,17 +3,13 @@ import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import {
-    getHasSelectableSignatureFormat,
-    isVerifySupported,
-    signThunk,
-    verifyThunk,
-} from '@suite-common/sign-verify';
+import { isTrezorDeviceWithState } from '@suite-common/device';
+import { injectSignVerify } from '@suite-common/sign-verify';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { exhaustive } from '@trezor/type-utils';
 
 import { FormatSwitch } from './FormatSwitch';
 import { SignVerifyAddressField } from './SignVerifyAddressField';
@@ -35,7 +31,7 @@ type SignVerifyFormProps = {
 export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVerifyFormProps) => {
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
-    const { dispatch } = useServices(injectDispatch);
+    const { signVerify } = useServices(injectSignVerify);
 
     const isSignPage = page === 'sign';
 
@@ -50,11 +46,10 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
         hexField,
         addressField,
         pathField,
-        isElectrumField,
-        cardanoPubKeyCoseField,
+        formatField,
     } = useSignVerifyForm(isSignPage, account);
 
-    const { isLocked } = useDevice();
+    const { device, isLocked } = useDevice();
     const { translationString } = useTranslation();
     const copyValue = useSignVerifyCopyValue();
 
@@ -91,30 +86,60 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
     };
 
     const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, isElectrum, cardanoPubKeyCose } = data;
+        if (!isTrezorDeviceWithState(device)) {
+            return;
+        }
+
+        const { address, path, message, signature, hex, format } = data;
 
         if (isSignPage && path !== undefined) {
-            const result = await dispatch(
-                signThunk(account, path, message, hex, isElectrum, cardanoPubKeyCose),
-            );
+            const result = await signVerify.sign({
+                device,
+                account,
+                path,
+                message,
+                hex,
+                format,
+            });
 
-            if (result) {
-                formSetSignature(result);
+            if (result.success) {
+                formSetSignature(result.payload);
                 setOutcome('signed');
             }
         } else if (signature !== undefined) {
-            const result = await dispatch(verifyThunk(account, address, message, signature, hex));
+            const result = await signVerify.verify({
+                device,
+                account,
+                address,
+                message,
+                signature,
+                hex,
+            });
 
-            // Cancelling on the device leaves the form exactly as it was, the way a cancelled
-            // signing does: nothing was verified, and nothing failed to verify either.
-            if (result !== 'cancelled') {
-                setOutcome(result === 'verified' ? 'verified' : 'failed');
+            if (result.success) {
+                setOutcome('verified');
+
+                return;
+            }
+
+            switch (result.error.type) {
+                // Cancelling on the device leaves the form exactly as it was, the way a cancelled
+                // signing does: nothing was verified, and nothing failed to verify either.
+                case 'DeviceCancelled':
+                    break;
+                case 'DeviceError':
+                case 'DeviceNotConnectedError':
+                case 'SignVerifyNotSupported':
+                    setOutcome('failed');
+                    break;
+                default:
+                    exhaustive(result.error);
             }
         }
     };
 
-    const signFormatsDiffer = getHasSelectableSignatureFormat(account);
-    const canVerify = isVerifySupported(account);
+    const formats = signVerify.getFormats(account);
+    const canVerify = signVerify.isVerifySupported(account);
     const isCardano = network?.networkType === 'cardano';
 
     return (
@@ -127,37 +152,11 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
             />
             <form onSubmit={formSubmit(onSubmit)}>
                 <Column gap={16} margin={{ bottom: 32 }}>
-                    {isSignPage && signFormatsDiffer && !isCompleted && (
+                    {isSignPage && formats.length > 1 && (
                         <FormatSwitch
-                            options={[
-                                { value: false, label: <Translation id="TR_BIP_SIG_FORMAT" /> },
-                                {
-                                    value: true,
-                                    label: <Translation id="TR_COMPATIBILITY_SIG_FORMAT" />,
-                                },
-                            ]}
-                            tooltip={
-                                <Translation
-                                    id="TR_FORMAT_TOOLTIP"
-                                    values={{
-                                        FormatDescription: chunks => <p>{chunks}</p>,
-                                        span: chunks => <strong>{chunks}</strong>,
-                                    }}
-                                />
-                            }
-                            data-testid="@sign-verify/format"
-                            {...isElectrumField}
-                        />
-                    )}
-                    {isSignPage && isCardano && (
-                        <FormatSwitch
-                            options={[
-                                { value: false, label: <Translation id="TR_PUBLIC_KEY_RAW" /> },
-                                { value: true, label: <Translation id="TR_PUBLIC_KEY_COSE" /> },
-                            ]}
+                            options={formats}
                             isDisabled={isCompleted}
-                            data-testid="@sign-verify/cardano-pubkey-format"
-                            {...cardanoPubKeyCoseField}
+                            {...formatField}
                         />
                     )}
                     <SignVerifyAddressField

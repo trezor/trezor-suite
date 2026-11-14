@@ -19,6 +19,9 @@
         },
         {
             "path": "../../../packages/utils"
+        },
+        {
+            "path": "../../../packages/dependency-injection"
         }
     ]
 }
