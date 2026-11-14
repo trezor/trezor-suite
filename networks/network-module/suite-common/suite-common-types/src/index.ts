@@ -6,26 +6,26 @@ export type {
     NamedAddressResolver,
 } from './namedAddressResolver/NamedAddressResolver';
 export type { IsWrappedNativeToken } from './IsWrappedNativeToken';
-export type { MessageSigner, SignVerifyError } from './messageSigner/MessageSigner';
+export type { NetworkSignVerify, SignVerifyError } from './signVerify/NetworkSignVerify';
 export {
     SignatureFormatNotSupportedError,
-    type MessageSigning,
+    type NetworkSignMessage,
     type SignError,
     type SignMessageParams,
     type SignatureFormat,
     type SignatureFormatNotSupportedErrorType,
     type SignedMessage,
-} from './messageSigner/SignMessage';
+} from './signVerify/NetworkSignMessage';
 export {
     SignVerifyNotSupportedError,
     type SignVerifyNotSupportedErrorType,
     toSignVerifyDeviceError,
-} from './messageSigner/signVerifyErrors';
+} from './signVerify/signVerifyErrors';
 export type {
-    MessageVerification,
+    NetworkVerifyMessage,
     VerifyError,
     VerifyMessageParams,
-} from './messageSigner/VerifyMessage';
+} from './signVerify/NetworkVerifyMessage';
 export { createNetworkModule } from './createNetworkModule';
 export type { NetworkModuleDefinition } from './createNetworkModule';
 export { asDisplayOrderKey } from './DisplayOrderKey';

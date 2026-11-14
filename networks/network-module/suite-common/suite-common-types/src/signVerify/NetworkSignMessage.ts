@@ -53,7 +53,7 @@ export type SignError =
     | SignVerifyNotSupportedErrorType
     | SignatureFormatNotSupportedErrorType;
 
-export type MessageSigning<TNetworkSymbol extends string> = {
+export type NetworkSignMessage<TNetworkSymbol extends string> = {
     /** The formats the user picks from, the default first; missing for networks with no choice. */
     getFormats?: (symbol: TNetworkSymbol, accountType: AccountType) => readonly SignatureFormat[];
     getDefaultFormat?: (symbol: TNetworkSymbol, accountType: AccountType) => SignatureFormat;

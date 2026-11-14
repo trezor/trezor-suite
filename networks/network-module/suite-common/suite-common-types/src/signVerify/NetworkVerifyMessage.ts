@@ -24,7 +24,7 @@ export type VerifyError =
     | DeviceNotConnectedErrorType
     | SignVerifyNotSupportedErrorType;
 
-export type MessageVerification<TNetworkSymbol extends string> = {
+export type NetworkVerifyMessage<TNetworkSymbol extends string> = {
     verifyMessage?: (
         params: VerifyMessageParams<TNetworkSymbol>,
     ) => Promise<Result<void, VerifyError>>;

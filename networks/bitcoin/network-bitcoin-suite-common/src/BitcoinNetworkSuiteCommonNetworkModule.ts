@@ -8,11 +8,11 @@ import {
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 import {
-    type BitcoinMessageSignerDeps,
-    createBitcoinMessageSigner,
-} from './signVerify/createBitcoinMessageSigner';
+    type BitcoinSignVerifyDeps,
+    createBitcoinSignVerify,
+} from './signVerify/createBitcoinSignVerify';
 
-type BitcoinSuiteCommonNetworkModuleDeps = BitcoinMessageSignerDeps;
+type BitcoinSuiteCommonNetworkModuleDeps = BitcoinSignVerifyDeps;
 
 export const createBitcoinSuiteCommonNetworkModule = (
     deps: BitcoinSuiteCommonNetworkModuleDeps,
@@ -22,5 +22,5 @@ export const createBitcoinSuiteCommonNetworkModule = (
         addressValidator: bitcoinValidator,
         getNetworkConfig,
         getAccountSyncInterval,
-        messageSigner: createBitcoinMessageSigner(deps),
+        signVerify: createBitcoinSignVerify(deps),
     });

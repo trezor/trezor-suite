@@ -1,11 +1,11 @@
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import type { MessageSigner } from './MessageSigner';
+import type { NetworkSignVerify } from './NetworkSignVerify';
 
-export const createMessageSigner = <TNetworkSymbol extends string>(
-    { getFormats, getDefaultFormat, signMessage, verifyMessage }: MessageSigner<TNetworkSymbol>,
+export const createNetworkSignVerify = <TNetworkSymbol extends string>(
+    { getFormats, getDefaultFormat, signMessage, verifyMessage }: NetworkSignVerify<TNetworkSymbol>,
     narrow: (symbol: NetworkSymbol) => TNetworkSymbol,
-): MessageSigner<NetworkSymbol> => ({
+): NetworkSignVerify<NetworkSymbol> => ({
     getFormats: getFormats && ((symbol, accountType) => getFormats(narrow(symbol), accountType)),
     getDefaultFormat:
         getDefaultFormat &&

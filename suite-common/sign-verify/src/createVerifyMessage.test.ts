@@ -9,7 +9,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { mock } from '@trezor/dependency-injection';
 import {
-    type MessageSigner,
+    type NetworkSignVerify,
     toSignVerifyDeviceError,
 } from '@trezor/network-module-suite-common-types';
 
@@ -25,7 +25,7 @@ const CONNECTED_DEVICE = mockSuiteDevice({
     available: true,
 }) as TrezorDeviceWithState;
 
-type VerifyMessage = NonNullable<MessageSigner<NetworkSymbol>['verifyMessage']>;
+type VerifyMessage = NonNullable<NetworkSignVerify<NetworkSymbol>['verifyMessage']>;
 
 describe('signVerify.verify', () => {
     let dispatch: jest.Mock;
@@ -41,7 +41,7 @@ describe('signVerify.verify', () => {
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
-                        messageSigner: { signMessage: mock(), verifyMessage },
+                        signVerify: { signMessage: mock(), verifyMessage },
                     }),
                 isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
             }),

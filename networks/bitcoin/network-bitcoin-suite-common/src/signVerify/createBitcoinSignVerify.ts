@@ -1,5 +1,5 @@
 import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
-import type { MessageSigner } from '@trezor/network-module-suite-common-types';
+import type { NetworkSignVerify } from '@trezor/network-module-suite-common-types';
 
 import {
     BITCOIN_DEFAULT_SIGNATURE_FORMAT,
@@ -11,11 +11,11 @@ import {
     createVerifyBitcoinMessage,
 } from './createVerifyBitcoinMessage';
 
-export type BitcoinMessageSignerDeps = SignBitcoinMessageDeps & VerifyBitcoinMessageDeps;
+export type BitcoinSignVerifyDeps = SignBitcoinMessageDeps & VerifyBitcoinMessageDeps;
 
-export const createBitcoinMessageSigner = (
-    deps: BitcoinMessageSignerDeps,
-): MessageSigner<BitcoinNetworkSymbol> => ({
+export const createBitcoinSignVerify = (
+    deps: BitcoinSignVerifyDeps,
+): NetworkSignVerify<BitcoinNetworkSymbol> => ({
     getFormats: getBitcoinSignatureFormats,
     getDefaultFormat: () => BITCOIN_DEFAULT_SIGNATURE_FORMAT,
     signMessage: createSignBitcoinMessage(deps),

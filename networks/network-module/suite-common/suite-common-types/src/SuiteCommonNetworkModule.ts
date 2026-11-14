@@ -4,8 +4,8 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import type { IsWrappedNativeToken } from './IsWrappedNativeToken';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 import type { AddressValidator } from './addressValidator/AddressValidator';
-import type { MessageSigner } from './messageSigner/MessageSigner';
 import type { NamedAddressResolver } from './namedAddressResolver/NamedAddressResolver';
+import type { NetworkSignVerify } from './signVerify/NetworkSignVerify';
 
 export type SuiteCommonNetworkModule = {
     icon: NetworkAssetsModule;
@@ -21,5 +21,5 @@ export type SuiteCommonNetworkModule = {
 
     getAccountSyncInterval(symbol: NetworkSymbol): number;
 
-    messageSigner?: MessageSigner<NetworkSymbol>;
+    signVerify?: NetworkSignVerify<NetworkSymbol>;
 };

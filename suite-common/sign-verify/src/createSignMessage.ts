@@ -14,7 +14,7 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { type Result, err } from '@trezor/type-utils';
 
-import { getMessageSigner } from './getMessageSigner';
+import { getNetworkSignVerify } from './getNetworkSignVerify';
 import { getErrorMessage, getFailureAttributes } from './signVerifyFailure';
 
 export type SignMessageDeps = NetworkModuleRepositoryDep &
@@ -38,11 +38,17 @@ export type SignMessage = {
 };
 
 export const createSignMessage = (deps: SignMessageDeps): SignMessage => {
-    const getFormats = (account: Account) =>
-        getMessageSigner(deps, account)?.getFormats?.(account.symbol, account.accountType) ?? [];
+    const getFormats = (account: Account) => {
+        const networkSignVerify = getNetworkSignVerify(deps, account);
 
-    const getDefaultFormat = (account: Account) =>
-        getMessageSigner(deps, account)?.getDefaultFormat?.(account.symbol, account.accountType);
+        return networkSignVerify?.getFormats?.(account.symbol, account.accountType) ?? [];
+    };
+
+    const getDefaultFormat = (account: Account) => {
+        const networkSignVerify = getNetworkSignVerify(deps, account);
+
+        return networkSignVerify?.getDefaultFormat?.(account.symbol, account.accountType);
+    };
 
     const signOnDevice = async ({
         device,
@@ -56,13 +62,13 @@ export const createSignMessage = (deps: SignMessageDeps): SignMessage => {
             return err(DeviceNotConnectedError('Device not connected: signMessage'));
         }
 
-        const messageSigner = getMessageSigner(deps, account);
+        const networkSignVerify = getNetworkSignVerify(deps, account);
 
-        if (!messageSigner) {
+        if (!networkSignVerify) {
             return err(SignVerifyNotSupportedError());
         }
 
-        return await messageSigner.signMessage({
+        return await networkSignVerify.signMessage({
             device,
             symbol: account.symbol,
             accountIndex: account.index,

@@ -9,11 +9,11 @@ import {
 import { adaValidator, preloadCborDecode } from './addressValidator/cardanoAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 import {
-    type CardanoMessageSignerDeps,
-    createCardanoMessageSigner,
-} from './signVerify/createCardanoMessageSigner';
+    type CardanoSignVerifyDeps,
+    createCardanoSignVerify,
+} from './signVerify/createCardanoSignVerify';
 
-type CardanoSuiteCommonNetworkModuleDeps = CardanoMessageSignerDeps;
+type CardanoSuiteCommonNetworkModuleDeps = CardanoSignVerifyDeps;
 
 export const createCardanoSuiteCommonNetworkModule = (
     deps: CardanoSuiteCommonNetworkModuleDeps,
@@ -32,6 +32,6 @@ export const createCardanoSuiteCommonNetworkModule = (
         addressValidator: adaValidator,
         getNetworkConfig,
         getAccountSyncInterval,
-        messageSigner: createCardanoMessageSigner(deps),
+        signVerify: createCardanoSignVerify(deps),
     });
 };

@@ -12,7 +12,7 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { type Result, err, exhaustive } from '@trezor/type-utils';
 
-import { getMessageSigner } from './getMessageSigner';
+import { getNetworkSignVerify } from './getNetworkSignVerify';
 import { getErrorMessage, getFailureAttributes } from './signVerifyFailure';
 
 export type VerifyMessageDeps = NetworkModuleRepositoryDep &
@@ -52,7 +52,7 @@ const getVerifyErrorToast = (error: VerifyError): ToastPayload => {
 
 export const createVerifyMessage = (deps: VerifyMessageDeps): VerifyMessage => {
     const isVerifySupported = (account: Account) =>
-        getMessageSigner(deps, account)?.verifyMessage !== undefined;
+        getNetworkSignVerify(deps, account)?.verifyMessage !== undefined;
 
     const verifyOnDevice = async ({
         device,
@@ -66,7 +66,7 @@ export const createVerifyMessage = (deps: VerifyMessageDeps): VerifyMessage => {
             return err(DeviceNotConnectedError('Device not connected: verifyMessage'));
         }
 
-        const verifyMessage = getMessageSigner(deps, account)?.verifyMessage;
+        const verifyMessage = getNetworkSignVerify(deps, account)?.verifyMessage;
 
         if (!verifyMessage) {
             return err(SignVerifyNotSupportedError());

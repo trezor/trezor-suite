@@ -13,17 +13,12 @@ import {
 } from './namedAddress/createEthereumNamedAddressResolverCompositionRoot';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 import {
-    type SignEthereumMessageDeps,
-    createSignEthereumMessage,
-} from './signVerify/createSignEthereumMessage';
-import {
-    type VerifyEthereumMessageDeps,
-    createVerifyEthereumMessage,
-} from './signVerify/createVerifyEthereumMessage';
+    type EthereumSignVerifyDeps,
+    createEthereumSignVerify,
+} from './signVerify/createEthereumSignVerify';
 
 type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps &
-    SignEthereumMessageDeps &
-    VerifyEthereumMessageDeps;
+    EthereumSignVerifyDeps;
 
 type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
@@ -43,9 +38,6 @@ export const createEthereumSuiteCommonNetworkModule = (
         namedAddressResolver: ethereumNamedAddressResolver,
         getNetworkConfig,
         getAccountSyncInterval,
-        messageSigner: {
-            signMessage: createSignEthereumMessage(deps),
-            verifyMessage: createVerifyEthereumMessage(deps),
-        },
+        signVerify: createEthereumSignVerify(deps),
     });
 };

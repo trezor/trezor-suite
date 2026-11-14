@@ -9,7 +9,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { mock } from '@trezor/dependency-injection';
 import {
-    type MessageSigner,
+    type NetworkSignVerify,
     type SignatureFormat,
     toSignVerifyDeviceError,
 } from '@trezor/network-module-suite-common-types';
@@ -34,19 +34,19 @@ const CONNECTED_DEVICE = mockSuiteDevice({
 
 describe('signVerify.sign', () => {
     let dispatch: jest.Mock;
-    let signMessage: jest.MockedFunction<MessageSigner<NetworkSymbol>['signMessage']>;
+    let signMessage: jest.MockedFunction<NetworkSignVerify<NetworkSymbol>['signMessage']>;
     let deps: SignMessageDeps & { analytics: ReturnType<typeof mockAnalytics> };
 
     beforeEach(() => {
         dispatch = jest.fn();
-        signMessage = mock<MessageSigner<NetworkSymbol>['signMessage']>();
+        signMessage = mock<NetworkSignVerify<NetworkSymbol>['signMessage']>();
         deps = {
             analytics: mockAnalytics(),
             // The account's network module, which signs on the device.
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
-                        messageSigner: {
+                        signVerify: {
                             // As Bitcoin: no choice for legacy accounts or other networks.
                             getFormats: (symbol, accountType) =>
                                 symbol === 'btc' && accountType !== 'legacy'
