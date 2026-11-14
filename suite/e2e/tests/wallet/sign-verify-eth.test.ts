@@ -34,7 +34,7 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
         async ({ page, devicePrompt, walletPage, device }) => {
             await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
             await walletPage.walletExtraDropDown.click();
-            await walletPage.signAndVerifyButton.click();
+            await walletPage.signVerifyButton.click();
             await page.getByTestId('@sign-verify/message').fill(MESSAGE_SIGN);
             await page.getByTestId('@sign-verify/submit').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
@@ -75,7 +75,7 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
         async ({ page, devicePrompt, walletPage, device }) => {
             await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
             await walletPage.walletExtraDropDown.click();
-            await walletPage.signAndVerifyButton.click();
+            await walletPage.signVerifyButton.click();
 
             await page.getByTestId('@sign-verify/navigation/verify').click();
             await page.getByTestId('@sign-verify/message').fill(MESSAGE_SIGN);

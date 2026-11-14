@@ -1,2 +1,2 @@
-export * from './navigation/SignAndVerifyStackNavigator';
-export * from './screens/SignAndVerifyScreen';
+export * from './navigation/SignVerifyStackNavigator';
+export * from './screens/SignVerifyScreen';

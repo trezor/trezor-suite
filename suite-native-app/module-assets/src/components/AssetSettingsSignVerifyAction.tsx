@@ -27,43 +27,43 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-type AssetSettingsSignAndVerifyActionProps = {
+type AssetSettingsSignVerifyActionProps = {
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    onOpenSignAndVerifyAccounts: () => void;
+    onOpenSignVerifyAccounts: () => void;
     onClose: () => void;
 };
 
-export const AssetSettingsSignAndVerifyAction = ({
+export const AssetSettingsSignVerifyAction = ({
     networkSymbol,
     tokenContract,
-    onOpenSignAndVerifyAccounts,
+    onOpenSignVerifyAccounts,
     onClose,
-}: AssetSettingsSignAndVerifyActionProps) => {
+}: AssetSettingsSignVerifyActionProps) => {
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const signAndVerifyAccounts = useSelector((state: HomeAssetTableState) =>
+    const signVerifyAccounts = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetSignVerifyAccounts(state, assetKey),
     );
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const navigation = useNavigation<NavigationProps>();
 
-    if (isPortfolioTrackerDevice || signAndVerifyAccounts.length === 0) {
+    if (isPortfolioTrackerDevice || signVerifyAccounts.length === 0) {
         return null;
     }
 
-    const handleOpenSignAndVerify = () => {
-        const [onlyAccount] = signAndVerifyAccounts;
+    const handleOpenSignVerify = () => {
+        const [onlyAccount] = signVerifyAccounts;
 
-        if (signAndVerifyAccounts.length === 1 && onlyAccount !== undefined) {
+        if (signVerifyAccounts.length === 1 && onlyAccount !== undefined) {
             onClose();
-            navigation.navigate(RootStackRoutes.SignAndVerify, { accountKey: onlyAccount.key });
+            navigation.navigate(RootStackRoutes.SignVerify, { accountKey: onlyAccount.key });
 
             return;
         }
 
-        onOpenSignAndVerifyAccounts();
+        onOpenSignVerifyAccounts();
     };
 
     return (
@@ -72,8 +72,8 @@ export const AssetSettingsSignAndVerifyAction = ({
             label={
                 <Translation id="moduleAccountManagement.accountSettingsScreen.signAndVerifyButton" />
             }
-            onPress={handleOpenSignAndVerify}
-            testID="@asset-detail/settings/sign-and-verify-button"
+            onPress={handleOpenSignVerify}
+            testID="@asset-detail/settings/sign-verify-button"
         />
     );
 };

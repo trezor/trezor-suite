@@ -12,21 +12,21 @@ import { AssetSettingsDivider } from './AssetSettingsDivider';
 import { AssetSettingsExplorerAction } from './AssetSettingsExplorerAction';
 import { AssetSettingsHideTokenAction } from './AssetSettingsHideTokenAction';
 import { AssetSettingsNetworkSection } from './AssetSettingsNetworkSection';
-import { AssetSettingsSignAndVerifyAction } from './AssetSettingsSignAndVerifyAction';
+import { AssetSettingsSignVerifyAction } from './AssetSettingsSignVerifyAction';
 import { AssetSettingsTokenDetailsSection } from './AssetSettingsTokenDetailsSection';
 import { AssetSettingsWalletConnectAction } from './AssetSettingsWalletConnectAction';
 
 type AssetSettingsBottomSheetProps = {
     ref: BottomSheetModalRef;
     onOpenAccounts: () => void;
-    onOpenSignAndVerifyAccounts: () => void;
+    onOpenSignVerifyAccounts: () => void;
     onClose: () => void;
 };
 
 export const AssetSettingsBottomSheet = ({
     ref,
     onOpenAccounts,
-    onOpenSignAndVerifyAccounts,
+    onOpenSignVerifyAccounts,
     onClose,
 }: AssetSettingsBottomSheetProps) => {
     const { networkSymbol, tokenContract } =
@@ -67,10 +67,10 @@ export const AssetSettingsBottomSheet = ({
                     tokenContract={tokenContract}
                     onOpenAccounts={onOpenAccounts}
                 />
-                <AssetSettingsSignAndVerifyAction
+                <AssetSettingsSignVerifyAction
                     networkSymbol={networkSymbol}
                     tokenContract={tokenContract}
-                    onOpenSignAndVerifyAccounts={onOpenSignAndVerifyAccounts}
+                    onOpenSignVerifyAccounts={onOpenSignVerifyAccounts}
                     onClose={onClose}
                 />
                 <AssetSettingsWalletConnectAction networkSymbol={networkSymbol} onClose={onClose} />

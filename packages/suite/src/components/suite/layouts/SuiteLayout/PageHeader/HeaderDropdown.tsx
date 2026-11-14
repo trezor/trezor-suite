@@ -23,14 +23,14 @@ type ActionItem = {
 
 type HeaderDropdownProps = {
     isDisabled?: boolean;
-    showSignAndVerify?: boolean;
+    showSignVerify?: boolean;
 };
-export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
+export const HeaderDropdown = ({ isDisabled, showSignVerify }: HeaderDropdownProps) => {
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
 
     const additionalActions: ActionItem[] = [
-        ...(showSignAndVerify
+        ...(showSignVerify
             ? [
                   {
                       id: 'wallet-sign-verify',
