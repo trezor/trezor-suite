@@ -6,7 +6,7 @@ import {
 import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
 import {
     type VerifyError,
-    toSignVerifyDeviceError,
+    connectErrorToSignVerifyError,
 } from '@trezor/network-module-suite-common-types';
 import { type Result, err, ok } from '@trezor/type-utils';
 
@@ -41,7 +41,7 @@ export const createVerifyBitcoinMessage =
             hex,
         });
 
-        return response.success ? ok() : err(toSignVerifyDeviceError(response.error));
+        return response.success ? ok() : err(connectErrorToSignVerifyError(response.error));
     };
 
 export const injectVerifyBitcoinMessage = (services: any): VerifyBitcoinMessageDep => ({

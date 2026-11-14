@@ -12,7 +12,7 @@ export const SignVerifyNotSupportedError = (): SignVerifyNotSupportedErrorType =
     type: 'SignVerifyNotSupported',
 });
 
-export const toSignVerifyDeviceError = ({
+export const connectErrorToSignVerifyError = ({
     message,
     code,
 }: {

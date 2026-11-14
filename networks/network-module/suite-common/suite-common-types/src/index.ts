@@ -19,7 +19,7 @@ export {
 export {
     SignVerifyNotSupportedError,
     type SignVerifyNotSupportedErrorType,
-    toSignVerifyDeviceError,
+    connectErrorToSignVerifyError,
 } from './signVerify/signVerifyErrors';
 export type {
     NetworkVerifyMessage,

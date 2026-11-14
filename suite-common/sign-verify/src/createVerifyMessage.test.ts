@@ -10,7 +10,7 @@ import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { mock } from '@trezor/dependency-injection';
 import {
     type NetworkSignVerify,
-    toSignVerifyDeviceError,
+    connectErrorToSignVerifyError,
 } from '@trezor/network-module-suite-common-types';
 
 import { type VerifyMessageDeps, createVerifyMessage } from './createVerifyMessage';
@@ -99,7 +99,7 @@ describe('signVerify.verify', () => {
         it('reports a failed verify with the error code', async () => {
             setVerifyResponse({
                 success: false,
-                error: toSignVerifyDeviceError({
+                error: connectErrorToSignVerifyError({
                     message: 'Invalid signature',
                     code: 'Failure_DataError',
                 }),
@@ -122,7 +122,7 @@ describe('signVerify.verify', () => {
         it('reports a verify rejected on the device as cancelled', async () => {
             setVerifyResponse({
                 success: false,
-                error: toSignVerifyDeviceError({
+                error: connectErrorToSignVerifyError({
                     message: 'Cancelled',
                     code: 'Failure_ActionCancelled',
                 }),
@@ -143,7 +143,7 @@ describe('signVerify.verify', () => {
             async code => {
                 setVerifyResponse({
                     success: false,
-                    error: toSignVerifyDeviceError({ message: 'Cancelled', code }),
+                    error: connectErrorToSignVerifyError({ message: 'Cancelled', code }),
                 });
 
                 const result = await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE);
@@ -160,7 +160,7 @@ describe('signVerify.verify', () => {
         it('settles a signature that does not verify as failed, and says so', async () => {
             setVerifyResponse({
                 success: false,
-                error: toSignVerifyDeviceError({
+                error: connectErrorToSignVerifyError({
                     message: 'Invalid signature',
                     code: 'Failure_DataError',
                 }),

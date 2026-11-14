@@ -3,7 +3,7 @@ import type { CardanoNetworkSymbol } from '@trezor/network-cardano-types';
 import {
     type AccountType,
     type SignError,
-    toSignVerifyDeviceError,
+    connectErrorToSignVerifyError,
 } from '@trezor/network-module-suite-common-types';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
@@ -92,7 +92,7 @@ export const createSignCardanoMessage =
                   pubKey: getPublicKey(signatureFormat.payload, response.payload),
                   address: response.payload.headers.protected.address,
               })
-            : err(toSignVerifyDeviceError(response.error));
+            : err(connectErrorToSignVerifyError(response.error));
     };
 
 export const injectSignCardanoMessage = (services: any): SignCardanoMessageDep => ({

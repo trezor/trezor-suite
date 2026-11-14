@@ -2,7 +2,7 @@ import { type DeviceIdentity, type GetTrezorConnectDep } from '@trezor/connect-c
 import {
     type SignError,
     type SignedMessage,
-    toSignVerifyDeviceError,
+    connectErrorToSignVerifyError,
 } from '@trezor/network-module-suite-common-types';
 import { type Result, err, ok } from '@trezor/type-utils';
 
@@ -36,7 +36,7 @@ export const createSignEthereumMessage =
 
         return response.success
             ? ok(response.payload)
-            : err(toSignVerifyDeviceError(response.error));
+            : err(connectErrorToSignVerifyError(response.error));
     };
 
 export const injectSignEthereumMessage = (services: any): SignEthereumMessageDep => ({

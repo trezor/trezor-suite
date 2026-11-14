@@ -7,7 +7,7 @@ import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
 import {
     type SignError,
     type SignedMessage,
-    toSignVerifyDeviceError,
+    connectErrorToSignVerifyError,
 } from '@trezor/network-module-suite-common-types';
 import { type Result, err, ok } from '@trezor/type-utils';
 
@@ -52,7 +52,7 @@ export const createSignBitcoinMessage =
 
         return response.success
             ? ok(response.payload)
-            : err(toSignVerifyDeviceError(response.error));
+            : err(connectErrorToSignVerifyError(response.error));
     };
 
 export const injectSignBitcoinMessage = (services: any): SignBitcoinMessageDep => ({

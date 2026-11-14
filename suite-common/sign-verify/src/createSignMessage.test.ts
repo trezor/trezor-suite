@@ -11,7 +11,7 @@ import { mock } from '@trezor/dependency-injection';
 import {
     type NetworkSignVerify,
     type SignatureFormat,
-    toSignVerifyDeviceError,
+    connectErrorToSignVerifyError,
 } from '@trezor/network-module-suite-common-types';
 
 import { type SignMessageDeps, createSignMessage } from './createSignMessage';
@@ -149,7 +149,7 @@ describe('signVerify.sign', () => {
         it('reports a failed sign with the error code', async () => {
             setSignResponse({
                 success: false,
-                error: toSignVerifyDeviceError({
+                error: connectErrorToSignVerifyError({
                     message: 'Signing failed',
                     code: 'Failure_DataError',
                 }),
@@ -175,7 +175,7 @@ describe('signVerify.sign', () => {
             async code => {
                 setSignResponse({
                     success: false,
-                    error: toSignVerifyDeviceError({ message: 'Cancelled', code }),
+                    error: connectErrorToSignVerifyError({ message: 'Cancelled', code }),
                 });
 
                 await sign(ACCOUNT, PATH, MESSAGE);
