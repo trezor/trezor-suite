@@ -8,3 +8,6 @@ export const selectCountryCode = (state: GeolocationRootState) => state.geolocat
 
 export const selectCountryCodeFetch = (state: GeolocationRootState) =>
     state.geolocation.countryCodeFetch;
+
+export const selectDevicePresenceSignals = (state: GeolocationRootState) =>
+    state.geolocation.deviceSignals;
