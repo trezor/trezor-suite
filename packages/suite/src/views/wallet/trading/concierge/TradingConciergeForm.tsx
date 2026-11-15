@@ -2,12 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type TradingCountryInputProps } from '@suite/trading';
-import {
-    type OtcProviderType,
-    getDefaultCountry,
-    isCountryCode,
-    useFetchOtc,
-} from '@suite-common/trading';
+import { isCountryCode } from '@suite-common/geolocation';
+import { type OtcProviderType, getDefaultCountry, useFetchOtc } from '@suite-common/trading';
 import { Button, Card, Column } from '@trezor/components';
 
 import { TradingConciergeCountryInput } from './TradingConciergeCountryInput';

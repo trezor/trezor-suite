@@ -2,15 +2,12 @@ import {
     type CountryCode,
     type CountryCodeWithSubdivisions,
     type CountrySubdivision,
-    countries,
+    isCountryCode,
     subdivisionsByCountry,
 } from '@suite-common/geolocation';
 
 import { regional } from '../regional';
 import { type TradingCountryCode } from '../types';
-
-export const isCountryCode = (countryCode: string): countryCode is CountryCode =>
-    countryCode in countries || countryCode === 'XX' || countryCode === 'T1';
 
 export const toTradingCountryCode = (countryCode: unknown): TradingCountryCode => {
     if (countryCode === regional.UNKNOWN_COUNTRY) {

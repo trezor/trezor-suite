@@ -4,25 +4,12 @@ import {
     getCountrySubdivisionByCode,
     getCountrySubdivisions,
     hasCountrySubdivisions,
-    isCountryCode,
     isCountrySubdivisionEmpty,
     isCountrySubdivisionRequired,
     toTradingCountryCode,
 } from './countryUtils';
 
 describe('countryUtils', () => {
-    describe('isCountryCode', () => {
-        it('returns true for ISO country code and cloudflare specific codes', () => {
-            expect(isCountryCode('US')).toBe(true);
-            expect(isCountryCode('XX')).toBe(true);
-            expect(isCountryCode('T1')).toBe(true);
-        });
-
-        it('returns false for invalid country code', () => {
-            expect(isCountryCode('INVALID')).toBe(false);
-        });
-    });
-
     describe('toTradingCountryCode', () => {
         it('returns known country code', () => {
             expect(toTradingCountryCode('US')).toBe('US');
