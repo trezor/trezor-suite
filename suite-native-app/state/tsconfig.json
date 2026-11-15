@@ -136,25 +136,28 @@
         },
         { "path": "../../packages/env-utils" },
         {
-            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+            "path": "../../networks/bitcoin/network-bitcoin-suite-native"
         },
         {
-            "path": "../../networks/cardano/network-cardano-suite-common"
+            "path": "../../networks/cardano/network-cardano-suite-native"
         },
         {
-            "path": "../../networks/ethereum/network-ethereum-suite-common"
+            "path": "../../networks/ethereum/network-ethereum-suite-native"
         },
         {
-            "path": "../../networks/ripple/network-ripple-suite-common"
+            "path": "../../networks/network-module/suite-native/suite-native-types"
         },
         {
-            "path": "../../networks/solana/network-solana-suite-common"
+            "path": "../../networks/ripple/network-ripple-suite-native"
         },
         {
-            "path": "../../networks/stellar/network-stellar-suite-common"
+            "path": "../../networks/solana/network-solana-suite-native"
         },
         {
-            "path": "../../networks/tron/network-tron-suite-common"
+            "path": "../../networks/stellar/network-stellar-suite-native"
+        },
+        {
+            "path": "../../networks/tron/network-tron-suite-native"
         },
         { "path": "../../packages/redux-utils" },
         {

@@ -15,18 +15,16 @@ export const mockNetworksServices = (
         getSupportedNetworks: () => supportedNetworks,
         getNetworkConfig: getMockNetworkMetadata,
     });
-    const networkModuleRepository =
-        overrides.networkModuleRepository ??
-        mockNetworkModuleRepository({
-            get: symbol => {
-                getMockNetworkMetadata(symbol);
+    const networkModuleRepository = mockNetworkModuleRepository({
+        get: symbol => {
+            getMockNetworkMetadata(symbol);
 
-                return networkModule;
-            },
-            getSupportedNetworks: () => supportedNetworks,
-            isSupportedNetwork: (symbol): symbol is NetworkSymbol =>
-                supportedNetworks.some(candidate => candidate === symbol),
-        });
+            return networkModule;
+        },
+        getSupportedNetworks: () => supportedNetworks,
+        isSupportedNetwork: (symbol): symbol is NetworkSymbol =>
+            supportedNetworks.some(candidate => candidate === symbol),
+    });
 
     return createMockDeps<NetworksServices>({
         networkIcon:
@@ -35,7 +33,6 @@ export const mockNetworksServices = (
                 hasCryptoIcon: networkModuleRepository.isSupportedNetwork,
                 hasNetworkIcon: networkModuleRepository.isSupportedNetwork,
             }),
-        networkModuleRepository,
         getNetworkConfig: overrides.getNetworkConfig ?? getMockNetworkMetadata,
         isSupportedNetwork:
             overrides.isSupportedNetwork ?? networkModuleRepository.isSupportedNetwork,

@@ -13,11 +13,13 @@ import {
     createCardanoSignVerify,
 } from './signVerify/createCardanoSignVerify';
 
-type CardanoSuiteCommonNetworkModuleDeps = CardanoSignVerifyDeps;
+export type CardanoSuiteCommonNetworkModuleDeps = CardanoSignVerifyDeps;
+
+export type CardanoSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
 export const createCardanoSuiteCommonNetworkModule = (
     deps: CardanoSuiteCommonNetworkModuleDeps,
-): SuiteCommonNetworkModule => {
+): CardanoSuiteCommonNetworkModule => {
     // Address validation is synchronous, so the legacy address decoder has to be ready before it.
     preloadCborDecode();
 

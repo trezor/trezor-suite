@@ -12,12 +12,14 @@ import { mockNetworkModule } from '../mocks/mockNetworkModule';
 
 it('exposes the service through the networks composition root and injector', () => {
     const networks = createNetworksCompositionRoot({
-        networkModules: [
-            mockNetworkModule({
-                getSupportedNetworks: () => [asNetworkSymbol('sol')],
-                getAccountSyncInterval: () => 300_000,
-            }),
-        ],
+        networkModuleRepository: createNetworkModuleRepository({
+            networkModules: [
+                mockNetworkModule({
+                    getSupportedNetworks: () => [asNetworkSymbol('sol')],
+                    getAccountSyncInterval: () => 300_000,
+                }),
+            ],
+        }),
         dispatch: action => action,
     });
     const { getAccountSyncInterval } = injectGetAccountSyncInterval({ networks });

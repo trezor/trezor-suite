@@ -8,7 +8,10 @@ import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-ide
 import { createStakingCompositionRoot } from '@suite-common/earn-staking';
 import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createQueryClient } from '@suite-common/react-query';
 import { createSignVerify } from '@suite-common/sign-verify';
@@ -28,13 +31,14 @@ import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sy
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
-import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
-import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
-import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
-import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
-import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
-import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
-import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
+import { createBitcoinSuiteNativeNetworkModule } from '@trezor/network-bitcoin-suite-native';
+import { createCardanoSuiteNativeNetworkModule } from '@trezor/network-cardano-suite-native';
+import { createEthereumSuiteNativeNetworkModule } from '@trezor/network-ethereum-suite-native';
+import type { SuiteNativeNetworkModule } from '@trezor/network-module-suite-native-types';
+import { createRippleSuiteNativeNetworkModule } from '@trezor/network-ripple-suite-native';
+import { createSolanaSuiteNativeNetworkModule } from '@trezor/network-solana-suite-native';
+import { createStellarSuiteNativeNetworkModule } from '@trezor/network-stellar-suite-native';
+import { createTronSuiteNativeNetworkModule } from '@trezor/network-tron-suite-native';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
@@ -92,16 +96,20 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
+    const suiteNativeNetworkModules: SuiteNativeNetworkModule[] = [
+        createBitcoinSuiteNativeNetworkModule(deps),
+        createEthereumSuiteNativeNetworkModule(deps),
+        createRippleSuiteNativeNetworkModule(),
+        createCardanoSuiteNativeNetworkModule(deps),
+        createSolanaSuiteNativeNetworkModule(),
+        createStellarSuiteNativeNetworkModule(),
+        createTronSuiteNativeNetworkModule(),
+    ];
+    const networkModuleRepository = createNetworkModuleRepository({
+        networkModules: suiteNativeNetworkModules.map(networkModule => networkModule.getCommon()),
+    });
     const networks = createNetworksCompositionRoot({
-        networkModules: [
-            createBitcoinSuiteCommonNetworkModule(deps),
-            createEthereumSuiteCommonNetworkModule(deps),
-            createRippleSuiteCommonNetworkModule(),
-            createCardanoSuiteCommonNetworkModule(deps),
-            createSolanaSuiteCommonNetworkModule(),
-            createStellarSuiteCommonNetworkModule(),
-            createTronSuiteCommonNetworkModule(),
-        ],
+        networkModuleRepository,
         dispatch: deps.dispatch,
     });
 
@@ -124,7 +132,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     return {
         networks,
         signVerify: createSignVerify({
-            networkModuleRepository: networks.networkModuleRepository,
+            networkModuleRepository,
             analytics,
             dispatch: deps.dispatch,
         }),

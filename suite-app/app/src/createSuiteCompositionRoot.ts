@@ -26,7 +26,10 @@ import {
 } from '@suite-common/earn-staking';
 import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import { createNetworksCompositionRoot } from '@suite-common/networks';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createQueryClient } from '@suite-common/react-query';
 import { createSignVerify } from '@suite-common/sign-verify';
@@ -53,13 +56,14 @@ import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
-import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
-import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
-import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
-import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
-import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
-import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
-import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
+import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
+import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
+import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
+import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
+import { createRippleSuiteNetworkModule } from '@trezor/network-ripple-suite';
+import { createSolanaSuiteNetworkModule } from '@trezor/network-solana-suite';
+import { createStellarSuiteNetworkModule } from '@trezor/network-stellar-suite';
+import { createTronSuiteNetworkModule } from '@trezor/network-tron-suite';
 import { type DbDep, reportSecurityCheck, selectIsWindowVisible } from '@trezor/suite';
 
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
@@ -145,16 +149,20 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    const suiteNetworkModules: SuiteNetworkModule[] = [
+        createBitcoinSuiteNetworkModule(deps),
+        createEthereumSuiteNetworkModule(deps),
+        createRippleSuiteNetworkModule(),
+        createCardanoSuiteNetworkModule(deps),
+        createSolanaSuiteNetworkModule(),
+        createStellarSuiteNetworkModule(),
+        createTronSuiteNetworkModule(),
+    ];
+    const networkModuleRepository = createNetworkModuleRepository({
+        networkModules: suiteNetworkModules.map(networkModule => networkModule.getCommon()),
+    });
     const networks = createNetworksCompositionRoot({
-        networkModules: [
-            createBitcoinSuiteCommonNetworkModule(deps),
-            createEthereumSuiteCommonNetworkModule(deps),
-            createRippleSuiteCommonNetworkModule(),
-            createCardanoSuiteCommonNetworkModule(deps),
-            createSolanaSuiteCommonNetworkModule(),
-            createStellarSuiteCommonNetworkModule(),
-            createTronSuiteCommonNetworkModule(),
-        ],
+        networkModuleRepository,
         dispatch: deps.dispatch,
     });
 
@@ -188,7 +196,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         desktopApi: deps.desktopApi,
         networks,
         signVerify: createSignVerify({
-            networkModuleRepository: networks.networkModuleRepository,
+            networkModuleRepository,
             analytics,
             dispatch: deps.dispatch,
         }),

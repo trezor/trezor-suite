@@ -1,4 +1,8 @@
-export { createBitcoinSuiteCommonNetworkModule } from './BitcoinNetworkSuiteCommonNetworkModule';
+export {
+    type BitcoinSuiteCommonNetworkModule,
+    type BitcoinSuiteCommonNetworkModuleDeps,
+    createBitcoinSuiteCommonNetworkModule,
+} from './BitcoinNetworkSuiteCommonNetworkModule';
 
 export { networkConfigBySymbol } from './networkConfig';
 

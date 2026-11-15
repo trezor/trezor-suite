@@ -8,7 +8,9 @@ import { supportedTronNetworks } from '@trezor/network-tron-types';
 import { tronValidator } from './addressValidator/tronAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
-export const createTronSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+export type TronSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+
+export const createTronSuiteCommonNetworkModule = (): TronSuiteCommonNetworkModule =>
     createNetworkModule(supportedTronNetworks, {
         icon: tronAssets,
         addressValidator: tronValidator,

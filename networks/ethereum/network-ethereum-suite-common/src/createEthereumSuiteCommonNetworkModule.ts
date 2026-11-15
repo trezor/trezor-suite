@@ -17,10 +17,10 @@ import {
     createEthereumSignVerify,
 } from './signVerify/createEthereumSignVerify';
 
-type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps &
+export type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps &
     EthereumSignVerifyDeps;
 
-type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+export type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
 export const createEthereumSuiteCommonNetworkModule = (
     deps: EthereumSuiteCommonNetworkModuleDeps,
