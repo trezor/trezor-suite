@@ -13,9 +13,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/geolocation": "workspace:*",
         "@suite-common/locale": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/regions": "workspace:*",
-        "@suite/settings": "workspace:*"
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite/settings": "workspace:*",
+        "@trezor/redux-utils": "workspace:*"
     }
 }
