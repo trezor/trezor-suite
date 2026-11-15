@@ -46,7 +46,12 @@ export type ConnectInitSettingsDep = {
 };
 
 export type TransportName =
-    'BridgeTransport' | 'NodeUsbTransport' | 'UdpTransport' | 'WebUsbTransport';
+    | 'BridgeTransport'
+    | 'NodeUsbTransport'
+    | 'UdpTransport'
+    | 'WebUsbTransport'
+    | 'NativeUsbTransport'
+    | 'NativeBluetoothTransport';
 
 export type CreateTransports = (transports: TransportName[]) => ConnectSettings['transports'];
 
