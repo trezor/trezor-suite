@@ -5,16 +5,11 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        { "path": "../../suite-common/locale" },
-        {
-            "path": "../../suite-common/message-system"
-        },
         { "path": "../../suite-common/regions" },
         {
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../desktop-app-api" },
-        { "path": "../settings" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" },

@@ -5,6 +5,9 @@
         {
             "path": "../../suite-common/earn-staking"
         },
+        {
+            "path": "../../suite-common/geolocation"
+        },
         { "path": "../formatters-config" },
         { "path": "../test-utils" },
         { "path": "../../packages/utils" }

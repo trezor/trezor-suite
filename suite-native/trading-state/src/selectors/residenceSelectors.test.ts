@@ -1,3 +1,5 @@
+import { type GeolocationRootState } from '@suite-common/geolocation';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import {
     Feature,
     type MessageSystemRootState,
@@ -5,7 +7,6 @@ import {
 } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type TradingCountryCode } from '@suite-common/trading';
-import { type LocaleSliceRootState, localeInitialState } from '@suite-native/intl';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import {
     type TradingResidenceRootState,
@@ -57,7 +58,9 @@ describe('residenceSelectors', () => {
         ),
     });
 
-    const localeRootState: LocaleSliceRootState = { locale: localeInitialState };
+    const geolocationRootState: GeolocationRootState = {
+        geolocation: mockGeolocationStateInCountry('US'),
+    };
 
     const getRootResidenceCheckState = (
         isResidenceWhitelistRequired = false,
@@ -244,7 +247,7 @@ describe('residenceSelectors', () => {
                             [Feature.regions.presenceRestriction]: { countries: ['US'] },
                         },
                     ),
-                    ...localeRootState,
+                    ...geolocationRootState,
                 };
 
                 expect(selectIsTradingResidenceSelectionAvailable(state)).toBe(expected);
@@ -257,7 +260,7 @@ describe('residenceSelectors', () => {
             const state = {
                 ...getRootResidenceState(tradingInitialState.residence),
                 ...getRootResidenceCheckState(false),
-                ...localeRootState,
+                ...geolocationRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);
@@ -267,7 +270,7 @@ describe('residenceSelectors', () => {
             const state = {
                 ...getRootResidenceState(visitedState),
                 ...getRootResidenceCheckState(true),
-                ...localeRootState,
+                ...geolocationRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);
@@ -277,7 +280,7 @@ describe('residenceSelectors', () => {
             const state = {
                 ...getRootResidenceState({ country: 'US', countrySubdivision: 'CA' }),
                 ...getRootResidenceCheckState(true),
-                ...localeRootState,
+                ...geolocationRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);
@@ -287,7 +290,7 @@ describe('residenceSelectors', () => {
             const state = {
                 ...getRootResidenceState(tradingInitialState.residence),
                 ...getRootResidenceCheckState(true),
-                ...localeRootState,
+                ...geolocationRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(true);
@@ -303,7 +306,7 @@ describe('residenceSelectors', () => {
                         [Feature.regions.presenceRestriction]: { countries: ['US'] },
                     },
                 ),
-                ...localeRootState,
+                ...geolocationRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);

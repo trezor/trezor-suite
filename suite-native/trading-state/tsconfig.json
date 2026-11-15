@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/geolocation"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/networks" },
@@ -33,7 +36,6 @@
         { "path": "../accounts" },
         { "path": "../config" },
         { "path": "../feature-flags" },
-        { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../regions" },
         { "path": "../sentry" },

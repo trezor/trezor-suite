@@ -66,3 +66,10 @@ the flag. Builders are in `@suite-common/regions` (`deviceSignals.ts`).
 - Default English (`en`, `en-US`) carries no region.
 - On web, `Atlantic/Reykjavik` counts as missing: privacy browsers (Tor Browser, Mullvad Browser, LibreWolf) report it
   everywhere.
+
+## Restriction rule
+
+`selectIsRegionRestricted` (`@suite-common/regions`) reads `countries` and `threshold` from the
+`regions.presenceRestriction` payload. With the flag off or no valid country it is not restricted and the estimator
+does not run. It restricts when `evidence` is not `none` and `score >= threshold` (default 0.499); a threshold
+outside (0, 1) uses the default.
