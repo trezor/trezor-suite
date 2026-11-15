@@ -45,6 +45,10 @@ import {
     initAnalyticsThunk,
 } from '@suite-native/analytics-redux';
 import {
+    type InitPresenceDetectionThunkState,
+    initPresenceDetectionThunk,
+} from '@suite-native/regions';
+import {
     type SettingsSliceRootState,
     selectEarnStakingWorkerBaseUrl,
     selectEarnYieldWorkerBaseUrl,
@@ -108,6 +112,7 @@ export const postOnboardingInitThunk = createThunk<
 type ApplicationInitThunkState = SettingsSliceRootState &
     MessageSystemRootState &
     InitAnalyticsThunkState &
+    InitPresenceDetectionThunkState &
     PostOnboardingInitThunkState;
 
 type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
@@ -129,6 +134,7 @@ export const applicationInitThunk = createThunk<
 
     dispatch(initAnalyticsThunk());
     dispatch(initMessageSystemThunk());
+    dispatch(initPresenceDetectionThunk());
 
     // Select latest remembered device or Portfolio Tracker device.
     dispatch(initDevicesThunk());
