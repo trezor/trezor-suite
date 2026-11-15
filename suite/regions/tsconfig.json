@@ -13,7 +13,13 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        { "path": "../desktop-app-api" },
         { "path": "../settings" },
-        { "path": "../../packages/redux-utils" }
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }
