@@ -2,6 +2,7 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import type { NetworkAssetsModule } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
+import { createNetworkModuleRepository } from './NetworkModuleRepository';
 import {
     type NetworkIconDeps,
     createNetworkIcon,
@@ -46,7 +47,7 @@ it.each([
 
 it('exposes the composed icon dependency through its injectors', () => {
     const networks = createNetworksCompositionRoot({
-        networkModules: [],
+        networkModuleRepository: createNetworkModuleRepository({ networkModules: [] }),
         dispatch: action => action,
     });
 

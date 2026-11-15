@@ -12,11 +12,13 @@ import {
     createBitcoinSignVerify,
 } from './signVerify/createBitcoinSignVerify';
 
-type BitcoinSuiteCommonNetworkModuleDeps = BitcoinSignVerifyDeps;
+export type BitcoinSuiteCommonNetworkModuleDeps = BitcoinSignVerifyDeps;
+
+export type BitcoinSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
 export const createBitcoinSuiteCommonNetworkModule = (
     deps: BitcoinSuiteCommonNetworkModuleDeps,
-): SuiteCommonNetworkModule =>
+): BitcoinSuiteCommonNetworkModule =>
     createNetworkModule(supportedBitcoinNetworks, {
         icon: bitcoinAssets,
         addressValidator: bitcoinValidator,

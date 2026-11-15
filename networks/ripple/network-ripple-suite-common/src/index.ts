@@ -1,3 +1,6 @@
-export { createRippleSuiteCommonNetworkModule } from './RippleNetworkSuiteCommonNetworkModule';
+export {
+    type RippleSuiteCommonNetworkModule,
+    createRippleSuiteCommonNetworkModule,
+} from './RippleNetworkSuiteCommonNetworkModule';
 
 export { networkConfigBySymbol } from './networkConfig';

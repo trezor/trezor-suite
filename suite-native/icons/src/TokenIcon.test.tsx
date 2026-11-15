@@ -57,7 +57,6 @@ describe('TokenIcon', () => {
             preloadedState: { networks: mockNetworkMetadata },
             services: {
                 networks: {
-                    networkModuleRepository,
                     networkIcon: createNetworkIcon({ networkModuleRepository }),
                     isWrappedNativeToken: createIsWrappedNativeToken({ networkModuleRepository }),
                 },

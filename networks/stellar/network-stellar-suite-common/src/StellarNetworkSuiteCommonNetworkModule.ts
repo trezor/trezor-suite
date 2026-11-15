@@ -9,7 +9,9 @@ import { stellarValidator } from './addressValidator/stellarAddressValidator';
 import { getStellarTokenLogoAddresses } from './getStellarTokenLogoAddresses';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
-export const createStellarSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+export type StellarSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+
+export const createStellarSuiteCommonNetworkModule = (): StellarSuiteCommonNetworkModule =>
     createNetworkModule(supportedStellarNetworks, {
         icon: {
             ...stellarAssets,

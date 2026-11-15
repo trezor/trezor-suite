@@ -1,4 +1,8 @@
-export { createCardanoSuiteCommonNetworkModule } from './CardanoNetworkSuiteCommonNetworkModule';
+export {
+    type CardanoSuiteCommonNetworkModule,
+    type CardanoSuiteCommonNetworkModuleDeps,
+    createCardanoSuiteCommonNetworkModule,
+} from './CardanoNetworkSuiteCommonNetworkModule';
 
 export { networkConfigBySymbol } from './networkConfig';
 

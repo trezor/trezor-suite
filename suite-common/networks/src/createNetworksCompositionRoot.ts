@@ -1,7 +1,6 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
-import { createNetworkModuleRepository } from './NetworkModuleRepository';
-import type { StaticNetworkModulesDep } from './NetworkModules';
+import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworksServices } from './NetworksServices';
 import { createAddressValidator } from './createAddressValidator';
 import { createGetAccountSyncInterval } from './createGetAccountSyncInterval';
@@ -14,14 +13,12 @@ import { createIsWrappedNativeToken } from './createIsWrappedNativeToken';
 import { createLoadNetworkModules } from './createLoadNetworkModules';
 import { createNetworkIcon } from './createNetworkIcon';
 
-export type NetworksCompositionRootDeps = StaticNetworkModulesDep & { dispatch: Dispatch };
+export type NetworksCompositionRootDeps = NetworkModuleRepositoryDep & { dispatch: Dispatch };
 
 export const createNetworksCompositionRoot = (
     deps: NetworksCompositionRootDeps,
 ): NetworksServices => {
-    const networkModuleRepository = createNetworkModuleRepository({
-        networkModules: deps.networkModules,
-    });
+    const { networkModuleRepository } = deps;
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const getNetworkConfigs = createGetNetworkConfigs({
         getNetworkConfig,
@@ -33,7 +30,6 @@ export const createNetworksCompositionRoot = (
         isSupportedNetwork: networkModuleRepository.isSupportedNetwork,
         networkIcon: createNetworkIcon({ networkModuleRepository }),
         isWrappedNativeToken: createIsWrappedNativeToken({ networkModuleRepository }),
-        networkModuleRepository,
         getNetworkConfig,
         getAccountSyncInterval: createGetAccountSyncInterval({ networkModuleRepository }),
         getNetworkByCoingeckoId: createGetNetworkByCoingeckoId({
