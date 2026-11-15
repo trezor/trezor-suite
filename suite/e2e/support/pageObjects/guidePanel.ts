@@ -80,8 +80,10 @@ export class GuidePanel {
 
     @step()
     async selectBugLocation(location: FeedbackCategory) {
-        await this.bugLocationDropdown.click();
-        await this.bugLocationDropdownOption(location).click();
+        await this.page.selectDropdownOptionWithRetry(
+            this.bugLocationDropdown,
+            this.bugLocationDropdownOption(location),
+        );
         await expect(this.bugLocationDropdownInput).toHaveText(capitalizeFirstLetter(location));
     }
 
