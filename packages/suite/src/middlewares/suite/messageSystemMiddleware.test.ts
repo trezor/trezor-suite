@@ -3,7 +3,11 @@ import { type Reducer, type UnknownAction, combineReducers, createReducer } from
 import { type TorState, torReducer } from '@suite/tor';
 import { type DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
 import { type DiscreetModeState } from '@suite-common/discreet-mode';
-import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
+import {
+    type GeolocationState,
+    geolocationInitialState,
+    geolocationReducer,
+} from '@suite-common/geolocation';
 import {
     type MessageSystemState,
     messageSystemActions,
@@ -69,9 +73,7 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    geolocation: {
-        countryCode: null,
-    },
+    geolocation: { ...geolocationInitialState },
 });
 
 const makeTestAction = (id: string): Action => ({

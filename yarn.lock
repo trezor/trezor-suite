@@ -12684,6 +12684,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
