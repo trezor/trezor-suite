@@ -1,12 +1,12 @@
 import type { NetworkAssetsModule } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
-import type { AddressValidator } from './AddressValidator';
 import type { IsWrappedNativeToken } from './IsWrappedNativeToken';
-import type { NamedAddressResolver } from './NamedAddressResolver';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
+import type { AddressValidator } from './addressValidator/AddressValidator';
 import { createNetworkModule } from './createNetworkModule';
+import type { NamedAddressResolver } from './namedAddressResolver/NamedAddressResolver';
 
 // A stand-in for a network package's closed symbol type, so this package stays independent of
 // any particular network.

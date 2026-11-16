@@ -17,7 +17,13 @@
             "path": "../../network-module/suite-common/suite-common-types"
         },
         {
+            "path": "../../../packages/type-utils"
+        },
+        {
             "path": "../../../packages/utils"
+        },
+        {
+            "path": "../../../packages/dependency-injection"
         }
     ]
 }

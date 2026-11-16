@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/device"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -34,10 +37,13 @@
         {
             "path": "../../networks/cardano/network-cardano-suite-common"
         },
-        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]

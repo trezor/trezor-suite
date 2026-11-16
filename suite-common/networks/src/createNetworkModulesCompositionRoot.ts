@@ -15,10 +15,10 @@ export const createNetworkModulesCompositionRoot = (
     deps: NetworkModulesCompositionRootDeps,
 ): NetworkModules => {
     const networkModules: NetworkModules = [
-        createBitcoinSuiteCommonNetworkModule(),
+        createBitcoinSuiteCommonNetworkModule(deps),
         createEthereumSuiteCommonNetworkModule(deps),
         createRippleSuiteCommonNetworkModule(),
-        createCardanoSuiteCommonNetworkModule(),
+        createCardanoSuiteCommonNetworkModule(deps),
         createSolanaSuiteCommonNetworkModule(),
         createStellarSuiteCommonNetworkModule(),
         createTronSuiteCommonNetworkModule(),
