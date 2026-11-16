@@ -346,23 +346,21 @@ export const WARDLookupAck = Type.Object(
     { $id: 'WARDLookupAck' },
 );
 
-export type WARDTrieNode = Static<typeof WARDTrieNode>;
-export const WARDTrieNode = Type.Object(
+export type WARDWalkEntry = Static<typeof WARDWalkEntry>;
+export const WARDWalkEntry = Type.Object(
     {
-        split_bit: Type.Optional(Type.Number()),
-        left: Type.Optional(Type.String()),
-        right: Type.Optional(Type.String()),
-        entry_key: Type.Optional(Type.String()),
+        entry_key: Type.String(),
+        proof: Type.Array(Type.String()),
         content: Type.Optional(LeafContent),
         identity: Type.Optional(LeafIdentity),
     },
-    { $id: 'WARDTrieNode' },
+    { $id: 'WARDWalkEntry' },
 );
 
 export type WARDNodeAck = Static<typeof WARDNodeAck>;
 export const WARDNodeAck = Type.Object(
     {
-        nodes: Type.Array(WARDTrieNode),
+        entries: Type.Array(WARDWalkEntry),
     },
     { $id: 'WARDNodeAck' },
 );
@@ -370,7 +368,7 @@ export const WARDNodeAck = Type.Object(
 export type WARDNodeRequest = Static<typeof WARDNodeRequest>;
 export const WARDNodeRequest = Type.Object(
     {
-        node_hash: Type.String(),
+        after: Type.Optional(Type.String()),
     },
     { $id: 'WARDNodeRequest' },
 );

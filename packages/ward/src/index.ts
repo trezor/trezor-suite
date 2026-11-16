@@ -13,13 +13,13 @@ export {
     computeRootFromBlobs,
     proofByKey,
     nonMembershipByKey,
-    nodesByHash,
+    walkEntries,
     // two-part leaf (LeafIdentity + LeafContent)
     ENC_ENCRYPTED,
     ENC_PLAINTEXT,
     EMPTY_PART,
 } from './proof';
-export type { BlobRow, LeafPart, ServedNode } from './proof';
+export type { BlobRow, LeafPart, WalkEntry } from './proof';
 
 // Shared DTO types.
 export type * from './types';

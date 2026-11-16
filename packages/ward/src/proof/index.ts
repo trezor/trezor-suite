@@ -128,26 +128,22 @@ const blobLeaf = (r: BlobRow): LeafInfo => {
     };
 };
 
-// Path-compressed internal hash (anti-malleability) — mirrors authdb_tree._internal_hash /
-// firmware apps.ward.trie.internal_hash:
-//   SHA-256(0x01 || u16be(split_bit) || left || right)
+// Path-compressed internal hash (anti-malleability) — the trie of trezor_ward (the device's
+// verifier, rust/trezor-ward in trezor-firmware) and trezorlib authdb_tree._internal_hash:
+//   SHA-256(0x01 || split_bit(1 byte) || left || right)
 // Binding split_bit into every branch is what closes the non-membership malleability (a step
 // cannot be relabelled to test another bit). skiplen is NOT hashed, as the firmware dropped it:
 // it is derived from the split bits, and leaving it out makes a node's hash independent of its
 // depth, so a subtree that re-parents on insert or delete keeps its hash.
-const u16be = (n: number): Uint8Array => {
-    const b = new Uint8Array(2);
-    new DataView(b.buffer).setUint16(0, n, false);
-
-    return b;
-};
+// One byte holds every bit position of a 256-bit key.
+const bitPos = (n: number): Uint8Array => Uint8Array.of(n);
 
 const internalHash = (splitBit: number, left: Uint8Array, right: Uint8Array): Uint8Array =>
-    sha256(concatBytes(new Uint8Array([0x01]), u16be(splitBit), left, right));
+    sha256(concatBytes(new Uint8Array([0x01]), bitPos(splitBit), left, right));
 
-// Proof element = u16be(split_bit) || sibling(32) = 34 bytes (68 hex chars).
+// Proof element = split_bit(1 byte) || sibling(32) = 33 bytes (66 hex chars).
 const proofElem = (splitBit: number, sibling: Uint8Array): string =>
-    bytesToHex(u16be(splitBit)) + bytesToHex(sibling);
+    bytesToHex(bitPos(splitBit)) + bytesToHex(sibling);
 
 // Return the bit at position `bit` of `addrHash`, MSB first.
 // bit 0 = MSB of byte 0; bit 7 = LSB of byte 0; bit 8 = MSB of byte 1; …
@@ -162,9 +158,9 @@ const getBit = (addrHash: Uint8Array, bit: number): 0 | 1 =>
 //   Branch — splits on bit `bit`; the hash binds it (see internalHash) so the tree is
 //            canonical and non-membership proofs are non-malleable.
 //
-// Proof format (leaf→root order): each element = u16be(split_bit) || 32-byte sibling =
-// 34 bytes (68 hex chars). O(log N) elements. Mirrors trezorlib
-// authdb_tree.py and firmware service.py byte-for-byte.
+// Proof format (leaf→root order): each element = split_bit(1 byte) || 32-byte sibling =
+// 33 bytes (66 hex chars). O(log N) elements. Mirrors trezorlib authdb_tree.py and the
+// firmware's trezor_ward verifier byte-for-byte.
 // ---------------------------------------------------------------------------
 
 type LeafInfo = { addrHash: Uint8Array; leafHash: Uint8Array };
@@ -277,61 +273,48 @@ export const nonMembershipByKey = (
     };
 };
 
-/** One node of a listing walk: a branch (`splitBit`, child hashes) or a leaf (its entry_key). */
-export type ServedNode =
-    | { kind: 'branch'; splitBit: number; leftHex: string; rightHex: string }
-    | { kind: 'leaf'; entryKeyHex: string };
+/** One entry of a listing walk: its entry_key and proof steps (leaf→root). */
+export type WalkEntry = { entryKeyHex: string; proof: MerkleProof };
+
+// The first bit on which two different keys differ.
+const critBit = (a: Uint8Array, b: Uint8Array): number => {
+    for (let bit = 0; bit < a.length * 8; bit++) {
+        if (getBit(a, bit) !== getBit(b, bit)) return bit;
+    }
+    throw new Error('equal keys have no crit bit');
+};
 
 /**
- * Serve the device's verified listing walk (WARDListEntries): the node whose hash is
- * `nodeHashHex`, then up to `maxNodes - 1` of its descendants in pre-order (node, left subtree,
- * right subtree) -- the order the device walks in, so one round trip can carry a whole subtree.
- * Empty if no node has that hash. Keyless, like the proofs: the device checks every node against
- * the hash its parent committed to. Mirrors trezorlib `WARDTree.get_nodes`.
+ * Serve the device's verified listing walk (WARDListEntries): up to `maxEntries` entries after
+ * the entry_key `afterHex` (null: from the first), in entry_key order. Each proof keeps only the
+ * steps below the branch where the entry parts from the one before, which the device already
+ * holds the rest of; the first entry gets its full proof. Empty if `afterHex` is not an entry.
+ * Keyless, like the proofs: the device holds every proof against its root and checks each entry
+ * is the successor of the one before. Mirrors trezorlib `WARDTree.get_walk_entries`.
  */
-export const nodesByHash = (rows: BlobRow[], nodeHashHex: string, maxNodes = 16): ServedNode[] => {
-    if (rows.length === 0) return [];
-    const hashes = new Map<MptNode, string>();
-    const hashOf = (node: MptNode): string => {
-        let h = hashes.get(node);
-        if (h === undefined) {
-            h =
-                node.kind === 'leaf'
-                    ? bytesToHex(node.leafHash)
-                    : bytesToHex(
-                          internalHash(
-                              node.bit,
-                              hexToBytes(hashOf(node.left)),
-                              hexToBytes(hashOf(node.right)),
-                          ),
-                      );
-            hashes.set(node, h);
+export const walkEntries = (
+    rows: BlobRow[],
+    afterHex: string | null,
+    maxEntries = 16,
+): WalkEntry[] => {
+    const keys = rows.map(r => r.entryKeyHex).sort();
+    let start = 0;
+    if (afterHex !== null) {
+        const at = keys.indexOf(afterHex);
+        if (at < 0) return [];
+        start = at + 1;
+    }
+    const out: WalkEntry[] = [];
+    let previous = afterHex === null ? null : hexToBytes(afterHex);
+    for (const keyHex of keys.slice(start, start + maxEntries)) {
+        const key = hexToBytes(keyHex);
+        let proof = proofByKey(rows, keyHex);
+        if (previous !== null) {
+            const c = critBit(previous, key);
+            proof = proof.filter(step => hexToBytes(step)[0]! > c);
         }
-
-        return h;
-    };
-    const find = (node: MptNode): MptNode | undefined => {
-        if (hashOf(node) === nodeHashHex) return node;
-        if (node.kind === 'leaf') return undefined;
-
-        return find(node.left) ?? find(node.right);
-    };
-    const start = find(buildMpt(rows.map(blobLeaf)));
-    const out: ServedNode[] = [];
-    const stack = start ? [start] : [];
-    while (stack.length > 0 && out.length < maxNodes) {
-        const node = stack.pop()!;
-        if (node.kind === 'leaf') {
-            out.push({ kind: 'leaf', entryKeyHex: bytesToHex(node.addrHash) });
-        } else {
-            out.push({
-                kind: 'branch',
-                splitBit: node.bit,
-                leftHex: hashOf(node.left),
-                rightHex: hashOf(node.right),
-            });
-            stack.push(node.right, node.left);
-        }
+        out.push({ entryKeyHex: keyHex, proof });
+        previous = key;
     }
 
     return out;
