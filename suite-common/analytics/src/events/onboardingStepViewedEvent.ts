@@ -1,8 +1,9 @@
 import { EventType } from '../constants';
 import type { AnalyticsPlatform, AttributeDef, EventDef } from '../eventDefinition';
 
-// `security-check` and `thp-pairing` are mobile-only; the rest fire on both platforms.
+// `thp-pairing` is mobile-only.
 export type DeviceOnboardingStepName =
+    | 'security-check'
     | 'firmware'
     | 'authenticate-device'
     | 'tutorial'
@@ -12,7 +13,6 @@ export type DeviceOnboardingStepName =
     | 'security'
     | 'set-pin'
     | 'final'
-    | 'security-check'
     | 'thp-pairing';
 
 type Attributes = {
@@ -30,10 +30,13 @@ export const onboardingStepViewedEvent: EventDef<Attributes, EventType.Onboardin
 
     attributes: {
         stepName: {
-            changelog: [{ version: '26.6.1', notes: 'added' }],
+            changelog: [
+                { version: '26.6.1', notes: 'added' },
+                { version: '26.12.0', notes: 'security-check is now also emitted by desktop' },
+            ],
             description: `Identifier of the onboarding step entered. Stable and non-localized. One of:
 
-- \`security-check\` — **Mobile only.** Pre-flow device security/authenticity self-check. Has no desktop screen.
+- \`security-check\` — Manual inspection of the device, packaging and security seals before firmware installation. Shared by desktop and mobile.
 - \`thp-pairing\` — **Mobile only.** Trezor Hardware Platform pairing flow. Has no desktop screen.
 - \`firmware\` — Firmware installation / update. Shown whenever the connected device needs firmware work; otherwise the user is sent past it.
 - \`authenticate-device\` — Device authenticity (attestation) check. Only fires on models with Optiga (e.g. T2B1, T3B1, T3T1, T3W1). Older models skip it.
@@ -46,7 +49,10 @@ export const onboardingStepViewedEvent: EventDef<Attributes, EventType.Onboardin
 - \`final\` — Onboarding success screen. Fires on both paths.`,
         },
         stepIndex: {
-            changelog: [{ version: '26.6.1', notes: 'added' }],
+            changelog: [
+                { version: '26.6.1', notes: 'added' },
+                { version: '26.12.0', notes: 'desktop steps now begin with security-check' },
+            ],
             description:
                 '1-based ordinal of the step on that platform’s own happy path. Each platform has different number of steps. So use `stepName` — not `stepIndex` — to compare/overlay funnels across platforms!',
         },

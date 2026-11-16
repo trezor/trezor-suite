@@ -1,19 +1,9 @@
-import {
-    type FC,
-    type PropsWithChildren,
-    type ReactNode,
-    useEffect,
-    useMemo,
-    useState,
-} from 'react';
+import { type FC, type PropsWithChildren, type ReactNode, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { selectRecoveryStatus } from '@suite/recovery';
-import { gotoThunk } from '@suite/router';
 import { selectDeviceModel, selectSelectedDevice } from '@suite-common/device';
 import { HAS_BRANDED_PLASTIC_WRAP_PACKAGING } from '@suite-common/device-authenticity';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
@@ -40,8 +30,6 @@ import {
 
 import { Hologram } from '#src/components/onboarding/Hologram';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { useOnboarding } from '#src/hooks/suite/useOnboarding';
-import { selectIsOnboardingActive } from '#src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { SecurityCheckButton } from './components/SecurityCheckButton';
@@ -363,51 +351,17 @@ const TakesManyMinutesTooltip = ({ children }: PropsWithChildren) => {
 };
 
 /**
- * Manual Device Check for an uninitialized device, which starts the onboarding flow.
+ * Manual Device Check for an uninitialized device during onboarding.
  */
 const UninitializedManualDeviceCheck = ({ onSuccess }: CommonManualDeviceCheckProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const recoveryStatus = useSelector(selectRecoveryStatus);
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const deviceId = device?.id;
-    const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
-    const isOnboardingActive = useSelector(selectIsOnboardingActive);
-
-    const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
-
-    const isRecoveryInProgress = recoveryStatus === 'in-progress';
     const isFirmwareInstalled = device?.firmware !== 'none';
 
-    // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
-    useEffect(() => {
-        if (!isRecoveryInProgress) {
-            updateAnalytics({
-                startTime: Date.now(),
-            });
-        }
-    }, [isRecoveryInProgress, updateAnalytics]);
-
     const handleSetupButtonClick = () => {
-        onSuccess();
         dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
-        analytics.report(
-            {
-                type: events.deviceSetupStartedEvent.name,
-                payload: {
-                    deviceModel,
-                },
-            },
-            { force: true },
-        );
-
-        if (isRecoveryInProgress) {
-            rerun();
-        } else if (isOnboardingActive) {
-            goToNextStep('firmware');
-            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
-        } else {
-            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
-        }
+        onSuccess();
     };
 
     const UILayoutComponent = isFirmwareInstalled ? UILayoutWithFirmware : UILayoutWithoutFirmware;

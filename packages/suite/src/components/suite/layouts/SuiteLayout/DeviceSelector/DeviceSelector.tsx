@@ -53,7 +53,7 @@ const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
     }
 `;
 
-const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
+const InnerContainer = styled.div<{ $isInteractive: boolean }>`
     position: relative;
     width: 100%;
     display: flex;
@@ -62,7 +62,7 @@ const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
     min-height: 42px;
     -webkit-app-region: no-drag;
 
-    cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
+    cursor: ${({ $isInteractive }) => ($isInteractive ? 'pointer' : 'default')};
 `;
 
 const RecentlyConnectedDeviceTooltipContent = () => {
@@ -85,7 +85,11 @@ const RecentlyConnectedDeviceTooltipContent = () => {
     );
 };
 
-export const DeviceSelector = () => {
+type DeviceSelectorProps = {
+    isInteractive?: boolean;
+};
+
+export const DeviceSelector = ({ isInteractive = true }: DeviceSelectorProps) => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
     const { dispatch } = useServices(injectDispatch);
@@ -99,7 +103,8 @@ export const DeviceSelector = () => {
 
     return (
         <Tooltip
-            isOpen={recentlyConnectedDevice !== undefined}
+            isOpen={isInteractive && recentlyConnectedDevice !== undefined}
+            isActive={isInteractive}
             content={<RecentlyConnectedDeviceTooltipContent />}
             placement="right"
             zIndex={zIndices.popover /* to prevent it from appearing above modals */}
@@ -108,9 +113,9 @@ export const DeviceSelector = () => {
                 {/* The shortcut hint is shown only in the expanded sidebar; when collapsed,
                     DeviceStatus renders its own tooltip with the device detail and shortcut. */}
                 <Tooltip
-                    cursor="pointer"
+                    cursor={isInteractive ? 'pointer' : 'default'}
                     width="100%"
-                    isActive={!isSidebarCollapsed}
+                    isActive={isInteractive && !isSidebarCollapsed}
                     delayShow={TOOLTIP_DELAY_LONG}
                     placement="right"
                     content={
@@ -121,16 +126,17 @@ export const DeviceSelector = () => {
                     }
                 >
                     <InnerContainer
-                        onClick={handleSwitchDeviceClick}
-                        tabIndex={0}
+                        $isInteractive={isInteractive}
+                        onClick={isInteractive ? handleSwitchDeviceClick : undefined}
+                        tabIndex={isInteractive ? 0 : undefined}
                         data-testid="@menu/switch-device"
                     >
                         <Box flex="1" minWidth="0" overflow="hidden">
-                            <SidebarDeviceStatus />
+                            <SidebarDeviceStatus isSwitchShortcutVisible={isInteractive} />
                         </Box>
 
                         <ExpandedSidebarOnly>
-                            {selectedDevice?.state && (
+                            {isInteractive && selectedDevice?.state && (
                                 <CaretContainer>
                                     <Icon size={20} as={CaretCircleDownIcon} />
                                 </CaretContainer>

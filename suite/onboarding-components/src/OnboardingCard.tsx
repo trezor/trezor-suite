@@ -59,18 +59,9 @@ export const OnboardingCard = ({
     return (
         <>
             {isBackDropVisible && <Modal.Backdrop zIndex={zIndices.modal} />}
-            <Column
-                alignItems="center"
-                gap={20}
-                position={{ type: 'relative' }}
-                padding={{ top: icon ? 48 : 0 }}
-                width="100%"
-            >
+            <Column alignItems="center" gap={32} width="100%">
                 {isBackDropVisible && (
-                    <Box
-                        zIndex={zIndices.modal}
-                        position={{ type: 'absolute', bottom: 'calc(100% + 32px)' }}
-                    >
+                    <Box zIndex={zIndices.modal}>
                         <ConfirmOnDevicePill
                             title={devicePrompt || <Translation id="TR_CONFIRM_ON_TREZOR" />}
                             deviceModelInternal={deviceModelInternal}
@@ -86,43 +77,53 @@ export const OnboardingCard = ({
                         />
                     </Box>
                 )}
-                <Card
-                    zIndex={isBackDropVisible ? zIndices.modal : undefined}
-                    paddingType="none"
-                    data-testid={dataTestId}
+                <Column
+                    alignItems="center"
+                    gap={20}
+                    position={{ type: 'relative' }}
+                    padding={{ top: icon ? 48 : 0 }}
+                    width="100%"
                 >
-                    <Column gap={48} padding={64} margin={icon ? { top: 40 } : undefined}>
-                        {(heading || description) && (
-                            <Column gap={16} alignItems="center" width="100%">
-                                {heading && <H2 align="center">{heading}</H2>}
-                                {description && (
-                                    <Paragraph
-                                        typographyStyle="body-md"
-                                        intent="neutral"
-                                        priority="secondary"
-                                        align="center"
-                                        width="80%"
-                                    >
-                                        {description}
-                                    </Paragraph>
-                                )}
-                            </Column>
-                        )}
-                        {children && <Box>{children}</Box>}
-                        {innerActions && <Row justifyContent="center">{innerActions}</Row>}
-                    </Column>
-                </Card>
-                {icon && (
-                    <Box
-                        position={{ type: 'absolute', top: 0 }}
+                    <Card
                         zIndex={isBackDropVisible ? zIndices.modal : undefined}
-                        backgroundColor="surfaceFillPage"
-                        borderRadius="full"
+                        paddingType="none"
+                        data-testid={dataTestId}
                     >
-                        <IconCircle icon={icon} size={96} intent={intent} />
-                    </Box>
-                )}
-                {outerActions && <Box zIndex={zIndices.onboardingForeground}>{outerActions}</Box>}
+                        <Column gap={48} padding={64} margin={icon ? { top: 40 } : undefined}>
+                            {(heading || description) && (
+                                <Column gap={16} alignItems="center" width="100%">
+                                    {heading && <H2 align="center">{heading}</H2>}
+                                    {description && (
+                                        <Paragraph
+                                            typographyStyle="body-md"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            align="center"
+                                            width="80%"
+                                        >
+                                            {description}
+                                        </Paragraph>
+                                    )}
+                                </Column>
+                            )}
+                            {children && <Box>{children}</Box>}
+                            {innerActions && <Row justifyContent="center">{innerActions}</Row>}
+                        </Column>
+                    </Card>
+                    {icon && (
+                        <Box
+                            position={{ type: 'absolute', top: 0 }}
+                            zIndex={isBackDropVisible ? zIndices.modal : undefined}
+                            backgroundColor="surfaceFillPage"
+                            borderRadius="full"
+                        >
+                            <IconCircle icon={icon} size={96} intent={intent} />
+                        </Box>
+                    )}
+                    {outerActions && (
+                        <Box zIndex={zIndices.onboardingForeground}>{outerActions}</Box>
+                    )}
+                </Column>
             </Column>
         </>
     );

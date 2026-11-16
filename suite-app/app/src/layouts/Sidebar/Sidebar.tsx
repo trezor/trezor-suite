@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -61,13 +61,14 @@ const HorizontalSpacer = styled.div`
 
 type WalletSwitcherProps = {
     isCollapsed: boolean;
+    isInteractive: boolean;
 };
 
-const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
+const WalletSwitcher = ({ isCollapsed, isInteractive }: WalletSwitcherProps) => {
     const isAnyDeviceSelected = useSelector(selectIsAnyDeviceSelected);
 
     if (isAnyDeviceSelected) {
-        return <DeviceSelector />;
+        return <DeviceSelector isInteractive={isInteractive} />;
     }
 
     return isCollapsed ? (
@@ -83,9 +84,15 @@ const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
 
 type SidebarProps = {
     showAccounts?: boolean;
+    children?: ReactNode;
+    isDeviceSelectorInteractive?: boolean;
 };
 
-export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
+export const Sidebar = ({
+    showAccounts = true,
+    children,
+    isDeviceSelectorInteractive = true,
+}: SidebarProps) => {
     const {
         isSidebarCollapsed,
         setSidebarWidth,
@@ -205,15 +212,21 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 <Container>
                     <TrafficLightOffset>
                         <Content>
-                            <WalletSwitcher isCollapsed={isSidebarCollapsed} />
-
-                            <Navigation />
-                            <HorizontalSpacer>
-                                {showAccountsAndIsDeviceReady && <AccountsMenu />}
-                            </HorizontalSpacer>
-                            {!isSidebarCollapsed && <SidebarBanners />}
-                            <BottomNavigation />
-                            <QuickActions isSidebarCollapsed={isSidebarCollapsed} />
+                            <WalletSwitcher
+                                isCollapsed={isSidebarCollapsed}
+                                isInteractive={isDeviceSelectorInteractive}
+                            />
+                            {children ?? (
+                                <>
+                                    <Navigation />
+                                    <HorizontalSpacer>
+                                        {showAccountsAndIsDeviceReady && <AccountsMenu />}
+                                    </HorizontalSpacer>
+                                    {!isSidebarCollapsed && <SidebarBanners />}
+                                    <BottomNavigation />
+                                    <QuickActions isSidebarCollapsed={isSidebarCollapsed} />
+                                </>
+                            )}
                         </Content>
                     </TrafficLightOffset>
                 </Container>

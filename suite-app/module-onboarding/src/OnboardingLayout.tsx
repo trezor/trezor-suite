@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
@@ -16,17 +16,14 @@ import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     ConnectionGlobalModalManager,
-    GuideButton,
     GuideRouter,
     MAX_ONBOARDING_WIDTH,
     OnboardingCancelButtonContext,
-    OnboardingProgressBar,
-    SmallDeviceItem,
     SuiteBanners,
     useFilteredModal,
     useOnboardingCancelButtonContext,
+    useResponsiveContextOnChange,
 } from '@trezor/suite';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 const OnboardingSpacer = styled.div`
     height: ${TRAFFIC_LIGHT_DEFAULT_OFFSET}px;
@@ -45,46 +42,35 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
     const goToSettings = () => dispatch(gotoThunk({ routeName: 'settings-index' }));
 
     return (
-        <Column gap={40}>
-            <Column gap={32}>
-                <Row justifyContent="space-between">
-                    <SmallDeviceItem />
-                    <Row gap={12}>
-                        {isDebugModeActive ? (
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                size="small"
-                                onClick={goToSettings}
-                            >
-                                <DebugOnlyBadge>
-                                    <Translation id="TR_SETTINGS" />
-                                </DebugOnlyBadge>
-                            </Button>
-                        ) : null}
+        <Column gap={24}>
+            <Row justifyContent="flex-end">
+                <Row gap={12}>
+                    {isDebugModeActive ? (
                         <Button
                             intent="neutral"
                             priority="secondary"
                             size="small"
-                            href={TREZOR_SUPPORT_URL}
+                            onClick={goToSettings}
+                            data-testid="@suite/menu/settings"
                         >
-                            <Translation id="TR_HELP" />
+                            <DebugOnlyBadge>
+                                <Translation id="TR_SETTINGS" />
+                            </DebugOnlyBadge>
                         </Button>
-                        {onCancelHandler !== null ? (
-                            <Button
-                                intent="neutral"
-                                priority="secondary"
-                                iconRight={XIcon}
-                                size="small"
-                                onClick={onCancelHandler}
-                            >
-                                <Translation id="TR_CANCEL" />
-                            </Button>
-                        ) : null}
-                    </Row>
+                    ) : null}
+                    {onCancelHandler !== null ? (
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            iconRight={XIcon}
+                            size="small"
+                            onClick={onCancelHandler}
+                        >
+                            <Translation id="TR_CANCEL" />
+                        </Button>
+                    ) : null}
                 </Row>
-                <OnboardingProgressBar />
-            </Column>
+            </Row>
             <Box>{children}</Box>
         </Column>
     );
@@ -92,11 +78,14 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
 
 type OnboardingLayoutProps = {
     children: ReactNode;
+    sidebar: ReactNode;
 };
 
-export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
+export const OnboardingLayout = ({ children, sidebar }: OnboardingLayoutProps) => {
+    const contentRef = useRef<HTMLDivElement>(null);
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
+    useResponsiveContextOnChange(contentRef);
 
     const allowedModal = useFilteredModal(
         [MODAL_CONTEXT_USER],
@@ -107,8 +96,16 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
         <>
             <ConnectionGlobalModalManager />
             {allowedModal !== null ? <ReduxModal {...allowedModal} /> : null}
-            <Row width="100%" height="100%">
-                <Column width="100%" height="100%" overflow="auto" alignItems="center">
+            <Row width="100%" height="100%" alignItems="stretch">
+                {sidebar}
+                <Column
+                    ref={contentRef}
+                    flex="1"
+                    minWidth={0}
+                    height="100%"
+                    overflow="auto"
+                    alignItems="center"
+                >
                     {isMac && isDesktopApp && <OnboardingSpacer />}
                     <Column
                         data-testid="@onboarding-layout/body"
@@ -123,7 +120,6 @@ export const OnboardingLayout = ({ children }: OnboardingLayoutProps) => {
                         </OnboardingCancelButtonContext>
                     </Column>
                 </Column>
-                <GuideButton />
                 <GuideRouter />
             </Row>
         </>

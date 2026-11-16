@@ -1,5 +1,6 @@
 import { type JSX } from 'react';
 
+import { selectRouterApp } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 
@@ -23,8 +24,13 @@ export const UnexpectedState = ({ children }: UnexpectedStateProps) => {
     const device = useSelector(selectSelectedDevice);
     const prerequisite = useSelector(selectPrerequisite);
     const thpStep = useSelector(selectThpStep);
+    const isOnboardingRoute = useSelector(selectRouterApp) === 'onboarding';
 
-    const { prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
+    const { isActive, prevDeviceId, activeStep, activeStepId, showPinMatrix } = useOnboarding();
+
+    if (!isActive || !isOnboardingRoute) {
+        return <DeviceDisconnectedStep />;
+    }
 
     // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
     // Then the device will get auto locked and requests to show a PIN matrix next before changing its setting.

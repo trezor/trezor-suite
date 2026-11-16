@@ -28,7 +28,6 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/urls": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.1",
         "styled-components": "^6.5.3"
