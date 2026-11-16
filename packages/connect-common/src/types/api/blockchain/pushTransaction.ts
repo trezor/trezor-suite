@@ -19,6 +19,7 @@ export const PushTransaction = Type.Object({
     ]),
     coin: CoinSymbolParam(),
     identity: Type.Optional(Type.String()),
+    disableAlternativeRPC: Type.Optional(Type.Boolean()),
 });
 
 // push transaction response

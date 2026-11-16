@@ -31,7 +31,7 @@ describe.each(['btc', 'test', 'regtest', 'ltc', 'doge', 'zec', 'bch'])(
     'pushTransaction %s Bitcoin-family payload',
     coin => {
         it.each(['0123456789abcdefABCDEF', ''])('accepts the original hex string %j', hex => {
-            expect(createMethod(coin, hex).getTransactionData()).toBe(hex);
+            expect(createMethod(coin, hex).getTransactionData()).toEqual({ hex });
         });
 
         it.each([undefined, true, false])(
@@ -61,12 +61,10 @@ describe.each(['eth', 'xrp', 'xlm', 'ada', 'trx', 'sol'])(
     'pushTransaction %s non-Bitcoin payload',
     coin => {
         it('preserves the existing string and object payloads', () => {
-            const serializedTransaction = 'serialized-transaction';
-            const tx = { hex: serializedTransaction, disableAlternativeRPC: true };
+            const hex = 'serialized-transaction';
+            const tx = { hex, disableAlternativeRPC: true };
 
-            expect(createMethod(coin, serializedTransaction).getTransactionData()).toBe(
-                serializedTransaction,
-            );
+            expect(createMethod(coin, hex).getTransactionData()).toEqual({ hex });
             expect(createMethod(coin, tx).getTransactionData()).toEqual(tx);
         });
     },

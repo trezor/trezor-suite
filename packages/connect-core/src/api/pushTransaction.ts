@@ -11,7 +11,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
-    tx: PushTransactionSchema['tx'];
+    tx: { hex: string; disableAlternativeRPC?: boolean };
     coinInfo: CoinInfo;
     identity?: string;
 };
@@ -32,8 +32,13 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
             throw ERRORS.TypedError('Method_InvalidParameter', 'Transaction must be hexadecimal');
         }
 
+        const disableAlternativeRPC =
+            typeof payload.tx === 'string'
+                ? payload.disableAlternativeRPC
+                : payload.tx.disableAlternativeRPC;
+
         const params = {
-            tx: payload.tx,
+            tx: { hex, disableAlternativeRPC },
             coinInfo,
             identity: payload.identity,
         };
@@ -53,8 +58,6 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         );
         const txid = await backend.pushTransaction(this.params.tx);
 
-        return {
-            txid,
-        };
+        return { txid };
     }
 }

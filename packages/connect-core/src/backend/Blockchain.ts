@@ -4,7 +4,7 @@ import type {
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
 import { BlockchainLink } from '@trezor/blockchain-link';
-import type { CoinInfo, CoreEventMessage, Proxy, PushTransaction } from '@trezor/connect-common';
+import type { CoinInfo, CoreEventMessage, Proxy } from '@trezor/connect-common';
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { type CanonicalDescriptor } from '@trezor/utils';
@@ -326,10 +326,8 @@ export class Blockchain {
         return this.unsubscribeBlocks();
     }
 
-    pushTransaction(tx: PushTransaction['tx']) {
-        const data = typeof tx === 'string' ? { hex: tx } : tx;
-
-        return this.link.pushTransaction(data);
+    pushTransaction(params: BlockchainLinkParams<'pushTransaction'>) {
+        return this.link.pushTransaction(params);
     }
 
     disconnect() {
