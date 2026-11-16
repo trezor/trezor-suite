@@ -396,6 +396,19 @@ export const findComposeErrors = <T extends FieldValues>(
     return composeErrors;
 };
 
+// Whether any field holds an error other than one set while composing a transaction.
+export const hasValidationErrors = <T extends FieldValues>(errors: FieldErrors<T>): boolean =>
+    Object.values(errors).some(val => {
+        if (!val || typeof val !== 'object') return false;
+        if (Array.isArray(val)) {
+            return val.some((output: FieldErrors<Output> | undefined) =>
+                output ? hasValidationErrors(output) : false,
+            );
+        }
+
+        return !('type' in val && Object.values(COMPOSE_ERROR_TYPES).includes(val.type as string));
+    });
+
 export const findToken = (tokens: Account['tokens'], address?: string | null) => {
     if (!address || !tokens) return;
 
