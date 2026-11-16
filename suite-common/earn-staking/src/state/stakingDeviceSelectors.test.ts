@@ -121,7 +121,7 @@ const otherDeviceEthAccount = createAccount({
     deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
 });
 
-// In reverse coin order, so the selectors have to sort.
+// In reverse network order, so the selectors have to sort.
 const ACCOUNTS = [
     trxAccount,
     adaFiveBinariesAccount,
@@ -224,7 +224,7 @@ const describeEntries = (state: StakingDeviceRootState) =>
     }));
 
 describe('selectDeviceStakingPositionEntries', () => {
-    it('lists the counted positions of the visible device accounts in coin order', () => {
+    it('lists the counted positions of the visible device accounts in network order', () => {
         expect(describeEntries(createState())).toEqual([
             { accountKey: ethAccount.key, productId: eth.id },
             { accountKey: secondEthAccount.key, productId: eth.id },
@@ -296,7 +296,7 @@ describe('selectDeviceStakingPositionEntriesBySymbol', () => {
 });
 
 describe('selectDeviceStakingSymbols', () => {
-    it('lists each network once, in coin order', () => {
+    it('lists each network once, in network order', () => {
         expect(selectDeviceStakingSymbols(createState())).toEqual([
             'eth',
             'thod',
