@@ -7,10 +7,7 @@ import {
     setCustomBackendThunk,
     updateCardanoProtocolParametersThunk,
 } from '@suite-common/wallet-core';
-import {
-    BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
-    isBlockchainEventOfType,
-} from '@trezor/connect';
+import { BLOCKCHAIN, isBlockchainEventOfType } from '@trezor/blockchain-core';
 import { createMiddleware } from '@trezor/redux-utils';
 
 import {
@@ -22,9 +19,9 @@ import { schedulePolledNetworkSync } from './polledNetworkSync';
 
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile
 export const blockchainMiddleware = createMiddleware((action, { dispatch, next, getState }) => {
-    if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT)) {
+    if (isBlockchainEventOfType(action, BLOCKCHAIN.CONNECT)) {
         dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
-    } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK)) {
+    } else if (isBlockchainEventOfType(action, BLOCKCHAIN.BLOCK)) {
         const networksWithPendingTransactions = selectNetworksWithPendingTxs(getState());
         const symbol = action.payload.coin.shortcut.toLowerCase();
 
@@ -32,9 +29,9 @@ export const blockchainMiddleware = createMiddleware((action, { dispatch, next, 
             dispatch(syncAccountsWithBlockchainThunk({ symbol }));
         }
         dispatch(updateCardanoProtocolParametersThunk(action.payload));
-    } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION)) {
+    } else if (isBlockchainEventOfType(action, BLOCKCHAIN.NOTIFICATION)) {
         dispatch(onBlockchainNotificationThunk(action.payload));
-    } else if (isBlockchainEventOfType(action, TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR)) {
+    } else if (isBlockchainEventOfType(action, BLOCKCHAIN.ERROR)) {
         dispatch(onBlockchainDisconnectThunk(action.payload));
     }
 

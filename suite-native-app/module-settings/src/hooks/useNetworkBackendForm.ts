@@ -20,8 +20,7 @@ import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { TrezorBlockchain } from '@trezor/blockchain-core';
-import { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
+import { BLOCKCHAIN, type BlockchainError, TrezorBlockchain } from '@trezor/blockchain-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
