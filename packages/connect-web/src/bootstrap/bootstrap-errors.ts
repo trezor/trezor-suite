@@ -6,3 +6,14 @@ export const BootstrapError = {
     ORIGIN_MISSING: 'origin-missing', // origin missing in handshake
     UNKNOWN: 'unknown', // unknown error
 } as const;
+
+/**
+ * URL of the Suite connect-popup page that shows the given bootstrap error.
+ */
+export const getPopupErrorURL = (popupPageURL: string, errorCode: string) => {
+    const url = new URL(popupPageURL);
+    url.search = '';
+    url.searchParams.set('connect-popup-err', errorCode);
+
+    return url.toString();
+};
