@@ -112,7 +112,6 @@ export const PublicKey = Type.Object({
      * Per-coin raw public key encoding:
      * - Bitcoin/Ethereum: hex-encoded compressed public key (33 bytes)
      * - Solana/Cardano: hex-encoded raw public key (32 bytes)
-     * - Tezos: base58check-encoded public key (`edpk…`)
      */
     publicKey: Type.String(),
     path: Type.Array(Type.Number()),
@@ -124,7 +123,6 @@ export const PublicKey = Type.Object({
      * - Ethereum: hex-encoded compressed public key (same value as `publicKey`)
      * - Cardano: extended public key (xpub)
      * - Solana: base58-encoded address (same value as `publicKeyBase58`)
-     * - Tezos: base58check-encoded public key, `edpk…` (same value as `publicKey`)
      *
      * Generic consumers (e.g. UI components that need to display *some* canonical
      * identifier without knowing the coin) should read this field. Coin-specific
@@ -134,7 +132,7 @@ export const PublicKey = Type.Object({
      *
      * Relation to what firmware shows on the device screen for
      * `showOnTrezor: true`:
-     * - Bitcoin (legacy/SegWit), Cardano, Solana, Tezos: byte-identical to the
+     * - Bitcoin (legacy/SegWit), Cardano, Solana: byte-identical to the
      *   firmware display.
      * - Bitcoin Taproot: same logical descriptor, but firmware renders the bare
      *   account-level form with `h`-notation (e.g. `tr([fp/86h/0h/0h]xpub…)`),

@@ -106,7 +106,6 @@ const connectPublicCallableMethodGroups = {
         'solanaComposeTransaction',
     ],
     stellar: ['stellarGetAddress', 'stellarSignTransaction'],
-    tezos: ['tezosGetAddress', 'tezosGetPublicKey', 'tezosSignTransaction'],
     tron: ['tronGetAddress', 'tronSignTransaction', 'tronComposeTransaction'],
     nostr: ['nostrGetPublicKey', 'nostrSignEvent'],
 } as const;

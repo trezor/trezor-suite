@@ -66,7 +66,6 @@ const tests = [
                 'Capability_Monero',
                 'Capability_Ripple',
                 'Capability_Stellar',
-                'Capability_Tezos',
                 'Capability_U2F',
                 'Capability_Shamir',
                 'Capability_ShamirGroups',

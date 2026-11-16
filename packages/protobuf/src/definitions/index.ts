@@ -261,14 +261,6 @@ import {
 } from './messages-stellar';
 import { Telemetry, TelemetryGet } from './messages-telemetry';
 import {
-    TezosAddress,
-    TezosGetAddress,
-    TezosGetPublicKey,
-    TezosPublicKey,
-    TezosSignTx,
-    TezosSignedTx,
-} from './messages-tezos';
-import {
     ThpCodeEntryChallenge,
     ThpCodeEntryCommitment,
     ThpCodeEntryCpaceHostTag,
@@ -323,7 +315,6 @@ export * from './messages-ripple';
 export * from './messages-solana';
 export * from './messages-stellar';
 export * from './messages-telemetry';
-export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
 
@@ -574,12 +565,6 @@ export const MessageType = Type.Object(
         StellarTxExt,
         TelemetryGet,
         Telemetry,
-        TezosGetAddress,
-        TezosAddress,
-        TezosGetPublicKey,
-        TezosPublicKey,
-        TezosSignTx,
-        TezosSignedTx,
         ThpCreateNewSession,
         ThpPairingRequest,
         ThpPairingRequestApproved,
@@ -772,9 +757,6 @@ export type WireInMessage =
     | 'StellarSignSorobanAuthorization'
     | 'StellarTxExt'
     | 'TelemetryGet'
-    | 'TezosGetAddress'
-    | 'TezosGetPublicKey'
-    | 'TezosSignTx'
     | 'ThpCreateNewSession'
     | 'ThpPairingRequest'
     | 'ThpSelectMethod'
@@ -886,9 +868,6 @@ export type WireOutMessage =
     | 'StellarSorobanAuthorizationSignature'
     | 'StellarTxExtRequest'
     | 'Telemetry'
-    | 'TezosAddress'
-    | 'TezosPublicKey'
-    | 'TezosSignedTx'
     | 'ThpPairingRequestApproved'
     | 'ThpPairingPreparationsFinished'
     | 'ThpCodeEntryCommitment'

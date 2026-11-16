@@ -21,7 +21,6 @@ const methodFamilies: Record<string, string> = {
     trx: 'tron*',
     ttrx: 'tron*',
     xmr: 'monero*',
-    xtz: 'tezos*',
     nostr: 'nostr*',
 };
 

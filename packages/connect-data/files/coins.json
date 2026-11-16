@@ -1245,22 +1245,6 @@
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
             }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "ed25519",
-            "decimals": 6,
-            "name": "Tezos",
-            "shortcut": "XTZ",
-            "slip44": 1729,
-            "support": {
-                "T1B1": false,
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.8",
-                "T3B1": "2.8.1",
-                "T3T1": "2.6.1",
-                "T3W1": "2.6.1"
-            }
         }
     ]
 }

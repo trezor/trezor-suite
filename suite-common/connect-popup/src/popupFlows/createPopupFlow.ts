@@ -37,7 +37,6 @@ const POPUP_FLOWS: { [M in CallMethodKeys]?: PopupFlowConstructor<M> } = {
     cardanoGetAddress: AddressConfirmationFlow,
     rippleGetAddress: AddressConfirmationFlow,
     solanaGetAddress: AddressConfirmationFlow,
-    tezosGetAddress: AddressConfirmationFlow,
     tronGetAddress: AddressConfirmationFlow,
     stellarGetAddress: AddressConfirmationFlow,
     moneroGetAddress: AddressConfirmationFlow,
@@ -45,7 +44,6 @@ const POPUP_FLOWS: { [M in CallMethodKeys]?: PopupFlowConstructor<M> } = {
     ethereumGetPublicKey: AddressConfirmationFlow,
     cardanoGetPublicKey: AddressConfirmationFlow,
     solanaGetPublicKey: AddressConfirmationFlow,
-    tezosGetPublicKey: AddressConfirmationFlow,
 };
 
 export const createPopupFlow = (

@@ -22,7 +22,6 @@ export const allCoinsSelect = [
     { value: 'xlm', label: 'Stellar', affectedValue: `m/44'/148'/0'` },
     { value: 'ada', label: 'Cardano', affectedValue: `m/1852'/1815'/0'` },
     { value: 'sol', label: 'Solana', affectedValue: `m/44'/501'/0'/0'` },
-    { value: 'xtz', label: 'Tezos', affectedValue: `m/44'/1729'/0'` },
     { value: 'trx', label: 'Tron', affectedValue: `m/44'/195'/0'/0/0` },
     { value: 'xmr', label: 'Monero', affectedValue: `m/44'/128'/0'` },
 ];

@@ -8,7 +8,6 @@ import { moneroAssets } from '@trezor/network-monero-assets';
 import { rippleAssets } from '@trezor/network-ripple-assets';
 import { solanaAssets } from '@trezor/network-solana-assets';
 import { stellarAssets } from '@trezor/network-stellar-assets';
-import { tezosAssets } from '@trezor/network-tezos-assets';
 import { tronAssets } from '@trezor/network-tron-assets';
 
 export type ExplorerNetworkConfig = {
@@ -71,12 +70,6 @@ export const connectExplorerNetworkConfig: readonly ExplorerNetworkConfig[] = [
         name: 'Solana',
         route: asNetworkRoute('solana'),
         icons: solanaAssets,
-    },
-    {
-        symbol: asNetworkSymbol('xtz'),
-        name: 'Tezos',
-        route: asNetworkRoute('tezos'),
-        icons: tezosAssets,
     },
     {
         symbol: asNetworkSymbol('trx'),
