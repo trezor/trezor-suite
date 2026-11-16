@@ -1,3 +1,4 @@
+import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/device';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
@@ -95,6 +96,7 @@ type MockStateParams = {
     accounts: Account[];
     enabledNetworks?: Account['symbol'][];
     hasBitcoinOnlyFirmware?: boolean;
+    isPortfolioTracker?: boolean;
     rates?: Record<string, { rate: number; usdRate?: number }>;
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
@@ -108,6 +110,7 @@ const createState = ({
     accounts,
     enabledNetworks = [BTC, ETH, POL],
     hasBitcoinOnlyFirmware = false,
+    isPortfolioTracker = false,
     rates = {},
     knownTokens = [USDC_ON_ETH, USDC_ON_POL],
     hiddenTokens = [],
@@ -123,6 +126,7 @@ const createState = ({
     return {
         device: {
             selectedDevice: {
+                id: isPortfolioTracker ? PORTFOLIO_TRACKER_DEVICE_ID : undefined,
                 state: { staticSessionId: ALICE },
                 firmwareType: hasBitcoinOnlyFirmware
                     ? FirmwareType.BitcoinOnly
@@ -273,6 +277,29 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectHomeAssetRowKeys(state)).toEqual([]);
+    });
+
+    it('keeps a network the user has not enabled in the Portfolio Tracker', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: BTC }),
+                mockAccount({
+                    symbol: ETH,
+                    balance: '0',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                }),
+            ],
+            enabledNetworks: [],
+            hiddenTokens: [USDC_ON_ETH],
+            isPortfolioTracker: true,
+        });
+
+        expect(selectHomeAssetRowKeys(state)).toEqual([
+            getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+        ]);
+        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([
+            getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: USDC_ON_ETH }),
+        ]);
     });
 
     it('leaves out a network the device cannot use, enabled or not', () => {
