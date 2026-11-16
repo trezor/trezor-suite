@@ -273,7 +273,7 @@ export const TransactionReviewModalBodyInner = ({
                             stakeType={stakeType}
                             timer={
                                 showTxValidityTimer ? (
-                                    <Row gap={8}>
+                                    <Row gap={8} flex="none">
                                         <TransactionReviewOutputTimer
                                             deadline={deadline}
                                             onTryAgain={handleTryAgain}
