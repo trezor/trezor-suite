@@ -14,7 +14,10 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
+import type { NetworkSymbol } from '@trezor/network-module-types';
 import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
@@ -22,6 +25,7 @@ import {
 } from '@trezor/redux-utils';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
+import { selectCountedStakingPositionEntriesByAccount } from './stakingAccountSelectors';
 import type { StakingRootState } from './stakingReducer';
 import {
     selectStakingPlatform,
@@ -47,6 +51,8 @@ export type ResolvedStakingProductAccess = {
 export type StakingAccessRootState = StakingRootState & MessageSystemRootState & DeviceRootState;
 
 export type StakingPromoRootState = StakingRootState & NetworksRootState;
+
+export type StakingAccountProductRootState = StakingRootState & AccountsRootState;
 
 const NO_OPERATIONS: readonly StakingOperation[] = [];
 
@@ -176,6 +182,44 @@ export const selectStakeableStakingProductDescriptorsBySymbol = createWeakMapSel
             ),
         ),
 );
+
+// The first stakeable product stands for the network until a second provider exists.
+export const selectStakeableStakingProductDescriptorBySymbol = (
+    state: StakingRootState,
+    networkSymbol: NetworkSymbol,
+): StakingProductDescriptor | null =>
+    selectStakeableStakingProductDescriptorsBySymbol(state, networkSymbol)[0] ?? null;
+
+export const selectStakingAccountProductDescriptor = (
+    state: StakingAccountProductRootState,
+    accountKey: AccountKey,
+): StakingProductDescriptor | null => {
+    const [entry] = selectCountedStakingPositionEntriesByAccount(state, accountKey);
+
+    if (entry !== undefined) {
+        return entry.descriptor;
+    }
+
+    const account = selectAccountByKey(state, accountKey);
+
+    if (!account) {
+        return null;
+    }
+
+    return selectStakeableStakingProductDescriptorBySymbol(state, account.symbol);
+};
+
+// Staked with an operator Suite does not offer: the position's product takes no new stake here.
+export const selectIsStakingAccountDelegatedOutside = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+): boolean => {
+    const platform = selectStakingPlatform(state);
+
+    return selectCountedStakingPositionEntriesByAccount(state, accountKey).some(
+        ({ descriptor }) => !isStakeableOnPlatform(descriptor, platform),
+    );
+};
 
 export const selectStakingPromoProductDescriptors = createWeakMapSelector(
     [

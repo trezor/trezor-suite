@@ -75,20 +75,26 @@ export type {
     StakingServices,
 } from './stakingServices';
 export {
+    selectIsStakingAccountDelegatedOutside,
+    selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,
+    selectStakingAccountProductDescriptor,
     selectStakingOperationMessageContent,
     selectStakingProductAccess,
     selectStakingPromoProductDescriptors,
     type ResolvedStakingProductAccess,
     type StakingAccessRootState,
+    type StakingAccountProductRootState,
     type StakingDisabledOperationReason,
     type StakingDisabledOperations,
     type StakingPromoRootState,
 } from './state/stakingAccessSelectors';
 export {
     selectCountedStakingPositionEntriesByAccount,
+    selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingOperationPending,
+    selectStakingAccountAmount,
     selectStakingAccountBalanceWithStaking,
     selectStakingAccountFiatAmount,
     selectStakingPositionEntriesByAccount,
@@ -193,6 +199,11 @@ export {
     type SyncStakingPositionsThunkState,
 } from './state/stakingThunks';
 export { formatStakingAmount, type FormatStakingAmountParams } from './utils/formatStakingAmount';
+export {
+    getPotentialStakingRewards,
+    type GetPotentialStakingRewardsParams,
+    type PotentialStakingRewardsAccount,
+} from './utils/getPotentialStakingRewards';
 export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
 export {
     isStakingOperationAvailable,

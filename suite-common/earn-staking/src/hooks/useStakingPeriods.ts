@@ -11,7 +11,7 @@ export type StakingPeriods = {
 
 const toWholeDays = (days: number | null) => (days === null ? null : Math.round(days));
 
-export const useStakingPeriods = (productId: StakingProductId): StakingPeriods => {
+export const useStakingPeriods = (productId: StakingProductId | null): StakingPeriods => {
     const { productInfo } = useStakingProductInfo(productId);
 
     const entryDays = toWholeDays(productInfo?.entryPeriodDays ?? null);

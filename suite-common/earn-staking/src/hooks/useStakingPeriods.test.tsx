@@ -5,7 +5,7 @@ import { type PropsWithChildren } from 'react';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
-import type { StakingProductInfo } from '@suite-common/earn-staking-common';
+import type { StakingProductId, StakingProductInfo } from '@suite-common/earn-staking-common';
 import {
     mockStakingProductDescriptor,
     mockStakingProductInfo,
@@ -22,7 +22,10 @@ type HookDeps = { services: StakingDep & QueryClientDep };
 
 const eth = mockStakingProductDescriptor();
 
-const renderStakingPeriods = (productInfo: StakingProductInfo | null) => {
+const renderStakingPeriods = (
+    productInfo: StakingProductInfo | null,
+    productId: StakingProductId | null = eth.id,
+) => {
     const queryClient = mockStakingQueryClient({
         productInfo: productInfo === null ? {} : { [eth.id]: productInfo },
     });
@@ -35,7 +38,7 @@ const renderStakingPeriods = (productInfo: StakingProductInfo | null) => {
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
 
-    return renderHookWithStoreProvider(() => useStakingPeriods(eth.id), { services, wrapper });
+    return renderHookWithStoreProvider(() => useStakingPeriods(productId), { services, wrapper });
 };
 
 describe('useStakingPeriods', () => {
@@ -63,6 +66,16 @@ describe('useStakingPeriods', () => {
             nextRewardAt: null,
         });
     });
+
+    it('knows no period for no product', () => {
+        expect(renderStakingPeriods(mockStakingProductInfo(), null).result.current).toEqual({
+            entryPeriodDays: null,
+            exitPeriodDays: null,
+            rewardPeriodDays: null,
+            nextRewardAt: null,
+        });
+    });
+
     it('rounds the periods once for display, with at least a day to enter', () => {
         const fractional = mockStakingProductInfo({ entryPeriodDays: 3.4, exitPeriodDays: 0.4 });
         const tiny = mockStakingProductInfo({ entryPeriodDays: 0.2, exitPeriodDays: 2.6 });
