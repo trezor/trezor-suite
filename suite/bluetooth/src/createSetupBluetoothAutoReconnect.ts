@@ -3,6 +3,7 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
+import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
@@ -19,7 +20,7 @@ type BluetoothReconnectThunkDispatch = ThunkDispatch<
     UnknownAction
 >;
 
-type SetupBluetoothAutoReconnectDeps = {
+export type SetupBluetoothAutoReconnectDeps = {
     getKnownDevices: () => DesktopBluetoothDevice[];
     getConnectingDeviceIds: () => string[];
     getAdapterStatus: () => DesktopBluetoothState['adapterStatus'];
@@ -75,23 +76,18 @@ const attemptDeviceConnect = async (
     // do not hijack BT connection
     const autoConnectPolicy = deps.getAutoConnectPolicy();
     const devicePolicy = autoConnectPolicy[knownDevice.id];
+    const { filterPolicy } = device.manufacturerData;
+    // Linux can retain the pairing advertisement after pairing and USB disconnection.
+    // Reconnect an existing bond only when the device is free and wasn't disconnected by its user.
+    const hasCachedPairingFlag =
+        isLinux() &&
+        device.paired === true &&
+        !filterPolicy?.connected &&
+        !filterPolicy?.user_disconnected;
     const isConnectable =
         device.connectionStatus.type === 'disconnected' &&
         devicePolicy?.type !== 'autoconnect-disabled' &&
-        !device.manufacturerData.filterPolicy?.pairing;
-
-    // NOTE
-    // linux is caching manufacturerData
-    // they will be always received as device is in pairing mode even if it not (until adapter reconnection)
-    // manufacturerData are updates are sent properly only if there are 2 apps paired with one trezor and both are enabled (desktop + mobile)
-    // TODO: in case of complains regarding auto reconnection on linux enable timeout based on recent disconnection timestamp
-    // if (
-    //     devicePolicy?.type === 'recently-disconnected' &&
-    //     knownDevice.manufacturerData.filterPolicy?.pairing &&
-    //     Date.now() - devicePolicy.timestamp < 10000
-    // ) {
-    //     isConnectable = false;
-    // }
+        (!filterPolicy?.pairing || hasCachedPairingFlag);
 
     if (isConnectable) {
         await deps.dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
