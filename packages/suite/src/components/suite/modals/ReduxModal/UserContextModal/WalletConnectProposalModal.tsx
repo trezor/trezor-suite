@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
-import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { useDappScan } from '@suite-common/tx-simulation';
@@ -13,6 +12,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
 import {
     selectPendingProposal,
+    selectPendingProposalNetworks,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
@@ -36,7 +36,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
 import { useSelector } from '#src/hooks/suite';
+import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
+import { ActivateAssetsModal } from './ActivateAssetsModal';
 import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
@@ -62,42 +64,49 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const { dispatch } = useServices(injectDispatch);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const pendingProposal = useSelector(selectPendingProposal);
+    const proposalNetworks = useSelector(selectPendingProposalNetworks);
     const accounts = useSelector(selectAllAccountsToList);
+    const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const selectableAccounts = useMemo<Account[]>(
         () =>
             sortByCoin(
-                pendingProposal?.networks
+                proposalNetworks
                     .filter(network => network.status === 'active')
                     .flatMap(network =>
                         accounts.filter(account => account.symbol === network.symbol),
-                    ) ?? [],
+                    ),
                 supportedNetworks,
             ),
-        [accounts, pendingProposal?.networks, supportedNetworks],
+        [accounts, proposalNetworks, supportedNetworks],
     );
     const requestedNetworks = useMemo(
         () =>
-            (pendingProposal?.networks ?? [])
+            proposalNetworks
                 .filter(network => network.status !== 'unsupported')
                 .toSorted(
                     (a, b) =>
                         getNetworkOrder(supportedNetworks, a.symbol) -
                         getNetworkOrder(supportedNetworks, b.symbol),
                 ),
-        [pendingProposal?.networks, supportedNetworks],
+        [proposalNetworks, supportedNetworks],
     );
-    const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
-        selectableAccounts[0] || null,
-    );
+    const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(null);
     const [ignoreWarning, setIgnoreWarning] = useState(false);
+    const [isActivatingAssets, setIsActivatingAssets] = useState(false);
     // Scan where the proposal came from, not the url the proposer declared for itself.
     const dappScanQuery = useDappScan(pendingProposal?.origin);
+
+    // Accounts of enabled networks may still be on the way, so their networks are not inactive yet.
+    const isDiscoveryLoading = discoveryStatus?.status === 'loading';
+    // The proposal can open before any account is discovered, so the default follows the
+    // discovered accounts until the user picks one.
+    const defaultAccount = selectedDefaultAccount ?? selectableAccounts[0] ?? null;
 
     const handleAccept = () => {
         dispatch(
             sessionProposalApproveThunk({
                 eventId,
-                selectedDefaultAccount,
+                selectedDefaultAccount: defaultAccount,
             }),
         );
         dispatch(closeModal());
@@ -106,13 +115,12 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
         dispatch(sessionProposalRejectThunk({ eventId }));
         dispatch(closeModal());
     };
-    const handleGoToCoinSettings = async () => {
-        await dispatch(closeModal());
-        dispatch(gotoThunk({ routeName: 'settings-coins' }));
-    };
+
+    const isShownAsInactive = (network: PendingConnectionProposalNetwork) =>
+        network.status !== 'active' && !isDiscoveryLoading;
 
     const getTooltipContent = (network: PendingConnectionProposalNetwork) => {
-        if (network.status !== 'active')
+        if (isShownAsInactive(network))
             return (
                 <Translation
                     id="TR_ACCOUNT_EXCEPTION_NOT_ENABLED"
@@ -126,12 +134,17 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
 
     if (!pendingProposal) return null;
 
-    const requiredNetworksNotActivated = pendingProposal.networks.some(
+    if (isActivatingAssets) {
+        return <ActivateAssetsModal onCancel={() => setIsActivatingAssets(false)} />;
+    }
+
+    const requiredNetworksNotActivated = proposalNetworks.some(
         network => network.required && network.status !== 'active',
     );
-    const noNetworksActivated = !pendingProposal.networks.some(
-        network => network.status === 'active',
-    );
+    const noNetworksActivated = !proposalNetworks.some(network => network.status === 'active');
+    const isActivateAssetsBannerVisible =
+        !isDiscoveryLoading &&
+        (requiredNetworksNotActivated || noNetworksActivated || selectableAccounts.length === 0);
 
     return (
         <Modal
@@ -146,7 +159,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             ((pendingProposal.isScam || dappScanQuery.data?.isMalicious) &&
                                 !ignoreWarning)
                         }
-                        isLoading={dappScanQuery.isLoading}
+                        isLoading={dappScanQuery.isLoading || isDiscoveryLoading}
                         data-testid="@walletconnect-proposal/confirm-button"
                     >
                         <Translation id="TR_CONFIRM" />
@@ -214,7 +227,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     <Row rowGap={8} columnGap={12} flexWrap="wrap">
                         {requestedNetworks.map(network => (
                             <Tooltip content={getTooltipContent(network)} key={network.namespaceId}>
-                                <NetworkItemWrapper $isDisabled={network.status !== 'active'}>
+                                <NetworkItemWrapper $isDisabled={isShownAsInactive(network)}>
                                     {network.symbol && (
                                         <NetworkIcon
                                             networkSymbol={network.symbol as any}
@@ -240,7 +253,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         isClearable={false}
                         size="large"
                         isMenuFullWidth
-                        value={selectedDefaultAccount}
+                        value={defaultAccount}
                         options={selectableAccounts}
                         formatOptionLabel={(account: Account) => (
                             <WalletConnectAccountOption account={account} />
@@ -250,13 +263,11 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     />
                 )}
 
-                {(requiredNetworksNotActivated ||
-                    noNetworksActivated ||
-                    selectableAccounts.length === 0) && (
+                {isActivateAssetsBannerVisible && (
                     <Banner
                         intent="warning"
                         rightContent={
-                            <Banner.Button onClick={() => handleGoToCoinSettings()}>
+                            <Banner.Button onClick={() => setIsActivatingAssets(true)}>
                                 <Translation id="TR_COIN_SETTINGS" />
                             </Banner.Button>
                         }
