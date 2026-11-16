@@ -48,7 +48,6 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    getMevProtectedTxData,
     isCardanoTx,
     isRbfBumpFeeTransaction,
     tryGetAccountIdentity,
@@ -142,15 +141,11 @@ const pushTransactionThunk =
 
         if (!serializedTx || !precomposedTx || !account) return;
 
-        const txData = getMevProtectedTxData(
-            serializedTx.tx,
-            isMevProtectionEnabled && isMevProtectionFeatureEnabled,
-        );
-
         const sentTx = await TrezorConnect.pushTransaction({
-            tx: txData,
+            tx: serializedTx.tx,
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
+            disableAlternativeRPC: !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
         });
 
         const flow = stakeType === 'change-delegate' ? 'vote' : stakeType;

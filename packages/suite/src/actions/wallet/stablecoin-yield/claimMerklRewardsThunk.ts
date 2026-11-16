@@ -31,7 +31,7 @@ import {
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
+import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
@@ -310,12 +310,11 @@ export const claimMerklRewardsThunk = createThunk<
                     selectIsMevProtectionFeatureEnabled(getState());
 
                 const pushResponse = await TrezorConnect.pushTransaction({
-                    tx: getMevProtectedTxData(
-                        signingResponse.payload.serializedTx,
-                        isMevProtectionEnabled && isMevProtectionFeatureEnabled,
-                    ),
+                    tx: signingResponse.payload.serializedTx,
                     coin: asCoinSymbol(account.symbol),
                     identity: getAccountIdentity(account),
+                    disableAlternativeRPC:
+                        !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
                 });
 
                 dispatch(closeModal());

@@ -171,6 +171,7 @@ describe('signTransactionThunk', () => {
             tx: SIGNED_TX,
             coin: 'ada',
             identity: undefined,
+            disableAlternativeRPC: false,
         });
         expect(mockNotifyEarnTransactionBroadcastThunk).toHaveBeenCalledWith(
             expect.objectContaining({ account, txid: TXID, flow: 'stake' }),
