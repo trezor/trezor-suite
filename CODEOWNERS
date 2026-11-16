@@ -22,6 +22,7 @@
 /packages/coinjoin @marekrjpolak @szymonlesisz
 
 /packages/components @trezor/suite-growth @seibei-iguchi @jvaclavik
+/suite-native/atoms @trezor/suite-growth @seibei-iguchi @yanascz
 
 /packages/product-components @trezor/suite-growth @seibei-iguchi @jvaclavik
 
