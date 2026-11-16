@@ -17,7 +17,11 @@ import { mockAddressValidator, mockGetNamedAddressSupport } from '@suite-common/
 import {
     type AddressValidatorDep,
     type GetNamedAddressSupportDep,
+    type GetNetworkDep,
+    type GetNetworkDeps,
     type NetworkModuleRepositoryDep,
+    createGetNetwork,
+    createNetworkFamiliesCompositionRoot,
     networksActions,
     networksReducer,
 } from '@suite-common/networks';
@@ -47,7 +51,11 @@ import {
 } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { type PROTO } from '@trezor/connect';
-import { asProtocol } from '@trezor/network-module-suite-common-types';
+import { asGetter, createMockDeps } from '@trezor/dependency-injection';
+import {
+    type NetworkSuiteCommonModuleApi,
+    asProtocol,
+} from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { type ProtocolState } from '#src/reducers/suite/protocolReducer';
@@ -122,7 +130,10 @@ type SendFormTestServices = SuiteRouterHistoryDep &
     GetTradedAccountKeysDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
     SuiteSyncDep & {
-        networks: AddressValidatorDep & GetNamedAddressSupportDep & NetworkModuleRepositoryDep;
+        networks: AddressValidatorDep &
+            GetNamedAddressSupportDep &
+            GetNetworkDep &
+            NetworkModuleRepositoryDep;
     };
 
 const extraServices: SendFormTestServices = {
@@ -137,6 +148,12 @@ const extraServices: SendFormTestServices = {
         }),
         getNamedAddressSupport: mockGetNamedAddressSupport(),
         networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
+        getNetwork: createGetNetwork({
+            networkFamilies: createNetworkFamiliesCompositionRoot(
+                createMockDeps<NetworkSuiteCommonModuleApi>({ getTrezorConnect: null }),
+            ),
+            getNetworkBackend: asGetter(() => 'blockbook'),
+        } satisfies GetNetworkDeps),
     },
     suiteSync: mockSuiteSync(),
 };

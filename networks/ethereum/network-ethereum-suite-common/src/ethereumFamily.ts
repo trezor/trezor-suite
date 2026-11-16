@@ -6,6 +6,7 @@ import {
     createEthereumMessageSigning,
 } from './messageSigning/createEthereumMessageSigning';
 import { getNetworkConfig } from './networkConfig';
+import { ethereumSendOptions } from './sendOptions/ethereumSendOptions';
 import {
     blockbookEvmTransactionDetails,
     evmRpcTransactionDetails,
@@ -34,5 +35,6 @@ export const ethereumFamily = defineFamily<EthereumFamilyDeps>()({
             }),
             defineCapability({ requires: {}, create: () => blockbookEvmTransactionDetails }),
         ],
+        sendOptions: defineCapability({ requires: {}, create: () => ethereumSendOptions }),
     },
 });

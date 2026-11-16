@@ -6,6 +6,7 @@ import {
     createCardanoMessageSigning,
 } from './messageSigning/createCardanoMessageSigning';
 import { getNetworkConfig } from './networkConfig';
+import { cardanoSendOptions } from './sendOptions/cardanoSendOptions';
 
 export type CardanoFamilyDeps = CardanoMessageSigningDeps;
 
@@ -18,5 +19,6 @@ export const cardanoFamily = defineFamily<CardanoFamilyDeps>()({
             requires: { feature: 'sign-verify' },
             create: createCardanoMessageSigning,
         }),
+        sendOptions: defineCapability({ requires: {}, create: () => cardanoSendOptions }),
     },
 });

@@ -24,7 +24,7 @@ import { UtxoSelectionList } from './UtxoSelectionList';
 import {
     type MockSuiteState,
     mockInitialAppState,
-} from '../../../../../../../../mocks/mockInitialAppState';
+} from '../../../../../../../mocks/mockInitialAppState';
 
 // The editable address label of every row measures itself with an observer jsdom lacks.
 global.ResizeObserver = class MockedResizeObserver {

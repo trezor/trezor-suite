@@ -2,3 +2,4 @@ export { createStellarSuiteCommonNetworkModule } from './StellarNetworkSuiteComm
 export { stellarFamily } from './stellarFamily';
 
 export { networkConfigBySymbol } from './networkConfig';
+export { stellarSendOptions } from './sendOptions/stellarSendOptions';

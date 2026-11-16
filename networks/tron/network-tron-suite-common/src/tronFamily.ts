@@ -2,6 +2,7 @@ import { defineCapability, defineFamily } from '@trezor/network-module-suite-com
 import { supportedTronNetworks } from '@trezor/network-tron-types';
 
 import { getNetworkConfig } from './networkConfig';
+import { tronSendOptions } from './sendOptions/tronSendOptions';
 import { tronTransactionDetails } from './transactionDetails/tronTransactionDetails';
 
 /** The Tron family: no message signing yet, and the transaction facts its backend reports. */
@@ -14,5 +15,6 @@ export const tronFamily = defineFamily<Record<never, never>>()({
             requires: {},
             create: () => tronTransactionDetails,
         }),
+        sendOptions: defineCapability({ requires: {}, create: () => tronSendOptions }),
     },
 });

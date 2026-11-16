@@ -6,6 +6,7 @@ import {
     createBitcoinMessageSigning,
 } from './messageSigning/createBitcoinMessageSigning';
 import { getNetworkConfig } from './networkConfig';
+import { bitcoinSendOptions } from './sendOptions/bitcoinSendOptions';
 import {
     blockbookBitcoinTransactionDetails,
     electrumBitcoinTransactionDetails,
@@ -29,5 +30,6 @@ export const bitcoinFamily = defineFamily<BitcoinFamilyDeps>()({
             }),
             defineCapability({ requires: {}, create: () => blockbookBitcoinTransactionDetails }),
         ],
+        sendOptions: defineCapability({ requires: {}, create: () => bitcoinSendOptions }),
     },
 });

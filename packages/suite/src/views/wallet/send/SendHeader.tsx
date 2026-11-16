@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
-import { type NetworkType } from '@suite-common/wallet-config';
+import { CapabilityLabel, Translation } from '@suite/intl';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { Button, Dropdown, type DropdownMenuItemProps, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
@@ -14,12 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { WalletSubpageHeading } from '#src/components/wallet';
 import { useSendFormContext } from '#src/hooks/wallet';
 
-const BROADCAST_SUPPORTED_NETWORK_TYPES: NetworkType[] = [
-    'bitcoin',
-    'ethereum',
-    'ripple',
-    'stellar',
-];
+import { useSendOptions } from './Options/sendOptions/useSendOptions';
 
 const ClearButtonWrapper = styled.div`
     display: inline-flex;
@@ -27,26 +20,22 @@ const ClearButtonWrapper = styled.div`
 `;
 
 export const SendHeader = () => {
-    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
-    // render-time read of it freezes on the first render. Remove once these reads move to
-    // `useWatch` or out of render.
+    // React Compiler: `formState` is a react-hook-form object it edits in place, so a compiled
+    // render-time read of `isDirty` could freeze. Remove once this read moves to `useFormState`.
     'use no memo';
 
     const { dispatch } = useServices(injectDispatch);
     const {
         outputs,
         control,
-        account: { networkType },
         formState: { isDirty },
-        watch,
-        resetDefaultValue,
         toggleOption,
-
         addOpReturn,
         resetContext,
         loadTransaction,
         composeTransaction,
     } = useSendFormContext();
+    const { options, transfer } = useSendOptions();
 
     const enabledFormOptions = useWatch({
         name: 'options',
@@ -60,31 +49,23 @@ export const SendHeader = () => {
     const dataEnabled = enabledFormOptions.includes('transactionData');
     const nonceEditEnabled = enabledFormOptions.includes('ethereumNonce');
     const destinationTagEnabled = enabledFormOptions.includes('destinationTag');
-    const token = watch('outputs.0.token');
+    const optionalMemo = options.memo?.identifiesRecipient ? undefined : options.memo;
 
-    useEffect(() => {
-        // disable data option if sending Tron token
-        if (networkType === 'tron' && token && dataEnabled) {
-            toggleOption('transactionData');
-            resetDefaultValue('transactionData');
-        }
-    }, [networkType, dataEnabled, token, toggleOption, resetDefaultValue]);
-
-    const options: Array<DropdownMenuItemProps> = [
+    const menuItems: Array<DropdownMenuItemProps> = [
         {
             'data-testid': '@send/header-dropdown/import',
             onClick: () => {
                 loadTransaction();
             },
             label: <Translation id="IMPORT_CSV" />,
-            isHidden: networkType !== 'bitcoin',
+            isHidden: !options.recipients?.canImport,
         },
         {
             'data-testid': '@send/header-dropdown/opreturn',
             onClick: addOpReturn,
             label: <Translation id="OP_RETURN_ADD" />,
             isDisabled: !!opreturnOutput,
-            isHidden: networkType !== 'bitcoin',
+            isHidden: !options.dataOutput,
         },
         {
             'data-testid': '@send/header-dropdown/locktime',
@@ -94,7 +75,7 @@ export const SendHeader = () => {
             },
             label: <Translation id="LOCKTIME_ADD" />,
             isDisabled: locktimeEnabled,
-            isHidden: networkType !== 'bitcoin',
+            isHidden: !options.locktime,
         },
         {
             onClick: () => {
@@ -103,8 +84,8 @@ export const SendHeader = () => {
             },
             closeOnClick: true,
             label: <Translation id="DATA_ADD" />,
-            isDisabled: dataEnabled || !!token,
-            isHidden: networkType !== 'ethereum' && networkType !== 'tron',
+            isDisabled: dataEnabled || options.data?.isAllowed(transfer) === false,
+            isHidden: !options.data,
         },
         {
             onClick: () => {
@@ -112,9 +93,9 @@ export const SendHeader = () => {
                 composeTransaction();
             },
             closeOnClick: true,
-            label: <Translation id={networkType === 'tron' ? 'TR_TRON_NOTE_ADD' : 'MEMO_SWITCH'} />,
+            label: optionalMemo && <CapabilityLabel label={optionalMemo.labels.add} />,
             isDisabled: destinationTagEnabled,
-            isHidden: networkType !== 'tron' && networkType !== 'solana',
+            isHidden: !optionalMemo,
         },
         {
             'data-testid': '@send/header-dropdown/broadcast',
@@ -141,14 +122,14 @@ export const SendHeader = () => {
                 />
             ),
             isDisabled: locktimeEnabled,
-            isHidden: !BROADCAST_SUPPORTED_NETWORK_TYPES.includes(networkType),
+            isHidden: !options.deferredBroadcast,
         },
         {
             'data-testid': '@send/header-dropdown/ethereum-nonce',
             onClick: () => toggleOption('ethereumNonce'),
             label: <Translation id="EVM_NONCE_EDIT" />,
             isDisabled: nonceEditEnabled,
-            isHidden: networkType !== 'ethereum',
+            isHidden: !options.nonce,
         },
         {
             'data-testid': '@send/header-dropdown/raw',
@@ -179,7 +160,7 @@ export const SendHeader = () => {
                     placement={{ position: 'bottom', alignment: 'start' }}
                     data-testid="@send/header-dropdown"
                     tooltip={{ content: <Translation id="TR_SHOW_MORE" />, placement: 'left' }}
-                    items={options}
+                    items={menuItems}
                 />
             </WalletSubpageHeading>
         </>

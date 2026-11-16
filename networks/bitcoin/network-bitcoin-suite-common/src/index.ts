@@ -6,3 +6,4 @@ export type {
     BitcoinMessageSigning,
     BitcoinSignParams,
 } from './messageSigning/createBitcoinMessageSigning';
+export { bitcoinSendOptions } from './sendOptions/bitcoinSendOptions';

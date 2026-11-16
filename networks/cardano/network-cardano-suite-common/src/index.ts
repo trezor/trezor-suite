@@ -14,3 +14,4 @@ export {
     getProtocolMagic,
     getStakingPath,
 } from './cardanoAddressing';
+export { cardanoSendOptions } from './sendOptions/cardanoSendOptions';

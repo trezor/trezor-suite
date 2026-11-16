@@ -5,6 +5,7 @@ import { type CapabilityRequirements, areRequirementsMet } from './CapabilityReq
 import type { NetworkContext } from './NetworkContext';
 import type { SuiteCommonNetworkConfig } from '../SuiteCommonNetworkConfig';
 import type { MessageSigning } from './messageSigning/MessageSigning';
+import type { SendOptions } from './sendOptions/SendOptions';
 import type { TransactionDetails } from './transactionDetails/TransactionDetails';
 
 /** What every capability is created from: one symbol, in one context, with its config. */
@@ -26,6 +27,7 @@ export type CapabilityProvider<TDeps, TSymbol extends string, TCapability> = {
 export type OpenNetworkCapabilities = {
     readonly messageSigning?: MessageSigning;
     readonly transactionDetails?: TransactionDetails;
+    readonly sendOptions?: SendOptions;
 };
 
 /**

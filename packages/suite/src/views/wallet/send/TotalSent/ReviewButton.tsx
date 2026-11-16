@@ -23,6 +23,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet';
 
+import { sendOptionFields } from '../Options/sendOptions/sendFormFields';
+import { useSendOptions } from '../Options/sendOptions/useSendOptions';
+
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -39,7 +42,7 @@ export const ReviewButton = () => {
     const { device, isLocked } = useDevice();
     const { dispatch } = useServices(injectDispatch);
     const {
-        account: { networkType, symbol },
+        account: { symbol },
         control,
         formState: { errors },
         online,
@@ -56,6 +59,9 @@ export const ReviewButton = () => {
             toggleAnonymityWarning,
         },
     } = useSendFormContext();
+    const {
+        options: { memo },
+    } = useSendOptions();
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, symbol));
     const isLoading = isSendFormLoading || areFeesLoading;
 
@@ -71,8 +77,9 @@ export const ReviewButton = () => {
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
     const requireDestinationTag =
-        (networkType === 'ripple' || networkType === 'stellar') &&
-        options.includes('destinationTag') &&
+        // A memo that is turned on but empty, on a network that refuses an empty one.
+        memo?.validate('') !== undefined &&
+        options.includes(sendOptionFields.memo.option) &&
         values.destinationTag === '';
 
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;

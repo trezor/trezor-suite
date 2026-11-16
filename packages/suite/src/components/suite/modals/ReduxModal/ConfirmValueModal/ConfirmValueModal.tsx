@@ -48,7 +48,7 @@ import { type OriginalReduxThunk, injectDispatch } from '@trezor/redux-utils';
 
 import { useGuideOpenNode } from '#src/hooks/guide';
 import { useSelector } from '#src/hooks/suite';
-import { DESTINATION_TAG_GUIDE_PATH } from '#src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
+import { DESTINATION_TAG_GUIDE_PATH } from '#src/views/wallet/send/Options/sendOptions/RecipientMemo';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
     account?: Account;

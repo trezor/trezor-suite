@@ -113,14 +113,36 @@ const getTransactionFactLabels = (): Label[] =>
             .map(fact => fact.label);
     });
 
+// Every send option label, including each validation message and the reasons a memo is refused.
+const getSendOptionLabels = (): Label[] =>
+    ['xrp', 'xlm', 'sol', 'trx'].flatMap(symbol => {
+        const account = createAccount(symbol);
+        const memo = createGetNetworkForBackend('blockbook')({ symbol: account.symbol })
+            ?.capabilities.sendOptions?.memo;
+
+        if (memo === undefined) {
+            throw new Error(`${symbol} is expected to offer a memo.`);
+        }
+
+        return [
+            memo.labels.name,
+            memo.labels.add,
+            memo.labels.description,
+            memo.labels.notice,
+            ...['', 'x', '99999999999', 'x'.repeat(600)].map(value => memo.validate(value)),
+            memo.getUnavailableReason({ token: { contract: 'C', standard: 'STELLAR-CONTRACT' } }),
+        ].filter((label): label is Label => label !== undefined);
+    });
+
 describe('capability labels', () => {
-    it.each([...getMessageSigningLabels(), ...getTransactionFactLabels()])(
-        '$id is in the desktop catalog as the family wrote it',
-        label => {
-            expect(isTranslationKey(label.id)).toBe(true);
-            expect(isTranslationKey(label.id) && messages[label.id].defaultMessage).toBe(
-                label.defaultMessage,
-            );
-        },
-    );
+    it.each([
+        ...getMessageSigningLabels(),
+        ...getTransactionFactLabels(),
+        ...getSendOptionLabels(),
+    ])('$id is in the desktop catalog as the family wrote it', label => {
+        expect(isTranslationKey(label.id)).toBe(true);
+        expect(isTranslationKey(label.id) && messages[label.id].defaultMessage).toBe(
+            label.defaultMessage,
+        );
+    });
 });
