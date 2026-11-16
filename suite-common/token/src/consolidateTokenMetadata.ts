@@ -37,6 +37,7 @@ export const consolidateTokenMetadata = ({
                 symbol: token.symbol ?? inherited?.symbol,
                 decimals: token.decimals ?? inherited?.decimals,
                 standard: token.standard ?? inherited?.standard,
+                ...((token.isRecognized || inherited?.isRecognized) && { isRecognized: true }),
             });
         }
     }

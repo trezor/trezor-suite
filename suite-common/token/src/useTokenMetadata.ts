@@ -38,5 +38,6 @@ export const useTokenMetadata = (
         symbol: accountToken.symbol || contextToken.symbol,
         decimals: accountToken.decimals ?? contextToken.decimals,
         standard: accountToken.standard ?? contextToken.standard,
+        ...(contextToken.isRecognized && { isRecognized: true }),
     };
 };
