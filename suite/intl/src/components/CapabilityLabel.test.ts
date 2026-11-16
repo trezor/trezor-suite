@@ -113,37 +113,25 @@ const getTransactionFactLabels = (): Label[] =>
             .map(fact => fact.label);
     });
 
-// Every send option label, with a token that makes the options explain why they are unavailable.
+// Every send option label, including each validation message and the reasons a memo is refused.
 const getSendOptionLabels = (): Label[] =>
-    ['xrp', 'xlm', 'sol', 'trx', 'eth', 'btc', 'ada'].flatMap(symbol => {
+    ['xrp', 'xlm', 'sol', 'trx'].flatMap(symbol => {
         const account = createAccount(symbol);
-        const sendOptions = createGetNetworkForBackend('blockbook')({ symbol: account.symbol })
-            ?.capabilities.sendOptions;
+        const memo = createGetNetworkForBackend('blockbook')({ symbol: account.symbol })
+            ?.capabilities.sendOptions?.memo;
 
-        if (sendOptions === undefined) {
-            throw new Error(`${symbol} is expected to describe its send options.`);
+        if (memo === undefined) {
+            throw new Error(`${symbol} is expected to offer a memo.`);
         }
 
-        return [undefined, { contract: 'token', standard: 'STELLAR-CONTRACT' }].flatMap(token => {
-            const { memo } = sendOptions.getOptions({ account, token });
-
-            return memo
-                ? [
-                      memo.label,
-                      memo.addLabel,
-                      ...[
-                          memo.tooltip,
-                          memo.note,
-                          memo.tooLongMessage,
-                          memo.requiredMessage,
-                      ].filter((label): label is Label => label !== undefined),
-                      ...(memo.unavailable?.reason ? [memo.unavailable.reason] : []),
-                      ...[memo.validate('x'), memo.validate('99999999999')].filter(
-                          (label): label is Label => label !== undefined,
-                      ),
-                  ]
-                : [];
-        });
+        return [
+            memo.labels.name,
+            memo.labels.add,
+            memo.labels.description,
+            memo.labels.notice,
+            ...['', 'x', '99999999999', 'x'.repeat(600)].map(value => memo.validate(value)),
+            memo.getUnavailableReason({ token: { contract: 'C', standard: 'STELLAR-CONTRACT' } }),
+        ].filter((label): label is Label => label !== undefined);
     });
 
 describe('capability labels', () => {

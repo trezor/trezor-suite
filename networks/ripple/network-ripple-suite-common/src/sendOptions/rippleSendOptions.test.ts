@@ -5,7 +5,11 @@ describe(validateDestinationTag.name, () => {
         expect(validateDestinationTag(value)).toBeUndefined();
     });
 
-    it.each(['abc', ' ', ''])('says %p is not a number', value => {
+    it('refuses an empty tag, since one that is turned on must be set', () => {
+        expect(validateDestinationTag('')).toBe(rippleSendLabels.notSet);
+    });
+
+    it.each(['abc', ' '])('says %p is not a number', value => {
         expect(validateDestinationTag(value)).toBe(rippleSendLabels.notNumber);
     });
 

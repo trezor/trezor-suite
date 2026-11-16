@@ -96,13 +96,10 @@ export type {
     TransactionFactValue,
     TransactionFactsParams,
 } from './capabilities/transactionDetails/TransactionDetails';
-export type {
-    SendData,
-    SendMemo,
-    SendNonceOverride,
-    SendOptionSet,
-    SendOptionUnavailable,
-    SendOptions,
-    SendOptionsParams,
-    SendToken,
-} from './capabilities/sendOptions/SendOptions';
+export type { NonceOverride } from './capabilities/sendOptions/NonceOverride';
+export type { Recipients } from './capabilities/sendOptions/Recipients';
+export type { SendOptions } from './capabilities/sendOptions/SendOptions';
+export type { SendToken, SendTransfer } from './capabilities/sendOptions/SendToken';
+export type { TransactionData } from './capabilities/sendOptions/TransactionData';
+export type { TransactionMemo } from './capabilities/sendOptions/TransactionMemo';
+export { getUtf8ByteLength } from './capabilities/sendOptions/getUtf8ByteLength';

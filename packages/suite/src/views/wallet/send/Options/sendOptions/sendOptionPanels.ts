@@ -1,9 +1,9 @@
 import type { ComponentType } from 'react';
 
-import type { SendNonceOverride } from '@trezor/network-module-suite-common-types';
+import type { NonceOverride } from '@trezor/network-module-suite-common-types';
 
 export type NoncePanelProps = {
-    nonceOverride: SendNonceOverride;
+    nonce: NonceOverride;
     /** Clears the custom nonce and closes the panel. */
     onCancel: () => void;
 };

@@ -5,25 +5,28 @@ import { CapabilityLabel, Translation, useCapabilityLabelText } from '@suite/int
 import { getNetwork } from '@suite-common/wallet-config';
 import { Banner, Button, Card, Column, Input, Note, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import type { SendMemo } from '@trezor/network-module-suite-common-types';
+import type { SendTransfer, TransactionMemo } from '@trezor/network-module-suite-common-types';
 
 import { useGuideOpenNode } from '#src/hooks/guide';
 import { useSendFormContext } from '#src/hooks/wallet';
 
+import { sendOptionFields } from './sendFormFields';
+
 export const DESTINATION_TAG_GUIDE_PATH =
     '/3_send-and-receive/transactions-in-depth/destination-tags.md';
 
-const inputName = 'destinationTag';
+const inputName = sendOptionFields.memo.value;
 
 type RecipientMemoProps = {
-    memo: SendMemo;
+    memo: TransactionMemo;
+    transfer: SendTransfer;
 };
 
 /**
  * A memo the receiving side needs to credit the funds, such as an exchange deposit's destination
  * tag: offered with every recipient, with a warning while it is off.
  */
-export const RecipientMemo = ({ memo }: RecipientMemoProps) => {
+export const RecipientMemo = ({ memo, transfer }: RecipientMemoProps) => {
     // React Compiler: `getDefaultValue` reads the form imperatively, so a compiled render-time read
     // of it freezes as soon as its own identity is stable. Remove once these reads move to
     // `useWatch` or out of render.
@@ -44,13 +47,14 @@ export const RecipientMemo = ({ memo }: RecipientMemoProps) => {
     const { openNodeById } = useGuideOpenNode();
 
     const options = useWatch({ name: 'options', control }) ?? [];
-    const isEnabled = options.includes(inputName);
-    const isUnavailable = memo.unavailable !== undefined;
+    const isEnabled = options.includes(sendOptionFields.memo.option);
+    const unavailableReason = memo.getUnavailableReason(transfer);
+    const isUnavailable = unavailableReason !== undefined;
 
     useEffect(() => {
         if (isUnavailable && isEnabled) {
             resetDefaultValue(inputName);
-            toggleOption(inputName);
+            toggleOption(sendOptionFields.memo.option);
             composeTransaction();
         }
     }, [isUnavailable, isEnabled, resetDefaultValue, toggleOption, composeTransaction]);
@@ -58,7 +62,6 @@ export const RecipientMemo = ({ memo }: RecipientMemoProps) => {
     const error = errors[inputName];
     const { ref: inputRef, ...inputField } = register(inputName, {
         onChange: () => composeTransaction(inputName),
-        required: memo.requiredMessage && labelText(memo.requiredMessage),
         validate: (value = '') => {
             const message = memo.validate(value);
 
@@ -71,7 +74,7 @@ export const RecipientMemo = ({ memo }: RecipientMemoProps) => {
             resetDefaultValue(inputName);
         }
 
-        toggleOption(inputName);
+        toggleOption(sendOptionFields.memo.option);
         composeTransaction();
     };
 
@@ -80,12 +83,10 @@ export const RecipientMemo = ({ memo }: RecipientMemoProps) => {
         openNodeById(DESTINATION_TAG_GUIDE_PATH);
     };
 
-    const offContent = memo.unavailable ? (
-        memo.unavailable.reason && (
-            <Note gap={8}>
-                <CapabilityLabel label={memo.unavailable.reason} />
-            </Note>
-        )
+    const offContent = unavailableReason ? (
+        <Note gap={8}>
+            <CapabilityLabel label={unavailableReason} />
+        </Note>
     ) : (
         <Banner
             intent="warning"
@@ -107,7 +108,7 @@ export const RecipientMemo = ({ memo }: RecipientMemoProps) => {
                         isChecked={isEnabled}
                         isDisabled={isUnavailable}
                         onChange={handleToggle}
-                        label={<CapabilityLabel label={memo.addLabel} />}
+                        label={<CapabilityLabel label={memo.labels.add} />}
                     />
                     <Button
                         intent="neutral"
@@ -125,8 +126,8 @@ export const RecipientMemo = ({ memo }: RecipientMemoProps) => {
                             hasError={!!error}
                             data-testid={inputName}
                             defaultValue={getDefaultValue(inputName) || ''}
-                            maxLength={memo.maxLength.value}
-                            label={<CapabilityLabel label={memo.label} />}
+                            maxLength={memo.maxBytes}
+                            label={<CapabilityLabel label={memo.labels.name} />}
                             bottomText={error?.message || null}
                             innerRef={inputRef}
                             {...inputField}

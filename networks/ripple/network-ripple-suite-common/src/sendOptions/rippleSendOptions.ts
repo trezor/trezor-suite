@@ -1,5 +1,4 @@
 import type { Label, SendOptions } from '@trezor/network-module-suite-common-types';
-import { RIPPLE_DESTINATION_TAG_MAX_DIGITS } from '@trezor/network-ripple/constants';
 
 /** Translation ids shared with the desktop catalog, so these are translated wherever it is. */
 export const rippleSendLabels = {
@@ -20,6 +19,10 @@ const MAX_DESTINATION_TAG = 0xffffffff;
 
 /** A destination tag is an unsigned 32-bit integer, written without leading zeros. */
 export const validateDestinationTag = (value: string): Label | undefined => {
+    if (value === '') {
+        return rippleSendLabels.notSet;
+    }
+
     if (value.trim() === '' || Number.isNaN(Number(value))) {
         return rippleSendLabels.notNumber;
     }
@@ -29,20 +32,13 @@ export const validateDestinationTag = (value: string): Label | undefined => {
         : rippleSendLabels.notValid;
 };
 
-/**
- * Exchanges tell deposits apart by destination tag, so it is offered with every recipient and a
- * send with the tag turned on but empty is refused.
- */
+/** Exchanges tell deposits apart by destination tag, so a tag that is turned on can't be empty. */
 export const rippleSendOptions: SendOptions = {
-    getOptions: () => ({
-        memo: {
-            label: rippleSendLabels.destinationTag,
-            prominence: 'recipient',
-            addLabel: rippleSendLabels.addDestinationTag,
-            maxLength: { value: RIPPLE_DESTINATION_TAG_MAX_DIGITS, unit: 'characters' },
-            requiredMessage: rippleSendLabels.notSet,
-            validate: validateDestinationTag,
-        },
-        broadcastToggle: true,
-    }),
+    memo: {
+        labels: { name: rippleSendLabels.destinationTag, add: rippleSendLabels.addDestinationTag },
+        identifiesRecipient: true,
+        validate: validateDestinationTag,
+        getUnavailableReason: () => undefined,
+    },
+    deferredBroadcast: true,
 };

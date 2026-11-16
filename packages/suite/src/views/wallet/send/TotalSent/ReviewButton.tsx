@@ -23,6 +23,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet';
 
+import { sendOptionFields } from '../Options/sendOptions/sendFormFields';
 import { useSendOptions } from '../Options/sendOptions/useSendOptions';
 
 const Container = styled.div`
@@ -76,8 +77,9 @@ export const ReviewButton = () => {
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
     const requireDestinationTag =
-        memo?.requiredMessage !== undefined &&
-        options.includes('destinationTag') &&
+        // A memo that is turned on but empty, on a network that refuses an empty one.
+        memo?.validate('') !== undefined &&
+        options.includes(sendOptionFields.memo.option) &&
         values.destinationTag === '';
 
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;

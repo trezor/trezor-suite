@@ -35,7 +35,7 @@ export const SendHeader = () => {
         loadTransaction,
         composeTransaction,
     } = useSendFormContext();
-    const { options } = useSendOptions();
+    const { options, transfer } = useSendOptions();
 
     const enabledFormOptions = useWatch({
         name: 'options',
@@ -49,7 +49,7 @@ export const SendHeader = () => {
     const dataEnabled = enabledFormOptions.includes('transactionData');
     const nonceEditEnabled = enabledFormOptions.includes('ethereumNonce');
     const destinationTagEnabled = enabledFormOptions.includes('destinationTag');
-    const optionalMemo = options.memo?.prominence === 'optional' ? options.memo : undefined;
+    const optionalMemo = options.memo?.identifiesRecipient ? undefined : options.memo;
 
     const menuItems: Array<DropdownMenuItemProps> = [
         {
@@ -58,7 +58,7 @@ export const SendHeader = () => {
                 loadTransaction();
             },
             label: <Translation id="IMPORT_CSV" />,
-            isHidden: !options.importRecipients,
+            isHidden: !options.recipients?.canImport,
         },
         {
             'data-testid': '@send/header-dropdown/opreturn',
@@ -84,7 +84,7 @@ export const SendHeader = () => {
             },
             closeOnClick: true,
             label: <Translation id="DATA_ADD" />,
-            isDisabled: dataEnabled || options.data?.unavailable !== undefined,
+            isDisabled: dataEnabled || options.data?.isAllowed(transfer) === false,
             isHidden: !options.data,
         },
         {
@@ -93,7 +93,7 @@ export const SendHeader = () => {
                 composeTransaction();
             },
             closeOnClick: true,
-            label: optionalMemo && <CapabilityLabel label={optionalMemo.addLabel} />,
+            label: optionalMemo && <CapabilityLabel label={optionalMemo.labels.add} />,
             isDisabled: destinationTagEnabled,
             isHidden: !optionalMemo,
         },
@@ -122,14 +122,14 @@ export const SendHeader = () => {
                 />
             ),
             isDisabled: locktimeEnabled,
-            isHidden: !options.broadcastToggle,
+            isHidden: !options.deferredBroadcast,
         },
         {
             'data-testid': '@send/header-dropdown/ethereum-nonce',
             onClick: () => toggleOption('ethereumNonce'),
             label: <Translation id="EVM_NONCE_EDIT" />,
             isDisabled: nonceEditEnabled,
-            isHidden: !options.nonceOverride,
+            isHidden: !options.nonce,
         },
         {
             'data-testid': '@send/header-dropdown/raw',

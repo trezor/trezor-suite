@@ -5,19 +5,23 @@ import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
 export const solanaSendLabels = {
     memo: { id: 'MEMO', defaultMessage: 'Memo' },
     addMemo: { id: 'MEMO_SWITCH', defaultMessage: 'Add memo' },
-    memoTooltip: { id: 'TR_SOLANA_MEMO_TOOLTIP', defaultMessage: 'Add a memo to the transaction.' },
+    memoDescription: {
+        id: 'TR_SOLANA_MEMO_TOOLTIP',
+        defaultMessage: 'Add a memo to the transaction.',
+    },
 } as const satisfies Record<string, Label>;
 
-/** A memo the sender adds on request, limited by the size of the memo instruction. */
+/** A memo for the sender's own use, limited by the size of the memo instruction. */
 export const solanaSendOptions: SendOptions = {
-    getOptions: () => ({
-        memo: {
-            label: solanaSendLabels.memo,
-            prominence: 'optional',
-            addLabel: solanaSendLabels.addMemo,
-            tooltip: solanaSendLabels.memoTooltip,
-            maxLength: { value: SOLANA_MEMO_MAX_BYTES, unit: 'bytes' },
-            validate: () => undefined,
+    memo: {
+        labels: {
+            name: solanaSendLabels.memo,
+            add: solanaSendLabels.addMemo,
+            description: solanaSendLabels.memoDescription,
         },
-    }),
+        identifiesRecipient: false,
+        maxBytes: SOLANA_MEMO_MAX_BYTES,
+        validate: () => undefined,
+        getUnavailableReason: () => undefined,
+    },
 };

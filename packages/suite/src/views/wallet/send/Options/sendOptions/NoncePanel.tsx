@@ -5,12 +5,13 @@ import { XIcon } from '@trezor/icons';
 
 import { useSendFormContext } from '#src/hooks/wallet';
 
+import { sendOptionFields } from './sendFormFields';
 import type { NoncePanelProps } from './sendOptionPanels';
 
-const inputName = 'ethereumNonce';
+const inputName = sendOptionFields.nonce.value;
 
 /** A sequence number the user sets by hand, checked only for being a whole number. */
-export const NoncePanel = ({ nonceOverride, onCancel }: NoncePanelProps) => {
+export const NoncePanel = ({ nonce, onCancel }: NoncePanelProps) => {
     // React Compiler: `getDefaultValue` reads the form imperatively, so a compiled render-time read
     // of it freezes as soon as its own identity is stable. Remove once these reads move to
     // `useWatch` or out of render.
@@ -55,7 +56,7 @@ export const NoncePanel = ({ nonceOverride, onCancel }: NoncePanelProps) => {
                     defaultValue={getDefaultValue(inputName) || ''}
                     inputMode="numeric"
                     hasError={!!error}
-                    maxLength={nonceOverride.maxDigits}
+                    maxLength={nonce.maxDigits}
                     bottomText={error?.message || null}
                     data-testid="nonce-input"
                 />

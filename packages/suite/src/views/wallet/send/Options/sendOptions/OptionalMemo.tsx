@@ -14,17 +14,16 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { InfoIcon, XIcon } from '@trezor/icons';
-import type { SendMemo } from '@trezor/network-module-suite-common-types';
+import { type TransactionMemo, getUtf8ByteLength } from '@trezor/network-module-suite-common-types';
 
 import { useSendFormContext } from '#src/hooks/wallet';
 
-const inputName = 'destinationTag';
+import { sendOptionFields } from './sendFormFields';
 
-const getLength = (value: string, unit: SendMemo['maxLength']['unit']) =>
-    unit === 'bytes' ? Buffer.from(value, 'utf8').length : value.length;
+const inputName = sendOptionFields.memo.value;
 
 type OptionalMemoProps = {
-    memo: SendMemo;
+    memo: TransactionMemo;
     close: () => void;
 };
 
@@ -47,12 +46,9 @@ export const OptionalMemo = ({ memo, close }: OptionalMemoProps) => {
     const labelText = useCapabilityLabelText();
 
     const value = useWatch({ name: inputName, control }) ?? '';
-    const length = getLength(value, memo.maxLength.unit);
-    const isTooLong = length > memo.maxLength.value;
+    const bytes = getUtf8ByteLength(value);
+    const isTooLong = memo.maxBytes !== undefined && bytes > memo.maxBytes;
     const error = errors[inputName];
-    const message =
-        error?.message ||
-        (isTooLong && memo.tooLongMessage ? labelText(memo.tooLongMessage) : undefined);
 
     const handleClose = () => {
         resetDefaultValue(inputName);
@@ -70,7 +66,7 @@ export const OptionalMemo = ({ memo, close }: OptionalMemoProps) => {
 
     const heading = (
         <H4 typographyStyle="body-md">
-            <CapabilityLabel label={memo.label} />
+            <CapabilityLabel label={memo.labels.name} />
         </H4>
     );
 
@@ -79,15 +75,18 @@ export const OptionalMemo = ({ memo, close }: OptionalMemoProps) => {
             <Column gap={12}>
                 <Row alignItems="start" justifyContent="space-between">
                     <Column gap={2} alignItems="start">
-                        {memo.tooltip ? (
-                            <Tooltip hasIcon content={<CapabilityLabel label={memo.tooltip} />}>
+                        {memo.labels.description ? (
+                            <Tooltip
+                                hasIcon
+                                content={<CapabilityLabel label={memo.labels.description} />}
+                            >
                                 {heading}
                             </Tooltip>
                         ) : (
                             heading
                         )}
 
-                        {memo.note && (
+                        {memo.labels.notice && (
                             <Row gap={4}>
                                 <Icon
                                     as={InfoIcon}
@@ -101,7 +100,7 @@ export const OptionalMemo = ({ memo, close }: OptionalMemoProps) => {
                                     priority="secondary"
                                 >
                                     <CapabilityLabel
-                                        label={memo.note}
+                                        label={memo.labels.notice}
                                         values={{
                                             networkDisplaySymbol: getNetworkDisplaySymbol(symbol),
                                         }}
@@ -124,11 +123,15 @@ export const OptionalMemo = ({ memo, close }: OptionalMemoProps) => {
                 <Textarea
                     hasError={isTooLong || !!error}
                     defaultValue={getDefaultValue(inputName) || ''}
-                    bottomText={message}
+                    bottomText={error?.message}
                     innerRef={inputRef}
                     rows={3}
                     {...inputField}
-                    characterCount={{ current: length, max: memo.maxLength.value }}
+                    characterCount={
+                        memo.maxBytes === undefined
+                            ? undefined
+                            : { current: bytes, max: memo.maxBytes }
+                    }
                 />
             </Column>
         </Card>

@@ -9,12 +9,7 @@ import type { SendOptions } from '@trezor/network-module-suite-common-types';
  * nonce can be set by hand, such as to replace a pending transaction.
  */
 export const ethereumSendOptions: SendOptions = {
-    getOptions: ({ token }) => ({
-        data: {
-            maxBytes: ETHEREUM_DATA_MAX_BYTES,
-            unavailable: token ? {} : undefined,
-        },
-        nonceOverride: { maxDigits: ETHEREUM_NONCE_MAX_DIGITS },
-        broadcastToggle: true,
-    }),
+    data: { maxBytes: ETHEREUM_DATA_MAX_BYTES, isAllowed: ({ token }) => token === undefined },
+    nonce: { maxDigits: ETHEREUM_NONCE_MAX_DIGITS },
+    deferredBroadcast: true,
 };

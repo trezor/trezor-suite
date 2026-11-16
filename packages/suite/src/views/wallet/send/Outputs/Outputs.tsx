@@ -34,6 +34,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     } = useSendFormContext();
     const {
         options: { memo },
+        transfer,
     } = useSendOptions();
 
     // Only adding or removing an output slides the content below, typing never does.
@@ -92,8 +93,8 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 )}
                             </Card>
 
-                            {output.type !== 'opreturn' && memo?.prominence === 'recipient' && (
-                                <RecipientMemo memo={memo} />
+                            {output.type !== 'opreturn' && memo?.identifiesRecipient && (
+                                <RecipientMemo memo={memo} transfer={transfer} />
                             )}
                         </Column>
                     </motion.div>
