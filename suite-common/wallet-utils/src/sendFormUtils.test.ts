@@ -19,7 +19,6 @@ import {
     getExternalComposeOutput,
     getGasLimitWithBuffer,
     getLowestFeeFromLevels,
-    getMevProtectedTxData,
     isAmountWithinNetworkReserve,
     isCustomFeeBelowLowestLevel,
     isMaxFeePerGasBelowBaseFee,
@@ -29,21 +28,6 @@ import {
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
-
-describe('getMevProtectedTxData', () => {
-    const hex = '0100000000';
-
-    it('preserves the transaction hex when MEV is enabled', () => {
-        expect(getMevProtectedTxData(hex, true)).toBe(hex);
-    });
-
-    it('disables the alternative RPC when MEV is disabled', () => {
-        expect(getMevProtectedTxData(hex, false)).toEqual({
-            hex,
-            disableAlternativeRPC: true,
-        });
-    });
-});
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
