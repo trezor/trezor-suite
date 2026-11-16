@@ -10,7 +10,7 @@ import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useEarnEntryId } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
-import { selectStakingPromoListSymbols } from '../../earnScreenSelectors';
+import { selectStakingPromoListDescriptors } from '../../earnScreenSelectors';
 
 type UseReportEarnDashboardReadyEventProps = {
     yieldOpportunities: YieldDtoV2[];
@@ -40,9 +40,9 @@ export const useReportEarnDashboardReadyEvent = ({
     const vaults = useSelector((state: EarnListRootState) =>
         selectYieldPromoListItems(state, yieldOpportunities),
     );
-    const stakingSymbols = useSelector(selectStakingPromoListSymbols);
+    const stakingPromoDescriptors = useSelector(selectStakingPromoListDescriptors);
     const availableVaultCount = isYieldDisabled ? 0 : vaults.length;
-    const availableStakingCount = isStakingDisabled ? 0 : stakingSymbols.length;
+    const availableStakingCount = isStakingDisabled ? 0 : stakingPromoDescriptors.length;
     const hasYieldPosition = !isYieldDisabled && yieldPositionsCount > 0;
     const hasStakingPosition = !isStakingDisabled && stakingPositionsCount > 0;
     const hasClaimBanner = !isYieldDisabled && claimItemsCount > 0;

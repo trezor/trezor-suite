@@ -1,18 +1,22 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type StakeRootState,
-    selectCardanoAccountForFiveBinariesBanner,
-} from '@suite-common/wallet-core';
+    type StakingDeviceRootState,
+    selectDeviceStakingEntryByWarning,
+} from '@suite-common/earn-staking';
+import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
 import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
 export const FiveBinariesHomeBanner = () => {
-    const account = useSelector((state: StakeRootState) =>
-        selectCardanoAccountForFiveBinariesBanner(state),
+    const entry = useSelector((state: StakingDeviceRootState) =>
+        selectDeviceStakingEntryByWarning(state, 'outdated-provider'),
     );
 
-    if (!account) return null;
+    if (entry === null || !new BigNumber(getStakingPositionAmount(entry.position)).gt(0)) {
+        return null;
+    }
 
     return (
         <BannerFull

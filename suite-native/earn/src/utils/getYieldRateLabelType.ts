@@ -1,6 +1,4 @@
 import { type RewardDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { isSupportedTronStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type TxKeyPath } from '@suite-native/intl';
 
 export type YieldRateLabelType = 'apy' | 'apr' | 'rate';
@@ -10,9 +8,6 @@ export const upToYieldRateTranslationIds: Record<YieldRateLabelType, TxKeyPath> 
     apr: 'earn.yieldRateBadge.upToApr',
     rate: 'earn.yieldRateBadge.upToRate',
 };
-
-export const getStakingRateLabelType = (symbol: NetworkSymbol): YieldRateLabelType =>
-    isSupportedTronStakingNetworkSymbol(symbol) ? 'apr' : 'apy';
 
 type YieldRewardRateFields = {
     rateType: YieldDtoV2['rewardRate']['rateType'];

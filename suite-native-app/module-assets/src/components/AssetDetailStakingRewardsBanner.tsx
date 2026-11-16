@@ -1,10 +1,11 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { EarnPromoBanner } from '@suite-native/banners';
-import { getStakingRateLabelType, useFormattedEarnRate, useStakingRate } from '@suite-native/earn';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 
 type AssetDetailStakingRewardsBannerProps = {
@@ -18,7 +19,10 @@ export const AssetDetailStakingRewardsBanner = ({
     accounts,
     onExplore,
 }: AssetDetailStakingRewardsBannerProps) => {
-    const { rate } = useStakingRate({ symbol: networkSymbol, accountKey: accounts.at(0)?.key });
+    const { rate, rateKind } = useNetworkStakingRate({
+        networkSymbol,
+        accountKey: accounts.at(0)?.key,
+    });
     const formattedRate = useFormattedEarnRate(rate);
     const { CryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
@@ -35,7 +39,7 @@ export const AssetDetailStakingRewardsBanner = ({
     const displayedRewards = isDiscreetMode
         ? redactNumericalSubstring(formattedRewards)
         : formattedRewards;
-    const isAprRate = getStakingRateLabelType(networkSymbol) === 'apr';
+    const isAprRate = rateKind === 'apr';
 
     return (
         <EarnPromoBanner

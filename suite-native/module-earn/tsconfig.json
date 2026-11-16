@@ -20,6 +20,9 @@
         {
             "path": "../../suite-common/earn-staking-api"
         },
+        {
+            "path": "../../suite-common/earn-staking-common"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/formatters"

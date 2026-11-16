@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import {
@@ -15,12 +16,7 @@ import {
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
-import {
-    getStakingRateLabelType,
-    useStakingDetailNavigation,
-    useStakingNavigateAnalytics,
-    useStakingRate,
-} from '@suite-native/earn';
+import { useStakingDetailNavigation, useStakingNavigateAnalytics } from '@suite-native/earn';
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -49,7 +45,7 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
         selectAccountByKey(state, accountKey),
     );
 
-    const { rate: apy } = useStakingRate({ symbol, accountKey });
+    const { rate: apy, rateKind } = useNetworkStakingRate({ networkSymbol: symbol, accountKey });
 
     const availableTronVotingPower = useSelector((state: AccountsRootState) =>
         selectTronAvailableVotingPowerByAccountKey(state, item.accountKey),
@@ -116,9 +112,7 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                         ) : (
                             <Translation
                                 id={
-                                    getStakingRateLabelType(symbol) === 'apr'
-                                        ? 'earn.aprPercentage'
-                                        : 'earn.apyPercentage'
+                                    rateKind === 'apr' ? 'earn.aprPercentage' : 'earn.apyPercentage'
                                 }
                                 values={{ apy: PercentageFormatter.format(apy) }}
                             />

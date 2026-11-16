@@ -8,6 +8,7 @@ export { YieldDisabledAlert } from './components/YieldDisabledAlert';
 export { useAssetYieldRate } from './hooks/useAssetYieldRate';
 export type {
     AssetYieldRate,
+    StakingPromotionScope,
     TokenYieldRateToken,
     TokenYieldRateVariant,
 } from './hooks/useAssetYieldRate';
@@ -16,28 +17,20 @@ export { useFormattedEarnRate } from './hooks/useFormattedEarnRate';
 export { useMessageSystemStaking } from './hooks/useMessageSystemStaking';
 export { useMessageSystemWrappedNative } from './hooks/useMessageSystemWrappedNative';
 export { useMessageSystemYield } from './hooks/useMessageSystemYield';
+export { useNavigateByAccountState } from './hooks/useNavigateByAccountState';
 export { useStablecoinYieldFirmwareUpdateAlert } from './hooks/useStablecoinYieldFirmwareUpdateAlert';
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
 export { useStakingNavigateAnalytics } from './hooks/useStakingNavigateAnalytics';
-export { useStakingRate } from './hooks/useStakingRate';
+export { useStakingOperationMessage } from './hooks/useStakingOperationMessage';
 export { useYieldBadge } from './hooks/useYieldBadge';
 export { useYieldDetailNavigation } from './hooks/useYieldDetailNavigation';
 export { useYieldEntryNavigationAnalytics } from './hooks/useYieldEntryNavigationAnalytics';
 export type { YieldEntrySheet } from './hooks/useYieldEntryNavigationAnalytics';
 export { useYieldFlowData } from './hooks/useYieldFlowData';
-export {
-    getStakingRateLabelType,
-    upToYieldRateTranslationIds,
-} from './utils/getYieldRateLabelType';
+export { selectIsStakingManageableSymbol } from './stakingSelectors';
+export { upToYieldRateTranslationIds } from './utils/getYieldRateLabelType';
 export type { YieldRateLabelType } from './utils/getYieldRateLabelType';
-export { hasAccountActiveStaking } from './utils/hasAccountActiveStaking';
-export { getMobileStakingSupport } from './utils/mobileStakingSupport';
-export type { MobileStakingSupport } from './utils/mobileStakingSupport';
-export { navigateByAccountState } from './utils/navigateByAccountState';
+export type { StakingNavigateFn } from './utils/navigateByAccountState';
 export { navigateByYieldAccountState } from './utils/navigateByYieldAccountState';
 export type { YieldAccountNavigationDestination } from './utils/navigateByYieldAccountState';
-export {
-    EARN_PROMO_SYMBOLS,
-    getBestPromotedRate,
-    isEarnPromoSymbol,
-} from './utils/promotedRateUtils';
+export { getBestPromotedRate } from './utils/promotedRateUtils';

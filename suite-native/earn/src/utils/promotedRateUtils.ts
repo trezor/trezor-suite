@@ -1,12 +1,4 @@
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
-import { isArrayMember } from '@trezor/utils';
-
-export const EARN_PROMO_SYMBOLS = [asNetworkSymbol('eth'), asNetworkSymbol('sol')] as const;
-export type EarnPromoSymbol = (typeof EARN_PROMO_SYMBOLS)[number];
-
-export const isEarnPromoSymbol = (symbol?: NetworkSymbol | null) =>
-    symbol != null && isArrayMember(symbol, EARN_PROMO_SYMBOLS);
 
 type GetBestPromotedRateParams = {
     vaultApy: number | null;

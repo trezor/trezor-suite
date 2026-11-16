@@ -1,23 +1,25 @@
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
-import { formatNetworkAmount, getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import { type StakingAmount } from '@suite-common/earn-staking-common';
 import { type StakingNavigateFrom } from '@suite-native/analytics';
 import { BigNumber } from '@trezor/utils';
 
-export const getStakingAnalyticsNavigateFrom = (account: Account): StakingNavigateFrom => {
-    const limits = getStakingLimitsByNetworkSymbol(account.symbol);
+type GetStakingAnalyticsNavigateFromParams = {
+    isStakingActive: boolean;
+    availableBalance: string;
+    minStakeAmount: StakingAmount | null;
+};
 
-    if (!limits) return 'unknown';
+export const getStakingAnalyticsNavigateFrom = ({
+    isStakingActive,
+    availableBalance,
+    minStakeAmount,
+}: GetStakingAnalyticsNavigateFromParams): StakingNavigateFrom => {
+    if (minStakeAmount === null) return 'unknown';
 
-    const stakedBalance = getAccountTotalStakingBalance(account);
-    const hasStakedBalance = !!stakedBalance && new BigNumber(stakedBalance).gt(0);
-    const formattedAvailableBalance = formatNetworkAmount(account.availableBalance, account.symbol);
-    const hasEnoughBalanceForStaking = new BigNumber(formattedAvailableBalance).gte(
-        limits.MIN_AMOUNT_FOR_STAKING,
-    );
+    const available = new BigNumber(availableBalance);
+    const hasEnoughBalanceForStaking = available.gte(minStakeAmount);
 
-    if (hasStakedBalance) {
-        if (new BigNumber(formattedAvailableBalance).isZero()) {
+    if (isStakingActive) {
+        if (available.isZero()) {
             return 'dashboard/staking-dashboard/staking-max';
         }
 

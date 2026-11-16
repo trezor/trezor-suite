@@ -1,17 +1,11 @@
 import { useFormatters } from '@suite-common/formatters';
-import {
-    type NetworkSymbol,
-    PROD_STAKING_SYMBOLS,
-    asNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Badge } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useAssetYieldRate } from '../hooks/useAssetYieldRate';
 import { upToYieldRateTranslationIds } from '../utils/getYieldRateLabelType';
-
-const prodStakingNetworkSymbols = PROD_STAKING_SYMBOLS.map(asNetworkSymbol);
 
 const badgeStyle = prepareNativeStyle(utils => ({
     flexShrink: 0,
@@ -46,7 +40,7 @@ export const AssetYieldRateBadge = ({
                       decimals: tokenDecimals ?? 0,
                   },
         variant: 'inactive',
-        stakingSymbols: prodStakingNetworkSymbols,
+        stakingScope: 'offered',
     });
 
     if (!yieldRate) {

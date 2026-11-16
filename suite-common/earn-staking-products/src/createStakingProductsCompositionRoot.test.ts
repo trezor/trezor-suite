@@ -166,3 +166,26 @@ describe('Cardano products', () => {
         ).toEqual(owner === null ? [] : [owner]);
     });
 });
+
+describe('mobile platform support', () => {
+    it('manages the Everstake Ethereum and Solana products and shows every other one read-only', () => {
+        const supportByProduct = Object.fromEntries(
+            createStakingProductsCompositionRoot().map(
+                ({ descriptor }) => [descriptor.id, descriptor.platforms.mobile] as const,
+            ),
+        );
+
+        expect(supportByProduct).toEqual({
+            'eth:eth:everstake:pooled': { access: 'manage' },
+            'thod:thod:everstake:pooled': { access: 'manage' },
+            'sol:sol:everstake:native': { access: 'manage' },
+            'dsol:dsol:everstake:native': { access: 'manage' },
+            'sol:sol:external:native': { access: 'read-only' },
+            'dsol:dsol:external:native': { access: 'read-only' },
+            'ada:ada:everstake:native': { access: 'read-only' },
+            'ada:ada:fivebinaries:native': { access: 'read-only' },
+            'ada:ada:external:native': { access: 'read-only' },
+            'trx:trx:curated:native': { access: 'read-only' },
+        });
+    });
+});

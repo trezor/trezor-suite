@@ -1,6 +1,4 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-
-import { getStakingRateLabelType, getYieldRateLabelType } from './getYieldRateLabelType';
+import { getYieldRateLabelType } from './getYieldRateLabelType';
 
 type RewardRateFixtureParams = {
     rateType?: string;
@@ -83,12 +81,5 @@ describe('getYieldRateLabelType', () => {
         });
 
         expect(getYieldRateLabelType(rewardRate)).toBe('rate');
-    });
-});
-
-describe('getStakingRateLabelType', () => {
-    it('quotes Tron staking as APR and other networks as APY', () => {
-        expect(getStakingRateLabelType(asNetworkSymbol('trx'))).toBe('apr');
-        expect(getStakingRateLabelType(asNetworkSymbol('eth'))).toBe('apy');
     });
 });

@@ -1,4 +1,12 @@
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import {
+    type ResolvedStakingProductAccess,
+    useNetworkStakingRate,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
+import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockYieldVault } from '@suite-common/wallet-core/mocks';
@@ -6,28 +14,40 @@ import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store'
 import { getWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
 import { AssetYieldRateBadge } from './AssetYieldRateBadge';
-import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
-import { useStakingRate } from '../hooks/useStakingRate';
 
 jest.mock('@suite-common/earn-stablecoin-api', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin-api'),
     useAllYieldOpportunities: jest.fn(),
 }));
-jest.mock('../hooks/useStakingRate');
+jest.mock('@suite-common/earn-staking', () => ({
+    ...jest.requireActual('@suite-common/earn-staking'),
+    useNetworkStakingRate: jest.fn(),
+    useStakingAccess: jest.fn(),
+}));
 jest.mock('../hooks/useMessageSystemYield');
-jest.mock('../hooks/useMessageSystemStaking');
 
 const mockUseAllYieldOpportunities = jest.mocked(useAllYieldOpportunities);
-const mockUseStakingRate = jest.mocked(useStakingRate);
+const mockUseNetworkStakingRate = jest.mocked(useNetworkStakingRate);
 const mockUseMessageSystemYield = jest.mocked(useMessageSystemYield);
-const mockUseMessageSystemStaking = jest.mocked(useMessageSystemStaking);
+const mockUseStakingAccess = jest.mocked(useStakingAccess);
 
 const BTC = asNetworkSymbol('btc');
 const ETH = asNetworkSymbol('eth');
 const TRX = asNetworkSymbol('trx');
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+const ethProduct = mockStakingProductDescriptor();
+const trxProduct = mockStakingProductDescriptor({
+    networkSymbol: TRX,
+    providerId: stakingProviderIdSchema.parse('curated'),
+    type: 'native',
+    operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
+    rateKind: 'apr',
+    rewardsKind: 'claimable',
+    platforms: { desktop: { access: 'manage' }, mobile: { access: 'read-only' } },
+});
 const BADGE = '@earn/asset-yield-rate-badge';
 
 type MockVaultParams = {
@@ -71,19 +91,31 @@ const mockEarn = ({
     areYieldDepositsOff = false,
     isStakingOff = false,
 }: MockEarnParams) => {
-    mockUseStakingRate.mockImplementation(({ symbol }) => ({
-        rate: (symbol && stakingRates[symbol]) ?? null,
+    mockUseNetworkStakingRate.mockImplementation(({ networkSymbol }) => ({
+        rate: (networkSymbol && stakingRates[networkSymbol]) ?? null,
+        rateKind: networkSymbol === TRX ? 'apr' : 'apy',
+        isPending: false,
     }));
     mockUseAllYieldOpportunities.mockReturnValue(vaultsQuery(vaults));
     mockUseMessageSystemYield.mockReturnValue({
         isDisabled: areYieldDepositsOff,
     } as ReturnType<typeof useMessageSystemYield>);
-    mockUseMessageSystemStaking.mockReturnValue({
-        isStakingDisabled: isStakingOff,
-    } as ReturnType<typeof useMessageSystemStaking>);
+    const access: ResolvedStakingProductAccess = {
+        access: 'manage',
+        operations: [],
+        disabled: isStakingOff
+            ? { stake: { kind: 'message-system', feature: 'eth.staking.stake' } }
+            : {},
+    };
+    mockUseStakingAccess.mockReturnValue(access);
 };
 
-const preloadedState = { messageSystem: messageSystemInitialState };
+const preloadedState = {
+    messageSystem: messageSystemInitialState,
+    earn: {
+        staking: mockStakingState({ platform: 'mobile', descriptors: [ethProduct, trxProduct] }),
+    },
+};
 
 const renderCoinBadge = (networkSymbol: NetworkSymbol) =>
     renderWithStoreProvider(<AssetYieldRateBadge networkSymbol={networkSymbol} />, {

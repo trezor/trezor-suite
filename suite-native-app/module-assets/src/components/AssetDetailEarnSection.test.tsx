@@ -1,7 +1,7 @@
+import { type useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { stakeInitialState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type useStakingRate } from '@suite-native/earn';
 import { getTranslation } from '@suite-native/intl';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
@@ -13,7 +13,7 @@ const DEVICE_STATE = 'aliceWallet@device:0';
 const VIEW_ALL_BUTTON = '@assets/asset-detail/earn-view-all-button';
 
 const mockDispatchNavigation = mock<(action: unknown) => void>();
-const mockUseStakingRate = mock<typeof useStakingRate>();
+const mockUseNetworkStakingRate = mock<typeof useNetworkStakingRate>();
 let mockRouteParams: AssetsStackParamList[AssetsStackRoutes.AssetDetail];
 
 jest.mock('@react-navigation/native', () => ({
@@ -21,9 +21,10 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ params: mockRouteParams }),
     useNavigation: () => ({ dispatch: mockDispatchNavigation }),
 }));
-jest.mock('@suite-native/earn', () => ({
-    ...jest.requireActual('@suite-native/earn'),
-    useStakingRate: (...args: Parameters<typeof useStakingRate>) => mockUseStakingRate(...args),
+jest.mock('@suite-common/earn-staking', () => ({
+    ...jest.requireActual('@suite-common/earn-staking'),
+    useNetworkStakingRate: (...args: Parameters<typeof useNetworkStakingRate>) =>
+        mockUseNetworkStakingRate(...args),
 }));
 
 type RenderEarnSectionParams = {
@@ -38,7 +39,11 @@ const renderEarnSection = ({
     stakingRate,
 }: RenderEarnSectionParams) => {
     mockRouteParams = { networkSymbol };
-    mockUseStakingRate.mockReturnValue({ rate: stakingRate ?? null });
+    mockUseNetworkStakingRate.mockImplementation(params => ({
+        rate: stakingRate ?? null,
+        rateKind: params.networkSymbol === asNetworkSymbol('trx') ? 'apr' : 'apy',
+        isPending: false,
+    }));
 
     return renderWithStoreProvider(<AssetDetailEarnSection />, {
         preloadedState: {

@@ -4,21 +4,24 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import type { DeviceRootState } from '@suite-common/device';
+import {
+    type StakingRootState,
+    selectStakeableStakingProductDescriptorBySymbol,
+    useNetworkStakingPeriods,
+    useNetworkStakingRate,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type EarnOnboardingRootState,
-    type StakeRootState,
     getEarnOpportunityKey,
-    selectApy,
     selectDeviceAccountsByNetworkSymbol,
-    selectEntryPeriodInDaysBySymbol,
     selectIsEarnOnboardingConfirmed,
-    selectUnstakingPeriodInDaysBySymbol,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
-import { useMessageSystemStaking } from '@suite-native/earn';
+import { useStakingOperationMessage } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -57,7 +60,13 @@ export const HowStakeWorksScreen = () => {
             getEarnOpportunityKey({ type: 'staking', provider: 'everstake' }),
         ),
     );
-    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(symbol);
+    const stakingProductId = useSelector(
+        (state: StakingRootState) =>
+            selectStakeableStakingProductDescriptorBySymbol(state, symbol)?.id ?? null,
+    );
+    const { disabled } = useStakingAccess(stakingProductId);
+    const isStakingDisabled = disabled.stake !== undefined;
+    const stakingMessageContent = useStakingOperationMessage(stakingProductId, 'stake');
 
     const [hasShownOnboarding, setHasShownOnboarding] = useState(false);
     const shouldSkipToEarnForm =
@@ -115,23 +124,16 @@ export const HowStakeWorksScreen = () => {
         navigation.navigate(RootStackRoutes.StakingForm, { accountKey: resolvedAccountKey });
     };
 
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
-        selectUnstakingPeriodInDaysBySymbol(state, symbol),
-    );
-
-    const entryPeriodInDays = useSelector((state: StakeRootState) =>
-        selectEntryPeriodInDaysBySymbol(state, symbol),
-    );
-
-    const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
+    const { entryPeriodDays, exitPeriodDays } = useNetworkStakingPeriods(symbol);
+    const { rate } = useNetworkStakingRate({ networkSymbol: symbol });
 
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 
     const { benefitItems, timelineSections } = useHowStakeWorksPreset({
         symbol,
-        entryPeriodInDays,
-        unstakingPeriodInDays,
-        apy,
+        entryPeriodInDays: entryPeriodDays,
+        unstakingPeriodInDays: exitPeriodDays,
+        apy: rate,
     });
 
     if (shouldSkipToEarnForm) {

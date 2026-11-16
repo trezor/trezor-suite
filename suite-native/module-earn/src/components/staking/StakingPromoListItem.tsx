@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { useStakingRate } from '@suite-common/earn-staking';
+import { type StakingProductDescriptor } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type NetworkSymbol,
@@ -9,7 +11,6 @@ import {
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { useStakingRate } from '@suite-native/earn';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -32,21 +33,22 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
 }));
 
 type StakingPromoListItemProps = {
-    symbol: NetworkSymbol;
+    descriptor: StakingProductDescriptor;
     onPress: (symbol: NetworkSymbol) => void;
 };
 
-export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemProps) => {
+export const StakingPromoListItem = ({ descriptor, onPress }: StakingPromoListItemProps) => {
+    const { networkSymbol, rateKind } = descriptor;
     const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const nativeTokenName = useSelector((state: NetworksRootState) =>
-        selectNativeTokenName(state, symbol),
+        selectNativeTokenName(state, networkSymbol),
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { rate } = useStakingRate({ symbol });
+    const { rate } = useStakingRate({ productId: descriptor.id });
 
-    const onPromoItemPress = () => onPress(symbol);
+    const onPromoItemPress = () => onPress(networkSymbol);
 
     return (
         <PressableOpacity style={applyStyle(promoItemStyle)} onPress={onPromoItemPress}>
@@ -58,7 +60,11 @@ export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemPr
             >
                 <Box flexDirection="row" alignItems="center" flex={1}>
                     <Box marginRight="sp16">
-                        <TokenIcon networkSymbol={symbol} tokenSymbol={symbol} showNetworkIcon />
+                        <TokenIcon
+                            networkSymbol={networkSymbol}
+                            tokenSymbol={networkSymbol}
+                            showNetworkIcon
+                        />
                     </Box>
 
                     <Box style={applyStyle(accountDescriptionStyle)}>
@@ -75,7 +81,7 @@ export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemPr
                                 {isApyAvailable(rate) ? (
                                     <Translation
                                         id={
-                                            symbol === 'trx'
+                                            rateKind === 'apr'
                                                 ? 'earn.aprPercentage'
                                                 : 'earn.apyPercentage'
                                         }
