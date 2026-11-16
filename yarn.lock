@@ -20118,23 +20118,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/network-tezos-assets@workspace:networks/tezos/network-tezos-assets":
-  version: 0.0.0-use.local
-  resolution: "@trezor/network-tezos-assets@workspace:networks/tezos/network-tezos-assets"
-  dependencies:
-    "@trezor/network-assets-types": "workspace:*"
-    "@trezor/network-tezos-types": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/network-tezos-types@workspace:*, @trezor/network-tezos-types@workspace:networks/tezos/network-tezos-types":
-  version: 0.0.0-use.local
-  resolution: "@trezor/network-tezos-types@workspace:networks/tezos/network-tezos-types"
-  dependencies:
-    "@trezor/utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/network-tron-assets@workspace:*, @trezor/network-tron-assets@workspace:networks/tron/network-tron-assets":
   version: 0.0.0-use.local
   resolution: "@trezor/network-tron-assets@workspace:networks/tron/network-tron-assets"
