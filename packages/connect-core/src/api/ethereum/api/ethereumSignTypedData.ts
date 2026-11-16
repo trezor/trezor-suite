@@ -1,12 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignTypedData.js
 
 import {
-    EthereumNetworkInfo,
     EthereumSignTypedData as EthereumSignTypedDataParams,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
 } from '@trezor/connect-common';
 import type {
     DeviceButtonRequestCode,
+    EthereumNetworkInfo,
     EthereumSignTypedDataTypes,
     PROTO,
     PermissionRequest,
@@ -38,16 +38,6 @@ type Params = (
     address_n: number[];
     network?: EthereumNetworkInfo;
 };
-const Params = Type.Intersect([
-    Type.Union([
-        Type.Omit(EthereumSignTypedDataParams, Type.Literal('path')),
-        Type.Omit(EthereumSignTypedHashParams, Type.Literal('path')),
-    ]),
-    Type.Object({
-        address_n: Type.Array(Type.Number()),
-        network: Type.Optional(EthereumNetworkInfo),
-    }),
-]);
 
 export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignTypedData', Params> {
     constructor(message: MethodMessage<'ethereumSignTypedData'>) {

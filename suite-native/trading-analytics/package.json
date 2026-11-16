@@ -19,7 +19,7 @@
         "@suite-native/trading-atoms": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "react": "19.3.0",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*",

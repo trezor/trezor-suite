@@ -45,9 +45,9 @@
         "@trezor/utils": "workspace:*",
         "@trezor/zod": "workspace:*",
         "dropbox": "^10.47.0",
-        "immer": "11.1.18",
+        "immer": "11.2.9",
         "react": "19.3.0",
-        "react-redux": "9.3.0",
+        "react-redux": "9.3.1",
         "redux": "^5.0.1",
         "styled-components": "^6.5.3"
     },

@@ -32,7 +32,7 @@
         "@trezor/type-utils": "workspace:*",
         "react": "19.3.0",
         "react-hook-form": "^7.91.0",
-        "react-redux": "9.3.0",
+        "react-redux": "9.3.1",
         "redux": "^5.0.1"
     },
     "devDependencies": {
