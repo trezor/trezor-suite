@@ -183,7 +183,15 @@ export class OnboardingPage {
 
     @step()
     async enableAutoconnect() {
+        // Onboarding exposes Settings only in debug mode.
+        const shouldEnableDebugMode = !(await this.page.getReduxObject('debug.showDebugMenu'));
+        if (shouldEnableDebugMode) {
+            await this.enableDebugMode();
+        }
         await this.settingsPage.navigateTo('device');
+        if (shouldEnableDebugMode) {
+            await this.disableDebugMode();
+        }
         await this.settingsPage.deviceTab.autoconnectSwitch.click();
         await this.devicePrompt.allowAutoconnect();
         await this.settingsPage.closeSettings();

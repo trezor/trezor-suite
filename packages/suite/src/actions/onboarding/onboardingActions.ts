@@ -287,9 +287,10 @@ const resolveNextAfterSkippedThunk =
         return resolvedNextStep?.id;
     };
 
-type RerunRecoveryThunkState = DeviceRootState & GotoThunkState & { recovery: RecoveryState };
+export type RerunRecoveryThunkState = DeviceRootState &
+    GotoThunkState & { recovery: RecoveryState };
 
-type RerunRecoveryThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
+export type RerunRecoveryThunkDeps = { services: DesktopAnalyticsDep & SuiteRouterHistoryDep };
 
 const rerunRecoveryThunk =
     () =>
@@ -309,7 +310,9 @@ const rerunRecoveryThunk =
         } else {
             if (selectRouterApp(getState()) !== 'onboarding') {
                 dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+                if (selectRouterApp(getState()) !== 'onboarding') return;
             }
+            dispatch(enableOnboardingReducer(true));
             dispatch(goToStep('recovery'));
             dispatch(addPath('recovery'));
         }

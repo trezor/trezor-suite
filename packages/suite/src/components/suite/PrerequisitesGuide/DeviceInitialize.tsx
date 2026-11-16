@@ -1,50 +1,20 @@
 import { type MouseEvent } from 'react';
 
-import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
-import { selectSelectedDevice } from '@suite-common/device';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
-import { injectDispatch, injectGetState } from '@trezor/redux-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    enableOnboardingReducer,
-    resetOnboarding,
-    updateAnalytics,
-} from '#src/actions/onboarding/onboardingActions';
+import { startOnboardingThunk } from '#src/actions/onboarding/startOnboardingThunk';
 import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
 
 export const DeviceInitialize = () => {
-    const { analytics, dispatch, getState } = useServices(
-        injectDesktopAnalytics,
-        injectDispatch,
-        injectGetState,
-    );
+    const { dispatch } = useServices(injectDispatch);
 
     const handleCtaClick = (e: MouseEvent) => {
         e.stopPropagation();
-        // in case this prerequisite (device-initialize) is displayed inside onboarding app we need to reset onboarding state
-        dispatch(resetOnboarding());
-        // and resetting state disables onboarding reducer so we need to enable it again
-        dispatch(enableOnboardingReducer(true));
-
-        dispatch(updateAnalytics({ startTime: Date.now() }));
-
-        const device = selectSelectedDevice(getState());
-
-        analytics.report(
-            {
-                type: events.deviceSetupStartedEvent.name,
-                payload: {
-                    deviceModel: device?.features?.internal_model || DeviceModelInternal.UNKNOWN,
-                },
-            },
-            { force: true },
-        );
-        dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+        dispatch(startOnboardingThunk({ shouldRestart: true }));
     };
 
     return (
