@@ -140,7 +140,7 @@ import IconWeb from '../components/icons/IconWeb';
 
     <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
         <Steps>
-            {<h3>Installation of the package</h3>}
+            <h3>Installation of the package</h3>
 
             ```bash
             npm install @trezor/connect
@@ -148,13 +148,13 @@ import IconWeb from '../components/icons/IconWeb';
             yarn add @trezor/connect
             ```
 
-            {<h3>Import from the package</h3>}
+            <h3>Import from the package</h3>
 
             ```javascript
             import TrezorConnect from '@trezor/connect';
             ```
 
-            {<h3>Initialization of the project</h3>}
+            <h3>Initialization of the project</h3>
 
             ```javascript
                 TrezorConnect.init({
@@ -172,7 +172,7 @@ import IconWeb from '../components/icons/IconWeb';
 
             If you need more customization, refer to [init method documentation](./methods/other/init)
 
-            {<h3>How to use?</h3>}
+            <h3>How to use?</h3>
 
             Here is an example of how to get the device's public key:
 
@@ -250,7 +250,7 @@ import IconWeb from '../components/icons/IconWeb';
     </SdkContainer>
     <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
             <Steps>
-                {<h3>Installation of the package</h3>}
+                <h3>Installation of the package</h3>
 
                 ```bash
                 npm install @trezor/connect-web
@@ -258,13 +258,13 @@ import IconWeb from '../components/icons/IconWeb';
                 yarn add @trezor/connect-web
                 ```
 
-                {<h3>Import from the package</h3>}
+                <h3>Import from the package</h3>
 
                 ```javascript
                 import TrezorConnect from '@trezor/connect-web';
                 ```
 
-                {<h3>Initialization of the project</h3>}
+                <h3>Initialization of the project</h3>
 
                 ```javascript
                 TrezorConnect.init({
@@ -280,7 +280,7 @@ import IconWeb from '../components/icons/IconWeb';
 
                 If you need more customization, refer to [init method documentation](./methods/other/init)
 
-                {<h3>How to use?</h3>}
+                <h3>How to use?</h3>
                 Here is an example of how to get the device's public key:
 
                 ```javascript
@@ -357,7 +357,7 @@ import IconWeb from '../components/icons/IconWeb';
 
         <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
             <Steps>
-                {<h3>Installation of the package</h3>}
+                <h3>Installation of the package</h3>
 
                 ```bash
                 npm install @trezor/connect-webextension
@@ -381,7 +381,7 @@ import IconWeb from '../components/icons/IconWeb';
                 ]
                 ```
 
-                {<h3>Import in the service worker</h3>}
+                <h3>Import in the service worker</h3>
 
                 ```javascript
                 import TrezorConnect from '@trezor/connect-webextension';
@@ -390,7 +390,7 @@ import IconWeb from '../components/icons/IconWeb';
                 The library is only available in the service worker context, so to use it in your extension's UI, you need to communicate with the service worker. This mechanism is not provided by the library, this depends on your extension's architecture.
                 Also it should be noted that the service worker may be idle when the extension is not in use, so you should implement a mechanism to keep it alive or wake it up when needed.
 
-                {<h3>Initialization of the extension</h3>}
+                <h3>Initialization of the extension</h3>
 
                 ```javascript
                 TrezorConnect.init({
@@ -406,7 +406,7 @@ import IconWeb from '../components/icons/IconWeb';
 
                 If you need more customization, refer to [init method documentation](./methods/other/init)
 
-                {<h3>How to use?</h3>}
+                <h3>How to use?</h3>
 
                 Here is an example of how to get the device's public key:
 
@@ -486,7 +486,7 @@ import IconWeb from '../components/icons/IconWeb';
 
         <CollapsibleBox heading="Quick start manual" margin={{ top: 16 }}>
             <Steps>
-                {<h3>Installation of the package</h3>}
+                <h3>Installation of the package</h3>
 
                 Simply install the package using your preferred package manager:
 
@@ -496,7 +496,7 @@ import IconWeb from '../components/icons/IconWeb';
                 yarn add @trezor/connect-mobile
                 ```
 
-                {<h3>Initialization of the API</h3>}
+                <h3>Initialization of the API</h3>
 
                 ```javascript
                 import * as Linking from 'expo-linking';
@@ -520,7 +520,7 @@ import IconWeb from '../components/icons/IconWeb';
 
                 In this example, we are using the `Linking` API from Expo to open the Trezor Suite app, however this may be different depending on your mobile app's environment.
 
-                {<h3>Handling callbacks</h3>}
+                <h3>Handling callbacks</h3>
 
                 The app needs to pass results from the callback URL back to the SDK. This can be done by listening to the URL and passing the data to the SDK using the `handleDeeplink` method.
 
@@ -534,7 +534,7 @@ import IconWeb from '../components/icons/IconWeb';
                 }, []);
                 ```
 
-                {<h3>How to use?</h3>}
+                <h3>How to use?</h3>
 
                 Here is an example of how to get the device's public key:
 
