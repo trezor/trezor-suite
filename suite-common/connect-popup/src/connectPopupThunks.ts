@@ -82,6 +82,9 @@ const sanitizeCallSource = (source: ConnectCallSource): ConnectCallSource => {
     };
 };
 
+// Aborted by the cancel of the current call.
+let callAbortController = new AbortController();
+
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 export type ConnectPopupCallInnerThunkDeps = {
@@ -97,6 +100,8 @@ export const connectPopupCallInnerThunk = createThunk<
     PopupFlowParams<CallMethodKeys>,
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(`${CONNECT_POPUP_MODULE}/callThunk`, async (declaredParams, { dispatch, getState, extra }) => {
+    callAbortController = new AbortController();
+    const { signal } = callAbortController;
     const params = { ...declaredParams, source: sanitizeCallSource(declaredParams.source) };
     const paramsCompat = applyRequestCompatibility(params);
     const flow = createPopupFlow(paramsCompat, { dispatch, getState });
@@ -112,7 +117,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
         // Not returned from the thunk, the response may hold confidential data which would then pass
         // through Redux.
-        getPopupCallDeferred().resolve(response);
+        if (!signal.aborted) getPopupCallDeferred().resolve(response);
     } catch (error) {
         console.error('connectPopupCallThunk', error);
         if (error?.error === 'switching-device') {
@@ -135,10 +140,8 @@ export const connectPopupCallInnerThunk = createThunk<
             payload: { ...getCallAttributes(params), error: error?.code },
         });
 
-        getPopupCallDeferred().resolve({
-            success: false,
-            error: serializeError(error),
-        });
+        if (!signal.aborted)
+            getPopupCallDeferred().resolve({ success: false, error: serializeError(error) });
     } finally {
         // Only after the error handling above, so the active call never refers to a removed
         // placeholder account.
@@ -941,6 +944,7 @@ export const connectPopupCancelThunk = createThunk<
 
     getPermissionDeferred().reject(TypedError('Method_Cancel'));
     TrezorConnect.cancel({ reason: error, callId });
+    callAbortController.abort(TypedError('Method_Cancel'));
     // Clear now instead of when the aborted call settles. No-op before the call reaches a device.
     dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
 
