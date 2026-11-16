@@ -12,7 +12,7 @@ import type { StakingRootState } from '../state/stakingReducer';
 import { selectStakingPosition, selectStakingProductDescriptor } from '../state/stakingSelectors';
 
 export type UseStakingRateParams = {
-    productId: StakingProductId;
+    productId: StakingProductId | null;
     accountKey?: AccountKey;
 };
 
@@ -28,13 +28,16 @@ export const useStakingRate = ({
 }: UseStakingRateParams): StakingRateResult => {
     const { productInfo, isPending } = useStakingProductInfo(productId);
 
-    const rateKind = useSelector(
-        (state: StakingRootState) =>
-            selectStakingProductDescriptor(state, productId)?.rateKind ?? null,
+    const rateKind = useSelector((state: StakingRootState) =>
+        productId === null
+            ? null
+            : (selectStakingProductDescriptor(state, productId)?.rateKind ?? null),
     );
 
     const position = useSelector((state: StakingRootState) =>
-        accountKey === undefined ? null : selectStakingPosition(state, accountKey, productId),
+        accountKey === undefined || productId === null
+            ? null
+            : selectStakingPosition(state, accountKey, productId),
     );
 
     const rate = getStakingPositionRate({ position, productInfo });

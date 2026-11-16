@@ -5,7 +5,7 @@ import { type PropsWithChildren } from 'react';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
-import type { StakingProductInfo } from '@suite-common/earn-staking-common';
+import type { StakingProductId, StakingProductInfo } from '@suite-common/earn-staking-common';
 import {
     mockStakingProductDescriptor,
     mockStakingProductInfo,
@@ -23,7 +23,10 @@ type HookDeps = { services: StakingDep & QueryClientDep };
 
 const ada = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('ada'), type: 'native' });
 
-const renderStakingProductTargets = (productInfo: StakingProductInfo | null) => {
+const renderStakingProductTargets = (
+    productInfo: StakingProductInfo | null,
+    productId: StakingProductId | null = ada.id,
+) => {
     const queryClient = mockStakingQueryClient({
         productInfo: productInfo === null ? {} : { [ada.id]: productInfo },
     });
@@ -36,7 +39,7 @@ const renderStakingProductTargets = (productInfo: StakingProductInfo | null) => 
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
 
-    return renderHookWithStoreProvider(() => useStakingProductTargets(ada.id), {
+    return renderHookWithStoreProvider(() => useStakingProductTargets(productId), {
         services,
         wrapper,
     });
@@ -52,6 +55,12 @@ describe('useStakingProductTargets', () => {
     it('shares one empty list before the product info arrives', () => {
         expect(renderStakingProductTargets(null).result.current).toBe(
             renderStakingProductTargets(mockStakingProductInfo({ targets: [] })).result.current,
+        );
+    });
+
+    it('shares the empty list for no product', () => {
+        expect(renderStakingProductTargets(mockStakingProductInfo(), null).result.current).toBe(
+            renderStakingProductTargets(null).result.current,
         );
     });
 });

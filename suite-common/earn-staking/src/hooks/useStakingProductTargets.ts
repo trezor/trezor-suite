@@ -4,7 +4,7 @@ import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { useStakingProductInfo } from './useStakingProductInfo';
 
 export const useStakingProductTargets = (
-    productId: StakingProductId,
+    productId: StakingProductId | null,
 ): readonly StakingProductTarget[] => {
     const { productInfo } = useStakingProductInfo(productId);
 

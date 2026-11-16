@@ -2,7 +2,9 @@ import {
     type StakingAmount,
     type StakingOperation,
     type StakingPosition,
+    type StakingPositionWarningCode,
     type StakingProductDescriptor,
+    getStakingPositionAmount,
     hasPendingStakingOperation,
     isStakingPositionActive,
     stakingAmountSchema,
@@ -107,6 +109,28 @@ export const selectIsStakingOperationPending = (
 ): boolean =>
     selectCountedStakingPositionEntriesByAccount(state, accountKey).some(({ position }) =>
         hasPendingStakingOperation(position, operation),
+    );
+
+export const selectStakingAccountAmount = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+): StakingAmount =>
+    stakingAmountSchema.parse(
+        selectCountedStakingPositionEntriesByAccount(state, accountKey)
+            .reduce(
+                (sum, { position }) => sum.plus(getStakingPositionAmount(position)),
+                new BigNumber(0),
+            )
+            .toFixed(0),
+    );
+
+export const selectHasStakingAccountWarning = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+    code: StakingPositionWarningCode,
+): boolean =>
+    selectStakingPositionsByAccount(state, accountKey).some(position =>
+        position.warnings.some(warning => warning.code === code),
     );
 
 const selectAccountAvailableBalanceParam = (state: AccountsRootState, accountKey: AccountKey) =>

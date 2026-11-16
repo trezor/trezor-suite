@@ -128,6 +128,14 @@ describe('useStakingRate', () => {
         ).toEqual({ rate: null, rateKind: 'apr', isPending: true });
     });
 
+    it('knows no rate for no product', () => {
+        expect(renderStakingRate({ productId: null, accountKey }).result.current).toEqual({
+            rate: null,
+            rateKind: null,
+            isPending: false,
+        });
+    });
+
     it('has no rate kind for a product that is not registered', () => {
         const unknown = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('ada') });
 

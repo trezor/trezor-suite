@@ -35,7 +35,7 @@ const sol = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('sol')
 const ethInfo = mockStakingProductInfo({ rate: 3.08 });
 
 const renderStakingProductInfo = (
-    productId: StakingProductId,
+    productId: StakingProductId | null,
     productInfo: Partial<Record<StakingProductId, StakingProductInfo>>,
 ) => {
     const queryClient = mockStakingQueryClient({ productInfo });
@@ -74,6 +74,18 @@ describe('useStakingProductInfo', () => {
                 status: 'pending',
                 fetchStatus: 'idle',
             },
+        );
+        expect(services.stakingProductRepository.get).not.toHaveBeenCalled();
+    });
+
+    it('knows no info for no product and subscribes to nothing', () => {
+        const { result, queryClient, services } = renderStakingProductInfo(null, {
+            [eth.id]: ethInfo,
+        });
+
+        expect(result.current).toEqual({ productInfo: null, isPending: false });
+        expect(queryClient.getQueryState(commonQueryKeys.stakingProductInfo(sol.id))).toBe(
+            undefined,
         );
         expect(services.stakingProductRepository.get).not.toHaveBeenCalled();
     });

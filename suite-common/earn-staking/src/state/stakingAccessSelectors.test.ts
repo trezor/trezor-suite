@@ -1,6 +1,9 @@
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
-import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
 import {
     type MessageSystemRootState,
     type MessageSystemState,
@@ -10,11 +13,17 @@ import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
 import type { VersionArray } from '@trezor/utils';
 
 import {
+    selectIsStakingAccountDelegatedOutside,
+    selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,
+    selectStakingAccountProductDescriptor,
     selectStakingOperationMessageContent,
     selectStakingProductAccess,
     selectStakingPromoProductDescriptors,
@@ -327,6 +336,161 @@ describe('selectStakeableStakingProductDescriptorsBySymbol', () => {
         ).toBe(
             selectStakeableStakingProductDescriptorsBySymbol(createState(), asNetworkSymbol('eth')),
         );
+    });
+});
+
+describe('selectStakeableStakingProductDescriptorBySymbol', () => {
+    it('is the first stakeable product of the network', () => {
+        expect(
+            selectStakeableStakingProductDescriptorBySymbol(createState(), asNetworkSymbol('sol')),
+        ).toEqual(subset);
+    });
+
+    it('is null without a stakeable product on the platform', () => {
+        const state = createState({ platform: 'mobile' });
+
+        expect(
+            selectStakeableStakingProductDescriptorBySymbol(state, asNetworkSymbol('ada')),
+        ).toBeNull();
+        expect(
+            selectStakeableStakingProductDescriptorBySymbol(state, asNetworkSymbol('btc')),
+        ).toBeNull();
+    });
+});
+
+const adaEverstake = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('ada'),
+    type: 'native',
+    operations: ['stake', 'unstake', 'claim', 'vote'],
+    platforms: { desktop: { access: 'manage' }, mobile: { access: 'read-only' } },
+});
+const adaFivebinaries = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('ada'),
+    providerId: stakingProviderIdSchema.parse('fivebinaries'),
+    type: 'native',
+    operations: ['unstake', 'claim', 'vote'],
+    consentKey: null,
+    platforms: { desktop: { access: 'manage' }, mobile: { access: 'read-only' } },
+});
+const adaExternal = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('ada'),
+    providerId: stakingProviderIdSchema.parse('external'),
+    type: 'native',
+    operations: ['unstake', 'claim', 'vote'],
+    consentKey: null,
+    platforms: { desktop: { access: 'manage' }, mobile: { access: 'read-only' } },
+});
+
+const everstakeAccount = mockWalletAccount({ symbol: asNetworkSymbol('ada') });
+const fivebinariesAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('ada'),
+    descriptor: asAccountDescriptor('fivebinaries'),
+});
+const externalAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('ada'),
+    descriptor: asAccountDescriptor('external'),
+});
+const unstakedAdaAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('ada'),
+    descriptor: asAccountDescriptor('unstaked'),
+});
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
+const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const unknownAccountKey = mockAccountKey({ descriptor: 'unknown', symbol: asNetworkSymbol('eth') });
+
+const adaPosition = (productId: typeof adaEverstake.id) =>
+    mockStakingPosition({
+        productId,
+        lockup: 'liquid',
+        unlocks: [],
+        operations: ['unstake', 'claim', 'vote'],
+    });
+
+const createAccountState = (
+    platform: 'desktop' | 'mobile' = 'desktop',
+): AccessState & AccountsRootState => ({
+    ...createState({ platform }),
+    earn: {
+        staking: mockStakingState({
+            platform,
+            descriptors: [manage, adaEverstake, adaFivebinaries, adaExternal, subset, external],
+            positions: {
+                [everstakeAccount.key]: [adaPosition(adaEverstake.id)],
+                [fivebinariesAccount.key]: [adaPosition(adaFivebinaries.id)],
+                [externalAccount.key]: [adaPosition(adaExternal.id)],
+                [ethAccount.key]: [mockStakingPosition()],
+                [solAccount.key]: [mockStakingPosition({ productId: external.id, operations: [] })],
+            },
+        }),
+    },
+    wallet: {
+        accounts: [
+            everstakeAccount,
+            fivebinariesAccount,
+            externalAccount,
+            unstakedAdaAccount,
+            ethAccount,
+            solAccount,
+            btcAccount,
+        ],
+    },
+});
+
+describe('selectStakingAccountProductDescriptor', () => {
+    it('is the product of the account counted position', () => {
+        const state = createAccountState();
+
+        expect(selectStakingAccountProductDescriptor(state, fivebinariesAccount.key)).toEqual(
+            adaFivebinaries,
+        );
+        expect(selectStakingAccountProductDescriptor(state, ethAccount.key)).toEqual(manage);
+    });
+
+    it('is the stakeable product of the network for an account without a counted position', () => {
+        const state = createAccountState();
+
+        expect(selectStakingAccountProductDescriptor(state, unstakedAdaAccount.key)).toEqual(
+            adaEverstake,
+        );
+        expect(selectStakingAccountProductDescriptor(state, solAccount.key)).toEqual(subset);
+    });
+
+    it('is null without a stakeable product or without the account', () => {
+        const state = createAccountState();
+
+        expect(selectStakingAccountProductDescriptor(state, btcAccount.key)).toBeNull();
+        expect(selectStakingAccountProductDescriptor(state, unknownAccountKey)).toBeNull();
+    });
+});
+
+describe('selectIsStakingAccountDelegatedOutside', () => {
+    it('is true for a counted position on a product that offers no stake', () => {
+        const state = createAccountState();
+
+        expect(selectIsStakingAccountDelegatedOutside(state, fivebinariesAccount.key)).toBe(true);
+        expect(selectIsStakingAccountDelegatedOutside(state, externalAccount.key)).toBe(true);
+    });
+
+    it('is false on a stakeable product and without a position', () => {
+        const state = createAccountState();
+
+        expect(selectIsStakingAccountDelegatedOutside(state, everstakeAccount.key)).toBe(false);
+        expect(selectIsStakingAccountDelegatedOutside(state, ethAccount.key)).toBe(false);
+        expect(selectIsStakingAccountDelegatedOutside(state, unstakedAdaAccount.key)).toBe(false);
+    });
+
+    it('ignores an uncounted position', () => {
+        expect(selectIsStakingAccountDelegatedOutside(createAccountState(), solAccount.key)).toBe(
+            false,
+        );
+    });
+
+    it('answers the same on a platform where the product is read-only', () => {
+        const state = createAccountState('mobile');
+
+        expect(selectIsStakingAccountDelegatedOutside(state, fivebinariesAccount.key)).toBe(true);
+        expect(selectIsStakingAccountDelegatedOutside(state, everstakeAccount.key)).toBe(false);
     });
 });
 

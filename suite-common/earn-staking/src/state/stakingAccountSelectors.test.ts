@@ -28,8 +28,10 @@ import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-type
 import {
     type StakingAccountFiatRootState,
     selectCountedStakingPositionEntriesByAccount,
+    selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingOperationPending,
+    selectStakingAccountAmount,
     selectStakingAccountBalanceWithStaking,
     selectStakingAccountFiatAmount,
     selectStakingPositionEntriesByAccount,
@@ -365,6 +367,71 @@ describe('selectIsStakingOperationPending', () => {
         });
 
         expect(selectIsStakingOperationPending(state, solAccount.key, 'stake')).toBe(false);
+    });
+});
+
+describe('selectStakingAccountAmount', () => {
+    it.each([
+        {
+            name: 'sums the locked Ethereum buckets',
+            account: ethAccount,
+            expected: '2500000000000000000',
+        },
+        {
+            name: 'counts the Everstake Solana stake only',
+            account: solAccount,
+            expected: '5000000000',
+        },
+        { name: 'takes the delegated Cardano balance', account: adaAccount, expected: '994750000' },
+        {
+            name: 'adds frozen TRX, the queue and the withdrawable amount',
+            account: trxAccount,
+            expected: '1500000000',
+        },
+    ])('$name', ({ account, expected }) => {
+        expect(selectStakingAccountAmount(createState(), account.key)).toBe(expected);
+    });
+
+    it('is zero without a position', () => {
+        expect(selectStakingAccountAmount(createState(), unknownAccountKey)).toBe('0');
+    });
+});
+
+describe('selectHasStakingAccountWarning', () => {
+    const outdatedProvider = {
+        code: 'outdated-provider' as const,
+        providerId: stakingProviderIdSchema.parse('fivebinaries'),
+    };
+
+    it('finds the warning on a position of the account', () => {
+        const state = createState({
+            positions: {
+                [adaAccount.key]: [{ ...adaPosition, warnings: [outdatedProvider] }],
+            },
+        });
+
+        expect(selectHasStakingAccountWarning(state, adaAccount.key, 'outdated-provider')).toBe(
+            true,
+        );
+        expect(selectHasStakingAccountWarning(state, adaAccount.key, 'missing-drep')).toBe(false);
+    });
+
+    it('is false without the warning', () => {
+        expect(
+            selectHasStakingAccountWarning(createState(), adaAccount.key, 'outdated-provider'),
+        ).toBe(false);
+    });
+
+    it('also reads an uncounted position', () => {
+        const state = createState({
+            positions: {
+                [solAccount.key]: [
+                    { ...solExternalPosition, warnings: [{ code: 'missing-drep' }] },
+                ],
+            },
+        });
+
+        expect(selectHasStakingAccountWarning(state, solAccount.key, 'missing-drep')).toBe(true);
     });
 });
 
