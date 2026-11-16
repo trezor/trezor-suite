@@ -720,12 +720,6 @@ export const getAmountValidationResult = ({
 export const isAmountTooHigh = (params: GetAmountValidationResultParams): boolean =>
     getAmountValidationResult(params).type !== 'ok';
 
-export const getMevProtectedTxData = (hex: string, isMevProtectionEnabled: boolean) => {
-    if (!isMevProtectionEnabled) return { hex, disableAlternativeRPC: true };
-
-    return hex;
-};
-
 export const isExchangeTradingForm = (
     form: FormStateTrading | undefined,
 ): form is FormStateTradingExchange =>
