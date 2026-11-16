@@ -42,13 +42,6 @@ export const config: Config = {
             comment: ['Since 2.4.3 Cardano derivation behavior has changed'],
         },
         {
-            methods: ['tezosSignTransaction'],
-            min: { T1B1: '0', T2T1: '2.1.8' },
-            comment: [
-                'Since 2.1.8 there are new protobuf fields in tezos transaction (Babylon fork)',
-            ],
-        },
-        {
             methods: ['stellarSignTransaction'],
             min: { T1B1: '1.9.0', T2T1: '2.3.0' },
             comment: [

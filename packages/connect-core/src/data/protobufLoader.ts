@@ -16,7 +16,6 @@ import * as rippleProto from '@trezor/protobuf/src/definitions/messages-ripple_p
 import * as solanaProto from '@trezor/protobuf/src/definitions/messages-solana_pb';
 import * as stellarProto from '@trezor/protobuf/src/definitions/messages-stellar_pb';
 import * as telemetryProto from '@trezor/protobuf/src/definitions/messages-telemetry_pb';
-import * as tezosProto from '@trezor/protobuf/src/definitions/messages-tezos_pb';
 import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import * as tronProto from '@trezor/protobuf/src/definitions/messages-tron_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
@@ -41,7 +40,6 @@ export const loadProtobufModules = () => {
         solanaProto,
         stellarProto,
         telemetryProto,
-        tezosProto,
         thpProto,
         tronProto,
         messagesProto,

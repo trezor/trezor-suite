@@ -16,11 +16,7 @@ import { AbstractMethod } from '../../core/AbstractMethod';
 import { getSerializedPath, validatePath } from '../../utils/pathUtils';
 
 export type MiscGetAddressMethodName =
-    | 'rippleGetAddress'
-    | 'stellarGetAddress'
-    | 'tezosGetAddress'
-    | 'solanaGetAddress'
-    | 'tronGetAddress';
+    'rippleGetAddress' | 'stellarGetAddress' | 'solanaGetAddress' | 'tronGetAddress';
 
 type MiscProto = {
     address_n: number[];

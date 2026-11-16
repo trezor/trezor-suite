@@ -25,7 +25,6 @@ const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
     'Capability_Ripple',
     'Capability_Solana',
     'Capability_Stellar',
-    'Capability_Tezos',
     'Capability_U2F',
 ];
 

@@ -53,9 +53,6 @@
             "path": "../../networks/stellar/network-stellar-assets"
         },
         {
-            "path": "../../networks/tezos/network-tezos-assets"
-        },
-        {
             "path": "../../networks/tron/network-tron-assets"
         },
         { "path": "../product-components" },

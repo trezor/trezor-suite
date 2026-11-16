@@ -167,7 +167,6 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                         'Capability_Monero',
                         'Capability_Ripple',
                         'Capability_Stellar',
-                        'Capability_Tezos',
                         'Capability_U2F',
                         'Capability_Shamir',
                         'Capability_ShamirGroups',

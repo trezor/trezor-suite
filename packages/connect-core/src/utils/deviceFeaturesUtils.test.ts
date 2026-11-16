@@ -54,7 +54,6 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Ripple',
             'Capability_Solana',
             'Capability_Stellar',
-            'Capability_Tezos',
             'Capability_U2F',
         ]);
 
@@ -74,7 +73,6 @@ describe('utils/deviceFeaturesUtils', () => {
             'Capability_Ripple',
             'Capability_Solana',
             'Capability_Stellar',
-            'Capability_Tezos',
             'Capability_U2F',
         ]);
 
@@ -155,7 +153,6 @@ describe('utils/deviceFeaturesUtils', () => {
                 txrp: 'no-support',
                 xmr: 'no-support',
                 xrp: 'no-support',
-                xtz: 'no-support',
                 xvg: 'update-required',
                 eip7702: 'no-support',
                 chunkify: 'no-support',

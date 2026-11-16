@@ -34,7 +34,6 @@ const getAllProtoModules = () => {
         'messages-solana',
         'messages-stellar',
         'messages-telemetry',
-        'messages-tezos',
         'messages-thp',
         'messages-tron',
         'options',

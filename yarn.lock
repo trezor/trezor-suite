@@ -19494,7 +19494,6 @@ __metadata:
     "@trezor/network-ripple-assets": "workspace:*"
     "@trezor/network-solana-assets": "workspace:*"
     "@trezor/network-stellar-assets": "workspace:*"
-    "@trezor/network-tezos-assets": "workspace:*"
     "@trezor/network-tron-assets": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/protobuf": "workspace:^"
@@ -20119,7 +20118,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/network-tezos-assets@workspace:*, @trezor/network-tezos-assets@workspace:networks/tezos/network-tezos-assets":
+"@trezor/network-tezos-assets@workspace:networks/tezos/network-tezos-assets":
   version: 0.0.0-use.local
   resolution: "@trezor/network-tezos-assets@workspace:networks/tezos/network-tezos-assets"
   dependencies:

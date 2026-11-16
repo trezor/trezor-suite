@@ -121,10 +121,10 @@ test.describe(
                 annotation: createTestAnnotation({ stream: TestStream.Connect }),
             },
             async ({ connectPermissionsModal }) => {
-                // `xtz` is Connect-valid but not modeled by Suite. The guard runs before the permissions
+                // `grs` is Connect-valid but not modeled by Suite. The guard runs before the permissions
                 // modal, so this rejects with no user interaction — unlike the other tests we never click
                 // confirm; a regressed guard would hang here until timeout.
-                const res = TrezorConnect.selectAccount({ coin: 'xtz' });
+                const res = TrezorConnect.selectAccount({ coin: 'grs' });
 
                 const response = await res;
                 expect(response.success).toBe(false);

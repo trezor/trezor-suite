@@ -10,15 +10,13 @@ type AddressConfirmationMethod =
     | 'cardanoGetAddress'
     | 'rippleGetAddress'
     | 'solanaGetAddress'
-    | 'tezosGetAddress'
     | 'tronGetAddress'
     | 'stellarGetAddress'
     | 'moneroGetAddress'
     | 'getPublicKey'
     | 'ethereumGetPublicKey'
     | 'cardanoGetPublicKey'
-    | 'solanaGetPublicKey'
-    | 'tezosGetPublicKey';
+    | 'solanaGetPublicKey';
 
 /**
  * Exports addresses or public keys without showing them on the device, then lets the user verify
@@ -45,7 +43,7 @@ export class AddressConfirmationFlow extends CommonPopupFlow<AddressConfirmation
         const addresses = bundledResponse.map((item, index) => ({
             // `displayablePublicKey` is the per-coin canonical user-facing
             // representation populated by `@trezor/connect` (xpubSegwit/xpub for
-            // Bitcoin, base58 for Solana, hex for Tezos, etc.).
+            // Bitcoin, base58 for Solana, etc.).
             address: 'address' in item ? item.address : item.displayablePublicKey,
             validated: 'not-started' as const,
             loading: false,

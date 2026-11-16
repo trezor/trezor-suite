@@ -95,7 +95,7 @@ describe('data/coinInfo', () => {
     it('resolves every misc firmware-gating shortcut (requiredFirmwareCoins is never [undefined])', () => {
         // the shortcut forms the misc api methods pass to getMiscNetwork() to build
         // requiredFirmwareCoins — a wrong form would silently become [undefined] (D1)
-        const shortcuts: CoinSymbol[] = ['ada', 'xrp', 'xmr', 'trx', 'xlm', 'sol', 'xtz', 'nostr'];
+        const shortcuts: CoinSymbol[] = ['ada', 'xrp', 'xmr', 'trx', 'xlm', 'sol', 'nostr'];
         shortcuts.forEach(shortcut => {
             expect(getMiscNetwork(shortcut)).toBeDefined();
         });
