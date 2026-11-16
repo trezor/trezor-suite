@@ -6,6 +6,7 @@ import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 
 import { routes } from '@suite/router-config';
+import { createServiceWorkerWebpackPlugins } from '@suite/service-worker/webpack';
 import { assetPrefix, createBaseConfig, createDevConfig, isDev } from '@suite-app/app/webpack';
 import { FLAGS } from '@suite-common/suite-config';
 
@@ -130,8 +131,12 @@ const webConfig: webpack.Configuration = {
     ],
 };
 
-export default merge([
-    createBaseConfig({ suiteType: 'web', baseDir, assetPrefix, browserslistConfigPath }),
-    ...(isDev ? [createDevConfig({ distPath: buildDir, port: DEV_PORT })] : []),
-    webConfig,
-]);
+const createWebpackConfig = async () =>
+    merge([
+        createBaseConfig({ suiteType: 'web', baseDir, assetPrefix, browserslistConfigPath }),
+        ...(isDev ? [createDevConfig({ distPath: buildDir, port: DEV_PORT })] : []),
+        webConfig,
+        { plugins: await createServiceWorkerWebpackPlugins({ isDev }) },
+    ]);
+
+export default createWebpackConfig;

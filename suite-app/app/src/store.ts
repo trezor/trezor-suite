@@ -11,6 +11,7 @@ import {
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
 import { type DesktopBluetoothState, prepareDesktopBluetoothReducer } from '@suite/bluetooth';
 import { type RecoveryState, recoveryReducer } from '@suite/recovery';
+import { type ServiceWorkerUpdateState, serviceWorkerUpdateReducer } from '@suite/service-worker';
 import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
@@ -83,6 +84,7 @@ export type AppState = SuiteReducersState & {
     globalSendReceiveFilters: GlobalSendReceiveFiltersState;
     persistentDeviceData: PersistentDeviceDataState;
     referAFriend: ReferAFriendState;
+    serviceWorkerUpdate: ServiceWorkerUpdateState;
 };
 
 export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
@@ -109,6 +111,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
     persistentDeviceData: persistentDeviceDataReducer,
     referAFriend: referAFriendReducer,
+    serviceWorkerUpdate: serviceWorkerUpdateReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;

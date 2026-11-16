@@ -23,12 +23,21 @@ import {
     NoDeviceEshopSidebarBanner,
     selectShouldShowNoDeviceEshopSidebarBanner,
 } from './NoDeviceEshopSidebarBanner';
+import {
+    ServiceWorkerUpdateSidebarBanner,
+    selectShouldShowServiceWorkerUpdateSidebarBanner,
+} from './ServiceWorkerUpdateSidebarBanner';
 
 export const SidebarBanners = () => {
     const [isUpdateBannerVisible, setIsUpdateBannerVisible] = useState(true);
+    const [isServiceWorkerUpdateBannerVisible, setIsServiceWorkerUpdateBannerVisible] =
+        useState(true);
     const [isSuiteSyncPromoBannerVisible, setIsSuiteSyncPromoBannerVisible] = useState(true);
 
     const shouldShowUpdateBanner = useSelector(selectShouldShowUpdateNotificationBanner);
+    const shouldShowServiceWorkerUpdateBanner = useSelector(
+        selectShouldShowServiceWorkerUpdateSidebarBanner,
+    );
     const shouldShowFeedbackBanner = useSelector(selectShouldShowFeedbackSidebarBanner);
     const shouldShowSuiteSyncPromoBanner = useSelector(selectShouldShowSuiteSyncPromoBanner);
     const shouldShowNoDeviceEshopBanner = useSelector(selectShouldShowNoDeviceEshopSidebarBanner);
@@ -36,6 +45,14 @@ export const SidebarBanners = () => {
     const getActiveSidebarBanner = () => {
         if (shouldShowUpdateBanner && isUpdateBannerVisible) {
             return <UpdateNotificationBanner onDismiss={() => setIsUpdateBannerVisible(false)} />;
+        }
+
+        if (shouldShowServiceWorkerUpdateBanner && isServiceWorkerUpdateBannerVisible) {
+            return (
+                <ServiceWorkerUpdateSidebarBanner
+                    onDismiss={() => setIsServiceWorkerUpdateBannerVisible(false)}
+                />
+            );
         }
 
         if (shouldShowSuiteSyncPromoBanner && isSuiteSyncPromoBannerVisible) {

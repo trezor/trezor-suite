@@ -122,3 +122,8 @@ autoprefixer
 css-loader
 postcss-loader
 style-loader
+
+# Suite Web service worker
+serwist
+@serwist/vite
+@serwist/webpack-plugin

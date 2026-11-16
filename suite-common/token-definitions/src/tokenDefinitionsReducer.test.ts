@@ -94,3 +94,44 @@ describe('token visibility updates', () => {
         },
     );
 });
+
+describe('replacing loaded definitions', () => {
+    const symbol = asNetworkSymbol('eth');
+    const type = DefinitionType.COIN;
+
+    it('replaces the data and keeps what the user hid or showed', () => {
+        const state: TokenDefinitionsState = {
+            [symbol]: {
+                [type]: {
+                    error: false,
+                    data: ['0xprevious'],
+                    isLoading: false,
+                    hide: ['0xhidden'],
+                    show: ['0xshown'],
+                },
+            },
+        };
+
+        expect(
+            reducer(
+                state,
+                tokenDefinitionsActions.setDefinitions({ symbol, type, data: ['0xcurrent'] }),
+            )[symbol]?.[type],
+        ).toEqual({
+            error: false,
+            data: ['0xcurrent'],
+            isLoading: false,
+            hide: ['0xhidden'],
+            show: ['0xshown'],
+        });
+    });
+
+    it('adds no definitions for a network that has none', () => {
+        expect(
+            reducer(
+                {},
+                tokenDefinitionsActions.setDefinitions({ symbol, type, data: ['0xcurrent'] }),
+            ),
+        ).toEqual({});
+    });
+});

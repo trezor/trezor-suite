@@ -11,6 +11,7 @@ import wasm from 'vite-plugin-wasm';
 
 // Vite loads its config as native ES modules, which cannot run the CommonJS Webpack index, so it
 // imports these self-contained modules directly.
+import { createServiceWorkerVitePlugins } from '@suite/service-worker/vite';
 import {
     assetPrefix,
     isTanstackReactQueryDevTools,
@@ -460,6 +461,8 @@ export default defineConfig({
         faviconPlugin(),
         viteCommonjs(),
         resolveWorkerUrlsPlugin(),
+        // Dev writes and deletes the worker on every request, so it must not go to build/.
+        ...createServiceWorkerVitePlugins({ outDir: resolve(__dirname, 'dist') }),
         wasm(),
         react(),
         babel({

@@ -1,8 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "include": [
         ".",
         "../../packages/suite/global.d.ts"
@@ -43,6 +41,7 @@
         },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
+        { "path": "../../suite/service-worker" },
         { "path": "../../suite/tor-desktop" },
         { "path": "../../packages/components" },
         {
