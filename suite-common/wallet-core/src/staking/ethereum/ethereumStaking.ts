@@ -20,13 +20,13 @@ import {
     secondsToDays,
 } from '@suite-common/wallet-utils';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
+import { type BlockchainEstimatedFee } from '@trezor/blockchain-core';
 import {
     type EthereumTransaction,
     type EthereumTransactionEIP1559,
     type InternalTransfer,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
 import {
     Calldata,
     EVM_ABI,

@@ -4,11 +4,17 @@
 // took over, so tests script backend and device calls with one sequence of fixtures, and
 // `emitTestEvent` emits its events too.
 
+import type * as BlockchainCore from '@trezor/blockchain-core';
+
 // Read on use, as the actual Connect, which the Connect mock loads, loads this mock too.
 const getConnectMock = () => require('@trezor/connect');
 
 const call = (method: string) =>
     jest.fn((params: object) => getConnectMock().mockResponse(method, params));
+
+// The events are plain constants, so the tests use the actual ones.
+export const { BLOCKCHAIN, BLOCKCHAIN_EVENT, createBlockchainMessage, isBlockchainEventOfType } =
+    jest.requireActual<typeof BlockchainCore>('@trezor/blockchain-core');
 
 export const TrezorBlockchain = {
     updateSettings: jest.fn(() => Promise.resolve()),

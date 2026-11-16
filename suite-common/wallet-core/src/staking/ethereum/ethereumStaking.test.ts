@@ -2,12 +2,12 @@ import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import { type AccountInfo, type InternalTransfer, type OkWithDevice } from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import {
     type BlockchainEstimatedFee,
     type BlockchainEstimatedFeeLevel,
-} from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+} from '@trezor/blockchain-core';
+import { type AccountInfo, type InternalTransfer, type OkWithDevice } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {
