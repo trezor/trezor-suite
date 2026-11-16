@@ -114,11 +114,28 @@ describe('getSolanaUnstakeAmountBounds', () => {
         });
     });
 
-    it('returns null when the runtime switches to the capped DESC selection', () => {
+    it('validates split bounds when the runtime switches to the capped DESC selection', () => {
         const account = buildSolanaAccount(
             Array.from({ length: 16 }, () => buildStakingAccount({ stake: `${2 * SOL}` })),
         );
 
-        expect(getSolanaUnstakeAmountBounds(account, '1.5')).toBeNull();
+        expect(getSolanaUnstakeAmountBounds(account, '0.5')).toEqual({ closestHigher: '1' });
+        expect(getSolanaUnstakeAmountBounds(account, '1.5')).toEqual({
+            closestLower: '1',
+            closestHigher: '2',
+        });
+    });
+
+    it('validates against the largest stake first at the threshold', () => {
+        const account = buildSolanaAccount([
+            ...Array.from({ length: 15 }, () => buildStakingAccount({ stake: `${1.42 * SOL}` })),
+            buildStakingAccount({ stake: `${3.12 * SOL}` }),
+        ]);
+
+        expect(getSolanaUnstakeAmountBounds(account, '2.5')).toEqual({
+            closestLower: '2.12',
+            closestHigher: '3.12',
+        });
+        expect(getSolanaUnstakeAmountBounds(account, '2.12')).toBeNull();
     });
 });

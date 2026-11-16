@@ -1,4 +1,4 @@
-import { createSolanaRpcFromTransport, isJsonRpcPayload } from '@solana/kit';
+import { createSolanaRpcFromTransport, getAddressDecoder, isJsonRpcPayload } from '@solana/kit';
 import type { RpcTransport } from '@solana/kit';
 
 import type { PrepareStakeSolTxResponse } from '../types';
@@ -6,6 +6,7 @@ import {
     getSolanaValidatorFixtures,
     mockNow,
     mockSender,
+    mockStakeAccount,
     stakeTransactionFixtures,
 } from './__fixtures__/staking.fixture';
 import {
@@ -13,6 +14,7 @@ import {
     prepareStakeSolTx,
     prepareUnstakeSolTx,
     selectSolanaValidator,
+    unstake,
 } from './staking';
 
 const mockConnection = (rpcResults: Record<string, unknown>) => {
@@ -52,6 +54,41 @@ describe('stake account layout', () => {
     afterEach(() => {
         jest.useRealTimers();
         jest.restoreAllMocks();
+    });
+
+    it.each([1, 15, 16, 17])('rejects an invalid split across %s active accounts', async count => {
+        const getProgramAccounts = Array.from({ length: count }, (_, index) =>
+            mockStakeAccount({
+                pubkey: getAddressDecoder().decode(new Uint8Array(32).fill(index + 3)),
+                stake: 2_000_000_000,
+                deactivationEpoch: 18_446_744_073_709_551_615n,
+            }),
+        );
+        const connection = mockConnection({
+            ...stakeTransactionFixtures.unstakeWithSplit.rpcResults,
+            getProgramAccounts,
+        });
+
+        for (const lamports of [500_000_000n, 1_500_000_000n]) {
+            await expect(
+                unstake({ connection, sender: mockSender, lamports, source: '1' }),
+            ).rejects.toThrow('Unstake amount cannot be split');
+        }
+
+        const split = await unstake({
+            connection,
+            sender: mockSender,
+            lamports: 1_000_000_000n,
+            source: '1',
+        });
+        expect(split.unstakeAmount).toBe(1_000_000_000n);
+        const full = await unstake({
+            connection,
+            sender: mockSender,
+            lamports: BigInt(count) * 2_000_000_000n,
+            source: '1',
+        });
+        expect(full.unstakeAmount).toBe(BigInt(Math.min(count, 16)) * 2_000_000_000n);
     });
 
     it('builds stake transaction with sysvar and config accounts', async () => {

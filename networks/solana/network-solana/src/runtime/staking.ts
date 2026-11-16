@@ -266,16 +266,15 @@ export const unstake = async ({
                 break;
             }
 
-            // Split `remaining` off only if both legs stay above the minimum; otherwise deactivate the whole account.
+            // Invalid splits must never increase the amount the user asked to unstake.
             const splitProducesValidAccount = remaining >= MIN_STAKE_DELEGATION;
             const splitLeavesValidRemainder = stakeAmount - remaining >= MIN_STAKE_DELEGATION;
-            if (splitProducesValidAccount && splitLeavesValidRemainder) {
-                accountsToSplit.push([acc, remaining]);
-                unstakeAmount += remaining;
-            } else {
-                accountsToDeactivate.push(acc);
-                unstakeAmount += stakeAmount;
+            if (!splitProducesValidAccount || !splitLeavesValidRemainder) {
+                throw new Error('Unstake amount cannot be split into valid stake accounts');
             }
+
+            accountsToSplit.push([acc, remaining]);
+            unstakeAmount += remaining;
             break;
         }
 
