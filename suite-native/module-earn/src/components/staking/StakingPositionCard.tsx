@@ -1,18 +1,17 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNetworkStakingRate } from '@suite-common/earn-staking';
+import {
+    type StakingPositionEntry,
+    type StakingRootState,
+    formatStakingAmount,
+    selectIsStakingAccountDelegatedOutside,
+    useStakingRate,
+} from '@suite-common/earn-staking';
+import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
-import {
-    type AccountsRootState,
-    type StakeRootState,
-    type StakingListItem,
-    selectAccountByKey,
-    selectIsCardanoStakedOutsideEverstake,
-    selectIsCardanoStakedWithFiveBinaries,
-    selectTronAvailableVotingPowerByAccountKey,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
@@ -20,19 +19,21 @@ import { useStakingDetailNavigation, useStakingNavigateAnalytics } from '@suite-
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 import { EarnTronVotingAlert } from '../earn/EarnTronVotingAlert';
 
 type StakingPositionCardProps = {
-    item: StakingListItem;
+    entry: StakingPositionEntry;
     onClose: () => void;
 };
 
-export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps) => {
+export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps) => {
     const { PercentageFormatter } = useFormatters();
-    const { symbol, accountKey, balance } = item;
+    const { accountKey, position, descriptor } = entry;
+    const { networkSymbol: symbol } = descriptor;
 
     const nativeTokenName = useSelector((state: NetworksRootState) =>
         selectNativeTokenName(state, symbol),
@@ -45,21 +46,31 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
         selectAccountByKey(state, accountKey),
     );
 
-    const { rate: apy, rateKind } = useNetworkStakingRate({ networkSymbol: symbol, accountKey });
+    const { rate, rateKind } = useStakingRate({ productId: descriptor.id, accountKey });
 
-    const availableTronVotingPower = useSelector((state: AccountsRootState) =>
-        selectTronAvailableVotingPowerByAccountKey(state, item.accountKey),
+    const isDelegatedOutside = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountDelegatedOutside(state, accountKey),
     );
 
-    const isAdaStakedOutsideEverstake = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
+    const hasOutdatedProvider = position.warnings.some(
+        warning => warning.code === 'outdated-provider',
     );
 
-    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
-    );
+    const amount = formatStakingAmount({
+        amount: getStakingPositionAmount(position),
+        networkSymbol: symbol,
+    });
 
-    const showTronVotingAlert = symbol === 'trx' && availableTronVotingPower !== '0';
+    const unallocatedVotingPower =
+        position.details?.kind === 'tron-staking' ? position.details.unallocatedVotingPower : null;
+
+    const votesRemaining =
+        unallocatedVotingPower !== null && new BigNumber(unallocatedVotingPower).gt(0)
+            ? formatStakingAmount({ amount: unallocatedVotingPower, networkSymbol: symbol })
+            : null;
+
+    const isRateShown = isDelegatedOutside || rate !== null;
+    const isRateAvailable = !isDelegatedOutside && isApyAvailable(rate);
 
     const onPress = useCallback(() => {
         if (!account) return;
@@ -92,7 +103,7 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
             }
             value={
                 <CompactCryptoAmountFormatter
-                    value={balance}
+                    value={amount}
                     symbol={symbol}
                     isBalance={true}
                     numberOfLines={1}
@@ -102,28 +113,26 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                 />
             }
             valueDescription={
-                (isAdaStakedOutsideEverstake || apy != null) &&
-                (isStakedWithFiveBinaries ? (
+                isRateShown &&
+                (hasOutdatedProvider ? (
                     <ZeroApyBadge />
                 ) : (
                     <Text variant="body-sm" color="contentSecondary">
-                        {isAdaStakedOutsideEverstake || apy == null || !isApyAvailable(apy) ? (
-                            <ApyValue apy={null} withLabel />
-                        ) : (
+                        {isRateAvailable && rate !== null ? (
                             <Translation
                                 id={
                                     rateKind === 'apr' ? 'earn.aprPercentage' : 'earn.apyPercentage'
                                 }
-                                values={{ apy: PercentageFormatter.format(apy) }}
+                                values={{ apy: PercentageFormatter.format(rate) }}
                             />
+                        ) : (
+                            <ApyValue apy={null} withLabel rateType={rateKind ?? 'apy'} />
                         )}
                     </Text>
                 ))
             }
             alerts={
-                showTronVotingAlert && (
-                    <EarnTronVotingAlert votesRemaining={availableTronVotingPower} />
-                )
+                votesRemaining !== null && <EarnTronVotingAlert votesRemaining={votesRemaining} />
             }
             onPress={onPress}
         />

@@ -1,12 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { type StakingRootState, selectHasStakingAccountWarning } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    type StakeRootState,
-    selectAccountNetworkSymbol,
-    selectIsCardanoStakedWithFiveBinaries,
-    useAccountsSelector,
-} from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerFull, BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -24,15 +20,15 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, accountKey),
+    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
+        selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
 
     const handleLearnMorePress = () => {
         openLink(HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER);
     };
 
-    if (isStakedWithFiveBinaries) {
+    if (hasOutdatedProvider) {
         return (
             <BannerFull
                 testID="@staking/cardano-not-earning-banner"

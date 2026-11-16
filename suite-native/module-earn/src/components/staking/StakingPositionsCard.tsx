@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectStakingListItems } from '@suite-common/wallet-core';
+import { selectDeviceStakingPositionEntries } from '@suite-common/earn-staking';
 import {
     Box,
     Card,
@@ -19,9 +19,9 @@ import { StakingPositionsIcons } from './StakingPositionsIcons';
 export const StakingPositionsCard = () => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const positions = useSelector(selectStakingListItems);
+    const positionEntries = useSelector(selectDeviceStakingPositionEntries);
 
-    if (positions.length === 0) return null;
+    if (positionEntries.length === 0) return null;
 
     return (
         <>
@@ -51,7 +51,7 @@ export const StakingPositionsCard = () => {
 
             <StakingPositionsBottomSheet
                 ref={bottomSheetRef}
-                positions={positions}
+                positionEntries={positionEntries}
                 onClose={closeModal}
             />
         </>

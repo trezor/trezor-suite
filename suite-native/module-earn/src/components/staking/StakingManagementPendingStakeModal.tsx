@@ -1,19 +1,20 @@
 import { useSelector } from 'react-redux';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import {
-    type StakeRootState,
-    isSupportedSolStakingNetworkSymbol,
-    selectAccountByKey,
-    selectAccountNetworkSymbol,
-    selectAccountStakeTransactions,
-    selectIsStakeConfirmingByAccountKey,
-    selectIsStakePendingByAccountKey,
-    selectTotalStakePendingByAccountKey,
-    useAccountsSelector,
-    useStakingEntryPeriodEstimateInDays,
-} from '@suite-common/wallet-core';
+    type StakingAccountProductRootState,
+    type StakingRootState,
+    formatStakingAmount,
+    getStakingDaysUntil,
+    selectIsStakingOperationPending,
+    selectStakingAccountProductDescriptor,
+    selectStakingAccountTotals,
+    selectStakingPosition,
+    useStakingPeriods,
+} from '@suite-common/earn-staking';
+import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isPositiveBalance, parseAccountKey } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -24,6 +25,7 @@ import {
 } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { useNow } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import {
@@ -49,55 +51,69 @@ const backgroundStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillRaised,
 }));
 
+const DAY_COUNT_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
+
 export const StakingManagementPendingStakeModal = ({
     ref,
     accountKey,
     onClose,
 }: StakingManagementPendingStakeModalProps) => {
     const { applyStyle } = useNativeStyles();
-    const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const { networkSymbol } = parseAccountKey(accountKey);
 
-    const account = useSelector((state: StakeRootState) => selectAccountByKey(state, accountKey));
-
-    const stakeTxs = useSelector((state: StakeRootState) =>
-        selectAccountStakeTransactions(state, accountKey),
+    const productId = useSelector(
+        (state: StakingAccountProductRootState) =>
+            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
     );
-
-    const isStakeConfirming = useSelector((state: StakeRootState) =>
-        selectIsStakeConfirmingByAccountKey(state, accountKey),
+    const position = useSelector((state: StakingRootState) =>
+        productId === null ? null : selectStakingPosition(state, accountKey, productId),
     );
-
-    const isStakePending = useSelector((state: StakeRootState) =>
-        selectIsStakePendingByAccountKey(state, accountKey),
+    const totals = useSelector((state: StakingRootState) =>
+        selectStakingAccountTotals(state, accountKey),
     );
+    const isStakeConfirming = useSelector((state: StakingRootState) =>
+        selectIsStakingOperationPending(state, accountKey, 'stake'),
+    );
+    const { entryPeriodDays } = useStakingPeriods(productId);
+    const now = useNow(DAY_COUNT_REFRESH_INTERVAL_MS);
 
-    const totalStakePending =
-        useSelector((state: StakeRootState) =>
-            selectTotalStakePendingByAccountKey(state, accountKey),
-        ) ?? '0';
+    const totalStakePending = formatStakingAmount({ amount: totals.pending, networkSymbol });
 
-    const entryPeriodEstimateInDays = useStakingEntryPeriodEstimateInDays({ account, stakeTxs });
+    // The first activation dates the stake; a position that cannot date it shows the entry period.
+    const activationAt = position?.activations[0]?.availableAt ?? null;
+    const daysUntilActive =
+        activationAt === null ? entryPeriodDays : getStakingDaysUntil(activationAt, now);
 
     const currentStep: StakingDetailModalStep = (() => {
         if (isStakeConfirming) return StakingDetailModalStep.TransactionConfirmed;
-        if (isStakePending) return StakingDetailModalStep.InProgress;
+        if (isPositiveBalance(totalStakePending)) return StakingDetailModalStep.InProgress;
 
         return StakingDetailModalStep.Completed;
     })();
 
-    const isSolanaStaking = !!symbol && isSupportedSolStakingNetworkSymbol(symbol);
+    const isSolanaStaking = getNetworkType(networkSymbol) === 'solana';
 
-    const inProgressLabel = isSolanaStaking ? (
-        <Translation
-            id="earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriod"
-            values={{ days: entryPeriodEstimateInDays }}
-        />
-    ) : (
-        <Translation
-            id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriod"
-            values={{ days: entryPeriodEstimateInDays }}
-        />
-    );
+    const inProgressLabel = (() => {
+        if (isSolanaStaking) {
+            return daysUntilActive === null ? (
+                <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriodWithoutDays" />
+            ) : (
+                <Translation
+                    id="earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriod"
+                    values={{ days: daysUntilActive }}
+                />
+            );
+        }
+
+        return daysUntilActive === null ? (
+            <Translation id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriodWithoutDays" />
+        ) : (
+            <Translation
+                id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriod"
+                values={{ days: daysUntilActive }}
+            />
+        );
+    })();
 
     const completedLabel = isSolanaStaking ? (
         <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepStakedReceivingRewards" />
@@ -114,29 +130,27 @@ export const StakingManagementPendingStakeModal = ({
                 <Text variant="headline-sm">
                     <Translation id="earn.stakingManagementScreen.pendingStakesItem.modalTitle" />
                 </Text>
-                {!!symbol && (
-                    <VStack style={applyStyle(amountsStyle)} spacing="sp2">
-                        <ExactCryptoAmountFormatter
+                <VStack style={applyStyle(amountsStyle)} spacing="sp2">
+                    <ExactCryptoAmountFormatter
+                        value={totalStakePending}
+                        symbol={networkSymbol}
+                        maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
+                        color="contentPrimary"
+                        variant="body-sm"
+                    />
+                    <HStack spacing="sp2">
+                        <Text color="contentSecondary" variant="body-sm">
+                            ≈
+                        </Text>
+                        <CryptoToFiatAmountFormatter
                             value={totalStakePending}
-                            symbol={symbol}
-                            maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-                            color="contentPrimary"
+                            symbol={networkSymbol}
+                            color="contentSecondary"
                             variant="body-sm"
+                            isBalance
                         />
-                        <HStack spacing="sp2">
-                            <Text color="contentSecondary" variant="body-sm">
-                                ≈
-                            </Text>
-                            <CryptoToFiatAmountFormatter
-                                value={totalStakePending}
-                                symbol={symbol}
-                                color="contentSecondary"
-                                variant="body-sm"
-                                isBalance
-                            />
-                        </HStack>
-                    </VStack>
-                )}
+                    </HStack>
+                </VStack>
             </HStack>
 
             <StakingManagementModalStepIndicator

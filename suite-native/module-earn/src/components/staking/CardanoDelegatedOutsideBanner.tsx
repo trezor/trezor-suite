@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type StakeRootState,
-    selectIsCardanoStakedOutsideEverstake,
-    selectIsCardanoStakedWithFiveBinaries,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountDelegatedOutside,
+} from '@suite-common/earn-staking';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -16,14 +16,15 @@ type CardanoDelegatedOutsideBannerProps = {
 export const CardanoDelegatedOutsideBanner = ({
     accountKey,
 }: CardanoDelegatedOutsideBannerProps) => {
-    const isStakedOutsideEverstake = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedOutsideEverstake(state, accountKey),
+    const isDelegatedOutside = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountDelegatedOutside(state, accountKey),
     );
-    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, accountKey),
+    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
+        selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
 
-    if (!isStakedOutsideEverstake || isStakedWithFiveBinaries) {
+    // An outdated provider has its own banner.
+    if (!isDelegatedOutside || hasOutdatedProvider) {
         return null;
     }
 
