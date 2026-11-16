@@ -56,7 +56,13 @@ model. A **network instance** is a Network in one runtime configuration.
 type BitcoinSignParams = { format: 'default' | 'electrum' };
 type CardanoSignParams = { publicKeyFormat: 'raw' | 'cose' };
 
-// 2. A family's capability is generic over its parameters; the shared contract is not.
+// 2. A family's capability is generic over its parameters; the shared contract is not. Shared
+//    code sees a parameter as a choice: labels and option ids, never the family's values.
+type SignChoice = {
+    key: string; // the family's name for it, e.g. Bitcoin's 'format'
+    label: Label;
+    options: readonly { id: SignChoiceOptionId; label: Label }[]; // ids only the family mints
+};
 type MessageSigning = {
     getChoices(account: OpenAccount): readonly SignChoice[]; // parameters as labelled options
     sign(params: SignParams & { selection?: SignSelection }): Promise<Result<Signed, SignError>>;
@@ -80,14 +86,21 @@ const bitcoinSigning = defineMessageSigning<BitcoinAccount, BitcoinSignParams>({
         trezorConnect.signMessage({ ...params, no_script_type: format === 'electrum' }),
 });
 
-// 4. Shared code (forms, thunks, WalletConnect) gets the open contract for any network. It shows
-//    the choices and hands back the option ids it was given.
+// 4. Shared code (the Sign & Verify feature, thunks, WalletConnect) gets the open contract for
+//    any network. Only the feature's form reads the choices, to render them; the app around it
+//    and every other caller never do.
 const signing = getNetwork({ symbol, accountType })?.capabilities.messageSigning;
-const [choice] = signing?.getChoices(account) ?? [];
-signing?.sign({ ...params, selection: { [choice.key]: choice.options[1].id } });
+// Bitcoin offers `format`, Cardano `publicKeyFormat`, Ethereum nothing.
+const choices = signing?.getChoices(account) ?? [];
+const selection: SignSelection = Object.fromEntries(
+    choices.map(choice => [choice.key, pickedByUser(choice)]), // one of choice.options[].id
+);
+signing?.sign({ ...params, selection }); // the form
+signing?.sign(params); // a thunk or WalletConnect: each choice takes its first option
 signing?.sign({ ...params, format: 'electrum' }); // ✗ shared code cannot name a family's value
 
-// 5. Code that knows its family narrows the network and gets the family's types back.
+// 5. Code that knows its family (an override, a family's own adapter) narrows the network and
+//    gets the family's types back.
 if (bitcoinFamily.isOwnNetwork(network)) {
     network.capabilities.messageSigning?.signWithParams({ ...params, format: 'electrum' }); // ✓
     network.capabilities.messageSigning?.signWithParams({ ...params, format: 'cose' }); // ✗
