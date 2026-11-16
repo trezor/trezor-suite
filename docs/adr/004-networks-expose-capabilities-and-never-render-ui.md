@@ -41,7 +41,11 @@ model. A **network instance** is a Network in one runtime configuration.
 1. **Network packages are pure TypeScript.** No React, Redux, translation catalogs or `@suite*`
    imports. App data arrives as call parameters.
 2. **A family creates a network instance per configuration:** the backend, the account type and
-   the version. Pages never pass a backend.
+   the version. Pages never pass a backend. Fetching network data depends on the same
+   configuration: whether to follow new blocks or poll, and how often, is set by the network's
+   block time and the backend serving it. On `develop` this is a `networkType` check in shared code
+   ([`shouldSubscribeBlocks`][subscribe-blocks]) and an interval per symbol; on the instance it is
+   one typed fact for every consumer, from the account sync to a query cache.
 3. **A feature is a typed capability on the instance,** absent when unsupported. One type lists
    every capability, so the compiler checks every family against it.
 4. **What differs between families is the family's own type.** Shared code picks from the options
@@ -139,4 +143,5 @@ Connect and Suite Common layers stay.
   capability keeps a test that it is present exactly where the old feature flag was.
 - **Revisit when** most families override a feature's default.
 
+[subscribe-blocks]: https://github.com/trezor/trezor-suite/blob/bd3630cfba27da8033d77ebb6a808f3784b41d74/suite-common/wallet-utils/src/backendUtils.ts#L79
 [reference]: https://github.com/trezor/trezor-suite/compare/develop...b5f7c559e7e851667288f95acd2632381d9443bd
