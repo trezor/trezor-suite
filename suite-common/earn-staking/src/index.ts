@@ -3,8 +3,8 @@ export {
     type StakingCompositionRootDeps,
 } from './createStakingCompositionRoot';
 export {
-    STAKING_DEVICE_ACCESS_CANCEL_REASONS,
     createStakingDeviceAccess,
+    STAKING_DEVICE_ACCESS_CANCEL_REASONS,
     type RunStakingDeviceCall,
     type StakingDeviceAccess,
     type StakingDeviceAccessCancelReason,
@@ -40,16 +40,22 @@ export {
     type SignStakingStepThunkState,
 } from './engine/signStakingStepThunk';
 export {
+    STAKING_ENGINE_REJECTIONS,
+    type StakingEngineRejection,
+} from './engine/stakingEngineRejection';
+export {
     STAKING_CONFIRMATION_TRACKING_TIMEOUT_MS,
     trackStakingStepConfirmationThunk,
     type TrackStakingStepConfirmationThunkDeps,
     type TrackStakingStepConfirmationThunkState,
 } from './engine/trackStakingStepConfirmationThunk';
-export {
-    STAKING_ENGINE_REJECTIONS,
-    type StakingEngineRejection,
-} from './engine/stakingEngineRejection';
 export { toPrecomposedLevels } from './fees/toPrecomposedLevels';
+export { useNetworkStakingPeriods } from './hooks/useNetworkStakingPeriods';
+export {
+    useNetworkStakingRate,
+    type UseNetworkStakingRateParams,
+} from './hooks/useNetworkStakingRate';
+export { useStakingAccess } from './hooks/useStakingAccess';
 export { useStakingPeriods, type StakingPeriods } from './hooks/useStakingPeriods';
 export {
     useStakingProductInfo,
@@ -163,11 +169,16 @@ export {
     type StakingReview,
 } from './state/stakingSessionSelectors';
 export {
+    hasStakingStepWithStatus,
+    type StakingSession,
+    type StakingSessionsState,
+} from './state/stakingSessionsReducer';
+export {
+    getStakingStepTransactions,
+    isStakingReviewStep,
     STAKING_ACTIVE_STEP_STATUSES,
     STAKING_IN_FLIGHT_STEP_STATUSES,
     STAKING_STEP_ERROR_KINDS,
-    isStakingReviewStep,
-    getStakingStepTransactions,
     type StakingAwaitingStep,
     type StakingReviewStep,
     type StakingSessionStep,
@@ -182,11 +193,6 @@ export {
     type StakingStepEvent,
     type StakingStepEventType,
 } from './state/stakingStepTransition';
-export {
-    hasStakingStepWithStatus,
-    type StakingSession,
-    type StakingSessionsState,
-} from './state/stakingSessionsReducer';
 export {
     refreshStakingProductInfoThunk,
     syncAllStakingPositionsThunk,
