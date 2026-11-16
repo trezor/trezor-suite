@@ -143,7 +143,6 @@ const pushTransactionThunk =
         if (!serializedTx || !precomposedTx || !account) return;
 
         const txData = getMevProtectedTxData(
-            serializedTx.symbol,
             serializedTx.tx,
             isMevProtectionEnabled && isMevProtectionFeatureEnabled,
         );

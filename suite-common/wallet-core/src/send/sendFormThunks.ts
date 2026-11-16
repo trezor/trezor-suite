@@ -514,11 +514,7 @@ export const pushSendFormTransactionThunk = createThunk<
                 },
             });
 
-        const txData = getMevProtectedTxData(
-            serializedTx.symbol,
-            serializedTx.tx,
-            isMevProtectionEnabled,
-        );
+        const txData = getMevProtectedTxData(serializedTx.tx, isMevProtectionEnabled);
 
         const pushTxResponse = await TrezorConnect.pushTransaction({
             tx: txData,
@@ -671,11 +667,7 @@ export const pushSendFormRawTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async (payload, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
-        const txData = getMevProtectedTxData(
-            payload.symbol,
-            payload.tx,
-            payload.isMevProtectionEnabled,
-        );
+        const txData = getMevProtectedTxData(payload.tx, payload.isMevProtectionEnabled);
 
         const sentTx = await TrezorConnect.pushTransaction({
             tx: txData,
