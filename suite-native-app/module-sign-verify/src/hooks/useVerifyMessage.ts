@@ -2,11 +2,7 @@ import { useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    type DeviceRootState,
-    isTrezorDeviceWithState,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { injectSignVerify } from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
 import { useDeviceReadyEvents } from '@suite-native/device-authorization';
@@ -50,14 +46,13 @@ export const useVerifyMessage = () => {
         navigation.navigate(RootStackRoutes.SignVerifyStack);
 
         const isDeviceReady = await waitForDevice();
-        // Read after waiting: the device may have connected while the user was asked for it.
-        const device = selectSelectedDevice(store.getState());
-        if (!isDeviceReady || !isTrezorDeviceWithState(device)) {
+        if (!isDeviceReady) {
             return 'cancelled';
         }
 
         const result = await signVerify.verify({
-            device,
+            // Read after waiting: the device may have connected while the user was asked for it.
+            device: selectSelectedDevice(store.getState()),
             account,
             address,
             message,

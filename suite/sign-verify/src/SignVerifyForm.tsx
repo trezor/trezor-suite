@@ -3,7 +3,6 @@ import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { isTrezorDeviceWithState } from '@suite-common/device';
 import { injectSignVerify } from '@suite-common/sign-verify';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -86,10 +85,6 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
     };
 
     const onSubmit = async (data: SignVerifyFields) => {
-        if (!isTrezorDeviceWithState(device)) {
-            return;
-        }
-
         const { address, path, message, signature, hex, format } = data;
 
         if (isSignPage && path !== undefined) {
