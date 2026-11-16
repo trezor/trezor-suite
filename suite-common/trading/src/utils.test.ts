@@ -21,6 +21,7 @@ import {
     cryptoIdToNetworkAndContractAddress,
     cryptoIdToNetworkSymbol,
     filterQuotesAccordingTags,
+    getCryptoId,
     getDefaultCountry,
     getDefaultCountrySubdivision,
     getTradingFormState,
@@ -242,6 +243,27 @@ describe('toTokenCryptoId', () => {
         expect(
             toTokenCryptoId(asNetworkSymbol('eth'), '0x1234123412341234123412341234123412341234'),
         ).toBe('ethereum--0x1234123412341234123412341234123412341234');
+    });
+});
+
+describe('getCryptoId', () => {
+    it('should return the trade cryptoId of the network when there is no token', () => {
+        expect(getCryptoId(asNetworkSymbol('ada'))).toBe('cardano');
+    });
+
+    it('should lowercase the contract address of an EVM token', () => {
+        expect(
+            getCryptoId(asNetworkSymbol('eth'), '0xdAC17F958D2ee523a2206206994597C13D831ec7'),
+        ).toBe('ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7');
+    });
+
+    it('should keep the asset name of a Cardano token', () => {
+        expect(
+            getCryptoId(
+                asNetworkSymbol('ada'),
+                '0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa4e49474854',
+            ),
+        ).toBe('cardano--0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa4e49474854');
     });
 });
 
