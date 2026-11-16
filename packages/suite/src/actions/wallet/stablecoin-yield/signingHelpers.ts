@@ -180,7 +180,6 @@ export const sendYieldTransaction = async ({
 
         const pushResponse = await TrezorConnect.pushTransaction({
             tx: getMevProtectedTxData(
-                account.symbol,
                 signingResponse.payload.serializedTx,
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             ),
