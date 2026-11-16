@@ -50,8 +50,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
-import { TrezorBlockchain } from '@trezor/blockchain-core';
-import { BLOCKCHAIN, BLOCKCHAIN_EVENT, PROTO } from '@trezor/connect';
+import { BLOCKCHAIN, BLOCKCHAIN_EVENT, TrezorBlockchain } from '@trezor/blockchain-core';
+import { PROTO } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-common-types';
 import { typedObjectKeys } from '@trezor/utils';

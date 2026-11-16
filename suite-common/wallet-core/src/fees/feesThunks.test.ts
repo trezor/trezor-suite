@@ -17,6 +17,7 @@ import {
 import { blockchainInitialState, prepareBlockchainReducer } from '../blockchain/blockchainReducer';
 
 jest.mock('@trezor/blockchain-core', () => ({
+    ...jest.requireActual('@trezor/blockchain-core'),
     TrezorBlockchain: { estimateFeeLevels: jest.fn() },
 }));
 
