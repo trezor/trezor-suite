@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/device" },
         { "path": "../../suite-common/networks" },
         { "path": "../../suite-common/receive" },
         {
@@ -32,6 +33,10 @@
         {
             "path": "../../networks/cardano/network-cardano-suite-common"
         },
-        { "path": "../../packages/redux-utils" }
+        {
+            "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/type-utils" }
     ]
 }

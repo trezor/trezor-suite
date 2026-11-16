@@ -8,8 +8,16 @@ import {
 
 import { adaValidator, preloadCborDecode } from './addressValidator/cardanoAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
+import {
+    type CardanoSignVerifyDeps,
+    createCardanoSignVerify,
+} from './signVerify/createCardanoSignVerify';
 
-export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModule => {
+type CardanoSuiteCommonNetworkModuleDeps = CardanoSignVerifyDeps;
+
+export const createCardanoSuiteCommonNetworkModule = (
+    deps: CardanoSuiteCommonNetworkModuleDeps,
+): SuiteCommonNetworkModule => {
     // Address validation is synchronous, so the legacy address decoder has to be ready before it.
     preloadCborDecode();
 
@@ -24,5 +32,6 @@ export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModul
         addressValidator: adaValidator,
         getNetworkConfig,
         getAccountSyncInterval,
+        signVerify: createCardanoSignVerify(deps),
     });
 };

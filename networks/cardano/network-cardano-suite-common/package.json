@@ -22,6 +22,7 @@
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12",
         "crc": "^4.3.2"
     }

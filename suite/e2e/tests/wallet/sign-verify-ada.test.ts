@@ -29,7 +29,7 @@ test.describe('Sign and verify ADA', { tag: ['@T3W1', '@T3T1', '@optional'] }, (
             await page.getByTestId('@sign-verify/message').fill(MESSAGE);
             await page.getByTestId('@sign-verify/sign-address/input').click();
             await page.getByTestId(`@sign-verify/sign-address/option/${STAKE_PATH}`).click();
-            await page.getByTestId('@sign-verify/cardano-pubkey-format/true').click();
+            await page.getByTestId('@sign-verify/format/cose').click();
             await page.getByTestId('@sign-verify/submit').click();
 
             await test.step('Confirm message payload on device', async () => {

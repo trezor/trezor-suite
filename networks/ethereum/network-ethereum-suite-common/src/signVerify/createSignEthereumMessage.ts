@@ -1,8 +1,10 @@
+import { type DeviceIdentity, type GetTrezorConnectDep } from '@trezor/connect-common';
 import {
-    type DeviceIdentity,
-    type GetTrezorConnectDep,
-    type TrezorConnectCallable,
-} from '@trezor/connect-common';
+    type SignError,
+    type SignedMessage,
+    connectErrorToSignVerifyError,
+} from '@trezor/network-module-suite-common-types';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 export type SignEthereumMessageDeps = GetTrezorConnectDep<'ethereumSignMessage'>;
 
@@ -16,7 +18,7 @@ export type SignEthereumMessageParams = {
 
 export type SignEthereumMessage = (
     params: SignEthereumMessageParams,
-) => ReturnType<TrezorConnectCallable['ethereumSignMessage']>;
+) => Promise<Result<SignedMessage, SignError>>;
 
 export type SignEthereumMessageDep = {
     signEthereumMessage: SignEthereumMessage;
@@ -24,8 +26,18 @@ export type SignEthereumMessageDep = {
 
 export const createSignEthereumMessage =
     (deps: SignEthereumMessageDeps): SignEthereumMessage =>
-    ({ device, path, message, hex }) =>
-        deps.getTrezorConnect().ethereumSignMessage({ device, path, message, hex });
+    async ({ device, path, message, hex }) => {
+        const response = await deps.getTrezorConnect().ethereumSignMessage({
+            device,
+            path,
+            message,
+            hex,
+        });
+
+        return response.success
+            ? ok(response.payload)
+            : err(connectErrorToSignVerifyError(response.error));
+    };
 
 export const injectSignEthereumMessage = (services: any): SignEthereumMessageDep => ({
     signEthereumMessage: services.signEthereumMessage,

@@ -1,8 +1,12 @@
-import { type DeviceIdentity, type ERRORS, type GetTrezorConnectDep } from '@trezor/connect-common';
+import { type DeviceIdentity, type GetTrezorConnectDep } from '@trezor/connect-common';
 import type { CardanoNetworkSymbol } from '@trezor/network-cardano-types';
-import type { AccountType } from '@trezor/network-module-suite-common-types';
+import {
+    type AccountType,
+    type SignError,
+    connectErrorToSignVerifyError,
+} from '@trezor/network-module-suite-common-types';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import type { Result } from '@trezor/type-utils';
+import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 import {
     getAddressParameters,
@@ -11,6 +15,7 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '../cardanoAddressParameters';
+import { type CardanoSignatureFormat, toCardanoSignatureFormat } from './cardanoSignatureFormats';
 
 export type SignCardanoMessageDeps = GetTrezorConnectDep<'cardanoSignMessage'>;
 
@@ -23,8 +28,7 @@ export type SignCardanoMessageParams = {
     path: string;
     message: string;
     hex: boolean;
-    /** Returns the public key as a COSE key instead of a raw one. */
-    isCose: boolean;
+    format?: string;
 };
 
 export type CardanoSignedMessage = {
@@ -35,7 +39,7 @@ export type CardanoSignedMessage = {
 
 export type SignCardanoMessage = (
     params: SignCardanoMessageParams,
-) => Promise<Result<CardanoSignedMessage, ERRORS.SerializedError>>;
+) => Promise<Result<CardanoSignedMessage, SignError>>;
 
 export type SignCardanoMessageDep = {
     signCardanoMessage: SignCardanoMessage;
@@ -49,9 +53,29 @@ const getCardanoAddressParameters = (accountIndex: number, path: string) => {
         : getAddressParameters({ index: accountIndex }, path);
 };
 
+const getPublicKey = (
+    format: CardanoSignatureFormat,
+    keys: { pubKey: string; coseKey: string },
+): string => {
+    switch (format) {
+        case 'raw':
+            return keys.pubKey;
+        case 'cose':
+            return keys.coseKey;
+        default:
+            return exhaustive(format);
+    }
+};
+
 export const createSignCardanoMessage =
     (deps: SignCardanoMessageDeps): SignCardanoMessage =>
-    async ({ device, symbol, accountIndex, accountType, path, message, hex, isCose }) => {
+    async ({ device, symbol, accountIndex, accountType, path, message, hex, format }) => {
+        const signatureFormat = toCardanoSignatureFormat(format);
+
+        if (!signatureFormat.success) {
+            return signatureFormat;
+        }
+
         const response = await deps.getTrezorConnect().cardanoSignMessage({
             device,
             path,
@@ -63,15 +87,12 @@ export const createSignCardanoMessage =
         });
 
         return response.success
-            ? {
-                  ...response,
-                  payload: {
-                      signature: response.payload.coseSignature,
-                      pubKey: isCose ? response.payload.coseKey : response.payload.pubKey,
-                      address: response.payload.headers.protected.address,
-                  },
-              }
-            : response;
+            ? ok({
+                  signature: response.payload.coseSignature,
+                  pubKey: getPublicKey(signatureFormat.payload, response.payload),
+                  address: response.payload.headers.protected.address,
+              })
+            : err(connectErrorToSignVerifyError(response.error));
     };
 
 export const injectSignCardanoMessage = (services: any): SignCardanoMessageDep => ({
