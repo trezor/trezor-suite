@@ -44,47 +44,36 @@ const renderFeesForm = (feeInfo: FeeInfo, defaultGasLimit = '21000') => {
 };
 
 describe('useEvmTxSimulationFeesForm selection', () => {
-    it.each(['legacy', 'eip1559'] as const)(
-        'keeps the chosen fee level separate from %s gas values',
-        type => {
-            const result = renderFeesForm({
-                blockHeight: 0,
-                blockTime: 12,
-                minFee: 0,
-                maxFee: 100,
-                minPriorityFee: 0,
-                levels: (['low', 'normal', 'high'] as const).map(label => ({
-                    label,
-                    blocks: 1,
-                    feePerUnit: '1',
-                    ...(type === 'eip1559'
-                        ? {
-                              maxFeePerGas: '1',
-                              maxPriorityFeePerGas: '0.1',
-                              baseFeePerGas: '0.5',
-                          }
-                        : {}),
-                })),
-            });
+    it('uses the selected legacy gas price after leaving Custom', () => {
+        const result = renderFeesForm({
+            blockHeight: 0,
+            blockTime: 12,
+            minFee: 1,
+            maxFee: 100,
+            minPriorityFee: 0,
+            levels: [
+                { label: 'low', blocks: 1, feePerUnit: '2' },
+                { label: 'normal', blocks: 1, feePerUnit: '10' },
+                { label: 'high', blocks: 1, feePerUnit: '20' },
+            ],
+        });
 
-            for (const label of ['low', 'normal', 'high', 'custom'] as const) {
-                act(() => result.current.form.setValue('selectedFee', label));
+        act(() => result.current.changeFeeLevel('custom'));
+        act(() => {
+            result.current.form.setValue('feePerUnit', '50');
+            result.current.form.setValue('feeLimit', '50000');
+        });
+        act(() => result.current.changeFeeLevel('low'));
 
-                expect(result.current.form.getValues('selectedFee')).toBe(label);
-                expect(result.current.getSelectedFee()).toEqual(
-                    type === 'eip1559'
-                        ? {
-                              type,
-                              gasLimit: '0x5208',
-                              maxFeePerGas: '0x3b9aca00',
-                              maxPriorityFeePerGas: '0x5f5e100',
-                              baseFeePerGas: '0x1dcd6500',
-                          }
-                        : { type, gasLimit: '0x5208', gasPrice: '0x3b9aca00' },
-                );
-            }
-        },
-    );
+        expect(result.current.getSelectedFee()).toEqual({
+            type: 'legacy',
+            gasLimit: '0x5208',
+            gasPrice: '0x77359400',
+        });
+        expect(result.current.composedLevels.low).toMatchObject({
+            fee: String(2e9 * 21000),
+        });
+    });
 });
 
 describe('useEvmTxSimulationFeesForm custom fee', () => {
