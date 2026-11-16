@@ -4,8 +4,13 @@ import {
     type DeviceRootState,
     selectDeviceStaticSessionId,
     selectHasBitcoinOnlyFirmware,
+    selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
+import {
+    type NetworksRootState,
+    selectNetworkNamesMap,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -245,13 +250,20 @@ const byValue =
         return worth(right).comparedTo(worth(left)) ?? 0;
     };
 
+// Enabled networks are what discovery looks for on a device. The Portfolio Tracker discovers
+// nothing: its accounts are imported one by one, on networks that setting may not hold.
+const selectAllowedNetworkSymbols = (state: HomeAssetTableState): readonly NetworkSymbol[] =>
+    selectIsPortfolioTrackerDevice(state)
+        ? selectSupportedNetworkSymbols(state)
+        : selectEnabledSupportedNetworks(state);
+
 export const selectShownWalletAssetKeys = createMemoizedSelector(
-    [selectWalletAssets, selectWalletAssetValues, selectEnabledSupportedNetworks],
-    (assets, values, enabledNetworks): readonly WalletAssetKey[] =>
+    [selectWalletAssets, selectWalletAssetValues, selectAllowedNetworkSymbols],
+    (assets, values, allowedNetworks): readonly WalletAssetKey[] =>
         returnStableArrayIfEmpty(
             [...assets.values()]
                 .filter(
-                    asset => enabledNetworks.includes(asset.symbol) && asset.cryptoBalance.gt(0),
+                    asset => allowedNetworks.includes(asset.symbol) && asset.cryptoBalance.gt(0),
                 )
                 .map(asset => asset.assetKey)
                 .sort(byValue(values)),
@@ -724,18 +736,18 @@ const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
         selectHiddenWalletAssets,
         selectHiddenWalletAssetValues,
         selectHiddenTokenReasons,
-        selectEnabledSupportedNetworks,
+        selectAllowedNetworkSymbols,
     ],
     (
         assets,
         values,
         reasons,
-        enabledNetworks,
+        allowedNetworks,
     ): ReadonlyMap<HiddenTokenReason, readonly WalletAssetKey[]> => {
         const byReason = new Map<HiddenTokenReason, WalletAssetKey[]>();
 
         assets.forEach((asset, assetKey) => {
-            if (asset.contractAddress === undefined || !enabledNetworks.includes(asset.symbol)) {
+            if (asset.contractAddress === undefined || !allowedNetworks.includes(asset.symbol)) {
                 return;
             }
 
