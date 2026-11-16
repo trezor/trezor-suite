@@ -11493,7 +11493,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@types/invity-api": "npm:^1.1.23"
+    "@types/invity-api": "npm:^1.1.24"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
     styled-components: "npm:^6.5.3"
@@ -21214,7 +21214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/invity-api@npm:^1.1.23, @types/invity-api@npm:^1.1.24":
+"@types/invity-api@npm:^1.1.24":
   version: 1.1.24
   resolution: "@types/invity-api@npm:1.1.24"
   checksum: 10/eafa27956fa4ad19c46ed786fb71dce0b325da6c437c8b625c49fd507d9c6ada42f203cc5c00b4290635c7fa5cdd5538384d8193d75b6b82fe6cc2055821af03
