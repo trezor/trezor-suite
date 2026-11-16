@@ -7,7 +7,11 @@ import { getWeakRandomId } from '@trezor/utils/src/getWeakRandomId';
 
 import { Popup } from './abstract';
 import { getIframeInstance } from './iframe';
-import { BootstrapError } from '../bootstrap/bootstrap-errors';
+import { BootstrapError, getPopupErrorURL } from '../bootstrap/bootstrap-errors';
+
+// Storage access settles within tens of milliseconds, and an older bootstrap starts its handshake
+// with the popup right away, so it must not wait for long.
+const POPUP_NAVIGATION_FALLBACK_TIMEOUT = 500;
 
 export class WebPopup extends Popup {
     private popupWindow: Window | undefined;
@@ -51,15 +55,23 @@ export class WebPopup extends Popup {
             return Promise.reject(error);
         }
 
-        // Open bootstrap.html. From now on we cant control the window.
-        // Communication via postMessage is limited to the same origin or localhost.
-        windowResult.location.href = popupUrl;
+        // Once the popup leaves about:blank we can't control it anymore (Suite sends COOP), and
+        // communication via postMessage is limited to the same origin or localhost.
+        let isPopupNavigated = false;
+        const navigatePopup = (href: string) => {
+            if (isPopupNavigated) return;
+
+            isPopupNavigated = true;
+            windowResult.location.href = href;
+        };
 
         // TODO: popupWindow assign conditionally when we have limited control over the window.
         // this.popupWindow = windowResult;
 
         const iframeWindowChannel = new WindowWindowChannel<
-            CoreEventMessage | { type: 'channel-handshake-error'; error: string }
+            | CoreEventMessage
+            | { type: 'channel-handshake-error'; error: string }
+            | { type: 'channel-handshake-ready' }
         >({
             windowHere: window,
             windowPeer: () => this.iframe.get()?.contentWindow || undefined,
@@ -72,21 +84,33 @@ export class WebPopup extends Popup {
         });
 
         iframeWindowChannel.on('message', message => {
-            if (message.type === 'channel-handshake-error') {
-                // This works only on limited setups: same origin or localhost.
-                // Handled by ../bootstrap.ts popup handshake
-                windowResult.postMessage(
-                    {
-                        type: 'channel-handshake-error',
-                        error: message.error,
-                    },
-                    popupOrigin,
-                );
+            if (message.type === 'channel-handshake-ready') {
+                navigatePopup(popupUrl);
+            } else if (message.type === 'channel-handshake-error') {
+                if (isPopupNavigated) {
+                    // This works only on limited setups: same origin or localhost.
+                    // Handled by ../bootstrap.ts popup handshake
+                    windowResult.postMessage(
+                        {
+                            type: 'channel-handshake-error',
+                            error: message.error,
+                        },
+                        popupOrigin,
+                    );
+                } else {
+                    navigatePopup(getPopupErrorURL(`${url}/`, message.error));
+                }
 
                 this.handleOpenFailure(message.error);
                 iframeWindowChannel.abortHandshake(message.error);
             }
         });
+
+        // Bootstrap from an older Suite deployment never reports it is ready.
+        const popupNavigationFallback = setTimeout(
+            () => navigatePopup(popupUrl),
+            POPUP_NAVIGATION_FALLBACK_TIMEOUT,
+        );
 
         try {
             await iframeWindowChannel.init();
@@ -102,6 +126,8 @@ export class WebPopup extends Popup {
             }
 
             return Promise.reject(error);
+        } finally {
+            clearTimeout(popupNavigationFallback);
         }
 
         if (!this.channel.isConnected) {

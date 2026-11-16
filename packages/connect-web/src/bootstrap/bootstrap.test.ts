@@ -16,8 +16,13 @@ class MockBroadcastChannel {
         MockBroadcastChannel.instances.push(this);
     }
 
-    addEventListener(_type: string, listener: (event: MessageEvent) => void) {
+    addEventListener(
+        _type: string,
+        listener: (event: MessageEvent) => void,
+        options?: AddEventListenerOptions,
+    ) {
         this.listeners.push(listener);
+        options?.signal?.addEventListener('abort', () => this.removeEventListener(_type, listener));
     }
 
     removeEventListener(_type: string, listener: (event: MessageEvent) => void) {
@@ -88,6 +93,15 @@ describe('bootstrap (popup mode)', () => {
         const bc: MockBroadcastChannel = instances[0];
         expect(bc).toBeDefined();
         expect(bc.name).toBe('@trezor/connect-popup/abc123');
+
+        // Popup announces itself, in case the iframe pinged before it was listening.
+        expect(bc.postMessage).toHaveBeenCalledWith({
+            type: 'channel-handshake-ready',
+            channel: {
+                here: '@trezor/connect-bootstrap-popup',
+                peer: '@trezor/connect-bootstrap-iframe',
+            },
+        });
 
         // Bootstrap-iframe sends handshake request via BroadcastChannel.
         bc.emit({
@@ -257,7 +271,39 @@ describe('bootstrap (iframe mode)', () => {
 
         await jest.advanceTimersByTimeAsync(0);
 
+        expect(mockParentWindow.postMessage).toHaveBeenCalledWith(
+            { type: 'channel-handshake-error', error: BootstrapError.STORAGE_ACCESS_DENIED },
+            OWNER_ORIGIN,
+        );
+        expect(mockParentWindow.postMessage).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'channel-handshake-ready' }),
+            OWNER_ORIGIN,
+        );
+
         errorSpy.mockRestore();
+    });
+
+    it('tells connect-web it is ready once storage access is granted', async () => {
+        const fakeBc = new MockBroadcastChannel('test');
+        (document as any).requestStorageAccess = jest.fn().mockResolvedValue({
+            BroadcastChannel: () => fakeBc,
+        });
+
+        bootstrap();
+        startHandshake();
+
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(mockParentWindow.postMessage).toHaveBeenCalledWith(
+            {
+                type: 'channel-handshake-ready',
+                channel: {
+                    here: '@trezor/connect-bootstrap-iframe',
+                    peer: '@trezor/connect-web',
+                },
+            },
+            OWNER_ORIGIN,
+        );
     });
 
     it('retries and eventually fails when bootstrap-popup does not respond', async () => {
@@ -273,18 +319,115 @@ describe('bootstrap (iframe mode)', () => {
 
         await jest.advanceTimersByTimeAsync(0);
 
-        // Exhaust all 5 retry attempts (500ms each).
-        jest.advanceTimersByTime(500 * 5);
+        await jest.advanceTimersByTimeAsync(7999);
+        expect(errorSpy).not.toHaveBeenCalled();
 
-        await jest.advanceTimersByTimeAsync(0);
+        await jest.advanceTimersByTimeAsync(1);
 
         const { calls } = errorSpy.mock;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstCall: unknown[] = calls[0];
         expect(firstCall.join(' ')).toMatch('handshake-timeout');
         expect(fakeBc.close).toHaveBeenCalled();
+        expect(mockParentWindow.postMessage).toHaveBeenCalledWith(
+            { type: 'channel-handshake-error', error: BootstrapError.HANDSHAKE_TIMEOUT },
+            OWNER_ORIGIN,
+        );
 
         errorSpy.mockRestore();
+    });
+
+    it('completes the handshake with a popup that starts listening late', async () => {
+        const fakeBc = new MockBroadcastChannel('test');
+        (document as any).requestStorageAccess = jest.fn().mockResolvedValue({
+            BroadcastChannel: () => fakeBc,
+        });
+
+        const promise = bootstrap();
+        startHandshake();
+
+        // A popup on a slow network is not listening for the first few seconds.
+        await jest.advanceTimersByTimeAsync(6000);
+
+        fakeBc.emit({
+            type: 'channel-handshake-confirm',
+            channel: {
+                here: '@trezor/connect-bootstrap-popup',
+                peer: '@trezor/connect-bootstrap-iframe',
+            },
+        });
+
+        await promise;
+
+        expect(mockParentWindow.postMessage).toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'channel-handshake-confirm' }),
+            OWNER_ORIGIN,
+        );
+    });
+
+    it('pings the popup right away when it announces itself', async () => {
+        const fakeBc = new MockBroadcastChannel('test');
+        (document as any).requestStorageAccess = jest.fn().mockResolvedValue({
+            BroadcastChannel: () => fakeBc,
+        });
+
+        bootstrap();
+        startHandshake();
+
+        await jest.advanceTimersByTimeAsync(0);
+        fakeBc.postMessage.mockClear();
+
+        fakeBc.emit({
+            type: 'channel-handshake-ready',
+            channel: {
+                here: '@trezor/connect-bootstrap-popup',
+                peer: '@trezor/connect-bootstrap-iframe',
+            },
+        });
+
+        expect(fakeBc.postMessage).toHaveBeenCalledWith({
+            type: 'channel-handshake-request',
+            channel: {
+                here: '@trezor/connect-bootstrap-iframe',
+                peer: '@trezor/connect-bootstrap-popup',
+            },
+        });
+    });
+
+    it('stops pinging the popup once it confirms', async () => {
+        const fakeBc = new MockBroadcastChannel('test');
+        (document as any).requestStorageAccess = jest.fn().mockResolvedValue({
+            BroadcastChannel: () => fakeBc,
+        });
+
+        const promise = bootstrap();
+        startHandshake();
+
+        await jest.advanceTimersByTimeAsync(0);
+
+        fakeBc.emit({
+            type: 'channel-handshake-confirm',
+            channel: {
+                here: '@trezor/connect-bootstrap-popup',
+                peer: '@trezor/connect-bootstrap-iframe',
+            },
+        });
+
+        await promise;
+        fakeBc.postMessage.mockClear();
+
+        await jest.advanceTimersByTimeAsync(10000);
+        fakeBc.emit({
+            type: 'channel-handshake-ready',
+            channel: {
+                here: '@trezor/connect-bootstrap-popup',
+                peer: '@trezor/connect-bootstrap-iframe',
+            },
+        });
+
+        expect(fakeBc.postMessage).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'channel-handshake-request' }),
+        );
     });
 });
 
