@@ -7,7 +7,9 @@ import {
 } from './__fixtures__/stakingUtils';
 import {
     getAccountEverstakeStakingPool,
+    getAccountTotalStakingBalance,
     getEthAccountTotalStakingBalance,
+    getTronAccountStakingBalanceWithUnstaking,
     getTronAccountTotalStakingBalance,
     getTronResources,
     getTronStakingInfo,
@@ -120,6 +122,24 @@ describe('getTronStakingInfo', () => {
 });
 
 describe('getTronAccountTotalStakingBalance', () => {
+    it('includes all unfreeze batches in portfolio totals while keeping active stake separate', () => {
+        const account = buildTronAccount({
+            formattedBalance: '10',
+            stakingInfo: buildStakingInfo({
+                stakedBalance: String(60 * TRX),
+                unstakingBatches: [
+                    { amount: String(15 * TRX), expireTime: 1 },
+                    { amount: String(25 * TRX), expireTime: 4_000_000_000 },
+                ],
+                unclaimedReward: String(2 * TRX),
+            }),
+        });
+
+        expect(getAccountTotalStakingBalance(account)).toBe('60');
+        expect(getTronAccountStakingBalanceWithUnstaking(account)).toBe('100');
+        expect(getTronAccountTotalStakingBalance(account)).toBe('60');
+    });
+
     it('returns null when there is no stakingInfo', () => {
         expect(getTronAccountTotalStakingBalance(buildTronAccount())).toBeNull();
     });

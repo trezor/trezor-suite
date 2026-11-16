@@ -32,7 +32,6 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
-    type Account,
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type Rate,
@@ -660,60 +659,74 @@ export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
 
 const selectHomeAssetTableState = (state: HomeAssetTableState) => state;
 
-const getAccountStakingAmount = (state: HomeAssetTableState, account: Account) =>
-    selectCountedStakingPositionEntriesByAccount(state, account.key).reduce(
-        (total, { position }) => total.plus(getStakingPositionAmount(position)),
-        ZERO,
-    );
-
-export const selectWalletAssetStakingAmount = createMemoizedSelector(
+const selectWalletAssetStakingBalances = createMemoizedSelector(
     [
         selectHomeAssetTableState,
         selectVisibleDeviceAccounts,
         selectWalletAssetNetworkSymbol,
         selectWalletAssetContractAddress,
     ],
-    (state, accounts, networkSymbol, contractAddress): string => {
+    (state, accounts, networkSymbol, contractAddress) => {
         if (networkSymbol === undefined || contractAddress !== undefined) {
-            return '0';
+            return { staked: '0', unstaking: '0' };
         }
 
-        const stakingAmount = accounts.reduce(
-            (total, account) =>
-                account.symbol === networkSymbol
-                    ? total.plus(getAccountStakingAmount(state, account))
-                    : total,
-            ZERO,
-        );
+        let total = ZERO;
+        let unstaking = ZERO;
 
-        return formatStakingAmount({
-            amount: stakingAmountSchema.parse(stakingAmount.toFixed(0)),
-            networkSymbol,
+        accounts.forEach(account => {
+            if (account.symbol !== networkSymbol) return;
+
+            selectCountedStakingPositionEntriesByAccount(state, account.key).forEach(
+                ({ position }) => {
+                    total = total.plus(getStakingPositionAmount(position));
+
+                    if (networkSymbol === 'trx') {
+                        unstaking = unstaking
+                            .plus(position.balances.unstaking)
+                            .plus(position.balances.withdrawable);
+                    }
+                },
+            );
         });
+
+        const format = (value: BigNumber) =>
+            formatStakingAmount({
+                amount: stakingAmountSchema.parse(value.toFixed(0)),
+                networkSymbol,
+            });
+
+        return { staked: format(total.minus(unstaking)), unstaking: format(unstaking) };
     },
+);
+
+export const selectWalletAssetStakingAmount = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey | undefined,
+) => selectWalletAssetStakingBalances(state, assetKey).staked;
+
+export const selectWalletAssetAvailableAmount = createMemoizedSelector(
+    [selectWalletAssetAmount, selectWalletAssetStakingBalances],
+    (totalAmount, { staked, unstaking }) =>
+        totalAmount === undefined
+            ? undefined
+            : new BigNumber(totalAmount).minus(staked).minus(unstaking).toFixed(),
 );
 
 export const selectWalletAssetStakingRatio = createMemoizedSelector(
-    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
-    (totalAmount, stakingAmount) => {
-        if (
-            totalAmount === undefined ||
-            !isPositiveBalance(totalAmount) ||
-            !isPositiveBalance(stakingAmount)
-        ) {
+    [selectWalletAssetAvailableAmount, selectWalletAssetStakingAmount],
+    (availableAmount, stakingAmount) => {
+        if (availableAmount === undefined || !isPositiveBalance(stakingAmount)) {
             return undefined;
         }
 
-        return Number(stakingAmount) / Number(totalAmount);
-    },
-);
+        // TRX in the unfreeze queue is owned but belongs to neither Earn segment.
+        const totalAmount = new BigNumber(availableAmount).plus(stakingAmount);
 
-export const selectWalletAssetAvailableAmount = createMemoizedSelector(
-    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
-    (totalAmount, stakingAmount) =>
-        totalAmount === undefined
-            ? undefined
-            : new BigNumber(totalAmount).minus(stakingAmount).toFixed(),
+        return totalAmount.gt(0)
+            ? new BigNumber(stakingAmount).div(totalAmount).toNumber()
+            : undefined;
+    },
 );
 
 export const selectWalletAssetTokenSymbol = (

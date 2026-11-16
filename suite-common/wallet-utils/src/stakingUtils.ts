@@ -141,6 +141,25 @@ export const getTronAccountTotalStakingBalance = (account: Account): string | nu
     return sunToTrx(stakingInfo.stakedBalance, account.symbol);
 };
 
+export const getTronAccountUnstakingBalance = (account: Account): string | null => {
+    const stakingInfo = getTronStakingInfo(account);
+    if (!stakingInfo) return null;
+
+    const total = (stakingInfo.unstakingBatches ?? []).reduce(
+        (balance, batch) => balance.plus(batch.amount),
+        new BigNumber(0),
+    );
+
+    return sunToTrx(total.toString(), account.symbol);
+};
+
+export const getTronAccountStakingBalanceWithUnstaking = (account: Account): string | null => {
+    const staked = getTronAccountTotalStakingBalance(account);
+    if (staked === null) return null;
+
+    return new BigNumber(staked).plus(getTronAccountUnstakingBalance(account) ?? '0').toString();
+};
+
 const STAKING_BALANCE_BY_TYPE = {
     ethereum: getEthAccountTotalStakingBalance,
     solana: getSolAccountTotalStakingBalance,

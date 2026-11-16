@@ -59,6 +59,7 @@ const ETH = asNetworkSymbol('eth');
 const POL = asNetworkSymbol('pol');
 const DSOL = asNetworkSymbol('dsol');
 const ADA = asNetworkSymbol('ada');
+const TRX = asNetworkSymbol('trx');
 
 /** What the desktop table folds at; the selectors take whatever a platform passes. */
 const ROW_LIMIT = 8;
@@ -72,6 +73,11 @@ const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
     networkSymbol: ADA,
     type: 'native',
     operations: ['stake', 'unstake', 'claim', 'vote'],
+    rewardsKind: 'claimable',
+});
+const TRX_STAKING_PRODUCT = mockStakingProductDescriptor({
+    networkSymbol: TRX,
+    type: 'native',
     rewardsKind: 'claimable',
 });
 
@@ -161,7 +167,7 @@ const createState = ({
     return {
         earn: {
             staking: mockStakingState({
-                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT],
+                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT, TRX_STAKING_PRODUCT],
                 positions: stakingPositions,
             }),
         },
@@ -191,6 +197,7 @@ const createState = ({
             [POL]: { symbol: POL, name: 'Polygon PoS' },
             [DSOL]: { symbol: DSOL, name: 'Solana Devnet' },
             [ADA]: { symbol: ADA, name: 'Cardano' },
+            [TRX]: { symbol: TRX, name: 'Tron' },
         },
     } as unknown as HomeAssetTableState;
 };
@@ -666,6 +673,35 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetStakingAmount(staked, ethereumKey)).toBe('2');
         expect(selectWalletAssetStakingRatio(staked, ethereumKey)).toBeCloseTo(2 / 3);
         expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
+    });
+
+    it('keeps unstaking and withdrawable TRX out of Available and active stake', () => {
+        const account = mockAccount({ symbol: TRX, balance: '10' });
+        const unstaking = createState({
+            accounts: [account],
+            enabledNetworks: [TRX],
+            rates: mockRate(TRX, 1),
+            stakingPositions: {
+                [account.key]: [
+                    mockStakingPosition({
+                        productId: TRX_STAKING_PRODUCT.id,
+                        balances: balances({
+                            staked: amount('60000000'),
+                            unstaking: amount('25000000'),
+                            withdrawable: amount('15000000'),
+                            rewards: amount('2000000'),
+                        }),
+                    }),
+                ],
+            },
+        });
+        const tronKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: TRX });
+
+        expect(selectWalletAssetAmount(unstaking, tronKey)).toBe('110');
+        expect(selectWalletAssetFiatValue(unstaking, tronKey)?.toFixed()).toBe('110');
+        expect(selectWalletAssetStakingAmount(unstaking, tronKey)).toBe('60');
+        expect(selectWalletAssetAvailableAmount(unstaking, tronKey)).toBe('10');
+        expect(selectWalletAssetStakingRatio(unstaking, tronKey)).toBeCloseTo(60 / 70);
     });
 
     it('counts a liquid Cardano stake in the balance the account already holds', () => {
