@@ -72,9 +72,11 @@ describe('VirtualizedList', () => {
     });
 
     describe('smoke tests', () => {
-        // jsdom performs no layout, so every element reports an offsetHeight of 0. The
-        // virtualizer sizes its window from that, and would find no room for any item.
+        // jsdom performs no layout, so every element reports a clientHeight and an offsetHeight
+        // of 0. The virtualizer sizes its window from the former and measures items from the
+        // latter, and would find no room for any item.
         beforeAll(() => {
+            jest.spyOn(Element.prototype, 'clientHeight', 'get').mockReturnValue(200);
             jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(200);
         });
 
@@ -188,9 +190,11 @@ describe('VirtualizedList', () => {
         const ITEM_HEIGHT = 40;
         const LIST_HEIGHT = 200;
 
-        // jsdom performs no layout, so every element reports an offsetHeight of 0. The
-        // virtualizer sizes its window from that, and would find no room for any item.
+        // jsdom performs no layout, so every element reports a clientHeight and an offsetHeight
+        // of 0. The virtualizer sizes its window from the former and measures items from the
+        // latter, and would find no room for any item.
         beforeAll(() => {
+            jest.spyOn(Element.prototype, 'clientHeight', 'get').mockReturnValue(LIST_HEIGHT);
             jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(LIST_HEIGHT);
         });
 

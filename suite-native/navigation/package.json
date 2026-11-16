@@ -45,7 +45,7 @@
         "react-native-keyboard-controller": "1.22.7",
         "react-native-reanimated": "4.7.1",
         "react-native-safe-area-context": "~5.10.1",
-        "react-redux": "9.3.0",
+        "react-redux": "9.3.1",
         "type-fest": "5.5.0"
     },
     "devDependencies": {

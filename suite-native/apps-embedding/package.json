@@ -25,7 +25,7 @@
         "react": "19.3.0",
         "react-native": "0.88.1",
         "react-native-webview": "patch:react-native-webview@npm%3A14.0.1#~/.yarn/patches/react-native-webview-npm-14.0.1-5188b52144.patch",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*"

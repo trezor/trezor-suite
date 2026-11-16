@@ -59,7 +59,7 @@
         "history": "^5.3.0",
         "react": "19.3.0",
         "react-dom": "19.3.0",
-        "react-redux": "9.3.0",
+        "react-redux": "9.3.1",
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
