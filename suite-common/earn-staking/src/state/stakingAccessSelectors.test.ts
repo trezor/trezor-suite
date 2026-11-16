@@ -85,7 +85,7 @@ const gated = mockStakingProductDescriptor({
     minFirmware: { claim: '2.12.2' },
 });
 
-// In reverse coin order, so the promo selector has to sort.
+// In reverse network order, so the promo selector has to sort.
 const DESCRIPTORS = [gated, readOnly, external, subset, testnet, manage];
 
 type AccessState = StakingRootState & MessageSystemRootState & DeviceRootState & NetworksRootState;
@@ -331,7 +331,7 @@ describe('selectStakeableStakingProductDescriptorsBySymbol', () => {
 });
 
 describe('selectStakingPromoProductDescriptors', () => {
-    it('lists the mainnet products in coin order while testnets are off', () => {
+    it('lists the mainnet products in network order while testnets are off', () => {
         expect(
             selectStakingPromoProductDescriptors(createState(), false).map(({ id }) => id),
         ).toEqual([manage.id, subset.id, readOnly.id, gated.id]);

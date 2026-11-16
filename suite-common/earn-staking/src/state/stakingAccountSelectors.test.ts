@@ -409,7 +409,7 @@ describe('selectStakingAccountFiatAmount', () => {
         [getFiatRateKey(asNetworkSymbol('ada'), 'usd')]: createRate(asNetworkSymbol('ada'), 0.5),
     };
 
-    it('values the amount outside the balance at the coin rate', () => {
+    it('values the amount outside the balance at the native token rate', () => {
         const state = createState({ rates: usdRates });
 
         expect(selectStakingAccountFiatAmount(state, ethAccount.key)?.toFixed()).toBe('5000');

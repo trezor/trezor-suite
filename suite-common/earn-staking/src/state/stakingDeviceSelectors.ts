@@ -39,7 +39,7 @@ const selectNetworkSymbolParam = (_state: StakingDeviceRootState, networkSymbol:
 
 // Every device selector below reads the selected device state, so one wallet: a passphrase wallet
 // is a device instance of its own, as for selectDeviceAccounts in wallet-core.
-const selectDeviceAccountsInCoinOrder = createWeakMapSelector(
+const selectDeviceAccountsInNetworkOrder = createWeakMapSelector(
     [selectVisibleDeviceAccounts, selectSupportedNetworkSymbols],
     (accounts, supportedNetworkSymbols): readonly Account[] =>
         returnStableArrayIfEmpty(
@@ -48,7 +48,7 @@ const selectDeviceAccountsInCoinOrder = createWeakMapSelector(
 );
 
 const selectDeviceCountedStakingPositionEntries = createWeakMapSelector(
-    [selectState, selectDeviceAccountsInCoinOrder],
+    [selectState, selectDeviceAccountsInNetworkOrder],
     (state, accounts): readonly StakingPositionEntry[] =>
         returnStableArrayIfEmpty(
             createStableEntries(
