@@ -166,4 +166,18 @@ describe('getMutex', () => {
             }),
         ]);
     });
+
+    // lockIds come from the outside world (e.g. transport uses USB serial numbers),
+    // so keys inherited from Object.prototype must behave like any other key and
+    // not read as an always-pending lock
+    it('inherited object keys as lockId', async () => {
+        for (const lockId of ['toString', 'constructor', '__proto__']) {
+            const unlock = await lock(lockId);
+            unlock();
+
+            // and the lock is reusable after unlock
+            const unlockAgain = await lock(lockId);
+            unlockAgain();
+        }
+    });
 });

@@ -81,4 +81,58 @@ describe('transport-bridge core lock safety', () => {
             core.dispose();
         }
     });
+
+    it('release frees the lock and reports device not found when the device vanishes mid-release', async () => {
+        const enumerate = jest
+            .fn()
+            .mockResolvedValueOnce({ success: true, payload: [{ path: '1' }] })
+            .mockResolvedValueOnce({ success: true, payload: [] })
+            .mockResolvedValue({ success: true, payload: [{ path: '1' }] });
+
+        const closeDevice = jest.fn();
+        const core = createCore(createFakeApi({ enumerate, closeDevice }), muteLogger);
+        const { signal } = new AbortController();
+
+        // the device unplugs while release is closing it: closeDevice re-enumerates
+        // to empty, removing the descriptor before releaseDone runs
+        closeDevice.mockImplementation(async () => {
+            await core.enumerate({ signal });
+
+            return { success: true, payload: undefined };
+        });
+
+        try {
+            await core.enumerate({ signal });
+
+            const acquire = await core.acquire({
+                path: PathPublic('1'),
+                previous: 'null',
+                signal,
+                sessionOwner: 'A',
+            });
+            expect(acquire.success).toBe(true);
+            if (!acquire.success) return;
+
+            const release = await core.release({ session: acquire.payload.session });
+            expect(release).toMatchObject({
+                success: false,
+                error: { code: 'device not found' },
+            });
+            expect(closeDevice).toHaveBeenCalledTimes(1);
+
+            // the lock taken by releaseIntent was freed: after the device
+            // reappears (new public path), acquire goes through instead of
+            // deadlocking behind the leaked lock
+            await core.enumerate({ signal });
+            const reacquire = await core.acquire({
+                path: PathPublic('2'),
+                previous: 'null',
+                signal,
+                sessionOwner: 'A',
+            });
+            expect(reacquire).toMatchObject({ success: true });
+        } finally {
+            core.dispose();
+        }
+    });
 });

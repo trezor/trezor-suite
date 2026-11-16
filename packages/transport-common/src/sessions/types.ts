@@ -64,9 +64,10 @@ export interface ReleaseDoneRequest {
     path: PathInternal;
 }
 
-export type ReleaseDoneResponse = BackgroundResponse<{
-    descriptors: Descriptor[];
-}>;
+export type ReleaseDoneResponse = BackgroundResponseWithError<
+    { descriptors: Descriptor[] },
+    typeof ERRORS.DEVICE_NOT_FOUND
+>;
 
 export type GetSessionsRequest = Record<string, never>;
 export type GetSessionsResponse = BackgroundResponse<{

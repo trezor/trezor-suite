@@ -280,4 +280,84 @@ describe('api/usb', () => {
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenCalledWith([]);
     });
+
+    // paths are raw USB serial numbers, so a device can report a serial colliding
+    // with an Object.prototype member; such a path must not read as a reset that
+    // is already running, otherwise aborts stop cancelling in-flight transfers
+    it('read aborted on a path colliding with Object.prototype keys', async () => {
+        const reset = jest.fn(() => Promise.resolve());
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () =>
+                    Promise.resolve([
+                        createMockedDevice({
+                            serialNumber: 'toString',
+                            reset,
+                            transferIn: () =>
+                                new Promise(resolve =>
+                                    setTimeout(
+                                        () => resolve(createTransferInResult(api.chunkSize)),
+                                        100,
+                                    ),
+                                ),
+                        }),
+                    ]),
+            }),
+        });
+
+        const abortController = new AbortController();
+        await api.enumerate(abortController.signal);
+        const promise = api.read(PathInternal('toString'), { signal: abortController.signal });
+        abortController.abort();
+
+        const result = await promise;
+        if (result.success) throw new Error('Unexpected success');
+        expect(reset).toHaveBeenCalledTimes(1);
+    });
+
+    it('runInIsolation isolates per path: other paths run in parallel, same path serializes', async () => {
+        const api = new UsbApi({ usbInterface: createUsbMock() });
+
+        const blocker = createDeferred();
+        const order: string[] = [];
+
+        // long operation (e.g. signing awaiting on-device confirmation) holds path 1
+        const path1 = api.runInIsolation(
+            { lock: { read: false, write: true }, path: '1' },
+            async () => {
+                order.push('path1-start');
+                await blocker.promise;
+                order.push('path1-end');
+
+                return { success: true as const, payload: undefined };
+            },
+        );
+
+        // an operation on another device must not queue behind it. runInIsolation
+        // only awaits microtasks here, and node drains those before the timer
+        // phase, so a 0ms sentinel makes this ordering deterministic
+        const path2 = await Promise.race([
+            api.runInIsolation({ lock: { read: true, write: true }, path: '2' }, () => ({
+                success: true as const,
+                payload: 'path2',
+            })),
+            new Promise(resolve => setTimeout(() => resolve('blocked'), 0)),
+        ]);
+        expect(path2).toEqual({ success: true, payload: 'path2' });
+
+        // while an operation on the same path (non-conflicting lock) still serializes
+        const path1Again = api.runInIsolation(
+            { lock: { read: true, write: false }, path: '1' },
+            () => {
+                order.push('path1-again');
+
+                return { success: true as const, payload: undefined };
+            },
+        );
+
+        blocker.resolve(undefined);
+        await path1;
+        await path1Again;
+        expect(order).toEqual(['path1-start', 'path1-end', 'path1-again']);
+    });
 });
