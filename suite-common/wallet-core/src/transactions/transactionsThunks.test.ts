@@ -1,4 +1,10 @@
-import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
+import { combineReducers } from '@reduxjs/toolkit';
+
+import {
+    type TestCompositionStore,
+    createTestCompositionRoot,
+    testMocks,
+} from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -10,28 +16,47 @@ import {
 import {
     mockWalletAccount,
     networkSpecificDefaultCardano,
+    networkSpecificDefaultRipple,
     networkSpecificDefaultSolana,
+    networkSpecificDefaultStellar,
 } from '@suite-common/wallet-types/mocks';
 import { isPending } from '@suite-common/wallet-utils';
-import { type AccountInfo } from '@trezor/connect';
+import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import {
     SOLANA_BLOCKHASH_VALIDITY_BLOCKS,
     SOLANA_SLOT_TIME_MS,
 } from '@trezor/network-solana/constants';
-import { createMockDispatch } from '@trezor/redux-utils/mocks';
+import { createMockDispatch, mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { transactionsActions } from './transactionsActions';
+import { prepareTransactionsReducer, transactionsInitialState } from './transactionsReducer';
+import { selectAreAllAccountTransactionsLoaded } from './transactionsSelectors';
 import {
     type AddFakePendingCardanoTxThunkState,
     type AddFakePendingSolanaTxThunkState,
     type AddFakePendingStellarTxThunkState,
+    type FetchTransactionsPageThunkState,
     addFakePendingCardanoTxThunk,
     addFakePendingSolanaSendTxThunk,
     addFakePendingSolanaStakeTxThunk,
     addFakePendingStellarTxThunk,
+    fetchTransactionsPageThunk,
     hasTransactionsPageAfter,
 } from './transactionsThunks';
+import { mockSetAccountAddMetadata } from '../../mocks';
+import { prepareAccountsReducer } from '../accounts/accountsReducer';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
+import { stellarContractTokensInitialState } from '../token/stellarContractTokensSlice';
+
+jest.mock('@trezor/connect', () => {
+    const actual = jest.requireActual('@trezor/connect');
+
+    return {
+        ...actual,
+        __esModule: true,
+        default: { ...actual.default, getAccountInfo: jest.fn() },
+    };
+});
 
 const OWN_ADDRESS = 'addr1-own';
 const OWN_PATH = "m/1852'/1815'/0'/0/0";
@@ -622,5 +647,132 @@ describe(hasTransactionsPageAfter.name, () => {
 
     it('has one more when the page was stored before', () => {
         expect(hasTransactionsPageAfter('ALREADY_FETCHED', 9)).toBe(true);
+    });
+});
+
+describe('fetchTransactionsPageThunk after an account sync', () => {
+    const PER_PAGE = 25;
+    const MAX_PAGES = 10;
+
+    const accountsReducer = prepareAccountsReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+        actions: { setAccountAddMetadata: mockSetAccountAddMetadata() },
+        reducers: { storageLoadAccounts: mockReducer() },
+    });
+    const transactionsReducer = prepareTransactionsReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+        reducers: { storageLoadTransactions: mockReducer() },
+    });
+
+    const getTransactions = (from: number, count: number) =>
+        Array.from({ length: count }, (_, index) =>
+            testMocks.getWalletTransaction({
+                txid: `tx-${from + index}`,
+                blockHeight: 1000 - from - index,
+            }),
+        );
+
+    const getAccountInfo = (transactions: AccountInfo['history']['transactions']) =>
+        ({
+            descriptor: 'descriptor',
+            balance: '0',
+            availableBalance: '0',
+            empty: false,
+            history: { total: -1, unconfirmed: 0, transactions },
+        }) as AccountInfo;
+
+    const PAGE_1 = getTransactions(0, PER_PAGE);
+
+    // The account list loads the page after the last one until the history reports its end.
+    const walkHistory = async (
+        { symbol }: Pick<Account, 'symbol'>,
+        networkSpecific: typeof networkSpecificDefaultStellar | typeof networkSpecificDefaultRipple,
+        responses: AccountInfo[],
+    ) => {
+        const syncedAccount = mockWalletAccount(
+            { symbol, history: { total: -1, unconfirmed: 0 } },
+            networkSpecific,
+        );
+        const { store } = createTestCompositionRoot<void, FetchTransactionsPageThunkState>({
+            reducer: combineReducers({
+                wallet: combineReducers({
+                    accounts: accountsReducer,
+                    transactions: transactionsReducer,
+                    blockchain: (state = blockchainInitialState) => state,
+                    stellarContractTokens: (state = stellarContractTokensInitialState) => state,
+                }),
+            }),
+            preloadedState: {
+                wallet: {
+                    accounts: [syncedAccount],
+                    transactions: transactionsInitialState,
+                    blockchain: blockchainInitialState,
+                    stellarContractTokens: stellarContractTokensInitialState,
+                },
+            },
+        }).services;
+
+        // An account sync stores page 1 the way fetchAndUpdateAccountThunk does: no page, no status.
+        store.dispatch(
+            transactionsActions.addTransaction({ account: syncedAccount, transactions: PAGE_1 }),
+        );
+
+        const getAccountInfoMock = jest.mocked(TrezorConnect.getAccountInfo);
+        // Without a cursor the backend serves the history from its top again.
+        getAccountInfoMock.mockResolvedValue({
+            success: true,
+            payload: getAccountInfo(PAGE_1),
+        } as any);
+        responses.forEach(payload =>
+            getAccountInfoMock.mockResolvedValueOnce({ success: true, payload } as any),
+        );
+
+        const requestedPages: number[] = [];
+        for (let page = 2; page <= MAX_PAGES; page++) {
+            if (selectAreAllAccountTransactionsLoaded(store.getState(), syncedAccount.key)) break;
+
+            requestedPages.push(page);
+            await store
+                .dispatch(
+                    fetchTransactionsPageThunk({
+                        accountKey: syncedAccount.key,
+                        page,
+                        perPage: PER_PAGE,
+                    }),
+                )
+                .unwrap();
+        }
+
+        return requestedPages;
+    };
+
+    afterEach(() => {
+        jest.mocked(TrezorConnect.getAccountInfo).mockReset();
+    });
+
+    it('stops a cursor-paged history at its first empty page', async () => {
+        const requestedPages = await walkHistory(
+            { symbol: asNetworkSymbol('xlm') },
+            networkSpecificDefaultStellar,
+            [
+                { ...getAccountInfo(getTransactions(25, 10)), stellarCursor: 'cursor-2' },
+                { ...getAccountInfo([]), stellarCursor: 'cursor-2' },
+            ],
+        );
+
+        expect(requestedPages).toEqual([2, 3]);
+    });
+
+    it('stops a marker-paged history at its first page without a marker', async () => {
+        const requestedPages = await walkHistory(
+            { symbol: asNetworkSymbol('xrp') },
+            networkSpecificDefaultRipple,
+            [
+                { ...getAccountInfo(getTransactions(25, 25)), marker: { ledger: 1, seq: 1 } },
+                getAccountInfo(getTransactions(50, 10)),
+            ],
+        );
+
+        expect(requestedPages).toEqual([2, 3]);
     });
 });

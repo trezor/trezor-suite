@@ -1,6 +1,6 @@
 import { freeze, isAnyOf, isDraft, original } from '@reduxjs/toolkit';
 
-import type { AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { type AccountInfo } from '@trezor/connect';
 import {
@@ -40,6 +40,7 @@ const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => 
 /** What a fetched page adds to the account's history walk. Only pages fetched in order count. */
 type GetHistoryStatusAfterPageParams = {
     status: Partial<AccountTransactionsHistoryStatus> | undefined;
+    storedTransactions: readonly WalletAccountTransaction[];
     page: number;
     perPage: number;
     result: AccountInfo | 'ALREADY_FETCHED';
@@ -47,12 +48,18 @@ type GetHistoryStatusAfterPageParams = {
 
 const getHistoryStatusAfterPage = ({
     status,
+    storedTransactions,
     page,
     perPage,
     result,
 }: GetHistoryStatusAfterPageParams): Partial<AccountTransactionsHistoryStatus> => {
     const { fetchedPages } = status ?? {};
-    const fetchedCount = fetchedPages?.perPage === perPage ? (fetchedPages?.count ?? 0) : 0;
+    // An account sync stores page 1 without recording it; the pages before this one count as
+    // fetched once the store holds them, or a cursor-paged history would never reach its end.
+    const firstGapIndex = storedTransactions.findIndex(tx => !tx?.txid);
+    const storedCount = firstGapIndex === -1 ? storedTransactions.length : firstGapIndex;
+    const storedPageCount = Math.min(Math.floor(storedCount / perPage), page - 1);
+    const fetchedCount = fetchedPages?.perPage === perPage ? fetchedPages.count : storedPageCount;
 
     if (page > fetchedCount + 1) {
         return {};
@@ -165,6 +172,7 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     error: null,
                     ...getHistoryStatusAfterPage({
                         status,
+                        storedTransactions: state.transactions[accountKey] ?? [],
                         page: meta.arg.page,
                         perPage: meta.arg.perPage,
                         result: payload,
