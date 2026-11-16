@@ -16,7 +16,7 @@
         "@suite-common/formatters": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@testing-library/react-native": "14.0.1",
+        "@testing-library/react-native": "14.1.0",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",

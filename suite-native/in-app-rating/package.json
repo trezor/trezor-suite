@@ -13,6 +13,6 @@
     "dependencies": {
         "@suite-common/message-system": "workspace:*",
         "expo-store-review": "~58.0.2",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     }
 }

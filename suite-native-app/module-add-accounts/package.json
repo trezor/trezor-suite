@@ -40,7 +40,7 @@
         "expo-linear-gradient": "~58.0.3",
         "react": "19.3.0",
         "react-native": "0.88.1",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"

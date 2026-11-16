@@ -22,7 +22,7 @@
         "@trezor/product-components": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react": "19.3.0",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@types/react": "19.3.0"

@@ -16,7 +16,7 @@
         "@suite-common/earn-staking": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@suite-common/earn-stablecoin-api": "workspace:*",
