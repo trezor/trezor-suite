@@ -110,6 +110,31 @@ describe('autocorrectAddress', () => {
         ).toBeNull();
     });
 
+    it('lowercases the 0X prefix of an ETH address', () => {
+        expect(
+            autocorrectAddress({
+                addressValidator: deps.addressValidator,
+                address: '0X0662CDB446FB08D2891D15351AC436181AF2D730',
+                symbol: ethSymbol,
+            }),
+        ).toEqual({
+            corrected: '0x0662CDB446FB08D2891D15351AC436181AF2D730',
+            type: 'hexPrefix',
+        });
+    });
+
+    it('does not change the 0X prefix when the network rejects the hex address', () => {
+        deps.addressValidator.isAddressValid.mockReturnValue(false);
+
+        expect(
+            autocorrectAddress({
+                addressValidator: deps.addressValidator,
+                address: '0X0662CDB446FB08D2891D15351AC436181AF2D730',
+                symbol: btcSymbol,
+            }),
+        ).toBeNull();
+    });
+
     it('returns null for non-BCH symbol even without prefix', () => {
         expect(
             autocorrectAddress({

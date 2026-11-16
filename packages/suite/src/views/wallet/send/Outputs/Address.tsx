@@ -68,6 +68,7 @@ import { DevAddressBook } from './DevAddressBook';
 const autocorrectTranslationKeys: Record<NonNullable<AddressCorrection>['type'], TranslationKey> = {
     lowercase: 'TR_CONVERTED_TO_LOWERCASE',
     bchPrefix: 'TR_ADDED_BITCOINCASH_PREFIX',
+    hexPrefix: 'TR_CONVERTED_HEX_PREFIX_TO_LOWERCASE',
 };
 
 type AddressProps = {
