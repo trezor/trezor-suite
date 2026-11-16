@@ -21,7 +21,8 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/earn-stablecoin": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:*",
-        "@suite-common/earn-staking-api": "workspace:*",
+        "@suite-common/earn-staking": "workspace:*",
+        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -53,6 +54,7 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/networks": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/device-utils": "workspace:*",

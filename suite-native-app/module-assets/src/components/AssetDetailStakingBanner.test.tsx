@@ -1,4 +1,5 @@
 import { type useNativeYieldVault } from '@suite-common/earn-stablecoin';
+import { type useNetworkStakingRate } from '@suite-common/earn-staking';
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { type StakingPosition, stakingAmountSchema } from '@suite-common/earn-staking-common';
 import {
@@ -13,7 +14,6 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { bannerFlagsInitialState } from '@suite-native/banners';
-import { type useStakingRate } from '@suite-native/earn';
 import { getTranslation } from '@suite-native/intl';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
 import {
@@ -33,7 +33,7 @@ const ADA = asNetworkSymbol('ada');
 const TRX = asNetworkSymbol('trx');
 
 const mockDispatchNavigation = mock<(action: unknown) => void>();
-const mockUseStakingRate = mock<typeof useStakingRate>();
+const mockUseNetworkStakingRate = mock<typeof useNetworkStakingRate>();
 const mockUseNativeYieldVault = mock<typeof useNativeYieldVault>();
 let mockRouteParams: AssetsStackParamList[AssetsStackRoutes.AssetDetail];
 
@@ -42,9 +42,10 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => ({ params: mockRouteParams }),
     useNavigation: () => ({ dispatch: mockDispatchNavigation }),
 }));
-jest.mock('@suite-native/earn', () => ({
-    ...jest.requireActual('@suite-native/earn'),
-    useStakingRate: (...args: Parameters<typeof useStakingRate>) => mockUseStakingRate(...args),
+jest.mock('@suite-common/earn-staking', () => ({
+    ...jest.requireActual('@suite-common/earn-staking'),
+    useNetworkStakingRate: (...args: Parameters<typeof useNetworkStakingRate>) =>
+        mockUseNetworkStakingRate(...args),
 }));
 jest.mock('@suite-common/earn-stablecoin', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin'),
@@ -107,7 +108,11 @@ const renderStakingBanner = async ({
     }
 
     mockRouteParams = { networkSymbol: account.symbol };
-    mockUseStakingRate.mockReturnValue({ rate: stakingRate ?? null });
+    mockUseNetworkStakingRate.mockImplementation(params => ({
+        rate: stakingRate ?? null,
+        rateKind: params.networkSymbol === asNetworkSymbol('trx') ? 'apr' : 'apy',
+        isPending: false,
+    }));
 
     const store = createStoreFromPreloadedState({
         discreetMode: { isActive: isDiscreetMode },

@@ -6,6 +6,12 @@ import {
     selectBestEnabledYieldVault,
 } from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import {
+    type StakingAccessRootState,
+    selectStakeableStakingProductDescriptorBySymbol,
+    useNetworkStakingRate,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -14,20 +20,17 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
-import { isArrayMember } from '@trezor/utils';
 
-import { useMessageSystemStaking } from './useMessageSystemStaking';
 import { useMessageSystemYield } from './useMessageSystemYield';
-import { useStakingRate } from './useStakingRate';
-import {
-    type YieldRateLabelType,
-    getStakingRateLabelType,
-    getYieldRateLabelType,
-} from '../utils/getYieldRateLabelType';
+import { selectIsStakingManageableSymbol } from '../stakingSelectors';
+import { type YieldRateLabelType, getYieldRateLabelType } from '../utils/getYieldRateLabelType';
 import { getBestPromotedRate } from '../utils/promotedRateUtils';
 
 /** `inactive` = token eligible for a deposit, `active` = vault receipt token already earning. */
 export type TokenYieldRateVariant = 'inactive' | 'active';
+
+/** `offered` = every staking product the platform shows, `manageable` = only what it can stake. */
+export type StakingPromotionScope = 'offered' | 'manageable';
 
 export type TokenYieldRateToken = {
     contract: string;
@@ -39,7 +42,7 @@ type UseAssetYieldRateParams = {
     networkSymbol: NetworkSymbol;
     token?: TokenYieldRateToken;
     variant: TokenYieldRateVariant;
-    stakingSymbols: readonly NetworkSymbol[];
+    stakingScope: StakingPromotionScope;
     accountKey?: AccountKey;
 };
 
@@ -54,7 +57,7 @@ export const useAssetYieldRate = ({
     networkSymbol,
     token,
     variant,
-    stakingSymbols,
+    stakingScope,
     accountKey,
 }: UseAssetYieldRateParams): AssetYieldRate | null => {
     const yieldDepositMessageSystem = useMessageSystemYield('deposit');
@@ -95,10 +98,19 @@ export const useAssetYieldRate = ({
         selectBestEnabledYieldVault(state, matchedVaults),
     );
 
-    const { isStakingDisabled } = useMessageSystemStaking(networkSymbol);
-    const { rate: stakingRate } = useStakingRate({ symbol: networkSymbol, accountKey });
+    const stakingProductId = useSelector(
+        (state: StakingAccessRootState) =>
+            selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol)?.id ?? null,
+    );
+    const isStakingPromoted = useSelector((state: StakingAccessRootState) =>
+        stakingScope === 'manageable'
+            ? selectIsStakingManageableSymbol(state, networkSymbol)
+            : selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol) !== null,
+    );
+    const { disabled } = useStakingAccess(stakingProductId);
+    const { rate: stakingRate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
     const promotedStakingRate =
-        token === undefined && !isStakingDisabled && isArrayMember(networkSymbol, stakingSymbols)
+        token === undefined && isStakingPromoted && disabled.stake === undefined
             ? stakingRate
             : null;
 
@@ -114,6 +126,6 @@ export const useAssetYieldRate = ({
             return { apy: bestRate.apy, labelType: getYieldRateLabelType(bestVault.rewardRate) };
         }
 
-        return { apy: bestRate.apy, labelType: getStakingRateLabelType(networkSymbol) };
-    }, [bestVault, promotedStakingRate, networkSymbol]);
+        return { apy: bestRate.apy, labelType: rateKind ?? 'rate' };
+    }, [bestVault, promotedStakingRate, rateKind]);
 };

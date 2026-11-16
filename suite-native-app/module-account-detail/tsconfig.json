@@ -11,6 +11,9 @@
             "path": "../../suite-common/earn-stablecoin-api"
         },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
             "path": "../../suite-common/fiat-services"
         },
         { "path": "../../suite-common/graph" },

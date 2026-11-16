@@ -37,8 +37,8 @@ import {
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import {
-    navigateByAccountState,
     navigateByYieldAccountState,
+    useNavigateByAccountState,
     useStablecoinYieldFirmwareUpdateAlert,
     useStakingNavigateAnalytics,
     useYieldEntryNavigationAnalytics,
@@ -106,6 +106,7 @@ const LIMIT = 10; // Maximum number of manually added accounts per non-EVM netwo
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const reportYieldEntryNavigation = useYieldEntryNavigationAnalytics();
     const reportStakingNavigate = useStakingNavigateAnalytics();
+    const navigateByAccountState = useNavigateByAccountState();
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const { dispatch } = useServices(injectDispatch);

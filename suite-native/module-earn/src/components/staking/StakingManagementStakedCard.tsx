@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    type StakingAccountProductRootState,
+    selectStakingAccountProductDescriptor,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
+import {
     formatTronApr,
     getTronVotedApr,
     useTronStakingStats,
@@ -37,7 +42,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { getMobileStakingSupport, useMessageSystemStaking } from '@suite-native/earn';
+import { useMessageSystemStaking } from '@suite-native/earn';
 import {
     CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -102,7 +107,12 @@ export const StakingManagementStakedCard = ({
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
     const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(networkSymbol);
     const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
-    const areStakeActionsShown = getMobileStakingSupport(networkSymbol) === 'manage';
+    const stakingProductId = useSelector(
+        (state: StakingAccountProductRootState) =>
+            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
+    );
+    const { access } = useStakingAccess(stakingProductId);
+    const areStakeActionsShown = access === 'manage';
     const areRewardsAutoRestaked = isEthereumStaking || isSolanaStaking;
 
     const handleStake = () => {

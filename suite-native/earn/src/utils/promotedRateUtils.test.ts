@@ -1,6 +1,4 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-
-import { getBestPromotedRate, isEarnPromoSymbol } from './promotedRateUtils';
+import { getBestPromotedRate } from './promotedRateUtils';
 
 describe('getBestPromotedRate', () => {
     it('promotes the vault rate when there is no staking rate', () => {
@@ -62,24 +60,5 @@ describe('getBestPromotedRate', () => {
             apy: 2.95,
             isVaultRate: false,
         });
-    });
-});
-
-describe('isEarnPromoSymbol', () => {
-    it.each([
-        ['eth', true],
-        ['sol', true],
-        ['ada', false],
-        ['trx', false],
-        ['btc', false],
-    ])('%s is promoted: %s', (symbol, expected) => {
-        expect(isEarnPromoSymbol(asNetworkSymbol(symbol))).toBe(expected);
-    });
-
-    it.each([
-        ['undefined', undefined],
-        ['null', null],
-    ])('returns false for %s', (_description, symbol) => {
-        expect(isEarnPromoSymbol(symbol)).toBe(false);
     });
 });

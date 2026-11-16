@@ -1,6 +1,7 @@
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { useFormattedEarnRate, useStakingRate } from '@suite-native/earn';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 
 import { EarnPromoBanner } from './EarnPromoBanner';
@@ -10,7 +11,10 @@ interface SolEarnPromoBannerProps {
 }
 
 export const SolEarnPromoBanner = ({ account }: SolEarnPromoBannerProps) => {
-    const stakingRate = useStakingRate({ symbol: account.symbol, accountKey: account.key });
+    const stakingRate = useNetworkStakingRate({
+        networkSymbol: account.symbol,
+        accountKey: account.key,
+    });
 
     const apyFormatted = useFormattedEarnRate(stakingRate.rate);
 

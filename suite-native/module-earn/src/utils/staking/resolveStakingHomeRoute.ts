@@ -1,9 +1,16 @@
 import { type Account } from '@suite-common/wallet-types';
-import { hasAccountActiveStaking } from '@suite-native/earn';
 import { RootStackRoutes } from '@suite-native/navigation';
 
-export const resolveStakingHomeRoute = (account: Account) => {
-    if (hasAccountActiveStaking(account)) {
+type ResolveStakingHomeRouteParams = {
+    account: Account;
+    isStakingActive: boolean;
+};
+
+export const resolveStakingHomeRoute = ({
+    account,
+    isStakingActive,
+}: ResolveStakingHomeRouteParams) => {
+    if (isStakingActive) {
         return {
             name: RootStackRoutes.StakingManagement,
             params: { accountKey: account.key },

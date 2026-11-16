@@ -1,5 +1,11 @@
-import { getStakingPromoListSymbols } from '@suite-common/wallet-core';
+import {
+    type StakingPromoRootState,
+    selectStakingPromoProductDescriptors,
+} from '@suite-common/earn-staking';
+import { type StakingProductDescriptor } from '@suite-common/earn-staking-common';
 import { type SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 
-export const selectStakingPromoListSymbols = (state: SettingsSliceRootState) =>
-    getStakingPromoListSymbols(selectAreTestnetsEnabled(state));
+export const selectStakingPromoListDescriptors = (
+    state: StakingPromoRootState & SettingsSliceRootState,
+): readonly StakingProductDescriptor[] =>
+    selectStakingPromoProductDescriptors(state, selectAreTestnetsEnabled(state));

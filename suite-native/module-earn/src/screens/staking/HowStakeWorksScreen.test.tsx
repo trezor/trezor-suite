@@ -36,13 +36,21 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectDeviceAccountsByNetworkSymbol: () => [account],
     selectIsEarnOnboardingConfirmed: () => false,
-    selectApy: () => 1,
-    selectEntryPeriodInDaysBySymbol: () => 1,
-    selectUnstakingPeriodInDaysBySymbol: () => 1,
+}));
+jest.mock('@suite-common/earn-staking', () => ({
+    ...jest.requireActual('@suite-common/earn-staking'),
+    useStakingAccess: () => ({ access: 'manage', operations: ['stake'], disabled: {} }),
+    useNetworkStakingRate: () => ({ rate: 1, rateKind: 'apy', isPending: false }),
+    useNetworkStakingPeriods: () => ({
+        entryPeriodDays: 1,
+        exitPeriodDays: 1,
+        rewardPeriodDays: null,
+        nextRewardAt: null,
+    }),
 }));
 jest.mock('@suite-native/earn', () => ({
     ...jest.requireActual('@suite-native/earn'),
-    useMessageSystemStaking: () => ({ isStakingDisabled: false }),
+    useStakingOperationMessage: () => null,
 }));
 jest.mock('../../components/earn/HowEarnWorks/stakePresets', () => ({
     useHowStakeWorksPreset: () => ({ benefitItems: [], timelineSections: [] }),

@@ -1,3 +1,4 @@
+import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectCardanoStakedWithFiveBinariesAccountKey,
@@ -13,7 +14,7 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mock } from '@trezor/dependency-injection';
 
 import { EarnScreenHeader } from './EarnScreenHeader';
-import { selectStakingPromoListSymbols } from '../../earnScreenSelectors';
+import { selectStakingPromoListDescriptors } from '../../earnScreenSelectors';
 
 let mockIsYieldDisabled = false;
 
@@ -42,16 +43,16 @@ jest.mock('@suite-common/wallet-core', () => ({
     selectCardanoStakedWithFiveBinariesAccountKey: jest.fn(),
 }));
 jest.mock('../../earnScreenSelectors', () => ({
-    selectStakingPromoListSymbols: jest.fn(),
+    selectStakingPromoListDescriptors: jest.fn(),
 }));
 
 describe('EarnScreenHeader analytics', () => {
     beforeEach(() => {
         mockIsYieldDisabled = false;
         jest.mocked(selectStakingListItems).mockReturnValue([]);
-        jest.mocked(selectStakingPromoListSymbols).mockReturnValue([
-            asNetworkSymbol('eth'),
-            asNetworkSymbol('ada'),
+        jest.mocked(selectStakingPromoListDescriptors).mockReturnValue([
+            mockStakingProductDescriptor(),
+            mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('ada'), type: 'native' }),
         ]);
         jest.mocked(selectYieldListItems).mockReturnValue([]);
         jest.mocked(selectYieldClaimListItems).mockReturnValue([]);

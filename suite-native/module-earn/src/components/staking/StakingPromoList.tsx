@@ -11,7 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { StakingDesktopOnlyBottomSheet } from './StakingDesktopOnlyBottomSheet';
 import { StakingPromoListItem } from './StakingPromoListItem';
 import { StakingPromoListProvider } from './StakingPromoListProvider';
-import { selectStakingPromoListSymbols } from '../../earnScreenSelectors';
+import { selectStakingPromoListDescriptors } from '../../earnScreenSelectors';
 import { useMessageSystemEarnDashboard } from '../../hooks/earn/useMessageSystemEarnDashboard';
 import { useStakingPromoNavigation } from '../../hooks/staking/useStakingPromoNavigation';
 import { EarnEnableNetworkBottomSheet } from '../earn/EarnEnableNetworkBottomSheet';
@@ -31,7 +31,7 @@ export const StakingPromoList = () => {
     const { analytics } = useServices(injectNativeAnalytics);
     const { isDisabled } = useMessageSystemEarnDashboard('staking');
 
-    const stakingSymbols = useSelector(selectStakingPromoListSymbols);
+    const promoDescriptors = useSelector(selectStakingPromoListDescriptors);
 
     const {
         selectAccountSheetRef,
@@ -69,10 +69,13 @@ export const StakingPromoList = () => {
                         <EarnPromoDisabledBanner type="staking" />
                     ) : (
                         <>
-                            {stakingSymbols.map(symbol => (
-                                <React.Fragment key={symbol}>
+                            {promoDescriptors.map(descriptor => (
+                                <React.Fragment key={descriptor.id}>
                                     <CardDivider horizontalPadding={0} />
-                                    <StakingPromoListItem symbol={symbol} onPress={onItemPress} />
+                                    <StakingPromoListItem
+                                        descriptor={descriptor}
+                                        onPress={onItemPress}
+                                    />
                                 </React.Fragment>
                             ))}
                         </>

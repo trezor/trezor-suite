@@ -3,14 +3,20 @@ import { useSelector, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type DeviceRootState, selectIsDeviceInViewOnlyMode } from '@suite-common/device';
+import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
+import {
+    type StakingAccessRootState,
+    selectIsStakingAccountActive,
+    selectStakeableStakingProductDescriptorBySymbol,
+    selectStakingProductAccess,
+} from '@suite-common/earn-staking';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModal, useBottomSheetModalControls } from '@suite-native/atoms';
-import { navigateByAccountState, useStakingNavigateAnalytics } from '@suite-native/earn';
+import { useNavigateByAccountState, useStakingNavigateAnalytics } from '@suite-native/earn';
 import { useTranslate } from '@suite-native/intl';
 import {
     AddCoinAccountStackRoutes,
@@ -30,7 +36,7 @@ import {
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 
 export const useStakingPromoNavigation = () => {
-    const store = useStore<AccountsRootState & DeviceRootState>();
+    const store = useStore<AccountsRootState & StakingAccessRootState>();
     const navigation = useNavigation<NavigationProp>();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showAlert, hideAlert } = useAlert();
@@ -39,6 +45,7 @@ export const useStakingPromoNavigation = () => {
     const { analytics } = useServices(injectNativeAnalytics);
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
+    const navigateByAccountState = useNavigateByAccountState();
 
     const { bottomSheetRef: infoSheetRef, openModal: openInfoSheet } = useBottomSheetModal();
 
@@ -72,7 +79,12 @@ export const useStakingPromoNavigation = () => {
 
             navigateByAccountState(account, navigation.navigate);
         },
-        [closeSelectAccountSheet, navigation.navigate, reportStakingNavigate],
+        [
+            closeSelectAccountSheet,
+            navigateByAccountState,
+            navigation.navigate,
+            reportStakingNavigate,
+        ],
     );
 
     const onSelectAccountDismiss = useCallback(() => {
@@ -180,10 +192,19 @@ export const useStakingPromoNavigation = () => {
 
     const onPromoItemPress = useCallback(
         (symbol: NetworkSymbol) => {
-            const accounts = selectVisibleDeviceAccounts(store.getState());
+            const descriptor = selectStakeableStakingProductDescriptorBySymbol(
+                store.getState(),
+                symbol,
+            );
             const resolution = resolveStakingPromoAccounts({
                 symbol,
-                accounts,
+                access:
+                    descriptor === null
+                        ? null
+                        : selectStakingProductAccess(store.getState(), descriptor.id).access,
+                accounts: selectVisibleDeviceAccounts(store.getState()),
+                isAccountStakingActive: account =>
+                    selectIsStakingAccountActive(store.getState(), account.key),
                 isDeviceInViewOnlyMode,
             });
 
@@ -237,6 +258,7 @@ export const useStakingPromoNavigation = () => {
         [
             store,
             isDeviceInViewOnlyMode,
+            navigateByAccountState,
             navigation.navigate,
             isPortfolioTrackerDevice,
             openPortfolioTrackerSheet,
@@ -248,7 +270,7 @@ export const useStakingPromoNavigation = () => {
         ],
     );
 
-    const isSelectAccountViewOnly = chosenAccountsSupport === 'view';
+    const isSelectAccountViewOnly = chosenAccountsSupport === 'read-only';
 
     return {
         onPromoItemPress,

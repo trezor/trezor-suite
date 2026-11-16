@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, StackActions, useNavigation } from '@react-navigation/native';
 
+import { type StakingRootState, selectIsStakingAccountActive } from '@suite-common/earn-staking';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -45,6 +46,9 @@ export const useEarnReviewBackNavigation = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const isStakingActive = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountActive(state, accountKey),
+    );
 
     const { dispatch } = useServices(injectDispatch);
     const serializedTx = useSelector((state: SendRootState) => selectSendSerializedTx(state));
@@ -71,7 +75,7 @@ export const useEarnReviewBackNavigation = ({
             return;
         }
 
-        const { name, params } = resolveStakingHomeRoute(account);
+        const { name, params } = resolveStakingHomeRoute({ account, isStakingActive });
 
         navigation.dispatch(
             CommonActions.reset({
@@ -85,7 +89,7 @@ export const useEarnReviewBackNavigation = ({
                 ],
             }),
         );
-    }, [account, navigation]);
+    }, [account, isStakingActive, navigation]);
 
     useEffect(() => {
         const cleanup = (actionType: string) => {

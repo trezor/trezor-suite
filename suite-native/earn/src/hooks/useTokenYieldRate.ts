@@ -5,7 +5,6 @@ import {
     type TokenYieldRateVariant,
     useAssetYieldRate,
 } from './useAssetYieldRate';
-import { EARN_PROMO_SYMBOLS } from '../utils/promotedRateUtils';
 
 type UseTokenYieldRateParams = {
     account: Account;
@@ -14,12 +13,12 @@ type UseTokenYieldRateParams = {
     variant: TokenYieldRateVariant;
 };
 
-/** The rate an account row may advertise, staking counted only for the promoted coins. */
+/** The rate an account row may advertise, staking counted only where the platform can stake. */
 export const useTokenYieldRate = ({ account, token, variant }: UseTokenYieldRateParams) =>
     useAssetYieldRate({
         networkSymbol: account.symbol,
         token,
         variant,
-        stakingSymbols: EARN_PROMO_SYMBOLS,
+        stakingScope: 'manageable',
         accountKey: account.key,
     });

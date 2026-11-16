@@ -1,175 +1,60 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { RootStackRoutes } from '@suite-native/navigation';
+import { mock } from '@trezor/dependency-injection';
 
-import { navigateByAccountState } from './navigateByAccountState';
+import { type StakingNavigateFn, navigateByAccountState } from './navigateByAccountState';
 
-jest.mock('@suite-common/wallet-utils', () => ({
-    ...jest.requireActual('@suite-common/wallet-utils'),
-    getAccountTotalStakingBalance: jest.fn(),
-}));
-
-const mockGetAccountTotalStakingBalance = jest.mocked(getAccountTotalStakingBalance);
-
-const mockNavigate = jest.fn();
-
-const createMockAccount = (overrides: Partial<Account> = {}): Account =>
-    ({
-        key: mockAccountKey({ descriptor: 'testAccountKey' }),
-        symbol: 'eth',
-        availableBalance: '1000000000000000000',
-        formattedBalance: '1.0',
-        ...overrides,
-    }) as Account;
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
 describe('navigateByAccountState', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+    it.each([true, false])(
+        'opens the staking management of an active account when manageable is %s',
+        isStakingManageable => {
+            const navigate = mock<StakingNavigateFn>();
 
-    it('navigates to StakingManagement when an Ethereum account has staked balance', () => {
-        const account = createMockAccount();
-        mockGetAccountTotalStakingBalance.mockReturnValue('1000000000000000');
+            expect(
+                navigateByAccountState({
+                    account,
+                    isStakingActive: true,
+                    isStakingManageable,
+                    navigate,
+                }),
+            ).toBe(true);
+            expect(navigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
+                accountKey: account.key,
+            });
+        },
+    );
 
-        const hasNavigated = navigateByAccountState(account, mockNavigate);
+    it('opens the staking intro of an inactive account the platform can stake', () => {
+        const navigate = mock<StakingNavigateFn>();
 
-        expect(hasNavigated).toBe(true);
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
+        expect(
+            navigateByAccountState({
+                account,
+                isStakingActive: false,
+                isStakingManageable: true,
+                navigate,
+            }),
+        ).toBe(true);
+        expect(navigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
+            symbol: account.symbol,
             accountKey: account.key,
         });
     });
 
-    it('navigates to StakingManagement when a Solana account has staked balance', () => {
-        const account = createMockAccount({ symbol: asNetworkSymbol('sol') });
-        mockGetAccountTotalStakingBalance.mockReturnValue('1000000000');
+    it('does not navigate an inactive account the platform cannot stake', () => {
+        const navigate = mock<StakingNavigateFn>();
 
-        navigateByAccountState(account, mockNavigate);
-
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
-            accountKey: account.key,
-        });
-    });
-
-    it('navigates to HowStakeWorksScreen when a Solana account has a balance but no stake', () => {
-        const account = createMockAccount({ symbol: asNetworkSymbol('sol') });
-        mockGetAccountTotalStakingBalance.mockReturnValue('0');
-
-        navigateByAccountState(account, mockNavigate);
-
-        // A first-time Solana staker starts at the intro, not the empty dashboard.
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: 'sol',
-            accountKey: account.key,
-        });
-    });
-
-    it('navigates to HowStakeWorksScreen when a Solana account has insufficient balance and no stake', () => {
-        const account = createMockAccount({
-            symbol: asNetworkSymbol('sol'),
-            availableBalance: '100',
-        });
-        mockGetAccountTotalStakingBalance.mockReturnValue(null);
-
-        navigateByAccountState(account, mockNavigate);
-
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: 'sol',
-            accountKey: account.key,
-        });
-    });
-
-    it('navigates to StakingManagement when a Cardano account has staked balance', () => {
-        const account = createMockAccount({ symbol: asNetworkSymbol('ada') });
-        mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
-
-        navigateByAccountState(account, mockNavigate);
-
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
-            accountKey: account.key,
-        });
-    });
-
-    it('does not navigate a Cardano account without a staked balance', () => {
-        const account = createMockAccount({ symbol: asNetworkSymbol('ada') });
-        mockGetAccountTotalStakingBalance.mockReturnValue('0');
-
-        const hasNavigated = navigateByAccountState(account, mockNavigate);
-
-        expect(hasNavigated).toBe(false);
-        expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it('does not navigate a Tron account without a staked balance', () => {
-        const account = createMockAccount({ symbol: asNetworkSymbol('trx') });
-        mockGetAccountTotalStakingBalance.mockReturnValue('0');
-
-        const hasNavigated = navigateByAccountState(account, mockNavigate);
-
-        expect(hasNavigated).toBe(false);
-        expect(mockNavigate).not.toHaveBeenCalled();
-    });
-
-    it('navigates to StakingManagement when a Cardano account is delegated but emptied', () => {
-        const account = createMockAccount({
-            symbol: 'ada',
-            networkType: 'cardano',
-            misc: { staking: { isActive: true } },
-        } as Partial<Account>);
-        mockGetAccountTotalStakingBalance.mockReturnValue('0');
-
-        navigateByAccountState(account, mockNavigate);
-
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
-            accountKey: account.key,
-        });
-    });
-
-    it('navigates to HowStakeWorksScreen when account has sufficient balance but no stake', () => {
-        const account = createMockAccount();
-        mockGetAccountTotalStakingBalance.mockReturnValue('0');
-
-        navigateByAccountState(account, mockNavigate);
-
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: 'eth',
-            accountKey: account.key,
-        });
-    });
-
-    it('navigates to HowStakeWorksScreen even when balance is below the staking minimum', () => {
-        // The user is never blocked from exploring staking; the form surfaces an info banner instead.
-        const account = createMockAccount({ availableBalance: '100' });
-        mockGetAccountTotalStakingBalance.mockReturnValue('0');
-
-        navigateByAccountState(account, mockNavigate);
-
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: 'eth',
-            accountKey: account.key,
-        });
-    });
-
-    it('navigates to HowStakeWorksScreen when staked balance is null', () => {
-        const account = createMockAccount();
-        mockGetAccountTotalStakingBalance.mockReturnValue(null);
-
-        navigateByAccountState(account, mockNavigate);
-
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: 'eth',
-            accountKey: account.key,
-        });
-    });
-
-    it('does not navigate when the account is not on a staking network', () => {
-        const account = createMockAccount({ symbol: asNetworkSymbol('btc') });
-        mockGetAccountTotalStakingBalance.mockReturnValue('0');
-
-        const hasNavigated = navigateByAccountState(account, mockNavigate);
-
-        expect(hasNavigated).toBe(false);
-        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(
+            navigateByAccountState({
+                account,
+                isStakingActive: false,
+                isStakingManageable: false,
+                navigate,
+            }),
+        ).toBe(false);
+        expect(navigate).not.toHaveBeenCalled();
     });
 });

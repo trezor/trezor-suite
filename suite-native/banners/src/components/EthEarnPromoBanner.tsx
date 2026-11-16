@@ -1,7 +1,8 @@
 import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { useFormattedEarnRate, useStakingRate } from '@suite-native/earn';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 
 import { EarnPromoBanner } from './EarnPromoBanner';
@@ -13,7 +14,10 @@ interface EthEarnPromoBannerProps {
 
 export const EthEarnPromoBanner = ({ account, onExplore }: EthEarnPromoBannerProps) => {
     const nativeYieldVault = useNativeYieldVault({ account });
-    const stakingRate = useStakingRate({ symbol: account.symbol, accountKey: account.key });
+    const stakingRate = useNetworkStakingRate({
+        networkSymbol: account.symbol,
+        accountKey: account.key,
+    });
 
     const yieldApy = nativeYieldVault.bestVault?.apy;
     const stakingApy = stakingRate.rate;

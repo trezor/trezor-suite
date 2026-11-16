@@ -1,13 +1,15 @@
+import { useSelector } from 'react-redux';
+
 import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { type StakingAccessRootState, useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import {
     getBestPromotedRate,
-    isEarnPromoSymbol,
-    useStakingRate,
+    selectIsStakingManageableSymbol,
     useYieldBadge,
 } from '@suite-native/earn';
 
@@ -26,16 +28,19 @@ export const useYourPositionCardYieldBadge = ({
 
     const nativeYieldVault = useNativeYieldVault({ account: account ?? undefined });
 
-    const { rate: stakingRate } = useStakingRate({
-        symbol: account?.symbol,
+    const { rate: stakingRate } = useNetworkStakingRate({
+        networkSymbol: account?.symbol ?? null,
         accountKey: account?.key,
     });
+    const isStakingManageable = useSelector((state: StakingAccessRootState) =>
+        account ? selectIsStakingManageableSymbol(state, account.symbol) : false,
+    );
 
     const bestPromotedRate = token
         ? null
         : getBestPromotedRate({
               vaultApy: nativeYieldVault.bestVault?.apy ?? null,
-              stakingRate: isEarnPromoSymbol(account?.symbol) ? stakingRate : null,
+              stakingRate: isStakingManageable ? stakingRate : null,
           });
 
     const promoYieldBadge = bestPromotedRate

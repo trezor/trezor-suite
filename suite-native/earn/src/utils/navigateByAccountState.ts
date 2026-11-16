@@ -5,22 +5,31 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { hasAccountActiveStaking } from './hasAccountActiveStaking';
-import { getMobileStakingSupport } from './mobileStakingSupport';
-
-type StakingNavigateFn = StackNavigationProps<
+export type StakingNavigateFn = StackNavigationProps<
     RootStackParamList,
     RootStackRoutes.StakingManagement
 >['navigate'];
 
-export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn): boolean => {
-    if (hasAccountActiveStaking(account)) {
+type NavigateByAccountStateParams = {
+    account: Account;
+    isStakingActive: boolean;
+    isStakingManageable: boolean;
+    navigate: StakingNavigateFn;
+};
+
+export const navigateByAccountState = ({
+    account,
+    isStakingActive,
+    isStakingManageable,
+    navigate,
+}: NavigateByAccountStateParams): boolean => {
+    if (isStakingActive) {
         navigate(RootStackRoutes.StakingManagement, { accountKey: account.key });
 
         return true;
     }
 
-    if (getMobileStakingSupport(account.symbol) !== 'manage') {
+    if (!isStakingManageable) {
         return false;
     }
 
