@@ -69,7 +69,8 @@ type BaseActionContext<TComposed extends ComposedTxBase> = {
 
 type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends string> = {
     amount: string | undefined;
-    availableBalance?: string;
+    /** Native spendable balance in wei. Undefined while the account context is missing. */
+    availableBalance: string | undefined;
     contextKey?: string;
     analyticsFlow: EarnTransactionFlow;
     /**
