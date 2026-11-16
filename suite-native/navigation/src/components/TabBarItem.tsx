@@ -13,17 +13,26 @@ type TabBarItemProps = {
     testID: string;
 };
 
-const tabBarItemStyle = prepareNativeStyle(_ => ({
+const tabBarItemStyle = prepareNativeStyle(utils => ({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: utils.spacings.sp8,
+    gap: utils.spacings.sp2,
 }));
 
-const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: utils.spacings.sp8,
-}));
+type TabBarItemIconStyleProps = Pick<TabBarItemProps, 'isFocused'>;
+
+const tabBarItemIconStyle = prepareNativeStyle<TabBarItemIconStyleProps>(
+    (utils, { isFocused }) => ({
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: isFocused ? utils.spacings.sp12 : 0,
+        paddingVertical: utils.spacings.sp4,
+        borderRadius: utils.borders.radii.round,
+        backgroundColor: isFocused ? utils.colors.elementFillBrandSofter : 'transparent',
+    }),
+);
 
 export const TabBarItem = ({
     isFocused,
@@ -49,24 +58,25 @@ export const TabBarItem = ({
             style={applyStyle(tabBarItemStyle)}
             testID={`@tabBar/${testID}`}
         >
-            <View style={applyStyle(tabBarItemContainerStyle)}>
+            <View style={applyStyle(tabBarItemIconStyle, { isFocused })}>
                 <Icon
                     name={isFocused ? focusedIconName : iconName}
                     size="large"
-                    color={isFocused ? 'contentBrand' : 'contentDisabled'}
+                    color={isFocused ? 'contentBrand' : 'contentSecondary'}
                 />
-                {title && (
-                    <Text
-                        maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
-                        variant="body-xs"
-                        textAlign="center"
-                        color={isFocused ? 'contentBrand' : 'contentDisabled'}
-                        testID={`@tabBar/${testID}/title`}
-                    >
-                        {title}
-                    </Text>
-                )}
             </View>
+            {title && (
+                <Text
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_MULTIPLIER}
+                    variant={isFocused ? 'body-xs-strong' : 'body-xs'}
+                    textAlign="center"
+                    color={isFocused ? 'contentBrand' : 'contentSecondary'}
+                    numberOfLines={1}
+                    testID={`@tabBar/${testID}/title`}
+                >
+                    {title}
+                </Text>
+            )}
         </PressableOpacity>
     );
 };
