@@ -30,7 +30,7 @@ export const TronVoteSubmitButton = () => {
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
 
-    const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
+    const isFeeReady = fees.composedLevels?.normal?.type === 'final';
 
     const allocations = useWatch({ control, name: 'voteAllocations' });
     const parsedAllocations = parseVoteAllocations(allocations);
@@ -94,7 +94,7 @@ export const TronVoteSubmitButton = () => {
                     isOverAllocated ||
                     isSubmitting ||
                     isDeviceLocked ||
-                    hasInsufficientFunds ||
+                    !isFeeReady ||
                     !!pendingTxid
                 }
                 isLoading={isSubmitting || isDiscoveryRunning}

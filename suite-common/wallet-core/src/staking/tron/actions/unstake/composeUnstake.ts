@@ -2,19 +2,15 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
     type PrecomposedLevels,
-    type PrecomposedTransactionFinal,
     type TronResourceType,
 } from '@suite-common/wallet-types';
-import {
-    asAmountUnit,
-    computeBandwidthFeeLevel,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildUnstakeContract } from './unstakeContract';
+import { composeTronStakingFeeLevels } from '../../shared/composeTronStakingFeeLevels';
 import {
     TRON_DUMMY_BLOCK_HASH,
     TRON_DUMMY_BLOCK_HEIGHT,
@@ -61,31 +57,15 @@ export const composeTronUnstakeFeeLevelsThunk = createThunk<
             return rejectWithValue({ kind: 'compose-failed', message: estimate.error.message });
         }
 
-        const bytes = estimate.payload.bandwidth;
-
-        const feeLevel = computeBandwidthFeeLevel({
-            availableStakedBandwidth: account.misc.tronResources?.availableStakedBandwidth ?? 0,
-            availableFreeBandwidth: account.misc.tronResources?.availableFreeBandwidth ?? 0,
-            bytes,
-        });
-
-        const feeInSun = feeLevel.feePerTx || '0';
         const amountInSun = unitsToSubunits({
             value: asAmountUnit(new BigNumber(amount)),
             decimals: getNetwork(account.symbol).decimals,
         }).toString();
 
-        const tx: PrecomposedTransactionFinal = {
-            type: 'final',
-            totalSpent: new BigNumber(amountInSun).plus(feeInSun).toString(),
-            fee: feeInSun,
-            feePerByte: feeLevel.feePerUnit ?? '0',
-            bytes,
-            inputs: [],
-            outputs: [{ address: account.descriptor, amount: amountInSun }],
-            outputsPermutation: [0],
-        };
-
-        return { normal: tx };
+        return composeTronStakingFeeLevels({
+            account,
+            bytes: estimate.payload.bandwidth,
+            amount: amountInSun,
+        });
     },
 );

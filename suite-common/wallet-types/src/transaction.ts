@@ -137,6 +137,7 @@ export type EthTransactionData = {
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
 type ComposeError = {
+    estimatedTransaction?: PrecomposedTransactionFinal;
     errorMessage?: {
         id: PrecomposeError;
         values?: Record<string, string>;
