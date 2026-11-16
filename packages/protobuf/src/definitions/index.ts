@@ -83,14 +83,6 @@ import {
     SignedIdentity,
 } from './messages-crypto';
 import {
-    EosGetPublicKey,
-    EosPublicKey,
-    EosSignTx,
-    EosSignedTx,
-    EosTxActionAck,
-    EosTxActionRequest,
-} from './messages-eos';
-import {
     EthereumAddress,
     EthereumDefinitionAck,
     EthereumDefinitionRequest,
@@ -321,7 +313,6 @@ export * from './messages-cardano';
 export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-definitions';
-export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
 export * from './messages-evolu';
@@ -466,12 +457,6 @@ export const MessageType = Type.Object(
         SetBrightness,
         GetSerialNumber,
         SerialNumber,
-        EosGetPublicKey,
-        EosPublicKey,
-        EosSignTx,
-        EosTxActionRequest,
-        EosTxActionAck,
-        EosSignedTx,
         EthereumGetPublicKey,
         EthereumPublicKey,
         EthereumGetAddress,
@@ -719,9 +704,6 @@ export type WireInMessage =
     | 'UnlockBootloader'
     | 'SetBrightness'
     | 'GetSerialNumber'
-    | 'EosGetPublicKey'
-    | 'EosSignTx'
-    | 'EosTxActionAck'
     | 'EthereumGetPublicKey'
     | 'EthereumGetAddress'
     | 'EthereumSignTx'
@@ -855,9 +837,6 @@ export type WireOutMessage =
     | 'Nonce'
     | 'UnlockedPathRequest'
     | 'SerialNumber'
-    | 'EosPublicKey'
-    | 'EosTxActionRequest'
-    | 'EosSignedTx'
     | 'EthereumPublicKey'
     | 'EthereumAddress'
     | 'EthereumTxRequest'

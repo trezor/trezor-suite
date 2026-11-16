@@ -56,9 +56,6 @@ export const RULE_PATCH = {
     'CardanoCVoteRegistrationParametersType.delegations': 'optional',
     'Success.message': 'required', // didn't find use case where it's not sent
     'SignedIdentity.address': 'required',
-    'EosAuthorizationKey.key': 'required', // its valid to be undefined according to implementation/tests
-    'EosAuthorizationKey.type': 'optional', // its valid to be undefined according to implementation/tests
-    'EosAuthorizationKey.address_n': 'optional', // its valid to be undefined according to implementation/tests
     'EthereumAddress.address': 'required', // address is transformed from legacy type _old_address
     // TODO: Features should be union: bootloader|normal
     // fields below are marked as required because of backward compatibility (suite implementation)
@@ -142,41 +139,6 @@ export const TYPE_PATCH = {
     'CardanoNativeScript.invalid_before': UINT_TYPE,
     'CardanoNativeScript.invalid_hereafter': UINT_TYPE,
     'CoinPurchaseMemo.amount': 'string',
-    'EosAsset.symbol': 'string',
-    'EosPermissionLevel.actor': 'string',
-    'EosPermissionLevel.permission': 'string',
-    'EosAuthorizationKey.key': 'string',
-    'EosActionCommon.account': 'string',
-    'EosActionCommon.name': 'string',
-    'EosActionTransfer.sender': 'string',
-    'EosActionTransfer.receiver': 'string',
-    'EosActionDelegate.sender': 'string',
-    'EosActionDelegate.receiver': 'string',
-    'EosActionUndelegate.sender': 'string',
-    'EosActionUndelegate.receiver': 'string',
-    'EosActionRefund.owner': 'string',
-    'EosActionBuyRam.payer': 'string',
-    'EosActionBuyRam.receiver': 'string',
-    'EosActionBuyRamBytes.payer': 'string',
-    'EosActionBuyRamBytes.receiver': 'string',
-    'EosActionSellRam.account': 'string',
-    'EosActionVoteProducer.voter': 'string',
-    'EosActionVoteProducer.proxy': 'string',
-    'EosActionVoteProducer.producers': 'string',
-    'EosActionUpdateAuth.account': 'string',
-    'EosActionUpdateAuth.permission': 'string',
-    'EosActionUpdateAuth.parent': 'string',
-    'EosActionDeleteAuth.account': 'string',
-    'EosActionDeleteAuth.permission': 'string',
-    'EosActionLinkAuth.account': 'string',
-    'EosActionLinkAuth.code': 'string',
-    'EosActionLinkAuth.type': 'string',
-    'EosActionLinkAuth.requirement': 'string',
-    'EosActionUnlinkAuth.account': 'string',
-    'EosActionUnlinkAuth.code': 'string',
-    'EosActionUnlinkAuth.type': 'string',
-    'EosActionNewAccount.creator': 'string',
-    'EosActionNewAccount.name': 'string',
     'ResetDevice.backup_type': 'Enum_BackupType',
     'StellarAsset.type': '0 | 1 | 2  | "NATIVE" | "ALPHANUM4" | "ALPHANUM12"', // StellarAssetType is a enum, accepted as both number and string
     'StellarSignTx.sequence_number': UINT_TYPE,
