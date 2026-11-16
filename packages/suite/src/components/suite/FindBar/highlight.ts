@@ -1,20 +1,12 @@
-import {
-    FIND_HIGHLIGHT_CLASSNAME,
-    FIND_HIGHLIGHT_SELECTOR,
-    MARK_ELEMENT,
-    NO_HIGHLIGHT_ATTRIBUTE,
-} from './consts';
+import { NO_HIGHLIGHT_ATTRIBUTE } from './consts';
+
+const FIND_MATCH_HIGHLIGHT = 'find-match';
+const FIND_CURRENT_HIGHLIGHT = 'find-current';
 
 const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-export const removeHighlights = (root: HTMLElement) => {
-    root.querySelectorAll(FIND_HIGHLIGHT_SELECTOR).forEach(mark => {
-        const parent = mark.parentNode;
-        if (!parent) return;
-        parent.replaceChild(document.createTextNode(mark.textContent || ''), mark);
-        parent.normalize();
-    });
-};
+// Ranges stay outside the DOM, so React still owns its text nodes.
+let matchRanges: Range[] = [];
 
 const isVisible = (el: Element): boolean =>
     el instanceof HTMLElement &&
@@ -32,60 +24,72 @@ const collectTextNodes = (root: HTMLElement): Text[] => {
     return nodes;
 };
 
+const clearHighlight = (name: string) => {
+    CSS.highlights.delete(name);
+};
+
+export const removeHighlights = () => {
+    matchRanges = [];
+    clearHighlight(FIND_MATCH_HIGHLIGHT);
+    clearHighlight(FIND_CURRENT_HIGHLIGHT);
+};
+
 export const highlightText = (root: HTMLElement, query: string): number => {
-    removeHighlights(root);
-    if (!query.trim()) return 0;
+    removeHighlights();
+    const trimmed = query.trim();
+    if (!trimmed) return 0;
 
-    const regex = new RegExp(escapeRegExp(query), 'gi');
-    let count = 0;
-    let ordinal = 0;
+    const regex = new RegExp(escapeRegExp(trimmed), 'gi');
+    const ranges: Range[] = [];
 
-    const textNodes = collectTextNodes(root);
-
-    const validNodes = textNodes.filter(textNode => {
+    collectTextNodes(root).forEach(textNode => {
         const text = textNode.textContent;
         const parent = textNode.parentElement;
-
-        return (
-            text &&
-            parent &&
-            !parent.closest(`[${NO_HIGHLIGHT_ATTRIBUTE}], [contenteditable="true"]`) &&
-            isVisible(parent)
-        );
-    });
-
-    validNodes.forEach(textNode => {
-        const text = textNode.textContent;
-        const matches = Array.from(text.matchAll(regex));
-        if (matches.length === 0) return;
-
-        const frag = document.createDocumentFragment();
-        let lastIndex = 0;
-
-        matches.forEach(match => {
-            const start = match.index ?? 0;
-            const end = start + match[0].length;
-
-            if (start > lastIndex) {
-                frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
-            }
-
-            const mark = document.createElement(MARK_ELEMENT);
-            mark.textContent = text.slice(start, end);
-            mark.className = FIND_HIGHLIGHT_CLASSNAME;
-            mark.dataset.findOrdinal = String(ordinal++);
-            frag.appendChild(mark);
-
-            count++;
-            lastIndex = end;
-        });
-
-        if (lastIndex < text.length) {
-            frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+        if (
+            !text ||
+            !parent ||
+            parent.closest(`[${NO_HIGHLIGHT_ATTRIBUTE}], [contenteditable="true"]`) ||
+            !isVisible(parent)
+        ) {
+            return;
         }
 
-        textNode.replaceWith(frag);
+        Array.from(text.matchAll(regex)).forEach(match => {
+            const start = match.index ?? 0;
+            const range = document.createRange();
+            range.setStart(textNode, start);
+            range.setEnd(textNode, start + match[0].length);
+            ranges.push(range);
+        });
     });
 
-    return count;
+    matchRanges = ranges;
+    if (ranges.length > 0) {
+        const highlight = new Highlight();
+        ranges.forEach(range => highlight.add(range));
+        CSS.highlights.set(FIND_MATCH_HIGHLIGHT, highlight);
+    }
+
+    return ranges.length;
+};
+
+export const setActiveFindMatch = (ordinal: number | null): boolean => {
+    clearHighlight(FIND_CURRENT_HIGHLIGHT);
+    if (ordinal === null) return false;
+
+    const range = matchRanges[ordinal];
+    if (!range) return false;
+
+    const highlight = new Highlight(range);
+    highlight.priority = 1;
+    CSS.highlights.set(FIND_CURRENT_HIGHLIGHT, highlight);
+
+    return true;
+};
+
+export const scrollFindMatchIntoView = (ordinal: number) => {
+    matchRanges[ordinal]?.startContainer.parentElement?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+    });
 };
