@@ -42,7 +42,7 @@ export const pushYieldTransaction = ({
     isMevProtectionEnabled,
 }: PushYieldTransactionParams) =>
     TrezorConnect.pushTransaction({
-        tx: getMevProtectedTxData(account.symbol, tx, isMevProtectionEnabled),
+        tx: getMevProtectedTxData(tx, isMevProtectionEnabled),
         coin: asCoinSymbol(account.symbol),
         identity: getAccountIdentity(account),
     });

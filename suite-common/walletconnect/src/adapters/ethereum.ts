@@ -258,7 +258,6 @@ const ethereumRequestThunk = createThunk<
                 signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
             const txData = getMevProtectedTxData(
-                account.symbol,
                 typedSignPayload.serializedTx,
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             );
