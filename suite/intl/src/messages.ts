@@ -13413,6 +13413,11 @@ export const messages = defineMessages({
         id: 'TR_WALLETCONNECT_REQUEST_EXPIRED',
         defaultMessage: 'This request has expired. Return to the app and try again.',
     },
+    TR_WALLETCONNECT_AUTHENTICATE_ERROR: {
+        id: 'TR_WALLETCONNECT_AUTHENTICATE_ERROR',
+        defaultMessage:
+            "Couldn't sign in to the app. Make sure you have an account on the network it requested, then try again.",
+    },
     TR_WALLETCONNECT_IS_SCAM: {
         id: 'TR_WALLETCONNECT_IS_SCAM',
         defaultMessage: 'We detected a scam attempt and blocked it for your safety.',

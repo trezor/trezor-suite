@@ -1,5 +1,6 @@
 import { unwrapResult } from '@reduxjs/toolkit';
 import { type IWalletKit, type WalletKitTypes } from '@reown/walletkit';
+import { type SdkErrorKey } from '@walletconnect/utils';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
@@ -15,7 +16,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
+import { type ERRORS } from '@trezor/connect-common';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import {
     type WalletConnectRequestThunkDeps,
@@ -25,6 +28,7 @@ import {
     getNamespaces,
     processNamespaces,
 } from './adapters';
+import { ethereumAdapter, getChainId } from './adapters/ethereum';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
 import { type WalletConnectStateRootState, selectPendingProposal } from './walletConnectReducer';
@@ -42,6 +46,16 @@ type SessionAuthenticateThunkState = trezorConnectPopupActions.ConnectPopupCallT
 
 type SessionAuthenticateThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
+// Codes of a sign-in the user declined in Suite or on the device, as opposed to a failure.
+const USER_REJECTED_ERROR_CODES = [
+    'Method_Cancel',
+    'Method_Interrupted',
+    'Failure_ActionCancelled',
+    'Failure_PinCancelled',
+] as const satisfies ERRORS.ErrorCode[];
+
+const getAccountChains = (account: Account) => getChainId(getNetwork(account.symbol));
+
 const sessionAuthenticateThunk = createThunk<
     void,
     {
@@ -52,23 +66,57 @@ const sessionAuthenticateThunk = createThunk<
     const { buildAuthObject, getSdkError, populateAuthPayload } =
         await import('@walletconnect/utils');
 
+    const reject = async (reason: SdkErrorKey) => {
+        if (reason !== 'USER_REJECTED') {
+            dispatch(notificationsActions.addToast({ type: 'walletconnect-authenticate-error' }));
+        }
+        await walletKit.rejectSessionAuthenticate({
+            id: event.id,
+            reason: getSdkError(reason),
+        });
+    };
+
+    const requestedChains = event.params.authPayload.chains;
+    const evmAccounts = selectAllSuccessfulAccountsToList(getState()).filter(
+        account => account.visible && account.networkType === 'ethereum',
+    );
+    if (evmAccounts.length === 0) {
+        return reject('UNSUPPORTED_ACCOUNTS');
+    }
+
+    // The first requested chain with an account decides which account signs in.
+    const signInChain = requestedChains.find(chain =>
+        evmAccounts.some(account => getAccountChains(account).includes(chain)),
+    );
+    if (!signInChain) {
+        return reject('UNSUPPORTED_CHAINS');
+    }
+
+    const signInAccount = evmAccounts.find(account =>
+        getAccountChains(account).includes(signInChain),
+    );
+    if (!signInAccount) {
+        return reject('UNSUPPORTED_CHAINS');
+    }
+
+    // The session gets the signed address on every chain of the payload, so keep only chains on which
+    // Suite has an account with this address, otherwise later requests on them find no account.
+    const signInAccountChains = requestedChains.filter(chain =>
+        evmAccounts.some(
+            account =>
+                account.descriptor === signInAccount.descriptor &&
+                getAccountChains(account).includes(chain),
+        ),
+    );
+
     // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
     try {
-        const accounts = selectAllSuccessfulAccountsToList(getState());
-        const supportedNamespaces = getNamespaces(accounts);
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
-            supportedNamespaces.eip155;
         const authPayload = populateAuthPayload({
             authPayload: event.params.authPayload,
-            chains: eip155Namespace.chains,
-            methods: eip155Namespace.methods,
+            chains: signInAccountChains,
+            methods: ethereumAdapter.methods,
         });
-        const ethAccount = accounts.find(a => a.symbol === 'eth');
-        if (!ethAccount) {
-            throw new Error('No ETH account');
-        }
-        const iss = `eip155:1:${ethAccount.descriptor}`;
+        const iss = `${signInChain}:${signInAccount.descriptor}`;
         const message = walletKit.formatAuthMessage({
             request: authPayload,
             iss,
@@ -86,14 +134,18 @@ const sessionAuthenticateThunk = createThunk<
                 },
                 method: 'ethereumSignMessage',
                 payload: {
-                    path: ethAccount.path,
+                    path: signInAccount.path,
                     message,
                 },
             }),
         );
         const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
         if (!response.success) {
-            throw new Error('Sign message error');
+            return await reject(
+                isArrayMember(response.error.code, USER_REJECTED_ERROR_CODES)
+                    ? 'USER_REJECTED'
+                    : 'SESSION_SETTLEMENT_FAILED',
+            );
         }
         const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
 
@@ -119,16 +171,8 @@ const sessionAuthenticateThunk = createThunk<
             );
         }
     } catch (error) {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: error.message,
-            }),
-        );
-        await walletKit.rejectSessionAuthenticate({
-            id: event.id,
-            reason: getSdkError('USER_REJECTED'),
-        });
+        console.error('sessionAuthenticateThunk', error);
+        await reject('SESSION_SETTLEMENT_FAILED');
     }
 });
 
