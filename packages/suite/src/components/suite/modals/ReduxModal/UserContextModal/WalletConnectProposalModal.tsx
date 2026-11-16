@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { closeModal } from '@suite/modal';
+import { closeModal, preserveModal, removePreserveModal } from '@suite/modal';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { useDappScan } from '@suite-common/tx-simulation';
@@ -95,6 +95,18 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const [isActivatingAssets, setIsActivatingAssets] = useState(false);
     // Scan where the proposal came from, not the url the proposer declared for itself.
     const dappScanQuery = useDappScan(pendingProposal?.origin);
+
+    // Device calls of a running discovery close unpreserved modals, which would leave the proposal
+    // unanswered. The activate assets modal preserves itself while it is open.
+    useEffect(() => {
+        if (isActivatingAssets) return undefined;
+
+        dispatch(preserveModal());
+
+        return () => {
+            dispatch(removePreserveModal());
+        };
+    }, [dispatch, isActivatingAssets]);
 
     // Accounts of enabled networks may still be on the way, so their networks are not inactive yet.
     const isDiscoveryLoading = discoveryStatus?.status === 'loading';
