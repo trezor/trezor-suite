@@ -27,18 +27,12 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         // validate backend
         assertBackendSupported(coinInfo);
 
-        const hex = typeof payload.tx === 'string' ? payload.tx : payload.tx.hex;
-        if (coinInfo.type === 'bitcoin' && !/^[0-9A-Fa-f]*$/.test(hex)) {
+        if (coinInfo.type === 'bitcoin' && !/^[0-9A-Fa-f]*$/.test(payload.tx)) {
             throw ERRORS.TypedError('Method_InvalidParameter', 'Transaction must be hexadecimal');
         }
 
-        const disableAlternativeRPC =
-            typeof payload.tx === 'string'
-                ? payload.disableAlternativeRPC
-                : payload.tx.disableAlternativeRPC;
-
         const params = {
-            tx: { hex, disableAlternativeRPC },
+            tx: { hex: payload.tx, disableAlternativeRPC: payload.disableAlternativeRPC },
             coinInfo,
             identity: payload.identity,
         };

@@ -1,7 +1,4 @@
-import {
-    type PushTransaction as PushTransactionParams,
-    asCoinSymbol,
-} from '@trezor/connect-common';
+import { asCoinSymbol } from '@trezor/connect-common';
 
 import PushTransactionBase from './pushTransaction';
 import { setCustomBackend } from '../backend/BlockchainLink';
@@ -13,8 +10,10 @@ class PushTransaction extends PushTransactionBase {
     }
 }
 
-const createMethod = (coin: string, tx: PushTransactionParams['tx']) =>
-    new PushTransaction({ payload: { method: 'pushTransaction', coin: asCoinSymbol(coin), tx } });
+const createMethod = (coin: string, tx: string, disableAlternativeRPC?: boolean) =>
+    new PushTransaction({
+        payload: { method: 'pushTransaction', coin: asCoinSymbol(coin), tx, disableAlternativeRPC },
+    });
 
 beforeAll(() => {
     setCustomBackend(getCoinInfoOrThrow(asCoinSymbol('regtest')), {
@@ -38,22 +37,16 @@ describe.each(['btc', 'test', 'regtest', 'ltc', 'doge', 'zec', 'bch'])(
             'accepts a transaction object with disableAlternativeRPC=%s',
             disableAlternativeRPC => {
                 const hex = '0123456789abcdefABCDEF';
-                const tx =
-                    disableAlternativeRPC === undefined ? { hex } : { hex, disableAlternativeRPC };
 
-                expect(createMethod(coin, tx).getTransactionData()).toEqual(tx);
-            },
-        );
-
-        it.each(['not-hexadecimal', '0x1234', '12 34'])(
-            'rejects invalid hex %j in both payload formats',
-            hex => {
-                expect(() => createMethod(coin, hex)).toThrow('Transaction must be hexadecimal');
-                expect(() => createMethod(coin, { hex })).toThrow(
-                    'Transaction must be hexadecimal',
+                expect(createMethod(coin, hex, disableAlternativeRPC).getTransactionData()).toEqual(
+                    { hex, disableAlternativeRPC },
                 );
             },
         );
+
+        it.each(['not-hexadecimal', '0x1234', '12 34'])('rejects invalid hex %j', hex => {
+            expect(() => createMethod(coin, hex)).toThrow('Transaction must be hexadecimal');
+        });
     },
 );
 
@@ -65,7 +58,7 @@ describe.each(['eth', 'xrp', 'xlm', 'ada', 'trx', 'sol'])(
             const tx = { hex, disableAlternativeRPC: true };
 
             expect(createMethod(coin, hex).getTransactionData()).toEqual({ hex });
-            expect(createMethod(coin, tx).getTransactionData()).toEqual(tx);
+            expect(createMethod(coin, hex, true).getTransactionData()).toEqual(tx);
         });
     },
 );
