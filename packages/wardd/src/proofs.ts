@@ -13,9 +13,9 @@ import {
     ENC_ENCRYPTED,
     ENC_PLAINTEXT,
     type LeafPart,
-    nodesByHash,
     nonMembershipByKey,
     proofByKey,
+    walkEntries,
 } from '@trezor/ward';
 
 type Body = Record<string, any>;
@@ -136,22 +136,21 @@ export const buildProofAck = (rows: BlobRow[], entryKeyHex: string): Body => {
 };
 
 /**
- * The WARDNodeAck for a listing walk's WARDNodeRequest: the node with `nodeHashHex` and up to
- * `maxNodes - 1` descendants in pre-order, leaves carrying both stored parts. Empty `nodes` if no
- * node has that hash -- the device then fails the listing rather than show a shorter one.
+ * The WARDNodeAck for a listing walk's WARDNodeRequest: up to `maxEntries` entries after the
+ * entry_key `afterHex` (null: from the first), in key order, each with both stored parts and its
+ * proof cut below where it parts from the one before. Empty `entries` if `afterHex` is not an
+ * entry -- the device then fails the listing rather than show a shorter one.
  */
-export const buildNodeAck = (rows: BlobRow[], nodeHashHex: string, maxNodes = 16): Body => {
+export const buildNodeAck = (rows: BlobRow[], afterHex: string | null, maxEntries = 16): Body => {
     const byKey = new Map(rows.map(r => [r.entryKeyHex, r]));
 
     return {
-        nodes: nodesByHash(rows, nodeHashHex, maxNodes).map(node => {
-            if (node.kind === 'branch') {
-                return { split_bit: node.splitBit, left: node.leftHex, right: node.rightHex };
-            }
-            const row = byKey.get(node.entryKeyHex)!;
+        entries: walkEntries(rows, afterHex, maxEntries).map(entry => {
+            const row = byKey.get(entry.entryKeyHex)!;
 
             return {
-                entry_key: node.entryKeyHex,
+                entry_key: entry.entryKeyHex,
+                proof: entry.proof,
                 content: makeLeafContent(row.content),
                 identity: makeLeafIdentity(row.keyType, row.identity),
             };

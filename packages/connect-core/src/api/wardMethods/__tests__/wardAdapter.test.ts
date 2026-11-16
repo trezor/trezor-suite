@@ -41,7 +41,7 @@ const fakeWardd = (
             if (method === 'answerProofRequest')
                 return Promise.resolve({ proof: [], content: null, x: {} });
             if (method === 'answerNodeRequest')
-                return Promise.resolve({ nodes: [{ entry_key: 'ee', content: null }] });
+                return Promise.resolve({ entries: [{ entry_key: 'ee', content: null }] });
 
             return script(device!, endpoint);
         }),
@@ -99,19 +99,19 @@ describe('the Connect WARD adapter', () => {
         expect(ack).toEqual({ unavailable: true });
     });
 
-    it("answers a listing walk's node pull through wardd's answerNodeRequest", async () => {
+    it("answers a listing walk's entry pull through wardd's answerNodeRequest", async () => {
         const cmd = fakeCmd({});
         const { wardd, calls } = fakeWardd(() => Promise.resolve({}));
         setWardd(wardd);
 
         const ack = await withWard(cmd as any, 'wardList', () =>
-            cmd.pullNodes({ node_hash: 'ab', absent: null }),
+            cmd.pullNodes({ after: 'ab', absent: null }),
         );
 
         expect(calls).toEqual([
-            { method: 'answerNodeRequest', params: { request: { node_hash: 'ab' } } },
+            { method: 'answerNodeRequest', params: { request: { after: 'ab' } } },
         ]);
-        expect(ack).toEqual({ nodes: [{ entry_key: 'ee' }] });
+        expect(ack).toEqual({ entries: [{ entry_key: 'ee' }] });
     });
 
     it("answers the device's proof pull through wardd's answerProofRequest", async () => {

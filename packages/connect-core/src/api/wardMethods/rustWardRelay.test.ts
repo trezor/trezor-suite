@@ -72,9 +72,9 @@ describe('Rust WARD adapter in Connect', () => {
             call: () => Promise.reject(new Error('no conversation expected')),
             answerWardRequest: (name, request) => {
                 expect(name).toBe('WARDNodeRequest');
-                expect(request).toEqual({ node_hash: 'ab' });
+                expect(request).toEqual({ after: 'ab' });
 
-                return Promise.resolve({ name: 'WARDNodeAck', message: { nodes: [] } });
+                return Promise.resolve({ name: 'WARDNodeAck', message: { entries: [] } });
             },
             close: () => Promise.resolve(),
         };
@@ -83,8 +83,8 @@ describe('Rust WARD adapter in Connect', () => {
         }).connect();
 
         await expect(
-            endpoint.call('answerNodeRequest', { request: { node_hash: 'ab' } }),
-        ).resolves.toEqual({ nodes: [] });
+            endpoint.call('answerNodeRequest', { request: { after: 'ab' } }),
+        ).resolves.toEqual({ entries: [] });
         await endpoint.close();
     });
 

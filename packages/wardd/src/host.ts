@@ -721,9 +721,13 @@ export class WardHost {
     async answerNodeRequest(params: Body): Promise<Body> {
         const wardId = this.requireWardId();
         const request = params.request ?? {};
-        if (typeof request.node_hash !== 'string' || !/^[0-9a-f]{64}$/i.test(request.node_hash)) {
-            throw new RelayFailure('bad_request', 'request.node_hash must be 32 bytes of hex');
+        if (
+            request.after != null &&
+            (typeof request.after !== 'string' || !/^[0-9a-f]{64}$/i.test(request.after))
+        ) {
+            throw new RelayFailure('bad_request', 'request.after must be 32 bytes of hex');
         }
+        const after: string | null = request.after == null ? null : request.after.toLowerCase();
         const tree = this.syncedHead ?? (await this.deps.storage.getTreeState(wardId));
         const key = `${wardId}:${tree?.counter ?? 0}:${tree?.root ?? ''}`;
         // rebuildTrie replays from genesis and checks the result against this exact head, so the
@@ -738,9 +742,9 @@ export class WardHost {
             );
             this.listingRows = { key, rows };
         }
-        const ack = buildNodeAck(this.listingRows.rows, request.node_hash.toLowerCase());
+        const ack = buildNodeAck(this.listingRows.rows, after);
         this.deps.log(
-            `NODES served node_hash=${request.node_hash} count=${ack.nodes.length}` +
+            `ENTRIES served after=${after ?? '-'} count=${ack.entries.length}` +
                 ` entries=${this.listingRows.rows.length}`,
         );
 

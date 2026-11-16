@@ -349,15 +349,15 @@ describe('wardd flows', () => {
             expect(result).toMatchObject({ shown: 0, entries: 0, complete: true });
         });
 
-        it('serves nothing for a hash that is not in the trie', async () => {
+        it('serves nothing after a key that is not in the trie', async () => {
             const { endpoint, dev } = await setup();
             await update(endpoint, dev.device, 'alice');
 
             await expect(
-                endpoint.call('answerNodeRequest', { request: { node_hash: '00'.repeat(32) } }),
-            ).resolves.toEqual({ nodes: [] });
+                endpoint.call('answerNodeRequest', { request: { after: '00'.repeat(32) } }),
+            ).resolves.toEqual({ entries: [] });
             await expect(
-                endpoint.call('answerNodeRequest', { request: { node_hash: 'zz' } }),
+                endpoint.call('answerNodeRequest', { request: { after: 'zz' } }),
             ).rejects.toMatchObject({ code: 'bad_request' });
         });
 

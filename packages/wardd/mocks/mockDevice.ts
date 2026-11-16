@@ -59,43 +59,69 @@ export const fakeDevice = (endpoint: () => WardRelayEndpoint, opts: { wardId?: s
         pulls.push(ack);
     };
 
-    /** The firmware's verified listing walk (trie.TrieWalk), pulling through `answerNodeRequest`. */
+    /**
+     * The firmware's verified listing walk (trezor_ward's Walk), pulling through
+     * `answerNodeRequest`: entries in key order, each proof completed from the one before (if
+     * cut), held against the root, and checked to be the successor.
+     */
     const walk = async () => {
-        const stack = root() ? [root()] : [];
-        let entries = 0;
-        while (stack.length > 0) {
-            const ack = await endpoint().call('answerNodeRequest', {
-                request: { node_hash: stack[stack.length - 1] },
-            });
-            const nodes = (ack.nodes ?? []) as Record<string, any>[];
-            if (nodes.length === 0) throw new Error('WARD listing: the host returned no node');
-            for (const node of nodes) {
-                const trusted = stack.pop();
-                let hash: string;
-                if (node.entry_key === undefined) {
-                    const split = new Uint8Array(2);
-                    new DataView(split.buffer).setUint16(0, node.split_bit);
-                    hash = bytesToHex(
-                        sha256(
-                            concatBytes(
-                                Uint8Array.of(1),
-                                split,
-                                hexToBytes(node.left),
-                                hexToBytes(node.right),
-                            ),
-                        ),
-                    );
-                    stack.push(node.right, node.left);
-                } else {
-                    const identity = readLeafIdentity(node.identity);
-                    const content = readLeafContent(node.content);
-                    const commit = commitOf(identity.keyType, identity.part!, content!);
-                    hash = bytesToHex(leafFromCommit(hexToBytes(node.entry_key), commit));
-                    entries++;
-                }
+        const bit = (key: Uint8Array, i: number) => ((key[i >> 3]! >> (7 - (i & 7))) & 1) === 1;
+        type Step = { c: number; sibling: Uint8Array };
+        const steps = (proof: string[]): Step[] =>
+            proof.map(step => ({ c: hexToBytes(step)[0]!, sibling: hexToBytes(step).slice(1) }));
+        const fold = (key: Uint8Array, node: Uint8Array, path: Step[]) =>
+            path.reduce((child, { c, sibling }) => {
+                const [left, right] = bit(key, c) ? [sibling, child] : [child, sibling];
 
-                if (hash !== trusted)
-                    throw new Error('WARD listing: node does not hash to its parent');
+                return sha256(concatBytes(Uint8Array.of(1, c), left, right));
+            }, node);
+        // where the next entry parts from `key`: its lowest left turn
+        const turn = (key: Uint8Array, path: Step[]) => path.findIndex(({ c }) => !bit(key, c));
+
+        const trusted = root();
+        let current: { key: Uint8Array; leaf: Uint8Array; path: Step[] } | undefined;
+        let entries = 0;
+        const done = () => (current ? turn(current.key, current.path) < 0 : trusted === '');
+        while (!done()) {
+            const ack = await endpoint().call('answerNodeRequest', {
+                request: { after: current ? bytesToHex(current.key) : undefined },
+            });
+            const served = (ack.entries ?? []) as Record<string, any>[];
+            if (served.length === 0) throw new Error('WARD listing: the host returned no entry');
+            for (const entry of served) {
+                if (done()) throw new Error('WARD listing: entries past the last one');
+                const key = hexToBytes(entry.entry_key);
+                const identity = readLeafIdentity(entry.identity);
+                const content = readLeafContent(entry.content);
+                const leaf = leafFromCommit(
+                    key,
+                    commitOf(identity.keyType, identity.part!, content!),
+                );
+                let path = steps(entry.proof ?? []);
+                let lower = -1;
+                if (current) {
+                    const at = turn(current.key, current.path);
+                    lower = current.path[at]!.c;
+                    if (path.every(({ c }) => c > lower)) {
+                        // cut: splice onto the current path above the parting branch
+                        const left = fold(current.key, current.leaf, current.path.slice(0, at));
+                        path = [
+                            ...path,
+                            { c: lower, sibling: left },
+                            ...current.path.slice(at + 1),
+                        ];
+                    }
+                    const parts = [...Array(256).keys()].find(
+                        i => bit(key, i) !== bit(current!.key, i),
+                    );
+                    if (parts !== lower) throw new Error('WARD listing: entry out of order');
+                }
+                if (bytesToHex(fold(key, leaf, path)) !== trusted)
+                    throw new Error('WARD listing: proof does not match the root');
+                if (path.some(({ c }) => c > lower && bit(key, c)))
+                    throw new Error('WARD listing: entry out of order');
+                current = { key, leaf, path };
+                entries++;
             }
         }
 
