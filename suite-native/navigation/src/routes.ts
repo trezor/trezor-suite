@@ -21,8 +21,10 @@ export enum RootStackRoutes {
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
     AppsEmbedding = 'AppsEmbedding',
-    SignVerify = 'SignVerify',
-    SignVerifyStack = 'SignVerifyStack',
+    // Route names are reported to analytics (screen change events) and Sentry (route tag, breadcrumbs);
+    // keep the original values so existing dashboards and filters still match.
+    SignVerify = 'SignAndVerify',
+    SignVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
