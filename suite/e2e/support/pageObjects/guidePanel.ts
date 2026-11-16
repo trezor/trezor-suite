@@ -13,7 +13,6 @@ export class GuidePanel {
     readonly supportAndFeedbackButton: Locator;
     readonly bugFormButton: Locator;
     readonly feedbackFormButton: Locator;
-    readonly bugLocationDropdown: Locator;
     readonly bugLocationDropdownInput: Locator;
     readonly bugLocationDropdownOption = (location: FeedbackCategory) =>
         this.page.getByTestId(`@guide/feedback/suggestion-dropdown/select/option/${location}`);
@@ -48,7 +47,6 @@ export class GuidePanel {
         this.supportAndFeedbackButton = this.page.getByTestId('@guide/button-feedback');
         this.bugFormButton = this.page.getByTestId('@guide/feedback/bug');
         this.feedbackFormButton = this.page.getByTestId('@guide/feedback/suggestion');
-        this.bugLocationDropdown = this.page.getByTestId('@guide/feedback/suggestion-dropdown');
         this.bugLocationDropdownInput = this.page.getByTestId(
             '@guide/feedback/suggestion-dropdown/select/input',
         );
@@ -80,7 +78,11 @@ export class GuidePanel {
 
     @step()
     async selectBugLocation(location: FeedbackCategory) {
-        await this.bugLocationDropdown.click();
+        /**
+         * Select renders an inert placeholder until react-select loads, and a click on it is lost.
+         * The input exists only in the loaded control, so the click waits for it.
+         */
+        await this.bugLocationDropdownInput.click();
         await this.bugLocationDropdownOption(location).click();
         await expect(this.bugLocationDropdownInput).toHaveText(capitalizeFirstLetter(location));
     }

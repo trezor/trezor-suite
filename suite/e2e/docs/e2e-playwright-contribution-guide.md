@@ -93,7 +93,6 @@ export class SuiteGuide {
     private readonly window: Page;
     readonly guideButton: Locator;
     readonly guidePanel: Locator;
-    readonly bugLocationDropdown: Locator;
     readonly bugLocationDropdownInput: Locator;
     readonly bugLocationDropdownOption = (location: FeedbackCategory) =>
         this.window.getByTestId(`@guide/feedback/suggestion-dropdown/select/option/${location}`);
@@ -102,7 +101,6 @@ export class SuiteGuide {
         this.window = window;
         this.guideButton = this.window.getByTestId('@guide/button-open');
         this.guidePanel = this.window.getByTestId('@guide/panel');
-        this.bugLocationDropdown = this.window.getByTestId('@guide/feedback/suggestion-dropdown');
         this.bugLocationDropdownInput = this.window.getByTestId(
             '@guide/feedback/suggestion-dropdown/select/input',
         );
@@ -116,7 +114,7 @@ export class SuiteGuide {
 
     @step()
     async selectBugLocation(location: FeedbackCategory) {
-        await this.bugLocationDropdown.click();
+        await this.bugLocationDropdownInput.click();
         await this.bugLocationDropdownOption(location).click();
         await expect(this.bugLocationDropdownInput).toHaveText(capitalizeFirstLetter(location));
     }
@@ -125,7 +123,7 @@ export class SuiteGuide {
 Locators should mainly rely on testIds `this.window.getByTestId('@guide/panel')` that we add to our product as html attributes `data-testid="@guide/panel"`.
 Alternatively you can use user facing locators `page.getByRole('button', { name: 'Submit' }).`but testIds are our strong preference.
 
-Adhere to consistent and clear naming. End the locator name with info of what kind of element it is `dashboardMenuButton, discoveryHeader, discoveryBar, bugLocationDropdown`.
+Adhere to consistent and clear naming. End the locator name with info of what kind of element it is `dashboardMenuButton, discoveryHeader, discoveryBar, bugLocationDropdownInput`.
 
 There is vast documentation on how to work with Locators on [PlayWraith webpages](https://playwright.dev/docs/locators)
 
