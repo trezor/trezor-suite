@@ -47,6 +47,7 @@ type TransactionReviewSummaryProps = {
     onDetailsClick: () => void;
     stakeType?: StakeType | null;
     timer?: React.JSX.Element;
+    formFeeLimit: string | undefined;
 };
 
 export const TransactionReviewSummary = ({
@@ -56,6 +57,7 @@ export const TransactionReviewSummary = ({
     onDetailsClick,
     stakeType,
     timer,
+    formFeeLimit,
 }: TransactionReviewSummaryProps) => {
     const drafts = useSelector(selectSendFormDrafts);
     const currentAccountKey = useSelector(selectSelectedAccountKey) as string;
@@ -108,7 +110,11 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {networkType === 'tron' && (
-                        <TransactionReviewTronFeeNotes tx={tx} account={account} />
+                        <TransactionReviewTronFeeNotes
+                            tx={tx}
+                            account={account}
+                            formFeeLimit={formFeeLimit}
+                        />
                     )}
 
                     {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (

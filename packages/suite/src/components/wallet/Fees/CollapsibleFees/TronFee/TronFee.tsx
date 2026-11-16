@@ -5,12 +5,12 @@ import { type FormState } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { LoadingContent } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite';
 
 import { TronFeeContent } from './TronFeeContent';
 import { useFeesContext } from '../../context/FeesContext';
+import { getTronFeeLimitSun } from '../../feeUtils';
 
 type TronFeeProps = {
     typographyStyle: TypographyStyle;
@@ -22,11 +22,7 @@ export function TronFee({ typographyStyle }: TronFeeProps) {
     const formFeeLimit = useWatch<FormState, 'feeLimit'>({ name: 'feeLimit' });
 
     const tx = composedLevels?.normal;
-    const estimatedFeeLimit = tx?.type !== 'error' ? tx?.estimatedFeeLimit : undefined;
-    const feeLimitSun =
-        formFeeLimit && estimatedFeeLimit && new BigNumber(formFeeLimit).gt(estimatedFeeLimit)
-            ? formFeeLimit
-            : estimatedFeeLimit;
+    const feeLimitSun = getTronFeeLimitSun({ tx, formFeeLimit });
     const fees = calculateTronFeeBreakdown(tx, tronResources, networkSymbol, feeLimitSun);
 
     return (

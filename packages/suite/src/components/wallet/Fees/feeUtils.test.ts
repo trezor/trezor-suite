@@ -6,7 +6,12 @@ import {
 } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
-import { getFeeTooltipTextId, getIsTrc20Transfer, getSupportsAdjustableFees } from './feeUtils';
+import {
+    getFeeTooltipTextId,
+    getIsTrc20Transfer,
+    getSupportsAdjustableFees,
+    getTronFeeLimitSun,
+} from './feeUtils';
 
 const token: TokenInfo = {
     standard: 'TRC20',
@@ -85,5 +90,28 @@ describe('getFeeTooltipTextId', () => {
         expect(getFeeTooltipTextId({ networkType: 'tron', isTronAccountActivation: true })).toBe(
             'TR_TRON_FEE_ACTIVATION_DESC',
         );
+    });
+});
+
+describe('getTronFeeLimitSun', () => {
+    const tx = finalLevel({ token, estimatedFeeLimit: '13000000' });
+
+    it.each<[string, string | undefined, string]>([
+        ['a fee limit above the estimate', '20000000', '20000000'],
+        ['a fee limit below the estimate', '10000000', '13000000'],
+        ['no fee limit', '', '13000000'],
+        ['an undefined fee limit', undefined, '13000000'],
+    ])('uses the larger value for %s', (_, formFeeLimit, expected) => {
+        expect(getTronFeeLimitSun({ tx, formFeeLimit })).toBe(expected);
+    });
+
+    it('is undefined without an estimated fee limit', () => {
+        expect(getTronFeeLimitSun({ tx: finalLevel(), formFeeLimit: '20000000' })).toBeUndefined();
+        expect(
+            getTronFeeLimitSun({
+                tx: { type: 'error', error: 'NOT-ENOUGH-FUNDS' },
+                formFeeLimit: '20000000',
+            }),
+        ).toBeUndefined();
     });
 });
