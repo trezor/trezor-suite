@@ -50,7 +50,7 @@ different form. None of these differences is visible in the contract or the page
 ### 2. React and React Native are the interface
 
 > [!CAUTION]
-> This decision is optional, not mandatory. It describes how to modularize a feature when we want
+> This decision does not apply to every module. It describes how to modularize a feature when we want
 > network modules to provide its components. Functionality that needs no network-specific UI can be
 > modularized headless, without React, see
 > [Headless contracts are for results, not for UI](#5-headless-contracts-are-for-results-not-for-ui).
