@@ -1,12 +1,24 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { TrezorBlockchain } from '@trezor/blockchain-core';
-import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
+import { asGetter } from '@trezor/dependency-injection';
+import { createMockDispatch, mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
-import { type SetCustomBackendThunkState, setCustomBackendThunk } from './blockchainThunks';
+import {
+    type InitBlockchainThunkDeps,
+    type InitBlockchainThunkState,
+    type SetCustomBackendThunkState,
+    initBlockchainThunk,
+    setCustomBackendThunk,
+} from './blockchainThunks';
 import {
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
@@ -92,5 +104,54 @@ describe(setCustomBackendThunk.name, () => {
             blockchainLink: { type: 'electrum', url: [electrumUrl] },
         });
         expect(reconnect).not.toHaveBeenCalled();
+    });
+});
+
+describe('initBlockchainThunk', () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    it('connects the backends of funded networks first', async () => {
+        // The balance report after init is debounced; it must not fire after the test.
+        jest.useFakeTimers();
+        const reconnect = jest
+            .spyOn(TrezorBlockchain, 'unsubscribeFiatRates')
+            .mockResolvedValue({ success: true, payload: { subscribed: false } });
+        const account = (symbol: string, balance: string) =>
+            mockWalletAccount({
+                symbol: asNetworkSymbol(symbol),
+                descriptor: asAccountDescriptor(`${symbol}${balance}`),
+                balance,
+            });
+        const state: InitBlockchainThunkState = {
+            wallet: {
+                accounts: [
+                    account('btc', '0'),
+                    account('eth', '0'),
+                    account('ltc', '5'),
+                    account('eth', '7'),
+                    account('doge', '0'),
+                ],
+                blockchain: blockchainInitialState,
+                settings: initialWalletSettingsState,
+            },
+            networks: mockNetworksState(['btc', 'eth', 'ltc', 'doge'].map(asNetworkSymbol)),
+        };
+        const extra: InitBlockchainThunkDeps = {
+            services: {
+                analytics: mockAnalytics<AnalyticsSharedEvents>(),
+                getDebugSettings: asGetter(() => ({})),
+            },
+        };
+        const { dispatch } = createMockDispatch({ getState: () => state, extra });
+
+        await dispatch(initBlockchainThunk()).unwrap();
+
+        expect(reconnect.mock.calls.map(([params]) => params.coin)).toEqual([
+            'eth',
+            'ltc',
+            'btc',
+            'doge',
+        ]);
+        jest.useRealTimers();
     });
 });
