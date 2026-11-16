@@ -83,6 +83,7 @@ export const useYieldDepositFees = ({
     const fees = usePreparedTxFees({
         analyticsFlow: 'yield-deposit',
         amount,
+        availableBalance: flowData?.account.availableBalance,
         composeTransaction,
         formDraftKey,
         hasInvalidContext,
