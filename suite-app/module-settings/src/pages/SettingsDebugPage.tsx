@@ -11,7 +11,7 @@ import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
-import { isDesktop } from '@trezor/env-utils';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
@@ -54,6 +54,7 @@ import {
 } from '@trezor/suite';
 import { breakpoints } from '@trezor/theme';
 
+import { ConnectedServiceWorkerDebugItem } from '../SettingsDebug/ConnectedServiceWorkerDebugItem';
 import { ReduxLogger } from '../SettingsDebug/ReduxLogger';
 
 export const SettingsDebugPage = () => {
@@ -182,6 +183,14 @@ export const SettingsDebugPage = () => {
             <SuiteSyncSettings onError={handleWipeSuiteSyncLabelsError} />
             <DebugQuotaManagerSettings />
             <DebugReferAFriendApi />
+            {isWeb() && (
+                <SettingsSection
+                    hasVerticalLayout={hasContentBelowTabletWidth}
+                    title="Service worker"
+                >
+                    <ConnectedServiceWorkerDebugItem />
+                </SettingsSection>
+            )}
             <DebugPlatformEncryption />
         </SettingsLayout>
     );

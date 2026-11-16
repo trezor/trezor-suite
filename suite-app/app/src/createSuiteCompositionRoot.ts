@@ -10,6 +10,7 @@ import { lockDevice } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
 import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
+import { type ServiceWorkerControlDep } from '@suite/service-worker';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { createGetSignVerify, createSuiteNetworkModuleRepository } from '@suite-app/networks';
@@ -98,7 +99,8 @@ export type SuiteAppDeps = StoreAPIDep &
     ReloadAppDep &
     ThpHostNameDep &
     GetTransportsFactoriesDep &
-    GetTrezorConnectPrivilegedDep;
+    GetTrezorConnectPrivilegedDep &
+    ServiceWorkerControlDep;
 
 export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
@@ -231,6 +233,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         }),
         reportSecurityCheck,
         reloadApp: deps.reloadApp,
+        serviceWorkerControl: deps.serviceWorkerControl,
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
