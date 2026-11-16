@@ -9,6 +9,8 @@ export type TokenMetadata = {
     symbol?: string;
     decimals?: number;
     standard?: TokenInfoBranded['standard'];
+    /** Listed in Trezor's token definitions, so URLs in its name are not blurred. */
+    isRecognized?: true;
 };
 
 export type TokenMetadataSource = {
