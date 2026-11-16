@@ -20,6 +20,7 @@ import {
     formatNetworkAmount,
     getAccountIdentity,
     getBackendFromSettings,
+    isPositiveBalance,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
     shouldUseIdentities,
@@ -134,12 +135,13 @@ export const initBlockchainThunk = createThunk<
         return;
     }
 
-    const symbols: NetworkSymbol[] = [];
-    accounts.forEach(a => {
-        if (!symbols.includes(a.symbol)) {
-            symbols.push(a.symbol);
-        }
-    });
+    // On web only a few backends connect at once, so the networks holding funds connect first.
+    const fundedSymbols = new Set(
+        accounts.filter(({ balance }) => isPositiveBalance(balance)).map(({ symbol }) => symbol),
+    );
+    const symbols = Array.from(new Set(accounts.map(({ symbol }) => symbol))).toSorted(
+        (a, b) => Number(fundedSymbols.has(b)) - Number(fundedSymbols.has(a)),
+    );
 
     const promises = symbols.map(symbol => dispatch(reconnectBlockchainThunk({ symbol })));
     await Promise.all(promises);
