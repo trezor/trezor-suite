@@ -37,10 +37,12 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
+        "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
+        "@types/jest": "30.0.0",
         "@types/sharedworker": "^0.0.229"
     },
     "dependencies": {

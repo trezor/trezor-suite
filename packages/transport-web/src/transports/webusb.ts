@@ -32,6 +32,8 @@ export class WebUsbTransport extends AbstractApiTransport {
 
     private readonly sessionsBackgroundUrl;
 
+    private browserSessionsBackground?: BrowserSessionsBackground;
+
     constructor({ logger, sessionsBackgroundUrl, ...rest }: WebUsbTransportParams) {
         super({
             api: new UsbApi({
@@ -48,6 +50,12 @@ export class WebUsbTransport extends AbstractApiTransport {
     }
 
     private async trySetSessionsBackground() {
+        // one SharedWorker connection per transport instance: every BrowserSessionsBackground
+        // opens a new port that the worker keeps in its never-pruned `ports` array
+        // (background-sharedworker), and init() is re-entered on every transport error
+        if (this.browserSessionsBackground) {
+            return;
+        }
         try {
             const response = await fetch(this.sessionsBackgroundUrl, { method: 'HEAD' });
             if (!response.ok) {
@@ -55,7 +63,10 @@ export class WebUsbTransport extends AbstractApiTransport {
                     `Failed to fetch sessions-background SharedWorker from url: ${this.sessionsBackgroundUrl}`,
                 );
             } else {
-                this.sessionsBackground = new BrowserSessionsBackground(this.sessionsBackgroundUrl);
+                this.browserSessionsBackground = new BrowserSessionsBackground(
+                    this.sessionsBackgroundUrl,
+                );
+                this.sessionsBackground = this.browserSessionsBackground;
                 // sessions client initiated with a request fn facilitating communication with a session backend (shared worker in case of webusb)
                 this.sessionsClient.setBackground(this.sessionsBackground);
             }
