@@ -32,6 +32,7 @@ const {
     TANSTACK_REACT_QUERY_DEV_TOOLS,
     TRANSPORT_BROWSER_PING,
     REDUX_LOGGER_ENABLED,
+    INSTRUMENT_CODE,
 } = process.env;
 
 const isDev = NODE_ENV !== 'production';
@@ -45,6 +46,11 @@ const isTanstackReactQueryDevTools = TANSTACK_REACT_QUERY_DEV_TOOLS === 'true';
 const transportBrowserPing = TRANSPORT_BROWSER_PING !== 'false';
 /** "true" or "false" forces the redux-logger switch of non-codesign builds, mainly for CI. */
 const reduxLoggerEnabled = REDUX_LOGGER_ENABLED ?? '';
+/**
+ * CI always sets INSTRUMENT_CODE, to "false" unless coverage is wanted,
+ * so only "true" may enable Istanbul.
+ */
+const shouldInstrumentCode = INSTRUMENT_CODE === 'true';
 
 export {
     isAnalyzing,
@@ -57,4 +63,5 @@ export {
     isTanstackReactQueryDevTools,
     transportBrowserPing,
     reduxLoggerEnabled,
+    shouldInstrumentCode,
 };

@@ -18,6 +18,7 @@ import {
     isTanstackReactQueryDevTools,
     reduxLoggerEnabled,
     sentryAuthToken,
+    shouldInstrumentCode,
     transportBrowserPing,
 } from './env';
 import { getRevision } from './git';
@@ -217,7 +218,7 @@ export const createBaseConfig = ({
                     use: {
                         loader: 'babel-loader',
                         options: {
-                            cacheDirectory: !process.env.INSTRUMENT_CODE,
+                            cacheDirectory: !shouldInstrumentCode,
                             cacheIdentifier: babelCacheIdentifier,
                             presets: [
                                 ['@babel/preset-react', { runtime: 'automatic' }],
@@ -269,7 +270,7 @@ export const createBaseConfig = ({
                                             },
                                         ],
                                         ...(isDev ? ['react-refresh/babel'] : []),
-                                        ...(process.env.INSTRUMENT_CODE
+                                        ...(shouldInstrumentCode
                                             ? [
                                                   [
                                                       'istanbul',
