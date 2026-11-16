@@ -1165,6 +1165,73 @@ export const getRbfParams = [
             ],
         },
     },
+    {
+        description: 'with non-ASCII OP_RETURN output',
+        account: {
+            networkType: 'bitcoin',
+            addresses: {
+                change: [{ address: '1234', path: 'm/44/1' }],
+                used: [{ address: 'abcd', path: 'm/44/0' }],
+                unused: [],
+            },
+        },
+        tx: {
+            type: 'sent',
+            txid: '1A2b',
+            rbf: true,
+            fee: '366',
+            details: {
+                size: 100,
+                vin: [
+                    {
+                        txid: 'prevTxid',
+                        value: '1',
+                        addresses: ['abcd'],
+                    },
+                ],
+                vout: [
+                    {
+                        isAddress: true,
+                        addresses: ['xyz0'],
+                    },
+                    {
+                        isAddress: false,
+                        addresses: ['OP_RETURN 000102ff8089abcd'],
+                        hex: '6a08000102ff8089abcd',
+                    },
+                ],
+            },
+        },
+        result: {
+            type: 'bitcoin',
+            txid: '1A2b',
+            baseFee: 366,
+            feeRate: '4',
+            utxo: [
+                {
+                    address: 'abcd',
+                    path: 'm/44/0',
+                    blockHeight: 0,
+                    confirmations: 0,
+                    txid: 'prevTxid',
+                    amount: '1',
+                    vout: 0,
+                    required: true,
+                },
+            ],
+            outputs: [
+                {
+                    type: 'payment',
+                    address: 'xyz0',
+                },
+                {
+                    type: 'opreturn',
+                    dataAscii: Buffer.from('000102ff8089abcd', 'hex').toString('utf-8'),
+                    dataHex: '000102ff8089abcd',
+                },
+            ],
+        },
+    },
 ];
 
 export const getAccountTransactions = [

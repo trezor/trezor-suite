@@ -31,6 +31,7 @@ import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
+import { payments } from '@trezor/utxo-lib';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { fromGwei, fromWei } from './ethConverter';
@@ -1121,6 +1122,25 @@ const getEthereumRbfParams = (
     };
 };
 
+const getOpReturnDataHex = (scriptHex: string | undefined, firstAddress: string) => {
+    if (scriptHex) {
+        try {
+            const { data } = payments.embed({ output: Buffer.from(scriptHex, 'hex') });
+            // Trezor's PAYTOOPRETURN carries a single data blob, so a multi-push script can't be replaced
+            const [chunk, ...rest] = data ?? [];
+
+            return chunk && rest.length === 0 ? chunk.toString('hex') : undefined;
+        } catch {
+            return undefined;
+        }
+    }
+
+    // pending txs created by @trezor/connect have no scriptPubKey, only the "OP_RETURN (<ascii>)" label
+    const dataAscii = firstAddress.match(/^OP_RETURN \((.*)\)/)?.pop();
+
+    return dataAscii ? Buffer.from(dataAscii, 'ascii').toString('hex') : undefined;
+};
+
 const getBitcoinRbfParams = (
     tx: AccountTransaction,
     account: Account,
@@ -1141,15 +1161,12 @@ const getBitcoinRbfParams = (
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstAddress: string = outputAddresses[0];
         if (!output.isAddress) {
-            // TODO: this should be done in @trezor/connect, blockchain-link or even blockbook
-            // blockbook sends output.hex as scriptPubKey with additional prefix where: 6a - OP_RETURN and XX - data len. this field should be parsed by @trezor/utxo-lib
-            // blockbook sends ascii data in output.address[0] field in format: "OP_RETURN (ASCII-VALUE)". as a workaround we are extracting ascii data from here
-            const dataAscii = firstAddress.match(/^OP_RETURN \((.*)\)/)?.pop(); // strip ASCII data from brackets
-            if (dataAscii) {
+            const dataHex = getOpReturnDataHex(output.hex, firstAddress);
+            if (dataHex) {
                 outputs.push({
                     type: 'opreturn',
-                    dataHex: Buffer.from(dataAscii, 'ascii').toString('hex'),
-                    dataAscii,
+                    dataHex,
+                    dataAscii: Buffer.from(dataHex, 'hex').toString('utf-8'),
                 });
             }
         } else {
