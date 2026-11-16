@@ -22,11 +22,13 @@
     "main": "src/index.ts",
     "browser": {
         "./src/utils/assets": "./src/utils/assets.browser.ts",
-        "./src/workers/workers": "./src/workers/workers.browser.ts"
+        "./src/workers/workers": "./src/workers/workers.browser.ts",
+        "./src/backend/backendConnectLimit": "./src/backend/backendConnectLimit.browser.ts"
     },
     "react-native": {
         "./src/utils/assets": "./src/utils/assets.native.ts",
-        "./src/workers/workers": "./src/workers/workers.native.ts"
+        "./src/workers/workers": "./src/workers/workers.native.ts",
+        "./src/backend/backendConnectLimit": "./src/backend/backendConnectLimit.native.ts"
     },
     "publishConfig": {
         "main": "./lib/index.js",
@@ -41,6 +43,7 @@
         "browser": {
             "./lib/utils/assets.js": "./lib/utils/assets.browser.js",
             "./lib/workers/workers.js": "./lib/workers/workers.browser.js",
+            "./lib/backend/backendConnectLimit.js": "./lib/backend/backendConnectLimit.browser.js",
             "./lib/data/*": "./lib/data/*",
             "./lib/exports.js": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*",
@@ -49,6 +52,7 @@
         "react-native": {
             "./lib/utils/assets.js": "./lib/utils/assets.native.js",
             "./lib/workers/workers.js": "./lib/workers/workers.native.js",
+            "./lib/backend/backendConnectLimit.js": "./lib/backend/backendConnectLimit.native.js",
             "./lib/data/*": "./lib/data/*",
             "./lib/exports.js": "./lib/exports.js",
             "./lib/impl/*": "./lib/impl/*",

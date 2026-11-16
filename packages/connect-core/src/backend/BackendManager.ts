@@ -1,3 +1,4 @@
+import type { ServerInfo } from '@trezor/blockchain-link';
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -6,6 +7,8 @@ import { deepEqual } from '@trezor/utils';
 
 import type { BlockchainOptions } from './Blockchain';
 import { Blockchain } from './Blockchain';
+import { type ConnectLane, ConnectQueue } from './ConnectQueue';
+import { BACKEND_CONNECT_LIMIT } from './backendConnectLimit';
 import * as settingsStore from '../data/settingsStore';
 
 type CoinShortcut = CoinInfo['shortcut'];
@@ -25,6 +28,8 @@ const STABLE_CONNECTION_TIME = 30000;
 
 export class BackendManager {
     private proxy?: Proxy;
+    private readonly connectQueue: ConnectQueue;
+    private readonly inits = new WeakMap<Blockchain, Promise<ServerInfo>>();
 
     private readonly instances: { [shortcut: CoinShortcutIdentity]: Blockchain } = {};
     private readonly reconnect: { [shortcut: CoinShortcutIdentity]: Reconnect } = {};
@@ -32,6 +37,10 @@ export class BackendManager {
     private readonly attempts: { [shortcut: CoinShortcutIdentity]: number } = {};
     private readonly custom: { [shortcut: CoinShortcut]: BlockchainLink } = {};
     private readonly preferred: { [shortcut: CoinShortcut]: string } = {};
+
+    constructor({ connectLimit = BACKEND_CONNECT_LIMIT }: { connectLimit?: number } = {}) {
+        this.connectQueue = new ConnectQueue(connectLimit);
+    }
 
     get(shortcut: CoinShortcut, identity = DEFAULT_IDENTITY): Blockchain | null {
         return this.instances[`${shortcut}/${identity}`] ?? null;
@@ -74,17 +83,42 @@ export class BackendManager {
         const reconnect = this.clearReconnect(coinIdentity);
 
         try {
-            const info = await backend.init();
+            const info = await this.initBackend(coinIdentity, backend);
             this.setPreferred(coinInfo.shortcut, info.url);
             this.connectedAt[coinIdentity] = Date.now();
 
             return backend;
         } catch (error) {
+            // A backend replaced while it connected must not remove its successor.
+            if (this.instances[coinIdentity] !== backend) throw error;
             // only keep retrying if a reconnection was already in flight
             const attempts = reconnect ? (this.attempts[coinIdentity] ?? 0) : undefined;
             this.onDisconnect({ coinInfo, postMessage, identity }, attempts);
             throw error;
         }
+    }
+
+    /**
+     * Only the first init of a backend waits for a connect slot,
+     * a connected or connecting backend shares the promise.
+     * A backend disconnected or replaced while it waited never opens its socket.
+     */
+    private initBackend(coinIdentity: CoinShortcutIdentity, backend: Blockchain) {
+        let init = this.inits.get(backend);
+        if (!init) {
+            const lane: ConnectLane =
+                (backend.identity ?? DEFAULT_IDENTITY) === DEFAULT_IDENTITY
+                    ? 'default'
+                    : 'identity';
+            init = this.connectQueue.run(lane, () =>
+                this.instances[coinIdentity] === backend
+                    ? backend.init()
+                    : Promise.reject(ERRORS.TypedError('Backend_Disconnected')),
+            );
+            this.inits.set(backend, init);
+        }
+
+        return init;
     }
 
     dispose() {
