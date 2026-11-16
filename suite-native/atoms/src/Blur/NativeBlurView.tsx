@@ -10,13 +10,16 @@ import { type NativeBlurViewProps } from './NativeBlurViewTypes';
 
 const nativeBlurStyle = prepareNativeStyle<{ isBlurred: boolean; blurIntensity: number }>(
     (_, { isBlurred, blurIntensity }) => {
+        // The halo box overlaps neighbours, so without blur it would swallow their touches.
+        if (!isBlurred) return {};
+
         // Native filters clip to the view bounds. Reserve room for the halo without changing layout.
         const padding = Math.ceil(blurIntensity * 3);
 
         return {
             padding,
             margin: -padding,
-            filter: isBlurred ? [{ blur: blurIntensity }] : undefined,
+            filter: [{ blur: blurIntensity }],
         };
     },
 );
