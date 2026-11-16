@@ -1,10 +1,8 @@
 # Networks expose typed capabilities and never render UI
 
 > [!NOTE]
-> An alternative to the ADR-003 proposal ([#34612](https://github.com/trezor/trezor-suite/pull/34612))
-> for how Suite features reach networks. Supersedes the part of
-> [ADR-001](./001-separate-app-and-lego-code.md) that lets network packages import UI. Reference
-> implementation: [`develop...b5f7c559e7`][reference].
+> Supersedes the part of [ADR-001](./001-separate-app-and-lego-code.md) that lets network packages
+> import UI. Reference implementation: [`develop...b5f7c559e7`][reference].
 
 ## Context
 
