@@ -27,6 +27,21 @@ export const getStakingPositionPrincipal = (
     );
 };
 
+// Locked positions hold their stake outside the account balance. A liquid position's stake is the
+// balance itself, but its rewards are not in it unless they are only expected.
+export const getStakingPositionAmountOutsideBalance = (
+    position: StakingPosition,
+    rewardsKind: StakingRewardsKind,
+): StakingAmount => {
+    if (position.lockup === 'locked') {
+        return getStakingPositionAmount(position);
+    }
+
+    return rewardsKind === 'expected'
+        ? toStakingAmount(new BigNumber(0))
+        : position.balances.rewards;
+};
+
 export const isStakingPositionActive = ({
     status,
     operations,

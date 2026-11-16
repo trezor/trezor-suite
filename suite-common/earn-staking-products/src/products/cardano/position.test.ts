@@ -104,7 +104,7 @@ const balances = (values: Partial<ExpectedBalances>): ExpectedBalances => ({
 
 const registeredWithoutPool = mockStakingAccount({
     symbol: networkSymbol,
-    balance: `40${ADA}`,
+    availableBalance: `40${ADA}`,
     misc: {
         staking: {
             address: 'stake1u9ylzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc',
@@ -124,7 +124,7 @@ describe('getCardanoProductPosition', () => {
             productId: 'ada:ada:everstake:native',
             status: 'active',
             lockup: 'liquid',
-            balances: balances({ staked: '994750000', rewards: '5250000' }),
+            balances: balances({ staked: '1005250000', rewards: '5250000' }),
             activations: [],
             unlocks: [],
             targets: [
@@ -132,7 +132,7 @@ describe('getCardanoProductPosition', () => {
                     address: MOCK_CARDANO_EVERSTAKE_POOL,
                     providerId: 'everstake',
                     name: 'Everstake',
-                    amount: '994750000',
+                    amount: '1005250000',
                 },
             ],
             operations: ['unstake', 'claim', 'vote'],
@@ -196,9 +196,18 @@ describe('getCardanoProductPosition', () => {
         expect(
             getEverstakePosition({ account: mockCardanoStakingAccount('everstakeOtherPool') }),
         ).toMatchObject({
-            balances: balances({ staked: `999${ADA}`, rewards: `1${ADA}` }),
+            balances: balances({ staked: `1001${ADA}`, rewards: `1${ADA}` }),
             targets: [{ address: MOCK_CARDANO_EVERSTAKE_OTHER_POOL, providerId: 'everstake' }],
             details: { poolId: MOCK_CARDANO_EVERSTAKE_OTHER_POOL },
+        });
+    });
+
+    it('takes a pending send out of the stake, as the available balance does', () => {
+        const sending = mockCardanoStakingAccount('everstake', { availableBalance: `980${ADA}` });
+
+        expect(getEverstakePosition({ account: sending })).toMatchObject({
+            balances: balances({ staked: '985250000', rewards: '5250000' }),
+            targets: [{ address: MOCK_CARDANO_EVERSTAKE_POOL, amount: '985250000' }],
         });
     });
 
@@ -241,7 +250,7 @@ describe('getCardanoProductPosition', () => {
             productId: 'ada:ada:fivebinaries:native',
             status: 'active',
             lockup: 'liquid',
-            balances: balances({ staked: `999${ADA}`, rewards: `1${ADA}` }),
+            balances: balances({ staked: `1001${ADA}`, rewards: `1${ADA}` }),
             activations: [],
             unlocks: [],
             targets: [
@@ -249,7 +258,7 @@ describe('getCardanoProductPosition', () => {
                     address: MOCK_CARDANO_FIVE_BINARIES_POOL,
                     providerId: 'fivebinaries',
                     name: 'FiveBinaries',
-                    amount: `999${ADA}`,
+                    amount: `1001${ADA}`,
                 },
             ],
             operations: ['unstake', 'claim', 'vote'],
@@ -270,12 +279,12 @@ describe('getCardanoProductPosition', () => {
             getExternalPosition({ account: mockCardanoStakingAccount('externalPool') }),
         ).toMatchObject({
             productId: 'ada:ada:external:native',
-            balances: balances({ staked: `998${ADA}`, rewards: `2${ADA}` }),
+            balances: balances({ staked: `1002${ADA}`, rewards: `2${ADA}` }),
             targets: [
                 {
                     address: MOCK_CARDANO_EXTERNAL_POOL,
                     providerId: 'external',
-                    amount: `998${ADA}`,
+                    amount: `1002${ADA}`,
                 },
             ],
             operations: ['vote'],
@@ -302,7 +311,7 @@ describe('getCardanoProductPosition', () => {
     it('keeps the position of a registered stake key with an empty balance', () => {
         expect(
             getEverstakePosition({
-                account: mockCardanoStakingAccount('everstakeNoRewards', { balance: '0' }),
+                account: mockCardanoStakingAccount('everstakeNoRewards', { availableBalance: '0' }),
             }),
         ).toMatchObject({
             status: 'inactive',
@@ -313,7 +322,7 @@ describe('getCardanoProductPosition', () => {
     });
 
     it('derives no position from a malformed balance instead of throwing', () => {
-        const account = mockCardanoStakingAccount('everstake', { balance: 'abc' });
+        const account = mockCardanoStakingAccount('everstake', { availableBalance: 'abc' });
 
         expect(getEverstakePosition({ account })).toBeNull();
         expect(getFiveBinariesPosition({ account })).toBeNull();
@@ -361,8 +370,8 @@ describe('getCardanoProductPosition', () => {
                 productId: everstake.id,
                 status: 'activating',
                 lockup: 'liquid',
-                balances: balances({ pending: account.balance }),
-                activations: [{ amount: account.balance, availableAt: null }],
+                balances: balances({ pending: account.availableBalance }),
+                activations: [{ amount: account.availableBalance, availableAt: null }],
                 unlocks: [],
                 targets: [],
                 operations: [],

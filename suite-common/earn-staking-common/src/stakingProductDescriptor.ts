@@ -42,9 +42,11 @@ export const STAKING_RATE_KINDS = ['apy', 'apr'] as const;
 export type StakingRateKind = (typeof STAKING_RATE_KINDS)[number];
 
 /**
- * `compounded`: rewards are restaked into `balances.staked`. `claimable`: rewards accrue apart
- * from the stake and are paid out by `claim`. `expected`: rewards are an estimate, since the
- * chain pays them into the stake without reporting them.
+ * `compounded`: rewards are part of `balances.staked`, restaked into it or delegated with it as
+ * Cardano's reward balance is; `getStakingPositionPrincipal` takes them out. `claimable`: rewards
+ * accrue apart from the stake and are paid out by `claim`. `expected`: rewards are an estimate,
+ * since the chain pays them into the stake without reporting them. Whether rewards can be claimed
+ * is the `claim` operation, not the kind.
  */
 export const STAKING_REWARDS_KINDS = ['compounded', 'claimable', 'expected'] as const;
 

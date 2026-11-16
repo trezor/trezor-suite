@@ -62,7 +62,6 @@ const ada = mockStakingProductDescriptor({
     networkSymbol: asNetworkSymbol('ada'),
     type: 'native',
     operations: ['stake', 'unstake', 'claim', 'vote'],
-    rewardsKind: 'claimable',
 });
 const trx = mockStakingProductDescriptor({
     networkSymbol: asNetworkSymbol('trx'),
@@ -377,7 +376,11 @@ describe('selectStakingAccountBalanceWithStaking', () => {
             expected: '4000000000000000000',
         },
         { name: 'adds the counted Solana stake only', account: solAccount, expected: '7500000000' },
-        { name: 'keeps the liquid Cardano balance', account: adaAccount, expected: '1000000000' },
+        {
+            name: 'adds the Cardano reward balance to the liquid stake',
+            account: adaAccount,
+            expected: '1005250000',
+        },
         {
             name: 'adds frozen TRX and the unfreeze queue',
             account: trxAccount,
@@ -410,7 +413,7 @@ describe('selectStakingAccountFiatAmount', () => {
         const state = createState({ rates: usdRates });
 
         expect(selectStakingAccountFiatAmount(state, ethAccount.key)?.toFixed()).toBe('5000');
-        expect(selectStakingAccountFiatAmount(state, adaAccount.key)?.toFixed()).toBe('0');
+        expect(selectStakingAccountFiatAmount(state, adaAccount.key)?.toFixed()).toBe('2.625');
     });
 
     it.each([

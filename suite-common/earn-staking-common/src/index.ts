@@ -115,6 +115,7 @@ export {
 } from './stakingPositionDetails';
 export {
     getStakingPositionAmount,
+    getStakingPositionAmountOutsideBalance,
     getStakingPositionPrincipal,
     getStakingPositionRate,
     hasPendingStakingOperation,

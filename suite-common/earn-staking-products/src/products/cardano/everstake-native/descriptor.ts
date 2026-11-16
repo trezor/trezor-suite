@@ -32,7 +32,7 @@ export const createCardanoEverstakeNativeProductDescriptor = ({
         operations: ['stake', 'unstake', 'claim', 'vote'],
         exclusivity: 'account',
         rateKind: 'apy',
-        rewardsKind: 'claimable',
+        rewardsKind: 'compounded',
         limits: CARDANO_EVERSTAKE_NATIVE_PRODUCT_LIMITS,
         options: [],
         consentKey: `staking:${provider.id}`,

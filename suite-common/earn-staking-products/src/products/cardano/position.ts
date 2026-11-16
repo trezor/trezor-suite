@@ -12,7 +12,7 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     getCardanoStakingPendingTransactions,
-    getParsedCardanoAccountBalance,
+    getParsedCardanoAvailableBalance,
     getParsedCardanoStakingInfo,
     getPositionBalances,
     getPositionOperations,
@@ -39,9 +39,12 @@ const getPendingFirstStakePosition = ({
     account,
     pendingTransactions,
 }: GetPendingFirstStakePositionParams): StakingPosition | null => {
-    const balance = getParsedCardanoAccountBalance(account);
+    const availableBalance = getParsedCardanoAvailableBalance(account);
 
-    if (balance === null || !pendingTransactions.some(({ operation }) => operation === 'stake')) {
+    if (
+        availableBalance === null ||
+        !pendingTransactions.some(({ operation }) => operation === 'stake')
+    ) {
         return null;
     }
 
@@ -51,12 +54,12 @@ const getPendingFirstStakePosition = ({
         lockup: 'liquid',
         balances: {
             staked: ZERO_STAKING_AMOUNT,
-            pending: balance,
+            pending: availableBalance,
             unstaking: ZERO_STAKING_AMOUNT,
             withdrawable: ZERO_STAKING_AMOUNT,
             rewards: ZERO_STAKING_AMOUNT,
         },
-        activations: [{ amount: balance, availableAt: null }],
+        activations: [{ amount: availableBalance, availableAt: null }],
         unlocks: [],
         targets: [],
         operations: [],
@@ -98,9 +101,10 @@ export const getCardanoProductPosition = ({
         return null;
     }
 
-    const { balance, poolId, rewards, drep } = stakingInfo;
-    // The account balance already holds the reward balance, so the two must not overlap.
-    const staked = toStakingAmount(BigNumber.max(new BigNumber(balance).minus(rewards), 0));
+    const { availableBalance, poolId, rewards, drep } = stakingInfo;
+    // The reward balance is delegated with the stake but is not in the available balance, which a
+    // pending send already reduces: staked holds both, as the pool balance does on Ethereum.
+    const staked = toStakingAmount(new BigNumber(availableBalance).plus(rewards));
     const isWithdrawalBlocked = isPositiveStakingAmount(rewards) && drep === null;
 
     const balances = getPositionBalances({ staked, rewards });
