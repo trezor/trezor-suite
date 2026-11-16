@@ -21,6 +21,7 @@ type StakingSplitCardProps = {
     /** The share of the coin that is staked, from 0 to 1. */
     stakingRatio: number;
     stakingRate: StakingRateResult;
+    showAllocation?: boolean;
     onViewAll: () => void;
     'data-testid': string;
 };
@@ -32,6 +33,7 @@ export const StakingSplitCard = ({
     stakingAmount,
     stakingRatio,
     stakingRate,
+    showAllocation = true,
     onViewAll,
     'data-testid': dataTestId,
 }: StakingSplitCardProps) => {
@@ -61,12 +63,15 @@ export const StakingSplitCard = ({
                                 <Translation id="TR_VIEW_ALL" />
                             </TextButton>
                         </Row>
-                        <SegmentedBar
-                            segments={[
-                                { value: 1 - stakingRatio, color: unstakedColor },
-                                { value: stakingRatio, color: STAKING_COLOR },
-                            ]}
-                        />
+                        {showAllocation && (
+                            <SegmentedBar
+                                data-testid={`${dataTestId}/allocation`}
+                                segments={[
+                                    { value: 1 - stakingRatio, color: unstakedColor },
+                                    { value: stakingRatio, color: STAKING_COLOR },
+                                ]}
+                            />
+                        )}
                         <Row justifyContent="space-between" alignItems="center">
                             <Row gap={12} alignItems="center">
                                 <StakingSplitLegendSquare color={unstakedColor} />
