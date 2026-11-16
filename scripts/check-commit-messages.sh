@@ -13,6 +13,14 @@ for commit in $(git rev-list origin/"$BASE_BRANCH_NAME"..HEAD); do
 
     commit_msg=$(git log --format=%B -n 1 "$commit")
 
+    if echo "$commit_msg" | grep -qiE "^Co-authored-by:.*(claude|@anthropic\.com)"; then
+    tput -T linux setaf 1
+    echo "Claude co-author validation failed for commit $commit: $commit_msg"
+    tput -T linux sgr0
+    echo "Remove the Co-authored-by trailer crediting Claude from the commit message."
+    exit 1
+    fi
+
     # Skip validation in case of revert commits
     if echo "$commit_msg" | grep -qE "^Revert"; then
     continue
