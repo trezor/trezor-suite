@@ -5,22 +5,26 @@ import { Note } from '@trezor/components';
 import { ReceiptIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { getTronFeeLimitSun } from '#src/components/wallet/Fees/feeUtils';
 import { type Account } from '#src/types/wallet';
 
 type TransactionReviewTronFeeNotesProps = {
     tx: GeneralPrecomposedTransactionFinal;
     account: Account;
+    formFeeLimit: string | undefined;
 };
 
 export const TransactionReviewTronFeeNotes = ({
     tx,
     account,
+    formFeeLimit,
 }: TransactionReviewTronFeeNotesProps) => {
     const { translationString } = useTranslation();
 
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
+    const feeLimitSun = getTronFeeLimitSun({ tx, formFeeLimit });
     const { trxBurned, coveredEnergy, coveredBandwidth } =
-        calculateTronFeeBreakdown(tx, tronResources, account.symbol) ?? {};
+        calculateTronFeeBreakdown(tx, tronResources, account.symbol, feeLimitSun) ?? {};
 
     return (
         <>
