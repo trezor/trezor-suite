@@ -45,7 +45,7 @@ mkdir -p ./build
 cp  "$REPO_PATH"/common/protob/*.proto ./build
 
 # remove unused files
-rm -f ./build/messages-{webauthn,benchmark,nem}.proto
+rm -f ./build/messages-{webauthn,benchmark}.proto
 
 # build `@bufbuild`` definitions
 buf generate

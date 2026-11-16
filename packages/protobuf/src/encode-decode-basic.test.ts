@@ -12,7 +12,6 @@ const getAllProtoModules = () => {
         'messages-crypto',
         'messages-debug',
         'messages-definitions',
-        'messages-eos',
         'messages-ethereum-eip712',
         'messages-ethereum',
         'messages-evolu',
