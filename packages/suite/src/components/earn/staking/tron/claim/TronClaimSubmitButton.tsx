@@ -24,7 +24,7 @@ export const TronClaimSubmitButton = () => {
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { account, actions } = useTronStakeContext();
+    const { account, actions, fees } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
 
@@ -51,7 +51,8 @@ export const TronClaimSubmitButton = () => {
         isClaimOnCooldown ||
         isSubmitting ||
         isDeviceLocked ||
-        !!pendingTxid;
+        !!pendingTxid ||
+        fees.composedLevels?.normal?.type !== 'final';
     const isLoading = isSubmitting || isDiscoveryRunning;
 
     const tooltipContent =

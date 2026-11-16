@@ -130,6 +130,10 @@ export {
     splitVotesEvenly,
 } from './staking/tron/actions/vote/voteContract';
 export { composeTronWithdrawFeeLevelsThunk } from './staking/tron/actions/withdraw/composeWithdraw';
+export {
+    type TronStakeFeeRequest,
+    composeTronStakeFeeLevelsThunk,
+} from './staking/tron/shared/composeTronStakeFeeLevelsThunk';
 export { confirmTronPendingTransactionThunk } from './staking/tron/shared/confirmPendingTransactionThunk';
 export { submitTronWithdrawThunk } from './staking/tron/actions/withdraw/submitWithdraw';
 export * from './staking/tron/tronStakingConstants';

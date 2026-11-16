@@ -48,6 +48,7 @@ describe('TronClaimSubmitButton', () => {
         jest.mocked(useTronStakeContext).mockReturnValue({
             account: trxAccount,
             actions: { isSubmitting: false, pendingTxid: null, submitAction },
+            fees: { composedLevels: { normal: { type: 'final' } } },
         } as unknown as ReturnType<typeof useTronStakeContext>);
     });
 

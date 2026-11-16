@@ -9,7 +9,6 @@ packages/suite/src/components/earn/staking/tron/claim/TronClaimAmount.tsx	opt-ou
 packages/suite/src/components/earn/staking/tron/complete/TronStakeSummaryCard.tsx	opt-out	'use no memo'
 packages/suite/src/components/earn/staking/tron/complete/TronVoteSummaryCard.tsx	opt-out	'use no memo'
 packages/suite/src/components/earn/staking/tron/freeze/TronFreezeAmount.tsx	bail	useMemo() callbacks may not be async or generator functions
-packages/suite/src/components/earn/staking/tron/hooks/useTronStakeFees.ts	opt-out	'use no memo'
 packages/suite/src/components/earn/staking/tron/unstake/TronUnstakeResourceReduction.tsx	bail	[Codegen] Internal error: MethodCall::property must be an unpromoted + unmemoized MemberExpression
 packages/suite/src/components/earn/staking/tron/vote/TronVoteRemainingVotes.tsx	bail	[Codegen] Internal error: MethodCall::property must be an unpromoted + unmemoized MemberExpression
 packages/suite/src/components/earn/yield/hooks/useYieldFlow.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause

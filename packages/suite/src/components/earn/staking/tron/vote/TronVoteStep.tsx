@@ -1,4 +1,3 @@
-import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { Banner, Column } from '@trezor/components';
@@ -12,12 +11,10 @@ import { TronStakeFees } from '../TronStakeFees';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';
 
 export const TronVoteStep = () => {
-    const { form, actions, account, fees } = useTronStakeContext();
-    const { error, pendingTxid } = actions;
+    const { form, actions, account } = useTronStakeContext();
+    const { error } = actions;
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
-
-    const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
 
     const { formState } = form.methods;
 
@@ -29,23 +26,6 @@ export const TronVoteStep = () => {
                 <TronVoteAllocationSection />
 
                 <TronStakeFees />
-
-                {hasInsufficientFunds && pendingTxid === null && (
-                    <Banner
-                        intent="warning"
-                        data-testid="@staking/tron-vote/insufficient-funds-banner"
-                        description={
-                            <Translation
-                                id="AMOUNT_NOT_ENOUGH_CURRENCY_FEE"
-                                values={{
-                                    networkDisplaySymbol: (
-                                        <AssetSymbol networkSymbol={account.symbol} />
-                                    ),
-                                }}
-                            />
-                        }
-                    />
-                )}
 
                 {error && (
                     <Banner

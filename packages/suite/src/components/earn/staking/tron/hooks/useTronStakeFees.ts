@@ -1,28 +1,27 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import {
+    type TronStakeFeeRequest,
     type TronStakeStepId,
-    composeTronClaimFeeLevelsThunk,
-    composeTronFreezeFeeLevelsThunk,
-    composeTronUnstakeFeeLevelsThunk,
-    composeTronVoteFeeLevelsThunk,
-    composeTronWithdrawFeeLevelsThunk,
+    composeTronStakeFeeLevelsThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type useTronStakeForm } from './useTronStakeForm';
-import { parseVoteAllocations } from '../utils/voteUtils';
+import { getTronStakeFeeRequest } from '../utils/getTronStakeFeeRequest';
 
 interface TronStakeFees {
     feeInfo: FeeInfo;
     composedLevels: PrecomposedLevels | undefined;
+    hasError: boolean;
+    retry: () => void;
 }
 
 interface UseTronStakeFeesProps {
@@ -32,16 +31,15 @@ interface UseTronStakeFeesProps {
 }
 
 export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps): TronStakeFees => {
-    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
-    // render-time read of it freezes on the first render. Remove once these reads move to
-    // `useWatch` or out of render.
-    'use no memo';
-
     const { dispatch } = useServices(injectDispatch);
-
-    const amount = form.methods.watch('amount');
-    const resourceType = form.methods.watch('resourceType');
-    const voteAllocations = form.methods.watch('voteAllocations');
+    const [amount, resourceType, voteAllocations] = useWatch({
+        control: form.methods.control,
+        name: ['amount', 'resourceType', 'voteAllocations'],
+    });
+    const isAmountStep = step === 'freeze' || step === 'unstake';
+    const composeAmount = isAmountStep ? amount : '';
+    const composeResourceType = isAmountStep ? resourceType : 'bandwidth';
+    const composeVoteAllocations = step === 'vote' ? voteAllocations : undefined;
 
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const feeInfo = useMemo(
@@ -50,68 +48,47 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
         [account.networkType, rawFeeInfo],
     );
 
-    const composeLevels = useMemo(() => {
-        switch (step) {
-            case 'freeze':
-                return () =>
-                    dispatch(composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }))
-                        .unwrap()
-                        .catch(() => undefined);
-            case 'vote': {
-                const allocations = parseVoteAllocations(voteAllocations);
-
-                if (allocations.length === 0) {
-                    return undefined;
-                }
-
-                return () =>
-                    dispatch(composeTronVoteFeeLevelsThunk({ account, allocations }))
-                        .unwrap()
-                        .catch(() => undefined);
-            }
-            case 'unstake':
-                return () =>
-                    dispatch(composeTronUnstakeFeeLevelsThunk({ account, amount, resourceType }))
-                        .unwrap()
-                        .catch(() => undefined);
-            case 'withdraw':
-                return () =>
-                    dispatch(composeTronWithdrawFeeLevelsThunk({ account }))
-                        .unwrap()
-                        .catch(() => undefined);
-            case 'claim':
-                return () =>
-                    dispatch(composeTronClaimFeeLevelsThunk({ account }))
-                        .unwrap()
-                        .catch(() => undefined);
-            case 'complete':
-                return undefined;
-            default:
-                return exhaustive(step);
-        }
-    }, [step, account, amount, resourceType, voteAllocations, dispatch]);
-
-    const [composedLevels, setComposedLevels] = useState<PrecomposedLevels | undefined>(undefined);
+    const request = useMemo(
+        () =>
+            getTronStakeFeeRequest(
+                step,
+                composeAmount,
+                composeResourceType,
+                composeVoteAllocations,
+            ),
+        [step, composeAmount, composeResourceType, composeVoteAllocations],
+    );
+    const [attempt, retry] = useReducer((previous: number) => previous + 1, 0);
+    const [composition, setComposition] = useState<{
+        account: Account;
+        request: TronStakeFeeRequest;
+        attempt: number;
+        levels: PrecomposedLevels | undefined;
+    }>();
 
     useEffect(() => {
-        if (!composeLevels) {
-            setComposedLevels(undefined);
+        if (!request) return;
 
-            return;
-        }
+        const estimate = dispatch(composeTronStakeFeeLevelsThunk({ account, request }));
+        void estimate.then(result => {
+            if (composeTronStakeFeeLevelsThunk.rejected.match(result) && result.meta.aborted)
+                return;
 
-        let active = true;
-
-        void composeLevels().then(levels => {
-            if (active) {
-                setComposedLevels(levels);
-            }
+            const levels = composeTronStakeFeeLevelsThunk.fulfilled.match(result)
+                ? result.payload
+                : undefined;
+            setComposition({ account, request, attempt, levels });
         });
 
-        return () => {
-            active = false;
-        };
-    }, [composeLevels]);
+        return () => estimate.abort();
+    }, [account, request, attempt, dispatch]);
 
-    return { feeInfo, composedLevels };
+    const isCurrent =
+        composition?.account === account &&
+        composition.request === request &&
+        composition.attempt === attempt;
+    const composedLevels = isCurrent ? composition.levels : undefined;
+    const hasError = isCurrent && composedLevels === undefined;
+
+    return { feeInfo, composedLevels, hasError, retry };
 };
