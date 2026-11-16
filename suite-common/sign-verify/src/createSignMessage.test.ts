@@ -1,7 +1,6 @@
 import { events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { mockNetworkModule, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
-import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -30,7 +29,8 @@ const ETHEREUM_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const CONNECTED_DEVICE = mockSuiteDevice({
     connected: true,
     available: true,
-}) as TrezorDeviceWithState;
+    state: { staticSessionId: '1@2:3' },
+});
 
 describe('signVerify.sign', () => {
     let dispatch: jest.Mock;
@@ -175,7 +175,7 @@ describe('signVerify.sign', () => {
             async code => {
                 setSignResponse({
                     success: false,
-                    error: connectErrorToSignVerifyError({ message: 'Cancelled', code }),
+                    error: connectErrorToSignVerifyError({ message: 'Canceled', code }),
                 });
 
                 await sign(ACCOUNT, PATH, MESSAGE);

@@ -1,7 +1,6 @@
 import { events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { mockNetworkModule, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
-import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -23,7 +22,8 @@ const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const CONNECTED_DEVICE = mockSuiteDevice({
     connected: true,
     available: true,
-}) as TrezorDeviceWithState;
+    state: { staticSessionId: '1@2:3' },
+});
 
 type VerifyMessage = NonNullable<NetworkSignVerify<NetworkSymbol>['verifyMessage']>;
 
@@ -123,7 +123,7 @@ describe('signVerify.verify', () => {
             setVerifyResponse({
                 success: false,
                 error: connectErrorToSignVerifyError({
-                    message: 'Cancelled',
+                    message: 'Canceled',
                     code: 'Failure_ActionCancelled',
                 }),
             });
@@ -143,7 +143,7 @@ describe('signVerify.verify', () => {
             async code => {
                 setVerifyResponse({
                     success: false,
-                    error: connectErrorToSignVerifyError({ message: 'Cancelled', code }),
+                    error: connectErrorToSignVerifyError({ message: 'Canceled', code }),
                 });
 
                 const result = await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE);
