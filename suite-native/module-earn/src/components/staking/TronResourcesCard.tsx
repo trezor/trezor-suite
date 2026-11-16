@@ -1,11 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import {
-    type AccountsRootState,
-    selectAccountByKey,
-    selectTronAvailableVotingPowerByAccountKey,
-    selectTronTotalVotingPowerByAccountKey,
-} from '@suite-common/wallet-core';
+import { type StakingRootState, formatStakingAmount } from '@suite-common/earn-staking';
+import { type StakingAmount } from '@suite-common/earn-staking-common';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
 import {
@@ -20,8 +17,10 @@ import {
 import { Icon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { BigNumber } from '@trezor/utils';
 
 import { TronStakingVotesBottomSheet } from './TronStakingVotesBottomSheet';
+import { selectTronStakingDetails } from '../../tronStakingSelectors';
 
 type TronResourcesCardProps = {
     accountKey: AccountKey;
@@ -62,21 +61,26 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const totalVotingPower = useSelector((state: AccountsRootState) =>
-        selectTronTotalVotingPowerByAccountKey(state, accountKey),
-    );
-    const availableVotingPower = useSelector((state: AccountsRootState) =>
-        selectTronAvailableVotingPowerByAccountKey(state, accountKey),
+    const stakingDetails = useSelector((state: StakingRootState) =>
+        selectTronStakingDetails(state, accountKey),
     );
 
+    // Resource meters are account data, not staking state.
     const resources = getTronResources(account ?? undefined);
 
-    if (!resources) return null;
+    if (!resources || !account) return null;
 
     const bandwidthAvailable =
         resources.availableStakedBandwidth + resources.availableFreeBandwidth;
     const bandwidthTotal = resources.totalStakedBandwidth + resources.totalFreeBandwidth;
-    const hasRemainingVotes = availableVotingPower !== '0';
+
+    const formatVotes = (amount: StakingAmount) =>
+        formatStakingAmount({ amount, networkSymbol: account.symbol });
+
+    const votingPower = stakingDetails === null ? '0' : formatVotes(stakingDetails.votingPower);
+    const unallocatedVotingPower =
+        stakingDetails === null ? '0' : formatVotes(stakingDetails.unallocatedVotingPower);
+    const hasRemainingVotes = new BigNumber(unallocatedVotingPower).gt(0);
 
     return (
         <VStack spacing="sp16">
@@ -110,7 +114,7 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
                                     >
                                         <Translation
                                             id="earn.tron.votesRemaining"
-                                            values={{ count: availableVotingPower }}
+                                            values={{ count: unallocatedVotingPower }}
                                         />
                                     </Text>
                                 </HStack>
@@ -119,7 +123,7 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
                             <Text variant="body-sm">
                                 <Translation
                                     id="earn.tron.allVotesAssigned"
-                                    values={{ count: totalVotingPower }}
+                                    values={{ count: votingPower }}
                                 />
                             </Text>
                         )}

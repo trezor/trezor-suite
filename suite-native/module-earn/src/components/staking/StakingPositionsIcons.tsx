@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { selectStakingListSymbols } from '@suite-common/wallet-core';
+import { selectDeviceStakingSymbols } from '@suite-common/earn-staking';
 import { TokenIcon } from '@suite-native/icons';
 
 import { EarnPositionsCardIcon, MAX_VISIBLE_POSITION_ICONS } from '../earn/EarnPositionsCardIcon';
 
 export const StakingPositionsIcons = () => {
-    const symbols = useSelector(selectStakingListSymbols);
+    const symbols = useSelector(selectDeviceStakingSymbols);
 
     return (
         <>

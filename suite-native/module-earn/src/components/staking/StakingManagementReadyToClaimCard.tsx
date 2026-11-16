@@ -1,19 +1,21 @@
-import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import {
-    type StakeRootState,
-    selectAccountNetworkSymbol,
-    selectClaimableAmountByAccountKey,
-} from '@suite-common/wallet-core';
+    type StakingAccountProductRootState,
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingAccountProductDescriptor,
+    selectStakingAccountTotals,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
+import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { isPositiveBalance, parseAccountKey } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Box, Button, Discreet, HStack, Text, VStack } from '@suite-native/atoms';
-import { useMessageSystemStaking } from '@suite-native/earn';
+import { useStakingOperationMessage } from '@suite-native/earn';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -46,23 +48,25 @@ export const StakingManagementReadyToClaimCard = ({
     const navigation = useNavigation<NavigationProp>();
     const { CryptoAmountFormatter } = useFormatters();
     const { analytics } = useServices(injectNativeAnalytics);
+    const { networkSymbol: symbol } = parseAccountKey(accountKey);
 
-    const symbol = useSelector((state: StakeRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
+    const productId = useSelector(
+        (state: StakingAccountProductRootState) =>
+            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
     );
+    const totals = useSelector((state: StakingRootState) =>
+        selectStakingAccountTotals(state, accountKey),
+    );
+    const access = useStakingAccess(productId);
+    const withdrawMessage = useStakingOperationMessage(productId, 'withdraw');
 
-    const claimableAmount =
-        useSelector((state: StakeRootState) =>
-            selectClaimableAmountByAccountKey(state, accountKey),
-        ) ?? '0';
+    const withdrawableAmount = formatStakingAmount({
+        amount: totals.withdrawable,
+        networkSymbol: symbol,
+    });
+    const isWithdrawDisabled = access.disabled.withdraw !== undefined;
 
-    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(symbol);
-
-    const handleClaimPress = useCallback(() => {
-        if (!symbol) {
-            return;
-        }
-
+    const onClaimPress = () => {
         if (isPortfolioTrackerDevice) {
             openPortfolioTrackerSheet();
 
@@ -78,16 +82,9 @@ export const StakingManagementReadyToClaimCard = ({
             },
         });
         navigation.navigate(RootStackRoutes.StakingClaimReview, { accountKey, symbol });
-    }, [
-        accountKey,
-        analytics,
-        navigation,
-        symbol,
-        isPortfolioTrackerDevice,
-        openPortfolioTrackerSheet,
-    ]);
+    };
 
-    if (!symbol || !isPositiveBalance(claimableAmount)) {
+    if (!isPositiveBalance(withdrawableAmount)) {
         return null;
     }
 
@@ -103,7 +100,7 @@ export const StakingManagementReadyToClaimCard = ({
                                 values={{
                                     amount: (
                                         <CryptoAmountFormatter
-                                            value={claimableAmount}
+                                            value={withdrawableAmount}
                                             isBalance
                                             maxDisplayedDecimals={
                                                 BASE_CRYPTO_MAX_DISPLAYED_DECIMALS
@@ -117,15 +114,15 @@ export const StakingManagementReadyToClaimCard = ({
                         </Text>
                     </Discreet>
 
-                    {isClaimingDisabled && claimingMessageContent && (
-                        <BannerInline intent="warning" title={claimingMessageContent} />
+                    {isWithdrawDisabled && withdrawMessage !== null && (
+                        <BannerInline intent="warning" title={withdrawMessage} />
                     )}
 
                     <Button
                         size="medium"
                         isFullWidth
-                        onPress={handleClaimPress}
-                        isDisabled={isClaimingDisabled}
+                        onPress={onClaimPress}
+                        isDisabled={isWithdrawDisabled}
                     >
                         <Text variant="body-sm-strong" color="contentButtonBrandPrimary">
                             <Translation id="earn.stakingManagementScreen.claim.claimButton" />

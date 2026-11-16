@@ -1,17 +1,16 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
-    selectHasSolExternalStakingAccounts,
-    selectSolExternalStakingAccountsTotalStaked,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingPositionEntriesByAccount,
+} from '@suite-common/earn-staking';
+import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BannerFull } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 
 type SolExternalStakingBannerProps = {
     accountKey: AccountKey;
@@ -22,20 +21,22 @@ export const SolExternalStakingBanner = ({
     accountKey,
     networkSymbol,
 }: SolExternalStakingBannerProps) => {
-    const hasExternalStakingAccounts = useSelector((state: AccountsRootState) =>
-        selectHasSolExternalStakingAccounts(state, accountKey),
-    );
-    const externalStakingTotalStaked = useSelector((state: AccountsRootState) =>
-        selectSolExternalStakingAccountsTotalStaked(state, accountKey),
+    // Stake with other validators is the account's position that counts in no total.
+    const externalPositionEntry = useSelector(
+        (state: StakingRootState) =>
+            selectStakingPositionEntriesByAccount(state, accountKey).find(
+                ({ descriptor }) => !descriptor.isCountedInAccountTotals,
+            ) ?? null,
     );
 
-    if (!hasExternalStakingAccounts) return null;
+    if (externalPositionEntry === null) return null;
 
     const displaySymbol = getNetworkDisplaySymbol(networkSymbol);
-    const totalStakedInUnits = subunitsToUnits({
-        value: asAmountSubunit(new BigNumber(externalStakingTotalStaked)),
-        symbol: networkSymbol,
-    }).toString();
+
+    const totalStakedInUnits = formatStakingAmount({
+        amount: getStakingPositionAmount(externalPositionEntry.position),
+        networkSymbol,
+    });
 
     return (
         <BannerFull

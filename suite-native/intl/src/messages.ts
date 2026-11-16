@@ -3019,6 +3019,7 @@ export const messages = {
             },
             unstakingItem: {
                 label: 'Unstaking (~{days, plural, one {# day} other {# days}})',
+                labelWithoutDays: 'Unstaking',
                 modalTitle: 'Unstaking',
             },
             pendingStakesItem: {
@@ -3029,16 +3030,20 @@ export const messages = {
                 gotIt: 'Got it',
                 stepTransactionConfirmed: 'Transaction confirmed',
                 stepEntryPeriod: 'Staking activation (~{days, plural, one {# day} other {# days}})',
+                stepEntryPeriodWithoutDays: 'Staking activation',
                 stepStakedReceivingRewards: 'Staked & earning rewards',
                 stepWithdrawalPeriod:
                     'Staking deactivation (~{days, plural, one {# day} other {# days}})',
+                stepWithdrawalPeriodWithoutDays: 'Staking deactivation',
                 stepReadyToClaim: 'Ready to claim',
                 sol: {
                     stepWarmUpPeriod:
                         'Staking activation (~{days, plural, one {# day} other {# days}})',
+                    stepWarmUpPeriodWithoutDays: 'Staking activation',
                     stepStakedReceivingRewards: 'Staked & earning rewards',
                     stepCoolDownPeriod:
                         'Staking deactivation (~{days, plural, one {# day} other {# days}})',
+                    stepCoolDownPeriodWithoutDays: 'Staking deactivation',
                     stepUnstakedReadyToClaim: 'Unstaked and ready to claim',
                 },
             },

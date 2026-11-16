@@ -1,12 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { type StakingRootState, selectIsStakingAccountActive } from '@suite-common/earn-staking';
 import { useSolStakingRewardsWarning } from '@suite-common/earn-staking-api';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAccountByKey,
-    selectAccountIsStakingActive,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { BannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -38,8 +34,8 @@ export const SolStakingRewardsWarning = ({ accountKey }: SolStakingRewardsWarnin
         selectAccountByKey(state, accountKey),
     );
 
-    const isStakingActive = useSelector((state: TransactionsRootState & AccountsRootState) =>
-        selectAccountIsStakingActive(state, accountKey),
+    const isStakingActive = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountActive(state, accountKey),
     );
 
     if (!account || !isStakingActive) return null;

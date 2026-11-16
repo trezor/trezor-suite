@@ -1,14 +1,8 @@
 import { useSelector } from 'react-redux';
 
+import { type StakingRootState, selectIsStakingAccountActive } from '@suite-common/earn-staking';
 import { Context } from '@suite-common/message-system';
-import {
-    type StakeRootState,
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedTronStakingNetworkSymbol,
-    selectAdaAccountHasStaked,
-} from '@suite-common/wallet-core';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { Text, VStack } from '@suite-native/atoms';
@@ -31,16 +25,19 @@ type StakingManagementListHeaderProps = {
 
 export const StakingManagementListHeader = ({ accountKey }: StakingManagementListHeaderProps) => {
     const { networkSymbol } = parseAccountKey(accountKey);
+    const networkType = getNetworkType(networkSymbol);
 
-    const hasAdaStaked = useSelector((state: StakeRootState) =>
-        selectAdaAccountHasStaked(state, accountKey),
+    const isStakingActive = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountActive(state, accountKey),
     );
 
-    const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
-    const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(networkSymbol);
-    const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
+    const isEthereumStaking = networkType === 'ethereum';
+    const isSolanaStaking = networkType === 'solana';
+    const isCardanoStaking = networkType === 'cardano';
+    const isTronStaking = networkType === 'tron';
 
-    const isStakeSectionShown = !isCardanoStaking || hasAdaStaked;
+    // Cardano has nothing to show before the stake key is registered; other networks offer the first stake here.
+    const isStakeSectionShown = !isCardanoStaking || isStakingActive;
 
     const historyHeadingId: TxKeyPath = isSolanaStaking
         ? 'earn.stakingManagementScreen.rewardsList.title'
@@ -48,9 +45,7 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
 
     return (
         <VStack spacing="sp24" marginTop="sp16" paddingHorizontal="sp16">
-            {isSupportedEthStakingNetworkSymbol(networkSymbol) && (
-                <InstantUnstakeConfirmationBanner accountKey={accountKey} />
-            )}
+            {isEthereumStaking && <InstantUnstakeConfirmationBanner accountKey={accountKey} />}
 
             {isStakingSymbol(networkSymbol) && (
                 <ContextMessage context={Context.getStaking(networkSymbol)} />
