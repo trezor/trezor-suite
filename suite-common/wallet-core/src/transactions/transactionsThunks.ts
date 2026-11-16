@@ -1032,7 +1032,7 @@ export type FetchTransactionsPageThunkParams = {
     from?: number;
 };
 
-type FetchTransactionsPageThunkState = AccountsRootState &
+export type FetchTransactionsPageThunkState = AccountsRootState &
     BlockchainRootState &
     StellarContractTokensRootState &
     TransactionsRootState;

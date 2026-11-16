@@ -202,4 +202,22 @@ describe('getAssetTransactionsView', () => {
 
         expect(getTxids(view.items)).toEqual(['first-90']);
     });
+
+    it('looks past a first page without the token when the history has no reported total', () => {
+        const view = getView({
+            accountHistories: [
+                mockAccountHistory({
+                    accountKey: FIRST,
+                    blockHeights: [90, 80],
+                    historyTotal: -1,
+                }),
+            ],
+            fetchedPageByAccount: { [FIRST]: 1 },
+            tokenContract: USDC,
+        });
+
+        expect(view.items).toEqual([]);
+        expect(view.isEmptyStateDeferred).toBe(true);
+        expect(view.automaticPageRequests).toEqual([{ accountKey: FIRST, page: 2 }]);
+    });
 });

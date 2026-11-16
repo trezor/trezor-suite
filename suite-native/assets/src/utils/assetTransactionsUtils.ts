@@ -127,11 +127,12 @@ export const getAccountPaging = ({
         : 0;
     const lastFetchedPage = fetchedPage ?? cachedFullPageCount;
     const needsFirstPage = lastFetchedPage === 0;
+    const isHistoryTotalReported = historyTotal >= 0;
     const hasMorePages =
         !needsFirstPage &&
         !areAllTransactionsLoaded &&
         !isExhausted &&
-        lastFetchedPage < Math.ceil(historyTotal / perPage);
+        (!isHistoryTotalReported || lastFetchedPage < Math.ceil(historyTotal / perPage));
     const hasOlderHistory = !needsFirstPage && !hasMorePages && olderHistoryFrom !== undefined;
     const nextPageRequest: PageRequest = hasOlderHistory
         ? {

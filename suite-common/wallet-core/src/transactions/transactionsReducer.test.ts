@@ -7,8 +7,10 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import * as fixtures from './__fixtures__/transactionsReducer';
 import { transactionsActions } from './transactionsActions';
 import { prepareTransactionsReducer, transactionsInitialState } from './transactionsReducer';
-import type { TransactionsState } from './transactionsReducerTypes';
+import type { TransactionsRootState, TransactionsState } from './transactionsReducerTypes';
+import { selectAreAllAccountTransactionsLoaded } from './transactionsSelectors';
 import { fetchTransactionsPageThunk } from './transactionsThunks';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 
 const transactionsReducer = prepareTransactionsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -232,6 +234,99 @@ describe(transactionsReducer.name, () => {
             const state = fetchedPage(fetchedPage(transactionsInitialState, 1, false), 1);
 
             expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBe(true);
+        });
+    });
+
+    describe('fetchTransactionsPageThunk.fulfilled after an account sync', () => {
+        const PER_PAGE = 25;
+        const getTransactions = (from: number, count: number) =>
+            Array.from({ length: count }, (_, index) =>
+                testMocks.getWalletTransaction({
+                    txid: `tx-${from + index}`,
+                    blockHeight: 1000 - from - index,
+                }),
+            );
+
+        // An account sync stores page 1 without a page number and without a fetch status.
+        const synced = () =>
+            transactionsReducer(
+                transactionsInitialState,
+                transactionsActions.addTransaction({
+                    account,
+                    transactions: getTransactions(0, 25),
+                }),
+            );
+
+        const fetchedPage = (
+            state: TransactionsState,
+            page: number,
+            payload: Partial<AccountInfo>,
+        ) => {
+            const transactions = payload.history?.transactions ?? [];
+            const withPage = transactionsReducer(
+                state,
+                transactionsActions.addTransaction({
+                    account,
+                    transactions,
+                    page,
+                    perPage: PER_PAGE,
+                }),
+            );
+
+            return transactionsReducer(
+                withPage,
+                fetchTransactionsPageThunk.fulfilled(payload as AccountInfo, 'requestId', {
+                    accountKey: account.key,
+                    page,
+                    perPage: PER_PAGE,
+                }),
+            );
+        };
+
+        const getAreAllLoaded = (state: TransactionsState) =>
+            selectAreAllAccountTransactionsLoaded(
+                {
+                    wallet: {
+                        transactions: state,
+                        accounts: [{ ...account, history: { ...account.history, total: -1 } }],
+                    },
+                } as TransactionsRootState & AccountsRootState,
+                account.key,
+            );
+
+        it('ends a cursor-paged history at the empty page after the synced one', () => {
+            const withPage2 = fetchedPage(synced(), 2, {
+                history: { total: -1, unconfirmed: 0, transactions: getTransactions(25, 10) },
+                stellarCursor: 'cursor-2',
+            });
+            const state = fetchedPage(withPage2, 3, {
+                history: { total: -1, unconfirmed: 0, transactions: [] },
+                stellarCursor: 'cursor-2',
+            });
+
+            expect(getAreAllLoaded(withPage2)).toBe(false);
+            expect(getAreAllLoaded(state)).toBe(true);
+        });
+
+        it('ends a marker-paged history at the synced page after it without a marker', () => {
+            const state = fetchedPage(synced(), 2, {
+                history: { total: -1, unconfirmed: 0, transactions: getTransactions(25, 10) },
+            });
+
+            expect(getAreAllLoaded(state)).toBe(true);
+        });
+
+        it('keeps a marker-paged history open while the page after the synced one has a marker', () => {
+            const state = fetchedPage(synced(), 2, {
+                history: { total: -1, unconfirmed: 0, transactions: getTransactions(25, 25) },
+                marker: { ledger: 1, seq: 1 },
+            });
+
+            expect(state.fetchStatusDetail[account.key]?.fetchedPages).toEqual({
+                count: 2,
+                perPage: PER_PAGE,
+            });
+            expect(getAreAllLoaded(state)).toBe(false);
         });
     });
 });

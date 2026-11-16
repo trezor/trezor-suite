@@ -334,6 +334,8 @@ export const selectAreAllAccountTransactionsLoaded: (
     (transactions, accountTotalTransactions, fetchStatusDetail) => {
         const areAllTransactionsLoaded = !!fetchStatusDetail?.areAllTransactionsLoaded;
         if (areAllTransactionsLoaded) return true;
+        // XRP, Stellar and unscanned evm-rpc report -1; only a fetch that reached the end can tell.
+        if (accountTotalTransactions < 0) return false;
 
         return transactions.length >= accountTotalTransactions;
     },
