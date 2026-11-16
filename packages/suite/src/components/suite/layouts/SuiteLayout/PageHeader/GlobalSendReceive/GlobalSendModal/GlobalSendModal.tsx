@@ -59,6 +59,7 @@ export function GlobalSendModal({
     const filteredAccountsWithTokens = useFilterAccountsWithTokens({
         accountsWithTokens,
         search: searchFilter,
+        shouldKeepAccountWithMatchedToken: false,
     });
     const targetOptions = useSelector((state: SendTargetOptionsState) =>
         selectSendTargetOptions(state, targets),
