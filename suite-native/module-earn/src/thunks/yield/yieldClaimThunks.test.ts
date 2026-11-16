@@ -226,9 +226,10 @@ describe('pushYieldClaimReviewThunk', () => {
 
         expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
         expect(pushTransactionMock).toHaveBeenCalledWith({
-            tx: { hex: '0xsignedtx', disableAlternativeRPC: true },
+            tx: '0xsignedtx',
             coin: account.symbol,
             identity: account.deviceState,
+            disableAlternativeRPC: true,
         });
         expect(synchronizeSentTransactionThunkMock).toHaveBeenCalledWith({
             selectedAccount: account,

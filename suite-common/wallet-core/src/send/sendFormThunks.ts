@@ -25,7 +25,6 @@ import {
     formatNetworkAmount,
     getAccountDecimals,
     getEvmTransactionTextSignature,
-    getMevProtectedTxData,
     getPendingAccount,
     getStakeType,
     hasNetworkFeatures,
@@ -516,12 +515,11 @@ export const pushSendFormTransactionThunk = createThunk<
                 message: 'Transaction not found.',
             });
 
-        const txData = getMevProtectedTxData(serializedTx.tx, isMevProtectionEnabled);
-
         const pushTxResponse = await TrezorConnect.pushTransaction({
-            tx: txData,
+            tx: serializedTx.tx,
             coin: asCoinSymbol(serializedTx.symbol),
             identity: tryGetAccountIdentity(selectedAccount),
+            disableAlternativeRPC: !isMevProtectionEnabled,
         });
 
         // close modal regardless result
@@ -672,12 +670,11 @@ export const pushSendFormRawTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async (payload, { dispatch, getState, fulfillWithValue, rejectWithValue }) => {
-        const txData = getMevProtectedTxData(payload.tx, payload.isMevProtectionEnabled);
-
         const sentTx = await TrezorConnect.pushTransaction({
-            tx: txData,
+            tx: payload.tx,
             coin: asCoinSymbol(payload.symbol),
             identity: payload.identity,
+            disableAlternativeRPC: !payload.isMevProtectionEnabled,
         });
 
         if (sentTx.success) {
