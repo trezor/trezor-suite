@@ -1119,6 +1119,7 @@ export const getRbfParams = [
                     {
                         isAddress: false,
                         addresses: ['OP_RETURN (foobar)'],
+                        hex: '6a06666f6f626172',
                     },
                     {
                         isAddress: true,

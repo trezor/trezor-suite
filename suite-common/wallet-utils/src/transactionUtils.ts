@@ -1122,23 +1122,16 @@ const getEthereumRbfParams = (
     };
 };
 
-const getOpReturnDataHex = (scriptHex: string | undefined, firstAddress: string) => {
-    if (scriptHex) {
-        try {
-            const { data } = payments.embed({ output: Buffer.from(scriptHex, 'hex') });
-            // Trezor's PAYTOOPRETURN carries a single data blob, so a multi-push script can't be replaced
-            const [chunk, ...rest] = data ?? [];
+const getOpReturnDataHex = (scriptHex: string) => {
+    try {
+        const { data } = payments.embed({ output: Buffer.from(scriptHex, 'hex') });
+        // Trezor's PAYTOOPRETURN carries a single data blob, so a multi-push script can't be replaced
+        const [chunk, ...rest] = data ?? [];
 
-            return chunk && rest.length === 0 ? chunk.toString('hex') : undefined;
-        } catch {
-            return undefined;
-        }
+        return chunk && rest.length === 0 ? chunk.toString('hex') : undefined;
+    } catch {
+        return undefined;
     }
-
-    // pending txs created by @trezor/connect have no scriptPubKey, only the "OP_RETURN (<ascii>)" label
-    const dataAscii = firstAddress.match(/^OP_RETURN \((.*)\)/)?.pop();
-
-    return dataAscii ? Buffer.from(dataAscii, 'ascii').toString('hex') : undefined;
 };
 
 const getBitcoinRbfParams = (
@@ -1161,7 +1154,8 @@ const getBitcoinRbfParams = (
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstAddress: string = outputAddresses[0];
         if (!output.isAddress) {
-            const dataHex = getOpReturnDataHex(output.hex, firstAddress);
+            // the "OP_RETURN (<ascii>)" address label is lossy for non-ASCII data, only the script is exact
+            const dataHex = output.hex ? getOpReturnDataHex(output.hex) : undefined;
             if (dataHex) {
                 outputs.push({
                     type: 'opreturn',
