@@ -819,7 +819,13 @@ export const findChainedTransactions = [
     },
 ];
 
-export const getRbfParams = [
+// Explicitly typed so the generated declaration does not inline every literal and exceed the size limit.
+export const getRbfParams: {
+    description: string;
+    account: unknown;
+    tx: unknown;
+    result: unknown;
+}[] = [
     {
         description: 'invalid account',
         account: { networkType: 'ethereum' },
