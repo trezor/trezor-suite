@@ -71,16 +71,18 @@ export function useEvmTxSimulationFeesForm({
         feeInfo,
     });
 
-    const [selectedFee, feePerUnit, maxFeePerGas, feeLimit] = useWatch({
+    const [selectedFee, feePerUnit, maxFeePerGas, feeLimit, estimatedFeeLimit] = useWatch({
         control: form.control,
-        name: ['selectedFee', 'feePerUnit', 'maxFeePerGas', 'feeLimit'],
+        name: ['selectedFee', 'feePerUnit', 'maxFeePerGas', 'feeLimit', 'estimatedFeeLimit'],
     });
+    const selectedFeeLimit =
+        selectedFee === 'custom' ? feeLimit : (estimatedFeeLimit ?? defaultGasLimit);
 
     // calculate levels with total max fee
     const feeTotalCalculation = useCallback(
         (feeValue: string) =>
-            new BigNumber(feeValue).multipliedBy(1e9).multipliedBy(feeLimit).toString(),
-        [feeLimit],
+            new BigNumber(feeValue).multipliedBy(1e9).multipliedBy(selectedFeeLimit).toString(),
+        [selectedFeeLimit],
     );
     const composedLevels = useComposedLevelsPlaceholder({
         feeTotalCalculation,
@@ -132,15 +134,18 @@ export function useEvmTxSimulationFeesForm({
 
     function getSelectedFee(): EvmSelectedFee | null {
         const values = form.getValues();
+        const customValues = values.selectedFee === 'custom' ? values : undefined;
+        const gasLimit =
+            (customValues ? values.feeLimit : values.estimatedFeeLimit) ?? defaultGasLimit;
         // The synthetic 'custom' level has no fee values; read network-derived values from 'normal' instead.
         const referenceLevelLabel =
             values.selectedFee === 'custom' ? 'normal' : (values.selectedFee ?? 'normal');
         const selectedFeeInfo = feeInfo.levels.find(level => level.label === referenceLevelLabel);
 
         const eip1559payload = {
-            maxFeePerGas: values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas,
+            maxFeePerGas: customValues?.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas,
             maxPriorityFeePerGas:
-                values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas,
+                customValues?.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas,
             baseFeePerGas: selectedFeeInfo?.baseFeePerGas,
         };
 
@@ -151,19 +156,19 @@ export function useEvmTxSimulationFeesForm({
         ) {
             return {
                 type: 'eip1559',
-                gasLimit: fromIntegerString(values.feeLimit).toHex(),
+                gasLimit: fromIntegerString(gasLimit).toHex(),
                 maxFeePerGas: fromGwei(eip1559payload.maxFeePerGas).toWei('hex'),
                 maxPriorityFeePerGas: fromGwei(eip1559payload.maxPriorityFeePerGas).toWei('hex'),
                 baseFeePerGas: fromGwei(eip1559payload.baseFeePerGas).toWei('hex'),
             };
         }
 
-        const gasPrice = values.feePerUnit ?? selectedFeeInfo?.feePerUnit;
+        const gasPrice = customValues?.feePerUnit ?? selectedFeeInfo?.feePerUnit;
 
         if (gasPrice) {
             return {
                 type: 'legacy',
-                gasLimit: fromIntegerString(values.feeLimit).toHex(),
+                gasLimit: fromIntegerString(gasLimit).toHex(),
                 gasPrice: fromGwei(gasPrice).toWei('hex'),
             };
         }
