@@ -53,6 +53,7 @@ const variantToMaxFontSizeMultiplier = {
     'body-md': TEXT_MAX_FONT_MULTIPLIER,
     'body-sm-strong': TEXT_MAX_FONT_MULTIPLIER,
     'body-sm': TEXT_MAX_FONT_MULTIPLIER,
+    'body-xs-strong': TEXT_MAX_FONT_MULTIPLIER,
     'body-xs': TEXT_MAX_FONT_MULTIPLIER,
 } as const satisfies Record<NativeTypographyStyle, number>;
 

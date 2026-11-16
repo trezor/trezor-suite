@@ -46,7 +46,7 @@ export const FlowStep = ({
                     <Column>
                         <Text
                             typographyStyle="body-sm-strong"
-                            case="small-caps"
+                            isAllCaps
                             intent="neutral"
                             priority="secondary"
                             data-testid={labelTestId}
@@ -69,7 +69,7 @@ export const FlowStep = ({
                 <Column gap={4}>
                     <Text
                         typographyStyle="body-sm-strong"
-                        case="small-caps"
+                        isAllCaps
                         intent="brand"
                         data-testid={labelTestId}
                     >
