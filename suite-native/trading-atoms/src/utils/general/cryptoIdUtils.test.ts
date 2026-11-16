@@ -19,6 +19,10 @@ describe('cryptoIdUtils', () => {
                 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
                 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId,
             ],
+            [
+                'cardano--0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa4e49474854',
+                'cardano--0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa4e49474854' as CryptoId,
+            ],
         ])('should return %s for %s', (expectedValue, cryptoId) => {
             expect(toCaseAwareCryptoId(cryptoId)).toBe(expectedValue);
         });

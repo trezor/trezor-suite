@@ -30,6 +30,20 @@ export const isTokenDefinitionKnownFixtures = [
         result: false,
     },
     {
+        testName: 'Cardano asset is known by its policy id',
+        tokenDefinitions: ['0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa'],
+        symbol: 'ada' as const,
+        contractAddress: '0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa4e49474854',
+        result: true,
+    },
+    {
+        testName: 'Cardano asset of an unlisted policy id is unknown',
+        tokenDefinitions: ['0691b2fecca1ac4f53cb6dfb00b7013e561d1f34403b957cbb5af1fa'],
+        symbol: 'ada' as const,
+        contractAddress: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc53541474958',
+        result: false,
+    },
+    {
         testName: 'Token definitions are undefined',
         tokenDefinitions: undefined,
         symbol: 'eth' as const,

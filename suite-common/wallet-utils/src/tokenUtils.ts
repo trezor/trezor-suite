@@ -14,7 +14,6 @@ import {
     type TokenStandard,
     type TokenTransfer,
 } from '@trezor/blockchain-link-types';
-import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended,
@@ -25,11 +24,6 @@ export const getContractAddressForNetworkSymbol = (
     switch (networkType) {
         case 'ethereum':
             return contractAddress.toLowerCase();
-        case 'cardano': {
-            const { policyId } = parseAsset(contractAddress);
-
-            return policyId.toLowerCase();
-        }
         default:
             return contractAddress;
     }
