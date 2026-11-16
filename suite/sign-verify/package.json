@@ -12,7 +12,6 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.9.2",
-        "@suite-common/device": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/receive": "workspace:*",
         "@suite-common/sign-verify": "workspace:*",

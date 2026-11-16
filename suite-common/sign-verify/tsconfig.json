@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics" },
+        { "path": "../device" },
         { "path": "../networks" },
         { "path": "../suite-types" },
         { "path": "../toast-notifications" },

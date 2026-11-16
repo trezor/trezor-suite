@@ -12974,6 +12974,7 @@ __metadata:
   resolution: "@suite-common/sign-verify@workspace:suite-common/sign-verify"
   dependencies:
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/device": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -18310,7 +18311,6 @@ __metadata:
   resolution: "@suite/sign-verify@workspace:suite/sign-verify"
   dependencies:
     "@hookform/resolvers": "npm:^5.9.2"
-    "@suite-common/device": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/sign-verify": "workspace:*"

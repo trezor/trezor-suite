@@ -1,8 +1,9 @@
 import { type Dispatch } from 'redux';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
+import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { type TrezorDeviceWithState } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
 import { DeviceNotConnectedError } from '@trezor/device';
@@ -21,7 +22,7 @@ export type VerifyMessageDeps = NetworkModuleRepositoryDep &
     };
 
 export type VerifyParams = {
-    device: TrezorDeviceWithState;
+    device: TrezorDevice | undefined;
     account: Account;
     address: string;
     message: string;
@@ -61,7 +62,7 @@ export const createVerifyMessage = (deps: VerifyMessageDeps): VerifyMessage => {
         signature,
         hex,
     }: VerifyParams): Promise<Result<void, VerifyError>> => {
-        if (!device.connected) {
+        if (!isTrezorDeviceWithState(device) || !device.connected || !device.available) {
             return err(DeviceNotConnectedError('Device not connected: verifyMessage'));
         }
 
