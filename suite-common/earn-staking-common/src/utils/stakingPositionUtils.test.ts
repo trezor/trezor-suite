@@ -2,6 +2,7 @@ import { mockStakingPosition, mockStakingProductInfo } from '../../mocks';
 import { stakingAmountSchema } from '../stakingAmount';
 import {
     getStakingPositionAmount,
+    getStakingPositionAmountOutsideBalance,
     getStakingPositionPrincipal,
     getStakingPositionRate,
     hasPendingStakingOperation,
@@ -62,6 +63,46 @@ describe('getStakingPositionPrincipal', () => {
         });
 
         expect(getStakingPositionPrincipal(rewardsOnly, 'compounded')).toBe('0');
+    });
+});
+
+describe('getStakingPositionAmountOutsideBalance', () => {
+    const held = balances({
+        staked: amount('2000000000000000000'),
+        pending: amount('250000000000000000'),
+        unstaking: amount('500000000000000000'),
+        withdrawable: amount('100000000000000000'),
+        rewards: amount('12000000000000000'),
+    });
+
+    it('holds every amount but the rewards of a locked position outside the balance', () => {
+        expect(
+            getStakingPositionAmountOutsideBalance(
+                mockStakingPosition({ balances: held }),
+                'compounded',
+            ),
+        ).toBe('2850000000000000000');
+    });
+
+    it.each(['compounded', 'claimable'] as const)(
+        'holds only the %s rewards of a liquid position outside the balance',
+        rewardsKind => {
+            expect(
+                getStakingPositionAmountOutsideBalance(
+                    mockStakingPosition({ lockup: 'liquid', balances: held }),
+                    rewardsKind,
+                ),
+            ).toBe('12000000000000000');
+        },
+    );
+
+    it('holds nothing of a liquid position with expected rewards outside the balance', () => {
+        expect(
+            getStakingPositionAmountOutsideBalance(
+                mockStakingPosition({ lockup: 'liquid', balances: held }),
+                'expected',
+            ),
+        ).toBe('0');
     });
 });
 

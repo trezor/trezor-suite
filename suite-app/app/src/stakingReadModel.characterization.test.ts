@@ -287,26 +287,29 @@ describe('staking read model on the P0.1 scenarios', () => {
         expect(read(state, `sol_${scenario}`)).toEqual(expected);
     });
 
-    // Cardano stake is liquid: the balance with staking is the balance. Differs: legacy reads the
-    // whole balance as staked; the position takes the reward balance out of it.
+    // Cardano stake is liquid and holds the reward balance, which Blockfrost keeps out of the
+    // available balance. Differs: legacy leaves the reward balance out of the balance with staking.
     it.each<{ scenario: CardanoStakingScenario; expected: Reading }>([
         { scenario: 'notDelegated', expected: empty('1000') },
-        { scenario: 'everstake', expected: staked('1000', { staked: '994.75', rewards: '5.25' }) },
+        {
+            scenario: 'everstake',
+            expected: staked('1005.25', { staked: '1005.25', rewards: '5.25' }),
+        },
         { scenario: 'everstakeNoRewards', expected: staked('1000', { staked: '1000' }) },
         {
             scenario: 'everstakeOtherPool',
-            expected: staked('1000', { staked: '999', rewards: '1' }),
+            expected: staked('1001', { staked: '1001', rewards: '1' }),
         },
         {
             scenario: 'everstakeMissingDrep',
-            expected: staked('1000', { staked: '994.75', rewards: '5.25' }),
+            expected: staked('1005.25', { staked: '1005.25', rewards: '5.25' }),
         },
         {
             scenario: 'everstakeAbstainDrep',
-            expected: staked('1000', { staked: '994.75', rewards: '5.25' }),
+            expected: staked('1005.25', { staked: '1005.25', rewards: '5.25' }),
         },
-        { scenario: 'fiveBinaries', expected: staked('1000', { staked: '999', rewards: '1' }) },
-        { scenario: 'externalPool', expected: staked('1000', { staked: '998', rewards: '2' }) },
+        { scenario: 'fiveBinaries', expected: staked('1001', { staked: '1001', rewards: '1' }) },
+        { scenario: 'externalPool', expected: staked('1002', { staked: '1002', rewards: '2' }) },
     ])('ada $scenario', ({ scenario, expected }) => {
         expect(read(state, `ada_${scenario}`)).toEqual(expected);
     });

@@ -78,7 +78,7 @@ describe('getAccountTotalStakingBalance characterization', () => {
         {
             name: 'ada everstake',
             account: mockCardanoStakingAccount('everstake'),
-            expected: '1000',
+            expected: '1005.25',
         },
         {
             name: 'ada everstakeNoRewards',
@@ -88,12 +88,12 @@ describe('getAccountTotalStakingBalance characterization', () => {
         {
             name: 'ada fiveBinaries',
             account: mockCardanoStakingAccount('fiveBinaries'),
-            expected: '1000',
+            expected: '1001',
         },
         {
             name: 'ada externalPool',
             account: mockCardanoStakingAccount('externalPool'),
-            expected: '1000',
+            expected: '1002',
         },
         { name: 'trx none', account: mockTronStakingAccount('none'), expected: null },
         {

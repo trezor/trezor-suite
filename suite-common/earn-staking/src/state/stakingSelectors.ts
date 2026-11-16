@@ -4,6 +4,7 @@ import {
     type StakingPositionBalances,
     type StakingProductDescriptor,
     type StakingProductId,
+    getStakingPositionAmountOutsideBalance,
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import type { AccountKey } from '@suite-common/wallet-types';
@@ -84,23 +85,25 @@ const selectCountedStakingPositions = createWeakMapSelector(
         ),
 );
 
-// The stake of liquid positions is already in the account balance; only locked positions hold
-// funds outside it. Rewards are never added: they compound into the stake, are only expected, or
-// are part of the balance.
 export const selectStakingAccountAmountOutsideBalance = createWeakMapSelector(
-    [selectCountedStakingPositions],
-    (countedPositions): StakingAmount => {
-        const lockedPositions = countedPositions.filter(({ lockup }) => lockup === 'locked');
+    [selectCountedStakingPositions, selectStakingProducts],
+    (countedPositions, products): StakingAmount =>
+        stakingAmountSchema.parse(
+            countedPositions
+                .reduce((sum, position) => {
+                    const descriptor = products[position.productId];
 
-        return stakingAmountSchema.parse(
-            (['staked', 'pending', 'unstaking', 'withdrawable'] as const)
-                .reduce(
-                    (sum, balance) => sum.plus(sumBalance(lockedPositions, balance)),
-                    new BigNumber(0),
-                )
+                    return descriptor === undefined
+                        ? sum
+                        : sum.plus(
+                              getStakingPositionAmountOutsideBalance(
+                                  position,
+                                  descriptor.rewardsKind,
+                              ),
+                          );
+                }, new BigNumber(0))
                 .toFixed(0),
-        );
-    },
+        ),
 );
 
 export const selectStakingAccountTotals = createWeakMapSelector(

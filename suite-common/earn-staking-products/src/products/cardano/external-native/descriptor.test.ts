@@ -21,7 +21,7 @@ describe('createCardanoExternalNativeProductDescriptor', () => {
             operations: ['unstake', 'claim', 'vote'],
             exclusivity: 'account',
             rateKind: 'apy',
-            rewardsKind: 'claimable',
+            rewardsKind: 'compounded',
             limits: {
                 minStakeAmount: '0',
                 maxStakeAmount: '0',

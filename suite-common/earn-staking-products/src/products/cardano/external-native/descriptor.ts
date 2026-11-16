@@ -30,7 +30,7 @@ export const createCardanoExternalNativeProductDescriptor = ({
         operations: ['unstake', 'claim', 'vote'],
         exclusivity: 'account',
         rateKind: 'apy',
-        rewardsKind: 'claimable',
+        rewardsKind: 'compounded',
         limits: CARDANO_EXTERNAL_NATIVE_PRODUCT_LIMITS,
         options: [],
         consentKey: null,

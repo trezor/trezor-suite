@@ -157,9 +157,9 @@ type ToLegacyReadingParams = {
     reading: CardanoReading;
 };
 
-// Cardano stake is liquid and already inside the balance, so nothing is added to it. Legacy reads
-// the whole balance as staked, which is the position's staked amount plus its reward balance. The
-// APY is the account's Everstake pool, or the promoted one without a pool.
+// Cardano stake is liquid, so nothing is added to the balance. Legacy reads the whole balance as
+// staked, reward balance included, which is the position's staked amount. The APY is the
+// account's Everstake pool, or the promoted one without a pool.
 const toLegacyReading = ({
     account,
     reading: { infos, owner, position },
@@ -169,7 +169,6 @@ const toLegacyReading = ({
     const pending = balances?.pending ?? '0';
     const unstaking = balances?.unstaking ?? '0';
     const withdrawable = balances?.withdrawable ?? '0';
-    const delegated = new BigNumber(staked).plus(balances?.rewards ?? '0');
     const lockedAmounts =
         position?.lockup === 'locked' ? [staked, pending, unstaking, withdrawable] : [];
     const poolId = getDelegation(position)?.poolId ?? null;
@@ -183,8 +182,8 @@ const toLegacyReading = ({
             poolId === null
                 ? infos.everstake.rate
                 : (infos.everstake.targets.find(({ address }) => address === poolId)?.rate ?? null),
-        staked: fromLovelace(delegated),
-        unstakable: fromLovelace(delegated),
+        staked: fromLovelace(staked),
+        unstakable: fromLovelace(staked),
         rewards: fromLovelace(balances?.rewards ?? '0'),
         totalStakePending: fromLovelace(pending),
         claimable: fromLovelace(withdrawable),
@@ -192,7 +191,10 @@ const toLegacyReading = ({
         unstaking: fromLovelace(unstaking),
         unstakingPeriodInDays: infos[owner ?? 'everstake'].exitPeriodDays,
         cryptoBalanceWithStaking: fromLovelace(
-            lockedAmounts.reduce((sum, amount) => sum.plus(amount), new BigNumber(account.balance)),
+            lockedAmounts.reduce(
+                (sum, amount) => sum.plus(amount),
+                new BigNumber(account.availableBalance),
+            ),
         ),
     };
 };
@@ -281,8 +283,7 @@ const toLegacyUtilsReading = ({
 }: ToLegacyReadingParams): LegacyUtilsReading => {
     const rewards = position?.balances.rewards ?? '0';
     const hasRewards = isPositive(rewards);
-    const delegated =
-        position === null ? null : new BigNumber(position.balances.staked).plus(rewards);
+    const delegated = position === null ? null : new BigNumber(position.balances.staked);
     const staked = delegated === null ? '' : fromLovelace(delegated);
     const hasStakedForAnalytics = delegated?.gt(0) ?? false;
     const hasPool = (getDelegation(position)?.poolId ?? null) !== null;
@@ -320,8 +321,8 @@ const CARDANO_STAKED_READING: LegacyReading = {
     isStakePending: false,
     isStakeConfirming: false,
     apy: 2.06,
-    staked: '1000',
-    unstakable: '1000',
+    staked: '1005.25',
+    unstakable: '1005.25',
     rewards: '5.25',
     totalStakePending: '0',
     claimable: '0',
@@ -345,9 +346,9 @@ const EVERSTAKE_DETAILS: LegacyDetailsReading = {
 };
 
 const cardanoStakingData = (data: Partial<LegacyStakingData>): LegacyStakingData => ({
-    autocompoundBalance: '1000',
+    autocompoundBalance: '1005.25',
     claimableAmount: '',
-    depositedBalance: '1000',
+    depositedBalance: '1005.25',
     pendingBalance: '',
     pendingDepositedBalance: '',
     totalPendingStakeBalance: '',
@@ -416,9 +417,10 @@ const SCENARIOS: {
     {
         scenario: 'everstakeNoRewards',
         expectedOperations: ['unstake', 'vote'],
-        expected: { ...CARDANO_STAKED_READING, rewards: '0' },
+        expected: { ...CARDANO_STAKED_READING, staked: '1000', unstakable: '1000', rewards: '0' },
         expectedDetails: EVERSTAKE_DETAILS,
         expectedUtils: stakedUtilsReading('everstake', {
+            autocompoundBalance: '1000',
             depositedBalance: '',
             totalPendingStakeBalance: '1000',
             restakedReward: '0',
@@ -428,13 +430,23 @@ const SCENARIOS: {
     {
         scenario: 'everstakeOtherPool',
         expectedOperations: ['unstake', 'claim', 'vote'],
-        expected: { ...CARDANO_STAKED_READING, apy: 2.4, rewards: '1' },
+        expected: {
+            ...CARDANO_STAKED_READING,
+            apy: 2.4,
+            staked: '1001',
+            unstakable: '1001',
+            rewards: '1',
+        },
         expectedDetails: {
             ...EVERSTAKE_DETAILS,
             poolId: MOCK_CARDANO_EVERSTAKE_OTHER_POOL,
             bestPool: MOCK_CARDANO_EVERSTAKE_OTHER_POOL,
         },
-        expectedUtils: stakedUtilsReading('everstake', { restakedReward: '1' }),
+        expectedUtils: stakedUtilsReading('everstake', {
+            autocompoundBalance: '1001',
+            depositedBalance: '1001',
+            restakedReward: '1',
+        }),
     },
     // Deliberate difference: legacy getStakingDataForNetwork reports canClaim whenever rewards are
     // positive, while the position withholds claim behind a missing DRep, as the desktop card does.
@@ -465,7 +477,13 @@ const SCENARIOS: {
     {
         scenario: 'fiveBinaries',
         expectedOperations: ['unstake', 'claim', 'vote'],
-        expected: { ...CARDANO_STAKED_READING, apy: null, rewards: '1' },
+        expected: {
+            ...CARDANO_STAKED_READING,
+            apy: null,
+            staked: '1001',
+            unstakable: '1001',
+            rewards: '1',
+        },
         expectedDetails: {
             ...EVERSTAKE_DETAILS,
             poolId: MOCK_CARDANO_FIVE_BINARIES_POOL,
@@ -473,13 +491,23 @@ const SCENARIOS: {
             isStakedOutsideEverstake: true,
             isStakedWithFiveBinaries: true,
         },
-        expectedUtils: stakedUtilsReading('fivebinaries', { restakedReward: '1' }),
+        expectedUtils: stakedUtilsReading('fivebinaries', {
+            autocompoundBalance: '1001',
+            depositedBalance: '1001',
+            restakedReward: '1',
+        }),
     },
     // Deliberate difference: canClaim, as in everstakeMissingDrep.
     {
         scenario: 'externalPool',
         expectedOperations: ['vote'],
-        expected: { ...CARDANO_STAKED_READING, apy: null, rewards: '2' },
+        expected: {
+            ...CARDANO_STAKED_READING,
+            apy: null,
+            staked: '1002',
+            unstakable: '1002',
+            rewards: '2',
+        },
         expectedDetails: {
             ...EVERSTAKE_DETAILS,
             poolId: MOCK_CARDANO_EXTERNAL_POOL,
@@ -490,7 +518,12 @@ const SCENARIOS: {
             hasLiveVoteDelegation: false,
             isWithdrawalBlockedByMissingDrep: true,
         },
-        expectedUtils: stakedUtilsReading('unknown', { restakedReward: '2', canClaim: false }),
+        expectedUtils: stakedUtilsReading('unknown', {
+            autocompoundBalance: '1002',
+            depositedBalance: '1002',
+            restakedReward: '2',
+            canClaim: false,
+        }),
     },
 ];
 
@@ -552,20 +585,14 @@ describe('cardano delegation products parity with the P0.1 snapshots', () => {
 
     it.each<{ scenario: CardanoStakingScenario; expected: string | null }>([
         { scenario: 'notDelegated', expected: null },
-        { scenario: 'everstake', expected: '1000' },
+        { scenario: 'everstake', expected: '1005.25' },
         { scenario: 'everstakeNoRewards', expected: '1000' },
-        { scenario: 'fiveBinaries', expected: '1000' },
-        { scenario: 'externalPool', expected: '1000' },
+        { scenario: 'fiveBinaries', expected: '1001' },
+        { scenario: 'externalPool', expected: '1002' },
     ])('$scenario total staking balance', async ({ scenario, expected }) => {
         const { position } = await readPositions(mockCardanoStakingAccount(scenario));
 
-        expect(
-            position === null
-                ? null
-                : fromLovelace(
-                      new BigNumber(position.balances.staked).plus(position.balances.rewards),
-                  ),
-        ).toBe(expected);
+        expect(position === null ? null : fromLovelace(position.balances.staked)).toBe(expected);
     });
 
     it('network readings', async () => {
@@ -672,7 +699,7 @@ describe('cardano delegation products parity with the P0.1 snapshots', () => {
         });
 
         // The 2 ADA stake key registration deposit of the legacy constants.
-        it('pays claimable rewards and takes the registration deposit on Everstake only', () => {
+        it('delegates its rewards and takes the registration deposit on Everstake only', () => {
             expect(
                 CARDANO_PRODUCT_KEYS.map(key => ({
                     rewardsKind: products[key].descriptor.rewardsKind,
@@ -682,9 +709,9 @@ describe('cardano delegation products parity with the P0.1 snapshots', () => {
                     minFirmware: products[key].descriptor.minFirmware,
                 })),
             ).toEqual([
-                { rewardsKind: 'claimable', registrationDeposit: '2', minFirmware: {} },
-                { rewardsKind: 'claimable', registrationDeposit: '0', minFirmware: {} },
-                { rewardsKind: 'claimable', registrationDeposit: '0', minFirmware: {} },
+                { rewardsKind: 'compounded', registrationDeposit: '2', minFirmware: {} },
+                { rewardsKind: 'compounded', registrationDeposit: '0', minFirmware: {} },
+                { rewardsKind: 'compounded', registrationDeposit: '0', minFirmware: {} },
             ]);
         });
 
