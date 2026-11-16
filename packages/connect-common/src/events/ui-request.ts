@@ -63,6 +63,7 @@ export interface UiRequestSelectFee {
     payload: {
         coinInfo: BitcoinNetworkInfo;
         feeLevels: FeeLevel[];
+        blockTime: number;
     };
 }
 

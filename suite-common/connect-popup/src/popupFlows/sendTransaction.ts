@@ -151,7 +151,7 @@ export class SendTransaction extends CommonPopupFlow<'sendTransaction'> {
         const feeDeferred = getPermissionDeferred(true);
         dispatch({
             type: UI_REQUESTS.REQUEST_FEE,
-            payload: { feeLevels: finalFeeLevels, coinInfo },
+            payload: { feeLevels: finalFeeLevels, coinInfo, blockTime: coinInfo.blockTime },
         } satisfies UiRequestSelectFee);
         dispatch(connectPopupActions.selectAccount(picker));
         const choice = await feeDeferred.promise;
