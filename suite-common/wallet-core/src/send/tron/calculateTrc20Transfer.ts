@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
@@ -35,9 +35,7 @@ export const calculateTrc20Transfer = (
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: {
-                    networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
-                },
+                networkSymbolValues: { networkDisplaySymbol: networkSymbol },
             },
         } as const;
     }

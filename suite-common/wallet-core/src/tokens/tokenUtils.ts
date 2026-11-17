@@ -6,7 +6,6 @@ import {
 import { type TokenSymbol } from '@suite-common/tokens';
 import {
     type NetworkSymbol,
-    getNetworkDisplaySymbol,
     getNetworkFeatures,
     getNetworkType,
 } from '@suite-common/wallet-config';
@@ -108,12 +107,13 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
 
 export const getAccountAnalyticsTokenSymbols = (
     account: Account,
+    networkDisplaySymbol: string,
     tokenDefinitions: TokenDefinition | undefined,
 ): TokenSymbol[] => {
     const { symbol } = account;
 
     const nativeTokenSymbol = new BigNumber(account.balance).gt(0)
-        ? (getNetworkDisplaySymbol(symbol) as TokenSymbol)
+        ? (networkDisplaySymbol as TokenSymbol)
         : undefined;
 
     const tokenSymbols = getTokens({ tokens: account.tokens ?? [], symbol, tokenDefinitions })

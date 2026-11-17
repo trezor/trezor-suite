@@ -3,14 +3,16 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
 
+/** `networkDisplaySymbol` is the symbol of the coin of the network all `transactions` are on. */
 export const advancedSearchTransactions = (
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
     search: string,
+    networkDisplaySymbol: string,
 ) => {
     // No AND/OR operators, just run a simple search
     if (!search.includes('&') && !search.includes('|')) {
-        return simpleSearchTransactions(transactions, accountLabels, search);
+        return simpleSearchTransactions(transactions, accountLabels, search, networkDisplaySymbol);
     }
 
     // Split by OR operator first
@@ -29,11 +31,17 @@ export const advancedSearchTransactions = (
                     transactions,
                     accountLabels,
                     or.replace('&', ''),
+                    networkDisplaySymbol,
                 ).flatMap(t => t.txid);
             }
 
             const andTxs = andSplit.flatMap(and =>
-                simpleSearchTransactions(transactions, accountLabels, and).map(t => t.txid),
+                simpleSearchTransactions(
+                    transactions,
+                    accountLabels,
+                    and,
+                    networkDisplaySymbol,
+                ).map(t => t.txid),
             );
 
             const transactionCount: { [txid: string]: number } = {};

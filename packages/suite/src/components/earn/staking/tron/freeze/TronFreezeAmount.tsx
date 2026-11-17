@@ -5,7 +5,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     AMOUNT_MAX_LENGTH,
     TRON_STAKING_RESERVE,
@@ -22,6 +22,7 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite';
+import { useNetworkDisplaySymbolText } from '#src/hooks/wallet/useNetworkDisplaySymbolText';
 import {
     validateDecimals,
     validateMin,
@@ -60,7 +61,7 @@ export const TronFreezeAmount = () => {
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
     const minStakingAmount = stakingLimits?.MIN_AMOUNT_FOR_STAKING;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = useNetworkDisplaySymbolText(account.symbol);
 
     const formatCryptoAmount = (value: string) =>
         CryptoAmountFormatter.format(value, {
@@ -115,6 +116,7 @@ export const TronFreezeAmount = () => {
             reserveOrBalance: async (value: string) => {
                 const reserveOrBalanceResult = validateReserveOrBalance(translationString, {
                     account,
+                    networkDisplaySymbol,
                 })(value);
 
                 if (reserveOrBalanceResult) {

@@ -14,6 +14,7 @@ export const isAccountActiveForAnalytics = (account: Account) =>
 
 export const getAccountInfoAnalyticsPayload = (
     account: Account,
+    networkDisplaySymbol: string,
     tokenDefinitions: TokenDefinition | undefined,
     hasTraded: boolean,
 ): EventInstance<typeof events.accountsInfoEvent>['payload'] => ({
@@ -22,6 +23,6 @@ export const getAccountInfoAnalyticsPayload = (
     index: account.index,
     hasStaked: hasAccountStakedForAnalytics(account),
     hasTraded,
-    tokenSymbols: getAccountAnalyticsTokenSymbols(account, tokenDefinitions),
+    tokenSymbols: getAccountAnalyticsTokenSymbols(account, networkDisplaySymbol, tokenDefinitions),
     stakingProviders: getStakingProvidersForAnalytics([account]),
 });

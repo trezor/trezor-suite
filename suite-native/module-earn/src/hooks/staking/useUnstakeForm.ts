@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -33,6 +34,9 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        account ? selectNetworkDisplaySymbol(state, account.symbol) : undefined,
+    );
     const unstakableBalance = useSelector((state: StakeRootState) =>
         selectUnstakableBalanceByAccountKey(state, accountKey),
     );
@@ -52,6 +56,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         context: {
             account,
             symbol: account?.symbol,
+            networkDisplaySymbol,
             unstakableBalance,
             decimals: network?.decimals,
             translate,

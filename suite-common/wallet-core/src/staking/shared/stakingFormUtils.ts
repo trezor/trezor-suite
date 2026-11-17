@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
     type ExternalOutput,
@@ -87,7 +87,7 @@ export const calculateStakeFormTransaction = (
             error,
             errorMessage: {
                 id: error,
-                values: { networkDisplaySymbol: getNetworkDisplaySymbol(symbol) },
+                networkSymbolValues: { networkDisplaySymbol: symbol },
             },
         } as const;
     }
@@ -177,7 +177,7 @@ export const composeStakingTransaction = (
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
             tx.errorMessage = {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: { networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol) },
+                networkSymbolValues: { networkDisplaySymbol: network.symbol },
             };
         }
     });

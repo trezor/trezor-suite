@@ -4,7 +4,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     ETH_SPEED_UP_TX_MULTIPLIER,
@@ -428,9 +428,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
-                    },
+                    networkSymbolValues: { networkDisplaySymbol: network.symbol },
                 };
             }
             if (
@@ -438,10 +436,8 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT'
             ) {
                 tx.errorMessage = {
-                    values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
-                        feeAmount: tx.errorMessage?.values?.feeAmount || '',
-                    },
+                    values: { feeAmount: tx.errorMessage?.values?.feeAmount || '' },
+                    networkSymbolValues: { networkDisplaySymbol: network.symbol },
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                 };
             }

@@ -13,6 +13,7 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
 import { useSelector } from '#src/hooks/suite';
+import { useNetworkDisplaySymbolText } from '#src/hooks/wallet/useNetworkDisplaySymbolText';
 import { CRYPTO_INPUT, FIAT_INPUT } from '#src/types/earn/earnFormFields';
 import { validateStakingMax } from '#src/utils/suite/staking';
 import {
@@ -53,6 +54,7 @@ export const StakeInputs = () => {
         setMax,
         setCurrency,
     } = useStakeFormContext();
+    const networkDisplaySymbol = useNetworkDisplaySymbolText(account.symbol);
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
@@ -98,6 +100,7 @@ export const StakeInputs = () => {
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
+                networkDisplaySymbol,
             }),
             limits: validateCryptoLimits(translationString, {
                 amountLimits,
