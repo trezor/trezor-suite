@@ -1,4 +1,5 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { AssetSymbol } from '@suite-native/assets';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -41,7 +42,14 @@ export const CardanoAutoStakedModal = ({ ref, networkSymbol }: CardanoAutoStaked
                     <Text color="contentSecondary">
                         <Translation
                             id="earn.stakingManagementScreen.cardanoAutoStakedModal.delegationDescription"
-                            values={{ symbol: getNetworkDisplaySymbol(networkSymbol) }}
+                            values={{
+                                symbol: (
+                                    <AssetSymbol
+                                        networkSymbol={networkSymbol}
+                                        color="contentSecondary"
+                                    />
+                                ),
+                            }}
                         />
                     </Text>
                     <Text color="contentSecondary">

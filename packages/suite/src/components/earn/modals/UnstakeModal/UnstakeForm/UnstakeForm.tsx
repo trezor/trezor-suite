@@ -1,7 +1,7 @@
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getSolanaUnstakeAmountBounds,
     getStakingDataForNetwork,
@@ -98,7 +98,7 @@ export const UnstakeForm = () => {
                                             isBalance: true,
                                             withSymbol: false,
                                         }),
-                                        symbol: getDisplaySymbol(account.symbol),
+                                        symbol: <AssetSymbol networkSymbol={account.symbol} />,
                                         br: <br />,
                                     }}
                                 />
@@ -132,7 +132,11 @@ export const UnstakeForm = () => {
                                                         : 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY'
                                                 }
                                                 values={{
-                                                    symbol: getNetworkDisplaySymbol(account.symbol),
+                                                    symbol: (
+                                                        <AssetSymbol
+                                                            networkSymbol={account.symbol}
+                                                        />
+                                                    ),
                                                     higher: renderClickableUnstakeAmount(
                                                         unstakeAmountBounds.closestHigher,
                                                     ),
@@ -193,7 +197,7 @@ export const UnstakeForm = () => {
                                 <Translation
                                     id="TR_STAKE_UNSTAKING_APPROXIMATE"
                                     values={{
-                                        symbol: getDisplaySymbol(account.symbol),
+                                        symbol: <AssetSymbol networkSymbol={account.symbol} />,
                                     }}
                                 />
                             </Tooltip>

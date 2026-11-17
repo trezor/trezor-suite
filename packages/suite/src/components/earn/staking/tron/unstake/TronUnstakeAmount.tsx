@@ -1,8 +1,9 @@
 import { useFormState, useWatch } from 'react-hook-form';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
@@ -37,8 +38,6 @@ export const TronUnstakeAmount = () => {
 
     const resourceType = useWatch({ control, name: 'resourceType' });
     const stakedBalance = getStakedBalance(account, resourceType);
-
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
 
     const cryptoInputRules = {
         required: translationString('AMOUNT_IS_NOT_SET'),
@@ -89,7 +88,11 @@ export const TronUnstakeAmount = () => {
         onChange: currency === 'crypto' ? onCryptoAmountChange : onFiatAmountChange,
         rightContent: (
             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                {currency === 'crypto' ? networkDisplaySymbol : baseCurrencyCode.toUpperCase()}
+                {currency === 'crypto' ? (
+                    <AssetSymbol networkSymbol={account.symbol} />
+                ) : (
+                    baseCurrencyCode.toUpperCase()
+                )}
             </Text>
         ),
     } as const;
@@ -106,7 +109,7 @@ export const TronUnstakeAmount = () => {
                     currency={currency}
                     setCurrency={setCurrency}
                     fiatCurrencySymbol={baseCurrencyCode.toUpperCase()}
-                    cryptoCurrencySymbol={networkDisplaySymbol}
+                    networkSymbol={account.symbol}
                 />
             </Row>
 

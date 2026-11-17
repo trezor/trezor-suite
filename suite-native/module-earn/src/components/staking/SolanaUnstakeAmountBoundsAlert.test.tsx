@@ -1,3 +1,4 @@
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type Account } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
 import {
@@ -59,7 +60,10 @@ const renderAlert = async (account: Account, amountValue: string) => {
         form,
         ...(await renderWithStoreProvider(
             <SolanaUnstakeAmountBoundsAlert account={account} amountValue={amountValue} />,
-            { wrapper: ({ children }) => <Form form={form}>{children}</Form> },
+            {
+                preloadedState: { networks: mockNetworksState([account.symbol]) },
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            },
         )),
     };
 };

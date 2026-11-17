@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type EarnOnboardingRootState,
@@ -17,6 +16,7 @@ import {
     selectUnstakingPeriodInDaysBySymbol,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline, Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { useMessageSystemStaking } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
@@ -125,8 +125,6 @@ export const HowStakeWorksScreen = () => {
 
     const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
-
     const { benefitItems, timelineSections } = useHowStakeWorksPreset({
         symbol,
         entryPeriodInDays,
@@ -147,13 +145,25 @@ export const HowStakeWorksScreen = () => {
                         title={
                             <Translation
                                 id="earn.howStakeWorksScreen.title"
-                                values={{ displaySymbol }}
+                                values={{
+                                    displaySymbol: (
+                                        <AssetSymbol networkSymbol={symbol} variant="headline-md" />
+                                    ),
+                                }}
                             />
                         }
                         subtitle={
                             <Translation
                                 id="earn.howStakeWorksScreen.subtitle"
-                                values={{ displaySymbol }}
+                                values={{
+                                    displaySymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={symbol}
+                                            variant="body-sm"
+                                            color="contentSecondary"
+                                        />
+                                    ),
+                                }}
                             />
                         }
                     />

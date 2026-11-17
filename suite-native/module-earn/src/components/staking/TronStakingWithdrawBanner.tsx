@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     getTronWithdrawableBalance,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -37,7 +37,13 @@ export const TronStakingWithdrawBanner = ({
                     id="earn.tron.readyToWithdrawAlert"
                     values={{
                         amount: withdrawableBalance,
-                        displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                        displaySymbol: (
+                            <AssetSymbol
+                                networkSymbol={account.symbol}
+                                variant="body-sm"
+                                color="contentInfo"
+                            />
+                        ),
                     }}
                 />
             }

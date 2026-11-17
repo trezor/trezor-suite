@@ -1,5 +1,5 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -44,7 +44,7 @@ export const CardanoVotingPreference = ({ account }: CardanoVotingPreferenceProp
             heading={
                 <Translation
                     id="TR_STAKING_WHO_VOTES_WITH_YOUR_FUNDS"
-                    values={{ displaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                    values={{ displaySymbol: <AssetSymbol networkSymbol={account.symbol} /> }}
                 />
             }
             description={<Translation id="TR_STAKING_VOTING_PREFERENCE_DESCRIPTION" />}
