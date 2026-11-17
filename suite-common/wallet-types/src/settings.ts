@@ -2,6 +2,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { PROTO } from '@trezor/connect';
 
+import type { CustomEvmNetworkDefinition } from './customEvmNetwork';
+
 export const AddressDisplayOptions = {
     ORIGINAL: 'original',
     CHUNKED: 'chunked',
@@ -35,4 +37,5 @@ export interface WalletSettings {
     areHomeAssetSmallBalancesShown: boolean;
     isHomeAssetTableNewBannerClosed: boolean;
     isHomeAssetTableFeedbackClosed: boolean;
+    customEvmNetworks: CustomEvmNetworkDefinition[];
 }

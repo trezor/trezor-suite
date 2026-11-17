@@ -43,6 +43,7 @@ const initialState: WalletSettingsState = {
     areHomeAssetSmallBalancesShown: true,
     isHomeAssetTableNewBannerClosed: false,
     isHomeAssetTableFeedbackClosed: false,
+    customEvmNetworks: [],
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -156,6 +157,8 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
 export const selectWalletSettings = (state: WalletSettingsRootState) => state.wallet.settings;
 export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
     returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
+export const selectCustomEvmNetworks = (state: WalletSettingsRootState) =>
+    returnStableArrayIfEmpty(state.wallet.settings.customEvmNetworks ?? []);
 export const selectBaseCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
 export const selectSuspiciousTransactionsFilter = (
