@@ -30,11 +30,13 @@ export type StakingAccountPosition = {
     access: ResolvedStakingProductAccess;
 };
 
-// The account's counted position with its product, totals and access. Without a position, the
+// The account's counted position with its own product, totals and access. Without a position, the
 // product is the one the network stakes on, so a screen can still offer the first stake.
 export const useStakingAccountPosition = (accountKey: AccountKey): StakingAccountPosition => {
-    const descriptor = useSelector((state: StakingAccountProductRootState) =>
-        selectStakingAccountProductDescriptor(state, accountKey),
+    const descriptor = useSelector(
+        (state: StakingAccountProductRootState) =>
+            selectStakingAccountPositionEntry(state, accountKey)?.descriptor ??
+            selectStakingAccountProductDescriptor(state, accountKey),
     );
     const position = useSelector(
         (state: StakingRootState) =>

@@ -151,12 +151,13 @@ type GetPositionTargetsParams = {
     provider: StakingProvider;
 };
 
+// The target tells a delegated key from a registered one, so it stays while the balance is empty.
 export const getPositionTargets = ({
     poolId,
     staked,
     provider,
 }: GetPositionTargetsParams): StakingPositionTarget[] => {
-    if (poolId === null || !isPositiveStakingAmount(staked)) {
+    if (poolId === null) {
         return [];
     }
 

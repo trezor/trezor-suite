@@ -8,7 +8,8 @@ import {
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     type StakingAccessRootState,
-    selectIsStakingManageableSymbol,
+    type StakingPromotionScope,
+    selectIsStakingPromotedSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     useNetworkStakingRate,
     useStakingAccess,
@@ -28,9 +29,6 @@ import { getBestPromotedRate } from '../utils/promotedRateUtils';
 
 /** `inactive` = token eligible for a deposit, `active` = vault receipt token already earning. */
 export type TokenYieldRateVariant = 'inactive' | 'active';
-
-/** `offered` = every staking product the platform shows, `manageable` = only what it can stake. */
-export type StakingPromotionScope = 'offered' | 'manageable';
 
 export type TokenYieldRateToken = {
     contract: string;
@@ -103,9 +101,7 @@ export const useAssetYieldRate = ({
             selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol)?.id ?? null,
     );
     const isStakingPromoted = useSelector((state: StakingAccessRootState) =>
-        stakingScope === 'manageable'
-            ? selectIsStakingManageableSymbol(state, networkSymbol)
-            : selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol) !== null,
+        selectIsStakingPromotedSymbol(state, networkSymbol, stakingScope),
     );
     const { disabled } = useStakingAccess(stakingProductId);
     const { rate: stakingRate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });

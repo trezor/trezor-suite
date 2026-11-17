@@ -5,7 +5,7 @@ import { type PropsWithChildren } from 'react';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
+import { stakingAmountSchema, stakingProviderIdSchema } from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
@@ -40,6 +40,13 @@ const adaFivebinaries = mockStakingProductDescriptor({
     operations: ['unstake', 'claim', 'vote'],
     consentKey: null,
 });
+const adaExternal = mockStakingProductDescriptor({
+    networkSymbol: ada,
+    providerId: stakingProviderIdSchema.parse('external'),
+    type: 'native',
+    operations: ['unstake', 'claim', 'vote'],
+    consentKey: null,
+});
 
 const fivebinariesAccount = mockWalletAccount({
     symbol: ada,
@@ -49,13 +56,36 @@ const unstakedAccount = mockWalletAccount({
     symbol: ada,
     descriptor: asAccountDescriptor('unstaked'),
 });
-const accounts: Account[] = [fivebinariesAccount, unstakedAccount];
+const undelegatedAccount = mockWalletAccount({
+    symbol: ada,
+    descriptor: asAccountDescriptor('undelegated'),
+});
+const accounts: Account[] = [fivebinariesAccount, unstakedAccount, undelegatedAccount];
+
+const adaPosition = (productId: typeof adaFivebinaries.id, poolId: string | null) =>
+    mockStakingPosition({
+        productId,
+        lockup: 'liquid',
+        unlocks: [],
+        targets:
+            poolId === null
+                ? []
+                : [
+                      {
+                          address: poolId,
+                          providerId: adaFivebinaries.providerId,
+                          amount: stakingAmountSchema.parse('1000000'),
+                      },
+                  ],
+        operations: ['unstake', 'claim', 'vote'],
+    });
 
 const renderNetworkStakingRate = (params: UseNetworkStakingRateParams) => {
     const queryClient = mockStakingQueryClient({
         productInfo: {
             [adaEverstake.id]: mockStakingProductInfo({ rate: 2.4 }),
             [adaFivebinaries.id]: mockStakingProductInfo({ rate: null, targets: [] }),
+            [adaExternal.id]: mockStakingProductInfo({ rate: null, targets: [] }),
         },
     });
     const { services } = createTestCompositionRoot<HookDeps, HookState>({
@@ -66,17 +96,12 @@ const renderNetworkStakingRate = (params: UseNetworkStakingRateParams) => {
         preloadedState: {
             earn: {
                 staking: mockStakingState({
-                    descriptors: [adaEverstake, adaFivebinaries],
+                    descriptors: [adaEverstake, adaFivebinaries, adaExternal],
                     positions: {
                         [fivebinariesAccount.key]: [
-                            mockStakingPosition({
-                                productId: adaFivebinaries.id,
-                                lockup: 'liquid',
-                                unlocks: [],
-                                targets: [],
-                                operations: ['unstake', 'claim', 'vote'],
-                            }),
+                            adaPosition(adaFivebinaries.id, 'pool1fivebinaries'),
                         ],
+                        [undelegatedAccount.key]: [adaPosition(adaExternal.id, null)],
                     },
                 }),
             },
@@ -103,6 +128,13 @@ describe('useNetworkStakingRate', () => {
         expect(
             renderNetworkStakingRate({ networkSymbol: ada, accountKey: unstakedAccount.key }).result
                 .current,
+        ).toEqual({ rate: 2.4, rateKind: 'apy', isPending: false });
+    });
+
+    it('rates a registered stake key without a pool on the product its network stakes on', () => {
+        expect(
+            renderNetworkStakingRate({ networkSymbol: ada, accountKey: undelegatedAccount.key })
+                .result.current,
         ).toEqual({ rate: 2.4, rateKind: 'apy', isPending: false });
     });
 

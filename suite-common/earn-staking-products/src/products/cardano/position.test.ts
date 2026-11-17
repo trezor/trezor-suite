@@ -308,7 +308,7 @@ describe('getCardanoProductPosition', () => {
         });
     });
 
-    it('keeps the position of a registered stake key with an empty balance', () => {
+    it('keeps the position and the pool of a registered stake key with an empty balance', () => {
         expect(
             getEverstakePosition({
                 account: mockCardanoStakingAccount('everstakeNoRewards', { availableBalance: '0' }),
@@ -316,7 +316,7 @@ describe('getCardanoProductPosition', () => {
         ).toMatchObject({
             status: 'inactive',
             balances: balances({}),
-            targets: [],
+            targets: [{ providerId: 'everstake', amount: '0' }],
             operations: ['unstake', 'vote'],
         });
     });

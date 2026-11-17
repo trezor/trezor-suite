@@ -4,7 +4,7 @@ import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     type StakingAccessRootState,
-    selectIsStakingManageableSymbol,
+    selectIsStakingPromotedSymbol,
     useNetworkStakingRate,
 } from '@suite-common/earn-staking';
 import { type TokenInfoBranded } from '@suite-common/tokens';
@@ -32,15 +32,15 @@ export const useYourPositionCardYieldBadge = ({
         networkSymbol: account?.symbol ?? null,
         accountKey: account?.key,
     });
-    const isStakingManageable = useSelector((state: StakingAccessRootState) =>
-        account ? selectIsStakingManageableSymbol(state, account.symbol) : false,
+    const isStakingPromoted = useSelector((state: StakingAccessRootState) =>
+        account ? selectIsStakingPromotedSymbol(state, account.symbol, 'manageable') : false,
     );
 
     const bestPromotedRate = token
         ? null
         : getBestPromotedRate({
               vaultApy: nativeYieldVault.bestVault?.apy ?? null,
-              stakingRate: isStakingManageable ? stakingRate : null,
+              stakingRate: isStakingPromoted ? stakingRate : null,
           });
 
     const promoYieldBadge = bestPromotedRate

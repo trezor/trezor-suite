@@ -165,6 +165,11 @@ const emptyFiveBinariesPosition = mockStakingPosition({
     operations: ['unstake', 'vote'],
     warnings: [{ code: 'outdated-provider', providerId: adaFiveBinaries.providerId }],
 });
+const fundedFiveBinariesPosition = mockStakingPosition({
+    ...emptyFiveBinariesPosition,
+    status: 'active',
+    balances: balances({ staked: amount('5000000') }),
+});
 const trxPosition = mockStakingPosition({
     productId: trx.id,
     balances: balances({
@@ -318,19 +323,31 @@ describe('selectDeviceStakingPositionsCount', () => {
 });
 
 describe('selectDeviceStakingEntryByWarning', () => {
-    it('finds the first entry with the warning, whatever its amount', () => {
-        expect(selectDeviceStakingEntryByWarning(createState(), 'outdated-provider')).toEqual({
+    const fundedState = () =>
+        createState({
+            positions: {
+                ...POSITIONS,
+                [adaFiveBinariesAccount.key]: [fundedFiveBinariesPosition],
+            },
+        });
+
+    it('finds the first funded entry with the warning', () => {
+        expect(selectDeviceStakingEntryByWarning(fundedState(), 'outdated-provider')).toEqual({
             accountKey: adaFiveBinariesAccount.key,
-            position: emptyFiveBinariesPosition,
+            position: fundedFiveBinariesPosition,
             descriptor: adaFiveBinaries,
         });
-        expect(selectDeviceStakingEntryByWarning(createState(), 'outdated-provider')).toBe(
-            selectDeviceStakingEntryByWarning(createState(), 'outdated-provider'),
+        expect(selectDeviceStakingEntryByWarning(fundedState(), 'outdated-provider')).toBe(
+            selectDeviceStakingEntryByWarning(fundedState(), 'outdated-provider'),
         );
     });
 
+    it('skips an entry with the warning that holds no amount', () => {
+        expect(selectDeviceStakingEntryByWarning(createState(), 'outdated-provider')).toBeNull();
+    });
+
     it('is null without the warning', () => {
-        expect(selectDeviceStakingEntryByWarning(createState(), 'missing-drep')).toBeNull();
+        expect(selectDeviceStakingEntryByWarning(fundedState(), 'missing-drep')).toBeNull();
     });
 
     it('ignores hidden accounts and other devices', () => {
@@ -339,6 +356,7 @@ describe('selectDeviceStakingEntryByWarning', () => {
                 { ...adaFiveBinariesAccount, visible: false },
                 { ...adaFiveBinariesAccount, deviceState: OTHER_DEVICE_STATIC_SESSION_ID },
             ],
+            positions: { [adaFiveBinariesAccount.key]: [fundedFiveBinariesPosition] },
         });
 
         expect(selectDeviceStakingEntryByWarning(state, 'outdated-provider')).toBeNull();

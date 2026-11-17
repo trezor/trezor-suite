@@ -22,6 +22,7 @@ import type { VersionArray } from '@trezor/utils';
 import {
     selectIsStakingAccountDelegatedOutside,
     selectIsStakingManageableSymbol,
+    selectIsStakingPromotedSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,
     selectStakingAccountProductDescriptor,
@@ -395,6 +396,10 @@ const unstakedAdaAccount = mockWalletAccount({
     symbol: asNetworkSymbol('ada'),
     descriptor: asAccountDescriptor('unstaked'),
 });
+const undelegatedAdaAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('ada'),
+    descriptor: asAccountDescriptor('undelegated'),
+});
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
@@ -420,6 +425,7 @@ const createAccountState = (
                 [everstakeAccount.key]: [adaPosition(adaEverstake.id)],
                 [fivebinariesAccount.key]: [adaPosition(adaFivebinaries.id)],
                 [externalAccount.key]: [adaPosition(adaExternal.id)],
+                [undelegatedAdaAccount.key]: [{ ...adaPosition(adaExternal.id), targets: [] }],
                 [ethAccount.key]: [mockStakingPosition()],
                 [solAccount.key]: [mockStakingPosition({ productId: external.id, operations: [] })],
             },
@@ -431,6 +437,7 @@ const createAccountState = (
             fivebinariesAccount,
             externalAccount,
             unstakedAdaAccount,
+            undelegatedAdaAccount,
             ethAccount,
             solAccount,
             btcAccount,
@@ -464,6 +471,36 @@ describe('selectIsStakingManageableSymbol', () => {
     });
 });
 
+describe('selectIsStakingPromotedSymbol', () => {
+    it('promotes a mainnet product the platform shows or manages', () => {
+        const state = createState();
+
+        expect(selectIsStakingPromotedSymbol(state, asNetworkSymbol('sol'), 'offered')).toBe(true);
+        expect(selectIsStakingPromotedSymbol(state, asNetworkSymbol('sol'), 'manageable')).toBe(
+            true,
+        );
+        expect(selectIsStakingPromotedSymbol(state, asNetworkSymbol('ada'), 'offered')).toBe(true);
+    });
+
+    it('does not promote a product the platform cannot stake into as manageable', () => {
+        expect(
+            selectIsStakingPromotedSymbol(createState(), asNetworkSymbol('ada'), 'manageable'),
+        ).toBe(false);
+    });
+
+    it('never promotes a testnet or a network without a product', () => {
+        const state = createState();
+
+        expect(selectIsStakingPromotedSymbol(state, asNetworkSymbol('thod'), 'offered')).toBe(
+            false,
+        );
+        expect(selectIsStakingPromotedSymbol(state, asNetworkSymbol('thod'), 'manageable')).toBe(
+            false,
+        );
+        expect(selectIsStakingPromotedSymbol(state, asNetworkSymbol('btc'), 'offered')).toBe(false);
+    });
+});
+
 describe('selectStakingAccountProductDescriptor', () => {
     it('is the product of the account counted position', () => {
         const state = createAccountState();
@@ -481,6 +518,12 @@ describe('selectStakingAccountProductDescriptor', () => {
             adaEverstake,
         );
         expect(selectStakingAccountProductDescriptor(state, solAccount.key)).toEqual(subset);
+    });
+
+    it('is the stakeable product of the network for a position delegated nowhere', () => {
+        expect(
+            selectStakingAccountProductDescriptor(createAccountState(), undelegatedAdaAccount.key),
+        ).toEqual(adaEverstake);
     });
 
     it('is null without a stakeable product or without the account', () => {
@@ -511,6 +554,12 @@ describe('selectIsStakingAccountDelegatedOutside', () => {
         expect(selectIsStakingAccountDelegatedOutside(createAccountState(), solAccount.key)).toBe(
             false,
         );
+    });
+
+    it('is false for a registered stake key without a pool', () => {
+        expect(
+            selectIsStakingAccountDelegatedOutside(createAccountState(), undelegatedAdaAccount.key),
+        ).toBe(false);
     });
 
     it('answers the same on a platform where the product is read-only', () => {
