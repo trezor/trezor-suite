@@ -1,14 +1,7 @@
-import { useSelector } from 'react-redux';
-
 import {
-    type StakingAccountProductRootState,
-    type StakingRootState,
     formatStakingAmount,
-    isStakingOperationAvailable,
-    selectStakingAccountProductDescriptor,
-    selectStakingAccountTotals,
-    selectStakingPosition,
-    useStakingAccess,
+    getStakingOperationAvailability,
+    useStakingAccountPosition,
     useStakingPeriods,
 } from '@suite-common/earn-staking';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -16,6 +9,7 @@ import { isPositiveBalance, parseAccountKey } from '@suite-common/wallet-utils';
 import { Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import { StakingDaysLabel } from './StakingDaysLabel';
 import { StakingManagementPendingItem } from './StakingManagementPendingItem';
 import { StakingManagementPendingStakeModal } from './StakingManagementPendingStakeModal';
 import { StakingManagementReadyToClaimCard } from './StakingManagementReadyToClaimCard';
@@ -30,17 +24,7 @@ export const StakingManagementPendingSection = ({
 }: StakingManagementPendingSectionProps) => {
     const { networkSymbol } = parseAccountKey(accountKey);
 
-    const productId = useSelector(
-        (state: StakingAccountProductRootState) =>
-            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
-    );
-    const position = useSelector((state: StakingRootState) =>
-        productId === null ? null : selectStakingPosition(state, accountKey, productId),
-    );
-    const totals = useSelector((state: StakingRootState) =>
-        selectStakingAccountTotals(state, accountKey),
-    );
-    const access = useStakingAccess(productId);
+    const { productId, position, totals, access } = useStakingAccountPosition(accountKey);
     const { exitPeriodDays } = useStakingPeriods(productId);
 
     const {
@@ -55,17 +39,10 @@ export const StakingManagementPendingSection = ({
         closeModal: closePendingStakeModal,
     } = useBottomSheetModal();
 
-    const isWithdrawAvailable = isStakingOperationAvailable({
-        position,
-        access,
-        operation: 'withdraw',
-    });
     // A withheld withdraw keeps its card, with the reason, as the kill switch did.
-    const isWithdrawWithheld =
-        position !== null &&
-        position.operations.includes('withdraw') &&
-        access.disabled.withdraw !== undefined;
-    const isClaim = isWithdrawAvailable || isWithdrawWithheld;
+    const isClaim =
+        getStakingOperationAvailability({ position, access, operation: 'withdraw' }) !==
+        'unavailable';
 
     const unstakingBalance = formatStakingAmount({ amount: totals.unstaking, networkSymbol });
     const totalStakePending = formatStakingAmount({ amount: totals.pending, networkSymbol });
@@ -88,14 +65,11 @@ export const StakingManagementPendingSection = ({
                     <StakingManagementPendingItem
                         accountKey={accountKey}
                         label={
-                            exitPeriodDays === null ? (
-                                <Translation id="earn.stakingManagementScreen.unstakingItem.labelWithoutDays" />
-                            ) : (
-                                <Translation
-                                    id="earn.stakingManagementScreen.unstakingItem.label"
-                                    values={{ days: exitPeriodDays }}
-                                />
-                            )
+                            <StakingDaysLabel
+                                days={exitPeriodDays}
+                                withDaysId="earn.stakingManagementScreen.unstakingItem.label"
+                                withoutDaysId="earn.stakingManagementScreen.unstakingItem.labelWithoutDays"
+                            />
                         }
                         amount={unstakingBalance}
                         onPress={openUnstakingModal}

@@ -1,15 +1,6 @@
-import { useSelector } from 'react-redux';
-
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    type StakingAccountProductRootState,
-    type StakingRootState,
-    formatStakingAmount,
-    selectStakingAccountProductDescriptor,
-    selectStakingAccountTotals,
-    useStakingAccess,
-} from '@suite-common/earn-staking';
+import { formatStakingAmount, useStakingAccountPosition } from '@suite-common/earn-staking';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS, useFormatters } from '@suite-common/formatters';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance, parseAccountKey } from '@suite-common/wallet-utils';
@@ -50,14 +41,7 @@ export const StakingManagementReadyToClaimCard = ({
     const { analytics } = useServices(injectNativeAnalytics);
     const { networkSymbol: symbol } = parseAccountKey(accountKey);
 
-    const productId = useSelector(
-        (state: StakingAccountProductRootState) =>
-            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
-    );
-    const totals = useSelector((state: StakingRootState) =>
-        selectStakingAccountTotals(state, accountKey),
-    );
-    const access = useStakingAccess(productId);
+    const { productId, totals, access } = useStakingAccountPosition(accountKey);
     const withdrawMessage = useStakingOperationMessage(productId, 'withdraw');
 
     const withdrawableAmount = formatStakingAmount({

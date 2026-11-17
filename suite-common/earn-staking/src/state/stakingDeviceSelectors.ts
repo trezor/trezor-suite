@@ -2,6 +2,7 @@ import type { DeviceRootState } from '@suite-common/device';
 import {
     type StakingPositionWarningCode,
     getStakingPositionAmount,
+    hasStakingPositionWarning,
 } from '@suite-common/earn-staking-common';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -99,5 +100,5 @@ export const selectDeviceStakingEntryByWarning = (
     code: StakingPositionWarningCode,
 ): StakingPositionEntry | null =>
     selectDeviceCountedStakingPositionEntries(state).find(({ position }) =>
-        position.warnings.some(warning => warning.code === code),
+        hasStakingPositionWarning(position, code),
     ) ?? null;

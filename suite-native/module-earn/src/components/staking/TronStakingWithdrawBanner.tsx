@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
     type StakingRootState,
     formatStakingAmount,
-    selectCountedStakingPositionEntriesByAccount,
+    selectStakingAccountPositionEntry,
 } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -16,9 +16,8 @@ type TronStakingWithdrawBannerProps = {
 };
 
 export const TronStakingWithdrawBanner = ({ accountKey }: TronStakingWithdrawBannerProps) => {
-    const positionEntry = useSelector(
-        (state: StakingRootState) =>
-            selectCountedStakingPositionEntriesByAccount(state, accountKey)[0] ?? null,
+    const positionEntry = useSelector((state: StakingRootState) =>
+        selectStakingAccountPositionEntry(state, accountKey),
     );
 
     if (positionEntry === null) return null;

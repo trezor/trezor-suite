@@ -2,7 +2,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { type StakingAmount, stakingAmountSchema } from '../stakingAmount';
 import type { StakingOperation } from '../stakingOperation';
-import type { StakingPosition } from '../stakingPosition';
+import type { StakingPosition, StakingPositionWarningCode } from '../stakingPosition';
 import type { StakingRewardsKind } from '../stakingProductDescriptor';
 import type { StakingProductInfo } from '../stakingProductInfo';
 
@@ -58,6 +58,11 @@ export const hasPendingStakingOperation = (
     pendingTransactions.some(
         transaction => operation === undefined || transaction.operation === operation,
     );
+
+export const hasStakingPositionWarning = (
+    { warnings }: StakingPosition,
+    code: StakingPositionWarningCode,
+): boolean => warnings.some(warning => warning.code === code);
 
 export type GetStakingPositionRateParams = {
     position: StakingPosition | null;

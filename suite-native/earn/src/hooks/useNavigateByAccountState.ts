@@ -4,10 +4,10 @@ import {
     type StakingAccessRootState,
     type StakingAccountProductRootState,
     selectIsStakingAccountActive,
+    selectIsStakingManageableSymbol,
 } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 
-import { selectIsStakingManageableSymbol } from '../stakingSelectors';
 import { type StakingNavigateFn, navigateByAccountState } from '../utils/navigateByAccountState';
 
 export const useNavigateByAccountState = () => {

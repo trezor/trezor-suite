@@ -25,7 +25,10 @@ import {
 } from '@trezor/redux-utils';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
-import { selectCountedStakingPositionEntriesByAccount } from './stakingAccountSelectors';
+import {
+    selectCountedStakingPositionEntriesByAccount,
+    selectStakingAccountPositionEntry,
+} from './stakingAccountSelectors';
 import type { StakingRootState } from './stakingReducer';
 import {
     selectStakingPlatform,
@@ -190,13 +193,24 @@ export const selectStakeableStakingProductDescriptorBySymbol = (
 ): StakingProductDescriptor | null =>
     selectStakeableStakingProductDescriptorsBySymbol(state, networkSymbol)[0] ?? null;
 
+export const selectIsStakingManageableSymbol = (
+    state: StakingAccessRootState,
+    networkSymbol: NetworkSymbol,
+): boolean => {
+    const descriptor = selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol);
+
+    return (
+        descriptor !== null && selectStakingProductAccess(state, descriptor.id).access === 'manage'
+    );
+};
+
 export const selectStakingAccountProductDescriptor = (
     state: StakingAccountProductRootState,
     accountKey: AccountKey,
 ): StakingProductDescriptor | null => {
-    const [entry] = selectCountedStakingPositionEntriesByAccount(state, accountKey);
+    const entry = selectStakingAccountPositionEntry(state, accountKey);
 
-    if (entry !== undefined) {
+    if (entry !== null) {
         return entry.descriptor;
     }
 

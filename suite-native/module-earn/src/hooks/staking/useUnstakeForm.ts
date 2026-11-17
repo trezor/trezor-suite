@@ -2,14 +2,9 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    type StakingAccountProductRootState,
-    type StakingRootState,
     formatStakingAmount,
     isStakingOperationAvailable,
-    selectStakingAccountProductDescriptor,
-    selectStakingAccountTotals,
-    selectStakingPosition,
-    useStakingAccess,
+    useStakingAccountPosition,
 } from '@suite-common/earn-staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -36,20 +31,12 @@ import { useComposeEarnFees } from '../earn/useComposeEarnFees';
 
 export const useUnstakeForm = (accountKey: AccountKey) => {
     const { translate } = useTranslate();
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const productId = useSelector(
-        (state: StakingAccountProductRootState) =>
-            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
-    );
-    const position = useSelector((state: StakingRootState) =>
-        productId === null ? null : selectStakingPosition(state, accountKey, productId),
-    );
-    const totals = useSelector((state: StakingRootState) =>
-        selectStakingAccountTotals(state, accountKey),
-    );
-    const access = useStakingAccess(productId);
+
+    const { position, totals, access } = useStakingAccountPosition(accountKey);
 
     const network = account ? getNetwork(account.symbol) : null;
 

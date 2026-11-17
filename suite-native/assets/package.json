@@ -17,6 +17,7 @@
         "@suite-common/assets": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/earn-staking": "workspace:*",
+        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/networks": "workspace:*",
@@ -50,7 +51,6 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*"
     }
 }

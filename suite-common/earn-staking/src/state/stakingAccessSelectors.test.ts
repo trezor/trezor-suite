@@ -21,6 +21,7 @@ import type { VersionArray } from '@trezor/utils';
 
 import {
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingManageableSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,
     selectStakingAccountProductDescriptor,
@@ -435,6 +436,32 @@ const createAccountState = (
             btcAccount,
         ],
     },
+});
+
+describe('selectIsStakingManageableSymbol', () => {
+    it('is true for a network whose stakeable product the platform manages', () => {
+        expect(selectIsStakingManageableSymbol(createState(), asNetworkSymbol('sol'))).toBe(true);
+        expect(
+            selectIsStakingManageableSymbol(
+                createState({ platform: 'mobile' }),
+                asNetworkSymbol('eth'),
+            ),
+        ).toBe(true);
+    });
+
+    it('is false for a product the platform only shows or does not list', () => {
+        expect(selectIsStakingManageableSymbol(createState(), asNetworkSymbol('ada'))).toBe(false);
+        expect(
+            selectIsStakingManageableSymbol(
+                createState({ platform: 'mobile' }),
+                asNetworkSymbol('sol'),
+            ),
+        ).toBe(false);
+    });
+
+    it('is false for a network without a product', () => {
+        expect(selectIsStakingManageableSymbol(createState(), asNetworkSymbol('btc'))).toBe(false);
+    });
 });
 
 describe('selectStakingAccountProductDescriptor', () => {
