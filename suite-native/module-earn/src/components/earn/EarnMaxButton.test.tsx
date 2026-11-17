@@ -1,3 +1,6 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -64,26 +67,18 @@ describe('Unstake max', () => {
     });
 
     it('fills the deposit together with restaked ETH rewards', async () => {
-        const account = mockWalletAccount(
-            { symbol: asNetworkSymbol('eth') },
-            {
-                misc: {
-                    stakingPools: [
-                        {
-                            name: 'Everstake',
-                            contract: '0x789',
-                            autocompoundBalance: '2050000000000000000',
-                            claimableAmount: '0',
-                            depositedBalance: '2000000000000000000',
-                            pendingBalance: '0',
-                            pendingDepositedBalance: '0',
-                            restakedReward: '50000000000000000',
-                            withdrawTotalAmount: '0',
-                        },
-                    ],
-                },
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+        // 2 ETH deposited and 0.05 ETH of restaked rewards: the whole stake can be unstaked.
+        const position = mockStakingPosition({
+            balances: {
+                staked: stakingAmountSchema.parse('2050000000000000000'),
+                pending: stakingAmountSchema.parse('0'),
+                unstaking: stakingAmountSchema.parse('0'),
+                withdrawable: stakingAmountSchema.parse('0'),
+                rewards: stakingAmountSchema.parse('50000000000000000'),
             },
-        );
+            unlocks: [],
+        });
         const services: NativeAnalyticsDep = {
             analytics: mockNativeAnalytics(mock<NativeAnalyticsDep['analytics']['report']>()),
         };
@@ -98,6 +93,9 @@ describe('Unstake max', () => {
             {
                 services,
                 preloadedState: {
+                    earn: {
+                        staking: mockStakingState({ positions: { [account.key]: [position] } }),
+                    },
                     wallet: {
                         accounts: [account],
                         settings: { localCurrency: 'usd', bitcoinAmountUnit: 0 },

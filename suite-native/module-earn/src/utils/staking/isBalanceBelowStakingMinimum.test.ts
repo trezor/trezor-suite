@@ -1,59 +1,25 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
 
 import { isBalanceBelowStakingMinimum } from './isBalanceBelowStakingMinimum';
 
-const createMockAccount = (symbol: Account['symbol'], availableBalance: string): Account =>
-    ({ symbol, availableBalance }) as Account;
+// 0.1 ETH minimum stake and a 0.01 ETH fee buffer.
+const { limits } = mockStakingProductDescriptor();
 
 describe('isBalanceBelowStakingMinimum', () => {
-    it('returns true when the ETH balance is below the min stake plus fee buffer', () => {
-        expect(
-            isBalanceBelowStakingMinimum(
-                createMockAccount(asNetworkSymbol('eth'), '10000000000000000'),
-            ),
-        ).toBe(true);
+    it.each([
+        { name: 'below the minimum', availableBalance: '10000000000000000', expected: true },
+        {
+            name: 'just below the threshold',
+            availableBalance: '109999999999999999',
+            expected: true,
+        },
+        { name: 'equal to the threshold', availableBalance: '110000000000000000', expected: false },
+        { name: 'above the threshold', availableBalance: '200000000000000000', expected: false },
+    ])('is $expected for a balance $name', ({ availableBalance, expected }) => {
+        expect(isBalanceBelowStakingMinimum({ availableBalance, limits })).toBe(expected);
     });
 
-    it('returns true when the ETH balance is just below the threshold', () => {
-        expect(
-            isBalanceBelowStakingMinimum(
-                createMockAccount(asNetworkSymbol('eth'), '14000000000000000'),
-            ),
-        ).toBe(true);
-    });
-
-    it('returns false when the ETH balance equals the threshold', () => {
-        expect(
-            isBalanceBelowStakingMinimum(
-                createMockAccount(asNetworkSymbol('eth'), '15000000000000000'),
-            ),
-        ).toBe(false);
-    });
-
-    it('returns false when the ETH balance is above the threshold', () => {
-        expect(
-            isBalanceBelowStakingMinimum(
-                createMockAccount(asNetworkSymbol('eth'), '20000000000000000'),
-            ),
-        ).toBe(false);
-    });
-
-    it('returns true when the SOL balance is below the min stake plus fee buffer', () => {
-        expect(
-            isBalanceBelowStakingMinimum(createMockAccount(asNetworkSymbol('sol'), '1000000000')),
-        ).toBe(true);
-    });
-
-    it('returns false when the SOL balance is above the threshold', () => {
-        expect(
-            isBalanceBelowStakingMinimum(createMockAccount(asNetworkSymbol('sol'), '2000000000')),
-        ).toBe(false);
-    });
-
-    it('returns false for a network that does not support staking', () => {
-        expect(isBalanceBelowStakingMinimum(createMockAccount(asNetworkSymbol('btc'), '0'))).toBe(
-            false,
-        );
+    it('is false without a product to stake into', () => {
+        expect(isBalanceBelowStakingMinimum({ availableBalance: '0', limits: null })).toBe(false);
     });
 });

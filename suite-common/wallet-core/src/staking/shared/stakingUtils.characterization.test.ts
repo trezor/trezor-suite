@@ -516,6 +516,13 @@ describe('staking account helpers characterization', () => {
             MIN_BALANCE_FOR_FEE_BUFFER: '0.005',
             MIN_BALANCE_FOR_STAKING: '0.015',
         };
+        // Hoodi's pool takes a stake from 0.1 ETH where mainnet takes it from 0.01 ETH.
+        const HOODI_LIMITS = {
+            ...ETHEREUM_LIMITS,
+            MIN_AMOUNT_FOR_STAKING: '0.1',
+            MIN_AMOUNT_FOR_STAKING_DASHBOARD: '0.1',
+            MIN_BALANCE_FOR_STAKING: '0.105',
+        };
         const SOLANA_LIMITS = {
             MIN_AMOUNT_FOR_STAKING: '1',
             MIN_AMOUNT_FOR_STAKING_DASHBOARD: '1',
@@ -527,7 +534,7 @@ describe('staking account helpers characterization', () => {
 
         it.each([
             { symbol: 'eth', limits: ETHEREUM_LIMITS },
-            { symbol: 'thod', limits: ETHEREUM_LIMITS },
+            { symbol: 'thod', limits: HOODI_LIMITS },
             { symbol: 'sol', limits: SOLANA_LIMITS },
             { symbol: 'dsol', limits: SOLANA_LIMITS },
             {

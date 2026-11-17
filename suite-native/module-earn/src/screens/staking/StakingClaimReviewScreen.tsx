@@ -3,18 +3,24 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import {
+    type StakingAccountProductRootState,
+    type StakingRootState,
+    formatStakingAmount,
+    isStakingOperationAvailable,
+    selectStakingAccountProductDescriptor,
+    selectStakingAccountTotals,
+    selectStakingPosition,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type StakeRootState,
     buildClaimWithdrawRequestData,
     getStakingContractAddress,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -27,7 +33,6 @@ import {
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
-import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
@@ -54,15 +59,30 @@ export const StakingClaimReviewScreen = () => {
         stakeType: 'claim',
     });
 
-    const canClaimInstantly = useSelector((state: StakeRootState) =>
-        selectCanClaimByAccountKey(state, accountKey),
-    );
-    const claimableAmount = useSelector((state: StakeRootState) =>
-        selectClaimableAmountByAccountKey(state, accountKey),
-    );
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const productId = useSelector(
+        (state: StakingAccountProductRootState) =>
+            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
+    );
+    const position = useSelector((state: StakingRootState) =>
+        productId === null ? null : selectStakingPosition(state, accountKey, productId),
+    );
+    const totals = useSelector((state: StakingRootState) =>
+        selectStakingAccountTotals(state, accountKey),
+    );
+    const access = useStakingAccess(productId);
+
+    const canClaimInstantly = isStakingOperationAvailable({
+        position,
+        access,
+        operation: 'withdraw',
+    });
+    const claimableAmount = formatStakingAmount({
+        amount: totals.withdrawable,
+        networkSymbol: symbol,
+    });
 
     const claimFormState = useMemo(() => {
         if (!account) return undefined;
@@ -75,7 +95,7 @@ export const StakingClaimReviewScreen = () => {
         }
 
         if (account.networkType === 'solana') {
-            if (!claimableAmount || !new BigNumber(claimableAmount).gt(0)) return undefined;
+            if (!isPositiveBalance(claimableAmount)) return undefined;
 
             return buildEarnComposeFormState(contractAddress, claimableAmount, '');
         }
@@ -153,14 +173,7 @@ export const StakingClaimReviewScreen = () => {
                     <Button
                         onPress={handleReviewAndSign}
                         isDisabled={
-                            isPending ||
-                            !claimFormState ||
-                            !canClaimInstantly ||
-                            !isFeeReady ||
-                            !(
-                                isSupportedEthStakingNetworkSymbol(symbol) ||
-                                isSupportedSolStakingNetworkSymbol(symbol)
-                            )
+                            isPending || !claimFormState || !canClaimInstantly || !isFeeReady
                         }
                     >
                         <Translation id="earn.claimReviewScreen.reviewAndSignButton" />

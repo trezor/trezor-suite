@@ -1,11 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import {
-    type AccountsRootState,
-    type StakeRootState,
-    selectAccountNetworkSymbol,
-    selectUnstakingPeriodInDaysBySymbol,
-} from '@suite-common/wallet-core';
+import { useNetworkStakingPeriods } from '@suite-common/earn-staking';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BannerInline,
@@ -41,9 +37,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
-        selectUnstakingPeriodInDaysBySymbol(state, symbol ?? undefined),
-    );
+    const { exitPeriodDays: unstakingPeriodInDays } = useNetworkStakingPeriods(symbol ?? null);
 
     if (!symbol) return null;
 
@@ -62,7 +56,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
                         <Icon name="caretDown" color="contentPrimary" />
                     </HStack>
 
-                    {unstakingPeriodInDays !== undefined && (
+                    {unstakingPeriodInDays !== null && (
                         <BannerInline
                             intent="info"
                             title={
@@ -107,7 +101,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
                                 />
                             ),
                             description:
-                                unstakingPeriodInDays !== undefined ? (
+                                unstakingPeriodInDays !== null ? (
                                     <Translation
                                         id="earn.howStakeWorksScreen.unstakeTimeline.second.description"
                                         values={{ unstakingPeriod: unstakingPeriodInDays }}

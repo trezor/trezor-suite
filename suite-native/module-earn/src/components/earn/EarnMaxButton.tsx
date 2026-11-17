@@ -1,15 +1,18 @@
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import {
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingAccountTotals,
+} from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type StakeRootState,
     getMaxStakeAmount,
     selectAccountByKey,
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,
-    selectUnstakableBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
@@ -46,8 +49,8 @@ export const EarnMaxButton = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const unstakableBalance = useSelector((state: StakeRootState) =>
-        selectUnstakableBalanceByAccountKey(state, accountKey),
+    const stakedAmount = useSelector(
+        (state: StakingRootState) => selectStakingAccountTotals(state, accountKey).staked,
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
@@ -60,7 +63,7 @@ export const EarnMaxButton = ({
 
     const getMaxAmount = (): string => {
         if (variant === 'unstake') {
-            return unstakableBalance ?? '0';
+            return formatStakingAmount({ amount: stakedAmount, networkSymbol: symbol });
         }
 
         const availableAmount = formatNetworkAmount(account!.availableBalance, symbol);

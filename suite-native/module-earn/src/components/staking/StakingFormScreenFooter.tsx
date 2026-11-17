@@ -1,7 +1,5 @@
-import { useSelector } from 'react-redux';
-
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -24,9 +22,9 @@ export const StakingFormScreenFooter = ({
 }: StakingFormScreenFooterProps) => {
     const { translate } = useTranslate();
 
-    const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
+    const { rate } = useNetworkStakingRate({ networkSymbol: symbol });
 
-    const isRewardsBoxVisible = isApyAvailable(apy) && !!amountValue && !isDisabled;
+    const isRewardsBoxVisible = isApyAvailable(rate) && !!amountValue && !isDisabled;
 
     return (
         <EarnScreenFooter
@@ -35,7 +33,7 @@ export const StakingFormScreenFooter = ({
                 isRewardsBoxVisible && (
                     <EarnEstimatedRewards
                         amountValue={amountValue}
-                        apy={apy}
+                        apy={rate}
                         label={<Translation id="earn.earnFormScreen.estimatedRewardsLabel" />}
                         symbol={symbol}
                     />

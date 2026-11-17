@@ -3,6 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import {
+    type StakingRootState,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import {
     type AccountsRootState,
@@ -62,6 +66,12 @@ export const StakingFormScreen = () => {
     const nativeTokenName = useSelector((state: NetworksRootState) =>
         networkSymbol ? selectNativeTokenName(state, networkSymbol) : undefined,
     );
+    const stakingLimits = useSelector((state: StakingRootState) =>
+        networkSymbol
+            ? (selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol)?.limits ??
+              null)
+            : null,
+    );
 
     const { analytics } = useServices(injectNativeAnalytics);
     const deviceStatus = useEarnDeviceStatus();
@@ -102,7 +112,13 @@ export const StakingFormScreen = () => {
         formState: { isValid },
     } = form;
 
-    if (!pendingTransaction && isBalanceBelowStakingMinimum(account)) {
+    if (
+        !pendingTransaction &&
+        isBalanceBelowStakingMinimum({
+            availableBalance: account.availableBalance,
+            limits: stakingLimits,
+        })
+    ) {
         return <StakingNoBalanceContent accountKey={accountKey} />;
     }
 

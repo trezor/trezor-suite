@@ -17,7 +17,7 @@ export const InstantUnstakeConfirmationBanner = ({
     if (!data) return null;
 
     const { amount, displaySymbol, unstakingPeriodInDays, dismiss } = data;
-    const hasDays = unstakingPeriodInDays !== undefined && unstakingPeriodInDays > 0;
+    const hasDays = unstakingPeriodInDays !== null && unstakingPeriodInDays > 0;
 
     const description = hasDays ? (
         <Translation

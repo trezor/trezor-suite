@@ -3,13 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import {
-    type AccountsRootState,
-    type StakeRootState,
-    selectAccountByKey,
-    selectApy,
-    selectEntryPeriodInDaysBySymbol,
-} from '@suite-common/wallet-core';
+import { useNetworkStakingPeriods, useNetworkStakingRate } from '@suite-common/earn-staking';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -43,23 +38,18 @@ export const StakingTransactionCompleteScreen = () => {
         selectAccountByKey(state, accountKey),
     );
 
-    const entryPeriodInDays = useSelector((state: StakeRootState) =>
-        stakeType === 'stake' ? selectEntryPeriodInDaysBySymbol(state, account?.symbol) : undefined,
-    );
-
-    const apy = useSelector((state: StakeRootState) =>
-        stakeType === 'stake'
-            ? selectApy(state, { accountKey, networkSymbol: account?.symbol })
-            : null,
-    );
+    // Only a stake shows its rate and entry period.
+    const stakedNetworkSymbol = stakeType === 'stake' ? (account?.symbol ?? null) : null;
+    const { entryPeriodDays } = useNetworkStakingPeriods(stakedNetworkSymbol);
+    const { rate } = useNetworkStakingRate({ networkSymbol: stakedNetworkSymbol, accountKey });
 
     const rows = useMemo(() => {
         if (!account) return [];
 
         const apyValue =
-            stakeType === 'stake' && isApyAvailable(apy) ? (
+            stakeType === 'stake' && isApyAvailable(rate) ? (
                 <Text variant="body-md" color="contentBrand">
-                    <ApyValue apy={apy} />
+                    <ApyValue apy={rate} />
                 </Text>
             ) : undefined;
 
@@ -69,7 +59,7 @@ export const StakingTransactionCompleteScreen = () => {
             amountLabel: <Translation id={amountLabelTranslationId[stakeType]} />,
             apyValue,
         });
-    }, [stakeType, account, amountInBaseUnits, apy]);
+    }, [stakeType, account, amountInBaseUnits, rate]);
 
     return (
         <EarnCompleteScreenContent
@@ -81,10 +71,10 @@ export const StakingTransactionCompleteScreen = () => {
             title={<Translation id={titleTranslationId[stakeType]} />}
             subtitle={
                 stakeType === 'stake' &&
-                entryPeriodInDays && (
+                entryPeriodDays !== null && (
                     <Translation
                         id="earn.transactionCompleteScreen.stakeDescription"
-                        values={{ days: entryPeriodInDays }}
+                        values={{ days: entryPeriodDays }}
                     />
                 )
             }
