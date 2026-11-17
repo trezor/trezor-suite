@@ -554,7 +554,7 @@ describe('composeTransactionThunk', () => {
                 error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                 errorMessage: {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: { networkDisplaySymbol: 'ADA' },
+                    networkSymbolValues: { networkDisplaySymbol: asNetworkSymbol('ada') },
                 },
             },
         ],

@@ -40,6 +40,7 @@ const ethPool = {
 const getStakingPayload = (account: ReturnType<typeof mockWalletAccount>) => {
     const { hasStaked, stakingProviders } = getAccountInfoAnalyticsPayload(
         account,
+        '',
         undefined,
         false,
     );

@@ -2,7 +2,7 @@ import { decodeFunctionResult } from 'viem';
 
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type PrecomposedLevels,
@@ -326,9 +326,7 @@ export const stake = async ({
     const amountWei = fromEther(amount).toWei();
 
     if (new BigNumber(amount).lt(MIN_ETH_AMOUNT_FOR_STAKING)) {
-        throw new Error(
-            `Min amount ${MIN_ETH_AMOUNT_FOR_STAKING} ${getNetworkDisplaySymbol(symbol)}`,
-        );
+        throw new Error(`Min amount ${MIN_ETH_AMOUNT_FOR_STAKING}`);
     }
 
     try {

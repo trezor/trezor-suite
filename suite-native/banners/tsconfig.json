@@ -25,6 +25,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../analytics" },
+        { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../earn" },
         { "path": "../feature-flags" },

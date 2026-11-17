@@ -1,4 +1,3 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     AddressDisplayOptions,
@@ -374,9 +373,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
-                    },
+                    networkSymbolValues: { networkDisplaySymbol: network.symbol },
                 };
             }
         });

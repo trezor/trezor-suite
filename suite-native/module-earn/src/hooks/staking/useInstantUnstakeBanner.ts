@@ -50,7 +50,7 @@ export const useInstantUnstakeBanner = (
 
         const transfer = getChangedInternalTx(prevTxs.current, txs, descriptor, symbol);
         if (transfer && getInstantStakeType(transfer, descriptor, symbol) === 'unstake') {
-            setAmount(formatNetworkAmount(transfer.amount ?? '0', symbol, false));
+            setAmount(formatNetworkAmount(transfer.amount ?? '0', symbol));
             setIsVisible(true);
         }
 

@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -113,8 +114,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
 
         if (availableBalance.lt(requiredAmount)) {
             return {
-                required: formatNetworkAmount(requiredAmount.toString(), symbol, true),
-                available: formatNetworkAmount(availableBalance.toString(), symbol, true),
+                required: formatNetworkAmount(requiredAmount.toString(), symbol),
+                available: formatNetworkAmount(availableBalance.toString(), symbol),
             };
         }
 
@@ -279,10 +280,14 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                 values={{
                                     token: tokenCode,
                                     network: getNetwork(symbol).name,
-                                    reserve: formatNetworkAmount(
-                                        account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
-                                        symbol,
-                                        true,
+                                    reserve: (
+                                        <>
+                                            {formatNetworkAmount(
+                                                account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
+                                                symbol,
+                                            )}{' '}
+                                            <AssetSymbol networkSymbol={symbol} />
+                                        </>
                                     ),
                                 }}
                             />
@@ -306,8 +311,18 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                 <Translation
                                     id="TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS"
                                     values={{
-                                        required: insufficientBalanceInfo.required,
-                                        available: insufficientBalanceInfo.available,
+                                        required: (
+                                            <>
+                                                {insufficientBalanceInfo.required}{' '}
+                                                <AssetSymbol networkSymbol={symbol} />
+                                            </>
+                                        ),
+                                        available: (
+                                            <>
+                                                {insufficientBalanceInfo.available}{' '}
+                                                <AssetSymbol networkSymbol={symbol} />
+                                            </>
+                                        ),
                                     }}
                                 />
                             }

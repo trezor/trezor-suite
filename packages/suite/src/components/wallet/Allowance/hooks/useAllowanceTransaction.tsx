@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { type ExtendedMessageDescriptor, type TranslationKey, isTranslationKey } from '@suite/intl';
 import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
 import {
@@ -10,7 +11,7 @@ import {
 } from '@suite-common/wallet-types';
 import { asAmountSubunit, findToken, getAllowanceAmountForLimit } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, typedObjectTransformValues } from '@trezor/utils';
 
 import { useAllowanceCompose } from './useAllowanceCompose';
 import { useAllowanceSend } from './useAllowanceSend';
@@ -104,7 +105,13 @@ export const useAllowanceTransaction = ({
 
         return {
             id: errorMessage.id satisfies TranslationKey,
-            values: errorMessage.values,
+            values: {
+                ...errorMessage.values,
+                ...typedObjectTransformValues(
+                    errorMessage.networkSymbolValues ?? {},
+                    networkSymbol => <AssetSymbol networkSymbol={networkSymbol} />,
+                ),
+            },
         };
     }, [selectedComposedLevel]);
     const canSubmit =

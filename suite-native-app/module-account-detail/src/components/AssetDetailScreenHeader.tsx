@@ -13,6 +13,7 @@ import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
 } from '@suite-native/accounts';
+import { AssetSymbol } from '@suite-native/assets';
 import { HStack, IconButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { TokenSettingsBottomSheet } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
@@ -114,6 +115,9 @@ const AssetDetailScreenSettingsButton = ({
                 ref={bottomSheetRef}
                 accountKey={account.key}
                 tokenContract={tokenContract}
+                nativeTokenSymbol={
+                    <AssetSymbol networkSymbol={account.symbol} variant="headline-sm" />
+                }
                 onNavigateAway={closeModal}
             />
         </>

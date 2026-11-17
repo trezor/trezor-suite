@@ -28,6 +28,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",
+        "@suite-native/assets": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/feature-feedback": "workspace:*",
         "@suite-native/formatters": "workspace:*",
@@ -53,6 +54,7 @@
         "react-redux": "9.3.1"
     },
     "devDependencies": {
+        "@suite-common/networks": "workspace:*",
         "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/test-utils": "workspace:*",

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
-import { isTranslationKey, useTranslation } from '@suite/intl';
+import { isTranslationKey } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_EXCHANGE_FROM_ADDRESS,
@@ -45,6 +45,7 @@ import {
 import { getComposeAddressPlaceholder } from '#src/utils/wallet/trading/tradingUtils';
 
 import { useBitcoinAmountUnit } from '../../../useBitcoinAmountUnit';
+import { useComposeErrorText } from '../../../useComposeErrorText';
 
 type BitcoinSwapFromAddressInputKeyParams = {
     symbol: NetworkSymbol;
@@ -90,7 +91,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const device = useSelector(selectSelectedDevice);
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const btcSwapComposeTemplate = useSelector(selectTradingBtcSwapComposeTemplate);
-    const { translationString } = useTranslation();
+    const getComposeErrorText = useComposeErrorText();
     const { shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const { getValues, setValue, setError, clearErrors, control } =
@@ -301,12 +302,12 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             } else if (isTranslationKey(composed.errorMessage?.id)) {
                 setError(TRADING_FORM_OUTPUT_AMOUNT, {
                     type: COMPOSE_ERROR_TYPES.COMPOSE,
-                    message: translationString(
+                    message: getComposeErrorText(
                         composed.errorMessage.id ===
                             'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT'
                             ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
                             : composed.errorMessage.id,
-                        composed.errorMessage.values,
+                        composed.errorMessage,
                     ),
                 });
             }
@@ -355,7 +356,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         getValues,
         setError,
         setValue,
-        translationString,
+        getComposeErrorText,
         shouldSuppressComposeErrors,
         isComposeErrorPending,
         type,

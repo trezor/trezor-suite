@@ -6,6 +6,7 @@ import {
     isStakingOperationAvailable,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -37,6 +38,9 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     );
 
     const { position, totals, access } = useStakingAccountPosition(accountKey);
+    const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        account ? selectNetworkDisplaySymbol(state, account.symbol) : undefined,
+    );
 
     const network = account ? getNetwork(account.symbol) : null;
 
@@ -55,6 +59,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         context: {
             account,
             symbol: account?.symbol,
+            networkDisplaySymbol,
             unstakableBalance,
             decimals: network?.decimals,
             translate,

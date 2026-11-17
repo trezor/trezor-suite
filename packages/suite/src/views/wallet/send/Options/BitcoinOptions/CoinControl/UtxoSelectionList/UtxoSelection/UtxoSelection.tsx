@@ -296,7 +296,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 as="div"
                             >
                                 <BaseCurrencyValue
-                                    amount={formatNetworkAmount(utxo.amount, account.symbol, false)}
+                                    amount={formatNetworkAmount(utxo.amount, account.symbol)}
                                     symbol={network.symbol}
                                 />
                             </Text>

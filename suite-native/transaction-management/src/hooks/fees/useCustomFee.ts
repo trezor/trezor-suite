@@ -53,6 +53,8 @@ const buildCustomFeeLevels = (
     }
 };
 
+const ERROR_BANNER_SYMBOL_TEXT_PROPS = { variant: 'body-sm', color: 'contentCritical' } as const;
+
 type UseCustomFeeProps = {
     accountKey: AccountKey;
     formState: FormState | null | undefined;
@@ -248,6 +250,7 @@ export const useCustomFee = ({ accountKey, formState, getCustomFeeLevel }: UseCu
     const precomposedError = usePrecomposedTransactionError({
         error: feeError?.code,
         networkSymbol: symbol,
+        symbolTextProps: ERROR_BANNER_SYMBOL_TEXT_PROPS,
     });
     const errorMessage = feeError
         ? (precomposedError ?? translate('moduleSend.fees.unavailable'))

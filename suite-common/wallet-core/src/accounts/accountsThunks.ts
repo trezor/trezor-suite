@@ -1,5 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type NotificationsRootState,
@@ -133,7 +134,9 @@ export const reportWalletBalanceThunk = createThunk<
     });
 });
 
-export type ReportAccountInfoThunkState = AccountsRootState & TokenDefinitionsRootState;
+export type ReportAccountInfoThunkState = AccountsRootState &
+    NetworksRootState &
+    TokenDefinitionsRootState;
 
 export type ReportAccountInfoThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
@@ -157,7 +160,12 @@ export const reportAccountInfoThunk = createThunk<
 
     extra.services.analytics.report({
         type: events.accountsInfoEvent.name,
-        payload: getAccountInfoAnalyticsPayload(account, tokenDefinitions, hasTraded),
+        payload: getAccountInfoAnalyticsPayload(
+            account,
+            selectNetworkDisplaySymbol(getState(), account.symbol) ?? '',
+            tokenDefinitions,
+            hasTraded,
+        ),
     });
 });
 

@@ -7,6 +7,7 @@ import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { EvmTxSimulationAssetAmount } from './EvmTxSimulationAssetAmount';
+import { TxSimulationAssetDiffLabel } from './TxSimulationAssetDiffLabel';
 
 type StellarTxSimulationAssetProps = {
     assetDiff: StellarAssetDiff;
@@ -40,10 +41,12 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                 <Translation
                                     id="moduleConnectPopup.simulation.sendingAsset"
                                     values={{
-                                        amount: getStellarAssetDiffLabel(
-                                            assetDiff,
-                                            sent,
-                                            network.symbol,
+                                        amount: (
+                                            <TxSimulationAssetDiffLabel
+                                                label={getStellarAssetDiffLabel(assetDiff, sent)}
+                                                networkSymbol={network.symbol}
+                                                color="contentCritical"
+                                            />
                                         ),
                                     }}
                                 />
@@ -65,10 +68,15 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                 <Translation
                                     id="moduleConnectPopup.simulation.receivingAsset"
                                     values={{
-                                        amount: getStellarAssetDiffLabel(
-                                            assetDiff,
-                                            received,
-                                            network.symbol,
+                                        amount: (
+                                            <TxSimulationAssetDiffLabel
+                                                label={getStellarAssetDiffLabel(
+                                                    assetDiff,
+                                                    received,
+                                                )}
+                                                networkSymbol={network.symbol}
+                                                color="contentBrand"
+                                            />
                                         ),
                                     }}
                                 />

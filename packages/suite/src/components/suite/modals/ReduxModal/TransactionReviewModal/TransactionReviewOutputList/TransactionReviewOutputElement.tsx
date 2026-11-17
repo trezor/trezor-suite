@@ -98,7 +98,7 @@ const Data = ({ value, state }: DataProps) => {
 
 type ValueProps = {
     value: string;
-    type: OutputElementLine['type'];
+    type: Exclude<OutputElementLine['type'], 'default'>;
     symbol: NetworkSymbol;
     isFiatVisible: boolean;
     state: TransactionReviewOutputElementProps['state'];
@@ -156,8 +156,6 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
                 </Column>
             );
         }
-        case 'default':
-            return <Text>{value}</Text>;
         default:
             return exhaustive(type);
     }
@@ -165,12 +163,13 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
 
 export type OutputElementLine = {
     id: string;
-    value: string;
     token?: TokenInfo;
-    type: 'default' | 'address' | 'safe-address' | 'note' | 'data' | 'amount';
     label?: ReactNode;
     isChunked?: boolean;
-};
+} & (
+    | { type: 'default'; value: ReactNode }
+    | { type: 'address' | 'safe-address' | 'note' | 'data' | 'amount'; value: string }
+);
 
 export type TransactionReviewOutputElementProps = {
     title: ReactNode;
@@ -207,17 +206,20 @@ export const TransactionReviewOutputElement = ({
         >
             <Column gap={16} padding={{ left: 32 }}>
                 {lines.map(line => {
-                    const value = (
-                        <Value
-                            value={line.value}
-                            type={line.type}
-                            symbol={symbol}
-                            token={line.token}
-                            isFiatVisible={fiatVisible}
-                            state={state}
-                            isChunked={line.isChunked}
-                        />
-                    );
+                    const value =
+                        line.type === 'default' ? (
+                            <Text>{line.value}</Text>
+                        ) : (
+                            <Value
+                                value={line.value}
+                                type={line.type}
+                                symbol={symbol}
+                                token={line.token}
+                                isFiatVisible={fiatVisible}
+                                state={state}
+                                isChunked={line.isChunked}
+                            />
+                        );
 
                     return (
                         <Column data-testid={`@modal/output-${line.id}`} key={line.id}>

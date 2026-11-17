@@ -1,9 +1,5 @@
 import { type TokenSymbol } from '@suite-common/tokens';
-import {
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { yup } from '@suite-native/forms';
 import { type TradingFormContext } from '@suite-native/trading-types';
@@ -166,6 +162,7 @@ export const sendCryptoAmountValidationSchema = yup
             convertNumberToBaseUnit,
             sendAssetSymbol,
             sendNetworkSymbol,
+            sendNetworkDisplaySymbol = '',
             maxSpendableAmount,
         } = getAmountLimitContext(testContext);
 
@@ -196,7 +193,7 @@ export const sendCryptoAmountValidationSchema = yup
             return testContext.createError({
                 type: 'network-reserve',
                 message: translate('moduleTrading.validators.networkReserve', {
-                    displaySymbol: getNetworkDisplaySymbol(sendNetworkSymbol),
+                    displaySymbol: sendNetworkDisplaySymbol,
                 }),
             });
         }

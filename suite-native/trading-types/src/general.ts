@@ -81,6 +81,8 @@ export type TradingFormContext = Partial<TradingAmountLimitProps> & {
     CryptoAmountFormatter: Formatters['CryptoAmountFormatter'];
     convertNumberToBaseUnit: ConvertNumberToBaseUnit;
     sendNetworkSymbol: NetworkSymbol | undefined;
+    /** The symbol of the send network's coin, for validation messages. */
+    sendNetworkDisplaySymbol: string | undefined;
     sendAssetSymbol: string | undefined;
     contractAddress: TokenAddress | undefined;
     balance: string | undefined;

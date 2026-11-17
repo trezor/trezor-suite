@@ -5,7 +5,7 @@ import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { type TokenDefinitions, isPhishingTransaction } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { subtypeToStakeTypeMap } from '@suite-common/wallet-core';
 import {
     type ExportFileType,
@@ -41,6 +41,7 @@ type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & 
 
 type Data = {
     symbol: NetworkSymbol;
+    networkDisplaySymbol: string;
     accountName: string;
     type: ExportFileType;
     transactions: AccountTransactionForExports[];
@@ -150,7 +151,7 @@ const prepareContent = (
     txsMarkedAsNotScam: string[],
     historicFiatRates?: RatesByTimestamps,
 ): Fields[] => {
-    const { transactions, symbol, baseCurrencyCode } = data;
+    const { transactions, symbol, networkDisplaySymbol, baseCurrencyCode } = data;
 
     return transactions
         .filter(
@@ -175,7 +176,6 @@ const prepareContent = (
                 type: t.type.toUpperCase(),
                 txid: t.txid,
             };
-            const symbol = getNetworkDisplaySymbol(data.symbol);
             const fiatRateKey = getFiatRateKey(t.symbol, baseCurrencyCode);
             const roundedTimestamp = roundTimestampToNearestPastHour(t.blockTime as Timestamp);
             const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
@@ -204,11 +204,11 @@ const prepareContent = (
                     const targetData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? networkDisplaySymbol : '',
                         address: target.isAddress ? (target.addresses[0] ?? '') : '', // SENT - it is destination address, RECV - it is MY address
                         label: target.isAddress && target.outputLabel ? target.outputLabel : '',
                         amount: target.isAddress ? target.amount : '',
-                        symbol: target.isAddress ? symbol : '',
+                        symbol: target.isAddress ? networkDisplaySymbol : '',
                         fiat: target.isAddress ? getFiatAmount(target.amount, historicRate) : '',
                         other: !target.isAddress ? (target.addresses[0] ?? '') : '', // e.g. OP_RETURN
                     };
@@ -235,7 +235,7 @@ const prepareContent = (
                     const tokenData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? networkDisplaySymbol : '',
                         address: token.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // token transactions do not have labels
                         amount: token.amount, // TODO: what to show if token.decimals missing so amount is not formatted correctly?
@@ -254,11 +254,11 @@ const prepareContent = (
                     const internalTransferData = {
                         ...sharedData,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '', // fee only once per tx
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? networkDisplaySymbol : '',
                         address: internal.to || '', // SENT - it is destination address, RECV - it is MY address
                         label: '', // internal transactions do not have labels
                         amount: internal.amount,
-                        symbol, // if symbol not available, use contract address
+                        symbol: networkDisplaySymbol, // if symbol not available, use contract address
                         fiat: getFiatAmount(internal.amount, historicRate),
                         other: '',
                     };
@@ -291,10 +291,10 @@ const prepareContent = (
                 cardanoStaking = [
                     {
                         ...sharedData,
-                        symbol,
+                        symbol: networkDisplaySymbol,
                         amount,
                         fee: !hasFeeBeenAlreadyUsed ? t.fee : '',
-                        feeSymbol: !hasFeeBeenAlreadyUsed ? symbol : '',
+                        feeSymbol: !hasFeeBeenAlreadyUsed ? networkDisplaySymbol : '',
                         address: stakeTypeLabel,
                         label: '',
                         fiat: getFiatAmount(amount, historicRate),

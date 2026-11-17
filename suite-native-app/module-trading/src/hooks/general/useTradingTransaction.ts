@@ -52,6 +52,8 @@ import { useComposeTradingTransaction } from './useComposeTradingTransaction';
 import { useConsent } from './useConsent';
 import { signAndPushSendFormTransactionThunk } from '../../thunks';
 
+const ERROR_BANNER_SYMBOL_TEXT_PROPS = { variant: 'body-sm', color: 'contentCritical' } as const;
+
 export type TradingTransactionSignAndSendProps = {
     nextStep: () => void;
     onError: (error: TradingError) => void;
@@ -132,6 +134,7 @@ export const useTradingTransaction = ({
     const txnErrorString = usePrecomposedTransactionError({
         error: feeError,
         networkSymbol: sendAccount?.symbol,
+        symbolTextProps: ERROR_BANNER_SYMBOL_TEXT_PROPS,
     });
 
     const {

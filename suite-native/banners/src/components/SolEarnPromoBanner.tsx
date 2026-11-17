@@ -1,6 +1,6 @@
 import { useNetworkStakingRate } from '@suite-common/earn-staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 
@@ -18,21 +18,30 @@ export const SolEarnPromoBanner = ({ account }: SolEarnPromoBannerProps) => {
 
     const apyFormatted = useFormattedEarnRate(stakingRate.rate);
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-
     return (
         <EarnPromoBanner
             symbol={account.symbol}
             title={
                 <Translation
                     id="earn.promoStakeBanner.title"
-                    values={{ apy: apyFormatted, symbol: displaySymbol }}
+                    values={{
+                        apy: apyFormatted,
+                        symbol: <AssetSymbol networkSymbol={account.symbol} color="contentBrand" />,
+                    }}
                 />
             }
             description={
                 <Translation
                     id="earn.promoStakeBanner.sol.description"
-                    values={{ symbol: displaySymbol }}
+                    values={{
+                        symbol: (
+                            <AssetSymbol
+                                networkSymbol={account.symbol}
+                                variant="body-sm"
+                                color="contentBrand"
+                            />
+                        ),
+                    }}
                 />
             }
         />

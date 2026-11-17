@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { Translation, type TranslationKey } from '@suite/intl';
 import { Button, type IconComponent } from '@trezor/components';
 
@@ -6,7 +8,7 @@ interface TradingFormOfferConfirmButtonProps {
     isDisabled?: boolean;
     isLoading?: boolean;
     translationId: TranslationKey;
-    translationValues?: Record<string, string>;
+    translationValues?: Record<string, ReactNode>;
     iconRight?: IconComponent;
     testId: string;
 }

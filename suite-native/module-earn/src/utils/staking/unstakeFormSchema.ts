@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     getSolanaUnstakeAmountBounds,
     getStakingLimitsByNetworkSymbol,
@@ -14,6 +14,8 @@ export const SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR = 'solana-unstake-amount-bounds'
 export type UnstakeFormContext = {
     account?: Account;
     symbol?: NetworkSymbol;
+    /** The symbol of the network's coin, for validation messages. */
+    networkDisplaySymbol?: string;
     unstakableBalance?: string;
     decimals?: number;
     translate: Translate;
@@ -56,22 +58,27 @@ export const unstakeFormValidationSchema = yup.object({
             return true;
         })
         .test(SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR, 'Amount cannot be unstaked.', function (value) {
-            const { account, translate } = this.options.context as UnstakeFormContext;
+            const {
+                account,
+                networkDisplaySymbol = '',
+                translate,
+            } = this.options.context as UnstakeFormContext;
 
             if (!value || !account) return true;
 
             const bounds = getSolanaUnstakeAmountBounds(account, value);
             if (!bounds) return true;
 
-            const symbol = getNetworkDisplaySymbol(account.symbol);
             const messageId = bounds.closestLower
                 ? 'earn.unstakeFormScreen.validation.invalidUnstakeAmount'
                 : 'earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly';
 
             return this.createError({
                 message: translate(messageId, {
-                    higher: `${bounds.closestHigher} ${symbol}`,
-                    lower: bounds.closestLower ? `${bounds.closestLower} ${symbol}` : undefined,
+                    higher: `${bounds.closestHigher} ${networkDisplaySymbol}`,
+                    lower: bounds.closestLower
+                        ? `${bounds.closestLower} ${networkDisplaySymbol}`
+                        : undefined,
                     higherFiat: '',
                     lowerFiat: '',
                 }),

@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { calculateTotal } from '@suite-common/wallet-utils';
 import { TRON_MEMO_FEE_SUN } from '@trezor/network-tron/constants';
@@ -25,9 +25,7 @@ export const calculateRawContractCall = (
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: {
-                    networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
-                },
+                networkSymbolValues: { networkDisplaySymbol: networkSymbol },
             },
         } as const;
     }
