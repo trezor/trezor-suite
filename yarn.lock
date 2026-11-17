@@ -16816,6 +16816,7 @@ __metadata:
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@types/invity-api": "npm:^1.1.23"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
@@ -16852,6 +16853,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -16890,6 +16892,7 @@ __metadata:
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.23"
@@ -16908,6 +16911,7 @@ __metadata:
   dependencies:
     "@suite-common/trading": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -16925,6 +16929,7 @@ __metadata:
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"
@@ -16945,6 +16950,7 @@ __metadata:
     "@suite-native/trading-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.23"
   languageName: unknown
@@ -16992,6 +16998,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -17022,6 +17029,7 @@ __metadata:
     "@suite-native/trading-fixtures": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -17044,6 +17052,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/trading-fixtures": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.23"
@@ -17077,6 +17086,7 @@ __metadata:
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     expo-localization: "npm:~58.0.5"
     react: "npm:19.3.0"
     react-native: "npm:0.88.1"
@@ -17106,6 +17116,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -17148,6 +17159,7 @@ __metadata:
     "@suite-native/trading-types": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/invity-api": "npm:^1.1.23"
@@ -17168,6 +17180,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@types/invity-api": "npm:^1.1.23"
   languageName: unknown
   linkType: soft

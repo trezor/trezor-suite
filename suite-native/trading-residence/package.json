@@ -42,6 +42,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
-        "@suite-native/trading-types": "workspace:*"
+        "@suite-native/trading-types": "workspace:*",
+        "@trezor/requirements": "workspace:*"
     }
 }
