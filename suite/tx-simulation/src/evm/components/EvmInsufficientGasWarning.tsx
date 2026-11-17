@@ -1,6 +1,7 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { useHasSufficientFundsForGas } from '@suite-common/tx-simulation';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
 
@@ -29,7 +30,7 @@ export function EvmInsufficientGasWarning({
                 <Translation
                     id="AMOUNT_NOT_ENOUGH_CURRENCY_FEE"
                     values={{
-                        networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                        networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} />,
                     }}
                 />
             }

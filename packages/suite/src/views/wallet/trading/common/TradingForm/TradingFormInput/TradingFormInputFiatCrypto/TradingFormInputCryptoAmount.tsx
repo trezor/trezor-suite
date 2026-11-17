@@ -33,6 +33,7 @@ import { BigNumber } from '@trezor/utils';
 import { useSelector } from '#src/hooks/suite';
 import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useNetworkDisplaySymbolText } from '#src/hooks/wallet/useNetworkDisplaySymbolText';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
@@ -84,6 +85,7 @@ const TradingFormInputCryptoAmountContent = ({
     const locale = useSelector(selectLanguage);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const networkDisplaySymbol = useNetworkDisplaySymbolText(validationAccount.symbol);
 
     const context = useTradingFormContext();
     const { type, amountLimits, network } = context;
@@ -142,6 +144,7 @@ const TradingFormInputCryptoAmountContent = ({
                       amountLimits,
                       formatter: CryptoAmountFormatter,
                       validationAccount,
+                      networkDisplaySymbol,
                       outputToken,
                       isNetworkReserveEnabled,
                       contractAddress,
@@ -156,6 +159,7 @@ const TradingFormInputCryptoAmountContent = ({
             amountLimits,
             CryptoAmountFormatter,
             validationAccount,
+            networkDisplaySymbol,
             outputToken,
             isNetworkReserveEnabled,
             contractAddress,

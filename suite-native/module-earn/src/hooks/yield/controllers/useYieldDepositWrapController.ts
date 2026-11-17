@@ -2,8 +2,8 @@ import { useCallback, useEffect } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
-import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useFormatters } from '@suite-common/formatters';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWrapErrorReason,
     getWrapReserveStatus,
@@ -59,7 +59,9 @@ export const useYieldDepositWrapController = () => {
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
     const wrapMessageSystem = useMessageSystemWrappedNative('wrap');
 
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
+    const { DisplaySymbolFormatter } = useFormatters();
+    // The form's validation messages take plain text.
+    const nativeSymbol = account ? DisplaySymbolFormatter.format(account.symbol) : '';
     const nativeBalance = account?.formattedBalance ?? '0';
 
     const gasReserve = useYieldDepositGasReserve({
@@ -162,8 +164,6 @@ export const useYieldDepositWrapController = () => {
         yieldFlowData,
         tokenContract: route.params.tokenContract,
         accountLabel: resolvedAccount.accountLabel ?? getNetwork(resolvedAccount.symbol).name,
-        nativeSymbol,
-        wrappedTokenSymbol: toTokenSymbol(resolvedToken.symbol),
         isInteractionBlocked: step.isStepPending,
         disabledAlerts: [
             ...(depositAlert ? [{ type: 'deposit' as const, ...depositAlert }] : []),
@@ -183,8 +183,7 @@ export const useYieldDepositWrapController = () => {
         receivingCard: {
             isVisible: step.isAmountReady,
             amount: amountValue ?? '0',
-            tokenContract: toTokenAddress(resolvedToken.contractAddress ?? ''),
-            tokenDecimals: resolvedToken.decimals,
+            tokenContract: resolvedToken.contractAddress,
         },
         feeReserve: {
             amount: gasReserve.recommended,

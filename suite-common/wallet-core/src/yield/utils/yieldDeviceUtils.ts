@@ -1,10 +1,11 @@
 import type { TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { WRAPPED_NATIVE_MIN_FIRMWARE } from '@suite-common/wallet-constants';
 import { DeviceModelInternal, getFirmwareVersionArray } from '@trezor/device-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { type VersionArray, versionUtils } from '@trezor/utils';
 
-import type { YieldFlowDisplayToken, YieldFlowType } from '../yieldTypes';
+import type { YieldFlowType } from '../yieldTypes';
 
 const hasMinFirmware = (device: TrezorDevice | undefined, minVersion: VersionArray): boolean => {
     // The firmware gates target the T2+ line only; T1B1 versions its firmware as 1.x.
@@ -21,10 +22,10 @@ export const isWrappedNativeFlowSupported = (device: TrezorDevice | undefined): 
     hasMinFirmware(device, WRAPPED_NATIVE_MIN_FIRMWARE);
 
 /** Input token of the vault being entered/exited; wrapped-native vaults need newer firmware. */
-export type StablecoinYieldVaultToken = Pick<
-    YieldFlowDisplayToken,
-    'networkSymbol' | 'contractAddress'
->;
+export type StablecoinYieldVaultToken = {
+    networkSymbol: NetworkSymbol;
+    contractAddress?: string | null;
+};
 
 type YieldSupportOptions = {
     flowType?: YieldFlowType;

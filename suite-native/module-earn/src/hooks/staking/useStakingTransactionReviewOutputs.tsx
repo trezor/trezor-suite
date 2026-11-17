@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
@@ -45,8 +45,6 @@ export const useStakingTransactionReviewOutputs = ({
     const getOutputValue = useCallback(() => {
         if (!account) return null;
 
-        const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-
         const isEverstakeStaking =
             stakeType !== 'stake' && isSupportedEthStakingNetworkSymbol(account.symbol);
 
@@ -58,7 +56,11 @@ export const useStakingTransactionReviewOutputs = ({
                             ? everstakeDescriptionTranslationId[stakeType]
                             : descriptionTranslationId[stakeType]
                     }
-                    values={{ displaySymbol }}
+                    values={{
+                        displaySymbol: (
+                            <AssetSymbol networkSymbol={account.symbol} variant="body-sm" />
+                        ),
+                    }}
                 />
             </Text>
         );

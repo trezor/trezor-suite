@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import {
     type TokenDefinitionsRootState,
     selectNetworkTokenDefinitions,
@@ -32,6 +33,7 @@ type ExportTransactionsThunkParams = {
 };
 
 type ExportTransactionsThunkState = FiatRatesRootState &
+    NetworksRootState &
     SelectAccountLabelsForSearchState &
     TokenDefinitionsRootState &
     TransactionsRootState &
@@ -61,6 +63,7 @@ export const exportTransactionsThunk = createThunk<
 
         const accountLabels = selectAccountLabelsForSearch(getState(), account);
         const accountName = accountLabels.accountLabel || defaultAccountName;
+        const networkDisplaySymbol = selectNetworkDisplaySymbol(getState(), account.symbol) ?? '';
 
         const transactions = getAccountTransactions(account.key, allTransactions)
             .filter(transaction => transaction.blockHeight !== -1)
@@ -76,7 +79,12 @@ export const exportTransactionsThunk = createThunk<
 
         const filteredTransaction =
             searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, accountLabels, searchQuery)
+                ? advancedSearchTransactions(
+                      transactions,
+                      accountLabels,
+                      searchQuery,
+                      networkDisplaySymbol,
+                  )
                 : transactions;
 
         // getAccountTransactions doesn't guarantee transactions will be sorted
@@ -86,6 +94,7 @@ export const exportTransactionsThunk = createThunk<
         const data = await formatData(
             {
                 symbol: account.symbol,
+                networkDisplaySymbol,
                 accountName,
                 type,
                 transactions: filteredTransaction,

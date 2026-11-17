@@ -3,9 +3,11 @@ import { useEffect, useRef } from 'react';
 import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { hasYieldDepositableBalance } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { useYieldFlowData } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
@@ -26,7 +28,6 @@ import {
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useRefreshWrappedNativeTokenOnFocus } from '../../hooks/yield/useRefreshWrappedNativeTokenOnFocus';
 import { useStartYieldDepositFlow } from '../../hooks/yield/useStartYieldDepositFlow';
-import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositNoBalance>;
 
@@ -45,15 +46,14 @@ export const YieldDepositNoBalanceScreen = () => {
         isWrappedNativeVault,
         resolutionStatus,
         token,
-        tokenSymbol,
         vault,
         vaultTokenName,
-        wrappedNativeSymbol,
     } = yieldFlowData;
 
     const { handleStartYieldDepositFlow } = useStartYieldDepositFlow({
         flowData,
         flowKey,
+        isWrappedNativeVault,
         routeParams: route.params,
         shouldReplaceRoute: true,
     });
@@ -137,7 +137,13 @@ export const YieldDepositNoBalanceScreen = () => {
         return null;
     }
 
-    const depositSymbol = wrappedNativeSymbol ?? tokenSymbol;
+    const depositSymbol = (
+        <AssetSymbol
+            networkSymbol={account.symbol}
+            contractAddress={route.params.tokenContract}
+            isWrappedNativeShownAsNative
+        />
+    );
 
     return (
         <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>

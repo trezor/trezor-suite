@@ -1,3 +1,4 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { mockResolvedYieldFlowData, mockYieldVault } from '@suite-common/wallet-core/mocks';
 
 import { yieldFlowDataToTokenMetadataSources } from './yieldFlowDataToTokenMetadataSources';
@@ -21,10 +22,13 @@ describe('yieldFlowDataToTokenMetadataSources', () => {
                     network: 'ethereum',
                 },
             },
-            token: { ...defaults.token, contractAddress: VAULT_TOKEN_ADDRESS.toLowerCase() },
+            token: {
+                ...defaults.token,
+                contractAddress: toTokenAddress(VAULT_TOKEN_ADDRESS.toLowerCase()),
+            },
             receiptToken: {
                 ...defaults.receiptToken,
-                contractAddress: RECEIPT_TOKEN_ADDRESS.toLowerCase(),
+                contractAddress: toTokenAddress(RECEIPT_TOKEN_ADDRESS.toLowerCase()),
             },
         });
 
@@ -39,8 +43,8 @@ describe('yieldFlowDataToTokenMetadataSources', () => {
         expect(source?.tokens[1]).toEqual({
             contract: VAULT_TOKEN_ADDRESS,
             name: vault.token.name,
-            symbol: defaults.token.symbol,
-            decimals: defaults.token.decimals,
+            symbol: vault.token.symbol,
+            decimals: vault.token.decimals,
         });
     });
 

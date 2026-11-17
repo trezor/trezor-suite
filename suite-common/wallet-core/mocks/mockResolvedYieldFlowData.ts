@@ -1,5 +1,5 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -10,8 +10,8 @@ export type FullyResolvedYieldFlowData = Extract<
     { resolutionStatus: 'resolved' }
 >;
 
-const TOKEN_CONTRACT = '0x0000000000000000000000000000000000000001';
-const RECEIPT_TOKEN_CONTRACT = '0x0000000000000000000000000000000000000002';
+const TOKEN_CONTRACT = toTokenAddress('0x0000000000000000000000000000000000000001');
+const RECEIPT_TOKEN_CONTRACT = toTokenAddress('0x0000000000000000000000000000000000000002');
 
 export const mockYieldVault = (overrides: Partial<YieldDtoV2> = {}): YieldDtoV2 => ({
     id: 'vault-id',
@@ -62,25 +62,18 @@ export const mockResolvedYieldFlowData = (
         vault: mockYieldVault(),
         token: {
             networkSymbol: account.symbol,
-            symbol: 'WETH',
-            decimals: 18,
             contractAddress: TOKEN_CONTRACT,
-            coingeckoId: 'weth',
             balance: '25',
         },
         receiptToken: {
             networkSymbol: account.symbol,
-            symbol: 'trWETH',
-            decimals: 18,
             contractAddress: RECEIPT_TOKEN_CONTRACT,
-            coingeckoId: 'weth',
         },
         flowKey: 'flow-key',
         apy: 5,
         depositedAmount: '10',
         depositedSharesAmount: '4',
         isWrappedNativeVault: true,
-        wrappedNativeSymbol: 'ETH',
         bonusRewardTokenSymbol: null,
         providerName: 'Morpho',
         tokenSymbol: toTokenSymbol('WETH'),

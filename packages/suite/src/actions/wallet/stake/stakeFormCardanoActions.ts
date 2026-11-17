@@ -8,11 +8,7 @@ import {
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    EVERSTAKE_POOL_NAMES,
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { EVERSTAKE_POOL_NAMES, type NetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     type AccountVotingDelegation,
@@ -316,7 +312,7 @@ const getComposeErrorLevels = (
                   error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                   errorMessage: {
                       id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                      values: { networkDisplaySymbol: getNetworkDisplaySymbol(symbol) },
+                      networkSymbolValues: { networkDisplaySymbol: symbol },
                   },
               }
             : {

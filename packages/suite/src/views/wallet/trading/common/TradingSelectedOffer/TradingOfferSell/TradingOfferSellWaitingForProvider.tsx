@@ -1,9 +1,11 @@
+import { type ReactNode } from 'react';
+
 import { Translation } from '@suite/intl';
 import { Column, Spinner, Text } from '@trezor/components';
 
 type TradingOfferSellWaitingForProviderProps = {
     providerName: string;
-    displaySymbol: string;
+    displaySymbol: ReactNode;
 };
 
 export const TradingOfferSellWaitingForProvider = ({

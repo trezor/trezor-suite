@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import type {
     YieldFlowDisplayToken,
@@ -15,6 +16,7 @@ import {
     type YieldApproxFiat,
 } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
+import { useYieldTokenDecimals } from '../hooks/useYieldTokenDecimals';
 
 const actionStepTranslationMap = {
     deposit: {
@@ -67,12 +69,18 @@ export const YieldActionStep = ({
 }: YieldActionStepProps) => {
     const { amountLabelTranslationId, submitTranslationId, balanceLabelTranslationId } =
         actionStepTranslationMap[flowType];
+    const decimals = useYieldTokenDecimals(token);
 
     return (
         <Column gap={16}>
             <YieldAmountCard
-                tokenSymbol={token.symbol}
-                decimals={token.decimals}
+                tokenSymbol={
+                    <AssetSymbol
+                        networkSymbol={token.networkSymbol}
+                        contractAddress={token.contractAddress}
+                    />
+                }
+                decimals={decimals}
                 approxFiat={approxFiat}
                 summary={{
                     labelTranslationId: balanceLabelTranslationId,

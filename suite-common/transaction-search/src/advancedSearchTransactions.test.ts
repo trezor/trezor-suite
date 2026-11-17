@@ -36,7 +36,12 @@ describe(advancedSearchTransactions.name, () => {
 
     searchTransactionsFixture.forEach(f => {
         it(f.description, () => {
-            const search = advancedSearchTransactions(transactions, accountLabels, f.search);
+            const search = advancedSearchTransactions(
+                transactions,
+                accountLabels,
+                f.search,
+                'TEST',
+            );
 
             if (f.result) {
                 // expect(search.length).toBe(f.result.length);

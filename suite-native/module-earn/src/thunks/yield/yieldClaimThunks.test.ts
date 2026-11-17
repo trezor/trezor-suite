@@ -2,6 +2,7 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldClaimUnsignedTransaction,
@@ -79,10 +80,9 @@ const rewards = [
     {
         token: {
             networkSymbol: asNetworkSymbol('eth'),
-            symbol: 'USDT',
-            decimals: 6,
-            contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            contractAddress: toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
         },
+        tokenInfo: { symbol: 'USDT', decimals: 6 },
         value: '1',
         fiatValue: '1',
     },

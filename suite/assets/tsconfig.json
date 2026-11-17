@@ -23,6 +23,9 @@
         { "path": "../discreet-mode" },
         { "path": "../token" },
         {
+            "path": "../../packages/dependency-injection"
+        },
+        {
             "path": "../../packages/product-components"
         }
     ]

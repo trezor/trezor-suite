@@ -52,7 +52,7 @@ const fetchWrappedNativeTokenInfoMock = jest.mocked(fetchWrappedNativeTokenInfo)
 const accountKey = 'eth-account-key' as AccountKey;
 const ownerAddress = '0x0000000000000000000000000000000000000001';
 const tokenContract = '0x0000000000000000000000000000000000000002' as TokenAddress;
-const receiptTokenContract = '0x0000000000000000000000000000000000000003';
+const receiptTokenContract = '0x0000000000000000000000000000000000000003' as TokenAddress;
 const yieldId = 'dummy-yield-id';
 const flowKey = `${accountKey}:${yieldId}:${tokenContract}`;
 const routeParams = {
@@ -93,15 +93,11 @@ const flowData = {
     token: {
         balance: '25',
         contractAddress: tokenContract,
-        decimals: 6,
         networkSymbol: asNetworkSymbol('eth'),
-        symbol: 'USDC',
     },
     receiptToken: {
         contractAddress: receiptTokenContract,
-        decimals: 18,
         networkSymbol: asNetworkSymbol('eth'),
-        symbol: 'trSHUSDCp',
     },
 } satisfies YieldFlowResolvedData;
 
@@ -119,9 +115,7 @@ const wethFlowData = {
     token: {
         balance: '0',
         contractAddress: wethTokenContract,
-        decimals: 18,
         networkSymbol: asNetworkSymbol('eth'),
-        symbol: 'WETH',
     },
 } satisfies YieldFlowResolvedData;
 
@@ -149,14 +143,21 @@ const buildStore = (storeAccount: Account = account) =>
 type HookParams = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
+    isWrappedNativeVault: boolean;
     routeParams: YieldFlowParams;
     shouldReplaceRoute?: boolean;
 };
 
-const defaultHookParams: HookParams = { flowData, flowKey, routeParams };
+const defaultHookParams: HookParams = {
+    flowData,
+    flowKey,
+    isWrappedNativeVault: false,
+    routeParams,
+};
 const wethHookParams: HookParams = {
     flowData: wethFlowData,
     flowKey: wethFlowKey,
+    isWrappedNativeVault: true,
     routeParams: wethRouteParams,
 };
 

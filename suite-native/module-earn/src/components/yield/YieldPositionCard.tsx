@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
+import { injectIsWrappedNativeToken } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type YieldListItem,
@@ -20,7 +21,6 @@ import {
 import { Translation } from '@suite-native/intl';
 import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
@@ -32,7 +32,10 @@ type YieldPositionCardProps = {
 
 export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => {
     const { PercentageFormatter, NetworkNameFormatter } = useFormatters();
-    const { analytics } = useServices(injectNativeAnalytics);
+    const { analytics, isWrappedNativeToken } = useServices(
+        injectNativeAnalytics,
+        injectIsWrappedNativeToken,
+    );
     const { navigateToYieldDetail } = useYieldDetailNavigation();
 
     const account = useSelector((state: AccountsRootState) =>

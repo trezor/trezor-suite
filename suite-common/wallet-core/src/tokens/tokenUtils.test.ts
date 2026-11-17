@@ -184,7 +184,7 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             tokens: [],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, ethDefinitions)).toEqual(['ETH']);
+        expect(getAccountAnalyticsTokenSymbols(account, 'ETH', ethDefinitions)).toEqual(['ETH']);
     });
 
     it('omits the native token when the native balance is zero', () => {
@@ -194,7 +194,7 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             tokens: [mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' })],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, ethDefinitions)).toEqual(['USDC']);
+        expect(getAccountAnalyticsTokenSymbols(account, 'ETH', ethDefinitions)).toEqual(['USDC']);
     });
 
     it('includes only legit tokens with balance, native first', () => {
@@ -209,7 +209,10 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             ],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, ethDefinitions)).toEqual(['ETH', 'USDC']);
+        expect(getAccountAnalyticsTokenSymbols(account, 'ETH', ethDefinitions)).toEqual([
+            'ETH',
+            'USDC',
+        ]);
     });
 
     it('deduplicates repeated token symbols', () => {
@@ -230,7 +233,7 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             ],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, definitions)).toEqual(['USDC']);
+        expect(getAccountAnalyticsTokenSymbols(account, 'ETH', definitions)).toEqual(['USDC']);
     });
 
     it('omits definition-dependent tokens until token definitions are loaded', () => {
@@ -240,6 +243,6 @@ describe('getAccountAnalyticsTokenSymbols', () => {
             tokens: [mockAccountToken({ symbol: 'USDC', contract: legitContract, balance: '100' })],
         });
 
-        expect(getAccountAnalyticsTokenSymbols(account, undefined)).toEqual(['ETH']);
+        expect(getAccountAnalyticsTokenSymbols(account, 'ETH', undefined)).toEqual(['ETH']);
     });
 });

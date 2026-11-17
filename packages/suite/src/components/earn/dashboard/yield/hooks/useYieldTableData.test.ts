@@ -1,9 +1,11 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { type NetworksDep } from '@suite-common/networks';
+import { mockNetworksServices, mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { getYieldOpportunityData, useYieldTableData } from './useYieldTableData';
 import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
@@ -12,6 +14,8 @@ const ethSymbol = asNetworkSymbol('eth');
 
 const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const isWrappedNativeToken = (_networkSymbol: NetworkSymbol, contract?: string | null) =>
+    contract?.toLowerCase() === WETH_ADDRESS.toLowerCase();
 
 const createMockVault = (
     id: string,
@@ -80,6 +84,7 @@ describe(getYieldOpportunityData.name, () => {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
+                isWrappedNativeToken,
             });
 
             expect(data.additionalDepositAmount).toBe('1.5');
@@ -95,6 +100,7 @@ describe(getYieldOpportunityData.name, () => {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
+                isWrappedNativeToken,
             });
 
             expect(data.matchedInputToken).toBeUndefined();
@@ -112,6 +118,7 @@ describe(getYieldOpportunityData.name, () => {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
+                isWrappedNativeToken,
             });
 
             expect(data.additionalDepositAmount).toBe('0.003');
@@ -136,11 +143,10 @@ describe(getYieldOpportunityData.name, () => {
                 account,
                 networkSymbol: ethSymbol,
                 vault: wethVault,
+                isWrappedNativeToken,
             });
 
-            expect(data.depositedSymbol).toBe('ETH');
-            expect(data.depositedContractAddress).toBeNull();
-            expect(data.depositedDecimals).toBe(18);
+            expect(data.depositedToken).toEqual({ networkSymbol: ethSymbol });
         });
     });
 
@@ -163,12 +169,14 @@ describe(getYieldOpportunityData.name, () => {
                 account,
                 networkSymbol: ethSymbol,
                 vault: usdcVault,
+                isWrappedNativeToken,
             });
 
             expect(data.additionalDepositAmount).toBe('100');
-            expect(data.depositedSymbol).toBe('USDC');
-            expect(data.depositedContractAddress).toBe(USDC_ADDRESS);
-            expect(data.depositedDecimals).toBe(6);
+            expect(data.depositedToken).toEqual({
+                networkSymbol: ethSymbol,
+                contractAddress: USDC_ADDRESS,
+            });
         });
 
         it('is not depositable without the matched token, regardless of native balance', () => {
@@ -181,6 +189,7 @@ describe(getYieldOpportunityData.name, () => {
                 account,
                 networkSymbol: ethSymbol,
                 vault: usdcVault,
+                isWrappedNativeToken,
             });
 
             expect(data.additionalDepositAmount).toBe('0');
@@ -191,7 +200,8 @@ describe(getYieldOpportunityData.name, () => {
 
 describe(useYieldTableData.name, () => {
     it('counts only catalog vaults with a mapped network and an underlying token address', () => {
-        const { services } = createTestCompositionRoot<void, MockSuiteState>({
+        const { services } = createTestCompositionRoot<WithServices<NetworksDep>, MockSuiteState>({
+            services: () => ({ networks: mockNetworksServices({ isWrappedNativeToken }) }),
             preloadedState: {
                 device: { selectedDevice: undefined },
                 networks: mockNetworksState([ethSymbol]),
@@ -230,7 +240,8 @@ describe(useYieldTableData.name, () => {
             formattedBalance: '1',
         });
 
-        const { services } = createTestCompositionRoot<void, MockSuiteState>({
+        const { services } = createTestCompositionRoot<WithServices<NetworksDep>, MockSuiteState>({
+            services: () => ({ networks: mockNetworksServices({ isWrappedNativeToken }) }),
             preloadedState: {
                 device: { selectedDevice: undefined },
                 networks: mockNetworksState([ethSymbol]),

@@ -1,6 +1,6 @@
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
 import { flattenEvmFees, parseEvmFeeHex } from '@suite-common/schemas/src/evm';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type EvmSelectedFee,
     type FormState,
@@ -37,8 +37,9 @@ export type StablecoinYieldParsedTransactionForSigning = NonNullable<
 >;
 
 type BuildStablecoinYieldReviewTokenParams = {
-    token: {
-        contractAddress?: string | null;
+    /** The token the transaction moves; without one, the amount is in the network's native coin. */
+    token?: {
+        contractAddress: string;
         decimals: number;
         symbol: string;
     };
@@ -132,7 +133,7 @@ const buildStablecoinYieldReviewToken = ({
     token,
     symbol,
 }: BuildStablecoinYieldReviewTokenParams): TokenInfo | undefined => {
-    if (!token.contractAddress) {
+    if (!token) {
         return undefined;
     }
 
@@ -160,7 +161,7 @@ export const buildStablecoinYieldReviewState = ({
     const reviewToken = buildStablecoinYieldReviewToken({ token, symbol });
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
-        decimals: token.decimals,
+        decimals: token?.decimals ?? getNetwork(symbol).decimals,
     });
 
     const eip1559ReviewFields: Partial<

@@ -1,30 +1,28 @@
+import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
-import { type TokenSymbol } from '@suite-common/tokens';
+import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Column, Paragraph } from '@trezor/components';
 
+import { EarnYieldCompactAmount } from './EarnYieldCompactAmount';
 import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
 
 type EarnYieldPotentialRewardsProps = {
     hasMaximumDeposited: boolean;
     hasPotentialRewards: boolean;
-    symbol: TokenSymbol;
+    token: YieldFlowDisplayToken;
     rewards: string;
     apy: number | null;
-    tokenDecimals: number;
-    formattedAdditionalDepositAmount: string;
-    displaySymbol: string;
+    additionalDepositAmount: string;
 };
 
 export const EarnYieldPotentialRewards = ({
     hasMaximumDeposited,
     hasPotentialRewards,
-    symbol,
+    token,
     rewards,
     apy,
-    tokenDecimals,
-    formattedAdditionalDepositAmount,
-    displaySymbol,
+    additionalDepositAmount,
 }: EarnYieldPotentialRewardsProps) => {
     if (hasMaximumDeposited) {
         return (
@@ -42,10 +40,10 @@ export const EarnYieldPotentialRewards = ({
         <Column gap={4}>
             <EarnRewardsAmount
                 data-testid="@earn/dashboard/potential-rewards/amount"
-                symbol={symbol}
+                symbol={token.networkSymbol}
+                contractAddress={token.contractAddress}
                 rewards={rewards}
                 apy={apy}
-                tokenDecimals={tokenDecimals}
                 intent="brand"
             />
 
@@ -53,7 +51,20 @@ export const EarnYieldPotentialRewards = ({
                 <HiddenPlaceholder>
                     <Translation
                         id="TR_EARN_STAKING_DASHBOARD_IF_YOU_ADD"
-                        values={{ amount: formattedAdditionalDepositAmount, displaySymbol }}
+                        values={{
+                            amount: (
+                                <EarnYieldCompactAmount
+                                    amount={additionalDepositAmount}
+                                    token={token}
+                                />
+                            ),
+                            displaySymbol: (
+                                <AssetSymbol
+                                    networkSymbol={token.networkSymbol}
+                                    contractAddress={token.contractAddress}
+                                />
+                            ),
+                        }}
                     />
                 </HiddenPlaceholder>
             </Paragraph>

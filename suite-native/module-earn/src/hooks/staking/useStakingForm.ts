@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -25,6 +26,9 @@ export const useStakingForm = (accountKey: AccountKey) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        account ? selectNetworkDisplaySymbol(state, account.symbol) : undefined,
+    );
 
     const network = account ? getNetwork(account.symbol) : null;
 
@@ -33,6 +37,7 @@ export const useStakingForm = (accountKey: AccountKey) => {
         mode: 'onTouched',
         context: {
             symbol: account?.symbol,
+            networkDisplaySymbol,
             availableBalance: account
                 ? formatNetworkAmount(account.availableBalance, account.symbol)
                 : undefined,

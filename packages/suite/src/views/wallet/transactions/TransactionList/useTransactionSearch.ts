@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebounce } from 'react-use';
 
+import { selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { sortByBlockHeightThenTime } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
+import { injectGetState } from '@trezor/redux-utils';
 
 import {
     type SelectAccountLabelsForSearchState,
@@ -28,6 +31,7 @@ export const useTransactionSearch = (
 ) => {
     const isSearching = searchQuery.trim() !== '';
     const [searchResult, setSearchResult] = useState(NO_SEARCH_RESULT);
+    const { getState } = useServices(injectGetState);
     const accountLabels = useSelector((state: SelectAccountLabelsForSearchState) =>
         selectAccountsLabelsForSearch(state, accounts),
     );
@@ -53,6 +57,7 @@ export const useTransactionSearch = (
                               ),
                               labels,
                               searchQuery,
+                              selectNetworkDisplaySymbol(getState(), account.symbol) ?? '',
                           );
                 })
                 .sort(sortByBlockHeightThenTime);
@@ -60,7 +65,7 @@ export const useTransactionSearch = (
             setSearchResult({ query: searchQuery, transactions: results });
         },
         SEARCH_DEBOUNCE_MS,
-        [transactions, accounts, accountLabels, searchQuery, isSearching],
+        [transactions, accounts, accountLabels, searchQuery, isSearching, getState],
     );
 
     // Until the first results of a search come in, the list stays as it was.

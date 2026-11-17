@@ -6,6 +6,7 @@ import {
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { Button, TimelineDetailsCard, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { YieldDisabledAlert, useMessageSystemYield } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
@@ -43,7 +44,7 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
         vaultTokenSymbol,
         bonusRewardTokenSymbol,
         resolutionStatus,
-        wrappedNativeSymbol,
+        isWrappedNativeVault,
     } = yieldFlowData;
 
     const {
@@ -113,7 +114,8 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
         apy,
         onApyPress: openApyBreakdownBottomSheet,
         bonusRewardTokenSymbol,
-        wrappedNativeSymbol,
+        networkSymbol: account?.symbol,
+        isWrappedNativeVault,
     });
 
     if (resolutionStatus !== 'resolved') {
@@ -129,21 +131,36 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
                             title={
                                 <Translation
                                     id={
-                                        wrappedNativeSymbol !== null
+                                        isWrappedNativeVault
                                             ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldTitle'
                                             : 'earn.howYieldWorksScreen.defiYieldTitle'
                                     }
-                                    values={{ nativeSymbol: wrappedNativeSymbol }}
+                                    values={{
+                                        nativeSymbol: (
+                                            <AssetSymbol
+                                                networkSymbol={account.symbol}
+                                                variant="headline-md"
+                                            />
+                                        ),
+                                    }}
                                 />
                             }
                             subtitle={
                                 <Translation
                                     id={
-                                        wrappedNativeSymbol !== null
+                                        isWrappedNativeVault
                                             ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldSubtitle'
                                             : 'earn.howYieldWorksScreen.defiYieldSubtitle'
                                     }
-                                    values={{ nativeSymbol: wrappedNativeSymbol }}
+                                    values={{
+                                        nativeSymbol: (
+                                            <AssetSymbol
+                                                networkSymbol={account.symbol}
+                                                variant="body-sm"
+                                                color="contentSecondary"
+                                            />
+                                        ),
+                                    }}
                                 />
                             }
                         />

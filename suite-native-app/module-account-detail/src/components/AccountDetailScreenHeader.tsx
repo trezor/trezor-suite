@@ -3,6 +3,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountDetailScreenHeaderContent } from '@suite-native/accounts';
+import { AssetSymbol } from '@suite-native/assets';
 import { IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { TokenSettingsBottomSheet } from '@suite-native/earn';
 import {
@@ -63,6 +64,9 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
             <TokenSettingsBottomSheet
                 ref={bottomSheetRef}
                 accountKey={account.key}
+                nativeTokenSymbol={
+                    <AssetSymbol networkSymbol={account.symbol} variant="headline-sm" />
+                }
                 onNavigateAway={closeModal}
             />
         </>

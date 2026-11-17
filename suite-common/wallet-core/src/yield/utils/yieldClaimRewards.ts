@@ -27,12 +27,8 @@ export const getYieldClaimRewardsSnapshot = ({
     rewards,
 }: GetYieldClaimRewardsSnapshotProps): YieldFlowCompleteRewardItem[] =>
     rewards.map(reward => ({
-        token: {
-            networkSymbol,
-            symbol: reward.token.symbol,
-            decimals: reward.token.decimals,
-            contractAddress: toTokenAddress(reward.token.address),
-        },
+        token: { networkSymbol, contractAddress: toTokenAddress(reward.token.address) },
+        tokenInfo: { symbol: reward.token.symbol, decimals: reward.token.decimals },
         value: subunitsToUnits({
             value: asAmountSubunit(new BigNumber(reward.claimable)),
             decimals: reward.token.decimals,

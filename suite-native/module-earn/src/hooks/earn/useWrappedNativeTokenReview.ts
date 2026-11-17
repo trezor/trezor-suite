@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
+import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     type StackNavigationProps,
@@ -30,7 +30,6 @@ type UseWrappedNativeTokenReviewParams = {
     account: Account;
     flowContext: 'standalone' | 'in-flow';
     flowType: WrappedNativeFlowType;
-    token: YieldFlowDisplayToken;
     amount: string;
     unsignedTransaction: string;
 
@@ -57,7 +56,6 @@ export const useWrappedNativeTokenReview = ({
     account,
     flowContext,
     flowType,
-    token,
     amount,
     unsignedTransaction,
     onBroadcast,
@@ -91,8 +89,10 @@ export const useWrappedNativeTokenReview = ({
 
     const signAction = useCallback(
         () =>
-            dispatch(signWrappedNativeTokenThunk({ account, token, amount, unsignedTransaction })),
-        [account, amount, dispatch, token, unsignedTransaction],
+            dispatch(
+                signWrappedNativeTokenThunk({ account, flowType, amount, unsignedTransaction }),
+            ),
+        [account, amount, dispatch, flowType, unsignedTransaction],
     );
     const pushAction = useCallback(
         () =>

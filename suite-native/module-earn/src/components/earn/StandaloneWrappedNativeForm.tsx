@@ -47,7 +47,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         spentTokenContract,
         submit,
         wrappedTokenContract,
-        wrappedTokenSymbol,
     } = controller;
 
     const messages = wrappedNativeFlowMessages[flowType].form;
@@ -63,7 +62,12 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             id={messages.title}
                             values={{
                                 nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
-                                wrappedSymbol: wrappedTokenSymbol,
+                                wrappedSymbol: (
+                                    <AssetSymbol
+                                        networkSymbol={account.symbol}
+                                        contractAddress={wrappedTokenContract}
+                                    />
+                                ),
                             }}
                         />
                     }

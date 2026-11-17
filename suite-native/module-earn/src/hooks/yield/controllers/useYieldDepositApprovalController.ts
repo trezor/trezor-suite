@@ -64,7 +64,10 @@ export const useYieldDepositApprovalController = () => {
         networkSymbol: account?.symbol,
         vaultId: yieldFlowData.vault?.id,
     });
-    const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({
+        session,
+        tokenDecimals: yieldFlowData.vault?.token.decimals,
+    });
     const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'minimal';
     const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } =
         useYieldApprovalLimit(defaultApprovalLimitType);
@@ -95,6 +98,7 @@ export const useYieldDepositApprovalController = () => {
                 ? session?.action.amount
                 : undefined,
         token,
+        decimals: yieldFlowData.vault?.token.decimals,
         tokenSymbol,
         wrappedAmount: session?.result.wrappedAmount,
     });
@@ -286,6 +290,7 @@ export const useYieldDepositApprovalController = () => {
         },
         stepCard: {
             hasWrapStep: yieldFlowData.isWrappedNativeVault,
+            wrappedTokenContract: yieldFlowData.token?.contractAddress,
             isWrapStepSkipped: !hasWrappedAmount,
             onEditWrapStep: returnToWrapStep,
         },

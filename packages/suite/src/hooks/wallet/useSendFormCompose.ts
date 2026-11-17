@@ -10,7 +10,7 @@ import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { type TranslationKey, isTranslationKey, useTranslation } from '@suite/intl';
+import { type TranslationKey, isTranslationKey } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -32,6 +32,7 @@ import { isChanged } from '@trezor/utils';
 import { type SendContextValues, type UseSendFormState } from '#src/types/wallet/sendForm';
 
 import { useSolanaSubscribeBlocks } from './form/useSolanaSubscribeBlocks';
+import { useComposeErrorText } from './useComposeErrorText';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;
@@ -69,7 +70,7 @@ export const useSendFormCompose = ({
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
     const { dispatch } = useServices(injectDispatch);
-    const { translationString } = useTranslation();
+    const getComposeErrorText = useComposeErrorText();
 
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
 
@@ -206,7 +207,7 @@ export const useSendFormCompose = ({
 
                 const formError = {
                     type: getErrorType(errorMessage.id),
-                    message: translationString(errorMessage.id, errorMessage.values),
+                    message: getComposeErrorText(errorMessage.id, errorMessage),
                 };
 
                 if (composeField) {
@@ -249,7 +250,7 @@ export const useSendFormCompose = ({
             clearErrors,
             setValue,
             setLoading,
-            translationString,
+            getComposeErrorText,
             setShowReserveBanner,
         ],
     );

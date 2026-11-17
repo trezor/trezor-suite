@@ -80,8 +80,7 @@ const sendTransaction = ({
     sendYieldTransaction({
         account,
         amount: '100',
-        token: {
-            networkSymbol: asNetworkSymbol('eth'),
+        transactionToken: {
             symbol: 'usdc',
             decimals: 6,
             contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',

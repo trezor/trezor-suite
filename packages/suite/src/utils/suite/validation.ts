@@ -1,10 +1,6 @@
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter, type Formatters } from '@suite-common/formatters';
-import {
-    getDisplaySymbol,
-    getNetworkDisplaySymbol,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { getSolanaUnstakeAmountBounds } from '@suite-common/wallet-core';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
@@ -137,36 +133,37 @@ export const validateCryptoLimits =
 
 interface ValidateSolanaUnstakeAmountOptions {
     account: Account;
+    networkDisplaySymbol: string;
 }
 
 export const validateSolanaUnstakeAmount =
-    (translationString: TranslationFunction, { account }: ValidateSolanaUnstakeAmountOptions) =>
+    (
+        translationString: TranslationFunction,
+        { account, networkDisplaySymbol }: ValidateSolanaUnstakeAmountOptions,
+    ) =>
     (value: string) => {
         if (!value) return;
 
         const bounds = getSolanaUnstakeAmountBounds(account, value);
         if (!bounds) return;
 
-        const symbol = getNetworkDisplaySymbol(account.symbol);
-
         // the fiat approximations are only rendered in the rich <Translation> banner
         return bounds.closestLower
             ? translationString('TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT', {
                   lower: bounds.closestLower,
                   higher: bounds.closestHigher,
-                  symbol,
+                  symbol: networkDisplaySymbol,
                   lowerFiat: '',
                   higherFiat: '',
               })
             : translationString('TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY', {
                   higher: bounds.closestHigher,
-                  symbol,
+                  symbol: networkDisplaySymbol,
                   higherFiat: '',
               });
     };
 
-interface ValidateSolanaUnstakeFiatAmountOptions {
-    account: Account;
+interface ValidateSolanaUnstakeFiatAmountOptions extends ValidateSolanaUnstakeAmountOptions {
     decimals: number;
     rate?: number;
 }
@@ -174,7 +171,7 @@ interface ValidateSolanaUnstakeFiatAmountOptions {
 export const validateSolanaUnstakeFiatAmount =
     (
         translationString: TranslationFunction,
-        { account, decimals, rate }: ValidateSolanaUnstakeFiatAmountOptions,
+        { account, networkDisplaySymbol, decimals, rate }: ValidateSolanaUnstakeFiatAmountOptions,
     ) =>
     (value: string, formValues?: { outputs?: { amount?: string }[] }) => {
         if (!value) return;
@@ -190,7 +187,7 @@ export const validateSolanaUnstakeFiatAmount =
             toFiatCurrency({ amount: outputAmount, rate })?.toFixed(2, BigNumber.ROUND_FLOOR) ===
                 value;
 
-        return validateSolanaUnstakeAmount(translationString, { account })(
+        return validateSolanaUnstakeAmount(translationString, { account, networkDisplaySymbol })(
             isFiatOfOutputAmount ? outputAmount : cryptoAmount,
         );
     };
@@ -298,6 +295,7 @@ export const validateMin =
 
 interface ValidateReserveOrBalanceOptions {
     account: Account;
+    networkDisplaySymbol: string;
     areSatsUsed?: boolean;
     contractAddress?: string | null;
 }
@@ -305,7 +303,12 @@ interface ValidateReserveOrBalanceOptions {
 export const validateReserveOrBalance =
     (
         translationString: TranslationFunction,
-        { account, areSatsUsed, contractAddress }: ValidateReserveOrBalanceOptions,
+        {
+            account,
+            networkDisplaySymbol,
+            areSatsUsed,
+            contractAddress,
+        }: ValidateReserveOrBalanceOptions,
     ) =>
     (value: string) => {
         const result = getAmountValidationResult({
@@ -318,7 +321,7 @@ export const validateReserveOrBalance =
         if (result.type === 'reserve') {
             return translationString('AMOUNT_IS_MORE_THAN_RESERVE', {
                 reserve: result.reserve,
-                displaySymbol: getDisplaySymbol(account.symbol),
+                displaySymbol: networkDisplaySymbol,
             });
         }
 

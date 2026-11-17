@@ -297,6 +297,7 @@ describe('validationSchemes', () => {
                 const context = createContext({
                     sendAssetSymbol: 'ETH',
                     sendNetworkSymbol: asNetworkSymbol('arb'),
+                    sendNetworkDisplaySymbol: 'ETH',
                     balance: '100',
                     maxSpendableAmount: '90',
                 });

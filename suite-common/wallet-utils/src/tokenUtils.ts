@@ -4,7 +4,6 @@ import {
     type NetworkSymbolExtended,
     type NetworkType,
     getExplorerUrl,
-    getNetworkDisplaySymbol,
     getNetworkType,
 } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -98,14 +97,15 @@ export const isTokenTransferMatchesSearch = (token: TokenTransfer, search: strin
     isTokenNameMatchesSearch(token.name, search) ||
     token.contract.toLowerCase().includes(search);
 
-export const isNativeDisplaySymbolSearch = (symbol: NetworkSymbol, search: string) =>
-    getNetworkDisplaySymbol(symbol).toLowerCase() === search;
+export const isNativeDisplaySymbolSearch = (networkDisplaySymbol: string, search: string) =>
+    networkDisplaySymbol.toLowerCase() === search;
 
 export const isNativeTransferMatchesSearch = (
     transaction: WalletAccountTransaction,
+    networkDisplaySymbol: string,
     search: string,
 ) => {
-    if (!isNativeDisplaySymbolSearch(transaction.symbol, search)) {
+    if (!isNativeDisplaySymbolSearch(networkDisplaySymbol, search)) {
         return false;
     }
 

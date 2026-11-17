@@ -17,7 +17,7 @@ const useRewardDescriptions = (apy: number | null) => {
         vaultTokenSymbol: 'steakUSDC',
         apy,
         onApyPress: () => {},
-        wrappedNativeSymbol: null,
+        isWrappedNativeVault: false,
     });
 
     return {

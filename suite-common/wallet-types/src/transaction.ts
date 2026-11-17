@@ -135,11 +135,15 @@ export type EthTransactionData = {
 
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
+export type ComposeErrorMessage = {
+    id: PrecomposeError;
+    values?: Record<string, string>;
+    /** Values filled with the symbol of the given network's coin when the message is rendered. */
+    networkSymbolValues?: Record<string, NetworkSymbol>;
+};
+
 type ComposeError = {
-    errorMessage?: {
-        id: PrecomposeError;
-        values?: Record<string, string>;
-    };
+    errorMessage?: ComposeErrorMessage;
 };
 
 export type PrecomposedTransactionError = PrecomposedTransactionErrorExtended & ComposeError;

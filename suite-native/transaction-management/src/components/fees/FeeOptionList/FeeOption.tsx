@@ -41,6 +41,8 @@ import {
 } from '../../../hooks/usePrecomposedTransactionError';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
+const FEE_ERROR_SYMBOL_TEXT_PROPS = { variant: 'body-sm' } as const;
+
 export type FeeOptionProps = {
     feeKey: NativeSupportedPredefinedFeeLevel;
     feeLevel: GeneralPrecomposedTransaction;
@@ -119,6 +121,7 @@ export const FeeOption = ({
     const feeError = usePrecomposedTransactionError({
         error: feeLevel.type === 'error' ? feeLevel.error : undefined,
         networkSymbol: symbol,
+        symbolTextProps: FEE_ERROR_SYMBOL_TEXT_PROPS,
     });
 
     const selectedLevel = useWatch({ control, name: 'feeLevel' });

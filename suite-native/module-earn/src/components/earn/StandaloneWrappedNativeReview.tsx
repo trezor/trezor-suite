@@ -27,14 +27,14 @@ export const StandaloneWrappedNativeReview = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { preview, spentToken } = useWrappedNativeReviewPreview({
+    const preview = useWrappedNativeReviewPreview({
         account,
         amount,
         flowType,
         unsignedTransaction,
     });
 
-    if (!account || !spentToken || !preview) {
+    if (!account || !preview) {
         return null;
     }
 
@@ -45,7 +45,6 @@ export const StandaloneWrappedNativeReview = ({
             flowContext="standalone"
             flowType={flowType}
             preview={preview}
-            spentToken={spentToken}
             unsignedTransaction={unsignedTransaction}
         />
     );

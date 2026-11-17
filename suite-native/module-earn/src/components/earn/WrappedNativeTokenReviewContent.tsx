@@ -1,4 +1,4 @@
-import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
+import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { TransactionReviewScreen } from '@suite-native/transaction-review';
 
@@ -26,7 +26,6 @@ type WrappedNativeTokenReviewContentProps = {
     onBroadcast?: (broadcast: YieldBroadcastTransaction) => void;
     onError?: (errorMessage: 'submit-failed' | 'push-failed') => void;
     preview: YieldReviewPreview;
-    spentToken: YieldFlowDisplayToken;
     unsignedTransaction: string;
 };
 
@@ -38,7 +37,6 @@ export const WrappedNativeTokenReviewContent = ({
     onBroadcast,
     onError,
     preview,
-    spentToken,
     unsignedTransaction,
 }: WrappedNativeTokenReviewContentProps) => {
     const {
@@ -58,7 +56,6 @@ export const WrappedNativeTokenReviewContent = ({
         account,
         flowContext,
         flowType,
-        token: spentToken,
         amount,
         unsignedTransaction,
         onBroadcast,

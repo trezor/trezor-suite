@@ -1,4 +1,3 @@
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     AddressDisplayOptions,
     type ExternalOutput,
@@ -370,16 +369,14 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                     id: 'AMOUNT_IS_LESS_THAN_RESERVE',
                     values: {
                         reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
-                        displaySymbol: getDisplaySymbol(account.symbol),
                     },
+                    networkSymbolValues: { displaySymbol: account.symbol },
                 };
             }
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                    values: {
-                        networkDisplaySymbol: getDisplaySymbol(network.symbol),
-                    },
+                    networkSymbolValues: { networkDisplaySymbol: network.symbol },
                 };
             }
         });
