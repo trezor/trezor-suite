@@ -1,11 +1,14 @@
 import { AccountLabel } from '@suite/account';
+import { useTranslation } from '@suite/intl';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Column, Icon, Row, Text } from '@trezor/components';
+import { Column, Icon, Row, TOOLTIP_DELAY_NORMAL, Text, Tooltip } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { useSelector } from '#src/hooks/suite/useSelector';
+import { selectIsAccountCustomBackendUnreachable } from '#src/selectors/suite/backendSelectors';
+import { selectIsSuiteOnline } from '#src/selectors/suite/suiteSelectors';
 
 import { AccountItemBadges } from './AccountItemBadges';
 import { BalancePlaceholder, FiatBalancePlaceholder } from './BalancePlaceholder';
@@ -31,7 +34,13 @@ export const AccountItemContent = ({
     isFocused,
 }: AccountItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
+    const { translationString } = useTranslation();
     const isFailed = !!account.failed;
+    // offline, every backend fails and the custom one is not the problem
+    const isCustomBackendUnreachable = useSelector(
+        state =>
+            selectIsSuiteOnline(state) && selectIsAccountCustomBackendUnreachable(state, account),
+    );
     const canShowBalance = account.backendType !== 'coinjoin' || account.status !== 'initial';
     const shouldShowBalancePlaceholder = !isFailed && !canShowBalance;
     const shouldShowCryptoBalance = !isFailed && canShowBalance && tokenCount === 0 && !hasStaking;
@@ -69,6 +78,24 @@ export const AccountItemContent = ({
                         intent="warning"
                         data-testid="@account-menu/account/error"
                     />
+                )}
+                {!isFailed && isCustomBackendUnreachable && (
+                    <Tooltip
+                        content={translationString('TR_CUSTOM_BACKEND_UNREACHABLE')}
+                        delayShow={TOOLTIP_DELAY_NORMAL}
+                    >
+                        <div
+                            role="img"
+                            aria-label={translationString('TR_CUSTOM_BACKEND_UNREACHABLE')}
+                        >
+                            <Icon
+                                as={WarningIcon}
+                                size={16}
+                                intent="warning"
+                                data-testid="@account-menu/account/backend-error"
+                            />
+                        </div>
+                    </Tooltip>
                 )}
                 {shouldShowBalancePlaceholder && (
                     <FiatBalancePlaceholder networkSymbol={account.symbol} />

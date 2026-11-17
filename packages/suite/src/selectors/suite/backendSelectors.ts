@@ -11,7 +11,8 @@ import {
     selectEnabledNetworks,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { type Account, type Blockchain } from '@suite-common/wallet-types';
+import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 // every network, enabled or not: a disabled one would reconnect to its custom backend once enabled again
@@ -118,6 +119,22 @@ export const selectIsCustomBackendUnreachable = (
     selectNetworkBackends(state).some(
         backend => backend.symbol === symbol && isUnreachableCustomBackend(backend),
     );
+
+// Ethereum accounts connect under their own identity, so their connection may fail on its own
+export const selectIsAccountCustomBackendUnreachable = (
+    state: BlockchainRootState,
+    account: Pick<Account, 'symbol' | 'backendType' | 'networkType' | 'deviceState'>,
+) => {
+    if (!isTrezorConnectBackendType(account.backendType)) return false;
+
+    const blockchain: Blockchain | undefined = selectNetworkBlockchainInfo(state, account.symbol);
+    if (blockchain?.backends.selected === undefined) return false;
+
+    const identity = tryGetAccountIdentity(account);
+    const identityConnection = identity ? blockchain.identityConnections?.[identity] : undefined;
+
+    return getConnectionStatus(identityConnection ?? blockchain) === 'failed';
+};
 
 export const selectCustomBackendsStatus = (
     state: AccountsRootState & BlockchainRootState & WalletSettingsRootState,
