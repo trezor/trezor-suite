@@ -2,10 +2,12 @@ import { type JSX } from 'react';
 
 import { type ErrorCode } from 'invity-api';
 
+import { AssetSymbol } from '@suite/assets';
 import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { TRADING_ERROR_MESSAGE } from '@suite/trading';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getTradingErrorDisplay } from '@suite-common/trading';
 import { DEVICE } from '@trezor/connect';
 import { ERRORS } from '@trezor/connect-common';
@@ -481,7 +483,12 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="TOAST_TX_REVOKED"
                     messageValues={{
-                        tokenSymbol: notification.token.symbol,
+                        tokenSymbol: (
+                            <AssetSymbol
+                                networkSymbol={notification.symbol}
+                                contractAddress={toTokenAddress(notification.token.contract)}
+                            />
+                        ),
                     }}
                 />
             );
@@ -495,7 +502,12 @@ export const NotificationRenderer = ({
                     variant="warning"
                     message="TOAST_TX_APPROVED"
                     messageValues={{
-                        tokenSymbol: notification.token.symbol,
+                        tokenSymbol: (
+                            <AssetSymbol
+                                networkSymbol={notification.symbol}
+                                contractAddress={toTokenAddress(notification.token.contract)}
+                            />
+                        ),
                     }}
                 />
             );

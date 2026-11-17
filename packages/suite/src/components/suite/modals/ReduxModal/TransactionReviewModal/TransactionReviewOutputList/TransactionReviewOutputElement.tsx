@@ -3,8 +3,9 @@ import { type ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Address } from '@suite/address';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -156,6 +157,19 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
                 </Column>
             );
         }
+        case 'token-symbol':
+            return (
+                <Text>
+                    {token ? (
+                        <AssetSymbol
+                            networkSymbol={symbol}
+                            contractAddress={toTokenAddress(token.contract)}
+                        />
+                    ) : (
+                        value
+                    )}
+                </Text>
+            );
         default:
             return exhaustive(type);
     }
@@ -168,7 +182,10 @@ export type OutputElementLine = {
     isChunked?: boolean;
 } & (
     | { type: 'default'; value: ReactNode }
-    | { type: 'address' | 'safe-address' | 'note' | 'data' | 'amount'; value: string }
+    | {
+          type: 'address' | 'safe-address' | 'note' | 'data' | 'amount' | 'token-symbol';
+          value: string;
+      }
 );
 
 export type TransactionReviewOutputElementProps = {
