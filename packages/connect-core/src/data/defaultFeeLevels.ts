@@ -106,7 +106,9 @@ export const getBitcoinFeeLevels = (coin: CoinsJsonData): FeeInfoWithLevels => {
     };
 };
 
-export const getEthereumFeeLevels = (network: CoinsJsonData): FeeInfoWithLevels => {
+export const getEthereumFeeLevels = (
+    network: Pick<CoinsJsonData, 'chain' | 'blocktime_seconds'>,
+): FeeInfoWithLevels => {
     const { min, max, defaultGas, minPriorityFee } = getEvmChainGweiGasPrice(network.chain);
 
     return {
