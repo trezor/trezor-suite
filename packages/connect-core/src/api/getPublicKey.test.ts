@@ -62,18 +62,18 @@ describe('GetPublicKey permissions', () => {
 
 describe('GetPublicKey crossChain permissions', () => {
     it.each([
-        ['Litecoin', "m/84'/2'/0'", undefined, 'btc'],
-        ['Ethereum', "m/44'/60'/0'", undefined, 'btc'],
-        ['Tron', "m/44'/195'/0'", undefined, 'btc'],
-        ['Ripple', "m/44'/144'/0'", undefined, 'btc'],
-        ['Nostr', "m/44'/1237'/0'", undefined, 'btc'],
-        ['Solana', "m/44'/501'/0'/0'", 'ed25519', 'btc'],
-        ['Stellar', "m/44'/148'/0'", 'ed25519', 'btc'],
+        ['Litecoin', "m/84'/2'/0'", undefined, 'ltc'],
+        ['Ethereum', "m/44'/60'/0'", undefined, 'eth'],
+        ['Tron', "m/44'/195'/0'", undefined, 'trx'],
+        ['Ripple', "m/44'/144'/0'", undefined, 'xrp'],
+        ['Nostr', "m/44'/1237'/0'", undefined, 'nostr'],
+        ['Solana', "m/44'/501'/0'/0'", 'ed25519', 'sol'],
+        ['Stellar', "m/44'/148'/0'", 'ed25519', 'xlm'],
         ['Solana on secp256k1', "m/44'/501'/0'/0'", undefined, 'btc'],
-        ['Ethereum on secp256k1-decred', "m/44'/60'/0'", 'secp256k1-decred', 'btc'],
-        ['Ethereum on secp256k1-groestl', "m/44'/60'/0'", 'secp256k1-groestl', 'btc'],
-        ['Ethereum on an empty curve name', "m/44'/60'/0'", '', 'btc'],
-        ['Solana on ed25519 with a NUL suffix', "m/44'/501'/0'/0'", 'ed25519\0x', 'btc'],
+        ['Ethereum on secp256k1-decred', "m/44'/60'/0'", 'secp256k1-decred', 'eth'],
+        ['Ethereum on secp256k1-groestl', "m/44'/60'/0'", 'secp256k1-groestl', 'eth'],
+        ['Ethereum on an empty curve name', "m/44'/60'/0'", '', 'eth'],
+        ['Solana on ed25519 with a NUL suffix', "m/44'/501'/0'/0'", 'ed25519\0x', 'sol'],
         ['Ethereum on ed25519', "m/44'/60'/0'", 'ed25519', 'btc'],
         ['Monero', "m/44'/128'/0'", 'ed25519', 'btc'],
         ['Cardano', "m/1852'/1815'/0'", 'ed25519', 'btc'],
@@ -84,9 +84,9 @@ describe('GetPublicKey crossChain permissions', () => {
         expect(method.requiredPermissions).toEqual([{ permission: 'read_xpub', coin }]);
     });
 
-    it('titles a crossChain call by its coin', () => {
+    it('titles a crossChain call by its coin and the network of its path', () => {
         expect(createMethod({ coin: 'btc', path: "m/44'/60'/0'", crossChain: true }).info).toBe(
-            'Export public key of Bitcoin legacy account #1',
+            'Export public key of Bitcoin legacy account #1 (Ethereum path)',
         );
         expect(
             createMethod({
@@ -95,6 +95,6 @@ describe('GetPublicKey crossChain permissions', () => {
                 ecdsaCurveName: 'ed25519',
                 crossChain: true,
             }).info,
-        ).toBe('Export public key of Bitcoin legacy account #1');
+        ).toBe('Export public key of Bitcoin legacy account #1 (Solana path)');
     });
 });

@@ -5,6 +5,21 @@ import { fromHardenedPathPart } from '@trezor/crypto-utils';
 
 import { getCoinName } from '../data/coinInfo';
 
+// A `crossChain` permission names the network of the path, so the title names it too, after the
+// coin whose format the key is exported in. Ethereum networks keep their ticker in `label`.
+export const getLabelWithPathNetwork = (
+    label: string,
+    coinInfo: Readonly<CoinInfo>,
+    pathNetwork: Readonly<CoinInfo>,
+) => {
+    if (pathNetwork.shortcut === coinInfo.shortcut) {
+        return label;
+    }
+    const pathNetworkName = pathNetwork.type === 'ethereum' ? pathNetwork.name : pathNetwork.label;
+
+    return `${label} (${pathNetworkName} path)`;
+};
+
 export const getPublicKeyLabel = (path: number[], coinInfo?: BitcoinNetworkInfo) => {
     let hasSegwit = false;
     let coinLabel: string;
