@@ -22,6 +22,7 @@ import type { VersionArray } from '@trezor/utils';
 import {
     selectIsStakingAccountDelegatedOutside,
     selectIsStakingManageableSymbol,
+    selectIsStakingOperationDisabled,
     selectIsStakingPromotedSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,
@@ -279,6 +280,30 @@ describe('selectStakingProductAccess', () => {
         expect(selectStakingProductAccess(state, manage.id)).toBe(
             selectStakingProductAccess(state, manage.id),
         );
+    });
+});
+
+describe('selectIsStakingOperationDisabled', () => {
+    it('reads the switch of an operation the platform does not offer', () => {
+        const state = createState({ platform: 'mobile', disabled: ['trx.staking.stake'] });
+
+        expect(selectStakingProductAccess(state, gated.id).access).toBe('read-only');
+        expect(selectIsStakingOperationDisabled(state, gated.id, 'stake')).toBe(true);
+        expect(selectIsStakingOperationDisabled(state, gated.id, 'claim')).toBe(false);
+    });
+
+    it('is false while the switch is on, without a feature or without the product', () => {
+        const state = createState({ disabled: ['trx.staking.stake'] });
+
+        expect(selectIsStakingOperationDisabled(state, manage.id, 'stake')).toBe(false);
+        expect(selectIsStakingOperationDisabled(state, gated.id, 'unstake')).toBe(false);
+        expect(
+            selectIsStakingOperationDisabled(
+                state,
+                mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('dsol') }).id,
+                'stake',
+            ),
+        ).toBe(false);
     });
 });
 

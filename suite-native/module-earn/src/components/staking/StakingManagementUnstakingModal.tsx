@@ -65,6 +65,9 @@ export const StakingManagementUnstakingModal = ({
         networkSymbol,
     });
 
+    // Once the unstake has matured, the position holds its amount as withdrawable.
+    const shownAmount = isPositiveBalance(unstakingBalance) ? unstakingBalance : withdrawableAmount;
+
     const currentStep: StakingDetailModalStep = (() => {
         if (isPositiveBalance(unstakingBalance)) return StakingDetailModalStep.InProgress;
         if (isPositiveBalance(withdrawableAmount)) return StakingDetailModalStep.Completed;
@@ -111,7 +114,7 @@ export const StakingManagementUnstakingModal = ({
                 </Text>
                 <VStack style={applyStyle(amountsStyle)} spacing="sp2">
                     <ExactCryptoAmountFormatter
-                        value={unstakingBalance}
+                        value={shownAmount}
                         symbol={networkSymbol}
                         maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
                         color="contentPrimary"
@@ -122,7 +125,7 @@ export const StakingManagementUnstakingModal = ({
                             ≈
                         </Text>
                         <CryptoToFiatAmountFormatter
-                            value={unstakingBalance}
+                            value={shownAmount}
                             symbol={networkSymbol}
                             color="contentSecondary"
                             variant="body-sm"

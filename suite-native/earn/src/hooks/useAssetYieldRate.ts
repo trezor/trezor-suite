@@ -9,10 +9,10 @@ import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-st
 import {
     type StakingAccessRootState,
     type StakingPromotionScope,
+    selectIsStakingOperationDisabled,
     selectIsStakingPromotedSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     useNetworkStakingRate,
-    useStakingAccess,
 } from '@suite-common/earn-staking';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -103,12 +103,15 @@ export const useAssetYieldRate = ({
     const isStakingPromoted = useSelector((state: StakingAccessRootState) =>
         selectIsStakingPromotedSymbol(state, networkSymbol, stakingScope),
     );
-    const { disabled } = useStakingAccess(stakingProductId);
+    // The switch applies to a product the platform only shows as well, as the legacy hook read it.
+    const isStakeDisabled = useSelector((state: StakingAccessRootState) =>
+        stakingProductId === null
+            ? false
+            : selectIsStakingOperationDisabled(state, stakingProductId, 'stake'),
+    );
     const { rate: stakingRate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
     const promotedStakingRate =
-        token === undefined && isStakingPromoted && disabled.stake === undefined
-            ? stakingRate
-            : null;
+        token === undefined && isStakingPromoted && !isStakeDisabled ? stakingRate : null;
 
     return useMemo(() => {
         const vaultApy = bestVault ? getApyPercent(bestVault.rewardRate.total) : null;

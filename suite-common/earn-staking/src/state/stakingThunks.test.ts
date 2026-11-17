@@ -1,5 +1,6 @@
 import {
     type StakingProductAdapter,
+    type StakingProductDescriptor,
     stakingProviderIdSchema,
 } from '@suite-common/earn-staking-common';
 import {
@@ -37,6 +38,7 @@ import {
 
 const eth = mockStakingProductDescriptor();
 const sol = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('sol'), type: 'native' });
+const thod = mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('thod') });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
@@ -93,8 +95,9 @@ describe('refreshStakingProductInfoThunk', () => {
     const createState = (
         accounts: readonly Account[] = [ethAccount, solAccount, btcAccount],
         enabledNetworks: NetworkSymbol[] = [asNetworkSymbol('eth')],
+        descriptors: readonly StakingProductDescriptor[] = [eth, sol],
     ): RefreshStakingProductInfoThunkState => ({
-        earn: { staking: mockStakingState({ descriptors: [eth, sol] }) },
+        earn: { staking: mockStakingState({ descriptors }) },
         wallet: {
             accounts: [...accounts],
             transactions: transactionsInitialState,
@@ -129,7 +132,7 @@ describe('refreshStakingProductInfoThunk', () => {
         jest.restoreAllMocks();
     });
 
-    it('fetches and caches the info of products on enabled networks only', async () => {
+    it('fetches and caches the info of every mainnet product, enabled or not', async () => {
         const ethAdapter = createAdapter(eth);
         const solAdapter = createAdapter(sol);
         const extra = createDeps([ethAdapter, solAdapter]);
@@ -137,11 +140,39 @@ describe('refreshStakingProductInfoThunk', () => {
         await run(createState(), extra);
 
         expect(ethAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
-        expect(solAdapter.fetchProductInfo).not.toHaveBeenCalled();
+        expect(solAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
         expect(getCachedStakingProductInfo(extra.services.queryClient, eth.id)).toEqual(
             mockStakingProductInfo(),
         );
-        expect(getCachedStakingProductInfo(extra.services.queryClient, sol.id)).toBeNull();
+        expect(getCachedStakingProductInfo(extra.services.queryClient, sol.id)).toEqual(
+            mockStakingProductInfo(),
+        );
+    });
+
+    it('fetches the info of a testnet product once its network is enabled', async () => {
+        const disabledAdapter = createAdapter(thod);
+
+        await run(
+            createState(undefined, [asNetworkSymbol('eth')], [eth, thod]),
+            createDeps([createAdapter(eth), disabledAdapter]),
+        );
+        expect(disabledAdapter.fetchProductInfo).not.toHaveBeenCalled();
+
+        const enabledAdapter = createAdapter(thod);
+
+        await run(
+            createState(undefined, [asNetworkSymbol('eth'), asNetworkSymbol('thod')], [eth, thod]),
+            createDeps([createAdapter(eth), enabledAdapter]),
+        );
+        expect(enabledAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+    });
+
+    it('fetches nothing while bitcoin is the only enabled network', async () => {
+        const adapter = createAdapter(eth);
+
+        await run(createState(undefined, [asNetworkSymbol('btc')]), createDeps([adapter]));
+
+        expect(adapter.fetchProductInfo).not.toHaveBeenCalled();
     });
 
     it('re-syncs the positions of a network whose info arrived, once', async () => {

@@ -149,6 +149,23 @@ describe('TronStakingPendingSection', () => {
         ).toBeOnTheScreen();
     });
 
+    it('moves an unstake from the card to the withdraw banner once it unlocks', async () => {
+        await renderSection({ unlocks: [{ amount: sun(5 * TRX), availableAt: NOW_MS + 30_000 }] });
+
+        const readyToWithdrawText = getTranslation('earn.tron.readyToWithdrawAlert', {
+            amount: '5',
+            displaySymbol: 'TRX',
+        });
+
+        expect(screen.getByTestId('@staking/tron-unstaking-card/container')).toBeOnTheScreen();
+        expect(screen.queryByText(readyToWithdrawText)).toBeNull();
+
+        await advanceMinutes(1);
+
+        expect(screen.queryByTestId('@staking/tron-unstaking-card/container')).toBeNull();
+        expect(screen.getByText(readyToWithdrawText)).toBeOnTheScreen();
+    });
+
     it('shows only the withdraw banner once every unlock has passed', async () => {
         await renderSection({ unlocks: [], withdrawable: sun(5 * TRX) });
 
