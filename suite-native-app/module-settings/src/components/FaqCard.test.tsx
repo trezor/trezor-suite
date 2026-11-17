@@ -11,8 +11,8 @@ jest.mock('@trezor/env-utils', () => ({
     isAndroid: () => mockIsAndroid,
 }));
 
-jest.mock('@suite-native/trading-state', () => ({
-    ...jest.requireActual('@suite-native/trading-state'),
+jest.mock('@suite-native/trading-shared', () => ({
+    ...jest.requireActual('@suite-native/trading-shared'),
     selectIsTradingEnabled: () => mockIsTradingEnabled,
 }));
 

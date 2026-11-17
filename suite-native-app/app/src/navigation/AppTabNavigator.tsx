@@ -7,7 +7,7 @@ import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { EarnStackNavigator } from '@suite-native/module-earn';
 import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { DEFAULT_TRADING_TYPE } from '@suite-native/trading-consts';
-import { selectIsTradingEnabled } from '@suite-native/trading-state';
+import { selectIsTradingEnabled } from '@suite-native/trading-shared';
 import { AccountsStackNavigator } from '@suite-native-app/module-accounts';
 import { HomeStackNavigator } from '@suite-native-app/module-home';
 import { SettingsScreen } from '@suite-native-app/module-settings';

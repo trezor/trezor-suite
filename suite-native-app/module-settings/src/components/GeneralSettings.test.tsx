@@ -2,8 +2,8 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { GeneralSettings } from './GeneralSettings';
 
-jest.mock('@suite-native/trading-state', () => ({
-    ...jest.requireActual('@suite-native/trading-state'),
+jest.mock('@suite-native/trading-shared', () => ({
+    ...jest.requireActual('@suite-native/trading-shared'),
     selectIsTradingCountrySet: () => true,
     selectIsTradingResidenceSelectionAvailable: () => true,
 }));

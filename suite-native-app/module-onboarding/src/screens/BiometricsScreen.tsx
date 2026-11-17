@@ -16,7 +16,7 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
-import { selectIsTradingResidenceSelectionAvailable } from '@suite-native/trading-state';
+import { selectIsTradingResidenceSelectionAvailable } from '@suite-native/trading-shared';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

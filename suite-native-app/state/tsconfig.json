@@ -125,7 +125,7 @@
         { "path": "../../suite-native/settings" },
         { "path": "../../suite-native/storage" },
         {
-            "path": "../../suite-native/trading-state"
+            "path": "../../suite-native/trading-shared"
         },
         {
             "path": "../../suite-native/transaction-management"

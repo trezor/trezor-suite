@@ -29,8 +29,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../trading-state" },
-        { "path": "../trading-types" },
+        { "path": "../trading-shared" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"

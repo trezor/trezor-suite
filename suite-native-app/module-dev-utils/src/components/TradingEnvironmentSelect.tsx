@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { Select, type SelectItemType } from '@suite-native/atoms';
-import { selectTradingEnvironment, tradingActions } from '@suite-native/trading-state';
+import { selectTradingEnvironment, tradingActions } from '@suite-native/trading-shared';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

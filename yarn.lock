@@ -13721,7 +13721,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -14308,7 +14308,7 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -14477,7 +14477,7 @@ __metadata:
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/toasts": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -14517,7 +14517,7 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -14744,7 +14744,7 @@ __metadata:
     "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@suite-native/wallet": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -15047,7 +15047,7 @@ __metadata:
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
@@ -15429,8 +15429,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
-    "@suite-native/trading-types": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -16347,7 +16346,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/tokens": "workspace:*"
-    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-shared": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@suite-native/transaction-review": "workspace:*"
     "@suite-native/transactions": "workspace:*"
@@ -17093,6 +17092,16 @@ __metadata:
     react-native-safe-area-context: "npm:~5.10.1"
     react-native-svg: "npm:15.16.0"
     react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/trading-shared@workspace:*, @suite-native/trading-shared@workspace:suite-native/trading-shared":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/trading-shared@workspace:suite-native/trading-shared"
+  dependencies:
+    "@suite-native/trading-state": "workspace:*"
+    "@suite-native/trading-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
   languageName: unknown
   linkType: soft
 

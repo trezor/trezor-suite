@@ -10,7 +10,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsTradingBuyEnabled, selectIsTradingEnabled } from '@suite-native/trading-state';
+import { selectIsTradingBuyEnabled, selectIsTradingEnabled } from '@suite-native/trading-shared';
 
 import { PortfolioAssetsEmptyStateContainer } from './PortfolioAssetsEmptyStateContainer';
 import { AssetsGetSvg } from '../../../../assets/AssetsGetSvg';
