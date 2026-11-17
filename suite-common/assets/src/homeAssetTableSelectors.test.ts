@@ -44,10 +44,10 @@ import {
     selectWalletAssetFiatValue,
     selectWalletAssetHiddenReason,
     selectWalletAssetHoldings,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetSignVerifyAccounts,
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
-    selectWalletAssetSymbol,
     selectWalletAssetTokenSymbol,
 } from './homeAssetTableSelectors';
 
@@ -336,10 +336,14 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectHomeAssetRowKeys(state)).toEqual([
-            getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+            getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC }),
         ]);
         expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([
-            getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: USDC_ON_ETH }),
+            getWalletAssetKey({
+                deviceState: ALICE,
+                networkSymbol: ETH,
+                contractAddress: USDC_ON_ETH,
+            }),
         ]);
     });
 
@@ -357,7 +361,7 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectHomeAssetRowKeys(state)).toEqual([
-            getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+            getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC }),
         ]);
         expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
     });
@@ -430,8 +434,8 @@ describe('the rows the table is given', () => {
 
     const bitcoin = mockAccount({ symbol: BTC, index: 0, balance: '1' });
     const ethereum = mockAccount({ symbol: ETH, index: 1, balance: '1' });
-    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
-    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
+    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC });
+    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: ETH });
     // Bitcoin outranks Ethereum until Ethereum's balance is written up.
     const twoAssetRates = { ...mockRate(BTC, 100000), ...mockRate(ETH, 3000) };
 
@@ -536,9 +540,9 @@ describe('the total over the wallet', () => {
         ],
         rates: { ...mockRate(ETH, 3000), ...mockRate(BTC, 100000) },
     });
-    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
-    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
-    const cardanoKey = getWalletAssetKey({ deviceState: ALICE, symbol: ADA });
+    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: ETH });
+    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC });
+    const cardanoKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: ADA });
 
     it('adds up every asset of the wallet', () => {
         expect(selectHomeAssetTotals(state).fiatValue?.toFixed()).toBe('56000');
@@ -552,7 +556,7 @@ describe('the total over the wallet', () => {
     it('counts only the accounts that hold the selected asset', () => {
         const tokenKey = getWalletAssetKey({
             deviceState: ALICE,
-            symbol: ETH,
+            networkSymbol: ETH,
             contractAddress: USDC_ON_ETH,
         });
         const stateWithThreeEthereumAccounts = createState({
@@ -573,7 +577,7 @@ describe('the total over the wallet', () => {
     it('lists the accounts that hold the selected asset, each with what it holds of it', () => {
         const tokenKey = getWalletAssetKey({
             deviceState: ALICE,
-            symbol: ETH,
+            networkSymbol: ETH,
             contractAddress: USDC_ON_ETH,
         });
         const stateWithTwoHolders = createState({
@@ -608,10 +612,10 @@ describe('the total over the wallet', () => {
     it('lists the accounts of the asset network that can sign and verify messages', () => {
         const tokenKey = getWalletAssetKey({
             deviceState: ALICE,
-            symbol: ETH,
+            networkSymbol: ETH,
             contractAddress: USDC_ON_ETH,
         });
-        const solanaKey = getWalletAssetKey({ deviceState: ALICE, symbol: DSOL });
+        const solanaKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: DSOL });
         const stateWithSigners = createState({
             accounts: [
                 mockAccount({
@@ -728,7 +732,7 @@ describe('the ticker of an asset', () => {
         shownTokens: [UNKNOWN_TOKEN],
     });
     const tokenKey = (contractAddress: TokenAddress) =>
-        getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress });
+        getWalletAssetKey({ deviceState: ALICE, networkSymbol: ETH, contractAddress });
 
     it('is the token’s own ticker', () => {
         expect(selectWalletAssetTokenSymbol(state, tokenKey(USDC_ON_ETH))).toBe('USDC');
@@ -739,7 +743,7 @@ describe('the ticker of an asset', () => {
         expect(
             selectWalletAssetTokenSymbol(
                 state,
-                getWalletAssetKey({ deviceState: ALICE, symbol: ETH }),
+                getWalletAssetKey({ deviceState: ALICE, networkSymbol: ETH }),
             ),
         ).toBeNull();
     });
@@ -748,8 +752,8 @@ describe('the ticker of an asset', () => {
 describe('the networks the table can be grouped by', () => {
     const bitcoin = mockAccount({ symbol: BTC, index: 0, balance: '1' });
     const ethereum = mockAccount({ symbol: ETH, index: 1, balance: '1' });
-    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
-    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
+    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC });
+    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: ETH });
     // Bitcoin outranks Ethereum until Ethereum's balance is written up.
     const rates = { ...mockRate(BTC, 100000), ...mockRate(ETH, 3000) };
 
@@ -903,11 +907,11 @@ describe('the tokens the table leaves out', () => {
         });
         const assetKey = getWalletAssetKey({
             deviceState: ALICE,
-            symbol: ETH,
+            networkSymbol: ETH,
             contractAddress: USDC_ON_ETH,
         });
 
-        expect(selectWalletAssetSymbol(state, assetKey)).toBe(ETH);
+        expect(selectWalletAssetNetworkSymbol(state, assetKey)).toBe(ETH);
         expect(selectWalletAssetContractAddress(state, assetKey)).toBe(USDC_ON_ETH);
         expect(selectWalletAssetFiatValue(state, assetKey)?.toFixed()).toBe('10');
     });
@@ -915,7 +919,7 @@ describe('the tokens the table leaves out', () => {
     it('says why a token is hidden, and nothing for one that is shown', () => {
         const state = stateWithBitcoinBalance('1');
         const getTokenKey = (contractAddress: TokenAddress) =>
-            getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress });
+            getWalletAssetKey({ deviceState: ALICE, networkSymbol: ETH, contractAddress });
 
         expect(selectWalletAssetHiddenReason(state, getTokenKey(USDC_ON_ETH))).toBe('hiddenByUser');
         expect(selectWalletAssetHiddenReason(state, getTokenKey(UNKNOWN_TOKEN))).toBe(
@@ -924,7 +928,7 @@ describe('the tokens the table leaves out', () => {
         expect(
             selectWalletAssetHiddenReason(
                 state,
-                getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+                getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC }),
             ),
         ).toBeUndefined();
     });

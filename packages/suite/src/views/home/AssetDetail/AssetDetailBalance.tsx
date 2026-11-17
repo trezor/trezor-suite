@@ -8,7 +8,7 @@ import {
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
@@ -57,7 +57,7 @@ export const AssetDetailBalanceSkeleton = () => {
 
 export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
@@ -66,7 +66,7 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
     const accountCount = useSelector(state => selectWalletAssetAccountCount(state, assetKey));
     const [isAccountsModalOpen, setIsAccountsModalOpen] = useState(false);
 
-    if (symbol === undefined || amount === undefined) {
+    if (networkSymbol === undefined || amount === undefined) {
         return null;
     }
 
@@ -107,7 +107,7 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
                     <Text typographyStyle="body-md">
                         <FormattedCryptoAmount
                             value={amount}
-                            symbol={tokenSymbol ?? symbol}
+                            symbol={tokenSymbol ?? networkSymbol}
                             contractAddress={contractAddress}
                             tokenDecimals={tokenDecimals}
                             isSymbolSecondary

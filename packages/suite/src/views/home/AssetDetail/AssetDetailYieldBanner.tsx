@@ -6,7 +6,7 @@ import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
@@ -28,16 +28,21 @@ type AssetDetailYieldBannerProps = {
 export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const formatApy = useFormatApy();
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
-    const bannerKey = `${symbol}-${contractAddress?.toLowerCase()}`;
+    const bannerKey = `${networkSymbol}-${contractAddress?.toLowerCase()}`;
     const isBannerClosed = useSelector(state => selectIsTokenYieldBannerClosed(state, bannerKey));
-    const apy = useYieldVaultApy({ symbol, contractAddress, tokenSymbol, tokenDecimals });
+    const apy = useYieldVaultApy({
+        symbol: networkSymbol,
+        contractAddress,
+        tokenSymbol,
+        tokenDecimals,
+    });
 
     if (
-        symbol === undefined ||
+        networkSymbol === undefined ||
         contractAddress === undefined ||
         isBannerClosed ||
         apy === null ||
@@ -47,7 +52,7 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
     }
 
     const symbolLabel = (
-        <AssetSymbol networkSymbol={symbol} contractAddress={contractAddress} isTruncated />
+        <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} isTruncated />
     );
 
     const reportYieldNavigate = (action: 'continue' | 'cancel') =>
@@ -57,7 +62,7 @@ export const AssetDetailYieldBanner = ({ assetKey }: AssetDetailYieldBannerProps
                 action,
                 from: 'asset-detail-banner',
                 to: 'earn-dashboard',
-                networkSymbol: symbol,
+                networkSymbol,
             },
         });
 

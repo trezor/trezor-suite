@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import {
     type HiddenTokenReason,
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import {
     DefinitionType,
@@ -25,16 +25,18 @@ type UnhideAssetModalProps = {
 
 export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModalProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, true));
+    const networkSymbol = useSelector(state =>
+        selectWalletAssetNetworkSymbol(state, assetKey, true),
+    );
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, true),
     );
 
     const handleUnhide = () => {
-        if (symbol !== undefined && contractAddress !== undefined) {
+        if (networkSymbol !== undefined && contractAddress !== undefined) {
             dispatch(
                 tokenDefinitionsActions.setTokenStatus({
-                    symbol,
+                    symbol: networkSymbol,
                     contractAddress,
                     status: TokenManagementAction.SHOW,
                     type: DefinitionType.COIN,
@@ -71,9 +73,9 @@ export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModa
                 <Translation
                     id="TR_HOME_ASSET_UNHIDE_TITLE"
                     values={{
-                        asset: symbol && (
+                        asset: networkSymbol && (
                             <AssetSymbol
-                                networkSymbol={symbol}
+                                networkSymbol={networkSymbol}
                                 contractAddress={contractAddress}
                                 isTruncated
                             />

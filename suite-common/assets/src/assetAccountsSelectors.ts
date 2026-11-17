@@ -37,7 +37,7 @@ export type AssetAccount = {
     accountKey: AccountKey;
     assetKey: WalletAssetKey;
     deviceState: StaticSessionId;
-    symbol: NetworkSymbol;
+    networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
     cryptoBalance: string;
     tokenInfo: TokenInfo | undefined;
@@ -58,7 +58,7 @@ const createAssetAccount = weakMapMemoize(
         accountKey: AccountKey,
         assetKey: WalletAssetKey,
         deviceState: StaticSessionId,
-        symbol: NetworkSymbol,
+        networkSymbol: NetworkSymbol,
         contractAddress: TokenAddress | undefined,
         cryptoBalance: string,
         tokenInfo: TokenInfo | undefined,
@@ -67,7 +67,7 @@ const createAssetAccount = weakMapMemoize(
         accountKey,
         assetKey,
         deviceState,
-        symbol,
+        networkSymbol,
         contractAddress,
         cryptoBalance,
         tokenInfo,
@@ -117,7 +117,7 @@ const toAssetAccounts = weakMapMemoize(
                 account.key,
                 getWalletAssetKey({
                     deviceState: account.deviceState,
-                    symbol: account.symbol,
+                    networkSymbol: account.symbol,
                     contractAddress,
                 }),
                 account.deviceState,
@@ -177,17 +177,17 @@ const selectAssetAccountsByToken = createMemoizedSelector(
         const byNetwork = new Map<NetworkSymbol, Map<TokenAddress, AssetAccount[]>>();
 
         assetAccounts.forEach(assetAccount => {
-            const { symbol, contractAddress } = assetAccount;
+            const { networkSymbol, contractAddress } = assetAccount;
 
             if (contractAddress === undefined) {
                 return;
             }
 
-            let byContract = byNetwork.get(symbol);
+            let byContract = byNetwork.get(networkSymbol);
 
             if (byContract === undefined) {
                 byContract = new Map<TokenAddress, AssetAccount[]>();
-                byNetwork.set(symbol, byContract);
+                byNetwork.set(networkSymbol, byContract);
             }
 
             const held = byContract.get(contractAddress);

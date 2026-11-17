@@ -14,16 +14,16 @@ const NATIVE_TOKEN_CONTRACT = '';
 
 type WalletAssetKeyParams = {
     deviceState: StaticSessionId;
-    symbol: NetworkSymbol;
+    networkSymbol: NetworkSymbol;
     contractAddress?: TokenAddress;
 };
 
 export const getWalletAssetKey = ({
     deviceState,
-    symbol,
+    networkSymbol,
     contractAddress,
 }: WalletAssetKeyParams): WalletAssetKey =>
-    [deviceState, symbol, contractAddress ?? NATIVE_TOKEN_CONTRACT].join(
+    [deviceState, networkSymbol, contractAddress ?? NATIVE_TOKEN_CONTRACT].join(
         ASSET_KEY_SEPARATOR,
     ) as WalletAssetKey;
 

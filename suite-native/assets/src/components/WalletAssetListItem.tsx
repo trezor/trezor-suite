@@ -7,7 +7,7 @@ import {
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
@@ -47,8 +47,8 @@ type WalletAssetListItemProps = {
 };
 
 export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
-    const symbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetSymbol(state, assetKey),
+    const networkSymbol = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetNetworkSymbol(state, assetKey),
     );
     const contractAddress = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
@@ -71,7 +71,8 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
 
     const isFiatRateDisallowed = useSelector(
         (state: TokenDefinitionsRootState) =>
-            symbol !== undefined && selectIsTokenFiatRateDisallowed(state, symbol, contractAddress),
+            networkSymbol !== undefined &&
+            selectIsTokenFiatRateDisallowed(state, networkSymbol, contractAddress),
     );
 
     const { applyStyle } = useNativeStyles();
@@ -79,24 +80,24 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
 
-    if (symbol === undefined || amount === undefined) {
+    if (networkSymbol === undefined || amount === undefined) {
         return null;
     }
 
     const handlePress = () =>
         navigation.navigate(RootStackRoutes.AssetsStack, {
             screen: AssetsStackRoutes.AssetDetail,
-            params: { networkSymbol: symbol, tokenContract: contractAddress },
+            params: { networkSymbol, tokenContract: contractAddress },
         });
 
     return (
         <PressableOpacity
             onPress={handlePress}
             style={applyStyle(rowStyle)}
-            testID={`@assets/wallet-asset/${symbol}/${contractAddress ?? 'coin'}`}
+            testID={`@assets/wallet-asset/${networkSymbol}/${contractAddress ?? 'coin'}`}
         >
             <TokenIcon
-                networkSymbol={symbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
                 size="medium"
                 showNetworkIcon
@@ -107,14 +108,14 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                         <Box flexShrink={1}>
                             <AssetSymbol
                                 isTruncated
-                                networkSymbol={symbol}
+                                networkSymbol={networkSymbol}
                                 contractAddress={contractAddress}
                                 variant="body-sm"
                                 numberOfLines={1}
                             />
                         </Box>
                         <AssetYieldRateBadge
-                            networkSymbol={symbol}
+                            networkSymbol={networkSymbol}
                             contractAddress={contractAddress}
                             tokenSymbol={tokenSymbol}
                             tokenDecimals={tokenDecimals}
@@ -123,7 +124,7 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                     {!isFiatRateDisallowed && (
                         <BaseCurrencyAmountFormatter
                             value={fiatValue ?? null}
-                            symbol={symbol}
+                            symbol={networkSymbol}
                             variant="body-sm"
                         />
                     )}
@@ -131,13 +132,13 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <Box flex={1}>
                         <Text variant="body-xs" color="contentSecondary" numberOfLines={1}>
-                            <NetworkNameFormatter value={symbol} />
+                            <NetworkNameFormatter value={networkSymbol} />
                         </Text>
                     </Box>
                     {contractAddress ? (
                         <CompactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
-                            networkSymbol={symbol}
+                            networkSymbol={networkSymbol}
                             contractAddress={contractAddress}
                             variant="body-xs"
                             color="contentTertiary"
@@ -145,7 +146,7 @@ export const WalletAssetListItem = ({ assetKey }: WalletAssetListItemProps) => {
                     ) : (
                         <CompactCryptoAmountFormatter
                             value={amount}
-                            symbol={symbol}
+                            symbol={networkSymbol}
                             variant="body-xs"
                             color="contentTertiary"
                         />

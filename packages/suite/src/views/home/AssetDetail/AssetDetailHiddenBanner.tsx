@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetHiddenReason,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import {
     DefinitionType,
@@ -25,10 +25,14 @@ type AssetDetailHiddenBannerProps = {
 export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerProps) => {
     const { dispatch } = useServices(injectDispatch);
     const hiddenReason = useSelector(state => selectWalletAssetHiddenReason(state, assetKey));
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
 
-    if (symbol === undefined || contractAddress === undefined || hiddenReason === undefined) {
+    if (
+        networkSymbol === undefined ||
+        contractAddress === undefined ||
+        hiddenReason === undefined
+    ) {
         return null;
     }
 
@@ -47,7 +51,7 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
     const showToken = () =>
         dispatch(
             tokenDefinitionsActions.setTokenStatus({
-                symbol,
+                symbol: networkSymbol,
                 contractAddress,
                 status: TokenManagementAction.SHOW,
                 type: DefinitionType.COIN,
@@ -65,7 +69,7 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
                     values={{
                         asset: (
                             <AssetSymbol
-                                networkSymbol={symbol}
+                                networkSymbol={networkSymbol}
                                 contractAddress={contractAddress}
                                 isTruncated
                             />

@@ -16,10 +16,10 @@ const btcSymbol = asNetworkSymbol('btc');
 const deviceState = '1stTestnetAddress@device_id:0';
 const usdcAddress = toTokenAddress(`0x${'a'.repeat(40)}`);
 
-const ethKey: WalletAssetKey = getWalletAssetKey({ deviceState, symbol: ethSymbol });
+const ethKey: WalletAssetKey = getWalletAssetKey({ deviceState, networkSymbol: ethSymbol });
 const usdcKey: WalletAssetKey = getWalletAssetKey({
     deviceState,
-    symbol: ethSymbol,
+    networkSymbol: ethSymbol,
     contractAddress: usdcAddress,
 });
 

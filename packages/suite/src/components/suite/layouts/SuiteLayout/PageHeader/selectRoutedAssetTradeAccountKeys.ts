@@ -55,7 +55,7 @@ export const selectRoutedAssetTradeAccountKeys = createMemoizedSelector(
         const routedAssetAccounts = assetAccounts.filter(
             assetAccount => assetAccount.assetKey === assetKey,
         );
-        const networkSymbol = routedAssetAccounts[0]?.symbol;
+        const networkSymbol = routedAssetAccounts[0]?.networkSymbol;
 
         const [buyAccount] =
             networkSymbol === undefined
@@ -84,7 +84,7 @@ export const selectRoutedAssetTradeAccountKeys = createMemoizedSelector(
                       account,
                       'sell',
                       tokenDefinitions,
-                      getCryptoId(assetAccount.symbol, assetAccount.contractAddress),
+                      getCryptoId(assetAccount.networkSymbol, assetAccount.contractAddress),
                   );
 
         return {

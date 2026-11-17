@@ -4,7 +4,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
@@ -33,12 +33,12 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     assetNameTestId,
 }: HomeAssetRowProps) {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
 
-    if (symbol === undefined) {
+    if (networkSymbol === undefined) {
         return null;
     }
 
@@ -49,25 +49,30 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                 action: 'navigate',
                 type: 'asset',
                 from: 'home-asset-table',
-                networkSymbol: symbol,
+                networkSymbol,
             },
         });
-        dispatch(gotoThunk({ routeName: 'suite-asset', params: { symbol, contractAddress } }));
+        dispatch(
+            gotoThunk({
+                routeName: 'suite-asset',
+                params: { symbol: networkSymbol, contractAddress },
+            }),
+        );
     };
 
     return (
         <Table.Row
             hasBorderTop={hasBorderTop}
             onClick={openAssetDetail}
-            data-testid={`@dashboard/home-asset-item/${symbol}/${contractAddress ?? 'coin'}`}
+            data-testid={`@dashboard/home-asset-item/${networkSymbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={HOME_ASSET_CELL_PADDING.first} data-testid={assetNameTestId}>
                 <HomeAssetIdentity
-                    symbol={symbol}
+                    symbol={networkSymbol}
                     contractAddress={contractAddress}
                     badge={
                         <HomeAssetApyBadge
-                            symbol={symbol}
+                            symbol={networkSymbol}
                             contractAddress={contractAddress}
                             tokenSymbol={tokenSymbol}
                             tokenDecimals={tokenDecimals}
@@ -78,8 +83,8 @@ export const HomeAssetRow = memo(function HomeAssetRow({
 
             <Table.Cell align="end">
                 <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
-                    <PriceTicker symbol={symbol} contractAddress={contractAddress} />
-                    <TrendTicker symbol={symbol} contractAddress={contractAddress} />
+                    <PriceTicker symbol={networkSymbol} contractAddress={contractAddress} />
+                    <TrendTicker symbol={networkSymbol} contractAddress={contractAddress} />
                 </Column>
             </Table.Cell>
 

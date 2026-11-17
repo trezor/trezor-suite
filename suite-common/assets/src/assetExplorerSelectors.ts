@@ -6,7 +6,7 @@ import { type AssetsRootState, selectAssetTokenInfo } from './assetSelectors';
 import {
     type HomeAssetTableState,
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from './homeAssetTableSelectors';
 
 type AssetTokenInfoState = AssetsRootState & HomeAssetTableState;
@@ -17,22 +17,22 @@ export const selectWalletAssetTokenInfo = (
     state: AssetTokenInfoState,
     assetKey: WalletAssetKey | undefined,
 ) => {
-    const symbol = selectWalletAssetSymbol(state, assetKey);
+    const networkSymbol = selectWalletAssetNetworkSymbol(state, assetKey);
     const contractAddress = selectWalletAssetContractAddress(state, assetKey);
 
-    return symbol === undefined || contractAddress === undefined
+    return networkSymbol === undefined || contractAddress === undefined
         ? null
-        : selectAssetTokenInfo(state, symbol, contractAddress);
+        : selectAssetTokenInfo(state, networkSymbol, contractAddress);
 };
 
 export const selectWalletAssetExplorerUrl = (
     state: AssetExplorerState,
     assetKey: WalletAssetKey | undefined,
 ): string | undefined => {
-    const symbol = selectWalletAssetSymbol(state, assetKey);
-    const explorer = selectExplorer(state, symbol);
+    const networkSymbol = selectWalletAssetNetworkSymbol(state, assetKey);
+    const explorer = selectExplorer(state, networkSymbol);
 
-    if (symbol === undefined || explorer === undefined) {
+    if (networkSymbol === undefined || explorer === undefined) {
         return undefined;
     }
 
@@ -40,5 +40,5 @@ export const selectWalletAssetExplorerUrl = (
 
     return tokenInfo === null
         ? `${explorer.base}${explorer.queryString ?? ''}`
-        : getTokenExplorerUrl(explorer, getNetwork(symbol).networkType, tokenInfo);
+        : getTokenExplorerUrl(explorer, getNetwork(networkSymbol).networkType, tokenInfo);
 };
