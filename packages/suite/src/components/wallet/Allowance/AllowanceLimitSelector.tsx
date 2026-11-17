@@ -1,10 +1,12 @@
 import { useRef } from 'react';
 
+import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
 import {
     CardList,
     Column,
@@ -17,7 +19,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, WarningIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 import type { AllowanceProvider } from './AllowanceProviderInfo';
@@ -28,7 +29,7 @@ type AllowanceLimitSelectorProps = {
     networkSymbol: NetworkSymbol;
     onSelect: (limitType: AllowanceLimitType) => void;
     provider: AllowanceProvider;
-    token: TokenInfo;
+    contractAddress: TokenAddress;
     displayAmount: AmountSubunit;
     hasPreapprovedAmount: boolean;
 };
@@ -67,20 +68,21 @@ export const AllowanceLimitSelector = ({
     networkSymbol,
     onSelect,
     provider,
-    token,
+    contractAddress,
     displayAmount,
     hasPreapprovedAmount,
 }: AllowanceLimitSelectorProps) => {
     const popoverRef = useRef<PopoverRef>(null);
-    const displaySymbol = token.symbol
-        ? getDisplaySymbol(token.symbol, token.contract)
-        : token.name;
+    const token = useTokenMetadata(networkSymbol, contractAddress);
+    const symbolLabel = (
+        <AssetSymbol networkSymbol={networkSymbol} contractAddress={contractAddress} isTruncated />
+    );
 
     const providerKind: ProviderKind = provider.kind ?? 'provider';
 
     const translationValues = {
-        value: subunitsToUnits({ value: displayAmount, decimals: token.decimals }).toString(),
-        send: displaySymbol,
+        value: subunitsToUnits({ value: displayAmount, decimals: token?.decimals ?? 0 }).toString(),
+        send: symbolLabel,
         provider: provider.name,
     };
 
@@ -103,7 +105,7 @@ export const AllowanceLimitSelector = ({
                         <Icon as={WarningIcon} size={16} />
                         <Translation
                             id={UNLIMITED_WARNING_ID[providerKind]}
-                            values={{ send: displaySymbol }}
+                            values={{ send: symbolLabel }}
                         />
                     </Row>
                 </Text>
@@ -120,11 +122,10 @@ export const AllowanceLimitSelector = ({
         >
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
-                    <TokenIcon
+                    <AssetIcon
                         networkSymbol={networkSymbol}
-                        contractAddress={token.contract}
+                        contractAddress={contractAddress}
                         size={20}
-                        placeholder={displaySymbol}
                     />
                     <Text typographyStyle="body-sm-strong">
                         <Translation id={LIMIT_TYPE_LABEL_ID[type]} values={translationValues} />
@@ -147,11 +148,10 @@ export const AllowanceLimitSelector = ({
                         />
                     </Text>
                     <Row gap={8}>
-                        <TokenIcon
+                        <AssetIcon
                             networkSymbol={networkSymbol}
-                            contractAddress={token.contract}
+                            contractAddress={contractAddress}
                             size={20}
-                            placeholder={displaySymbol}
                         />
                         <Text
                             typographyStyle="body-sm-strong"
