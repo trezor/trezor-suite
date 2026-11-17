@@ -20,6 +20,11 @@ import { BigNumber } from '@trezor/utils';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
 import {
+    type FetchAndUpdateAccountThunkDeps,
+    type FetchAndUpdateAccountThunkState,
+    fetchAndUpdateAccountThunk,
+} from '../../accounts/accountsThunks';
+import {
     type BlockchainRootState,
     selectBlockchainUrlBySymbol,
 } from '../../blockchain/blockchainReducer';
@@ -29,6 +34,7 @@ import { type SignTransactionError } from '../../send/sendFormTypes';
 import { STAKE_MODULE_PREFIX } from '../stakingActions';
 import {
     composeSolanaStakingTransaction,
+    hasStakedBalanceChangedError,
     prepareSolanaStakeTxData,
 } from './solanaStakingFormUtils';
 import { isSupportedSolStakingNetworkSymbol } from './solanaStakingUtils';
@@ -125,7 +131,10 @@ export const resolveSolanaStakingContext = async (
 };
 
 export type ComposeSolanaStakingTransactionFeeLevelsThunkState = ResolveSolanaStakingContextState &
-    FeesRootState;
+    FeesRootState &
+    FetchAndUpdateAccountThunkState;
+
+export type ComposeSolanaStakingTransactionFeeLevelsThunkDeps = FetchAndUpdateAccountThunkDeps;
 
 export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels | undefined,
@@ -133,10 +142,11 @@ export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
     {
         rejectValue: SolanaStakingComposeRejectValue;
         state: ComposeSolanaStakingTransactionFeeLevelsThunkState;
+        extra: ComposeSolanaStakingTransactionFeeLevelsThunkDeps;
     }
 >(
     `${STAKE_MODULE_PREFIX}/composeSolanaStakingTransactionFeeLevelsThunk`,
-    async ({ accountKey, stakeType, amount, source }, { getState, rejectWithValue }) => {
+    async ({ accountKey, stakeType, amount, source }, { dispatch, getState, rejectWithValue }) => {
         if (!amount || amount === '0') return undefined;
 
         const resolved = await resolveSolanaStakingContext(getState(), accountKey);
@@ -149,7 +159,7 @@ export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
         if (!feeInfo) return undefined;
 
-        return await composeSolanaStakingTransaction({
+        const composedLevels = await composeSolanaStakingTransaction({
             formValues: buildSolanaStakeFormState(account, amount, stakeType),
             composeContext: {
                 account,
@@ -160,6 +170,12 @@ export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
             userAgent: getSolanaStakingUserAgent(),
             source,
         });
+
+        if (hasStakedBalanceChangedError(composedLevels)) {
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+        }
+
+        return composedLevels;
     },
 );
 

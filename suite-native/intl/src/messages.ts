@@ -5012,6 +5012,8 @@ export const messages = {
                 stakeNotEnoughFunds: 'Insufficient funds for staking.',
                 stakeTxPreparationFailed:
                     'The transaction could not be prepared. Make sure the account is up to date and try again.',
+                stakedBalanceChanged:
+                    'Your staked balance has changed. Check the updated amount and try again.',
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:
