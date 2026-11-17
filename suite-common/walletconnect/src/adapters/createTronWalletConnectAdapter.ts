@@ -1,22 +1,19 @@
-import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type CallConnectPopupDep } from '@suite-common/connect-popup';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
 import type { TronContractInput } from '@trezor/connect-common';
-import { createThunk } from '@trezor/redux-utils';
+import { type Getter } from '@trezor/dependency-injection';
 import { type Result } from '@trezor/type-utils';
 
-import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import type {
     PendingConnectionProposalNetwork,
     WalletConnectAdapter,
     WalletConnectNamespace,
+    WalletConnectRequestParams,
 } from '../walletConnectTypes';
 
 type TronRawData = {
@@ -105,24 +102,15 @@ const processNamespaces = (
         },
     );
 
-export type TronRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
-    AccountsRootState &
-    WalletConnectStateRootState;
+export type TronWalletConnectAdapterDeps = CallConnectPopupDep & {
+    getAccounts: Getter<[], Account[]>;
+    getSelectedDevice: Getter<[], TrezorDevice | undefined>;
+};
 
-export type TronRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
-
-const tronRequestThunk = createThunk<
-    Record<string, unknown> | undefined,
-    {
-        event: WalletKitTypes.SessionRequest;
-    },
-    { state: TronRequestThunkState; extra: TronRequestThunkDeps }
->(`${WALLETCONNECT_MODULE}/tronRequest`, async ({ event }, { dispatch, getState }) => {
-    const session = selectSessionByTopic(getState(), event.topic);
-    if (!session) {
-        throw new Error('WalletConnect Session not found');
-    }
-
+const handleTronRequest = async (
+    deps: TronWalletConnectAdapterDeps,
+    { event, session }: WalletConnectRequestParams,
+) => {
     switch (event.params.request.method) {
         case 'tron_signTransaction': {
             const { address, transaction } = event.params.request.params as {
@@ -138,7 +126,7 @@ const tronRequestThunk = createThunk<
 
             const { raw_data: rawData } = rawTransaction;
 
-            const accounts = selectAccounts(getState());
+            const accounts = deps.getAccounts();
             const account = accounts.find(
                 a => a.networkType === 'tron' && a.visible && a.descriptor === address,
             );
@@ -146,35 +134,30 @@ const tronRequestThunk = createThunk<
                 throw new Error(`Tron account not found: ${address}`);
             }
 
-            const device = selectSelectedDevice(getState());
+            const device = deps.getSelectedDevice();
             const { origin } = event.verifyContext.verified;
 
-            dispatch(
-                trezorConnectPopupActions.connectPopupCallThunk({
-                    method: 'tronSignTransaction',
-                    payload: {
-                        path: account.path,
-                        device,
-                        ref_block_bytes: rawData.ref_block_bytes,
-                        ref_block_hash: rawData.ref_block_hash,
-                        expiration: rawData.expiration,
-                        timestamp: rawData.timestamp,
-                        fee_limit: rawData.fee_limit,
-                        contract: rawData.contract,
+            const response = (await deps.callConnectPopup({
+                method: 'tronSignTransaction',
+                payload: {
+                    path: account.path,
+                    device,
+                    ref_block_bytes: rawData.ref_block_bytes,
+                    ref_block_hash: rawData.ref_block_hash,
+                    expiration: rawData.expiration,
+                    timestamp: rawData.timestamp,
+                    fee_limit: rawData.fee_limit,
+                    contract: rawData.contract,
+                },
+                source: {
+                    type: 'walletconnect' as const,
+                    origin,
+                    manifest: {
+                        appName: session.peer.metadata.name,
+                        appIcon: session.peer.metadata.icons?.[0],
                     },
-                    source: {
-                        type: 'walletconnect' as const,
-                        origin,
-                        manifest: {
-                            appName: session.peer.metadata.name,
-                            appIcon: session.peer.metadata.icons?.[0],
-                        },
-                    },
-                }),
-            );
-
-            const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
-                .promise) as Result<CallMethodResponse<'tronSignTransaction'>>;
+                },
+            })) as Result<CallMethodResponse<'tronSignTransaction'>>;
 
             if (!response.success || !response.payload.signature) {
                 console.error('tron_signTransaction error', response);
@@ -187,13 +170,15 @@ const tronRequestThunk = createThunk<
             throw new Error('Tron message signing is not supported');
         }
     }
-});
+};
 
-export const tronAdapter = {
+export const createTronWalletConnectAdapter = (
+    deps: TronWalletConnectAdapterDeps,
+): WalletConnectAdapter => ({
     methods,
     networkType: 'tron',
     namespaceId: 'tron',
-    requestThunk: tronRequestThunk,
+    handleRequest: params => handleTronRequest(deps, params),
     getNamespace,
     processNamespaces,
-} satisfies WalletConnectAdapter;
+});

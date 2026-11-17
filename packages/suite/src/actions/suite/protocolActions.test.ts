@@ -32,6 +32,7 @@ const createHandleProtocolRequestDeps = () => {
                 navigate: jest.fn(),
                 listen: jest.fn(),
             },
+            walletConnectAdapters: [],
         },
     };
 

@@ -1,22 +1,20 @@
-import { type WalletKitTypes } from '@reown/walletkit';
 import { base58 } from '@scure/base';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type CallConnectPopupDep } from '@suite-common/connect-popup';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
-import { createThunk } from '@trezor/redux-utils';
+import { type CallMethodResponse } from '@trezor/connect';
+import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { type Getter } from '@trezor/dependency-injection';
 import { type Result } from '@trezor/type-utils';
 
-import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
     type WalletConnectNamespace,
+    type WalletConnectRequestParams,
     type WalletConnectSession,
 } from '../walletConnectTypes';
 
@@ -28,110 +26,94 @@ const methods = [
     'solana_signMessage',
 ];
 
-type SolanaSignTransactionThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
-    AccountsRootState;
+export type SolanaWalletConnectAdapterDeps = CallConnectPopupDep &
+    GetTrezorConnectDep<'blockchainEstimateFee' | 'pushTransaction'> & {
+        getAccounts: Getter<[], Account[]>;
+        getSelectedDevice: Getter<[], TrezorDevice | undefined>;
+    };
 
-type SolanaSignTransactionThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+type SignSolanaTransactionParams = {
+    session: WalletConnectSession;
+    transaction: string;
+    feePayer?: string;
+    origin: string;
+    isDevnet: boolean;
+};
 
-const solanaSignTransactionThunk = createThunk<
-    { signature: string; transaction: string },
-    {
-        session: WalletConnectSession;
-        transaction: string;
-        feePayer?: string;
-        origin: string;
-        isDevnet: boolean;
-    },
-    { state: SolanaSignTransactionThunkState; extra: SolanaSignTransactionThunkDeps }
->(
-    `${WALLETCONNECT_MODULE}/solanaSignTransaction`,
-    async ({ session, transaction, feePayer, origin, isDevnet }, { dispatch, getState }) => {
-        // Convert from base64 to hex
-        const transactionBuffer = Buffer.from(transaction, 'base64');
-        const serializedTx = transactionBuffer.toString('hex');
+const signSolanaTransaction = async (
+    deps: SolanaWalletConnectAdapterDeps,
+    { session, transaction, feePayer, origin, isDevnet }: SignSolanaTransactionParams,
+) => {
+    // Convert from base64 to hex
+    const transactionBuffer = Buffer.from(transaction, 'base64');
+    const serializedTx = transactionBuffer.toString('hex');
 
-        const device = selectSelectedDevice(getState());
-        const accounts = selectAccounts(getState());
-        const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-            coin: isDevnet ? 'dsol' : 'sol',
-            request: {
-                specific: {
-                    data: serializedTx,
-                },
+    const device = deps.getSelectedDevice();
+    const accounts = deps.getAccounts();
+    const estimatedFee = await deps.getTrezorConnect().blockchainEstimateFee({
+        coin: isDevnet ? 'dsol' : 'sol',
+        request: {
+            specific: {
+                data: serializedTx,
             },
-        });
-        if (!estimatedFee.success) {
-            throw new Error('Failed to estimate fee. ' + estimatedFee.error.message);
-        }
-        // Get from argument or use decoded from estimate fee
-        const { levels } = estimatedFee.payload;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstLevel: (typeof levels)[number] = levels[0];
-        feePayer = feePayer || firstLevel.feePayer;
-        const account = accounts.find(
-            a => a.networkType === 'solana' && a.visible && a.descriptor === feePayer,
-        );
-        if (!account) {
-            throw new Error('Account not found');
-        }
-
-        dispatch(
-            trezorConnectPopupActions.connectPopupCallThunk({
-                method: 'solanaSignTransaction',
-                payload: {
-                    path: account.path,
-                    device,
-                    serializedTx,
-                    serialize: true,
-                    additionalInfo: {
-                        isDevnet,
-                    },
-                },
-                source: {
-                    type: 'walletconnect' as const,
-                    origin,
-                    manifest: {
-                        appName: session.peer.metadata.name,
-                        appIcon: session.peer.metadata.icons?.[0],
-                    },
-                },
-            }),
-        );
-        const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
-            .promise) as Result<CallMethodResponse<'solanaSignTransaction'>>;
-        if (!response.success || !response.payload.serializedTx) {
-            console.error('solana_signTransaction error', response);
-            throw new Error('Solana signing error');
-        }
-
-        return {
-            signature: response.payload.signature,
-            transaction: response.payload.serializedTx,
-        };
-    },
-);
-
-export type SolanaRequestThunkState = SolanaSignTransactionThunkState & WalletConnectStateRootState;
-
-export type SolanaRequestThunkDeps = SolanaSignTransactionThunkDeps;
-
-const solanaRequestThunk = createThunk<
-    { pubkey: string }[] | { signature: string } | undefined,
-    {
-        event: WalletKitTypes.SessionRequest;
-    },
-    { state: SolanaRequestThunkState; extra: SolanaRequestThunkDeps }
->(`${WALLETCONNECT_MODULE}/solanaRequest`, async ({ event }, { dispatch, getState }) => {
-    const session = selectSessionByTopic(getState(), event.topic);
-    if (!session) {
-        throw new Error('WalletConnect Session not found');
+        },
+    });
+    if (!estimatedFee.success) {
+        throw new Error('Failed to estimate fee. ' + estimatedFee.error.message);
     }
+    // Get from argument or use decoded from estimate fee
+    const { levels } = estimatedFee.payload;
+    // @ts-expect-error: indexing with noUncheckedIndexedAccess
+    const firstLevel: (typeof levels)[number] = levels[0];
+    feePayer = feePayer || firstLevel.feePayer;
+    const account = accounts.find(
+        a => a.networkType === 'solana' && a.visible && a.descriptor === feePayer,
+    );
+    if (!account) {
+        throw new Error('Account not found');
+    }
+
+    const response = (await deps.callConnectPopup({
+        method: 'solanaSignTransaction',
+        payload: {
+            path: account.path,
+            device,
+            serializedTx,
+            serialize: true,
+            additionalInfo: {
+                isDevnet,
+            },
+        },
+        source: {
+            type: 'walletconnect' as const,
+            origin,
+            manifest: {
+                appName: session.peer.metadata.name,
+                appIcon: session.peer.metadata.icons?.[0],
+            },
+        },
+    })) as Result<CallMethodResponse<'solanaSignTransaction'>>;
+    if (!response.success || !response.payload.serializedTx) {
+        console.error('solana_signTransaction error', response);
+        throw new Error('Solana signing error');
+    }
+
+    return {
+        signature: response.payload.signature,
+        transaction: response.payload.serializedTx,
+    };
+};
+
+const handleSolanaRequest = async (
+    deps: SolanaWalletConnectAdapterDeps,
+    { event, session }: WalletConnectRequestParams,
+) => {
     const isDevnet = session.lastAccount?.symbol === 'dsol';
 
     switch (event.params.request.method) {
         case 'solana_getAccounts':
         case 'solana_requestAccounts': {
-            const accounts = selectAccounts(getState());
+            const accounts = deps.getAccounts();
 
             return accounts
                 .filter(a => a.networkType === 'solana' && a.visible)
@@ -141,9 +123,13 @@ const solanaRequestThunk = createThunk<
             const { transaction, feePayer } = event.params.request.params;
             const { origin } = event.verifyContext.verified;
 
-            const response = await dispatch(
-                solanaSignTransactionThunk({ session, transaction, feePayer, origin, isDevnet }),
-            ).unwrap();
+            const response = await signSolanaTransaction(deps, {
+                session,
+                transaction,
+                feePayer,
+                origin,
+                isDevnet,
+            });
 
             const signature = base58.encode(Buffer.from(response.signature, 'hex'));
 
@@ -153,11 +139,14 @@ const solanaRequestThunk = createThunk<
             const { transaction } = event.params.request.params;
             const { origin } = event.verifyContext.verified;
 
-            const signResponse = await dispatch(
-                solanaSignTransactionThunk({ session, transaction, origin, isDevnet }),
-            ).unwrap();
+            const signResponse = await signSolanaTransaction(deps, {
+                session,
+                transaction,
+                origin,
+                isDevnet,
+            });
 
-            const pushResponse = await TrezorConnect.pushTransaction({
+            const pushResponse = await deps.getTrezorConnect().pushTransaction({
                 coin: isDevnet ? 'dsol' : 'sol',
                 tx: signResponse.transaction,
             });
@@ -174,7 +163,7 @@ const solanaRequestThunk = createThunk<
             throw new Error('Solana message signing is not supported');
         }
     }
-});
+};
 
 // https://github.com/reown-com/blockchain-api/blob/master/SUPPORTED_CHAINS.md#solana
 enum SolanaChainIds {
@@ -256,11 +245,13 @@ const processNamespaces = (
         },
     );
 
-export const solanaAdapter = {
+export const createSolanaWalletConnectAdapter = (
+    deps: SolanaWalletConnectAdapterDeps,
+): WalletConnectAdapter => ({
     methods,
     networkType: 'solana',
     namespaceId: 'solana',
-    requestThunk: solanaRequestThunk,
+    handleRequest: params => handleSolanaRequest(deps, params),
     getNamespace,
     processNamespaces,
-} satisfies WalletConnectAdapter;
+});

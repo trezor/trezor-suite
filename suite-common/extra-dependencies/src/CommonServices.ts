@@ -29,6 +29,7 @@ import {
     type GetTradedAccountKeysDep,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
+import { type WalletConnectAdaptersDep } from '@suite-common/walletconnect';
 import type { ThpSettings } from '@trezor/connect';
 import { type Getter } from '@trezor/dependency-injection';
 import type { CreateLoggerDep } from '@trezor/logger';
@@ -36,6 +37,7 @@ import type { CreateLoggerDep } from '@trezor/logger';
 export type CommonServices = SuiteSyncDep &
     NetworksDep &
     SignVerifyDep &
+    WalletConnectAdaptersDep &
     StakingDep &
     QueryClientDep &
     Bip329Dep &

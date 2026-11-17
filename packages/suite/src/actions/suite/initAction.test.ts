@@ -325,6 +325,7 @@ const initStore = (state: InitThunkState) => {
                 () => state.wallet.settings.enabledNetworks,
             ),
             suiteRouterHistory,
+            walletConnectAdapters: [],
             lockDevice: (isLocked: boolean): void => {
                 store.dispatch(lockDevice(isLocked));
             },

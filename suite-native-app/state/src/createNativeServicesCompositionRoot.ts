@@ -14,6 +14,7 @@ import { createQueryClient } from '@suite-common/react-query';
 import { createSignVerifyCompositionRoot } from '@suite-common/sign-verify';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { createWalletConnectCompositionRoot } from '@suite-common/walletconnect';
 import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -109,6 +110,11 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     return {
         networks,
         ...createSignVerifyCompositionRoot({ getTrezorConnect: deps.getTrezorConnect }),
+        ...createWalletConnectCompositionRoot({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            getTrezorConnect: deps.getTrezorConnect,
+        }),
         staking,
         queryClient,
         suiteSync,

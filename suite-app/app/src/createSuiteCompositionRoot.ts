@@ -49,6 +49,7 @@ import {
     selectAccountsByDeviceState,
     selectAccountsTransactions,
 } from '@suite-common/wallet-core';
+import { createWalletConnectCompositionRoot } from '@suite-common/walletconnect';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -173,6 +174,11 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         desktopApi: deps.desktopApi,
         networks,
         ...createSignVerifyCompositionRoot({ getTrezorConnect: deps.getTrezorConnect }),
+        ...createWalletConnectCompositionRoot({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            getTrezorConnect: deps.getTrezorConnect,
+        }),
         staking,
         queryClient,
         suiteSync,
