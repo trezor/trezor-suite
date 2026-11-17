@@ -88,6 +88,7 @@ type CryptoInputRulesProps = {
     amountLimits: AmountLimitProps | undefined;
     formatter: Formatter<string, string>;
     validationAccount: Account;
+    networkDisplaySymbol: string;
     outputToken: string | null | undefined;
     isNetworkReserveEnabled: boolean;
     contractAddress: string | undefined;
@@ -102,6 +103,7 @@ export const getCryptoInputRules = ({
     amountLimits,
     formatter,
     validationAccount,
+    networkDisplaySymbol,
     outputToken,
     isNetworkReserveEnabled,
     contractAddress,
@@ -120,6 +122,7 @@ export const getCryptoInputRules = ({
             ? {
                   reserveOrBalance: validateReserveOrBalance(translationString, {
                       account: validationAccount,
+                      networkDisplaySymbol,
                       areSatsUsed: !!shouldSendInSats,
                       contractAddress: outputToken ?? undefined,
                   }),

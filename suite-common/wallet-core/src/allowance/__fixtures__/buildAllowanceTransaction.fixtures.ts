@@ -1,3 +1,4 @@
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import type { PrecomposedTransaction } from '@suite-common/wallet-types';
 import type { FeeLevel, TokenInfo } from '@trezor/connect';
 
@@ -7,7 +8,7 @@ interface BuildAllowanceTransactionFixture {
         balance: string;
         contract: string;
         feeLevel: FeeLevel;
-        networkDisplaySymbol: string;
+        networkSymbol: NetworkSymbol;
         token?: TokenInfo;
         estimatedFeeLimit?: string;
     };
@@ -26,7 +27,7 @@ export const buildAllowanceTransaction: BuildAllowanceTransactionFixture[] = [
                 feeLimit: '50000',
                 blocks: -1,
             },
-            networkDisplaySymbol: 'ETH',
+            networkSymbol: asNetworkSymbol('eth'),
         },
         result: {
             type: 'final',
@@ -61,17 +62,15 @@ export const buildAllowanceTransaction: BuildAllowanceTransactionFixture[] = [
                 feeLimit: '50000',
                 blocks: -1,
             },
-            networkDisplaySymbol: 'ETH',
+            networkSymbol: asNetworkSymbol('eth'),
         },
         result: {
             type: 'error',
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                values: {
-                    feeAmount: '0.0005',
-                    networkDisplaySymbol: 'ETH',
-                },
+                values: { feeAmount: '0.0005' },
+                networkSymbolValues: { networkDisplaySymbol: asNetworkSymbol('eth') },
             },
         },
     },

@@ -23,6 +23,7 @@
         { "path": "../account" },
         { "path": "../address" },
         { "path": "../analytics" },
+        { "path": "../assets" },
         { "path": "../authenticity-checks" },
         { "path": "../device" },
         { "path": "../intl" },

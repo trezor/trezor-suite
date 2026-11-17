@@ -1,11 +1,8 @@
 import { useMemo, useState } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import {
-    getNetwork,
-    getNetworkDisplaySymbol,
-    getNetworkFeatures,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Column, H2, Icon, Row, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -43,7 +40,7 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
     );
 
     const networkName = getNetwork(account.symbol).name;
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
 
     const handleVerifyAddress = async (path: string) => {
         if (verifyingAddressPath !== undefined) {

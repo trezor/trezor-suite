@@ -1,4 +1,3 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type Account,
@@ -99,7 +98,7 @@ export const composeAllowanceTransactionThunk = createThunk<
                     account.availableBalance,
                     contract,
                     level,
-                    getNetworkDisplaySymbol(account.symbol),
+                    account.symbol,
                     token,
                     adjustedGasLimit.toFixed(0),
                 ),

@@ -38,7 +38,7 @@ describe(simpleSearchTransactions.name, () => {
     it('finds transactions with native balance change by native display symbol', () => {
         const transaction = getWalletTransaction({ txid: 'aaa1' });
 
-        const result = simpleSearchTransactions([transaction], emptyLabels, 'BTC');
+        const result = simpleSearchTransactions([transaction], emptyLabels, 'BTC', 'BTC');
 
         expect(result).toEqual([transaction]);
     });
@@ -63,7 +63,7 @@ describe(simpleSearchTransactions.name, () => {
             ],
         });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([]);
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH', 'ETH')).toEqual([]);
     });
 
     it('does not match token-only transactions by native display symbol even when token symbol or name contain it', () => {
@@ -98,7 +98,7 @@ describe(simpleSearchTransactions.name, () => {
             ],
         });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([]);
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH', 'ETH')).toEqual([]);
     });
 
     it('matches contract transactions with native amount by native display symbol', () => {
@@ -109,13 +109,15 @@ describe(simpleSearchTransactions.name, () => {
             amount: '1.5',
         });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([transaction]);
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH', 'ETH')).toEqual([
+            transaction,
+        ]);
     });
 
     it('does not match fee-only self transactions by native display symbol', () => {
         const transaction = getWalletTransaction({ txid: 'aaa3', type: 'self', amount: '144' });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'BTC')).toEqual([]);
+        expect(simpleSearchTransactions([transaction], emptyLabels, 'BTC', 'BTC')).toEqual([]);
     });
 
     it('matches transactions with native internal transfers by native display symbol', () => {
@@ -126,7 +128,7 @@ describe(simpleSearchTransactions.name, () => {
             internalTransfers: [{ type: 'recv', from: '0x1', to: '0x2', amount: '5' }],
         });
 
-        const result = simpleSearchTransactions([transaction], emptyLabels, 'ETH');
+        const result = simpleSearchTransactions([transaction], emptyLabels, 'ETH', 'ETH');
 
         expect(result).toEqual([transaction]);
     });
@@ -151,7 +153,7 @@ describe(simpleSearchTransactions.name, () => {
             ],
         });
 
-        const result = simpleSearchTransactions([transaction], emptyLabels, 'USDT');
+        const result = simpleSearchTransactions([transaction], emptyLabels, 'USDT', 'ETH');
 
         expect(result).toEqual([transaction]);
     });
@@ -159,7 +161,7 @@ describe(simpleSearchTransactions.name, () => {
         const first = getTransactionForAddress('aaa8', sharedAddress);
         const second = getTransactionForAddress('aaa9', sharedAddress);
 
-        const result = simpleSearchTransactions([first, second], emptyLabels, sharedAddress);
+        const result = simpleSearchTransactions([first, second], emptyLabels, sharedAddress, 'BTC');
 
         expect(result).toEqual([first, second]);
     });
@@ -172,7 +174,7 @@ describe(simpleSearchTransactions.name, () => {
             accountLabel: null,
         };
 
-        const result = simpleSearchTransactions([transaction], labels, 'sAvIn');
+        const result = simpleSearchTransactions([transaction], labels, 'sAvIn', 'BTC');
 
         expect(result).toEqual([transaction]);
     });
@@ -195,23 +197,27 @@ describe(simpleSearchTransactions.name, () => {
         const dear = received('amount1', '1200000000'); // 12
 
         it('matches an amount when the query is a number', () => {
-            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '0.001')).toEqual([cheap]);
+            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '0.001', 'BTC')).toEqual([
+                cheap,
+            ]);
         });
 
         it('matches an amount when the query is a number with an operator', () => {
-            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '>1')).toEqual([dear]);
+            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '>1', 'BTC')).toEqual([
+                dear,
+            ]);
         });
 
         it('matches nothing for an operator query that is not a number', () => {
             // Was comparing every amount against `BigNumber(NaN)`, because the `return []` below
             // the number branch could not be reached.
-            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '>abc')).toEqual([]);
+            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '>abc', 'BTC')).toEqual([]);
         });
 
         it('does not look at amounts for a query that is not a number', () => {
             const transaction = getTransactionForAddress('aaa1', sharedAddress);
 
-            expect(simpleSearchTransactions([transaction], emptyLabels, 'zzz')).toEqual([]);
+            expect(simpleSearchTransactions([transaction], emptyLabels, 'zzz', 'BTC')).toEqual([]);
         });
     });
 });

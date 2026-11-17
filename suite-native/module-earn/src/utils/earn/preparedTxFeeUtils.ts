@@ -17,8 +17,9 @@ type ParsedUnsignedEvmTransaction = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
 
+/** The token a prepared transaction spends; without one, it spends the native coin. */
 export type PreparedTxFeeToken = {
-    contractAddress?: string | null;
+    contractAddress: string;
     decimals: number;
     symbol: string;
 };
@@ -28,7 +29,7 @@ type BuildPreparedTxFeeLevelsParams = {
     feeInfo: FeeInfo;
     gasLimit: string;
     symbol: NetworkSymbol;
-    token: PreparedTxFeeToken;
+    token?: PreparedTxFeeToken;
     unsignedTransaction: string;
 };
 
