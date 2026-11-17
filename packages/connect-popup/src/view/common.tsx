@@ -35,10 +35,10 @@ const windowFocusedRef = {
 
 const updateDeprecationBanner = () => {
     const appName = getCallerAppName(state.settings);
-    const appNameElement = document.getElementById('deprecation-banner-app-name');
-
-    if (appName && appNameElement) {
-        appNameElement.textContent = appName;
+    if (appName) {
+        document.querySelectorAll('.deprecation-banner-app-name').forEach(element => {
+            element.textContent = appName;
+        });
     }
 
     const suiteButton = document.getElementById('deprecation-banner-suite');
