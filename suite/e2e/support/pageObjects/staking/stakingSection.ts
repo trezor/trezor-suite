@@ -8,7 +8,7 @@ import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
 type VerifyStakingToastParams = {
-    type: 'staked' | 'unstaked' | 'claimed';
+    type: 'staked' | 'unstaked' | 'claimed' | 'voted';
 };
 
 type ExpectStakingAmountsParams = {
@@ -79,6 +79,7 @@ export class StakingSection {
     readonly unstakedToastMessage: Locator;
     readonly claimedToast: Locator;
     readonly claimedToastMessage: Locator;
+    readonly votedToastMessage: Locator;
     readonly claimRewardsButton: Locator;
     readonly cardanoRewardAmount: Locator;
     readonly cardanoDepositAmount: Locator;
@@ -176,6 +177,7 @@ export class StakingSection {
         this.unstakedToastMessage = this.page.getByTestId('@toast/tx-unstaked/message');
         this.claimedToast = this.page.getByTestId('@toast/tx-claimed');
         this.claimedToastMessage = this.page.getByTestId('@toast/tx-claimed/message');
+        this.votedToastMessage = this.page.getByTestId('@toast/tx-voted/message');
         this.claimRewardsButton = this.page.getByTestId('@account/staking/claim-rewards-button');
         this.cardanoRewardAmount = this.page.getByTestId('@account/staking/rewards-with-symbol');
         this.cardanoDepositAmount = this.page.getByTestId(
@@ -233,6 +235,10 @@ export class StakingSection {
             claimed: {
                 messageLocator: this.claimedToastMessage,
                 translationKey: 'TOAST_TX_CLAIM_PENDING',
+            },
+            voted: {
+                messageLocator: this.votedToastMessage,
+                translationKey: 'TOAST_TX_VOTE_PENDING',
             },
         } as const;
 
