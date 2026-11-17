@@ -110,3 +110,24 @@ export const getCustomFeeEthereumRules = ({
 
     return { gasLimitRules, gasPriceRules, maxFeePerGasRules, maxPriorityFeePerGasRules };
 };
+
+export type CustomFeeRules = {
+    required: string;
+    validate: Record<string, (value: string) => string | undefined>;
+};
+
+/** Runs registered input rules on a value directly, mirroring how react-hook-form applies them. */
+export const getCustomFeeRuleError = (
+    { required, validate }: CustomFeeRules,
+    value: string | undefined,
+) => {
+    if (!value) return { type: 'required', message: required };
+
+    for (const [type, validator] of Object.entries(validate)) {
+        const message = validator(value);
+
+        if (message) return { type, message };
+    }
+
+    return undefined;
+};

@@ -8,7 +8,7 @@ type UseComposedLevelsPlaceholderParams = {
     selectedFee?: FeeLevel['label'];
     feePerUnit: string;
     maxFeePerGas?: string;
-    feeTotalCalculation?: (feeValue: string) => string;
+    feeTotalCalculation?: (feeValue: string, label: FeeLevel['label']) => string;
 };
 
 export const useComposedLevelsPlaceholder = ({
@@ -21,10 +21,10 @@ export const useComposedLevelsPlaceholder = ({
     const composedLevels = useMemo(() => {
         const levels: PrecomposedLevels = {};
 
-        const createComposedTx = (feeValue: string) => ({
+        const createComposedTx = (feeValue: string, label: FeeLevel['label']) => ({
             type: 'final' as const,
             totalSpent: '0',
-            fee: feeTotalCalculation ? feeTotalCalculation(feeValue) : feeValue,
+            fee: feeTotalCalculation ? feeTotalCalculation(feeValue, label) : feeValue,
             feePerByte: feeValue,
             bytes: 0,
             inputs: [],
@@ -33,11 +33,14 @@ export const useComposedLevelsPlaceholder = ({
         });
 
         feeInfo.levels.forEach(level => {
-            levels[level.label] = createComposedTx(level.maxFeePerGas ?? level.feePerUnit);
+            levels[level.label] = createComposedTx(
+                level.maxFeePerGas ?? level.feePerUnit,
+                level.label,
+            );
         });
 
         if (selectedFee === 'custom' && feePerUnit) {
-            levels.custom = createComposedTx(maxFeePerGas ?? feePerUnit);
+            levels.custom = createComposedTx(maxFeePerGas ?? feePerUnit, 'custom');
         }
 
         return levels;

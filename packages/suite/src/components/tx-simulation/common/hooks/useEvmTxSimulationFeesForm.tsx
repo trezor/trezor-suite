@@ -6,7 +6,7 @@ import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import { type NetworkSymbol, type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { type EvmSelectedFee } from '@suite-common/wallet-types';
+import { type EvmSelectedFee, type FeeLevelLabel } from '@suite-common/wallet-types';
 import {
     fromGwei,
     fromIntegerString,
@@ -16,7 +16,15 @@ import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useComposedLevelsPlaceholder } from '#src/hooks/wallet/form/useComposedLevelsPlaceholder';
+import { useCustomFeeValidation } from '#src/hooks/wallet/form/useCustomFeeValidation';
 import { type FeesFormValues, useFees } from '#src/hooks/wallet/form/useFees';
+
+// Dapps and the yield builder pass the gas limit as a hex quantity; the gas limit input takes decimals.
+const toDecimalGasLimit = (gasLimit: string) => {
+    const gasLimitBig = new BigNumber(gasLimit);
+
+    return gasLimitBig.isFinite() ? gasLimitBig.toFixed() : gasLimit;
+};
 
 interface UseTxFeesFormProps {
     accountBalance: string;
@@ -36,11 +44,13 @@ export function useEvmTxSimulationFeesForm({
     accountBalance,
     networkType = 'ethereum',
     networkSymbol = asNetworkSymbol('eth'),
-    defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    defaultGasLimit: rawDefaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     txValue = '0',
     isGasLimitFinal = false,
 }: UseTxFeesFormProps) {
+    const defaultGasLimit = toDecimalGasLimit(rawDefaultGasLimit);
     const form = useForm<FeesFormValues>({
+        mode: 'onChange',
         defaultValues: {
             feeLimit: defaultGasLimit,
             estimatedFeeLimit: defaultGasLimit,
@@ -67,16 +77,24 @@ export function useEvmTxSimulationFeesForm({
         feeInfo,
     });
 
-    const [selectedFee, feePerUnit, maxFeePerGas, feeLimit] = useWatch({
+    const [selectedFee, feePerUnit, maxFeePerGas, feeLimit, estimatedFeeLimit] = useWatch({
         control: form.control,
-        name: ['selectedFee', 'feePerUnit', 'maxFeePerGas', 'feeLimit'],
+        name: ['selectedFee', 'feePerUnit', 'maxFeePerGas', 'feeLimit', 'estimatedFeeLimit'],
     });
 
-    // calculate levels with total max fee
+    const { hasCustomFeeErrors, validateCustomFee } = useCustomFeeValidation(form, {
+        feeInfo,
+        networkType,
+    });
+
+    // The custom gas limit field keeps its value after leaving Custom, so only Custom may use it.
     const feeTotalCalculation = useCallback(
-        (feeValue: string) =>
-            new BigNumber(feeValue).multipliedBy(1e9).multipliedBy(feeLimit).toString(),
-        [feeLimit],
+        (feeValue: string, label: FeeLevelLabel) =>
+            new BigNumber(feeValue)
+                .multipliedBy(1e9)
+                .multipliedBy(label === 'custom' ? feeLimit : estimatedFeeLimit || defaultGasLimit)
+                .toString(),
+        [feeLimit, estimatedFeeLimit, defaultGasLimit],
     );
     const composedLevels = useComposedLevelsPlaceholder({
         feeTotalCalculation,
@@ -121,24 +139,33 @@ export function useEvmTxSimulationFeesForm({
                 : null;
 
         if (simulation?.status === 'Success' && newFeeLimit && newFeeLimit !== defaultGasLimit) {
-            form.setValue('feeLimit', newFeeLimit);
+            // The gas limit rule reads the estimate, so it must be in place before re-validating.
             form.setValue('estimatedFeeLimit', newFeeLimit);
+            form.setValue('feeLimit', newFeeLimit, { shouldValidate: true });
         }
     }
 
     function getSelectedFee(): EvmSelectedFee | null {
         const values = form.getValues();
+        const isCustom = values.selectedFee === 'custom';
         // The synthetic 'custom' level has no fee values; read network-derived values from 'normal' instead.
-        const referenceLevelLabel =
-            values.selectedFee === 'custom' ? 'normal' : (values.selectedFee ?? 'normal');
+        const referenceLevelLabel = isCustom ? 'normal' : (values.selectedFee ?? 'normal');
         const selectedFeeInfo = feeInfo.levels.find(level => level.label === referenceLevelLabel);
+        // Custom fields keep their values after switching to a preset, so a preset reads only its level.
+        const gasLimit = isCustom ? values.feeLimit : values.estimatedFeeLimit || defaultGasLimit;
 
-        const eip1559payload = {
-            maxFeePerGas: values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas,
-            maxPriorityFeePerGas:
-                values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas,
-            baseFeePerGas: selectedFeeInfo?.baseFeePerGas,
-        };
+        const eip1559payload = isCustom
+            ? {
+                  maxFeePerGas: values.maxFeePerGas ?? selectedFeeInfo?.maxFeePerGas,
+                  maxPriorityFeePerGas:
+                      values.maxPriorityFeePerGas ?? selectedFeeInfo?.maxPriorityFeePerGas,
+                  baseFeePerGas: selectedFeeInfo?.baseFeePerGas,
+              }
+            : {
+                  maxFeePerGas: selectedFeeInfo?.maxFeePerGas,
+                  maxPriorityFeePerGas: selectedFeeInfo?.maxPriorityFeePerGas,
+                  baseFeePerGas: selectedFeeInfo?.baseFeePerGas,
+              };
 
         if (
             eip1559payload.maxFeePerGas &&
@@ -147,19 +174,21 @@ export function useEvmTxSimulationFeesForm({
         ) {
             return {
                 type: 'eip1559',
-                gasLimit: fromIntegerString(values.feeLimit).toHex(),
+                gasLimit: fromIntegerString(gasLimit).toHex(),
                 maxFeePerGas: fromGwei(eip1559payload.maxFeePerGas).toWei('hex'),
                 maxPriorityFeePerGas: fromGwei(eip1559payload.maxPriorityFeePerGas).toWei('hex'),
                 baseFeePerGas: fromGwei(eip1559payload.baseFeePerGas).toWei('hex'),
             };
         }
 
-        const gasPrice = values.feePerUnit ?? selectedFeeInfo?.feePerUnit;
+        const gasPrice = isCustom
+            ? (values.feePerUnit ?? selectedFeeInfo?.feePerUnit)
+            : selectedFeeInfo?.feePerUnit;
 
         if (gasPrice) {
             return {
                 type: 'legacy',
-                gasLimit: fromIntegerString(values.feeLimit).toHex(),
+                gasLimit: fromIntegerString(gasLimit).toHex(),
                 gasPrice: fromGwei(gasPrice).toWei('hex'),
             };
         }
@@ -173,6 +202,8 @@ export function useEvmTxSimulationFeesForm({
         feeInfo,
         composedLevels,
         composedLevelsError,
+        hasCustomFeeErrors,
+        validateCustomFee,
         handleTxSimulationResult,
         getSelectedFee,
     };

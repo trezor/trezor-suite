@@ -10,7 +10,6 @@ import { NumberInput } from '@trezor/product-components';
 
 import { InputError } from '#src/components/wallet/InputError';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { validateDecimals } from '#src/utils/suite/validation';
 
 import { type CustomFeeBasicProps } from './CustomFeeBasicProps';
 import { FEE_LIMIT, FEE_PER_UNIT, MAX_FEE_PER_GAS, MAX_PRIORITY_FEE_PER_GAS } from './constants';

@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type TranslationFunction } from '@suite/intl';
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import {
     act,
@@ -18,6 +19,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { buildApprovalTransactionData, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { mock } from '@trezor/dependency-injection';
+
+import { getCustomFeeEthereumRules } from '#src/components/wallet/Fees/CollapsibleFees/CustomFee/getCustomFeeEthereumRules';
 
 import {
     type UseAllowanceTransactionParams,
@@ -57,7 +60,10 @@ const COMPOSED_TRANSACTION: PrecomposedTransactionFinal = {
     outputs: [{ address: TOKEN_CONTRACT, amount: '0', script_type: 'PAYTOADDRESS' }],
 };
 
-const COMPOSED_LEVELS: PrecomposedLevels = { normal: COMPOSED_TRANSACTION };
+const COMPOSED_LEVELS: PrecomposedLevels = {
+    normal: COMPOSED_TRANSACTION,
+    custom: COMPOSED_TRANSACTION,
+};
 
 type SignAndPushResult = { payload: { txid: string } };
 
@@ -82,6 +88,11 @@ jest.mock('@suite-common/wallet-core', () => {
             mockComposeAllowanceTransaction(params),
     };
 });
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
+    useTranslation: () => ({ translationString: (id: string) => id }),
+}));
 
 jest.mock('#src/actions/wallet/send/sendFormThunks', () => ({
     signAndPushSendFormTransactionThunk: (params: unknown) => mockSignAndPush(params),
@@ -299,6 +310,72 @@ describe('useAllowanceTransaction', () => {
         expect(mockSignAndPush).toHaveBeenCalledWith(
             expect.objectContaining({ shouldShowApprovalToast: false }),
         );
+    });
+
+    it('does not sign while a custom fee is invalid', async () => {
+        const { result, callbacks } = renderAllowanceTransaction();
+        await waitForComposed(result);
+
+        const { methods, feeInfo } = result.current;
+        const translationString: TranslationFunction = id => id;
+        const rules = getCustomFeeEthereumRules({
+            translationString,
+            sharedRules: { required: translationString('CUSTOM_FEE_IS_NOT_SET') },
+            feeInfo,
+            networkType: 'ethereum',
+            getValues: methods.getValues,
+        });
+        const maxFeePerGas = String(feeInfo.maxFee);
+        act(() => {
+            methods.register('maxFeePerGas', rules.maxFeePerGasRules);
+            methods.register('maxPriorityFeePerGas', rules.maxPriorityFeePerGasRules);
+            methods.setValue('selectedFee', 'custom');
+        });
+        act(() => {
+            methods.setValue('feeLimit', '60000');
+            methods.setValue('feePerUnit', maxFeePerGas);
+            methods.setValue('maxFeePerGas', maxFeePerGas);
+            methods.setValue('maxPriorityFeePerGas', String(feeInfo.maxFee + 1));
+        });
+        await waitForComposed(result);
+
+        await act(async () => {
+            await result.current.confirmAndSend();
+        });
+
+        expect(result.current.canSubmit).toBe(false);
+        expect(callbacks.onConfirm).not.toHaveBeenCalled();
+        expect(mockSignAndPush).not.toHaveBeenCalled();
+
+        // CustomFeeEthereum re-validates the pair whenever either side changes.
+        act(() => methods.setValue('maxPriorityFeePerGas', maxFeePerGas));
+        await act(() => methods.trigger(['maxFeePerGas', 'maxPriorityFeePerGas']));
+        await waitForComposed(result);
+    });
+
+    it('does not sign an invalid custom gas limit while the fee panel is collapsed', async () => {
+        const { result, callbacks } = renderAllowanceTransaction();
+        await waitForComposed(result);
+
+        const { methods, feeInfo } = result.current;
+        const maxFeePerGas = String(feeInfo.maxFee);
+        // No rules registered: the collapsed panel unmounted the inputs, so `trigger` skips them.
+        act(() => methods.setValue('selectedFee', 'custom'));
+        act(() => {
+            methods.setValue('feeLimit', '0');
+            methods.setValue('feePerUnit', maxFeePerGas);
+            methods.setValue('maxFeePerGas', maxFeePerGas);
+            methods.setValue('maxPriorityFeePerGas', maxFeePerGas);
+        });
+        await waitForComposed(result);
+
+        await act(async () => {
+            await result.current.confirmAndSend();
+        });
+
+        expect(result.current.canSubmit).toBe(false);
+        expect(callbacks.onConfirm).not.toHaveBeenCalled();
+        expect(mockSignAndPush).not.toHaveBeenCalled();
     });
 
     it('hands a cancel over to the caller', () => {

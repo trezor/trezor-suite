@@ -53,6 +53,8 @@ export function EarnYieldTxSimulationModalInner({
         feeInfo,
         composedLevels,
         composedLevelsError,
+        hasCustomFeeErrors,
+        validateCustomFee,
         handleTxSimulationResult,
         getSelectedFee,
     } = useEvmTxSimulationFeesForm({
@@ -107,7 +109,9 @@ export function EarnYieldTxSimulationModalInner({
         });
     }
 
-    function confirm() {
+    async function confirm() {
+        if (!(await validateCustomFee())) return;
+
         setConfirming(true);
 
         const selectedFee = areTxSimulationMethods(TX_METHODS_WITH_FEES, action)
@@ -132,7 +136,8 @@ export function EarnYieldTxSimulationModalInner({
         txSimulationQuery.isLoading ||
         (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted) ||
         (hasRenderFailure && !renderFailureAccepted) ||
-        composedLevelsError,
+        composedLevelsError ||
+        hasCustomFeeErrors,
     );
 
     const { formState } = form;
