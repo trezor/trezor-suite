@@ -1,8 +1,8 @@
 import { useWatch } from 'react-hook-form';
 
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Card, Column, Divider, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -39,7 +39,9 @@ export const TronUnstakeForm = () => {
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                         <Translation
                             id="TR_EARN_TRON_UNSTAKE_DESCRIPTION"
-                            values={{ displaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                            values={{
+                                displaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                            }}
                         />
                     </Text>
                 </Column>

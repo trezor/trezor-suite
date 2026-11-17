@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { type TokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { AccountLabel } from '@suite-native/accounts';
+import { AssetSymbol } from '@suite-native/assets';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -52,7 +52,14 @@ export const ReceiveFreshAddressHeader = ({
                         {symbol ? (
                             <Translation
                                 id="moduleReceive.screenTitle"
-                                values={{ coinSymbol: getNetworkDisplaySymbol(symbol) }}
+                                values={{
+                                    coinSymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={symbol}
+                                            variant="body-md-strong"
+                                        />
+                                    ),
+                                }}
                             />
                         ) : (
                             <Translation id="moduleReceive.receiveTitle" />

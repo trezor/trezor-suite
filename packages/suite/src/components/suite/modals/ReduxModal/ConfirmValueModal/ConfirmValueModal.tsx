@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
@@ -12,7 +13,6 @@ import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
@@ -187,7 +187,9 @@ export const ConfirmValueModal = ({
                                         a: chunks => (
                                             <Link onClick={handleOpenGuide}>{chunks}</Link>
                                         ),
-                                        displaySymbol: getDisplaySymbol(account.symbol),
+                                        displaySymbol: (
+                                            <AssetSymbol networkSymbol={account.symbol} />
+                                        ),
                                     }}
                                 />
                             }

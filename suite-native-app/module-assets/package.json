@@ -58,6 +58,7 @@
         "@suite-common/earn-staking": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }

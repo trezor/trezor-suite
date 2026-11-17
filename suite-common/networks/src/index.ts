@@ -17,6 +17,7 @@ export {
     selectNetworkColor,
     selectNetworkConfig,
     selectNetworkConfigs,
+    selectNetworkDisplaySymbol,
     selectNetworkNamesMap,
     selectNetworkSymbolForProtocol,
     selectSupportedNetworkSymbols,

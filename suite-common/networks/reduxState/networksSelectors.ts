@@ -30,6 +30,11 @@ export const selectNetworkConfig = (
     symbol: NetworkSymbol,
 ): NetworkMetadata | null => state.networks?.[symbol] ?? null;
 
+export const selectNetworkDisplaySymbol = (
+    state: NetworksRootState,
+    symbol: NetworkSymbol,
+): string | undefined => selectNetworkConfig(state, symbol)?.displaySymbol;
+
 export const selectNetworkCoingeckoId = (
     state: NetworksRootState,
     symbol: NetworkSymbol,

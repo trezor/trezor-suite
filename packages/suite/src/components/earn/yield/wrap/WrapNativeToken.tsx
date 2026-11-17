@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -87,10 +88,9 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         networkSymbol: account.symbol,
     });
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     const nativeToken: YieldFlowDisplayToken = {
         networkSymbol: account.symbol,
-        symbol: nativeSymbol,
+        symbol: getNetworkDisplaySymbol(account.symbol),
         decimals: token.decimals,
     };
 
@@ -216,7 +216,10 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         if (isNativeFeeInsufficient) {
             return (
                 <YieldActionStepWarning
-                    insufficientFeeReserve={{ amount: formattedReserve, nativeSymbol }}
+                    insufficientFeeReserve={{
+                        amount: formattedReserve,
+                        networkSymbol: account.symbol,
+                    }}
                 />
             );
         }
@@ -227,14 +230,19 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
 
         if (wrapReserveStatus === 'kept') {
             return (
-                <YieldActionStepWarning reserveKept={{ amount: formattedReserve, nativeSymbol }} />
+                <YieldActionStepWarning
+                    reserveKept={{ amount: formattedReserve, networkSymbol: account.symbol }}
+                />
             );
         }
 
         if (wrapReserveStatus === 'below') {
             return (
                 <YieldActionStepWarning
-                    reserveRecommendation={{ amount: formattedReserve, nativeSymbol }}
+                    reserveRecommendation={{
+                        amount: formattedReserve,
+                        networkSymbol: account.symbol,
+                    }}
                 />
             );
         }
@@ -254,7 +262,10 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                     description={
                         <Translation
                             id="TR_WRAP_COMPLETE_DESCRIPTION"
-                            values={{ nativeSymbol, tokenSymbol: token.symbol }}
+                            values={{
+                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                tokenSymbol: token.symbol,
+                            }}
                         />
                     }
                 >
@@ -284,14 +295,16 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                 <Text typographyStyle="headline-md">
                     <Translation
                         id="TR_EARN_YIELD_WRAP_TITLE"
-                        values={{ nativeSymbol, tokenSymbol: token.symbol }}
+                        values={{
+                            nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                            tokenSymbol: token.symbol,
+                        }}
                     />
                 </Text>
 
                 <Form form={methods} formState={formState}>
                     <YieldWrapStep
                         token={token}
-                        nativeSymbol={nativeSymbol}
                         availableAmount={account.formattedBalance}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}

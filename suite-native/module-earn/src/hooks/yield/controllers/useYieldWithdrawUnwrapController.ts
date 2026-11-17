@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWrapErrorReason,
     type YieldWithdrawFlowType,
@@ -56,7 +56,6 @@ export const useYieldWithdrawUnwrapController = () => {
         [reportInteraction],
     );
 
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
     const wrappedBalance = token?.balance ?? '0';
 
     const handleSkipAnalytics = useCallback(
@@ -189,7 +188,6 @@ export const useYieldWithdrawUnwrapController = () => {
         yieldFlowData,
         tokenContract: route.params.tokenContract,
         accountLabel: resolvedAccount.accountLabel ?? getNetwork(resolvedAccount.symbol).name,
-        nativeSymbol,
         wrappedTokenSymbol: toTokenSymbol(resolvedToken.symbol),
         wrappedTokenContract: toTokenAddress(resolvedToken.contractAddress ?? ''),
         isInteractionBlocked: step.isStepPending,

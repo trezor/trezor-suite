@@ -6,6 +6,7 @@ import {
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { stakeInitialState, transactionsInitialState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -110,6 +111,7 @@ const renderStakingBanner = async ({
     mockUseStakingRate.mockReturnValue({ rate: stakingRate ?? null });
 
     const store = createStoreFromPreloadedState({
+        networks: mockNetworksState([account.symbol]),
         discreetMode: { isActive: isDiscreetMode },
         device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
         earn: {
