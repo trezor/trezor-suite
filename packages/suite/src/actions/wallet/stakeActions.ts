@@ -95,6 +95,19 @@ export const composeTransaction =
         return Promise.resolve(undefined);
     };
 
+const openStakingModal = (stakeType: StakeType, account: Account) => {
+    switch (stakeType) {
+        case 'stake':
+            return openModal({ type: stakeType, flow: EarnFlow.Stake, account });
+        case 'unstake':
+            return openModal({ type: stakeType, accountKey: account.key });
+        case 'claim':
+            return openModal({ type: stakeType, account });
+        case 'change-delegate':
+            return openModal({ type: stakeType });
+    }
+};
+
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 type CancelSignTxThunkState = StakeRootState;
 
@@ -115,14 +128,7 @@ export const cancelSignTxThunk =
 
         const { stakeType } = precomposedForm ?? {};
         if (account && stakeType && !isSuccessTx) {
-            switch (stakeType) {
-                case 'stake':
-                    dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
-                    break;
-
-                default:
-                    dispatch(openModal({ type: stakeType, account }));
-            }
+            dispatch(openStakingModal(stakeType, account));
         }
     };
 
@@ -374,14 +380,7 @@ export const signTransactionThunk =
 
             const { stakeType } = formValues;
             if (stakeType) {
-                switch (stakeType) {
-                    case 'stake':
-                        dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
-                        break;
-
-                    default:
-                        dispatch(openModal({ type: stakeType, account }));
-                }
+                dispatch(openStakingModal(stakeType, account));
             }
 
             return;
