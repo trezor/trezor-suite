@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isTronAccountActivation } from '@suite-common/wallet-utils';
 import { Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
@@ -67,7 +67,7 @@ export function CollapsibleFeesHeader({
                         id={feeTooltipTextId}
                         values={{
                             br: <br />,
-                            networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                            networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} />,
                         }}
                     />
                 }

@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import type {
     YieldFlowDisplayToken,
@@ -16,7 +17,6 @@ import { YieldPendingTransaction } from './YieldPendingTransaction';
 
 type YieldWrapStepProps = {
     token: YieldFlowDisplayToken;
-    nativeSymbol: string;
     availableAmount: string;
     onMaxClick: () => void;
     onSubmit: () => void;
@@ -33,7 +33,6 @@ type YieldWrapStepProps = {
 
 export const YieldWrapStep = ({
     token,
-    nativeSymbol,
     availableAmount,
     onMaxClick,
     onSubmit,
@@ -49,7 +48,7 @@ export const YieldWrapStep = ({
 }: YieldWrapStepProps) => (
     <Column gap={16}>
         <YieldAmountCard
-            tokenSymbol={nativeSymbol}
+            tokenSymbol={<AssetSymbol networkSymbol={token.networkSymbol} />}
             decimals={token.decimals}
             isDisabled={!!pendingTransaction}
             // The wrap amount is the native coin, so no token contract address.
@@ -62,7 +61,7 @@ export const YieldWrapStep = ({
                 value: (
                     <FormattedCryptoAmount
                         value={availableAmount}
-                        networkSymbol={nativeSymbol}
+                        networkSymbol={token.networkSymbol}
                         tokenDecimals={token.decimals}
                     />
                 ),
@@ -114,7 +113,10 @@ export const YieldWrapStep = ({
                 isDisabled={isSubmitDisabled || !!pendingTransaction}
                 data-testid="@yield/form/wrap-button"
             >
-                <Translation id="TR_EARN_YIELD_WRAP_SUBMIT" values={{ nativeSymbol }} />
+                <Translation
+                    id="TR_EARN_YIELD_WRAP_SUBMIT"
+                    values={{ nativeSymbol: <AssetSymbol networkSymbol={token.networkSymbol} /> }}
+                />
             </Button>
             {onSkip && (
                 <Button

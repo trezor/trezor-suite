@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { AssetSymbol } from '@suite-native/assets';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -30,7 +30,7 @@ export type MyAssetListItemProps = {
 export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
-    const { symbol, name, balance, fiatBalance, tokenSymbol, contract, isEnabled } = asset;
+    const { symbol, name, balance, fiatBalance, contract, isEnabled } = asset;
 
     const nativeTokenName = useSelector((state: NetworksRootState) =>
         selectNativeTokenName(state, symbol),
@@ -76,7 +76,14 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
                 <TradingAsset
                     assetType="crypto"
                     name={assetName}
-                    symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
+                    symbol={
+                        <AssetSymbol
+                            networkSymbol={symbol}
+                            contractAddress={contract}
+                            variant="body-sm"
+                            color="contentSecondary"
+                        />
+                    }
                     contractAddress={contract}
                     networkSymbol={symbol}
                     rightContent={

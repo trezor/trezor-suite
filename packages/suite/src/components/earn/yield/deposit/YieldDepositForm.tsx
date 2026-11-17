@@ -1,4 +1,5 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
@@ -100,7 +101,6 @@ export const YieldDepositForm = () => {
     const wrapPendingTransaction =
         pendingTransaction?.type === 'wrap' ? pendingTransaction : undefined;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     // Approximate fiat value shown under the amount input, from the token's own rate.
     const approxFiat = {
         symbol: token.networkSymbol,
@@ -134,12 +134,12 @@ export const YieldDepositForm = () => {
         flow.currentStep === 'wrap' ? gasReserve.recommended : gasReserve.minimum;
 
     const insufficientFeeReserve = isNativeFeeInsufficient
-        ? { amount: formatReserve(blockingReserve), nativeSymbol }
+        ? { amount: formatReserve(blockingReserve), networkSymbol: account.symbol }
         : undefined;
 
     const feeReserveTopUpRecommendation =
         nativeFeeStatus === 'below-recommended'
-            ? { amount: formatReserve(gasReserve.recommended), nativeSymbol }
+            ? { amount: formatReserve(gasReserve.recommended), networkSymbol: account.symbol }
             : undefined;
 
     // Max keeps the recommended reserve aside and says so; wrapping into it manually stays
@@ -155,7 +155,10 @@ export const YieldDepositForm = () => {
               })
             : 'none';
 
-    const wrapReserveNotice = { amount: formatReserve(gasReserve.recommended), nativeSymbol };
+    const wrapReserveNotice = {
+        amount: formatReserve(gasReserve.recommended),
+        networkSymbol: account.symbol,
+    };
 
     const renderWrapWarning = () => {
         if (!wrapPendingTransaction && insufficientFeeReserve) {
@@ -392,13 +395,22 @@ export const YieldDepositForm = () => {
                                 title: (
                                     <Translation
                                         id="TR_EARN_YIELD_WRAP_TITLE"
-                                        values={{ nativeSymbol, tokenSymbol: token.symbol }}
+                                        values={{
+                                            nativeSymbol: (
+                                                <AssetSymbol networkSymbol={account.symbol} />
+                                            ),
+                                            tokenSymbol: token.symbol,
+                                        }}
                                     />
                                 ),
                                 description: (
                                     <Translation
                                         id="TR_EARN_YIELD_WRAP_DESCRIPTION"
-                                        values={{ nativeSymbol }}
+                                        values={{
+                                            nativeSymbol: (
+                                                <AssetSymbol networkSymbol={account.symbol} />
+                                            ),
+                                        }}
                                     />
                                 ),
                                 onEdit: isDisabled ? undefined : returnToWrapStep,
@@ -415,7 +427,6 @@ export const YieldDepositForm = () => {
                                         )}
                                         <YieldWrapStep
                                             token={token}
-                                            nativeSymbol={nativeSymbol}
                                             availableAmount={account.formattedBalance}
                                             receivingAmount={liveAmount || '0'}
                                             isSubmitting={isSubmittingAction}
@@ -564,7 +575,9 @@ export const YieldDepositForm = () => {
                                                 wrappedAmount !== null
                                                     ? {
                                                           networkSymbol: account.symbol,
-                                                          symbol: nativeSymbol,
+                                                          symbol: getNetworkDisplaySymbol(
+                                                              account.symbol,
+                                                          ),
                                                           decimals: token.decimals,
                                                       }
                                                     : token,

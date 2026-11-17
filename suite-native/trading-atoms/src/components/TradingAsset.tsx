@@ -20,7 +20,7 @@ type TradingAssetBaseProps = {
     primaryTextVariant?: NativeTypographyStyle;
     rightContent?: ReactNode;
     spacing?: NativeSpacing | number;
-    symbol: string;
+    symbol: ReactNode;
     testID?: string;
 };
 

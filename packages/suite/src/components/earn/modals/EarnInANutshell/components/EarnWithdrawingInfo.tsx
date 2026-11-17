@@ -1,8 +1,9 @@
 import React from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getUnstakingPeriodInDays, selectEthereumValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
@@ -19,7 +20,7 @@ interface EarnWithdrawingInfoProps {
 
 interface EarnWithdrawingRowsProps {
     flow: EarnFlow;
-    displaySymbol: string;
+    networkSymbol: NetworkSymbol;
     daysToUnstake?: number;
 }
 
@@ -40,7 +41,7 @@ const WithdrawingSignRow = ({ flow }: Pick<EarnWithdrawingRowsProps, 'flow'>) =>
 
 const EthereumWithdrawingRows = ({
     flow,
-    displaySymbol,
+    networkSymbol,
     daysToUnstake,
 }: EarnWithdrawingRowsProps) => (
     <>
@@ -50,7 +51,7 @@ const EthereumWithdrawingRows = ({
             subheading={
                 <Translation
                     id="TR_EARN_STAKING_CONSOLIDATING_FUNDS"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             content={{
@@ -63,13 +64,13 @@ const EthereumWithdrawingRows = ({
             heading={
                 <Translation
                     id="TR_EARN_CLAIM_UNSTAKED"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             subheading={
                 <Translation
                     id="TR_EARN_YOUR_UNSTAKED_FUNDS"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
@@ -78,14 +79,14 @@ const EthereumWithdrawingRows = ({
             heading={
                 <Translation
                     id="TR_EARN_RECEIVE_IN_ACCOUNT"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
         />
     </>
 );
 
-const SolanaWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProps) => (
+const SolanaWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProps) => (
     <>
         <WithdrawingSignRow flow={flow} />
         <EarnInfoRow
@@ -93,7 +94,7 @@ const SolanaWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProps
             subheading={
                 <Translation
                     id="TR_EARN_STAKING_WAIT_FOR_DEACTIVATION"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             content={{
@@ -104,13 +105,13 @@ const SolanaWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProps
             heading={
                 <Translation
                     id="TR_EARN_CLAIM_UNSTAKED"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             subheading={
                 <Translation
                     id="TR_EARN_YOUR_UNSTAKED_FUNDS"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
@@ -119,14 +120,14 @@ const SolanaWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProps
             heading={
                 <Translation
                     id="TR_EARN_RECEIVE_IN_ACCOUNT"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
         />
     </>
 );
 
-const CardanoWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProps) => (
+const CardanoWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProps) => (
     <>
         <WithdrawingSignRow flow={flow} />
         <EarnInfoRow
@@ -134,7 +135,7 @@ const CardanoWithdrawingRows = ({ flow, displaySymbol }: EarnWithdrawingRowsProp
             subheading={
                 <Translation
                     id="TR_EARN_YOUR_DEPOSIT_IS_RETURNED"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             content={{ text: <Translation id="TR_EARN_INSTANTLY" /> }}
@@ -146,22 +147,20 @@ export const EarnWithdrawingInfo = ({ account, flow }: EarnWithdrawingInfoProps)
     const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
     const daysToUnstake = getUnstakingPeriodInDays(account.networkType, validatorsQueue);
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-
     const content = (() => {
         switch (account.networkType) {
             case 'ethereum':
                 return (
                     <EthereumWithdrawingRows
                         flow={flow}
-                        displaySymbol={displaySymbol}
+                        networkSymbol={account.symbol}
                         daysToUnstake={daysToUnstake}
                     />
                 );
             case 'solana':
-                return <SolanaWithdrawingRows flow={flow} displaySymbol={displaySymbol} />;
+                return <SolanaWithdrawingRows flow={flow} networkSymbol={account.symbol} />;
             case 'cardano':
-                return <CardanoWithdrawingRows flow={flow} displaySymbol={displaySymbol} />;
+                return <CardanoWithdrawingRows flow={flow} networkSymbol={account.symbol} />;
             default:
                 return null;
         }

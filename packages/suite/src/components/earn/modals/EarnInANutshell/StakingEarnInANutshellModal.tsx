@@ -5,7 +5,6 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
@@ -49,10 +48,6 @@ export const StakingEarnInANutshellModal = ({
         return null;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-
-    if (!displaySymbol) return null;
-
     const processes: EarnInANutshellProcess[] = [
         {
             heading: <Translation id="TR_EARN_STAKING_PROCESS" />,
@@ -75,7 +70,7 @@ export const StakingEarnInANutshellModal = ({
         >
             <StakingEarnInANutshellHighlights
                 networkType={account.networkType}
-                displaySymbol={displaySymbol}
+                networkSymbol={account.symbol}
                 unstakingPeriod={unstakingPeriod}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />

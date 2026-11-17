@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { TokenMetadataProvider } from '@suite-common/token';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type WrappedNativeFlowType,
@@ -11,6 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
@@ -39,7 +39,6 @@ export const WrappedNativeTokenCompleteContent = ({
         selectAccountByKey(state, accountKey),
     );
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
-    const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : '';
 
     // The form replaced itself with this screen, so this stack holds it alone — any back
     // navigation leaves the whole flow, which is what closing should do. Intercepting it (as the
@@ -93,7 +92,16 @@ export const WrappedNativeTokenCompleteContent = ({
             subtitle={
                 <Translation
                     id={messages.subtitle}
-                    values={{ nativeSymbol, wrappedSymbol: wrappedNative.symbol }}
+                    values={{
+                        nativeSymbol: (
+                            <AssetSymbol
+                                networkSymbol={account.symbol}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        ),
+                        wrappedSymbol: wrappedNative.symbol,
+                    }}
                 />
             }
         />

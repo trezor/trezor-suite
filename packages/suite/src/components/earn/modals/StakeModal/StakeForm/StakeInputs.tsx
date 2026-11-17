@@ -1,8 +1,8 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type StakeFormState } from '@suite-common/wallet-types';
 import { Banner, Column, Text } from '@trezor/components';
@@ -109,7 +109,7 @@ export const StakeInputs = () => {
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
 
     const isFractionButtonDisabled = (divisor: number) => {
         if (!account.formattedBalance || !network.decimals) return false;

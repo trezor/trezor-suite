@@ -1,5 +1,6 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { HELP_CENTER_XLM_URL, HELP_CENTER_XRP_URL } from '@trezor/urls';
@@ -42,7 +43,7 @@ export const ReserveBanner = ({ account }: ReserveBannerProps) => {
                     values={{
                         minBalance: formatNetworkAmount(account.misc.reserve, account.symbol),
                         networkName: getNetwork(account.symbol).name,
-                        displaySymbol: getDisplaySymbol(account.symbol),
+                        displaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
                     }}
                 />
             }
