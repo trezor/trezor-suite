@@ -7,12 +7,18 @@ import { type WithServices, createOwnedAction, createThunk } from '@trezor/redux
 import { DISCOVERY_MODULE_PREFIX } from './discoveryActions';
 import { selectDiscoveryByDevicePath } from './discoverySelectors';
 import { type DiscoveryRootState } from './discoveryTypes';
-import { getDiscoveryOutcome, getReportableErrorCode, hasDiscoveryEnded } from './discoveryUtils';
+import {
+    getDiscoveryLoadDurationMs,
+    getDiscoveryOutcome,
+    getReportableErrorCode,
+    hasDiscoveryEnded,
+} from './discoveryUtils';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 
 // Private on purpose: a discovery may only change through updateDiscoveryThunk and deleteDiscoveryThunk,
-// which report the outcome of the run. Reducers and middlewares get the matchers.
+// which report the outcome of the run, and setDiscoveryLoadTimingThunk, which keeps the status.
+// Reducers and middlewares get the matchers.
 const { create: updateDiscovery, matcher: updateDiscoveryMatcher } = createOwnedAction(
     `${DISCOVERY_MODULE_PREFIX}/update`,
     (status: DiscoveryStatus, path: DeviceUniquePath) => ({
@@ -95,6 +101,7 @@ export const updateDiscoveryThunk = createThunk<
             payload: {
                 outcome: isCancelledFailure ? 'cancelled' : reportedOutcome,
                 trigger,
+                durationMs: getDiscoveryLoadDurationMs(previousDiscovery, Date.now()),
                 ...(errorCode !== undefined && { errorCode }),
             },
         });
@@ -118,7 +125,33 @@ export const deleteDiscoveryThunk = createThunk<
     if (trigger !== undefined && !hasDiscoveryEnded(deletedDiscovery)) {
         extra.services.analytics.report({
             type: events.accountsDiscoveryResultEvent.name,
-            payload: { outcome: 'cancelled', trigger },
+            payload: {
+                outcome: 'cancelled',
+                trigger,
+                durationMs: getDiscoveryLoadDurationMs(deletedDiscovery, Date.now()),
+            },
         });
     }
 });
+
+type SetDiscoveryLoadTimingThunkParams = {
+    path: DeviceUniquePath;
+    timing: Pick<DiscoveryStatus, 'loadStartTimestamp' | 'loadEndTimestamp'>;
+};
+
+export type SetDiscoveryLoadTimingThunkState = DiscoveryRootState;
+
+// A run that has already ended has been reported, so its timing no longer matters.
+export const setDiscoveryLoadTimingThunk = createThunk<
+    void,
+    SetDiscoveryLoadTimingThunkParams,
+    { state: SetDiscoveryLoadTimingThunkState }
+>(
+    `${DISCOVERY_MODULE_PREFIX}/setDiscoveryLoadTiming`,
+    ({ path, timing }, { dispatch, getState }) => {
+        const discovery = selectDiscoveryByDevicePath(getState(), path);
+        if (discovery === undefined || hasDiscoveryEnded(discovery)) return;
+
+        dispatch(updateDiscovery({ ...discovery, ...timing }, path));
+    },
+);
