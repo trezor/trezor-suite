@@ -51,6 +51,7 @@ describe('stake account layout', () => {
 
     afterEach(() => {
         jest.useRealTimers();
+        jest.restoreAllMocks();
     });
 
     it('builds stake transaction with sysvar and config accounts', async () => {
@@ -90,6 +91,43 @@ describe('stake account layout', () => {
         });
 
         expect(getSerializedMessage(response)).toBe(stakeTransactionFixtures.unstake.message);
+    });
+
+    it('reports an unstake above the active stake as insufficient active stake', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        const { rpcResults } = stakeTransactionFixtures.unstake;
+
+        const response = await prepareUnstakeSolTx({
+            from: mockSender,
+            amount: '1000',
+            connection: mockConnection(rpcResults),
+            validator,
+        });
+
+        expect(response).toEqual({
+            success: false,
+            errorCode: 'INSUFFICIENT_ACTIVE_STAKE',
+            errorMessage: expect.stringContaining('Active stake less than requested'),
+        });
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+    });
+
+    it('reports any other unstake failure as unknown', async () => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        const response = await prepareUnstakeSolTx({
+            from: mockSender,
+            amount: '7',
+            connection: mockConnection({}),
+            validator,
+        });
+
+        expect(response).toEqual({
+            success: false,
+            errorCode: 'UNKNOWN',
+            errorMessage: expect.stringContaining('Failed to fetch delegations'),
+        });
     });
 
     it('builds split unstake transaction with clock sysvar account', async () => {

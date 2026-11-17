@@ -6939,6 +6939,10 @@ export const messages = defineMessages({
         defaultMessage:
             'The transaction could not be prepared. Make sure the account is up to date and try again.',
     },
+    TR_STAKE_SOL_STAKED_BALANCE_CHANGED: {
+        id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+        defaultMessage: 'Your staked balance has changed. Check the updated amount and try again.',
+    },
     OP_RETURN: {
         id: 'OP_RETURN',
         defaultMessage: 'Hexadecimal message (OP_RETURN)',
