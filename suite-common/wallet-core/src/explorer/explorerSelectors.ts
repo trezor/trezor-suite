@@ -6,8 +6,9 @@ import { type ExplorerItem, type ExplorerState } from './explorerReducer';
 export const selectNetworkExplorers = (state: ExplorerState, symbol: NetworkSymbol): ExplorerItem =>
     state.wallet.explorer[symbol as LegacyNetworkSymbol];
 
+// The entry is missing for a network that is not (or no longer) registered.
 export const selectNetworkExplorerType = (state: ExplorerState, symbol: NetworkSymbol) =>
-    state.wallet.explorer[symbol as LegacyNetworkSymbol].custom ? 'custom' : 'default';
+    state.wallet.explorer[symbol as LegacyNetworkSymbol]?.custom ? 'custom' : 'default';
 
 export const selectExplorer = (
     state: ExplorerState,
@@ -19,5 +20,5 @@ export const selectExplorer = (
 
     const config = state.wallet.explorer[symbol as LegacyNetworkSymbol];
 
-    return config.custom ?? config.default;
+    return config?.custom ?? config?.default;
 };

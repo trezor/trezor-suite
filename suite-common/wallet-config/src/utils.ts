@@ -1,4 +1,8 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
+import {
+    registerLegacyNetwork as registerLegacyNetworkConfig,
+    unregisterLegacyNetwork as unregisterLegacyNetworkConfig,
+} from '@suite-common/legacy-network-config';
 import { exhaustive } from '@trezor/type-utils';
 import { typedObjectValues } from '@trezor/utils';
 
@@ -25,6 +29,34 @@ export const networksCollection = typedObjectValues(networks) as unknown as Netw
  * array of network symbols
  */
 const networkSymbolCollection = networksCollection.map(n => n.symbol);
+
+/**
+ * Adds (or replaces) a runtime network, keeping the snapshotted collections in sync in place so
+ * that references handed out earlier see it.
+ */
+export const registerLegacyNetwork = (symbol: NetworkSymbol, config: Network) => {
+    registerLegacyNetworkConfig(symbol, config);
+
+    const index = networkSymbolCollection.indexOf(symbol);
+
+    if (index === -1) {
+        networksCollection.push(config);
+        networkSymbolCollection.push(symbol);
+    } else {
+        networksCollection[index] = config;
+    }
+};
+
+export const unregisterLegacyNetwork = (symbol: NetworkSymbol) => {
+    unregisterLegacyNetworkConfig(symbol);
+
+    const index = networkSymbolCollection.indexOf(symbol);
+
+    if (index !== -1) {
+        networksCollection.splice(index, 1);
+        networkSymbolCollection.splice(index, 1);
+    }
+};
 
 /**
  * @deprecated TODO: Replace with a networks store selector or inject via

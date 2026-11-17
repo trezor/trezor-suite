@@ -145,6 +145,9 @@
             "path": "../../networks/cardano/network-cardano-suite-native"
         },
         {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../networks/ethereum/network-ethereum-suite-native"
         },
         {
