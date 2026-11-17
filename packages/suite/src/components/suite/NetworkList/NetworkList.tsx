@@ -77,9 +77,11 @@ export const NetworkList = ({
         <Column gap={12} width="100%">
             {networks.map(network => {
                 const { symbol, name, support } = network;
-                const blockchainInfo = blockchain[symbol as keyof typeof blockchain];
-                const hasCustomBackend = !!blockchainInfo.backends.selected;
-                const backendStatus = getBackendStatus(blockchainInfo);
+                // Custom EVM networks have no blockchain state until their backend is registered.
+                const blockchainInfo = blockchain[symbol as keyof typeof blockchain] as
+                    (typeof blockchain)[keyof typeof blockchain] | undefined;
+                const hasCustomBackend = !!blockchainInfo?.backends.selected;
+                const backendStatus = blockchainInfo ? getBackendStatus(blockchainInfo) : undefined;
 
                 const firmwareSupportRestriction =
                     deviceModelInternal && support?.[deviceModelInternal];
