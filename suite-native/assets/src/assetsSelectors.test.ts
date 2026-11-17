@@ -10,7 +10,11 @@ import {
 } from '@suite-common/earn-staking-common/mocks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { fiatRatesInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    discoveryInitialState,
+    fiatRatesInitialState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { mockStakeRootState } from '@suite-common/wallet-core/mocks';
 import { type CurrentRate, type Timestamp, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -98,6 +102,7 @@ const createState = (): AssetsRootState => {
         ...state,
         wallet: {
             ...state.wallet,
+            discovery: discoveryInitialState,
             settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
             fiat: {
                 ...fiatRatesInitialState,
@@ -148,6 +153,7 @@ const createState = (): AssetsRootState => {
             }),
         },
         networks: mockNetworksState([ETH, ADA, TRX]),
+        tokenDefinitions: {},
     } as AssetsRootState;
 };
 

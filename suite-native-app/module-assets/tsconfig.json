@@ -17,6 +17,9 @@
             "path": "../../suite-common/earn-staking"
         },
         {
+            "path": "../../suite-common/earn-staking-common"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/receive" },
@@ -74,9 +77,6 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },
-        {
-            "path": "../../suite-common/earn-staking-common"
-        },
         {
             "path": "../../suite-common/message-system"
         },

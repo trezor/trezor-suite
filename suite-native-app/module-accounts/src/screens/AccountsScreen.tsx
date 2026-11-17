@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
+import { useStore } from 'react-redux';
 
+import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
@@ -25,11 +26,14 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const store = useStore<StakingRootState>();
+
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
     const isScreenReady = useIsAccountsScreenReady();
+
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
@@ -39,7 +43,7 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
         if (
             isAssetsFirstEnabled ||
             isNetworkWithTokens(account.symbol) ||
-            isStakingSymbol(account.symbol)
+            selectIsStakingSupportedSymbol(store.getState(), account.symbol)
         ) {
             navigation.navigate(RootStackRoutes.AccountOverview, { accountKey: account.key });
 

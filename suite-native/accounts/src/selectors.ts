@@ -8,6 +8,9 @@ import {
 } from '@suite-common/device';
 import {
     type StakingRootState,
+    formatStakingAmount,
+    selectIsStakingAccountActive,
+    selectStakingAccountAmount,
     selectStakingAccountAmountOutsideBalance,
 } from '@suite-common/earn-staking';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
@@ -29,7 +32,6 @@ import {
     type TransactionsRootState,
     type WalletSettingsRootState,
     getTokens,
-    isCardanoStakingActive,
     selectAccountByKey,
     selectAccountTokens,
     selectBaseCurrency,
@@ -50,11 +52,9 @@ import {
 import {
     BASE_CURRENCY_ZERO,
     getAccountFiatBalance,
-    getAccountTotalStakingBalance,
     getFiatRateKey,
     isAccountFailed,
     isErc4626,
-    isStakingSymbol,
     sortTokensByName,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -309,13 +309,25 @@ export const selectAccountTokenFiatBalance = createMemoizedSelector(
     },
 );
 
-export const getAccountListSections = (
-    account: Account,
-    tokenDefinitions: TokenDefinition | undefined,
+export type GetAccountListSectionsParams = {
+    account: Account;
+    tokenDefinitions: TokenDefinition | undefined;
+    isStakingActive: boolean;
+    stakingCryptoBalance: string;
+    groupZeroBalance?: boolean;
+    fiatRates?: RatesByKey;
+    localCurrency?: ReturnType<typeof selectBaseCurrency>;
+};
+
+export const getAccountListSections = ({
+    account,
+    tokenDefinitions,
+    isStakingActive,
+    stakingCryptoBalance,
     groupZeroBalance = false,
-    fiatRates?: RatesByKey,
-    localCurrency?: ReturnType<typeof selectBaseCurrency>,
-) => {
+    fiatRates,
+    localCurrency,
+}: GetAccountListSectionsParams) => {
     const sections: AccountListSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
@@ -332,24 +344,19 @@ export const getAccountListSections = (
     const hasAnyKnownTokens =
         isNetworkSupportingTokens && !!(tokensWithBalance.length + zeroBalanceTokens.length);
 
-    const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
-
-    const hasStakingBalance = stakingBalance !== '0' || isCardanoStakingActive(account);
-    const hasStaking = isStakingSymbol(account.symbol) && hasStakingBalance;
-
     sections.push({
         type: 'account',
         account,
-        isLast: !hasAnyKnownTokens && !hasStaking,
+        isLast: !hasAnyKnownTokens && !isStakingActive,
         isFirst: true,
         hasAnyKnownTokens,
     });
 
-    if (hasStaking) {
+    if (isStakingActive) {
         sections.push({
             type: 'staking',
             account,
-            stakingCryptoBalance: stakingBalance,
+            stakingCryptoBalance,
             isLast: !hasAnyKnownTokens,
         });
     }
@@ -395,17 +402,29 @@ export const getAccountListSections = (
 const EMPTY_ARRAY: AccountListSection[] = [];
 
 export const selectAccountListSectionsWithZeroBalanceGroup = createMemoizedSelector(
-    [selectAccountByKey, selectTokenDefinitions, selectCurrentFiatRates, selectBaseCurrency],
-    (account, tokenDefinitions, fiatRates, localCurrency) => {
+    [
+        selectAccountByKey,
+        selectTokenDefinitions,
+        selectCurrentFiatRates,
+        selectBaseCurrency,
+        selectIsStakingAccountActive,
+        selectStakingAccountAmount,
+    ],
+    (account, tokenDefinitions, fiatRates, localCurrency, isStakingActive, stakingAmount) => {
         if (!account) return EMPTY_ARRAY;
 
-        return getAccountListSections(
+        return getAccountListSections({
             account,
-            tokenDefinitions[account.symbol]?.coin,
-            true,
+            tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
+            isStakingActive,
+            stakingCryptoBalance: formatStakingAmount({
+                amount: stakingAmount,
+                networkSymbol: account.symbol,
+            }),
+            groupZeroBalance: true,
             fiatRates,
             localCurrency,
-        );
+        });
     },
 );
 

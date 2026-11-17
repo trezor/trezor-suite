@@ -1,3 +1,6 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { toTokenAddress } from '@suite-common/tokens';
 import { mockStakeRootState } from '@suite-common/wallet-core/mocks';
 import { type CurrentRate, type Timestamp } from '@suite-common/wallet-types';
@@ -22,6 +25,17 @@ const contract = toTokenAddress('0x' + 'a'.repeat(40));
 const account = mockEthereumStakingAccount('active', {
     tokens: [mockAccountToken({ contract, balance: '250' })],
 });
+// The 2.05 ETH of the active scenario, as a position.
+const activeStake = mockStakingPosition({
+    balances: {
+        staked: stakingAmountSchema.parse('2050000000000000000'),
+        pending: stakingAmountSchema.parse('0'),
+        unstaking: stakingAmountSchema.parse('0'),
+        withdrawable: stakingAmountSchema.parse('0'),
+        rewards: stakingAmountSchema.parse('0'),
+    },
+    unlocks: [],
+});
 
 const createRate = (rate: number): CurrentRate => ({
     ticker: { symbol: account.symbol },
@@ -37,6 +51,7 @@ const renderCard = () =>
     renderWithStoreProvider(<AccountDetailsCard accountKey={account.key} />, {
         preloadedState: {
             device: mockStakeRootState({ accounts: [account] }).device,
+            earn: { staking: mockStakingState({ positions: { [account.key]: [activeStake] } }) },
             wallet: {
                 accounts: [account],
                 settings: { localCurrency: 'usd' },
