@@ -181,7 +181,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
         case 'stake':
             return <StakeModal {...payload} onCancel={onCancel} />;
         case 'unstake':
-            return <UnstakeModal onCancel={onCancel} account={payload.account} />;
+            return <UnstakeModal onCancel={onCancel} accountKey={payload.accountKey} />;
         case 'claim':
             return <EarnClaimModal onCancel={onCancel} account={payload.account} />;
         case 'change-delegate':
