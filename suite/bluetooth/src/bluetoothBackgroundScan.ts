@@ -17,6 +17,7 @@ export type BackgroundScan = {
 export type BackgroundScanDeps = {
     getAdapterStatus: () => DesktopBluetoothState['adapterStatus'];
     getKnownDevices: () => DesktopBluetoothDevice[];
+    isLinux: () => boolean;
 };
 
 // TODO: add logger to deps
@@ -33,11 +34,14 @@ export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan =
 
     const isWindowVisible = () => document.visibilityState === 'visible';
 
-    const hasDisconnectedKnownDevice = () =>
-        deps.getKnownDevices().some(device => !isBluetoothDeviceReachable(device));
+    // On Linux (BlueZ), connecting to a bonded device can stall until its timeout without discovery.
+    // Keep cycling scan windows while it connects; the connection completes during one of them.
+    const needsScan = (device: DesktopBluetoothDevice) =>
+        !isBluetoothDeviceReachable(device) ||
+        (deps.isLinux() && device.connectionStatus.type === 'connecting');
 
     const shouldScan = () =>
-        hasDisconnectedKnownDevice() &&
+        deps.getKnownDevices().some(needsScan) &&
         // unknown - adapter was not used yet, try to use it.
         // enabled - adapter is ready for use.
         ['unknown', 'enabled'].includes(deps.getAdapterStatus());

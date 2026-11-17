@@ -30,11 +30,12 @@ describe('createBackgroundScan', () => {
     let adapterStatus: DesktopBluetoothState['adapterStatus'];
     let scan: BackgroundScan;
 
-    const createScan = () =>
+    const createScan = (isLinux = false) =>
         createBackgroundScan(
             createMockDeps({
                 getKnownDevices: () => knownDevices,
                 getAdapterStatus: () => adapterStatus,
+                isLinux: () => isLinux,
             }),
         );
 
@@ -88,6 +89,23 @@ describe('createBackgroundScan', () => {
             expect(bluetoothIpc.stopScan).not.toHaveBeenCalled();
         },
     );
+
+    it('keeps scanning on Linux while a known device is connecting', async () => {
+        scan = createScan(true);
+        scan.start();
+        knownDevices = [{ ...disconnectedDevice, connectionStatus: { type: 'connecting' } }];
+        scan.restartIfNeeded();
+        await jest.advanceTimersByTimeAsync(6000);
+
+        expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(2);
+
+        knownDevices = [{ ...disconnectedDevice, connectionStatus: { type: 'connected' } }];
+        scan.restartIfNeeded();
+        await jest.advanceTimersByTimeAsync(12000);
+
+        expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(2);
+        expect(bluetoothIpc.stopScan).toHaveBeenCalledTimes(2);
+    });
 
     it.each(['disabled', 'permission-denied', 'not-compatible', 'power-suspending'] as const)(
         'does not scan when the adapter is %s',

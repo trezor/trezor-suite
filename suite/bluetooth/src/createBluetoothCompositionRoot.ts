@@ -10,6 +10,7 @@ import {
 import { selectDevices } from '@suite-common/device';
 import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
 import { toGetter } from '@trezor/dependency-injection';
+import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
@@ -39,6 +40,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     const backgroundScan = createBackgroundScan({
         getAdapterStatus,
         getKnownDevices,
+        isLinux,
     });
 
     const setupBluetoothListeners = createSetupBluetoothListeners({
@@ -57,6 +59,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         getFirmware: toGetter(deps.getState, selectFirmware),
         dispatch: deps.dispatch,
         backgroundScan,
+        isLinux,
     });
 
     const bluetoothInit = createBluetoothInit({

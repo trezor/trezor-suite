@@ -28,6 +28,7 @@ type SetupBluetoothAutoReconnectDeps = {
     getFirmware: () => FirmwareUpdateState;
     dispatch: BluetoothReconnectThunkDispatch;
     backgroundScan: BackgroundScan;
+    isLinux: () => boolean;
 };
 
 type SetupBluetoothAutoReconnect = () => Promise<void>;
@@ -75,23 +76,20 @@ const attemptDeviceConnect = async (
     // do not hijack BT connection
     const autoConnectPolicy = deps.getAutoConnectPolicy();
     const devicePolicy = autoConnectPolicy[knownDevice.id];
+    const { filterPolicy } = device.manufacturerData;
+    // Linux (BlueZ) only receives the manufacturer data while the device is in pairing mode and keeps
+    // reporting it afterwards, so a stale pairing flag can't be told from a real one. Trade-off: reconnect
+    // a bonded device anyway, accepting that this host may take over a pairing meant for another host.
+    // The other flags come from the same byte, so they only help when the advertisement is fresh.
+    const canIgnorePairingFlag =
+        deps.isLinux() &&
+        device.paired === true &&
+        !filterPolicy?.connected &&
+        !filterPolicy?.user_disconnected;
     const isConnectable =
         device.connectionStatus.type === 'disconnected' &&
         devicePolicy?.type !== 'autoconnect-disabled' &&
-        !device.manufacturerData.filterPolicy?.pairing;
-
-    // NOTE
-    // linux is caching manufacturerData
-    // they will be always received as device is in pairing mode even if it not (until adapter reconnection)
-    // manufacturerData are updates are sent properly only if there are 2 apps paired with one trezor and both are enabled (desktop + mobile)
-    // TODO: in case of complains regarding auto reconnection on linux enable timeout based on recent disconnection timestamp
-    // if (
-    //     devicePolicy?.type === 'recently-disconnected' &&
-    //     knownDevice.manufacturerData.filterPolicy?.pairing &&
-    //     Date.now() - devicePolicy.timestamp < 10000
-    // ) {
-    //     isConnectable = false;
-    // }
+        (!filterPolicy?.pairing || canIgnorePairingFlag);
 
     if (isConnectable) {
         await deps.dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
