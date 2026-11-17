@@ -1,13 +1,14 @@
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
-import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
+import type { Proxy } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TimerId } from '@trezor/type-utils';
 import { deepEqual } from '@trezor/utils';
 
 import type { BlockchainOptions } from './Blockchain';
 import { Blockchain } from './Blockchain';
+import type { BackendCoinInfo, BlockchainLinkSettings } from '../data/coinInfo';
 
-type CoinShortcut = CoinInfo['shortcut'];
+type CoinShortcut = BackendCoinInfo['shortcut'];
 type Identity = string;
 type CoinShortcutIdentity = `${CoinShortcut}/${Identity}`;
 type Reconnect = { handle: TimerId };
@@ -30,7 +31,7 @@ export class BackendManager {
     private readonly reconnect: { [shortcut: CoinShortcutIdentity]: Reconnect } = {};
     private readonly connectedAt: { [shortcut: CoinShortcutIdentity]: number } = {};
     private readonly attempts: { [shortcut: CoinShortcutIdentity]: number } = {};
-    private readonly custom: { [shortcut: CoinShortcut]: BlockchainLink } = {};
+    private readonly custom: { [shortcut: CoinShortcut]: BlockchainLinkSettings } = {};
     private readonly preferred: { [shortcut: CoinShortcut]: string } = {};
 
     get(shortcut: CoinShortcut, identity = DEFAULT_IDENTITY): Blockchain | null {
@@ -100,7 +101,7 @@ export class BackendManager {
         Object.values(this.instances).forEach(i => i.disconnect());
     }
 
-    reconnectAll(coin?: CoinInfo) {
+    reconnectAll(coin?: BackendCoinInfo) {
         // collect all running backends
         const backends = Object.values(this.instances).filter(
             backend => !coin || coin.shortcut === backend.coinInfo.shortcut,
@@ -112,13 +113,13 @@ export class BackendManager {
         return Promise.all(backends.map(backend => this.getOrConnect(backend, { force: true })));
     }
 
-    isSupported(coinInfo: CoinInfo) {
+    isSupported(coinInfo: BackendCoinInfo) {
         const info = this.custom[coinInfo.shortcut] || coinInfo.blockchainLink;
 
         return !!info;
     }
 
-    setCustom(shortcut: CoinShortcut, blockchainLink?: BlockchainLink) {
+    setCustom(shortcut: CoinShortcut, blockchainLink?: BlockchainLinkSettings) {
         this.setPreferred(shortcut, undefined);
         if (blockchainLink) {
             this.custom[shortcut] = blockchainLink;
@@ -210,17 +211,17 @@ export class BackendManager {
         return reconnect;
     }
 
-    private patchCoinInfo(coinInfo: CoinInfo): CoinInfo {
+    private patchCoinInfo(coinInfo: BackendCoinInfo): BackendCoinInfo {
         const thisCustom = this.custom;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const custom: BlockchainLink = thisCustom[coinInfo.shortcut];
+        const custom: BlockchainLinkSettings = thisCustom[coinInfo.shortcut];
         const thisPreferred = this.preferred;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const preferred: string = thisPreferred[coinInfo.shortcut];
 
         const url = preferred ? [preferred] : (custom?.url ?? coinInfo.blockchainLink?.url ?? []);
 
-        const patchedBlockchainLink: CoinInfo['blockchainLink'] = {
+        const patchedBlockchainLink: BackendCoinInfo['blockchainLink'] = {
             ...coinInfo.blockchainLink,
             ...custom,
             url,
@@ -232,7 +233,7 @@ export class BackendManager {
         };
     }
 
-    private getReconnectFilter(coinInfo?: CoinInfo) {
+    private getReconnectFilter(coinInfo?: BackendCoinInfo) {
         return (key: string): key is CoinShortcutIdentity =>
             !coinInfo || key.startsWith(`${coinInfo.shortcut}/`);
     }
