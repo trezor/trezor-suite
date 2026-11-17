@@ -204,13 +204,15 @@ export const selectIsStakingManageableSymbol = (
     );
 };
 
+// The product a rate or a period is asked for: the position's own while it is delegated somewhere,
+// else the one the network stakes on, which legacy promoted to a stake key without a pool.
 export const selectStakingAccountProductDescriptor = (
     state: StakingAccountProductRootState,
     accountKey: AccountKey,
 ): StakingProductDescriptor | null => {
     const entry = selectStakingAccountPositionEntry(state, accountKey);
 
-    if (entry !== null) {
+    if (entry !== null && entry.position.targets.length > 0) {
         return entry.descriptor;
     }
 
@@ -223,7 +225,8 @@ export const selectStakingAccountProductDescriptor = (
     return selectStakeableStakingProductDescriptorBySymbol(state, account.symbol);
 };
 
-// Staked with an operator Suite does not offer: the position's product takes no new stake here.
+// Delegated to an operator Suite does not offer: the position targets one and its product takes no
+// new stake here. A registered stake key without a pool is delegated nowhere.
 export const selectIsStakingAccountDelegatedOutside = (
     state: StakingRootState,
     accountKey: AccountKey,
@@ -231,8 +234,29 @@ export const selectIsStakingAccountDelegatedOutside = (
     const platform = selectStakingPlatform(state);
 
     return selectCountedStakingPositionEntriesByAccount(state, accountKey).some(
-        ({ descriptor }) => !isStakeableOnPlatform(descriptor, platform),
+        ({ position, descriptor }) =>
+            position.targets.length > 0 && !isStakeableOnPlatform(descriptor, platform),
     );
+};
+
+export const STAKING_PROMOTION_SCOPES = ['offered', 'manageable'] as const;
+
+/** `offered`: every product the platform shows; `manageable`: only what it can stake into. */
+export type StakingPromotionScope = (typeof STAKING_PROMOTION_SCOPES)[number];
+
+// Promotions advertise mainnet products only, whatever the testnets setting.
+export const selectIsStakingPromotedSymbol = (
+    state: StakingAccessRootState,
+    networkSymbol: NetworkSymbol,
+    scope: StakingPromotionScope,
+): boolean => {
+    if (isTestnet(networkSymbol)) {
+        return false;
+    }
+
+    return scope === 'manageable'
+        ? selectIsStakingManageableSymbol(state, networkSymbol)
+        : selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol) !== null;
 };
 
 export const selectStakingPromoProductDescriptors = createWeakMapSelector(

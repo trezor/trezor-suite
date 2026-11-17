@@ -8,7 +8,6 @@ export { YieldDisabledAlert } from './components/YieldDisabledAlert';
 export { useAssetYieldRate } from './hooks/useAssetYieldRate';
 export type {
     AssetYieldRate,
-    StakingPromotionScope,
     TokenYieldRateToken,
     TokenYieldRateVariant,
 } from './hooks/useAssetYieldRate';

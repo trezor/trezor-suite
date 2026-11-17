@@ -95,10 +95,11 @@ export const selectDeviceStakingSymbols = createWeakMapSelector(
 export const selectDeviceStakingPositionsCount = (state: StakingDeviceRootState): number =>
     selectDeviceStakingPositionEntries(state).length;
 
+// The first funded entry with the warning, as the legacy banners required a balance.
 export const selectDeviceStakingEntryByWarning = (
     state: StakingDeviceRootState,
     code: StakingPositionWarningCode,
 ): StakingPositionEntry | null =>
-    selectDeviceCountedStakingPositionEntries(state).find(({ position }) =>
+    selectDeviceStakingPositionEntries(state).find(({ position }) =>
         hasStakingPositionWarning(position, code),
     ) ?? null;

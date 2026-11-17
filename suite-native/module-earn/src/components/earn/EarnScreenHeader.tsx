@@ -5,7 +5,6 @@ import {
     selectDeviceStakingEntryByWarning,
     selectDeviceStakingPositionEntries,
 } from '@suite-common/earn-staking';
-import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
 import {
     type EarnListRootState,
     selectYieldClaimListItems,
@@ -15,7 +14,6 @@ import {
 } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { EarnBalanceCard } from './EarnBalanceCard';
 import { useMessageSystemEarnDashboard } from '../../hooks/earn/useMessageSystemEarnDashboard';
@@ -50,17 +48,11 @@ export const EarnScreenHeader = () => {
         selectYieldClaimListItems(state, claimRewardsWithFiat),
     );
 
-    // The banner needs a funded account, as the home banner does.
-    const outdatedProviderAccountKey = useSelector((state: StakingDeviceRootState) => {
-        if (isStakingDisabled) return null;
-
-        const position = selectDeviceStakingEntryByWarning(state, 'outdated-provider');
-
-        if (position === null) return null;
-        if (new BigNumber(getStakingPositionAmount(position.position)).lte(0)) return null;
-
-        return position.accountKey;
-    });
+    const outdatedProviderAccountKey = useSelector((state: StakingDeviceRootState) =>
+        isStakingDisabled
+            ? null
+            : (selectDeviceStakingEntryByWarning(state, 'outdated-provider')?.accountKey ?? null),
+    );
 
     const hasEarnPositions = stakingPositionEntries.length > 0 || yieldPositions.length > 0;
     const hasClaimItems = claimItems.length > 0;

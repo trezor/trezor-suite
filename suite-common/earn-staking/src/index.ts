@@ -89,18 +89,21 @@ export type {
 export {
     selectIsStakingAccountDelegatedOutside,
     selectIsStakingManageableSymbol,
+    selectIsStakingPromotedSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,
     selectStakingAccountProductDescriptor,
     selectStakingOperationMessageContent,
     selectStakingProductAccess,
     selectStakingPromoProductDescriptors,
+    STAKING_PROMOTION_SCOPES,
     type ResolvedStakingProductAccess,
     type StakingAccessRootState,
     type StakingAccountProductRootState,
     type StakingDisabledOperationReason,
     type StakingDisabledOperations,
     type StakingPromoRootState,
+    type StakingPromotionScope,
 } from './state/stakingAccessSelectors';
 export {
     selectCountedStakingPositionEntriesByAccount,

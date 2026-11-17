@@ -6,7 +6,7 @@ import {
     type StakingRootState,
     formatStakingAmount,
     selectIsStakingAccountDelegatedOutside,
-    useStakingRate,
+    useNetworkStakingRate,
 } from '@suite-common/earn-staking';
 import {
     getStakingPositionAmount,
@@ -49,7 +49,7 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
         selectAccountByKey(state, accountKey),
     );
 
-    const { rate, rateKind } = useStakingRate({ productId: descriptor.id, accountKey });
+    const { rate, rateKind } = useNetworkStakingRate({ networkSymbol: symbol, accountKey });
 
     const isDelegatedOutside = useSelector((state: StakingRootState) =>
         selectIsStakingAccountDelegatedOutside(state, accountKey),

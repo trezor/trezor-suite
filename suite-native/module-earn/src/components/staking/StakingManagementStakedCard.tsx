@@ -6,10 +6,10 @@ import {
     type StakingRootState,
     formatStakingAmount,
     selectHasStakingAccountWarning,
+    useNetworkStakingRate,
     useStakingAccountPosition,
     useStakingDaysUntil,
     useStakingPeriods,
-    useStakingRate,
 } from '@suite-common/earn-staking';
 import {
     getStakingPositionPrincipal,
@@ -109,7 +109,7 @@ export const StakingManagementStakedCard = ({
     );
     const stakeMessage = useStakingOperationMessage(productId, 'stake');
     const unstakeMessage = useStakingOperationMessage(productId, 'unstake');
-    const { rate, rateKind } = useStakingRate({ productId, accountKey });
+    const { rate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
     const { rewardPeriodDays, nextRewardAt } = useStakingPeriods(productId);
     const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
     const nextRewardInDays = useStakingDaysUntil(nextRewardAt);
