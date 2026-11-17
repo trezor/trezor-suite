@@ -2,16 +2,13 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    type StakingRootState,
     formatStakingAmount,
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountActive,
     selectStakingAccountBalanceWithStaking,
 } from '@suite-common/earn-staking';
-import {
-    type AccountsRootState,
-    type StakeRootState,
-    selectAccountHasStaking,
-    selectFormattedAccountType,
-    selectIsCardanoStakedWithFiveBinaries,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
@@ -73,12 +70,12 @@ const AccountsListItemComponent = ({
         selectAccountHasAnyKnownTokens(state, account.key),
     );
 
-    const accountHasStaking = useSelector((state: StakeRootState) =>
-        selectAccountHasStaking(state, account.key),
+    const isStakingActive = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountActive(state, account.key),
     );
 
-    const isStakedWithFiveBinaries = useSelector((state: AccountsRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, account.key),
+    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
+        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
     );
 
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
@@ -94,8 +91,8 @@ const AccountsListItemComponent = ({
 
     const shouldShowAccountLabel = !isNetworkWithTokens(account.symbol) || !isNativeCoinOnly;
     const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
-    const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
-    const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
+    const shouldShowStakingBadge = isStakingActive && !isNativeCoinOnly;
+    const shouldShowZeroApyBadge = hasOutdatedProvider && !isNativeCoinOnly;
     const shouldShowTotalFiat = shouldShowTokenBadge && !shouldLimitFiatToNativeBalance;
     const shouldIncludeStakingInFiat = shouldShowStakingBadge && !shouldLimitFiatToNativeBalance;
     const fiatBalanceValue = shouldShowTotalFiat ? (
@@ -157,7 +154,7 @@ const AccountsListItemComponent = ({
                         <ZeroApyBadge />
                     ) : (
                         shouldShowStakingBadge && (
-                            <StakingBadge networkSymbol={account.symbol} account={account} />
+                            <StakingBadge networkSymbol={account.symbol} accountKey={account.key} />
                         )
                     )}
                     {shouldShowTokenBadge && <AccountListTokenBadge accountKey={account.key} />}

@@ -13953,6 +13953,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@shopify/flash-list": "npm:2.3.2"
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/token": "workspace:*"
     "@suite-common/tokens": "workspace:*"

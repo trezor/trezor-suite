@@ -1,7 +1,9 @@
+import { useStore } from 'react-redux';
+
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
-import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountDetailScreenHeaderContent } from '@suite-native/accounts';
 import { IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { TokenSettingsBottomSheet } from '@suite-native/earn';
@@ -29,11 +31,15 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
     const route =
         useRoute<RouteProp<AccountDetailStackParamList, AccountDetailStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
+    const store = useStore<StakingRootState>();
 
     const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
 
     const handleSettingsNavigation = () => {
-        if (isNetworkWithTokens(account.symbol) || isStakingSymbol(account.symbol)) {
+        if (
+            isNetworkWithTokens(account.symbol) ||
+            selectIsStakingSupportedSymbol(store.getState(), account.symbol)
+        ) {
             openModal();
         } else {
             navigation.navigate(AccountDetailStackRoutes.AccountSettings, {

@@ -38,13 +38,6 @@ const supportedNetworks = mockGetSupportedNetworks();
 const btcSymbol = asNetworkSymbol('btc');
 const solSymbol = asNetworkSymbol('sol');
 
-let mockStakingBalance = '0';
-
-jest.mock('@suite-common/wallet-utils', () => ({
-    ...jest.requireActual('@suite-common/wallet-utils'),
-    getAccountTotalStakingBalance: (_: Account) => mockStakingBalance,
-}));
-
 describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
     const account = {
         label: 'Original account name',
@@ -312,10 +305,14 @@ describe('getAccountListSections', () => {
         jest.clearAllMocks();
     });
 
-    it('should include only tokens with positive balance', () => {
-        mockStakingBalance = '0';
+    const idleStaking = { isStakingActive: false, stakingCryptoBalance: '0' };
 
-        const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
+    it('should include only tokens with positive balance', () => {
+        const sections = getAccountListSections({
+            account: mockAccount,
+            tokenDefinitions: mockTokenDefinitions,
+            ...idleStaking,
+        });
 
         // Should have account section and two token sections (for Token1 and Token3)
         expect(sections).toHaveLength(3);
@@ -334,7 +331,11 @@ describe('getAccountListSections', () => {
             tokens: [],
         };
 
-        const sections = getAccountListSections(accountWithoutTokens, mockTokenDefinitions);
+        const sections = getAccountListSections({
+            account: accountWithoutTokens,
+            tokenDefinitions: mockTokenDefinitions,
+            ...idleStaking,
+        });
 
         // Should only have account section
         expect(sections).toHaveLength(1);
@@ -342,8 +343,6 @@ describe('getAccountListSections', () => {
     });
 
     it('should handle account with only zero balance tokens', () => {
-        mockStakingBalance = '0';
-
         const accountWithZeroBalanceTokens: Account = {
             ...mockAccount,
             tokens: [
@@ -364,24 +363,95 @@ describe('getAccountListSections', () => {
             ] as TokenInfoBranded[],
         };
 
-        const sections = getAccountListSections(accountWithZeroBalanceTokens, mockTokenDefinitions);
+        const sections = getAccountListSections({
+            account: accountWithZeroBalanceTokens,
+            tokenDefinitions: mockTokenDefinitions,
+            ...idleStaking,
+        });
 
         // Should only have account section
         expect(sections).toHaveLength(1);
         expect(sections[0]?.type).toBe('account');
     });
 
-    it('should handle account with staking balance', () => {
-        mockStakingBalance = '100';
-
-        const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
+    it('should handle an account with active staking', () => {
+        const sections = getAccountListSections({
+            account: mockAccount,
+            tokenDefinitions: mockTokenDefinitions,
+            isStakingActive: true,
+            stakingCryptoBalance: '100',
+        });
 
         // Should have account section, staking section, and two token sections
         expect(sections).toHaveLength(4);
         expect(sections[0]?.type).toBe('account');
-        expect(sections[1]?.type).toBe('staking');
+        expect(sections[1]).toMatchObject({ type: 'staking', stakingCryptoBalance: '100' });
         expect(sections[2]?.type).toBe('token');
         expect(sections[3]?.type).toBe('token');
+    });
+});
+
+describe('selectAccountListSectionsWithZeroBalanceGroup', () => {
+    const stakingAccount = mockEthereumStakingAccount('active');
+    const idleAccount = mockEthereumStakingAccount('none');
+    const createState = (): NativeAccountsRootState => {
+        const state = mockStakeRootState({ accounts: [stakingAccount, idleAccount] });
+
+        return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+                fiat: fiatRatesInitialState,
+            },
+            earn: {
+                staking: mockStakingState({
+                    positions: {
+                        [stakingAccount.key]: [
+                            mockStakingPosition({
+                                balances: {
+                                    staked: stakingAmountSchema.parse('2050000000000000000'),
+                                    pending: stakingAmountSchema.parse('0'),
+                                    unstaking: stakingAmountSchema.parse('0'),
+                                    withdrawable: stakingAmountSchema.parse('0'),
+                                    rewards: stakingAmountSchema.parse('0'),
+                                },
+                                unlocks: [],
+                            }),
+                        ],
+                    },
+                }),
+            },
+            suiteSyncData: { wallets: {} },
+            tokenDefinitions: {},
+        };
+    };
+
+    it('adds a staking section with the position amount of an active account', () => {
+        const sections = selectAccountListSectionsWithZeroBalanceGroup(
+            createState(),
+            stakingAccount.key,
+        );
+
+        expect(sections.map(section => section.type)).toEqual(['account', 'staking']);
+        expect(sections[1]).toMatchObject({ type: 'staking', stakingCryptoBalance: '2.05' });
+    });
+
+    it('lists only the account section without a position', () => {
+        const sections = selectAccountListSectionsWithZeroBalanceGroup(
+            createState(),
+            idleAccount.key,
+        );
+
+        expect(sections.map(section => section.type)).toEqual(['account']);
+    });
+
+    it('keeps the sections reference while the state is unchanged', () => {
+        const state = createState();
+
+        expect(selectAccountListSectionsWithZeroBalanceGroup(state, stakingAccount.key)).toBe(
+            selectAccountListSectionsWithZeroBalanceGroup(state, stakingAccount.key),
+        );
     });
 });
 

@@ -6,10 +6,10 @@ import {
     selectWalletAssetUnstakedAccounts,
 } from '@suite-common/assets';
 import {
-    type WalletAssetKey,
-    getStakingLimitsByNetworkSymbol,
-    isSupportedStakingNetworkSymbol,
-} from '@suite-common/wallet-core';
+    selectIsStakingSupportedSymbol,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { type BannerFlagsSliceRootState, selectIsEarnBannerClosed } from '@suite-native/banners';
@@ -27,7 +27,7 @@ const selectIsWalletAssetStakingSupported = (
     return (
         networkSymbol !== undefined &&
         selectWalletAssetContractAddress(state, assetKey) === undefined &&
-        isSupportedStakingNetworkSymbol(networkSymbol)
+        selectIsStakingSupportedSymbol(state, networkSymbol)
     );
 };
 
@@ -44,6 +44,7 @@ export const selectShouldShowWalletAssetEarnSection = (
     );
 };
 
+// The banner promotes a product the platform can stake into.
 export const selectWalletAssetStakingBannerAccounts = (
     state: AssetDetailStakingBannerState,
     assetKey: WalletAssetKey | undefined,
@@ -53,7 +54,7 @@ export const selectWalletAssetStakingBannerAccounts = (
     if (
         networkSymbol === undefined ||
         !selectIsWalletAssetStakingSupported(state, assetKey) ||
-        getStakingLimitsByNetworkSymbol(networkSymbol) === null ||
+        selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol) === null ||
         selectIsEarnBannerClosed(state, networkSymbol)
     ) {
         return NO_ACCOUNTS;

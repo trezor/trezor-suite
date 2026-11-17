@@ -1,6 +1,8 @@
 import { type useNetworkStakingRate } from '@suite-common/earn-staking';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
+import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { stakeInitialState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
@@ -11,6 +13,25 @@ import { AssetDetailEarnSection } from './AssetDetailEarnSection';
 
 const DEVICE_STATE = 'aliceWallet@device:0';
 const VIEW_ALL_BUTTON = '@assets/asset-detail/earn-view-all-button';
+
+// The staking products of the networks under test; bitcoin has none.
+const stakingProducts = [
+    mockStakingProductDescriptor(),
+    mockStakingProductDescriptor({
+        networkSymbol: asNetworkSymbol('ada'),
+        type: 'native',
+        operations: ['stake', 'unstake', 'claim', 'vote'],
+    }),
+    mockStakingProductDescriptor({
+        networkSymbol: asNetworkSymbol('trx'),
+        providerId: stakingProviderIdSchema.parse('curated'),
+        type: 'native',
+        operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
+        rateKind: 'apr',
+        rewardsKind: 'claimable',
+        platforms: { desktop: { access: 'manage' }, mobile: { access: 'read-only' } },
+    }),
+];
 
 const mockDispatchNavigation = mock<(action: unknown) => void>();
 const mockUseNetworkStakingRate = mock<typeof useNetworkStakingRate>();
@@ -48,6 +69,9 @@ const renderEarnSection = ({
     return renderWithStoreProvider(<AssetDetailEarnSection />, {
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
+            earn: {
+                staking: mockStakingState({ platform: 'mobile', descriptors: stakingProducts }),
+            },
             wallet: {
                 accounts: [
                     mockWalletAccount({
@@ -56,7 +80,6 @@ const renderEarnSection = ({
                         formattedBalance,
                     }),
                 ],
-                stake: stakeInitialState,
             },
         },
     });

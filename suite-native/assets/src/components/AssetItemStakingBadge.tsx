@@ -1,12 +1,11 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
-    type StakeRootState,
-    selectFirstCardanoAccountStakedWithFiveBinaries,
-    selectHasAnyDeviceAccountsWithStaking,
-} from '@suite-common/wallet-core';
+    type StakingDeviceRootState,
+    selectDeviceStakingPositionEntriesBySymbol,
+} from '@suite-common/earn-staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StakingBadge, ZeroApyBadge } from '@suite-native/accounts';
 
 type AssetItemStakingBadgeProps = {
@@ -14,18 +13,19 @@ type AssetItemStakingBadgeProps = {
 };
 
 export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProps) => {
-    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState) =>
-        selectHasAnyDeviceAccountsWithStaking(state, symbol),
-    );
-    const stakedWithFiveBinariesAccount = useSelector((state: StakeRootState) =>
-        selectFirstCardanoAccountStakedWithFiveBinaries(state),
+    const positionEntries = useSelector((state: StakingDeviceRootState) =>
+        selectDeviceStakingPositionEntriesBySymbol(state, symbol),
     );
 
-    if (!hasAnyAccountsWithStaking) {
+    if (positionEntries.length === 0) {
         return null;
     }
 
-    if (getNetworkType(symbol) === 'cardano' && stakedWithFiveBinariesAccount) {
+    const hasOutdatedProvider = positionEntries.some(({ position }) =>
+        position.warnings.some(warning => warning.code === 'outdated-provider'),
+    );
+
+    if (hasOutdatedProvider) {
         return <ZeroApyBadge />;
     }
 

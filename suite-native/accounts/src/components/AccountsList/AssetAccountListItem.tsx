@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux';
 
-import { type TokenAddress } from '@suite-common/tokens';
 import {
-    type AccountsRootState,
-    getAccountCryptoBalanceWithStaking,
-    selectFormattedAccountType,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingAccountBalanceWithStaking,
+} from '@suite-common/earn-staking';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { findToken, isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
@@ -47,10 +48,13 @@ export const AssetAccountListItem = ({
     const hasAnyKnownTokens = useSelector((state: NativeAccountsRootState) =>
         selectAccountHasAnyKnownTokens(state, account.key),
     );
+    const balanceWithStaking = useSelector((state: StakingRootState & AccountsRootState) =>
+        selectStakingAccountBalanceWithStaking(state, account.key),
+    );
     const token = findToken(account.tokens, contractAddress);
     const cryptoBalance = contractAddress
         ? (token?.balance ?? '0')
-        : getAccountCryptoBalanceWithStaking(account);
+        : formatStakingAmount({ amount: balanceWithStaking, networkSymbol: account.symbol });
     const isFailed = isAccountFailed(account);
 
     const fiatValue = contractAddress ? (

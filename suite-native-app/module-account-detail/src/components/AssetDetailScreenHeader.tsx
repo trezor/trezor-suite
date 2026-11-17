@@ -1,12 +1,13 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isAccountFailed, isStakingSymbol } from '@suite-common/wallet-utils';
+import { isAccountFailed } from '@suite-common/wallet-utils';
 import {
     AccountLabel,
     type NativeAccountsRootState,
@@ -79,14 +80,16 @@ const AssetDetailScreenSettingsButton = ({
     account,
     tokenContract,
 }: AssetDetailScreenSettingsButtonProps) => {
+    const store = useStore<StakingRootState>();
     const navigation = useNavigation<AccountDetailNavigationProps>();
+
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleSettingsNavigation = () => {
         if (
             !!tokenContract ||
             isNetworkWithTokens(account.symbol) ||
-            isStakingSymbol(account.symbol)
+            selectIsStakingSupportedSymbol(store.getState(), account.symbol)
         ) {
             openModal();
         } else {

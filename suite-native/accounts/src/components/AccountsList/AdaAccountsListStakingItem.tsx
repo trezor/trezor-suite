@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    type StakeRootState,
-    selectIsCardanoStakedOutsideEverstake,
-    selectIsCardanoStakedWithFiveBinaries,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountDelegatedOutside,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { IconCircle } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -32,23 +32,23 @@ export const AdaAccountsListStakingItem = ({
     badges,
     ...props
 }: AdaAccountsListStakingItemProps) => {
-    const isStakedOutsideEverstake = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedOutsideEverstake(state, account.key),
+    const isDelegatedOutside = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountDelegatedOutside(state, account.key),
     );
-    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, account.key),
+    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
+        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
     );
 
     const mainValue = useMemo(() => {
-        if (isStakedWithFiveBinaries) {
+        if (hasOutdatedProvider) {
             return <ZeroApyBadge />;
         }
-        if (isStakedOutsideEverstake) {
+        if (isDelegatedOutside) {
             return <Icon name="warning" color="contentWarning" />;
         }
 
         return <Icon name="check" color="contentBrand" />;
-    }, [isStakedOutsideEverstake, isStakedWithFiveBinaries]);
+    }, [isDelegatedOutside, hasOutdatedProvider]);
 
     return (
         <AccountsListItemBase

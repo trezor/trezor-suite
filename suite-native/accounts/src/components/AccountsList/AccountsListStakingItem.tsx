@@ -1,4 +1,4 @@
-import { isSupportedAdaStakingNetworkSymbol } from '@suite-common/wallet-core';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { AdaAccountsListStakingItem } from './AdaAccountsListStakingItem';
@@ -18,7 +18,7 @@ type AccountsListStakingItemProps = {
 export const AccountsListStakingItem = (props: AccountsListStakingItemProps) => {
     const { account } = props;
 
-    if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
+    if (getNetworkType(account.symbol) === 'cardano') {
         return <AdaAccountsListStakingItem {...props} />;
     }
 

@@ -1,14 +1,18 @@
 import { type useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { type useNetworkStakingRate } from '@suite-common/earn-staking';
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
-import { type StakingPosition, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import {
+    type StakingPosition,
+    stakingAmountSchema,
+    stakingProviderIdSchema,
+} from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { stakeInitialState, transactionsInitialState } from '@suite-common/wallet-core';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { transactionsInitialState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -53,21 +57,64 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
         mockUseNativeYieldVault(...args),
 }));
 
+const toBaseUnits = (networkSymbol: NetworkSymbol, wholeCoins: string) =>
+    `${wholeCoins}${'0'.repeat(getNetwork(networkSymbol).decimals)}`;
+
 const mockAccount = (networkSymbol: NetworkSymbol, formattedBalance = '10'): Account =>
-    mockWalletAccount({ symbol: networkSymbol, deviceState: DEVICE_STATE, formattedBalance });
+    mockWalletAccount({
+        symbol: networkSymbol,
+        deviceState: DEVICE_STATE,
+        formattedBalance,
+        availableBalance: toBaseUnits(networkSymbol, formattedBalance),
+    });
+
+const { limits: ETH_LIMITS } = mockStakingProductDescriptor();
+
+// Every product under test takes a stake from 1 unit of its coin; Cardano also keeps a 2 ADA deposit.
+const mockLimits = (networkSymbol: NetworkSymbol, registrationDeposit?: string) => ({
+    ...ETH_LIMITS,
+    minStakeAmount: stakingAmountSchema.parse(toBaseUnits(networkSymbol, '1')),
+    minStakeAmountForDashboard: stakingAmountSchema.parse(toBaseUnits(networkSymbol, '1')),
+    registrationDeposit:
+        registrationDeposit === undefined
+            ? ETH_LIMITS.registrationDeposit
+            : stakingAmountSchema.parse(toBaseUnits(networkSymbol, registrationDeposit)),
+});
 
 const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
     networkSymbol: ADA,
     type: 'native',
     operations: ['stake', 'unstake', 'claim', 'vote'],
-    rewardsKind: 'claimable',
+    limits: mockLimits(ADA, '2'),
 });
+
+const STAKING_PRODUCTS = [
+    mockStakingProductDescriptor({ limits: mockLimits(ETH) }),
+    mockStakingProductDescriptor({
+        networkSymbol: SOL,
+        type: 'native',
+        operations: ['stake', 'unstake', 'withdraw'],
+        rewardsKind: 'expected',
+        limits: mockLimits(SOL),
+    }),
+    ADA_STAKING_PRODUCT,
+    mockStakingProductDescriptor({
+        networkSymbol: TRX,
+        providerId: stakingProviderIdSchema.parse('curated'),
+        type: 'native',
+        operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
+        rateKind: 'apr',
+        rewardsKind: 'claimable',
+        limits: mockLimits(TRX),
+    }),
+];
 
 const mockCardanoAccount = (descriptor: string): Account =>
     mockWalletAccount({
         symbol: ADA,
         deviceState: DEVICE_STATE,
         formattedBalance: '10',
+        availableBalance: toBaseUnits(ADA, '10'),
         descriptor: asAccountDescriptor(descriptor),
     });
 
@@ -119,13 +166,13 @@ const renderStakingBanner = async ({
         device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
         earn: {
             staking: mockStakingState({
-                descriptors: [ADA_STAKING_PRODUCT],
+                platform: 'mobile',
+                descriptors: STAKING_PRODUCTS,
                 positions: stakingPositions,
             }),
         },
         wallet: {
             accounts,
-            stake: stakeInitialState,
             transactions: transactionsInitialState,
         },
         messageSystem: messageSystemInitialState,
