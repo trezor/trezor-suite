@@ -1,6 +1,7 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
-import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import {
     isCardanoStakingTx,
@@ -166,7 +167,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             <Translation
                 id={wrapKind === 'wrap' ? 'TR_TX_WRAP' : 'TR_TX_UNWRAP'}
                 values={{
-                    nativeSymbol: getNetworkDisplaySymbol(transaction.symbol),
+                    nativeSymbol: <AssetSymbol networkSymbol={transaction.symbol} />,
                     wrappedAmount: <WrapTxAmount transaction={transaction} wrapped />,
                 }}
             />
@@ -278,43 +279,56 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         (transaction.tokens.length === 1 &&
             (transaction.internalTransfers.length === 1 || transaction.targets.length === 1))
     ) {
+        const nativeSymbol = <AssetSymbol networkSymbol={transaction.symbol} />;
         const combined = [
-            ...transaction.tokens,
+            ...transaction.tokens.map(t => ({
+                type: t.type,
+                symbol: t.symbol ? (
+                    <BlurUrls
+                        tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
+                        text={t.symbol}
+                    />
+                ) : undefined,
+            })),
             ...transaction.internalTransfers.map(t => ({
                 type: t.type,
-                symbol: getNetworkDisplaySymbol(transaction.symbol),
+                symbol: nativeSymbol,
             })),
             ...transaction.targets.map(_ => ({
                 type: 'sent',
-                symbol: getNetworkDisplaySymbol(transaction.symbol),
+                symbol: nativeSymbol,
             })),
         ];
         const fromSymbol = combined.find(t => t.type === 'sent')?.symbol;
         const toSymbol = combined.find(t => t.type === 'recv')?.symbol;
 
         if (fromSymbol && toSymbol && !transaction.cardanoSpecific) {
-            return (
-                <BlurUrls
-                    tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
-                    text={translationString('TR_SWAP_TRANSACTION', { fromSymbol, toSymbol })}
-                />
-            );
+            return <Translation id="TR_SWAP_TRANSACTION" values={{ fromSymbol, toSymbol }} />;
         }
     }
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;
     const transactionSymbol = getTxHeaderSymbol(transaction);
+    const messageId = getTransactionMessageId({ transaction, isPending });
+
     // token symbols carry their own casing (trSHUSDTp), only network symbols are stored lowercase
-    const symbol =
-        transactionSymbol && isNetworkSymbol(transactionSymbol)
-            ? getNetworkDisplaySymbol(transactionSymbol)
-            : transactionSymbol;
+    if (transactionSymbol && isNetworkSymbol(transactionSymbol)) {
+        return (
+            <Translation
+                id={messageId}
+                values={{
+                    symbol: <AssetSymbol networkSymbol={transactionSymbol} />,
+                    multiple: isMultiTokenTransaction,
+                }}
+            />
+        );
+    }
 
     return (
         <BlurUrls
             tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
-            text={translationString(getTransactionMessageId({ transaction, isPending }), {
-                symbol,
+            text={translationString(messageId, {
+                symbol: transactionSymbol,
                 multiple: isMultiTokenTransaction,
             })}
         />

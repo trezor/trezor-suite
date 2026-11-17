@@ -1,10 +1,10 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, supportedTronNetworkSymbols } from '@suite-common/wallet-types';
 import { Divider, StepList } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -95,7 +95,7 @@ export const TronStakeInANutshellModal = ({
         });
     };
 
-    const displaySymbol = getNetworkDisplaySymbol(supportedTronNetworkSymbols[0]);
+    const displaySymbol = <AssetSymbol networkSymbol={supportedTronNetworkSymbols[0]} />;
     const networkFeeBadge = { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true };
 
     const processes: EarnInANutshellProcess[] = [

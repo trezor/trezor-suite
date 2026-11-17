@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -67,7 +67,7 @@ export const InstantStakeBanner = ({
 
     if (!stakeType || stakeType === 'claim') return null; // claim is not supported
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const displaySymbol = <AssetSymbol networkSymbol={symbol} />;
     const remainingDays = stakeType === 'stake' ? daysToAddToPool : daysToUnstake;
 
     return (

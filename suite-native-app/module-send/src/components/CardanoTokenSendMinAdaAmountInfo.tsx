@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { type TokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { subunitsToUnits } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import {
     BottomSheetModal,
     Button,
@@ -46,7 +47,6 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
 
     if (!symbol || getNetworkType(symbol) !== 'cardano' || !tokenContract) return null;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
     const minAdaAmountInUnits = minAdaAmount
         ? subunitsToUnits({ symbol, value: minAdaAmount }).toFixed()
         : null;
@@ -62,7 +62,11 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                 >
                     <Translation
                         id="moduleSend.outputs.recipients.cardano.tokenSendMinAdaAmount.title"
-                        values={{ networkDisplaySymbol }}
+                        values={{
+                            networkDisplaySymbol: (
+                                <AssetSymbol networkSymbol={symbol} variant="body-sm" />
+                            ),
+                        }}
                     />
                 </TextButton>
                 <ExactCryptoAmountFormatter
@@ -80,13 +84,25 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                         <Text variant="headline-sm">
                             <Translation
                                 id="moduleSend.outputs.recipients.cardano.tokenSendMinAdaAmount.title"
-                                values={{ networkDisplaySymbol }}
+                                values={{
+                                    networkDisplaySymbol: (
+                                        <AssetSymbol networkSymbol={symbol} variant="headline-sm" />
+                                    ),
+                                }}
                             />
                         </Text>
                         <Text variant="body-sm" color="contentSecondary">
                             <Translation
                                 id="moduleSend.outputs.recipients.cardano.tokenSendMinAdaAmount.description"
-                                values={{ networkDisplaySymbol }}
+                                values={{
+                                    networkDisplaySymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={symbol}
+                                            variant="body-sm"
+                                            color="contentSecondary"
+                                        />
+                                    ),
+                                }}
                             />
                         </Text>
                     </VStack>
@@ -99,7 +115,15 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                 <Hint variant="error">
                     <Translation
                         id="moduleSend.outputs.recipients.cardano.tokenSendMinAdaAmount.notEnough"
-                        values={{ networkDisplaySymbol }}
+                        values={{
+                            networkDisplaySymbol: (
+                                <AssetSymbol
+                                    networkSymbol={symbol}
+                                    variant="body-xs"
+                                    color="contentCritical"
+                                />
+                            ),
+                        }}
                     />
                 </Hint>
             )}

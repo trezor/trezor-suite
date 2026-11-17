@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type StakeRootState,
@@ -16,6 +15,7 @@ import {
     selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -46,7 +46,6 @@ export const StakingClaimReviewScreen = () => {
             StackNavigationProps<RootStackParamList, RootStackRoutes.StakingClaimReview>
         >();
     const { accountKey, symbol, pendingTransaction } = route.params;
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
 
     const { isPending, pendingModal } = useStakingPendingTransaction({
         accountKey,
@@ -142,7 +141,14 @@ export const StakingClaimReviewScreen = () => {
                         <Text variant="body-md-strong">
                             <Translation
                                 id="earn.claimReviewScreen.title"
-                                values={{ displaySymbol }}
+                                values={{
+                                    displaySymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={symbol}
+                                            variant="body-md-strong"
+                                        />
+                                    ),
+                                }}
                             />
                         </Text>
                     }
@@ -194,7 +200,15 @@ export const StakingClaimReviewScreen = () => {
                             title={
                                 <Translation
                                     id="earn.claimReviewScreen.instantClaimBanner"
-                                    values={{ displaySymbol }}
+                                    values={{
+                                        displaySymbol: (
+                                            <AssetSymbol
+                                                networkSymbol={symbol}
+                                                variant="body-sm"
+                                                color="contentBrand"
+                                            />
+                                        ),
+                                    }}
                                 />
                             }
                         />
@@ -208,7 +222,13 @@ export const StakingClaimReviewScreen = () => {
                                     values={{
                                         limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
                                         amount: claimableLimitAmount,
-                                        symbol: displaySymbol,
+                                        symbol: (
+                                            <AssetSymbol
+                                                networkSymbol={symbol}
+                                                variant="body-sm"
+                                                color="contentInfo"
+                                            />
+                                        ),
                                     }}
                                 />
                             }

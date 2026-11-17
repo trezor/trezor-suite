@@ -1,5 +1,5 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { TRON_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
@@ -45,7 +45,9 @@ export const TronStake = ({ account }: TronStakeProps) => {
                                 <Translation
                                     id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION"
                                     values={{
-                                        displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                        displaySymbol: (
+                                            <AssetSymbol networkSymbol={account.symbol} />
+                                        ),
                                     }}
                                 />
                             }
@@ -88,8 +90,10 @@ export const TronStake = ({ account }: TronStakeProps) => {
                                             <Translation
                                                 id="TR_EARN_TRON_FREEZE_STEP_TITLE"
                                                 values={{
-                                                    displaySymbol: getNetworkDisplaySymbol(
-                                                        account.symbol,
+                                                    displaySymbol: (
+                                                        <AssetSymbol
+                                                            networkSymbol={account.symbol}
+                                                        />
                                                     ),
                                                 }}
                                             />

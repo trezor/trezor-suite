@@ -1,8 +1,10 @@
+import { type ReactNode } from 'react';
+
 import { Translation } from '@suite/intl';
 import { Button, Row, Text } from '@trezor/components';
 
 type YieldAmountInputAddonProps = {
-    unit: string;
+    unit: ReactNode;
     onMaxClick?: () => void;
     'data-testid'?: string;
 };

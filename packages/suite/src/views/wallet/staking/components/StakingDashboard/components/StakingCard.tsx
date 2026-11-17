@@ -1,9 +1,9 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getStakingDataForNetwork,
     isCardanoStakedWithEverstake,
@@ -278,8 +278,8 @@ export const StakingCard = ({
                                 <Translation
                                     id="TR_STAKE_FUNDS_FULLY_ACCESSIBLE"
                                     values={{
-                                        networkDisplaySymbol: getNetworkDisplaySymbol(
-                                            account.symbol,
+                                        networkDisplaySymbol: (
+                                            <AssetSymbol networkSymbol={account.symbol} />
                                         ),
                                     }}
                                 />
@@ -323,8 +323,8 @@ export const StakingCard = ({
                                         <Translation
                                             id="TR_STAKE_ETH_REWARDS_EARN_APY"
                                             values={{
-                                                networkDisplaySymbol: getNetworkDisplaySymbol(
-                                                    account.symbol,
+                                                networkDisplaySymbol: (
+                                                    <AssetSymbol networkSymbol={account.symbol} />
                                                 ),
                                             }}
                                         />
