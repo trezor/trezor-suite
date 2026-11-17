@@ -55,7 +55,7 @@ type ExchangeTransactionNotification = {
 
 export type WrapTransactionAsset = {
     symbol: NetworkSymbol;
-    displaySymbol: string;
+    displaySymbol?: string;
     contractAddress?: string;
     amount: string;
 };

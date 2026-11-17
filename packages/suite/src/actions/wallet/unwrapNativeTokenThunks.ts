@@ -3,7 +3,6 @@ import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type TokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldUnwrapTransactionThunkState,
     type YieldFlowDisplayToken,
@@ -203,7 +202,6 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                         },
                         receive: {
                             symbol: account.symbol,
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
                             amount: unwrapAmount,
                         },
                     },

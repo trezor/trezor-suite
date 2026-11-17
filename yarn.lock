@@ -16061,6 +16061,7 @@ __metadata:
   resolution: "@suite-native/formatters-config@workspace:suite-native/formatters-config"
   dependencies:
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/intl": "workspace:*"
     expo-localization: "npm:~58.0.5"
@@ -17397,6 +17398,7 @@ __metadata:
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
+    "@suite-common/networks": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

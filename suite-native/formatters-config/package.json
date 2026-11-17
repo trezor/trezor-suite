@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@suite-common/formatters": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "expo-localization": "~58.0.5",

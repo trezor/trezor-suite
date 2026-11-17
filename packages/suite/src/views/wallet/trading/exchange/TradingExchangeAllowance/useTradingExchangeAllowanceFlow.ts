@@ -19,7 +19,6 @@ import {
     tradingExchangeActions,
     useTradingExchangeAllowance,
 } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { useAllowanceTxTracking } from '@suite-common/wallet-core';
 import { type FeeLevelLabel } from '@suite-common/wallet-types';
 import { findToken } from '@suite-common/wallet-utils';
@@ -61,11 +60,10 @@ export const useTradingExchangeAllowanceFlow = () => {
     const tokenContractAddress = quote?.send ? parseCryptoId(quote.send).contractAddress : null;
     const accountToken = findToken(account?.tokens, tokenContractAddress);
     const token =
-        account && accountToken?.symbol
+        account && accountToken
             ? {
                   networkSymbol: account.symbol,
                   contractAddress: toTokenAddress(accountToken.contract),
-                  symbol: getDisplaySymbol(accountToken.symbol, accountToken.contract),
                   decimals: accountToken.decimals,
               }
             : undefined;

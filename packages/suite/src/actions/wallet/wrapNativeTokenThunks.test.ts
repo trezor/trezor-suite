@@ -3,7 +3,7 @@ import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
-import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWrapTransactionThunkState,
     type YieldFlowDisplayToken,
@@ -243,7 +243,6 @@ describe('submitWrapNativeTokenThunk', () => {
             metadata: {
                 send: {
                     symbol: account.symbol,
-                    displaySymbol: getNetworkDisplaySymbol(account.symbol),
                     amount: '1.5',
                 },
                 receive: {
