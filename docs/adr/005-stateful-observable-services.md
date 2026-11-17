@@ -47,6 +47,7 @@ export const createObservableState = <T>(initial: T) => {
 - **React** gets the service with `useServices` and reads a slice with `useObservable`, built on `useSyncExternalStore`. The selector result is compared with `Object.is`, so a component re-renders only when its slice changes. `useObservable` lives next to `useServices`.
 - **Thunks and other services** await the service's methods or read `deps.x.state.getSnapshot()`.
 - **Redux selectors never read services.** A value derived from both Redux state and a service snapshot is a plain function that takes both values, called from a hook or a thunk.
+- **Hooks are wiring only.** A hook calls `useServices`, `useObservable` and `useSelector` and passes the results to plain functions. Any logic, including values derived from service and Redux state, lives in those functions, which are tested without React.
 
 ```ts
 const { discovery } = useServices(injectDiscovery);
