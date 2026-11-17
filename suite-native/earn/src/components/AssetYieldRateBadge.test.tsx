@@ -1,8 +1,7 @@
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
-    type ResolvedStakingProductAccess,
+    selectIsStakingOperationDisabled,
     useNetworkStakingRate,
-    useStakingAccess,
 } from '@suite-common/earn-staking';
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
@@ -23,14 +22,14 @@ jest.mock('@suite-common/earn-stablecoin-api', () => ({
 jest.mock('@suite-common/earn-staking', () => ({
     ...jest.requireActual('@suite-common/earn-staking'),
     useNetworkStakingRate: jest.fn(),
-    useStakingAccess: jest.fn(),
+    selectIsStakingOperationDisabled: jest.fn(),
 }));
 jest.mock('../hooks/useMessageSystemYield');
 
 const mockUseAllYieldOpportunities = jest.mocked(useAllYieldOpportunities);
 const mockUseNetworkStakingRate = jest.mocked(useNetworkStakingRate);
 const mockUseMessageSystemYield = jest.mocked(useMessageSystemYield);
-const mockUseStakingAccess = jest.mocked(useStakingAccess);
+const mockSelectIsStakingOperationDisabled = jest.mocked(selectIsStakingOperationDisabled);
 
 const BTC = asNetworkSymbol('btc');
 const ETH = asNetworkSymbol('eth');
@@ -100,14 +99,7 @@ const mockEarn = ({
     mockUseMessageSystemYield.mockReturnValue({
         isDisabled: areYieldDepositsOff,
     } as ReturnType<typeof useMessageSystemYield>);
-    const access: ResolvedStakingProductAccess = {
-        access: 'manage',
-        operations: [],
-        disabled: isStakingOff
-            ? { stake: { kind: 'message-system', feature: 'eth.staking.stake' } }
-            : {},
-    };
-    mockUseStakingAccess.mockReturnValue(access);
+    mockSelectIsStakingOperationDisabled.mockReturnValue(isStakingOff);
 };
 
 const preloadedState = {

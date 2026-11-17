@@ -89,6 +89,7 @@ export type {
 export {
     selectIsStakingAccountDelegatedOutside,
     selectIsStakingManageableSymbol,
+    selectIsStakingOperationDisabled,
     selectIsStakingPromotedSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,

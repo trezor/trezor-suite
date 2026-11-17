@@ -21,9 +21,11 @@ import { Translation } from '@suite-native/intl';
 import { useNow } from '@trezor/react-utils';
 
 import { TronStakingUnstakeRow } from './TronStakingUnstakeRow';
+import {
+    TRON_UNLOCKS_REFRESH_INTERVAL_MS,
+    settleTronUnlocks,
+} from '../../../utils/staking/settleTronUnlocks';
 import { EarnApproximateFiatAmount } from '../../earn/EarnApproximateFiatAmount';
-
-const UNSTAKING_REFRESH_INTERVAL_MS = 60 * 1000;
 
 type TronStakingUnstakeCardProps = {
     accountKey: AccountKey;
@@ -32,7 +34,7 @@ type TronStakingUnstakeCardProps = {
 export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const nowMs = useNow(UNSTAKING_REFRESH_INTERVAL_MS);
+    const nowMs = useNow(TRON_UNLOCKS_REFRESH_INTERVAL_MS);
 
     const positionEntry = useSelector((state: StakingRootState) =>
         selectStakingAccountPositionEntry(state, accountKey),
@@ -42,17 +44,19 @@ export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardPro
         setIsExpanded(!isExpanded);
     };
 
-    if (positionEntry === null || positionEntry.position.unlocks.length === 0) {
+    if (positionEntry === null) {
         return null;
     }
 
-    const { position, descriptor } = positionEntry;
-    const { networkSymbol: symbol } = descriptor;
+    const { unlocks, unstaking } = settleTronUnlocks({ position: positionEntry.position, nowMs });
 
-    const pendingBalance = formatStakingAmount({
-        amount: position.balances.unstaking,
-        networkSymbol: symbol,
-    });
+    if (unlocks.length === 0) {
+        return null;
+    }
+
+    const { networkSymbol: symbol } = positionEntry.descriptor;
+
+    const pendingBalance = formatStakingAmount({ amount: unstaking, networkSymbol: symbol });
 
     return (
         <VStack spacing="sp12">
@@ -99,7 +103,7 @@ export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardPro
                 </PressableOpacity>
 
                 {isExpanded &&
-                    position.unlocks.map(({ amount, availableAt }, index) => (
+                    unlocks.map(({ amount, availableAt }, index) => (
                         <Fragment key={`${availableAt}-${index}`}>
                             <CardDivider horizontalPadding={0} />
 

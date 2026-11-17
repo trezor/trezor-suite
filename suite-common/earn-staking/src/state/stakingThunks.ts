@@ -16,7 +16,8 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import type { StakingDep } from '../stakingServices';
@@ -140,8 +141,16 @@ export const refreshStakingProductInfoThunk = createThunk<
     async (params, { dispatch, getState, extra }) => {
         const { queryClient, staking } = extra.services;
         const enabledNetworks = selectEnabledNetworks(getState());
-        const descriptors = selectStakingProductDescriptors(getState()).filter(descriptor =>
-            enabledNetworks.includes(descriptor.networkSymbol),
+
+        // A wallet with Bitcoin alone has no staking to show, as the legacy fetch assumed.
+        if (enabledNetworks.length === 1 && enabledNetworks.includes(asNetworkSymbol('btc'))) {
+            return;
+        }
+
+        // Every mainnet product serves the promo lists, enabled or not; a testnet once enabled.
+        const descriptors = selectStakingProductDescriptors(getState()).filter(
+            ({ networkSymbol }) =>
+                !isTestnet(networkSymbol) || enabledNetworks.includes(networkSymbol),
         );
         const networkSymbols = [...new Set(descriptors.map(({ networkSymbol }) => networkSymbol))];
 

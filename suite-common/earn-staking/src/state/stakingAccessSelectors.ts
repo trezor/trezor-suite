@@ -153,6 +153,20 @@ export const selectStakingProductAccess = createWeakMapSelector(
     },
 );
 
+// The message-system switch of an operation, whatever the platform offers: a promotion hides a
+// product whose stake is switched off even where the product is only shown.
+export const selectIsStakingOperationDisabled = (
+    state: StakingRootState & MessageSystemRootState,
+    productId: StakingProductId,
+    operation: StakingOperation,
+): boolean => {
+    const feature = selectStakingProductDescriptor(state, productId)?.messageSystemFeatures[
+        operation
+    ];
+
+    return feature !== undefined && selectIsFeatureDisabled(state, toFeatureDomain(feature));
+};
+
 export const selectStakingOperationMessageContent = (
     state: StakingRootState & MessageSystemRootState,
     productId: StakingProductId,
