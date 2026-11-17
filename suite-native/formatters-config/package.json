@@ -16,6 +16,6 @@
         "@suite-native/intl": "workspace:*",
         "expo-localization": "~58.0.5",
         "react": "19.3.0",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     }
 }

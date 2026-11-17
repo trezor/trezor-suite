@@ -22,7 +22,7 @@
         "@trezor/suite": "workspace:*",
         "react": "19.3.0",
         "react-intl": "^12.1.4",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"

@@ -22,6 +22,6 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.3.0",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     }
 }

@@ -21,7 +21,7 @@
         "@suite-native/trading-state": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.3.0",
-        "react-redux": "9.3.0"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@suite-native/intl": "workspace:*",
