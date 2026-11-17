@@ -1,8 +1,8 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type StakeFormState } from '@suite-common/wallet-types';
 import { Banner, Column, Text } from '@trezor/components';
@@ -13,6 +13,7 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
 import { useSelector } from '#src/hooks/suite';
+import { useNetworkDisplaySymbolText } from '#src/hooks/wallet/useNetworkDisplaySymbolText';
 import { CRYPTO_INPUT, FIAT_INPUT } from '#src/types/earn/earnFormFields';
 import { validateStakingMax } from '#src/utils/suite/staking';
 import {
@@ -53,6 +54,7 @@ export const StakeInputs = () => {
         setMax,
         setCurrency,
     } = useStakeFormContext();
+    const networkDisplaySymbol = useNetworkDisplaySymbolText(account.symbol);
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
@@ -98,6 +100,7 @@ export const StakeInputs = () => {
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
+                networkDisplaySymbol,
             }),
             limits: validateCryptoLimits(translationString, {
                 amountLimits,
@@ -109,7 +112,7 @@ export const StakeInputs = () => {
     const shouldShowAmountForWithdrawalWarning =
         isLessAmountForWithdrawalWarningShown || isAmountForWithdrawalWarningShown;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
 
     const isFractionButtonDisabled = (divisor: number) => {
         if (!account.formattedBalance || !network.decimals) return false;

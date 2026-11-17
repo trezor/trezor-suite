@@ -15,7 +15,7 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { type TokenAddress } from '@suite-common/tokens';
-import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -102,12 +102,19 @@ const DetailRow = ({ label, children }: DetailRowProps) => {
 type TokenSettingsBottomSheetProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    /** Title for the account's coin; passed in because `@suite-native/assets` depends on this package. */
+    nativeTokenSymbol: ReactNode;
     onNavigateAway?: () => void;
 };
 
 export const TokenSettingsBottomSheet = forwardRef(
     (
-        { accountKey, tokenContract, onNavigateAway }: TokenSettingsBottomSheetProps,
+        {
+            accountKey,
+            tokenContract,
+            nativeTokenSymbol,
+            onNavigateAway,
+        }: TokenSettingsBottomSheetProps,
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { applyStyle } = useNativeStyles();
@@ -148,7 +155,6 @@ export const TokenSettingsBottomSheet = forwardRef(
         if (!account || !symbol) return null;
 
         const tokenBalance = token?.balance ?? '0';
-        const displaySymbol = getDisplaySymbol(account.symbol);
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -241,7 +247,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                             variant="headline-sm"
                         />
                     ) : (
-                        displaySymbol
+                        nativeTokenSymbol
                     )
                 }
                 isCloseDisplayed

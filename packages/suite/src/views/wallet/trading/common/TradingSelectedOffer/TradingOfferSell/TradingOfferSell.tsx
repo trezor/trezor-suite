@@ -1,10 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type TradingRootState,
+    cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingComposedTransactionInfo,
     selectTradingProviderCompanyName,
     selectTradingSellActiveTrade,
@@ -14,9 +17,7 @@ import {
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
     sellUtils,
-    useTradingUtils,
 } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Card, Column, H2, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -45,7 +46,6 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const { analytics } = useServices(injectDesktopAnalytics);
     const { handleClick: handleRequestClick, disabled: isRequesting } = useAsyncClickHandler();
     const { handleClick: handleSendClick, disabled: isSending } = useAsyncClickHandler();
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { device } = useDevice();
     const { account, confirmTrade, addBankAccount, sendTransaction } = useTradingSellTradeActions();
     const formStep = useSelector(selectTradingSellFormStep);
@@ -84,12 +84,20 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const isPartnerReadyToReceive = sellUtils.isReadyToSendCrypto(selectedTrade);
     const isSendDisabled = isLoading || !device?.connected || isDiscoveryRunning || isSending;
 
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
+    const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(
         selectedTrade.cryptoCurrency,
     );
     const translationValues = {
         providerName: providerName ?? '',
-        displaySymbol: coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : '',
+        displaySymbol: networkSymbol ? (
+            <AssetSymbol
+                networkSymbol={networkSymbol}
+                contractAddress={contractAddress ? toTokenAddress(contractAddress) : undefined}
+                isTruncated
+            />
+        ) : (
+            ''
+        ),
     };
 
     const quoteAmounts: TradingGetCryptoQuoteAmountProps = {

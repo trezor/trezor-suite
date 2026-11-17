@@ -11,7 +11,7 @@ export const buildYieldClaimRewards = (review: YieldClaimReview) =>
         return {
             token: {
                 address: reward.token.contractAddress,
-                symbol: reward.token.symbol,
+                symbol: reward.tokenInfo.symbol,
             },
         };
     });

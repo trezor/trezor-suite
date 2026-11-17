@@ -6,7 +6,9 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type TokenMetadataSource } from '@suite-common/token';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -32,7 +34,6 @@ import {
 import { type Account, type AllowanceAction } from '@suite-common/wallet-types';
 import { getAllowanceAction } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -71,6 +72,8 @@ export type UseYieldFlowResult = {
     vault: YieldDtoV2;
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
+    /** The vault's tokens, which the account may not hold, for the flow's token metadata. */
+    tokenMetadataSources: TokenMetadataSource[];
     apy: number | null;
     depositedAmount: string;
     depositedSharesAmount: string;
@@ -142,6 +145,10 @@ export const useYieldFlow = ({
     const depositedAmount = yieldFlowData.depositedAmount ?? '0';
     const depositedSharesAmount = yieldFlowData.depositedSharesAmount ?? '0';
     const flowKey = yieldFlowData.flowKey ?? '';
+    const tokenMetadataSources = useMemo(
+        () => yieldFlowDataToTokenMetadataSources(yieldFlowData),
+        [yieldFlowData],
+    );
 
     const session = useSelector(state => selectYieldSession(state, flowType, flowKey));
     // Fresh rather than commit-lagging: callbacks read the current step and pending transaction
@@ -188,7 +195,7 @@ export const useYieldFlow = ({
 
     const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType, flowKey });
 
-    const isWrappedNativeVault = isWrappedNativeToken(account.symbol, vault.token.address);
+    const { isWrappedNativeVault } = yieldFlowData;
     const hasWrappedTokenBalance = isAmountGreaterThan({
         amount: token?.balance ?? '0',
         threshold: '0',
@@ -300,6 +307,7 @@ export const useYieldFlow = ({
         flowType,
         flowKey,
         vault,
+        isWrappedNativeVault,
     });
 
     const flow = useMemo(
@@ -415,7 +423,7 @@ export const useYieldFlow = ({
             }
 
             const wrappedToken = {
-                ...token,
+                networkSymbol: token.networkSymbol,
                 contractAddress: token.contractAddress,
             };
 
@@ -732,6 +740,7 @@ export const useYieldFlow = ({
         vault,
         token,
         receiptToken,
+        tokenMetadataSources,
         apy,
         depositedAmount,
         depositedSharesAmount,

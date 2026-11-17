@@ -1,7 +1,6 @@
 import { type Network, asNetworkSymbol } from './networkTypes';
 import {
     filterNetworksByName,
-    getDisplaySymbol,
     getMainnets,
     getNetworks,
     getNetworksWithMevProtection,
@@ -172,23 +171,5 @@ describe(getNetworksWithNativeTokenReserve.name, () => {
         expect(getNetworksWithNativeTokenReserve()).toEqual(
             'Base, Optimism, Robinhood Chain, Solana',
         );
-    });
-});
-
-describe(getDisplaySymbol.name, () => {
-    it('returns an empty string for an empty symbol', () => {
-        expect(getDisplaySymbol('')).toBe('');
-    });
-
-    it('returns the network display symbol for a native coin symbol', () => {
-        expect(getDisplaySymbol('eth')).toBe('ETH');
-    });
-
-    it('returns the token symbol unchanged when it also has a contract address', () => {
-        expect(getDisplaySymbol('USDC', '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48')).toBe('USDC');
-    });
-
-    it('truncates symbols longer than the maximum length', () => {
-        expect(getDisplaySymbol('SUPERLONGTOKEN')).toBe('SUPERLONGT...');
     });
 });

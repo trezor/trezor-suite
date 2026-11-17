@@ -180,23 +180,6 @@ export const getNetworkByTradeCryptoId = (tradeCryptoId: string): Network | unde
 export const getNetworkByEvmChainId = (chainId: number): Network | undefined =>
     networksCollection.find(n => n.chainId === chainId);
 
-export const getNetworkDisplaySymbol = (symbol: NetworkSymbol): string =>
-    getNetwork(symbol).displaySymbol;
-
-export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | null) => {
-    const MAX_SYMBOL_LENGTH = 10;
-    const isTokenSymbolLong = coinSymbol.length > MAX_SYMBOL_LENGTH;
-
-    const symbol = coinSymbol.toLowerCase();
-
-    // TODO: L2 networks - Base, Arbitrum, Optimism native tokens
-    if (isNetworkSymbol(symbol) && !contractAddress) {
-        return getNetworkDisplaySymbol(symbol);
-    }
-
-    return isTokenSymbolLong ? `${coinSymbol.slice(0, MAX_SYMBOL_LENGTH)}...` : coinSymbol;
-};
-
 export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol): string => {
     const network = getNetwork(symbol);
 

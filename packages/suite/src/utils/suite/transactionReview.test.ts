@@ -1,20 +1,14 @@
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { type FormState } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
 
-import { getTransactionReviewModalActionTranslation } from './transactionReview';
+import { getTransactionReviewModalAction } from './transactionReview';
 
-const TOKEN_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const ETH = asNetworkSymbol('eth');
+const TOKEN_CONTRACT = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const SPENDER = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
-
-const usdc: TokenInfo = {
-    standard: 'ERC20',
-    contract: TOKEN_CONTRACT,
-    symbol: 'USDC',
-    decimals: 6,
-};
 
 const getFormState = (overrides: Partial<FormState> = {}): FormState => ({
     ...DEFAULT_VALUES,
@@ -26,7 +20,7 @@ const getFormState = (overrides: Partial<FormState> = {}): FormState => ({
 
 type GetTranslationParams = {
     precomposedForm: FormState;
-    approvalToken: TokenInfo | undefined;
+    approvalTokenContract: TokenAddress | undefined;
     source: 'heading' | 'button';
     routeName?: string;
     isBumpFeeRbfAction?: boolean;
@@ -34,35 +28,45 @@ type GetTranslationParams = {
 
 const getTranslation = ({
     precomposedForm,
-    approvalToken,
+    approvalTokenContract,
     source,
     routeName,
     isBumpFeeRbfAction = false,
 }: GetTranslationParams) =>
-    getTransactionReviewModalActionTranslation({
-        symbol: asNetworkSymbol('eth'),
+    getTransactionReviewModalAction({
+        networkSymbol: ETH,
         stakeType: null,
         precomposedForm,
-        approvalToken,
+        approvalTokenContract,
         routeName,
         isBumpFeeRbfAction,
         isCancelRbfAction: false,
         source,
     });
 
-describe('getTransactionReviewModalActionTranslation', () => {
+describe('getTransactionReviewModalAction', () => {
     it('describes an approval signed outside of any trading or earn form state', () => {
         const precomposedForm = getFormState({
             transactionData: buildApprovalTransactionData({ amount: '1000000', spender: SPENDER }),
         });
 
-        expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'heading' })).toEqual(
-            {
-                id: 'TR_APPROVAL_APPROVE_TOKEN_SPENDING',
-                values: { displaySymbol: 'USDC' },
-            },
-        );
-        expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'button' })).toEqual({
+        expect(
+            getTranslation({
+                precomposedForm,
+                approvalTokenContract: TOKEN_CONTRACT,
+                source: 'heading',
+            }),
+        ).toEqual({
+            id: 'TR_APPROVAL_APPROVE_TOKEN_SPENDING',
+            assets: { displaySymbol: { networkSymbol: ETH, contractAddress: TOKEN_CONTRACT } },
+        });
+        expect(
+            getTranslation({
+                precomposedForm,
+                approvalTokenContract: TOKEN_CONTRACT,
+                source: 'button',
+            }),
+        ).toEqual({
             id: 'TR_APPROVE_DATA_TITLE',
         });
     });
@@ -72,13 +76,23 @@ describe('getTransactionReviewModalActionTranslation', () => {
             transactionData: buildApprovalTransactionData({ amount: '0', spender: SPENDER }),
         });
 
-        expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'heading' })).toEqual(
-            {
-                id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
-                values: { displaySymbol: 'USDC' },
-            },
-        );
-        expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'button' })).toEqual({
+        expect(
+            getTranslation({
+                precomposedForm,
+                approvalTokenContract: TOKEN_CONTRACT,
+                source: 'heading',
+            }),
+        ).toEqual({
+            id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
+            assets: { displaySymbol: { networkSymbol: ETH, contractAddress: TOKEN_CONTRACT } },
+        });
+        expect(
+            getTranslation({
+                precomposedForm,
+                approvalTokenContract: TOKEN_CONTRACT,
+                source: 'button',
+            }),
+        ).toEqual({
             id: 'TR_REVOKE_DATA_TITLE',
         });
     });
@@ -89,7 +103,11 @@ describe('getTransactionReviewModalActionTranslation', () => {
         });
 
         expect(
-            getTranslation({ precomposedForm, approvalToken: undefined, source: 'heading' }),
+            getTranslation({
+                precomposedForm,
+                approvalTokenContract: undefined,
+                source: 'heading',
+            }),
         ).toEqual({ id: 'TR_APPROVE_DATA_TITLE' });
     });
 
@@ -101,7 +119,7 @@ describe('getTransactionReviewModalActionTranslation', () => {
         expect(
             getTranslation({
                 precomposedForm,
-                approvalToken: usdc,
+                approvalTokenContract: TOKEN_CONTRACT,
                 source: 'heading',
                 isBumpFeeRbfAction: true,
             }),
@@ -114,7 +132,11 @@ describe('getTransactionReviewModalActionTranslation', () => {
         });
 
         expect(
-            getTranslation({ precomposedForm, approvalToken: undefined, source: 'heading' }),
+            getTranslation({
+                precomposedForm,
+                approvalTokenContract: undefined,
+                source: 'heading',
+            }),
         ).toEqual({ id: 'TR_TRADING_SWAP' });
     });
 
@@ -128,7 +150,7 @@ describe('getTransactionReviewModalActionTranslation', () => {
         expect(
             getTranslation({
                 precomposedForm,
-                approvalToken: undefined,
+                approvalTokenContract: undefined,
                 source: 'heading',
                 routeName,
             }),
@@ -136,7 +158,7 @@ describe('getTransactionReviewModalActionTranslation', () => {
         expect(
             getTranslation({
                 precomposedForm,
-                approvalToken: undefined,
+                approvalTokenContract: undefined,
                 source: 'button',
                 routeName,
             }),

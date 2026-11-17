@@ -9,7 +9,6 @@ import {
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
-    type YieldFlowDisplayToken,
     type YieldFlowType,
     isEarnSigningCancelled,
     selectAddressDisplayType,
@@ -75,7 +74,8 @@ export type SendYieldTransactionResult =
 export type SendYieldTransactionParams = {
     account: Account;
     amount: string;
-    token: YieldFlowDisplayToken;
+    /** The token the transaction moves; without one, the amount is in the native coin. */
+    transactionToken?: Parameters<typeof buildStablecoinYieldTransactionReview>[0]['token'];
     unsignedTransaction: string;
     flowKey: string;
     flowType: YieldFlowType;
@@ -88,7 +88,7 @@ export type SendYieldTransactionParams = {
 export const sendYieldTransaction = async ({
     account,
     amount,
-    token,
+    transactionToken,
     unsignedTransaction,
     flowKey,
     flowType,
@@ -113,7 +113,7 @@ export const sendYieldTransaction = async ({
         selectedFee,
         selectedFeeLevel,
         amount,
-        token,
+        token: transactionToken,
         symbol: account.symbol,
     });
 

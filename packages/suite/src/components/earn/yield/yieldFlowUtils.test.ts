@@ -53,21 +53,11 @@ const pricePerShareState = {
 };
 
 const baseUnwrapParams: Parameters<typeof getYieldUnwrapDefaultAmount>[0] = {
+    networkSymbol: ethSymbol,
     flowType: 'withdraw',
     withdrawnAmount: '0.5',
-    token: {
-        networkSymbol: ethSymbol,
-        symbol: 'WETH',
-        decimals: 18,
-        contractAddress: WETH_ADDRESS,
-        balance: '5',
-    },
-    receiptToken: {
-        networkSymbol: ethSymbol,
-        symbol: 'trSHETHp',
-        decimals: 18,
-        contractAddress: VAULT_ADDRESS,
-    },
+    token: { symbol: 'WETH', decimals: 18, address: WETH_ADDRESS },
+    receiptToken: { symbol: 'trSHETHp', decimals: 18, address: VAULT_ADDRESS },
     pricePerShareState,
 };
 

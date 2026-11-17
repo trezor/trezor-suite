@@ -168,7 +168,8 @@ const FEE_ERROR_LEVELS: PrecomposedLevels = {
         error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
         errorMessage: {
             id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-            values: { networkDisplaySymbol: 'ETH', feeAmount: '0.000076965689338' },
+            values: { feeAmount: '0.000076965689338' },
+            networkSymbolValues: { networkDisplaySymbol: asNetworkSymbol('eth') },
         },
     },
 };

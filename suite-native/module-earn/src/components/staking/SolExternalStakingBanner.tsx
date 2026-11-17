@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectHasSolExternalStakingAccounts,
@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -31,7 +32,6 @@ export const SolExternalStakingBanner = ({
 
     if (!hasExternalStakingAccounts) return null;
 
-    const displaySymbol = getNetworkDisplaySymbol(networkSymbol);
     const totalStakedInUnits = subunitsToUnits({
         value: asAmountSubunit(new BigNumber(externalStakingTotalStaked)),
         symbol: networkSymbol,
@@ -48,7 +48,7 @@ export const SolExternalStakingBanner = ({
                     id="earn.stakingManagementScreen.outsideStakingBanner.description"
                     values={{
                         amount: totalStakedInUnits,
-                        symbol: displaySymbol,
+                        symbol: <AssetSymbol networkSymbol={networkSymbol} variant="body-sm" />,
                         fiat: (
                             <CryptoToFiatAmountFormatter
                                 value={totalStakedInUnits}

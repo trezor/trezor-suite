@@ -1,7 +1,7 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, getStakingDataForNetwork } from '@suite-common/wallet-core';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
@@ -11,6 +11,7 @@ import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useWithdrawalFormContext } from '#src/hooks/earn/useWithdrawalForm';
 import { useSelector } from '#src/hooks/suite';
+import { useNetworkDisplaySymbolText } from '#src/hooks/wallet/useNetworkDisplaySymbolText';
 import { FIAT_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
 import {
     validateCryptoLimits,
@@ -57,7 +58,8 @@ export const UnstakeInputs = () => {
     const isRewardsDisabled = restakedReward === '0';
 
     const { symbol } = account;
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = <AssetSymbol networkSymbol={symbol} />;
+    const networkDisplaySymbolText = useNetworkDisplaySymbolText(symbol);
 
     const { outputs } = getValues();
     const amount = outputs?.[0]?.amount;
@@ -79,6 +81,7 @@ export const UnstakeInputs = () => {
             }),
             solanaUnstakeAmount: validateSolanaUnstakeFiatAmount(translationString, {
                 account,
+                networkDisplaySymbol: networkDisplaySymbolText,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
             }),
@@ -94,7 +97,10 @@ export const UnstakeInputs = () => {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),
-            solanaUnstakeAmount: validateSolanaUnstakeAmount(translationString, { account }),
+            solanaUnstakeAmount: validateSolanaUnstakeAmount(translationString, {
+                account,
+                networkDisplaySymbol: networkDisplaySymbolText,
+            }),
         },
     };
 

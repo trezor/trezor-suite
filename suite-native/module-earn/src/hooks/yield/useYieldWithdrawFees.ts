@@ -5,7 +5,7 @@ import {
     type ResolvedYieldFlowData,
     type YieldWithdrawFlowType,
     composeYieldWithdrawTransactionThunk,
-    getYieldWithdrawInputToken,
+    getYieldFlowTransactionToken,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
@@ -61,7 +61,7 @@ export const useYieldWithdrawFees = ({
                       type: 'ready',
                       transaction: {
                           symbol: currentFlowData.account.symbol,
-                          token: getYieldWithdrawInputToken({
+                          token: getYieldFlowTransactionToken({
                               flowData: currentFlowData,
                               flowType,
                           }),

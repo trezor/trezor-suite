@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import { yup } from '@suite-native/forms';
@@ -7,6 +7,8 @@ import { BigNumber } from '@trezor/utils';
 
 export type EarnFormContext = {
     symbol?: NetworkSymbol;
+    /** The symbol of the network's coin, for validation messages. */
+    networkDisplaySymbol?: string;
     availableBalance?: string;
     decimals?: number;
     translate: Translate;
@@ -21,6 +23,7 @@ export const earnFormValidationSchema = yup.object({
         .test('min-amount', 'Amount is below minimum.', function (value) {
             const {
                 symbol,
+                networkDisplaySymbol = '',
                 translate,
                 formatCryptoAmount = (amount: string) => amount,
             } = this.options.context as EarnFormContext;
@@ -34,7 +37,7 @@ export const earnFormValidationSchema = yup.object({
                 return this.createError({
                     message: translate('earn.earnFormScreen.validation.amountBelowMinimum', {
                         amount: formatCryptoAmount(limits.MIN_AMOUNT_FOR_STAKING.toString()),
-                        symbol: getNetworkDisplaySymbol(symbol),
+                        symbol: networkDisplaySymbol,
                     }),
                 });
             }

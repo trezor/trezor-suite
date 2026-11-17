@@ -3,12 +3,13 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { toTokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
@@ -37,10 +38,9 @@ import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
 type UnwrapNativeTokenProps = {
     account: Account;
-    tokenSymbol: string;
-    tokenDecimals: number;
+    /** The network's wrapped native token. */
+    token: YieldFlowDisplayToken & { contractAddress: TokenAddress };
     tokenBalance: string;
-    tokenContractAddress: string;
     /** Reported upward because the page header lives outside this subtree, in the layout. */
     onFlowCompleteChange?: (isComplete: boolean) => void;
 };
@@ -52,10 +52,8 @@ type BroadcastUnwrap = {
 
 export const UnwrapNativeToken = ({
     account,
-    tokenSymbol,
-    tokenDecimals,
+    token,
     tokenBalance,
-    tokenContractAddress,
     onFlowCompleteChange,
 }: UnwrapNativeTokenProps) => {
     const { dispatch } = useServices(injectDispatch);
@@ -74,10 +72,11 @@ export const UnwrapNativeToken = ({
         },
     });
 
+    // The fiat rate is the native coin's, and a wrapped native token has the native decimals.
     const { fiatToggle, setMaxAmount } = useYieldFiatInput({
         methods,
         symbol: account.symbol,
-        decimals: tokenDecimals,
+        decimals: getNetwork(account.symbol).decimals,
     });
 
     const { status: pendingTxStatus } = useEvmPendingTxStatus(
@@ -105,28 +104,17 @@ export const UnwrapNativeToken = ({
 
     const shouldCheckUnwrapAmount = !broadcast;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
-
     const baseCurrency = useSelector(selectBaseCurrency);
     // The wrapped-native token (WETH) is not held as a balance, so its fiat rate is not fetched by
     // the balance-driven path. Force-fetch it so the approximate fiat value can render.
     useMissingRateTickersQuery({
         baseCurrencyCode: baseCurrency,
-        missingRateTickers: [
-            { symbol: account.symbol, tokenAddress: toTokenAddress(tokenContractAddress) },
-        ],
+        missingRateTickers: [{ symbol: account.symbol, tokenAddress: token.contractAddress }],
     });
-    const wrappedToken: YieldFlowDisplayToken & { contractAddress: string } = {
-        networkSymbol: account.symbol,
-        symbol: tokenSymbol,
-        decimals: tokenDecimals,
-        contractAddress: tokenContractAddress,
-    };
-    const nativeToken: YieldFlowDisplayToken = {
-        networkSymbol: account.symbol,
-        symbol: nativeSymbol,
-        decimals: tokenDecimals,
-    };
+    const nativeToken: YieldFlowDisplayToken = { networkSymbol: account.symbol };
+    const tokenSymbol = (
+        <AssetSymbol networkSymbol={token.networkSymbol} contractAddress={token.contractAddress} />
+    );
 
     useEffect(() => {
         if (pendingTxStatus !== 'failed') {
@@ -145,9 +133,7 @@ export const UnwrapNativeToken = ({
 
     const unwrapMutation = useMutation({
         mutationFn: (unwrapAmount: string) =>
-            dispatch(
-                submitUnwrapNativeTokenThunk({ account, token: wrappedToken, unwrapAmount }),
-            ).unwrap(),
+            dispatch(submitUnwrapNativeTokenThunk({ account, token, unwrapAmount })).unwrap(),
         onSuccess: (result, unwrapAmount) => {
             if (result) {
                 setBroadcast({ txid: result.txid, amount: unwrapAmount });
@@ -204,14 +190,17 @@ export const UnwrapNativeToken = ({
                     description={
                         <Translation
                             id="TR_UNWRAP_COMPLETE_DESCRIPTION"
-                            values={{ tokenSymbol, nativeSymbol }}
+                            values={{
+                                tokenSymbol,
+                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                            }}
                         />
                     }
                 >
                     <YieldFlowTransferRow
                         inputLabelId="TR_EARN_YIELD_UNWRAP_AMOUNT"
                         outputLabelId="TR_RECEIVED"
-                        input={{ token: wrappedToken, amount: broadcast.amount }}
+                        input={{ token, amount: broadcast.amount }}
                         output={{ token: nativeToken, amount: broadcast.amount }}
                     />
                 </WrappedNativeFlowComplete>
@@ -234,16 +223,21 @@ export const UnwrapNativeToken = ({
                 <Text typographyStyle="headline-md">
                     <Translation
                         id="TR_EARN_YIELD_UNWRAP_TITLE"
-                        values={{ tokenSymbol, nativeSymbol }}
+                        values={{
+                            tokenSymbol,
+                            nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                        }}
                     />
                 </Text>
 
                 <Form form={methods} formState={formState}>
                     <YieldUnwrapStep
-                        tokenSymbol={tokenSymbol}
-                        tokenDecimals={tokenDecimals}
+                        token={token}
                         tokenBalance={tokenBalance}
-                        approxFiat={{ symbol: account.symbol, tokenContractAddress }}
+                        approxFiat={{
+                            symbol: account.symbol,
+                            tokenContractAddress: token.contractAddress,
+                        }}
                         isSubmitting={unwrapMutation.isPending}
                         isSubmitDisabled={!isAmountValid || isDisabled}
                         warning={

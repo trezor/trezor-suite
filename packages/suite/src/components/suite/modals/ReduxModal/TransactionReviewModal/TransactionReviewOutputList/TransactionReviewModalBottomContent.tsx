@@ -5,7 +5,7 @@ import {
     events,
     injectDesktopAnalytics,
 } from '@suite/analytics';
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { Translation } from '@suite/intl';
 import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -23,6 +23,9 @@ import { copyToClipboard, download } from '@trezor/dom-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
+import { type TransactionReviewModalAction } from '#src/utils/suite/transactionReview';
+
+import { TransactionReviewActionLabel } from '../TransactionReviewActionLabel';
 import { type TxInfoState, hasTxValidityExpired, selectTxType } from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
@@ -37,7 +40,7 @@ type TransactionReviewModalBottomContentProps = {
     onCancel: () => void;
     handleTryAgain: (close: boolean) => void;
     txInfoState: TxInfoState;
-    actionTranslation: ExtendedMessageDescriptor;
+    action: TransactionReviewModalAction;
     hasTxReviewExpired: boolean;
     deadline: number;
     shouldCheckTxTimeValidity: boolean;
@@ -55,7 +58,7 @@ export const TransactionReviewModalBottomContent = ({
     onCancel,
     handleTryAgain,
     txInfoState,
-    actionTranslation,
+    action,
     hasTxReviewExpired,
     deadline,
     shouldCheckTxTimeValidity,
@@ -169,7 +172,7 @@ export const TransactionReviewModalBottomContent = ({
                 intent={isCancelRbfAction ? 'critical' : 'brand'}
                 onClick={handleSend}
             >
-                <Translation {...actionTranslation} />
+                <TransactionReviewActionLabel action={action} />
             </Modal.Button>
         );
     }

@@ -5,6 +5,7 @@ import { Row } from '@trezor/components';
 
 import { StellarTxSimulationAssetLogo } from './StellarTxSimulationAssetLogo';
 import { TxSimulationAssetRow } from '../../../common';
+import { TxSimulationAssetDiffLabel } from '../../../common/components/TxSimulationAssetDiffLabel';
 
 interface StellarTxSimulationAssetProps {
     assetDiff: StellarAssetDiff;
@@ -31,7 +32,12 @@ export function StellarTxSimulationAsset({ assetDiff, network }: StellarTxSimula
                     <Translation
                         id="TR_SIMULATION_SENDING_ASSET"
                         values={{
-                            amount: getStellarAssetDiffLabel(assetDiff, sent, network.symbol),
+                            amount: (
+                                <TxSimulationAssetDiffLabel
+                                    label={getStellarAssetDiffLabel(assetDiff, sent)}
+                                    networkSymbol={network.symbol}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>
@@ -49,7 +55,12 @@ export function StellarTxSimulationAsset({ assetDiff, network }: StellarTxSimula
                     <Translation
                         id="TR_SIMULATION_RECEIVING_ASSET"
                         values={{
-                            amount: getStellarAssetDiffLabel(assetDiff, received, network.symbol),
+                            amount: (
+                                <TxSimulationAssetDiffLabel
+                                    label={getStellarAssetDiffLabel(assetDiff, received)}
+                                    networkSymbol={network.symbol}
+                                />
+                            ),
                         }}
                     />
                 </TxSimulationAssetRow>

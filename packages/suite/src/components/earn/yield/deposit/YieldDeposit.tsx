@@ -2,6 +2,7 @@ import { Form } from '@suite/form';
 import { ContextMessage } from '@suite/message-system';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
@@ -42,21 +43,23 @@ export const YieldDeposit = ({ account, vault }: YieldDepositProps) => {
     const { formState } = yieldDepositContextValues.methods;
 
     return (
-        <Column gap={24}>
-            <ContextMessage context={Context.getEarnYield('deposit')} />
-            {isFormHidden ? (
-                <YieldDisabledBanner
-                    type="deposit"
-                    content={isDisabled ? content : undefined}
-                    variant={isDisabled ? variant : undefined}
-                />
-            ) : (
-                <YieldDepositContext.Provider value={yieldDepositContextValues}>
-                    <Form form={yieldDepositContextValues.methods} formState={formState}>
-                        <YieldDepositForm />
-                    </Form>
-                </YieldDepositContext.Provider>
-            )}
-        </Column>
+        <TokenMetadataProvider sources={yieldDepositContextValues.tokenMetadataSources}>
+            <Column gap={24}>
+                <ContextMessage context={Context.getEarnYield('deposit')} />
+                {isFormHidden ? (
+                    <YieldDisabledBanner
+                        type="deposit"
+                        content={isDisabled ? content : undefined}
+                        variant={isDisabled ? variant : undefined}
+                    />
+                ) : (
+                    <YieldDepositContext.Provider value={yieldDepositContextValues}>
+                        <Form form={yieldDepositContextValues.methods} formState={formState}>
+                            <YieldDepositForm />
+                        </Form>
+                    </YieldDepositContext.Provider>
+                )}
+            </Column>
+        </TokenMetadataProvider>
     );
 };

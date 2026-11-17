@@ -1,3 +1,4 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { calculateTotalGasCost, fromGwei, fromWei } from '@suite-common/wallet-utils';
 import { type FeeLevel, type TokenInfo } from '@trezor/connect';
@@ -7,7 +8,7 @@ export const buildAllowanceTransaction = (
     balance: string,
     contract: string,
     feeLevel: FeeLevel,
-    networkDisplaySymbol: string,
+    networkSymbol: NetworkSymbol,
     token?: TokenInfo,
     estimatedFeeLimit?: string,
 ): PrecomposedTransaction => {
@@ -21,10 +22,8 @@ export const buildAllowanceTransaction = (
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
             errorMessage: {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-                values: {
-                    feeAmount: fromWei(fee).toEther(),
-                    networkDisplaySymbol,
-                },
+                values: { feeAmount: fromWei(fee).toEther() },
+                networkSymbolValues: { networkDisplaySymbol: networkSymbol },
             },
         };
     }

@@ -51,8 +51,8 @@ jest.mock('@suite-common/earn-stablecoin', () => ({
 }));
 
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
-const token = { networkSymbol: account.symbol, symbol: 'eth', decimals: 18, contractAddress: null };
-const flowData = { account, token } as unknown as YieldFlowResolvedData;
+const token = { networkSymbol: account.symbol };
+const flowData = { account, token, vault: {} } as unknown as YieldFlowResolvedData;
 const analytics = mockNativeAnalytics();
 
 type SigningStore = TestCompositionStore<
@@ -79,7 +79,7 @@ const signers = [
             store.dispatch(
                 signWrappedNativeTokenThunk({
                     account,
-                    token,
+                    flowType: 'wrap',
                     amount: '1',
                     unsignedTransaction: '{}',
                 }),

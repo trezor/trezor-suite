@@ -1,3 +1,4 @@
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
@@ -17,7 +18,6 @@ import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessi
 import { YieldWrappedNativeReceivingCard } from '../../components/yield/YieldWrappedNativeReceivingCard';
 import { YieldWrappedNativeStepFooter } from '../../components/yield/YieldWrappedNativeStepFooter';
 import { useYieldDepositWrapController } from '../../hooks/yield/controllers/useYieldDepositWrapController';
-import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositWrapScreen = () => {
     const controller = useYieldDepositWrapController();
@@ -75,6 +75,7 @@ export const YieldDepositWrapScreen = () => {
                             currentStepId="wrap"
                             hasWrapStep
                             networkSymbol={account.symbol}
+                            wrappedTokenContract={yieldFlowData.token.contractAddress}
                         />
 
                         <ContextMessage

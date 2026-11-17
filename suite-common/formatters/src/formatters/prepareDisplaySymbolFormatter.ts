@@ -1,9 +1,5 @@
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 import { makeFormatter } from '../makeFormatter';
 import { type FormatterConfig } from '../types';
@@ -13,12 +9,12 @@ export type DisplaySymbolFormatterDataContext = { areAmountUnitsEnabled?: boolea
 export const prepareDisplaySymbolFormatter = (config: FormatterConfig) =>
     makeFormatter<NetworkSymbol, string, DisplaySymbolFormatterDataContext>(
         (symbol, dataContext) => {
-            const { bitcoinAmountUnit } = config;
+            const { bitcoinAmountUnit, networkDisplaySymbols } = config;
             const { areAmountUnitsEnabled = true } = dataContext;
 
             const { features: networkFeatures, testnet: isTestnet } = getNetwork(symbol);
             const areAmountUnitsSupported = !!networkFeatures?.includes('amount-unit');
-            let formattedSymbol = getNetworkDisplaySymbol(symbol);
+            let formattedSymbol = networkDisplaySymbols?.[symbol] ?? symbol.toUpperCase();
 
             // convert to different units if needed
             if (areAmountUnitsEnabled && areAmountUnitsSupported) {

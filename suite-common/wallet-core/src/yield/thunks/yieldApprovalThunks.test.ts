@@ -45,28 +45,31 @@ const account = mockWalletAccount({
 // Wrapped-native (WETH) deposit: 18 decimals, spender resolved from receiptToken.
 const flowData = {
     account,
-    vault: { id: `eth-${VAULT_ADDRESS}`, chainId: 1 },
+    vault: {
+        id: `eth-${VAULT_ADDRESS}`,
+        chainId: 1,
+        token: { address: WETH_ADDRESS, symbol: 'weth', decimals: 18 },
+        outputToken: { address: VAULT_ADDRESS, symbol: 'wsteth', decimals: 18 },
+    },
     token: {
         networkSymbol: 'eth',
-        symbol: 'weth',
-        decimals: 18,
         contractAddress: WETH_ADDRESS,
         balance: '100',
     },
     receiptToken: {
         networkSymbol: 'eth',
-        symbol: 'wsteth',
-        decimals: 18,
         contractAddress: VAULT_ADDRESS,
     },
 } as unknown as YieldFlowResolvedData;
 
 const usdtFlowData = {
     ...flowData,
+    vault: {
+        ...flowData.vault,
+        token: { address: USDT_ADDRESS, symbol: 'usdt', decimals: 6 },
+    },
     token: {
         networkSymbol: 'eth',
-        symbol: 'usdt',
-        decimals: 6,
         contractAddress: USDT_ADDRESS,
         balance: '100',
     },

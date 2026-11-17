@@ -1,9 +1,14 @@
 import { type TokenMetadataSource } from '@suite-common/token';
 import { toTokenAddress } from '@suite-common/tokens';
-import { type StablecoinYieldAccountRewards } from '@suite-common/wallet-core';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+
+type YieldAccountRewards = {
+    account: { symbol: NetworkSymbol };
+    rewards: readonly { token: { address: string; symbol: string; decimals: number } }[];
+};
 
 export const yieldAccountRewardsToTokenMetadataSources = (
-    accountRewards: StablecoinYieldAccountRewards | null,
+    accountRewards: YieldAccountRewards | null | undefined,
 ): TokenMetadataSource[] => {
     if (!accountRewards) return [];
 

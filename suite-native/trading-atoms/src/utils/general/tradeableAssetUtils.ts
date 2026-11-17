@@ -1,12 +1,12 @@
 import type { CoinInfo, CryptoId } from 'invity-api';
 
+import { truncateTokenSymbol } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     cryptoIdToNetworkSymbol,
     isCryptoIdForNativeToken,
     parseCryptoId,
 } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 export const coinInfoToTradeableAsset = (
@@ -21,7 +21,7 @@ export const coinInfoToTradeableAsset = (
 
     return {
         cryptoId,
-        symbol: getDisplaySymbol(symbol.toUpperCase(), tokenContractAddress),
+        symbol: truncateTokenSymbol(symbol.toUpperCase()),
         contractAddress: tokenContractAddress,
         networkId,
         ...info,

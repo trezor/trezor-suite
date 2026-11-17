@@ -1,7 +1,7 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -43,7 +43,7 @@ export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
                 heading={
                     <Translation
                         id="TR_STAKE_UNSTAKE_TOKEN"
-                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
+                        values={{ symbol: <AssetSymbol networkSymbol={account.symbol} /> }}
                     />
                 }
                 description={

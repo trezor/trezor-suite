@@ -1,13 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { AssetSymbol } from '@suite/assets';
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
-import {
-    type NetworkSymbol,
-    type NetworkType,
-    asNetworkSymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
@@ -99,7 +95,7 @@ export function useEvmTxSimulationFeesForm({
         if (new BigNumber(fee).gt(accountBalance)) {
             return {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: { networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol) },
+                values: { networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> },
             } as const;
         }
 

@@ -3,8 +3,11 @@ import { useEffect, useRef } from 'react';
 import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { hasYieldDepositableBalance } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { useYieldFlowData } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
@@ -43,15 +46,14 @@ export const YieldDepositNoBalanceScreen = () => {
         isWrappedNativeVault,
         resolutionStatus,
         token,
-        tokenSymbol,
         vault,
         vaultTokenName,
-        wrappedNativeSymbol,
     } = yieldFlowData;
 
     const { handleStartYieldDepositFlow } = useStartYieldDepositFlow({
         flowData,
         flowKey,
+        isWrappedNativeVault,
         routeParams: route.params,
         shouldReplaceRoute: true,
     });
@@ -135,42 +137,53 @@ export const YieldDepositNoBalanceScreen = () => {
         return null;
     }
 
-    const depositSymbol = wrappedNativeSymbol ?? tokenSymbol;
+    const depositSymbol = (
+        <AssetSymbol
+            networkSymbol={account.symbol}
+            contractAddress={route.params.tokenContract}
+            isWrappedNativeShownAsNative
+        />
+    );
 
     return (
-        <Screen
-            header={
-                <YieldFlowScreenHeader
-                    account={account}
-                    closeAction={navigateToInitialScreen}
-                    title={vaultTokenName}
-                    tokenContract={route.params.tokenContract}
-                />
-            }
-            footer={
-                <EarnNoBalanceFooter
-                    displaySymbol={depositSymbol}
-                    onBuyPress={handleBuyPress}
-                    onReceivePress={handleReceivePress}
-                    onSwapPress={handleSwapPress}
-                />
-            }
-        >
-            <EarnNoBalanceCard
-                apy={apy}
-                title={
-                    <Translation
-                        id="earn.noBalance.yield.title"
-                        values={{ tokenSymbol: depositSymbol }}
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            <Screen
+                header={
+                    <YieldFlowScreenHeader
+                        account={account}
+                        closeAction={navigateToInitialScreen}
+                        title={vaultTokenName}
+                        tokenContract={route.params.tokenContract}
                     />
                 }
-                subtitle={
-                    <Translation
-                        id="earn.noBalance.yield.subtitle"
-                        values={{ tokenSymbol: depositSymbol }}
+                footer={
+                    <EarnNoBalanceFooter
+                        networkSymbol={account.symbol}
+                        contractAddress={
+                            isWrappedNativeVault ? undefined : route.params.tokenContract
+                        }
+                        onBuyPress={handleBuyPress}
+                        onReceivePress={handleReceivePress}
+                        onSwapPress={handleSwapPress}
                     />
                 }
-            />
-        </Screen>
+            >
+                <EarnNoBalanceCard
+                    apy={apy}
+                    title={
+                        <Translation
+                            id="earn.noBalance.yield.title"
+                            values={{ tokenSymbol: depositSymbol }}
+                        />
+                    }
+                    subtitle={
+                        <Translation
+                            id="earn.noBalance.yield.subtitle"
+                            values={{ tokenSymbol: depositSymbol }}
+                        />
+                    }
+                />
+            </Screen>
+        </TokenMetadataProvider>
     );
 };

@@ -60,7 +60,7 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
     const actionReview = session?.action.review;
     const review = actionReview?.type === 'unwrap' ? actionReview : null;
 
-    const { preview, spentToken } = useWrappedNativeReviewPreview({
+    const preview = useWrappedNativeReviewPreview({
         account,
         amount: review?.amount,
         flowType: 'unwrap',
@@ -101,7 +101,7 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
         [dispatch, flowKey, flowType, navigation, review, route.params],
     );
 
-    if (resolutionStatus !== 'resolved' || !account || !spentToken || !review || !preview) {
+    if (resolutionStatus !== 'resolved' || !account || !review || !preview) {
         return null;
     }
 
@@ -114,7 +114,6 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
             onBroadcast={handleBroadcast}
             onError={handleReviewError}
             preview={preview}
-            spentToken={spentToken}
             unsignedTransaction={review.unsignedTransaction}
         />
     );

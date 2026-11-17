@@ -2,19 +2,18 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { injectIsWrappedNativeToken } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
@@ -42,7 +41,10 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
-    const { analytics } = useServices(injectDesktopAnalytics);
+    const { analytics, isWrappedNativeToken } = useServices(
+        injectDesktopAnalytics,
+        injectIsWrappedNativeToken,
+    );
 
     const { handleAction, onCancelClick } = useEarnInANutshell({
         flow: EarnFlow.Yield,
@@ -68,7 +70,6 @@ export const YieldEarnInANutshellModal = ({
     // an intro highlight plus a wrap step on deposit and an unwrap step on withdrawal.
     const isWrappedNativeVault =
         vault !== undefined && isWrappedNativeToken(account.symbol, vault.token.address);
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
 
     const processes: EarnInANutshellProcess[] = [
         {
@@ -89,7 +90,6 @@ export const YieldEarnInANutshellModal = ({
                     depositSymbol={depositSymbol}
                     vaultSymbol={vaultSymbol}
                     isWrappedNativeVault={isWrappedNativeVault}
-                    nativeSymbol={nativeSymbol}
                 />
             ),
         },
@@ -105,9 +105,9 @@ export const YieldEarnInANutshellModal = ({
             ),
             content: (
                 <YieldWithdrawingInfo
+                    networkSymbol={account.symbol}
                     depositSymbol={depositSymbol}
                     isWrappedNativeVault={isWrappedNativeVault}
-                    nativeSymbol={nativeSymbol}
                 />
             ),
         },
@@ -181,11 +181,11 @@ export const YieldEarnInANutshellModal = ({
             hasCancelButton={actionType !== 'close'}
         >
             <YieldEarnInANutshellHighlights
+                networkSymbol={account.symbol}
                 depositSymbol={depositSymbol}
                 vaultSymbol={vaultSymbol}
                 rewardsSymbols={rewardsSymbols}
                 isWrappedNativeVault={isWrappedNativeVault}
-                nativeSymbol={nativeSymbol}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
             <EarnInANutshellProcesses items={processes} onItemToggle={handleProcessToggle} />

@@ -3,7 +3,7 @@ import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { isTranslationKey, useTranslation } from '@suite/intl';
+import { isTranslationKey } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import {
@@ -21,6 +21,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
+import { useComposeErrorText } from '#src/hooks/wallet/useComposeErrorText';
 import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
@@ -47,7 +48,7 @@ export const useCompose = <TFieldValues extends FormState>({
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
-    const { translationString } = useTranslation();
+    const getComposeErrorText = useComposeErrorText();
 
     const { dispatch } = useServices(injectDispatch);
 
@@ -141,7 +142,7 @@ export const useCompose = <TFieldValues extends FormState>({
 
                 const formError = {
                     type: COMPOSE_ERROR_TYPES.COMPOSE,
-                    message: translationString(errorMessage.id, errorMessage.values),
+                    message: getComposeErrorText(errorMessage.id, errorMessage),
                 };
 
                 if (composeField) {
@@ -169,7 +170,7 @@ export const useCompose = <TFieldValues extends FormState>({
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
             setLoading(false);
         },
-        [composeField, getValues, setValue, getErrors, setError, clearErrors, translationString],
+        [composeField, getValues, setValue, getErrors, setError, clearErrors, getComposeErrorText],
     );
 
     // called from the useFees sub-hook

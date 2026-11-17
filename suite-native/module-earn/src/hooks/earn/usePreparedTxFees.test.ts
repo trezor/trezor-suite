@@ -79,7 +79,6 @@ const composeReady = (unsignedTransaction = BASE_UNSIGNED_TX) => ({
     type: 'ready' as const,
     transaction: {
         symbol: asNetworkSymbol('eth'),
-        token: { contractAddress: null, decimals: 18, symbol: 'ETH' },
         unsignedTransaction,
     } satisfies ComposedTxBase,
 });

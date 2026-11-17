@@ -42,7 +42,7 @@ import {
 
 export type ComposedTxBase = {
     symbol: NetworkSymbol;
-    token: PreparedTxFeeToken;
+    token?: PreparedTxFeeToken;
     unsignedTransaction: string;
 };
 

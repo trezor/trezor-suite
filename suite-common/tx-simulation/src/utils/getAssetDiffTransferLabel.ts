@@ -1,4 +1,3 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 
 import { getAssetDiffTransferAmount } from './getAssetDiffTransferAmount';
@@ -7,15 +6,20 @@ import { type SolanaAssetDiff, type StellarAssetDiff } from '../types';
 type SolanaTransfer = NonNullable<SolanaAssetDiff['in'] | SolanaAssetDiff['out']>;
 type StellarTransfer = NonNullable<StellarAssetDiff['in'] | StellarAssetDiff['out']>;
 
+export type AssetDiffTransferLabel = {
+    amount: string | null;
+    /** `null` for an asset without a symbol of its own, labeled with its network's coin symbol. */
+    assetSymbol: string | null;
+};
+
 const composeLabel = (
     transfer: { raw_value: string | number; value?: string | number | null },
     decimals: number | undefined,
-    code: string,
-) => {
-    const amount = getAssetDiffTransferAmount(transfer, decimals);
-
-    return amount === null ? code : `${amount.toString()} ${code}`;
-};
+    assetSymbol: string | null | undefined,
+): AssetDiffTransferLabel => ({
+    amount: getAssetDiffTransferAmount(transfer, decimals)?.toString() ?? null,
+    assetSymbol: assetSymbol || null,
+});
 
 /**
  * Amount of a Solana asset-diff transfer, e.g. `37.191885 fone`.
@@ -24,15 +28,11 @@ const composeLabel = (
  * phrases it in USD ("Lost approximately 0.42$"), which repeats the fiat column and hides the
  * amount the user gets.
  */
-export const getSolanaAssetDiffLabel = (
-    { asset }: SolanaAssetDiff,
-    transfer: SolanaTransfer,
-    symbol: NetworkSymbol,
-) =>
+export const getSolanaAssetDiffLabel = ({ asset }: SolanaAssetDiff, transfer: SolanaTransfer) =>
     composeLabel(
         transfer,
         'decimals' in asset ? asset.decimals : undefined,
-        ('symbol' in asset && asset.symbol) || getNetworkDisplaySymbol(symbol),
+        'symbol' in asset ? asset.symbol : undefined,
     );
 
 /**
@@ -40,13 +40,5 @@ export const getSolanaAssetDiffLabel = (
  * arrives as `0` — so the amount always comes from the exact `raw_value`, a stroop count like
  * everywhere else in Suite (`getStellarInactiveTokens`).
  */
-export const getStellarAssetDiffLabel = (
-    { asset }: StellarAssetDiff,
-    transfer: StellarTransfer,
-    symbol: NetworkSymbol,
-) =>
-    composeLabel(
-        transfer,
-        STELLAR_DECIMALS,
-        ('symbol' in asset ? asset.symbol : asset.code) || getNetworkDisplaySymbol(symbol),
-    );
+export const getStellarAssetDiffLabel = ({ asset }: StellarAssetDiff, transfer: StellarTransfer) =>
+    composeLabel(transfer, STELLAR_DECIMALS, 'symbol' in asset ? asset.symbol : asset.code);

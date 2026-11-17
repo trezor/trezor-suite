@@ -4,12 +4,14 @@ import { useSelector } from 'react-redux';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useFormatters } from '@suite-common/formatters';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowFormValues,
@@ -41,7 +43,8 @@ import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
 type WrapNativeTokenProps = {
     account: Account;
-    token: YieldFlowDisplayToken & { contractAddress: string };
+    /** The network's wrapped native token. */
+    token: YieldFlowDisplayToken & { contractAddress: TokenAddress };
     /** Reported upward because the page header lives outside this subtree, in the layout. */
     onFlowCompleteChange?: (isComplete: boolean) => void;
 };
@@ -87,12 +90,10 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         networkSymbol: account.symbol,
     });
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
-    const nativeToken: YieldFlowDisplayToken = {
-        networkSymbol: account.symbol,
-        symbol: nativeSymbol,
-        decimals: token.decimals,
-    };
+    const nativeToken: YieldFlowDisplayToken = { networkSymbol: account.symbol };
+    const tokenSymbol = (
+        <AssetSymbol networkSymbol={token.networkSymbol} contractAddress={token.contractAddress} />
+    );
 
     const isRefetchDisabled = useSelector(selectIsFeeRefetchBlockedByModal);
     useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
@@ -130,7 +131,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
     const { fiatToggle, setMaxAmount } = useYieldFiatInput({
         methods,
         symbol: account.symbol,
-        decimals: token.decimals,
+        decimals: getNetwork(account.symbol).decimals,
     });
 
     const amountInput = useWatch({ control: methods.control, name: 'amountInput' });
@@ -216,7 +217,10 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
         if (isNativeFeeInsufficient) {
             return (
                 <YieldActionStepWarning
-                    insufficientFeeReserve={{ amount: formattedReserve, nativeSymbol }}
+                    insufficientFeeReserve={{
+                        amount: formattedReserve,
+                        networkSymbol: account.symbol,
+                    }}
                 />
             );
         }
@@ -227,14 +231,19 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
 
         if (wrapReserveStatus === 'kept') {
             return (
-                <YieldActionStepWarning reserveKept={{ amount: formattedReserve, nativeSymbol }} />
+                <YieldActionStepWarning
+                    reserveKept={{ amount: formattedReserve, networkSymbol: account.symbol }}
+                />
             );
         }
 
         if (wrapReserveStatus === 'below') {
             return (
                 <YieldActionStepWarning
-                    reserveRecommendation={{ amount: formattedReserve, nativeSymbol }}
+                    reserveRecommendation={{
+                        amount: formattedReserve,
+                        networkSymbol: account.symbol,
+                    }}
                 />
             );
         }
@@ -254,7 +263,10 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                     description={
                         <Translation
                             id="TR_WRAP_COMPLETE_DESCRIPTION"
-                            values={{ nativeSymbol, tokenSymbol: token.symbol }}
+                            values={{
+                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                tokenSymbol,
+                            }}
                         />
                     }
                 >
@@ -284,14 +296,16 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                 <Text typographyStyle="headline-md">
                     <Translation
                         id="TR_EARN_YIELD_WRAP_TITLE"
-                        values={{ nativeSymbol, tokenSymbol: token.symbol }}
+                        values={{
+                            nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                            tokenSymbol,
+                        }}
                     />
                 </Text>
 
                 <Form form={methods} formState={formState}>
                     <YieldWrapStep
                         token={token}
-                        nativeSymbol={nativeSymbol}
                         availableAmount={account.formattedBalance}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}

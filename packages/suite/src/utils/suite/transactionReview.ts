@@ -1,19 +1,27 @@
-import { type ExtendedMessageDescriptor } from '@suite/intl';
-import {
-    type NetworkSymbol,
-    getDisplaySymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type TranslationKey } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
-type GetTransactionReviewModalActionTranslationParams = {
-    symbol: NetworkSymbol;
+type TransactionReviewModalAsset = {
+    networkSymbol: NetworkSymbol;
+    contractAddress?: TokenAddress;
+};
+
+export type TransactionReviewModalAction = {
+    id: TranslationKey;
+    values?: Record<string, string | undefined>;
+    /** Placeholders filled with an asset's symbol, which the UI renders and masks. */
+    assets?: Record<string, TransactionReviewModalAsset>;
+};
+
+type GetTransactionReviewModalActionParams = {
+    networkSymbol: NetworkSymbol;
     stakeType: StakeFormState['stakeType'] | null;
     precomposedForm: FormState | StakeFormState;
-    approvalToken: TokenInfo | undefined;
+    approvalTokenContract: TokenAddress | undefined;
     routeName?: string;
     isBumpFeeRbfAction: boolean;
     isCancelRbfAction: boolean;
@@ -21,19 +29,19 @@ type GetTransactionReviewModalActionTranslationParams = {
     source: 'heading' | 'button';
 };
 
-export const getTransactionReviewModalActionTranslation = ({
-    symbol,
+export const getTransactionReviewModalAction = ({
+    networkSymbol,
     stakeType,
     precomposedForm,
-    approvalToken,
+    approvalTokenContract,
     routeName,
     isBumpFeeRbfAction,
     isCancelRbfAction,
     isSending,
     source,
-}: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
+}: GetTransactionReviewModalActionParams): TransactionReviewModalAction => {
     const txPurpose = getEvmTransactionPurpose({
-        networkSymbol: symbol,
+        networkSymbol,
         to: precomposedForm.outputs?.[0]?.address,
         data: precomposedForm.transactionData,
     });
@@ -42,17 +50,17 @@ export const getTransactionReviewModalActionTranslation = ({
         case 'stake':
             return {
                 id: source === 'heading' ? 'TR_EARN_STAKE_TOKEN' : 'TR_STAKE_STAKE',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                assets: { symbol: { networkSymbol } },
             };
         case 'unstake':
             return {
                 id: source === 'heading' ? 'TR_STAKE_UNSTAKE_TOKEN' : 'TR_STAKE_UNSTAKE',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                assets: { symbol: { networkSymbol } },
             };
         case 'claim':
             return {
                 id: source === 'heading' ? 'TR_STAKE_CLAIM_TOKEN' : 'TR_STAKE_CLAIM',
-                values: { symbol: getNetworkDisplaySymbol(symbol) },
+                assets: { symbol: { networkSymbol } },
             };
         // no default
     }
@@ -70,11 +78,7 @@ export const getTransactionReviewModalActionTranslation = ({
     // from the calldata rather than from the originating form or route.
     if (txPurpose === 'approve' || txPurpose === 'revoke') {
         const isApprove = txPurpose === 'approve';
-        const displaySymbol = approvalToken?.symbol
-            ? getDisplaySymbol(approvalToken.symbol, approvalToken.contract)
-            : undefined;
-
-        if (source === 'button' || !displaySymbol) {
+        if (source === 'button' || !approvalTokenContract) {
             return { id: isApprove ? 'TR_APPROVE_DATA_TITLE' : 'TR_REVOKE_DATA_TITLE' };
         }
 
@@ -82,7 +86,9 @@ export const getTransactionReviewModalActionTranslation = ({
             id: isApprove
                 ? 'TR_APPROVAL_APPROVE_TOKEN_SPENDING'
                 : 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
-            values: { displaySymbol },
+            assets: {
+                displaySymbol: { networkSymbol, contractAddress: approvalTokenContract },
+            },
         };
     }
 
@@ -101,10 +107,8 @@ export const getTransactionReviewModalActionTranslation = ({
                     txPurpose === 'wrap'
                         ? 'TR_EARN_YIELD_WRAP_TITLE'
                         : 'TR_EARN_YIELD_UNWRAP_TITLE',
-                values: {
-                    nativeSymbol: getNetworkDisplaySymbol(symbol),
-                    tokenSymbol: getWrappedNativeSymbol(symbol),
-                },
+                values: { tokenSymbol: getWrappedNativeSymbol(networkSymbol) },
+                assets: { nativeSymbol: { networkSymbol } },
             };
         }
 

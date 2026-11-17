@@ -2,7 +2,7 @@ import { openDeferredModal } from '@suite/modal';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type ComposeYieldUnwrapTransactionThunkState,
     type YieldFlowDisplayToken,
@@ -11,6 +11,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import {
@@ -25,7 +26,7 @@ const UNWRAP_NATIVE_TOKEN_PREFIX = '@wallet/unwrap-native-token';
 
 type UnwrapNativeTokenPayload = {
     account: Account;
-    token: YieldFlowDisplayToken & { contractAddress: string };
+    token: YieldFlowDisplayToken & { contractAddress: TokenAddress };
     unwrapAmount: string;
     yieldFlow?: {
         flowKey: string;
@@ -128,10 +129,18 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 return undefined;
             }
 
+            // The transaction review and the toast describe WETH as text, so its catalog entry
+            // supplies the symbol and decimals; the compose step has checked the contract.
+            const wrappedNative = getWrappedNativeToken(account.symbol);
+
             const sendResult = await sendYieldTransaction({
                 account,
                 amount: unwrapAmount,
-                token,
+                transactionToken: wrappedNative && {
+                    contractAddress: token.contractAddress,
+                    symbol: wrappedNative.symbol,
+                    decimals: wrappedNative.decimals,
+                },
                 unsignedTransaction: result.unsignedTransaction,
                 flowKey: yieldFlow?.flowKey ?? 'standalone-unwrap-native',
                 flowType: yieldFlow?.flowType ?? 'withdraw',
@@ -187,13 +196,12 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                     metadata: {
                         send: {
                             symbol: account.symbol,
-                            displaySymbol: token.symbol,
+                            displaySymbol: wrappedNative?.symbol ?? '',
                             contractAddress: token.contractAddress,
                             amount: unwrapAmount,
                         },
                         receive: {
                             symbol: account.symbol,
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
                             amount: unwrapAmount,
                         },
                     },

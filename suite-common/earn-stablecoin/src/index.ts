@@ -1,5 +1,14 @@
 export * from './allowance';
 export * from './claim';
 export * from './signing';
+export { wrappedNativeToTokenMetadataSources } from './token-metadata/wrappedNativeToTokenMetadataSources';
+export { yieldAccountRewardsToTokenMetadataSources } from './token-metadata/yieldAccountRewardsToTokenMetadataSources';
+export { yieldClaimAccountItemsToTokenMetadataSources } from './token-metadata/yieldClaimAccountItemsToTokenMetadataSources';
+export { yieldCompleteRewardsToTokenMetadataSources } from './token-metadata/yieldCompleteRewardsToTokenMetadataSources';
+export { yieldFlowDataToTokenMetadataSources } from './token-metadata/yieldFlowDataToTokenMetadataSources';
+export { yieldPositionsToTokenMetadataSources } from './token-metadata/yieldPositionsToTokenMetadataSources';
+export { yieldRewardsToTokenMetadataSources } from './token-metadata/yieldRewardsToTokenMetadataSources';
+export { yieldVaultDetailToTokenMetadataSources } from './token-metadata/yieldVaultDetailToTokenMetadataSources';
+export { yieldVaultsToTokenMetadataSources } from './token-metadata/yieldVaultsToTokenMetadataSources';
 export * from './tx-simulation';
 export * from './vaults';

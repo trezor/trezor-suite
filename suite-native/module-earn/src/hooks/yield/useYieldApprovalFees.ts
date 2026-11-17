@@ -31,8 +31,8 @@ export const useYieldApprovalFees = ({
             amount,
             approvalLimitType,
             tokenContract,
-            tokenDecimals: flowData.token.decimals,
-            tokenSymbol: flowData.token.symbol,
+            tokenDecimals: flowData.vault.token.decimals,
+            tokenSymbol: flowData.vault.token.symbol,
         });
         const contractAddress = getApprovalContractAddress({
             flowType: 'deposit',

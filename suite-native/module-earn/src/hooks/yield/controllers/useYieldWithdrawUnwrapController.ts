@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
-import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { toTokenAddress } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWrapErrorReason,
     type YieldWithdrawFlowType,
@@ -56,7 +56,6 @@ export const useYieldWithdrawUnwrapController = () => {
         [reportInteraction],
     );
 
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
     const wrappedBalance = token?.balance ?? '0';
 
     const handleSkipAnalytics = useCallback(
@@ -87,7 +86,7 @@ export const useYieldWithdrawUnwrapController = () => {
     const step = useYieldWrappedNativeStep({
         account,
         availableBalance: wrappedBalance,
-        decimals: token?.decimals ?? 0,
+        decimals: vault?.token.decimals ?? 0,
         flowKey,
         flowType,
         isDisabled: unwrapMessageSystem.isDisabled,
@@ -97,7 +96,8 @@ export const useYieldWithdrawUnwrapController = () => {
         onSubmitAnalytics: handleSubmitAnalytics,
         onComposeError: handleComposeError,
         step: 'unwrap',
-        tokenSymbol: token?.symbol ?? '',
+        // The form's validation messages take plain text.
+        tokenSymbol: vault?.token.symbol ?? '',
         vault,
     });
     const { amountValue, fees, isSheetPresented, session, simulation } = step;
@@ -126,7 +126,7 @@ export const useYieldWithdrawUnwrapController = () => {
                 : completedAmount;
         const clampedAmount = BigNumber.min(
             new BigNumber(withdrawnWrappedAmount).decimalPlaces(
-                token.decimals,
+                vault.token.decimals,
                 BigNumber.ROUND_DOWN,
             ),
             wrappedBalance,
@@ -139,7 +139,6 @@ export const useYieldWithdrawUnwrapController = () => {
         flowType,
         isUnwrapSessionReady,
         resolutionStatus,
-        token,
         vault,
         wrappedBalance,
     ]);
@@ -189,8 +188,6 @@ export const useYieldWithdrawUnwrapController = () => {
         yieldFlowData,
         tokenContract: route.params.tokenContract,
         accountLabel: resolvedAccount.accountLabel ?? getNetwork(resolvedAccount.symbol).name,
-        nativeSymbol,
-        wrappedTokenSymbol: toTokenSymbol(resolvedToken.symbol),
         wrappedTokenContract: toTokenAddress(resolvedToken.contractAddress ?? ''),
         isInteractionBlocked: step.isStepPending,
         disabledAlert: unwrapMessageSystem.isDisabled

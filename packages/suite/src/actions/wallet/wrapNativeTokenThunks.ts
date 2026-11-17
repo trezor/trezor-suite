@@ -2,7 +2,7 @@ import { openDeferredModal } from '@suite/modal';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type ComposeYieldWrapTransactionThunkState,
     type YieldFlowDisplayToken,
@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import {
@@ -28,7 +29,7 @@ const WRAP_NATIVE_TOKEN_PREFIX = '@wallet/wrap-native-token';
 
 type WrapNativeTokenPayload = {
     account: Account;
-    token: YieldFlowDisplayToken & { contractAddress: string };
+    token: YieldFlowDisplayToken & { contractAddress: TokenAddress };
     wrapAmount: string;
     yieldFlow?: {
         flowKey: string;
@@ -136,17 +137,10 @@ export const submitWrapNativeTokenThunk = createThunk<
                 return undefined;
             }
 
-            const network = getNetwork(account.symbol);
-
+            // The wrap sends the native coin, so the transaction moves no token.
             const sendResult = await sendYieldTransaction({
                 account,
                 amount: wrapAmount,
-                token: {
-                    networkSymbol: account.symbol,
-                    symbol: getNetworkDisplaySymbol(account.symbol),
-                    decimals: network.decimals,
-                    contractAddress: null,
-                },
                 unsignedTransaction: result.unsignedTransaction,
                 flowKey: yieldFlow?.flowKey ?? 'standalone-wrap-native',
                 flowType: yieldFlow?.flowType ?? 'deposit',
@@ -197,15 +191,19 @@ export const submitWrapNativeTokenThunk = createThunk<
                     accountToken.contract.toLowerCase() === token.contractAddress.toLowerCase(),
             );
 
-            if (!isAlreadyTracked) {
+            // Tracking the token and the toast describe WETH as text, so its catalog entry supplies
+            // the symbol and decimals; the compose step has checked the contract.
+            const wrappedNative = getWrappedNativeToken(account.symbol);
+
+            if (!isAlreadyTracked && wrappedNative) {
                 const wrappedTokenInfo: TokenInfo = {
                     // Only affects symbol casing (both ERC20 and BEP20 preserve it); the real
                     // standard/balance are filled in by the next backend account refresh.
                     standard: 'ERC20',
                     contract: token.contractAddress,
-                    symbol: token.symbol,
-                    name: token.symbol,
-                    decimals: token.decimals,
+                    symbol: wrappedNative.symbol,
+                    name: wrappedNative.symbol,
+                    decimals: wrappedNative.decimals,
                     balance: '0',
                 };
 
@@ -223,12 +221,11 @@ export const submitWrapNativeTokenThunk = createThunk<
                     metadata: {
                         send: {
                             symbol: account.symbol,
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
                             amount: wrapAmount,
                         },
                         receive: {
                             symbol: account.symbol,
-                            displaySymbol: token.symbol,
+                            displaySymbol: wrappedNative?.symbol ?? '',
                             contractAddress: token.contractAddress,
                             amount: wrapAmount,
                         },

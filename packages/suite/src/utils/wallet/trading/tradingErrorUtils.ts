@@ -4,10 +4,12 @@ import {
     type TradingErrorCode,
     getTradingErrorCauseMessage,
 } from '@suite-common/trading';
+import { type ComposeErrorMessage } from '@suite-common/wallet-types';
 
 type TradingErrorTranslation = {
     id: TranslationKey;
     values?: Record<string, string>;
+    networkSymbolValues?: ComposeErrorMessage['networkSymbolValues'];
 };
 
 const TRADING_ERROR_TRANSLATION_KEYS: Record<TradingErrorCode, TranslationKey> = {
@@ -52,7 +54,11 @@ export const getTradingErrorTranslation = (tradingError: TradingError): TradingE
 
     // The composer already explains why the transaction cannot be created, e.g. insufficient funds.
     if (cause?.source === 'precompose' && isTranslationKey(cause.errorMessage.id)) {
-        return { id: cause.errorMessage.id, values: cause.errorMessage.values };
+        return {
+            id: cause.errorMessage.id,
+            values: cause.errorMessage.values,
+            networkSymbolValues: cause.errorMessage.networkSymbolValues,
+        };
     }
 
     const values = getTranslationValues(tradingError, getTradingErrorCauseMessage(cause));

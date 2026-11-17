@@ -9,10 +9,15 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
+import {
+    type NetworksRootState,
+    injectAddressValidator,
+    injectGetNamedAddressSupport,
+    selectNetworkDisplaySymbol,
+} from '@suite-common/networks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
-import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -138,6 +143,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         selectAccountByKey(state, accountKey),
     );
 
+    const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        account ? selectNetworkDisplaySymbol(state, account.symbol) : undefined,
+    );
+
     const tokenInfo = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
@@ -193,6 +202,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,
+            networkDisplaySymbol,
             availableBalance: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
@@ -272,7 +282,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
                 if (isReserveError) {
                     setError('outputs.0.amount', {
-                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
+                        message: `Recipient account requires minimum reserve of 1 ${networkDisplaySymbol} to activate.`,
                     });
                 }
 
@@ -326,6 +336,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         tokenContract,
         account,
         network,
+        networkDisplaySymbol,
         networkFeeInfo,
         setError,
         excludedUtxos,

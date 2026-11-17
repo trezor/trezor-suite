@@ -4,8 +4,10 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { wrappedNativeToTokenMetadataSources } from '@suite-common/earn-stablecoin';
+import { useFormatters } from '@suite-common/formatters';
+import { toTokenAddress } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type ComposeYieldWrapErrorReason,
@@ -28,7 +30,6 @@ import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
-import { wrappedNativeToTokenMetadataSources } from '../../utils/earn/wrappedNativeToTokenMetadataSources';
 import { useYieldCurrencyToggleAnalytics } from '../yield/useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 
@@ -47,7 +48,8 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
     );
 
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
+    const { DisplaySymbolFormatter } = useFormatters();
+    const nativeSymbol = account ? DisplaySymbolFormatter.format(account.symbol) : '';
     const wrappedBalance =
         account && wrappedNative
             ? (getAccountTokenByContract(account, wrappedNative.address)?.balance ?? '0')
@@ -56,7 +58,8 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
     const nativeDecimals = account ? getNetwork(account.symbol).decimals : 0;
     const spentBalance = isWrap ? (account?.formattedBalance ?? '0') : wrappedBalance;
     const spentDecimals = isWrap ? nativeDecimals : (wrappedNative?.decimals ?? 0);
-    const spentSymbol = isWrap ? nativeSymbol : toTokenSymbol(wrappedNative?.symbol ?? '');
+    // The form's validation messages take plain text.
+    const spentSymbol = isWrap ? nativeSymbol : (wrappedNative?.symbol ?? '');
 
     const messageSystem = useMessageSystemWrappedNative(flowType);
 
@@ -146,11 +149,8 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         status: 'ready' as const,
         account,
         accountLabel: account.accountLabel ?? getNetwork(account.symbol).name,
-        nativeSymbol,
-        wrappedTokenSymbol: wrappedNative.symbol,
         wrappedTokenContract: toTokenAddress(wrappedNative.address),
         metadataSources: wrappedNativeToTokenMetadataSources(account.symbol, wrappedNative),
-        spentSymbol,
         spentTokenContract,
         isInteractionBlocked: isFlowPending,
         disabledAlert: messageSystem.isDisabled

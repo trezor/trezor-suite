@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { TokenSymbol } from '@suite/token';
 import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type Output } from '@suite-common/wallet-types';
 import {
@@ -27,6 +27,7 @@ import { BaseCurrencyValue } from '#src/components/suite';
 import { useLayoutSize, useSelector } from '#src/hooks/suite';
 import { useSendFormContext } from '#src/hooks/wallet';
 import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { useNetworkDisplaySymbolText } from '#src/hooks/wallet/useNetworkDisplaySymbolText';
 import {
     validateDecimals,
     validateInteger,
@@ -71,6 +72,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         setShowReserveBanner,
     } = useSendFormContext();
     const { symbol, tokens } = account;
+    const networkDisplaySymbol = useNetworkDisplaySymbolText(symbol);
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const { isBelowLaptop } = useLayoutSize();
 
@@ -113,7 +115,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const displayTicker = shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol);
+    const displayTicker = shouldSendInSats ? 'sat' : <AssetSymbol networkSymbol={symbol} />;
     const amountSymbol = withTokens && token ? token.symbol : displayTicker;
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const hasError = !!error;
@@ -155,12 +157,13 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     }
 
                     return translationString('AMOUNT_IS_BELOW_DUST', {
-                        dust: `${dust} ${shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol)}`,
+                        dust: `${dust} ${shouldSendInSats ? 'sat' : networkDisplaySymbol}`,
                     });
                 }
             },
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,
+                networkDisplaySymbol,
                 areSatsUsed: !!shouldSendInSats,
                 contractAddress: tokenValue,
             }),

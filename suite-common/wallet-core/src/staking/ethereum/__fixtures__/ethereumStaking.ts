@@ -114,7 +114,7 @@ export const stakeFailedFixture = [
                 levels: [{ feeLimit: '21000' }],
             },
         },
-        result: 'Min amount 0.01 ETH',
+        result: 'Min amount 0.01',
     },
     {
         description: 'should throw an error when fee estimation is errored',

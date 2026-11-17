@@ -1,8 +1,4 @@
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import type { TokenTransfer } from '@trezor/connect';
 import { BigNumber, type BigNumberValue } from '@trezor/utils';
 
@@ -108,30 +104,12 @@ export const networkAmountToSmallestUnit = (amount: string | null, symbol: Netwo
 /**
  * @deprecated use `subunitsToUnits` if you don't need formatting. If you need formating, use function that does ONLY formatting.
  */
-export const formatNetworkAmount = (
-    amount: string,
-    symbol: NetworkSymbol,
-    withSymbol = false,
-    isSatoshis?: boolean,
-) => {
+export const formatNetworkAmount = (amount: string, symbol: NetworkSymbol) => {
     const decimals = getAccountDecimals(symbol);
 
     if (!decimals) return amount;
 
-    let formattedAmount = convertAmountSubunitsToUnits(amount, decimals);
-
-    if (withSymbol) {
-        let formattedSymbol = getNetworkDisplaySymbol(symbol);
-
-        if (isSatoshis) {
-            formattedAmount = amount || '0';
-            formattedSymbol = `sat ${getNetworkDisplaySymbol(symbol)}`;
-        }
-
-        return `${formattedAmount} ${formattedSymbol}`;
-    }
-
-    return formattedAmount;
+    return convertAmountSubunitsToUnits(amount, decimals);
 };
 
 export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {

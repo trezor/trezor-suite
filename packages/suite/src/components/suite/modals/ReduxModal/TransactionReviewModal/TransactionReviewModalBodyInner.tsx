@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import type { DeviceRootState } from '@suite-common/device';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type SerializedTx,
     type WalletCoreCompoundRootState,
@@ -35,8 +36,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
-import { getTransactionReviewModalActionTranslation } from '#src/utils/suite/transactionReview';
+import { getTransactionReviewModalAction } from '#src/utils/suite/transactionReview';
 
+import { TransactionReviewActionLabel } from './TransactionReviewActionLabel';
 import { TransactionReviewModalBottomContent } from './TransactionReviewOutputList/TransactionReviewModalBottomContent';
 import { TransactionReviewModalConfirmOnDevice } from './TransactionReviewOutputList/TransactionReviewModalConfirmOnDevice';
 import { TransactionReviewModalContent } from './TransactionReviewOutputList/TransactionReviewModalContent';
@@ -211,12 +213,13 @@ export const TransactionReviewModalBodyInner = ({
         isTrading: !!precomposedForm.trading?.activeSection,
     });
 
-    const actionTranslation = (source: 'heading' | 'button') =>
-        getTransactionReviewModalActionTranslation({
-            symbol,
+    const getAction = (source: 'heading' | 'button') =>
+        getTransactionReviewModalAction({
+            networkSymbol: account.symbol,
             stakeType,
             precomposedForm,
-            approvalToken: precomposedTx.token,
+            approvalTokenContract:
+                precomposedTx.token && toTokenAddress(precomposedTx.token.contract),
             routeName,
             isBumpFeeRbfAction,
             isCancelRbfAction,
@@ -256,11 +259,11 @@ export const TransactionReviewModalBodyInner = ({
             )}
             <Modal.ModalBase
                 heading={
-                    <Translation
-                        {...(areDetailsVisible
-                            ? { id: 'TR_DETAIL' }
-                            : actionTranslation('heading'))}
-                    />
+                    areDetailsVisible ? (
+                        <Translation id="TR_DETAIL" />
+                    ) : (
+                        <TransactionReviewActionLabel action={getAction('heading')} />
+                    )
                 }
                 onBackClick={areDetailsVisible ? () => setAreDetailsVisible(false) : undefined}
                 description={
@@ -296,7 +299,7 @@ export const TransactionReviewModalBodyInner = ({
                             onCancel={onCancel}
                             handleTryAgain={handleTryAgain}
                             txInfoState={txInfoState}
-                            actionTranslation={actionTranslation('button')}
+                            action={getAction('button')}
                             hasTxReviewExpired={hasTxReviewExpired}
                             deadline={deadline}
                             shouldCheckTxTimeValidity={shouldCheckTxTimeValidity}

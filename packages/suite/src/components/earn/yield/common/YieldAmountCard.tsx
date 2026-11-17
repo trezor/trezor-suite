@@ -33,7 +33,7 @@ type YieldAmountCardHeadingProps = {
 };
 
 export type YieldAmountCardUnitToggleProps = {
-    otherTokenSymbol: string;
+    otherTokenSymbol: ReactNode;
     onClick: () => void;
 };
 
@@ -50,7 +50,7 @@ export type YieldAmountCardFiatToggleProps = {
 };
 
 type YieldAmountCardProps = {
-    tokenSymbol: string;
+    tokenSymbol: ReactNode;
     decimals?: number;
     summary?: YieldAmountCardSummaryProps;
     heading?: YieldAmountCardHeadingProps;

@@ -1,8 +1,9 @@
 import { type CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
+import { AssetSymbol } from '@suite/assets';
+import { toTokenAddress } from '@suite-common/tokens';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from '#src/components/suite';
@@ -26,7 +27,7 @@ export const TradingCryptoAmount = ({
     testId,
 }: TradingCryptoAmountProps) => {
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
+    const { contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoId);
     const { networkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
 
     if (!amount || amount === '') {
@@ -37,7 +38,15 @@ export const TradingCryptoAmount = ({
                         <TradingCoinLogo cryptoId={cryptoId} margin={{ right: 8 }} />
                     </LogoWrapper>
                 )}
-                {coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : ''}
+                {networkSymbol && (
+                    <AssetSymbol
+                        networkSymbol={networkSymbol}
+                        contractAddress={
+                            contractAddress ? toTokenAddress(contractAddress) : undefined
+                        }
+                        isTruncated
+                    />
+                )}
             </Row>
         );
     }

@@ -1,6 +1,8 @@
 import { type ReactNode } from 'react';
 
+import { AssetIcon } from '@suite/assets';
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
@@ -34,10 +36,11 @@ export const EarnAccountCell = ({
         <Row gap={16} cursor="inherit">
             <Column alignItems="center">
                 {iconToken ? (
-                    <TokenIcon
-                        placeholder={iconToken.symbol || iconToken.name || ''}
+                    <AssetIcon
                         networkSymbol={networkSymbol}
-                        contractAddress={iconToken.address ?? null}
+                        contractAddress={
+                            iconToken.address ? toTokenAddress(iconToken.address) : undefined
+                        }
                         showNetworkIcon={showAssetNetworkIcon}
                         size={32}
                         isBordered={false}

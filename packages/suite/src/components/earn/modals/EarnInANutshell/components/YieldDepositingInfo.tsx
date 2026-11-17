@@ -1,3 +1,4 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -15,7 +16,6 @@ type YieldDepositingInfoProps = {
     depositSymbol: string;
     vaultSymbol: string | undefined;
     isWrappedNativeVault?: boolean;
-    nativeSymbol?: string;
 };
 
 export const YieldDepositingInfo = ({
@@ -25,18 +25,20 @@ export const YieldDepositingInfo = ({
     depositSymbol,
     vaultSymbol,
     isWrappedNativeVault = false,
-    nativeSymbol,
 }: YieldDepositingInfoProps) => {
     const formatApyValue = useFormatApy();
 
     return (
         <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
-            {isWrappedNativeVault && nativeSymbol && (
+            {isWrappedNativeVault && (
                 <EarnInfoRow
                     heading={
                         <Translation
                             id="TR_EARN_YIELD_WRAP_TITLE"
-                            values={{ nativeSymbol, tokenSymbol: depositSymbol }}
+                            values={{
+                                nativeSymbol: <AssetSymbol networkSymbol={networkSymbol} />,
+                                tokenSymbol: depositSymbol,
+                            }}
                         />
                     }
                     content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}

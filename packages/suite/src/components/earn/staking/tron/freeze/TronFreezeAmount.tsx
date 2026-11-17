@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     AMOUNT_MAX_LENGTH,
     TRON_STAKING_RESERVE,
@@ -21,6 +22,7 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useSelector } from '#src/hooks/suite';
+import { useNetworkDisplaySymbolText } from '#src/hooks/wallet/useNetworkDisplaySymbolText';
 import {
     validateDecimals,
     validateMin,
@@ -59,7 +61,7 @@ export const TronFreezeAmount = () => {
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
     const minStakingAmount = stakingLimits?.MIN_AMOUNT_FOR_STAKING;
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const networkDisplaySymbol = useNetworkDisplaySymbolText(account.symbol);
 
     const formatCryptoAmount = (value: string) =>
         CryptoAmountFormatter.format(value, {
@@ -114,6 +116,7 @@ export const TronFreezeAmount = () => {
             reserveOrBalance: async (value: string) => {
                 const reserveOrBalanceResult = validateReserveOrBalance(translationString, {
                     account,
+                    networkDisplaySymbol,
                 })(value);
 
                 if (reserveOrBalanceResult) {
@@ -236,7 +239,11 @@ export const TronFreezeAmount = () => {
         onChange: currency === 'crypto' ? handleCryptoAmountChange : handleFiatAmountChange,
         rightContent: (
             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                {currency === 'crypto' ? networkDisplaySymbol : baseCurrencyCode.toUpperCase()}
+                {currency === 'crypto' ? (
+                    <AssetSymbol networkSymbol={account.symbol} />
+                ) : (
+                    baseCurrencyCode.toUpperCase()
+                )}
             </Text>
         ),
     } as const;
@@ -253,7 +260,7 @@ export const TronFreezeAmount = () => {
                     currency={currency}
                     setCurrency={setCurrency}
                     fiatCurrencySymbol={baseCurrencyCode.toUpperCase()}
-                    cryptoCurrencySymbol={networkDisplaySymbol}
+                    networkSymbol={account.symbol}
                 />
             </Row>
 
@@ -312,7 +319,9 @@ export const TronFreezeAmount = () => {
                             id="TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING"
                             values={{
                                 amount: formatCryptoAmount(TRON_STAKING_RESERVE.toString()),
-                                networkDisplaySymbol,
+                                networkDisplaySymbol: (
+                                    <AssetSymbol networkSymbol={account.symbol} />
+                                ),
                             }}
                         />
                     }
@@ -328,7 +337,9 @@ export const TronFreezeAmount = () => {
                             id="TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING"
                             values={{
                                 amount: formatCryptoAmount(TRON_STAKING_RESERVE.toString()),
-                                networkDisplaySymbol,
+                                networkDisplaySymbol: (
+                                    <AssetSymbol networkSymbol={account.symbol} />
+                                ),
                             }}
                         />
                     }

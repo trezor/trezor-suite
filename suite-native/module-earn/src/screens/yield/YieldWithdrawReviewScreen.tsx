@@ -8,7 +8,6 @@ import {
     type YieldActionReviewState,
     type YieldRootState,
     type YieldWithdrawFlowType,
-    getYieldWithdrawInputToken,
     selectYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
 import { useYieldFlowData } from '@suite-native/earn';
@@ -53,15 +52,8 @@ export const YieldWithdrawReviewScreen = () => {
         () => (isYieldWithdrawScreenReview(actionReview, flowType) ? actionReview : null),
         [actionReview, flowType],
     );
-    const reviewToken = useMemo(() => {
-        if (!flowData) {
-            return null;
-        }
-
-        return getYieldWithdrawInputToken({ flowData, flowType });
-    }, [flowData, flowType]);
     const preview = useMemo(() => {
-        if (!review || !device || !flowData || !reviewToken || vaultName === null) {
+        if (!review || !device || !flowData || vaultName === null) {
             return null;
         }
 
@@ -69,11 +61,10 @@ export const YieldWithdrawReviewScreen = () => {
             device,
             flowData,
             review,
-            reviewToken,
             type: 'withdraw',
             vaultName,
         });
-    }, [device, flowData, review, reviewToken, vaultName]);
+    }, [device, flowData, review, vaultName]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
@@ -91,7 +82,7 @@ export const YieldWithdrawReviewScreen = () => {
         }
     }, [navigation, resolutionStatus, review, route.params, session?.step]);
 
-    if (resolutionStatus !== 'resolved' || !flowData || !review || !reviewToken || !preview) {
+    if (resolutionStatus !== 'resolved' || !flowData || !review || !preview) {
         return null;
     }
 
@@ -101,7 +92,6 @@ export const YieldWithdrawReviewScreen = () => {
             flowKey={flowKey}
             flowType={flowType}
             preview={preview}
-            reviewToken={reviewToken}
         />
     );
 };

@@ -77,12 +77,16 @@ export const useYieldDepositController = () => {
     });
     const isDepositPending = !!actionPendingTransaction;
     const isActionSubmitting = session?.action.isSubmitting ?? false;
-    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({
+        session,
+        tokenDecimals: yieldFlowData.vault?.token.decimals,
+    });
     const isAllowanceLoaded = allowanceStatus === 'loaded';
     const isDepositSessionReady = session?.step === 'action';
     const depositForm = useYieldDepositForm({
         defaultAmount: session?.action.amount,
         token,
+        decimals: yieldFlowData.vault?.token.decimals,
         tokenSymbol,
         wrappedAmount: session?.result.wrappedAmount,
     });
@@ -267,6 +271,7 @@ export const useYieldDepositController = () => {
         },
         stepCard: {
             hasWrapStep: yieldFlowData.isWrappedNativeVault,
+            wrappedTokenContract: yieldFlowData.token?.contractAddress,
             isApprovalStepSkipped: !!session?.approval.isSkipped,
             isWrapStepSkipped: !session?.result.wrappedAmount,
             onEditWrapStep: returnToWrapStep,

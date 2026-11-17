@@ -1,7 +1,8 @@
+import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
@@ -57,7 +58,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                     priority="secondary"
                                     typographyStyle="body-sm"
                                 >
-                                    {getNetworkDisplaySymbol(account.symbol)}
+                                    <AssetSymbol networkSymbol={account.symbol} />
                                 </Text>
                             </InfoItem>
                         </AssetDetailLink>
