@@ -5,7 +5,7 @@ import {
     type CardanoSignedMessage,
     type PermissionRequest,
 } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import cardano from '@trezor/network-cardano/runtime';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';

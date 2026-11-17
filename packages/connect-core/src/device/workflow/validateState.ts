@@ -1,6 +1,6 @@
 import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type { StaticSessionId } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
 import { createStaticSessionId, parseStaticSessionId } from '@trezor/device-utils';
 

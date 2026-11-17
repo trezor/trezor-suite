@@ -37,8 +37,6 @@ module.exports = {
     setupFiles: suiteSourceConfig.setupFiles,
     setupFilesAfterEnv: suiteSourceConfig.setupFilesAfterEnv,
     moduleNameMapper: {
-        '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
-        '^@trezor/(?!network-)(.+)': '<rootDir>/../$1',
         ...suiteSourceConfig.moduleNameMapper,
         ...baseConfig.moduleNameMapper,
     },

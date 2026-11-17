@@ -1,5 +1,5 @@
 import type { PROTO, PermissionRequest } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS } from '@trezor/connect-common/constants';
 import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 
 import type { MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';

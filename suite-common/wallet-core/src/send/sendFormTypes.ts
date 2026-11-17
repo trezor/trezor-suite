@@ -8,7 +8,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
-import { type ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
+import { type ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/constants';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 

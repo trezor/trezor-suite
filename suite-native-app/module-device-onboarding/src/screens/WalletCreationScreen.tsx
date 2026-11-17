@@ -20,7 +20,7 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
-import { type ERRORS } from '@trezor/connect-common/src/constants';
+import { type ERRORS } from '@trezor/connect-common/constants';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

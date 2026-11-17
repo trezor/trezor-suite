@@ -19,6 +19,15 @@
     "description": "Collection of assets and utils used by trezor-connect library.",
     "sideEffects": false,
     "main": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./constants": "./src/constants/index.ts",
+        "./data": "./src/data/index.ts",
+        "./events": "./src/events/index.ts",
+        "./types": "./src/types/index.ts",
+        "./types/api": "./src/types/api/index.ts",
+        "./*": "./src/*.ts"
+    },
     "files": [
         "lib/",
         "CHANGELOG.md"
@@ -32,21 +41,29 @@
                 "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*",
-            "./lib/constants": {
+            "./constants": {
                 "types": "./lib/constants/index.d.ts",
                 "default": "./lib/constants/index.js"
             },
-            "./lib/data": {
+            "./data": {
                 "types": "./lib/data/index.d.ts",
                 "default": "./lib/data/index.js"
             },
-            "./lib/events": {
+            "./events": {
                 "types": "./lib/events/index.d.ts",
                 "default": "./lib/events/index.js"
             },
-            "./lib/types": {
+            "./types": {
                 "types": "./lib/types/index.d.ts",
                 "default": "./lib/types/index.js"
+            },
+            "./types/api": {
+                "types": "./lib/types/api/index.d.ts",
+                "default": "./lib/types/api/index.js"
+            },
+            "./*": {
+                "types": "./lib/*.d.ts",
+                "default": "./lib/*.js"
             }
         }
     },
