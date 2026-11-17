@@ -121,6 +121,8 @@ export {
     type StakingPositionEntry,
 } from './state/stakingAccountSelectors';
 export {
+    selectDeviceActiveStakingPositionEntries,
+    selectDeviceActiveStakingPositionEntriesBySymbol,
     selectDeviceStakingEntryByWarning,
     selectDeviceStakingPositionEntries,
     selectDeviceStakingPositionEntriesBySymbol,

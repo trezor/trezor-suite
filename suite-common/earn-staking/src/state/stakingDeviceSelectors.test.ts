@@ -17,6 +17,8 @@ import { asNetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types'
 
 import {
     type StakingDeviceRootState,
+    selectDeviceActiveStakingPositionEntries,
+    selectDeviceActiveStakingPositionEntriesBySymbol,
     selectDeviceStakingEntryByWarning,
     selectDeviceStakingPositionEntries,
     selectDeviceStakingPositionEntriesBySymbol,
@@ -276,6 +278,48 @@ describe('selectDeviceStakingPositionEntries', () => {
 
         expect(selectDeviceStakingPositionEntries(createState())).toBe(first);
         expect(selectDeviceStakingPositionEntries(createState())[0]).toBe(first[0]);
+    });
+});
+
+describe('selectDeviceActiveStakingPositionEntries', () => {
+    it('keeps a registered key with an empty balance and drops an empty pool', () => {
+        const accountKeys = selectDeviceActiveStakingPositionEntries(createState()).map(
+            ({ accountKey }) => accountKey,
+        );
+
+        expect(accountKeys).toHaveLength(7);
+        expect(accountKeys).toEqual(expect.arrayContaining([adaFiveBinariesAccount.key]));
+        expect(accountKeys).not.toEqual(expect.arrayContaining([emptyPoolEthAccount.key]));
+    });
+
+    it('keeps the references across a recreated state', () => {
+        expect(selectDeviceActiveStakingPositionEntries(createState())).toBe(
+            selectDeviceActiveStakingPositionEntries(createState()),
+        );
+    });
+});
+
+describe('selectDeviceActiveStakingPositionEntriesBySymbol', () => {
+    it('keeps the active entries of one network', () => {
+        const accountKeys = selectDeviceActiveStakingPositionEntriesBySymbol(
+            createState(),
+            asNetworkSymbol('ada'),
+        ).map(({ accountKey }) => accountKey);
+
+        expect(accountKeys).toHaveLength(2);
+        expect(accountKeys).toEqual(
+            expect.arrayContaining([adaAccount.key, adaFiveBinariesAccount.key]),
+        );
+    });
+
+    it('shares the empty list for a network without an active position', () => {
+        const state = createState({
+            positions: { [emptyPoolEthAccount.key]: [emptyPoolPosition] },
+        });
+
+        expect(
+            selectDeviceActiveStakingPositionEntriesBySymbol(state, asNetworkSymbol('eth')),
+        ).toBe(selectDeviceActiveStakingPositionEntriesBySymbol(state, asNetworkSymbol('btc')));
     });
 });
 

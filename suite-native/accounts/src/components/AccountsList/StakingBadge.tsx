@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     type StakingDeviceRootState,
     type StakingPositionEntry,
-    selectDeviceStakingPositionEntriesBySymbol,
+    selectDeviceActiveStakingPositionEntriesBySymbol,
     selectHasStakingAccountWarning,
 } from '@suite-common/earn-staking';
 import { hasStakingPositionWarning } from '@suite-common/earn-staking-common';
@@ -44,7 +44,7 @@ export const StakingBadge = ({ networkSymbol, accountKey }: StakingBadgeProps) =
     // The badge of an account warns about that account; the badge of a network about any of its accounts.
     const shouldShowWarningIcon = useSelector((state: StakingDeviceRootState) =>
         accountKey === undefined
-            ? selectDeviceStakingPositionEntriesBySymbol(state, networkSymbol).some(
+            ? selectDeviceActiveStakingPositionEntriesBySymbol(state, networkSymbol).some(
                   hasOutdatedProvider,
               )
             : selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),

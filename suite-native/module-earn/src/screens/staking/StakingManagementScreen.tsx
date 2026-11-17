@@ -42,6 +42,11 @@ export const StakingManagementScreen = () => {
         () => dispatch(refreshStakingProductInfoThunk()),
         [dispatch],
     );
+    // A pull asks for fresh data even within the maximum age, as the legacy fetch did.
+    const refreshProductInfoNow = useCallback(
+        () => dispatch(refreshStakingProductInfoThunk({ force: true })),
+        [dispatch],
+    );
 
     // Until the scheduler lands, screen mounts and pull-to-refresh are the only refresh paths after startup.
     useEffect(() => {
@@ -72,7 +77,7 @@ export const StakingManagementScreen = () => {
                     ) : (
                         <TransactionList
                             account={account}
-                            onRefresh={refreshProductInfo}
+                            onRefresh={refreshProductInfoNow}
                             listHeaderComponent={listHeaderComponent}
                             filter={{ type: 'staking' }}
                         />

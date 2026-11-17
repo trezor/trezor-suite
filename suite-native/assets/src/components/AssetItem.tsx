@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     type StakingDeviceRootState,
-    selectDeviceStakingPositionEntriesBySymbol,
+    selectDeviceActiveStakingPositionEntriesBySymbol,
 } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -53,7 +53,8 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     );
     const hasAnyAccountsWithStaking = useSelector(
         (state: StakingDeviceRootState) =>
-            selectDeviceStakingPositionEntriesBySymbol(state, cryptoCurrencySymbol).length > 0,
+            selectDeviceActiveStakingPositionEntriesBySymbol(state, cryptoCurrencySymbol).length >
+            0,
     );
     const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>
         selectHasDeviceAnyFailedAccountForNetworkSymbol(state, cryptoCurrencySymbol),

@@ -3,6 +3,7 @@ import {
     type StakingPositionWarningCode,
     getStakingPositionAmount,
     hasStakingPositionWarning,
+    isStakingPositionActive,
 } from '@suite-common/earn-staking-common';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -60,6 +61,8 @@ const selectDeviceCountedStakingPositionEntries = createWeakMapSelector(
         ),
 );
 
+// The funded entries make the Earn list; the active ones, which a registered key with an empty
+// balance still is, decide whether a network has staking at all.
 export const selectDeviceStakingPositionEntries = createWeakMapSelector(
     [selectDeviceCountedStakingPositionEntries],
     (entries): readonly StakingPositionEntry[] =>
@@ -68,6 +71,26 @@ export const selectDeviceStakingPositionEntries = createWeakMapSelector(
                 ...entries.filter(({ position }) =>
                     new BigNumber(getStakingPositionAmount(position)).gt(0),
                 ),
+            ),
+        ),
+);
+
+export const selectDeviceActiveStakingPositionEntries = createWeakMapSelector(
+    [selectDeviceCountedStakingPositionEntries],
+    (entries): readonly StakingPositionEntry[] =>
+        returnStableArrayIfEmpty(
+            createStableEntries(
+                ...entries.filter(({ position }) => isStakingPositionActive(position)),
+            ),
+        ),
+);
+
+export const selectDeviceActiveStakingPositionEntriesBySymbol = createWeakMapSelector(
+    [selectDeviceActiveStakingPositionEntries, selectNetworkSymbolParam],
+    (entries, networkSymbol): readonly StakingPositionEntry[] =>
+        returnStableArrayIfEmpty(
+            createStableEntries(
+                ...entries.filter(({ descriptor }) => descriptor.networkSymbol === networkSymbol),
             ),
         ),
 );
