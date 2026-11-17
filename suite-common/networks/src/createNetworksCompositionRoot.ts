@@ -12,6 +12,8 @@ import { createGetNetworkConfigs } from './createGetNetworkConfigs';
 import { createIsWrappedNativeToken } from './createIsWrappedNativeToken';
 import { createLoadNetworkModules } from './createLoadNetworkModules';
 import { createNetworkIcon } from './createNetworkIcon';
+import { createRegisterCustomEvmNetwork } from './createRegisterCustomEvmNetwork';
+import { createUnregisterCustomEvmNetwork } from './createUnregisterCustomEvmNetwork';
 
 export type NetworksCompositionRootDeps = NetworkModuleRepositoryDep & { dispatch: Dispatch };
 
@@ -41,6 +43,17 @@ export const createNetworksCompositionRoot = (
         loadNetworkModules: createLoadNetworkModules({
             dispatch: deps.dispatch,
             getNetworkConfigs,
+            networkModuleRepository,
+        }),
+        registerCustomEvmNetwork: createRegisterCustomEvmNetwork({
+            dispatch: deps.dispatch,
+            getNetworkConfigs,
+            networkModuleRepository,
+        }),
+        unregisterCustomEvmNetwork: createUnregisterCustomEvmNetwork({
+            dispatch: deps.dispatch,
+            getNetworkConfigs,
+            networkModuleRepository,
         }),
     };
 };

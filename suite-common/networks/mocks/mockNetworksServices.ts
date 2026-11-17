@@ -46,5 +46,7 @@ export const mockNetworksServices = (
         getNamedAddressSupport: overrides.getNamedAddressSupport ?? null,
         getNetworkByCoingeckoId: overrides.getNetworkByCoingeckoId ?? null,
         loadNetworkModules: overrides.loadNetworkModules ?? null,
+        registerCustomEvmNetwork: overrides.registerCustomEvmNetwork ?? null,
+        unregisterCustomEvmNetwork: overrides.unregisterCustomEvmNetwork ?? null,
     });
 };

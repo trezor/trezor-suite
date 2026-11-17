@@ -8,6 +8,8 @@ import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 import type { IsWrappedNativeTokenDep } from './createIsWrappedNativeToken';
 import type { LoadNetworkModulesDep } from './createLoadNetworkModules';
 import type { NetworkIconDep } from './createNetworkIcon';
+import type { RegisterCustomEvmNetworkDep } from './createRegisterCustomEvmNetwork';
+import type { UnregisterCustomEvmNetworkDep } from './createUnregisterCustomEvmNetwork';
 
 export type NetworksServices = NetworkIconDep &
     GetIconPathsDep &
@@ -18,6 +20,8 @@ export type NetworksServices = NetworkIconDep &
     GetNamedAddressSupportDep &
     GetNetworkConfigDep &
     GetNetworkByCoingeckoIdDep &
-    LoadNetworkModulesDep;
+    LoadNetworkModulesDep &
+    RegisterCustomEvmNetworkDep &
+    UnregisterCustomEvmNetworkDep;
 
 export type NetworksDep = { networks: NetworksServices };

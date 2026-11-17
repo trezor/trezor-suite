@@ -1,9 +1,11 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
+import { buildCustomEvmNetworkConfig } from '@suite-common/networks';
 import {
     type Explorer,
     getParsedExplorerUrls,
     networksCollection,
 } from '@suite-common/wallet-config';
+import { type CustomEvmNetworkDefinition } from '@suite-common/wallet-types';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -12,6 +14,7 @@ import {
 import { typedObjectKeys } from '@trezor/utils';
 
 import { explorerActions } from './explorerActions';
+import { customEvmNetworksActions } from '../customNetworks/customEvmNetworksActions';
 
 export type ExplorerItem = {
     default: Explorer;
@@ -31,6 +34,18 @@ export const explorerInitialState: ExplorerConfig = networksCollection.reduce((s
 
     return state;
 }, initialStatePredefined as ExplorerConfig);
+
+export const addCustomEvmNetworkExplorer = (
+    state: ExplorerConfig,
+    definition: CustomEvmNetworkDefinition,
+) => {
+    const symbol = definition.symbol as LegacyNetworkSymbol;
+
+    state[symbol] ??= {
+        default: getParsedExplorerUrls(buildCustomEvmNetworkConfig(definition).explorer),
+        custom: undefined,
+    };
+};
 
 const normalizeExplorer = (explorer: Explorer) => {
     typedObjectKeys(explorer).forEach(key => {
@@ -60,6 +75,12 @@ export const prepareExplorerReducer = createReducerWithExtraDeps(
                 state[symbol as LegacyNetworkSymbol].custom = !isDefaultExplorer
                     ? normalizedExplorer
                     : undefined;
+            })
+            .addCase(customEvmNetworksActions.registered, (state, action) => {
+                addCustomEvmNetworkExplorer(state, action.payload.definition);
+            })
+            .addCase(customEvmNetworksActions.unregistered, (state, action) => {
+                delete state[action.payload.symbol as LegacyNetworkSymbol];
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadExplorer);
     },
