@@ -1,8 +1,8 @@
+import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Badge, Card, Column, Modal, Paragraph, Row, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { type AllowanceStepToken } from './AllowanceStepToken';
 
@@ -33,7 +33,10 @@ export const AllowanceLimitModal = ({
     onSelect,
     onClose,
 }: AllowanceLimitModalProps) => {
-    const translationValues = { value: amount, send: token.symbol };
+    const symbolLabel = (
+        <AssetSymbol networkSymbol={token.networkSymbol} contractAddress={token.contractAddress} />
+    );
+    const translationValues = { value: amount, send: symbolLabel };
 
     return (
         <Modal
@@ -54,11 +57,10 @@ export const AllowanceLimitModal = ({
                     >
                         <Column gap={4} alignItems="flex-start">
                             <Row gap={8}>
-                                <TokenIcon
+                                <AssetIcon
                                     networkSymbol={token.networkSymbol}
                                     contractAddress={token.contractAddress}
                                     size={20}
-                                    placeholder={token.symbol}
                                 />
                                 <Text typographyStyle="body-md-strong">
                                     <Translation
@@ -78,7 +80,7 @@ export const AllowanceLimitModal = ({
                                 <Badge intent="warning" size="small" iconLeft={WarningIcon}>
                                     <Translation
                                         id="TR_APPROVAL_VALUE_INFINITE_WARNING"
-                                        values={{ send: token.symbol }}
+                                        values={{ send: symbolLabel }}
                                     />
                                 </Badge>
                             )}

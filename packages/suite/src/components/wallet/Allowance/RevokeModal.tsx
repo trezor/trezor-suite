@@ -1,7 +1,8 @@
+import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { toTokenAddress } from '@suite-common/tokens';
 import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { shouldShowRevokeAllowanceBanner } from '@suite-common/wallet-utils';
@@ -84,7 +85,10 @@ export const RevokeModal = ({
     // when the signing fails, so the user can retry or cancel.
     if (!token?.symbol || isSending) return null;
 
-    const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const tokenContract = toTokenAddress(token.contract);
+    const displaySymbol = (
+        <AssetSymbol networkSymbol={account.symbol} contractAddress={tokenContract} isTruncated />
+    );
     const currentLimit =
         preapprovedAmount && preapprovedAmount !== '0' ? preapprovedAmount : undefined;
 
@@ -148,9 +152,7 @@ export const RevokeModal = ({
                             <AllowanceCurrentLimitRow
                                 label="TR_APPROVAL_LIMIT"
                                 networkSymbol={account.symbol}
-                                contractAddress={token.contract}
-                                symbol={displaySymbol}
-                                decimals={token.decimals}
+                                contractAddress={tokenContract}
                                 amount={currentLimit}
                                 isRevoked
                             />

@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
+import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type AllowanceLimitType,
@@ -110,7 +111,19 @@ export const AllowanceStepCard = ({
                 <Translation id="TR_STEP_OF_TOTAL" values={{ index: step, total: totalSteps }} />
             }
             title={<Translation id={textIds.title} />}
-            description={<Translation id={textIds.description} values={{ symbol: token.symbol }} />}
+            description={
+                <Translation
+                    id={textIds.description}
+                    values={{
+                        symbol: (
+                            <AssetSymbol
+                                networkSymbol={token.networkSymbol}
+                                contractAddress={token.contractAddress}
+                            />
+                        ),
+                    }}
+                />
+            }
             data-testid={dataTest}
         >
             <Column gap={12}>

@@ -1,8 +1,9 @@
+import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { toTokenAddress } from '@suite-common/tokens';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Card, IconButton, Row, Text } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { AllowanceAmount } from '#src/components/wallet/Allowance/AllowanceAmount';
 
@@ -21,7 +22,9 @@ export const YieldApprovedAmountCard = ({
     hasError = false,
     onRevoke,
 }: YieldApprovedAmountCardProps) => {
-    if (!amount || amount.trim() === '' || amount === '0') return null;
+    if (!amount || amount.trim() === '' || amount === '0' || !token.contractAddress) return null;
+
+    const contractAddress = toTokenAddress(token.contractAddress);
 
     return (
         <Card type="contrast" paddingType="small">
@@ -30,19 +33,17 @@ export const YieldApprovedAmountCard = ({
                     <Translation id="TR_EARN_YIELD_APPROVED_AMOUNT" />
                 </Text>
                 <Row alignItems="center" gap={8}>
-                    <TokenIcon
+                    <AssetIcon
                         size={20}
                         networkSymbol={token.networkSymbol}
-                        contractAddress={token.contractAddress ?? null}
-                        placeholder={token.symbol}
+                        contractAddress={contractAddress}
                         showNetworkIcon
                         isBordered={false}
                     />
                     <AllowanceAmount
                         amount={amount}
-                        symbol={token.symbol}
-                        decimals={token.decimals}
-                        contractAddress={token.contractAddress}
+                        networkSymbol={token.networkSymbol}
+                        contractAddress={contractAddress}
                         isLoading={isLoading}
                         hasError={hasError}
                         data-testid="@yield/approve/approved-amount"
