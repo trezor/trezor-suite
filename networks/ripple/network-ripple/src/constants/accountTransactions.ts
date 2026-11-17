@@ -20,7 +20,16 @@ export const transformRippleTransaction = (
         const deliverMax = (tx_json as { DeliverMax?: string }).DeliverMax ?? undefined;
         const isTokenTransaction = typeof deliverMax !== 'string';
 
-        amount = !isTokenTransaction ? deliverMax : undefined;
+        // Partial payments can deliver less than DeliverMax.
+        // https://xrpl.org/docs/references/protocol/transactions/metadata#delivered_amount
+        const deliveredAmount =
+            meta != null && typeof meta !== 'string' ? meta.delivered_amount : undefined;
+        const resolvedAmount =
+            typeof deliveredAmount === 'string' && deliveredAmount !== 'unavailable'
+                ? deliveredAmount
+                : deliverMax;
+
+        amount = !isTokenTransaction ? resolvedAmount : undefined;
 
         // https://xrpl.org/docs/references/protocol/transactions/transaction-results
         // Success - tes - (Not an error) The transaction succeeded. This result only final in a validated ledger.
