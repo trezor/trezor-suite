@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
     type StakingDeviceRootState,
-    selectDeviceStakingPositionEntriesBySymbol,
+    selectDeviceActiveStakingPositionEntriesBySymbol,
 } from '@suite-common/earn-staking';
 import { hasStakingPositionWarning } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -15,7 +15,7 @@ type AssetItemStakingBadgeProps = {
 
 export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProps) => {
     const positionEntries = useSelector((state: StakingDeviceRootState) =>
-        selectDeviceStakingPositionEntriesBySymbol(state, symbol),
+        selectDeviceActiveStakingPositionEntriesBySymbol(state, symbol),
     );
 
     if (positionEntries.length === 0) {

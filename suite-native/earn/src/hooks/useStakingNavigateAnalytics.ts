@@ -3,9 +3,9 @@ import { useStore } from 'react-redux';
 
 import { type StakingNavigateFrom } from '@suite-common/analytics';
 import {
-    type StakingAccountProductRootState,
+    type StakingRootState,
     selectIsStakingAccountActive,
-    selectStakingAccountProductDescriptor,
+    selectStakeableStakingProductDescriptorBySymbol,
 } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -15,7 +15,7 @@ import { getStakingAnalyticsNavigateFrom } from '../utils/getStakingAnalyticsNav
 
 export const useStakingNavigateAnalytics = () => {
     const { analytics } = useServices(injectNativeAnalytics);
-    const store = useStore<StakingAccountProductRootState>();
+    const store = useStore<StakingRootState>();
 
     return useCallback(
         (account: Account, from?: StakingNavigateFrom) => {
@@ -31,9 +31,13 @@ export const useStakingNavigateAnalytics = () => {
                                 account.key,
                             ),
                             availableBalance: account.availableBalance,
+                            // The bucket compares with the minimum of the product the network
+                            // stakes on, as the legacy limits table did.
                             minStakeAmount:
-                                selectStakingAccountProductDescriptor(store.getState(), account.key)
-                                    ?.limits.minStakeAmount ?? null,
+                                selectStakeableStakingProductDescriptorBySymbol(
+                                    store.getState(),
+                                    account.symbol,
+                                )?.limits.minStakeAmount ?? null,
                         }),
                     networkSymbol: account.symbol,
                 },
