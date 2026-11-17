@@ -16,6 +16,7 @@ import { getStoredFirmwares } from './firmware';
 import type { ModuleInit, ModuleInitBackground } from './module';
 import { looselyTypedIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
+import { getCustomEvmNetworkRpcHostnames } from '../libs/customEvmNetworkDomains';
 import { getComputerName } from '../libs/info';
 import { getSwitchValue } from '../libs/process-switches';
 
@@ -185,6 +186,18 @@ export const initBackground: ModuleInitBackground = ({
                     mainThreadEmitter.emit('module/request-interceptor', {
                         type: 'ADD_WHITELISTED_DOMAIN',
                         domain: new URL(url).hostname,
+                    });
+                }
+
+                if (method === 'blockchainRegisterEvmNetwork') {
+                    const { symbol, rpcUrls } = params[0];
+
+                    // Keyed by symbol so that registering the network again on startup restores
+                    // the whitelist and a changed URL list replaces the previous one.
+                    mainThreadEmitter.emit('module/request-interceptor', {
+                        type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
+                        coin: symbol,
+                        domains: getCustomEvmNetworkRpcHostnames(rpcUrls),
                     });
                 }
 
