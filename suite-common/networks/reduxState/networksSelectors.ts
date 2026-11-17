@@ -30,6 +30,18 @@ export const selectNetworkConfig = (
     symbol: NetworkSymbol,
 ): NetworkMetadata | null => state.networks?.[symbol] ?? null;
 
+export const selectNetworkDisplaySymbols = createMemoizedSelector(
+    [state => state.networks],
+    (networks): Partial<Record<NetworkSymbol, string>> =>
+        networks === null
+            ? {}
+            : typedObjectFromEntries(
+                  typedObjectValues(networks).map(
+                      ({ symbol, displaySymbol }) => [symbol, displaySymbol] as const,
+                  ),
+              ),
+);
+
 export const selectNetworkDisplaySymbol = (
     state: NetworksRootState,
     symbol: NetworkSymbol,

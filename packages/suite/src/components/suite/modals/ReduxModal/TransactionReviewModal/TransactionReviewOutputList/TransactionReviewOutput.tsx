@@ -11,7 +11,7 @@ import { selectLanguage } from '@suite/settings';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { type Locale } from '@suite-common/locale';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
@@ -507,16 +507,21 @@ const getOutputLines = ({
             ];
         case 'contract_intent':
             return [
-                {
-                    id: 'contract_intent',
-                    type: 'data',
-                    value: isWrappedNativeAction(evmTxType)
-                        ? translationString(wrappedNativeIntentStrings[evmTxType], {
-                              nativeSymbol: getNetworkDisplaySymbol(symbol),
-                              tokenSymbol: getWrappedNativeSymbol(symbol),
-                          })
-                        : '',
-                },
+                isWrappedNativeAction(evmTxType)
+                    ? {
+                          id: 'contract_intent',
+                          type: 'default',
+                          value: (
+                              <Translation
+                                  id={wrappedNativeIntentStrings[evmTxType]}
+                                  values={{
+                                      nativeSymbol: <AssetSymbol networkSymbol={symbol} />,
+                                      tokenSymbol: getWrappedNativeSymbol(symbol),
+                                  }}
+                              />
+                          ),
+                      }
+                    : { id: 'contract_intent', type: 'data', value: '' },
             ];
         case 'amount': {
             if (isYieldAction(evmTxType)) {
