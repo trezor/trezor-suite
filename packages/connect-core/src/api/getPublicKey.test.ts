@@ -2,7 +2,14 @@ import type { CoinSymbol } from '@trezor/connect-common';
 
 import GetPublicKey from './getPublicKey';
 
-const createMethod = (params: { path: string; coin?: CoinSymbol }, v9Compat?: boolean) =>
+type GetPublicKeyParams = {
+    path: string;
+    coin?: CoinSymbol;
+    crossChain?: boolean;
+    ecdsaCurveName?: string;
+};
+
+const createMethod = (params: GetPublicKeyParams, v9Compat?: boolean) =>
     new GetPublicKey({
         payload: { method: 'getPublicKey', ...params, _v9_compat: v9Compat },
     });
@@ -50,5 +57,44 @@ describe('GetPublicKey permissions', () => {
             { permission: 'read_xpub', coin: 'btc' },
             { permission: 'read_xpub' },
         ]);
+    });
+});
+
+describe('GetPublicKey crossChain permissions', () => {
+    it.each([
+        ['Litecoin', "m/84'/2'/0'", undefined, 'btc'],
+        ['Ethereum', "m/44'/60'/0'", undefined, 'btc'],
+        ['Tron', "m/44'/195'/0'", undefined, 'btc'],
+        ['Ripple', "m/44'/144'/0'", undefined, 'btc'],
+        ['Nostr', "m/44'/1237'/0'", undefined, 'btc'],
+        ['Solana', "m/44'/501'/0'/0'", 'ed25519', 'btc'],
+        ['Stellar', "m/44'/148'/0'", 'ed25519', 'btc'],
+        ['Solana on secp256k1', "m/44'/501'/0'/0'", undefined, 'btc'],
+        ['Ethereum on secp256k1-decred', "m/44'/60'/0'", 'secp256k1-decred', 'btc'],
+        ['Ethereum on secp256k1-groestl', "m/44'/60'/0'", 'secp256k1-groestl', 'btc'],
+        ['Ethereum on an empty curve name', "m/44'/60'/0'", '', 'btc'],
+        ['Solana on ed25519 with a NUL suffix', "m/44'/501'/0'/0'", 'ed25519\0x', 'btc'],
+        ['Ethereum on ed25519', "m/44'/60'/0'", 'ed25519', 'btc'],
+        ['Monero', "m/44'/128'/0'", 'ed25519', 'btc'],
+        ['Cardano', "m/1852'/1815'/0'", 'ed25519', 'btc'],
+        ['coin type 1', "m/84'/1'/0'", undefined, 'btc'],
+        ['an unknown coin type', "m/44'/9999'/0'", undefined, 'btc'],
+    ])('requires read_xpub for a crossChain path of %s', (_, path, ecdsaCurveName, coin) => {
+        const method = createMethod({ coin: 'btc', path, ecdsaCurveName, crossChain: true });
+        expect(method.requiredPermissions).toEqual([{ permission: 'read_xpub', coin }]);
+    });
+
+    it('titles a crossChain call by its coin', () => {
+        expect(createMethod({ coin: 'btc', path: "m/44'/60'/0'", crossChain: true }).info).toBe(
+            'Export public key of Bitcoin legacy account #1',
+        );
+        expect(
+            createMethod({
+                coin: 'btc',
+                path: "m/44'/501'/0'/0'",
+                ecdsaCurveName: 'ed25519',
+                crossChain: true,
+            }).info,
+        ).toBe('Export public key of Bitcoin legacy account #1');
     });
 });
