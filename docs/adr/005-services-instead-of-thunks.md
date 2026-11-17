@@ -33,6 +33,8 @@ Ownership, initialization order and disposal of this state are implicit. It is s
 
 Account discovery is a process: it runs, is awaited, waits for the user and can be cancelled. Redux holds only a snapshot of it. A run starts in four thunks, ends from middlewares, deletions and UI cancels, and about 130 files read it from Redux. No code owns a run, so anything about a whole run, such as reporting its outcome and duration (#32267), has to be rebuilt from state transitions. The [discovery epic](https://github.com/trezor/trezor-suite/issues/35209) records the details.
 
+An older proposal in [#17911](https://github.com/trezor/trezor-suite/issues/17911#issuecomment-2765400030) identified the same problem and suggested a stateless discovery process with progress events, dispatched into Redux by a thunk. It does not do full DI: the state stays in Redux and thunks remain the glue.
+
 ### Suite Sync already does it right
 
 [`createSuiteSyncCompositionRoot`](https://github.com/trezor/trezor-suite/blob/55440db6b37efd7605ce893a638707e04d40906a/suite-common/suite-sync/src/createSuiteSyncCompositionRoot.ts) builds the whole feature from services once:
