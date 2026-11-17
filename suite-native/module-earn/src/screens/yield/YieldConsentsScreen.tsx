@@ -7,6 +7,7 @@ import {
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { Text, VStack } from '@suite-native/atoms';
 import { useYieldFlowData } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
@@ -45,12 +46,13 @@ export const YieldConsentsScreen = () => {
         tokenSymbol,
         vault,
         resolutionStatus,
-        wrappedNativeSymbol,
+        isWrappedNativeVault,
     } = yieldFlowData;
 
     const { handleStartYieldDepositFlow, isStartingDepositFlow } = useStartYieldDepositFlow({
         flowData,
         flowKey,
+        isWrappedNativeVault,
         routeParams: route.params,
     });
 
@@ -105,7 +107,17 @@ export const YieldConsentsScreen = () => {
                 </Text>
                 <YieldConsentsProviderCard
                     providerName={providerName}
-                    tokenSymbol={wrappedNativeSymbol ?? tokenSymbol}
+                    tokenSymbol={
+                        isWrappedNativeVault ? (
+                            <AssetSymbol
+                                networkSymbol={account.symbol}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        ) : (
+                            tokenSymbol
+                        )
+                    }
                     onConfirm={handleConfirmConsents}
                     isConfirmLoading={isStartingDepositFlow}
                 />

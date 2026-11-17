@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import {
     Box,
@@ -40,7 +40,7 @@ const buttonStyle = prepareNativeStyle(() => ({
 
 type YieldConsentsProviderCardProps = {
     providerName: string;
-    tokenSymbol: string;
+    tokenSymbol: ReactNode;
     isConfirmLoading?: boolean;
     onConfirm: () => void;
 };

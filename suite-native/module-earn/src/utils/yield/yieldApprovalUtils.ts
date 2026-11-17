@@ -1,9 +1,5 @@
 import { type TokenAddress } from '@suite-common/tokens';
-import {
-    type YieldApproveModalState,
-    type YieldFlowToken,
-    type YieldSessionState,
-} from '@suite-common/wallet-core';
+import { type YieldApproveModalState, type YieldSessionState } from '@suite-common/wallet-core';
 import {
     type AllowanceLimitType,
     type FeeLevelLabel,
@@ -41,7 +37,7 @@ type GetYieldApprovalAllowanceAmountParams = {
 
 type IsYieldApprovalAllowanceUnlimitedParams = {
     session: YieldSessionState | null | undefined;
-    token: YieldFlowToken | null | undefined;
+    tokenDecimals: number | undefined;
 };
 
 export const buildYieldAllowanceFormState = ({
@@ -118,13 +114,13 @@ export const getYieldApprovalAllowanceAmount = ({
 
 export const isYieldApprovalAllowanceUnlimited = ({
     session,
-    token,
+    tokenDecimals,
 }: IsYieldApprovalAllowanceUnlimitedParams): boolean => {
     const allowanceAmount = session?.approval.allowanceAmount;
 
-    if (!allowanceAmount || token?.decimals === undefined) {
+    if (!allowanceAmount || tokenDecimals === undefined) {
         return false;
     }
 
-    return isAllowanceUnlimited({ amount: allowanceAmount, decimals: token.decimals });
+    return isAllowanceUnlimited({ amount: allowanceAmount, decimals: tokenDecimals });
 };

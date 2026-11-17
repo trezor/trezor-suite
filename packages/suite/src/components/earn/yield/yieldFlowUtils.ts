@@ -4,7 +4,6 @@ import {
     type YieldAllowanceStatus,
     type YieldFlowDisplayToken,
     type YieldFlowStepId,
-    type YieldFlowToken,
     type YieldPositionFlowType,
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -82,17 +81,20 @@ export const getYieldStepEntryAmount = ({
     }
 };
 
+type ConvertOutputTokenBalanceParams = Parameters<
+    typeof getConvertedOutputTokenBalanceToInputTokenAmount
+>[0];
+
 type YieldUnwrapDefaultAmountParams = {
+    networkSymbol: NetworkSymbol;
     flowType: YieldWithdrawFlowType;
     /** Amount just withdrawn, in the flow's input unit — assets for `withdraw`, shares for `redeem`. */
     withdrawnAmount: string;
     /** Vault asset token being unwrapped (the wrapped-native token, e.g. WETH). */
-    token: YieldFlowToken;
+    token: ConvertOutputTokenBalanceParams['token'];
     /** Vault receipt/share token (e.g. trSHETHp). */
-    receiptToken: YieldFlowDisplayToken;
-    pricePerShareState?: Parameters<
-        typeof getConvertedOutputTokenBalanceToInputTokenAmount
-    >[0]['pricePerShareState'];
+    receiptToken: ConvertOutputTokenBalanceParams['outputToken'];
+    pricePerShareState?: ConvertOutputTokenBalanceParams['pricePerShareState'];
     /** Asset-output amount persisted when the withdraw was submitted. */
     persistedAssetAmount?: string;
 };
@@ -106,6 +108,7 @@ type YieldUnwrapDefaultAmountParams = {
  * failing that the field stays empty (trezor/trezor-suite#30893).
  */
 export const getYieldUnwrapDefaultAmount = ({
+    networkSymbol,
     flowType,
     withdrawnAmount,
     token,
@@ -116,7 +119,7 @@ export const getYieldUnwrapDefaultAmount = ({
     const withdrawnAssetAmount =
         flowType === 'redeem'
             ? getConvertedOutputTokenBalanceToInputTokenAmount({
-                  networkSymbol: token.networkSymbol,
+                  networkSymbol,
                   token,
                   outputToken: receiptToken,
                   outputTokenBalance: withdrawnAmount,

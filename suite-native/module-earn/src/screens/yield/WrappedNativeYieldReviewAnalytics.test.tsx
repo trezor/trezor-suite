@@ -40,7 +40,7 @@ jest.mock('@suite-native/earn', () => ({
     useYieldFlowData: () => mockData,
 }));
 jest.mock('../../hooks/earn/useWrappedNativeReviewPreview', () => ({
-    useWrappedNativeReviewPreview: () => ({ preview: {}, spentToken: mockData.token }),
+    useWrappedNativeReviewPreview: () => ({}),
 }));
 jest.mock('../../components/earn/WrappedNativeTokenReviewContent', () => ({
     WrappedNativeTokenReviewContent: (

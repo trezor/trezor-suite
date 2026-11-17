@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { yieldPositionsToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type EarnListRootState,
@@ -24,7 +25,6 @@ import { Translation } from '@suite-native/intl';
 import { YieldClaimRewardsSummaryCard } from './YieldClaimRewardsSummaryCard';
 import { YieldPositionsBottomSheet } from './YieldPositionsBottomSheet';
 import { YieldPositionsIcons } from './YieldPositionsIcons';
-import { yieldPositionsToTokenMetadataSources } from '../../utils/yield/yieldPositionsToTokenMetadataSources';
 
 export const YieldPositionsCard = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);

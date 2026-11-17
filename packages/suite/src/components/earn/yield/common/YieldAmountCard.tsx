@@ -33,7 +33,7 @@ type YieldAmountCardHeadingProps = {
 };
 
 export type YieldAmountCardUnitToggleProps = {
-    otherTokenSymbol: string;
+    otherTokenSymbol: ReactNode;
     onClick: () => void;
 };
 

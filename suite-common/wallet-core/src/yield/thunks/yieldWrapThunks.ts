@@ -43,13 +43,13 @@ export type ComposeYieldWrapResult =
 
 type ComposeYieldWrapTransactionPayload = {
     account: Account;
-    token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
+    token: YieldFlowDisplayToken;
     wrapAmount: string;
 };
 
 type ComposeYieldUnwrapTransactionPayload = {
     account: Account;
-    token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
+    token: YieldFlowDisplayToken;
     unwrapAmount: string;
 };
 
@@ -74,14 +74,15 @@ export const composeYieldWrapTransactionThunk = createThunk<
         }
 
         const wethAddress = token.contractAddress;
+        const wrappedNative = getWrappedNativeToken(account.symbol);
 
-        if (!isWrappedNativeToken(account.symbol, wethAddress) || !wethAddress) {
+        if (!isWrappedNativeToken(account.symbol, wethAddress) || !wethAddress || !wrappedNative) {
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
         const { data, value } = buildYieldWrapTransactionData({
             wrapAmount,
-            decimals: token.decimals,
+            decimals: wrappedNative.decimals,
         });
 
         return await dispatch(
@@ -229,14 +230,15 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
         }
 
         const wethAddress = token.contractAddress;
+        const wrappedNative = getWrappedNativeToken(account.symbol);
 
-        if (!isWrappedNativeToken(account.symbol, wethAddress) || !wethAddress) {
+        if (!isWrappedNativeToken(account.symbol, wethAddress) || !wethAddress || !wrappedNative) {
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
         const { data } = buildYieldUnwrapTransactionData({
             unwrapAmount,
-            decimals: token.decimals,
+            decimals: wrappedNative.decimals,
         });
 
         return await dispatch(

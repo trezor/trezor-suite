@@ -1,39 +1,57 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { type YieldFlowDisplayToken, type YieldFlowToken } from '../yieldTypes';
+import { mockYieldVault } from '../../../mocks/mockResolvedYieldFlowData';
+import { type YieldFlowDisplayToken } from '../yieldTypes';
 import { getYieldWithdrawCompletedValues } from './yieldWithdrawCompletedValues';
 
 type Params = Parameters<typeof getYieldWithdrawCompletedValues>[0];
 
 const ethSymbol = asNetworkSymbol('eth');
 
-const token: YieldFlowToken = {
+const TOKEN_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+const RECEIPT_TOKEN_ADDRESS = '0x1111111111111111111111111111111111111111';
+
+const token: YieldFlowDisplayToken = {
     networkSymbol: ethSymbol,
-    symbol: 'WETH',
-    decimals: 18,
-    contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    balance: '5',
+    contractAddress: toTokenAddress(TOKEN_ADDRESS),
 };
 
 const receiptToken: YieldFlowDisplayToken = {
     networkSymbol: ethSymbol,
-    symbol: 'trSHETHp',
-    decimals: 18,
-    contractAddress: '0x1111111111111111111111111111111111111111',
+    contractAddress: toTokenAddress(RECEIPT_TOKEN_ADDRESS),
 };
 
+const defaultVault = mockYieldVault();
+
 // 1 share (trSHETHp) is worth 1.05 WETH.
-const pricePerShareState: Params['pricePerShareState'] = {
-    price: '1.05',
-    shareToken: { symbol: 'trSHETHp', network: 'ethereum', name: 'trSHETHp', decimals: 18 },
-    quoteToken: { symbol: 'WETH', network: 'ethereum', name: 'Wrapped Ether', decimals: 18 },
+const vault: Params['vault'] = {
+    token: { ...defaultVault.token, address: TOKEN_ADDRESS, symbol: 'WETH', decimals: 18 },
+    outputToken: {
+        ...defaultVault.outputToken!,
+        address: RECEIPT_TOKEN_ADDRESS,
+        symbol: 'trSHETHp',
+        decimals: 18,
+    },
+    state: {
+        pricePerShareState: {
+            price: '1.05',
+            shareToken: { symbol: 'trSHETHp', network: 'ethereum', name: 'trSHETHp', decimals: 18 },
+            quoteToken: {
+                symbol: 'WETH',
+                network: 'ethereum',
+                name: 'Wrapped Ether',
+                decimals: 18,
+            },
+        },
+    },
 };
 
 const base = {
     networkSymbol: ethSymbol,
     token,
     receiptToken,
-    pricePerShareState,
+    vault,
 } satisfies Omit<Params, 'flowType' | 'completedAmount' | 'unwrappedAmount'>;
 
 describe('getYieldWithdrawCompletedValues', () => {
@@ -58,8 +76,7 @@ describe('getYieldWithdrawCompletedValues', () => {
         });
 
         expect(input).toEqual({ token: receiptToken, amount: '2' });
-        expect(output.token.symbol).toBe('ETH');
-        expect(output.amount).toBe('2.1');
+        expect(output).toEqual({ token: { networkSymbol: ethSymbol }, amount: '2.1' });
     });
 
     it('withdraw (asset unit) without unwrap: derives the trSHETHp shares sent, receives WETH', () => {
@@ -84,8 +101,7 @@ describe('getYieldWithdrawCompletedValues', () => {
         });
 
         expect(input).toEqual({ token: receiptToken, amount: '2' });
-        expect(output.token.symbol).toBe('ETH');
-        expect(output.amount).toBe('2.1');
+        expect(output).toEqual({ token: { networkSymbol: ethSymbol }, amount: '2.1' });
     });
 
     it.each(['redeem', 'withdraw'] as const)(
@@ -93,7 +109,7 @@ describe('getYieldWithdrawCompletedValues', () => {
         flowType => {
             const { input, output } = getYieldWithdrawCompletedValues({
                 ...base,
-                pricePerShareState: undefined,
+                vault: { ...vault, state: undefined },
                 flowType,
                 completedAmount: '2.1',
                 unwrappedAmount: null,

@@ -5,7 +5,6 @@ import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
-import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     getTradingPrefilledFromAccountData,
@@ -17,7 +16,6 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -45,7 +43,6 @@ export const EarnYieldAccountOpportunity = ({
     isCardLayout,
 }: EarnYieldAccountOpportunityProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -83,21 +80,6 @@ export const EarnYieldAccountOpportunity = ({
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
     const hasMaximumDeposited = hasDepositedBalance && !hasAdditionalDepositAmount;
     const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards && !hasMaximumDeposited;
-    const compactAmountFormatterContext = {
-        symbol: opportunity.depositedSymbol,
-        withSymbol: false,
-        isBalance: true,
-        formatStyle: 'compact-balance',
-        tokenDecimals: opportunity.depositedDecimals,
-    } as const;
-    const formattedDepositedAmount = CryptoAmountFormatter.format(
-        opportunity.depositedAmount,
-        compactAmountFormatterContext,
-    );
-    const formattedAdditionalDepositAmount = CryptoAmountFormatter.format(
-        opportunity.additionalDepositAmount,
-        compactAmountFormatterContext,
-    );
 
     const navigateToTradingBuy = () => {
         const networkSymbol = opportunity.account?.symbol ?? opportunity.networkSymbol;
@@ -105,9 +87,7 @@ export const EarnYieldAccountOpportunity = ({
         const accountType = opportunity.account?.accountType ?? 'normal';
         // A wrapped-native (WETH) vault deposit spends the native asset (wrapped on the way in),
         // so prefill a native buy rather than the wrapped ERC-20, which on-ramps don't sell.
-        const tokenAddress = isWrappedNativeToken(networkSymbol, opportunity.vault.token.address)
-            ? undefined
-            : opportunity.vault.token.address;
+        const tokenAddress = opportunity.depositedToken.contractAddress;
 
         if (opportunity.account) {
             const tokenCryptoId = tokenAddress
@@ -253,24 +233,20 @@ export const EarnYieldAccountOpportunity = ({
     );
 
     const yearlyRewardsProps = {
-        symbol: opportunity.depositedSymbol,
+        token: opportunity.depositedToken,
         rewards: yearlyRewards,
         apy: opportunity.apyPercentage,
-        tokenDecimals: opportunity.depositedDecimals,
         hasDisplayableDepositedAmount,
-        formattedDepositedAmount,
-        displaySymbol: opportunity.depositedSymbol,
+        depositedAmount: opportunity.depositedAmount,
     } as const;
 
     const potentialRewardsProps = {
         hasMaximumDeposited,
         hasPotentialRewards,
-        symbol: opportunity.depositedSymbol,
+        token: opportunity.depositedToken,
         rewards: potentialRewards,
         apy: opportunity.apyPercentage,
-        tokenDecimals: opportunity.depositedDecimals,
-        formattedAdditionalDepositAmount,
-        displaySymbol: opportunity.depositedSymbol,
+        additionalDepositAmount: opportunity.additionalDepositAmount,
     } as const;
 
     const actionButtonsProps = {
@@ -297,9 +273,7 @@ export const EarnYieldAccountOpportunity = ({
             subtitle={opportunity.vault.outputToken?.name ?? ''}
             tokenBalance={{
                 value: opportunity.additionalDepositAmount,
-                symbol: opportunity.depositedSymbol,
-                contractAddress: opportunity.depositedContractAddress,
-                decimals: opportunity.depositedDecimals,
+                contractAddress: opportunity.depositedToken.contractAddress,
             }}
         />
     );

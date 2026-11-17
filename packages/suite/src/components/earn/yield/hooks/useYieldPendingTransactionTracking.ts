@@ -16,7 +16,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { useServices } from '@trezor/dependency-injection';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
@@ -181,6 +180,7 @@ type UseYieldPendingTransactionTrackingProps = {
     flowKey: string;
     waitForMerklToResolveClaim?: () => Promise<unknown>;
     vault?: YieldDtoV2 | null;
+    isWrappedNativeVault?: boolean;
 };
 
 const stablePlaceholderPromise = () => Promise.resolve();
@@ -191,6 +191,7 @@ export const useYieldPendingTransactionTracking = ({
     flowKey,
     waitForMerklToResolveClaim = stablePlaceholderPromise,
     vault,
+    isWrappedNativeVault = false,
 }: UseYieldPendingTransactionTrackingProps) => {
     const { analytics, dispatch, getState } = useServices(
         injectDesktopAnalytics,
@@ -254,7 +255,7 @@ export const useYieldPendingTransactionTracking = ({
             networkSymbol: account.symbol,
             vault,
             durationMs,
-            wrappedNative: isWrappedNativeToken(account.symbol, vault?.token.address),
+            wrappedNative: isWrappedNativeVault,
         };
 
         if (pendingTxStatus === 'failed') {
@@ -352,6 +353,7 @@ export const useYieldPendingTransactionTracking = ({
         analytics,
         account.symbol,
         vault,
+        isWrappedNativeVault,
         waitForMerklToResolveClaim,
         getState,
     ]);

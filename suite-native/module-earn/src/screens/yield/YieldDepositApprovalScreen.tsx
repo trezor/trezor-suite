@@ -1,3 +1,4 @@
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
@@ -18,7 +19,6 @@ import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHea
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { useYieldDepositApprovalController } from '../../hooks/yield/controllers/useYieldDepositApprovalController';
 import { getYieldTokenContract } from '../../utils/yield/yieldFiatAmountUtils';
-import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositApprovalScreen = () => {
     const controller = useYieldDepositApprovalController();
@@ -100,6 +100,7 @@ export const YieldDepositApprovalScreen = () => {
                             hasWrapStep={stepCard.hasWrapStep}
                             isWrapStepSkipped={stepCard.isWrapStepSkipped}
                             networkSymbol={account.symbol}
+                            wrappedTokenContract={stepCard.wrappedTokenContract}
                             onEditStep={{ wrap: stepCard.onEditWrapStep }}
                         />
 

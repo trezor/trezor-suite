@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import type {
     YieldFlowDisplayToken,
@@ -17,6 +18,7 @@ import {
 } from './YieldAmountCard';
 import { YieldApprovedAmountCard } from './YieldApprovedAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
+import { useYieldTokenDecimals } from '../hooks/useYieldTokenDecimals';
 
 const getApproveButtonTranslationId = (approvalAction: AllowanceAction) => {
     switch (approvalAction) {
@@ -79,6 +81,10 @@ export const YieldApproveStep = ({
     const shouldEnableRevoke =
         canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError && !isLoading;
     const onRevokeClick = shouldEnableRevoke ? onRevoke : undefined;
+    const decimals = useYieldTokenDecimals(token);
+    const tokenSymbol = (
+        <AssetSymbol networkSymbol={token.networkSymbol} contractAddress={token.contractAddress} />
+    );
 
     return (
         <Column gap={16}>
@@ -91,8 +97,8 @@ export const YieldApproveStep = ({
             />
 
             <YieldAmountCard
-                tokenSymbol={token.symbol}
-                decimals={token.decimals}
+                tokenSymbol={tokenSymbol}
+                decimals={decimals}
                 approxFiat={approxFiat}
                 summary={{
                     labelTranslationId: 'TR_BALANCE',
@@ -116,7 +122,7 @@ export const YieldApproveStep = ({
                     isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
                     isLoading={isLoading}
                 >
-                    <Translation id={approveButtonId} values={{ tokenSymbol: token.symbol }} />
+                    <Translation id={approveButtonId} values={{ tokenSymbol }} />
                 </Button>
                 {onSkip && (
                     <Button

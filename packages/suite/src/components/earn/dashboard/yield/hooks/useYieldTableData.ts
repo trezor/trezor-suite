@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { type TokenInfoBranded, toTokenSymbol } from '@suite-common/tokens';
 import {
-    type NetworkSymbol,
-    getNetworkByYieldXyzId,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+    type IsWrappedNativeToken,
+    injectIsWrappedNativeToken,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
+import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
+import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,
@@ -22,7 +22,7 @@ import {
     compareEarnByNetworkTokenOrder,
     getApyPercent,
 } from '@suite-common/wallet-utils';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -71,12 +71,14 @@ type GetYieldOpportunityDataParams = {
     account: Account;
     networkSymbol: NetworkSymbol;
     vault: YieldDtoV2;
+    isWrappedNativeToken: IsWrappedNativeToken;
 };
 
 export const getYieldOpportunityData = ({
     account,
     networkSymbol,
     vault,
+    isWrappedNativeToken,
 }: GetYieldOpportunityDataParams): YieldOpportunityData => {
     const matchedInputToken = getMatchedAccountToken({
         account,
@@ -107,8 +109,9 @@ export const getYieldOpportunityData = ({
     const hasRewardsData =
         new BigNumber(depositedAmount).gt(0) || new BigNumber(additionalDepositAmount).gt(0);
     // A wrapped-native vault is presented as its native asset (see #29881), so amounts are
-    // denominated in the native symbol and no token contract is exposed to the formatters.
+    // denominated in the native coin and no token contract is exposed to the formatters.
     const isWrappedNativeVault = isWrappedNativeToken(networkSymbol, vault.token.address);
+    const depositedContract = matchedInputToken?.contract ?? vault.token.address;
 
     return {
         matchedInputToken,
@@ -116,21 +119,21 @@ export const getYieldOpportunityData = ({
         hasRewardsData,
         depositedAmount,
         additionalDepositAmount,
-        depositedSymbol: isWrappedNativeVault
-            ? toTokenSymbol(getNetworkDisplaySymbol(networkSymbol))
-            : (matchedInputToken?.symbol ?? toTokenSymbol(vault.token.symbol)),
-        depositedContractAddress: isWrappedNativeVault
-            ? null
-            : (matchedInputToken?.contract ?? vault.token.address ?? null),
-        // Stated decimals of the deposited token, so a stablecoin amount reads money-like.
-        depositedDecimals: matchedInputToken?.decimals ?? vault.token.decimals,
+        depositedToken: {
+            networkSymbol,
+            contractAddress:
+                isWrappedNativeVault || !depositedContract
+                    ? undefined
+                    : toTokenAddress(depositedContract),
+        },
     };
 };
 
 const toNetworkTokenSortKey = (opportunity: YieldAccountOpportunity) =>
     opportunity.account && {
         symbol: opportunity.account.symbol,
-        tokenSymbol: opportunity.depositedSymbol,
+        tokenSymbol:
+            opportunity.matchedInputToken?.symbol ?? toTokenSymbol(opportunity.vault.token.symbol),
         accountType: opportunity.account.accountType,
         index: opportunity.account.index,
     };
@@ -147,6 +150,7 @@ export const useYieldTableData = ({
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
+    const { isWrappedNativeToken } = useServices(injectIsWrappedNativeToken);
     const availableVaultCount = useMemo(
         () =>
             availableVaults.filter(
@@ -176,6 +180,7 @@ export const useYieldTableData = ({
                     account,
                     networkSymbol: network.symbol,
                     vault,
+                    isWrappedNativeToken,
                 }),
                 apyPercentage: getApyPercent(vault.rewardRate.total),
             }));
@@ -221,7 +226,13 @@ export const useYieldTableData = ({
                 compareEarnByNetworkTokenOrder(toNetworkTokenSortKey, allNetworkSymbols),
             ),
         ];
-    }, [availableVaults, allNetworkSymbols, visibleAccountSymbols, visibleAccounts]);
+    }, [
+        availableVaults,
+        allNetworkSymbols,
+        isWrappedNativeToken,
+        visibleAccountSymbols,
+        visibleAccounts,
+    ]);
 
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const yieldInactiveVaultOpportunities = useMemo<YieldInactiveVaultOpportunity[]>(() => {

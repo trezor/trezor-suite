@@ -2,9 +2,11 @@ import { Fragment } from 'react';
 
 import styled from 'styled-components';
 
+import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid, Row, Text, Tooltip } from '@trezor/components';
@@ -89,7 +91,10 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
             </TokenIconStack>
             {rewards.length === 1 ? (
                 <Text intent="neutral" priority="secondary">
-                    {firstReward.symbol}
+                    <AssetSymbol
+                        networkSymbol={firstReward.networkSymbol}
+                        contractAddress={toTokenAddress(firstReward.contractAddress)}
+                    />
                 </Text>
             ) : (
                 <TooltipLabel>
@@ -115,30 +120,27 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
             width="auto"
             content={
                 <Grid columns="auto auto" rowGap={4} columnGap={24}>
-                    {rewards.map(
-                        ({ symbol, networkSymbol, contractAddress, decimals, crypto, fiat }) => (
-                            <Fragment key={`${networkSymbol}-${contractAddress}`}>
-                                <Text>
-                                    <FormattedCryptoAmount
-                                        value={crypto.toString()}
-                                        networkSymbol={symbol}
-                                        contractAddress={contractAddress}
-                                        tokenDecimals={decimals}
-                                        isCompact
+                    {rewards.map(({ networkSymbol, contractAddress, crypto, fiat }) => (
+                        <Fragment key={`${networkSymbol}-${contractAddress}`}>
+                            <Text>
+                                <FormattedCryptoAmount
+                                    value={crypto.toString()}
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={contractAddress}
+                                    isCompact
+                                />
+                            </Text>
+
+                            <HiddenPlaceholder>
+                                <Text align="end">
+                                    <BaseCurrencyAmountFormatter
+                                        value={asBaseCurrencyAmount(fiat)}
+                                        currency={currency}
                                     />
                                 </Text>
-
-                                <HiddenPlaceholder>
-                                    <Text align="end">
-                                        <BaseCurrencyAmountFormatter
-                                            value={asBaseCurrencyAmount(fiat)}
-                                            currency={currency}
-                                        />
-                                    </Text>
-                                </HiddenPlaceholder>
-                            </Fragment>
-                        ),
-                    )}
+                            </HiddenPlaceholder>
+                        </Fragment>
+                    ))}
                 </Grid>
             }
         >

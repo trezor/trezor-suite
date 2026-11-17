@@ -49,14 +49,13 @@ describe.each(['standalone', 'in-flow'] as const)('%s review analytics', flowCon
                     meta: { requestStatus: 'rejected' },
                     payload: { error: 'sign-transaction-failed', message },
                 });
-                const { account, token } = mockResolvedYieldFlowData();
+                const { account } = mockResolvedYieldFlowData();
                 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
                 const onError = jest.fn();
                 const { result: review } = await renderHookWithStoreProvider(
                     () =>
                         useWrappedNativeTokenReview({
                             account,
-                            token,
                             flowType,
                             flowContext,
                             onError,

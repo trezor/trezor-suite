@@ -6,9 +6,9 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type WrappedNativeFlowType,
     type YieldActionReviewState,
-    type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
+    getYieldFlowTransactionToken,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -84,7 +84,6 @@ type BuildYieldWithdrawReviewPreviewParams = {
     device: TrezorDevice;
     flowData: YieldFlowResolvedData;
     review: YieldWithdrawScreenReview;
-    reviewToken: YieldFlowDisplayToken;
     type: 'withdraw';
     vaultName: string;
 };
@@ -103,7 +102,8 @@ type BuildWrappedNativeReviewPreviewParams = {
         amount: string;
         unsignedTransaction: string;
     };
-    reviewToken: YieldFlowDisplayToken;
+    /** The wrapped native token an unwrap spends; a wrap spends the native coin. */
+    transactionToken: Parameters<typeof buildStablecoinYieldTransactionReview>[0]['token'];
     type: WrappedNativeFlowType;
 };
 
@@ -293,8 +293,10 @@ export const buildYieldReviewPreview = (
                         amount: params.review.amount,
                         selectedFee: null,
                         symbol: params.flowData.account.symbol,
-                        token:
-                            params.type === 'withdraw' ? params.reviewToken : params.flowData.token,
+                        token: getYieldFlowTransactionToken({
+                            flowData: params.flowData,
+                            flowType: params.review.type,
+                        }),
                         unsignedTransaction: params.review.unsignedTransaction,
                     },
                 );
@@ -329,7 +331,7 @@ export const buildYieldReviewPreview = (
                         amount: params.review.amount,
                         selectedFee: null,
                         symbol: params.account.symbol,
-                        token: params.reviewToken,
+                        token: params.transactionToken,
                         unsignedTransaction: params.review.unsignedTransaction,
                     },
                 );

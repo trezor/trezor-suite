@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { yieldCompleteRewardsToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type AccountsRootState,
@@ -26,7 +27,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldClaimCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
-import { yieldCompleteRewardsToTokenMetadataSources } from '../../utils/yield/yieldCompleteRewardsToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaimComplete>;
 type NavigationProps = StackNavigationProps<

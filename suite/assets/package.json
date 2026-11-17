@@ -22,6 +22,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/discreet-mode": "workspace:*",
         "@suite/token": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.1"

@@ -39,13 +39,13 @@ export const yieldFlowDataToTokenMetadataSources = (
             tokens: [
                 ...toTokenMetadataForContracts(underlyingContracts, {
                     name: vault.token.name,
-                    symbol: token.symbol,
-                    decimals: token.decimals,
+                    symbol: vault.token.symbol,
+                    decimals: vault.token.decimals,
                 }),
                 ...toTokenMetadataForContracts(receiptContracts, {
                     name: vault.outputToken?.name,
-                    symbol: receiptToken.symbol,
-                    decimals: receiptToken.decimals,
+                    symbol: vault.outputToken?.symbol,
+                    decimals: vault.outputToken?.decimals,
                 }),
             ],
         },

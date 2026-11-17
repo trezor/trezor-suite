@@ -1,6 +1,7 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { type IsWrappedNativeToken, injectIsWrappedNativeToken } from '@suite-common/networks';
 import { type NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -10,7 +11,6 @@ import {
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { useServices } from '@trezor/dependency-injection';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type AllowanceProvider } from '#src/components/wallet/Allowance/AllowanceProviderInfo';
@@ -37,11 +37,13 @@ const ANALYTICS_APPROVAL_TYPE = {
 type GetVaultTokenLogoParams = {
     networkSymbol: NetworkSymbol;
     contractAddress: string;
+    isWrappedNativeToken: IsWrappedNativeToken;
 };
 
 const getVaultTokenLogo = ({
     networkSymbol,
     contractAddress,
+    isWrappedNativeToken,
 }: GetVaultTokenLogoParams): AllowanceProvider['logo'] => {
     if (isWrappedNativeToken(networkSymbol, contractAddress)) {
         return {
@@ -76,7 +78,10 @@ export const YieldApproveModal = ({
     onCancel,
     onSuccess,
 }: YieldApproveModalProps) => {
-    const { analytics } = useServices(injectDesktopAnalytics);
+    const { analytics, isWrappedNativeToken } = useServices(
+        injectDesktopAnalytics,
+        injectIsWrappedNativeToken,
+    );
 
     const { data: vaultName } = useYieldOpportunity(vaultId, {
         select: yieldOpportunity => yieldOpportunity.metadata.name,
@@ -85,7 +90,11 @@ export const YieldApproveModal = ({
     const provider: AllowanceProvider = {
         name: vaultName,
         companyName: vaultName,
-        logo: getVaultTokenLogo({ networkSymbol: account.symbol, contractAddress }),
+        logo: getVaultTokenLogo({
+            networkSymbol: account.symbol,
+            contractAddress,
+            isWrappedNativeToken,
+        }),
         label: 'TR_EARN_YIELD_VAULT',
         kind: 'vault',
     };

@@ -1,4 +1,4 @@
-import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
@@ -34,8 +34,7 @@ export const getFiatFormValue = ({
 
 export const getYieldTokenContract = (
     token: YieldFlowDisplayToken | null,
-): TokenAddress | undefined =>
-    token?.contractAddress ? toTokenAddress(token.contractAddress) : undefined;
+): TokenAddress | undefined => token?.contractAddress;
 
 type IsAmountInputValueValidParams = {
     value: string;

@@ -10,7 +10,6 @@ import {
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
     type WrappedNativeFlowType,
-    type YieldFlowDisplayToken,
     isEarnSigningCancelled,
     isWrappedNativeFlowSupported,
     selectAddressDisplayType,
@@ -33,6 +32,7 @@ import {
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
 import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
+import { getWrappedNativeTransactionToken } from '../../utils/earn/wrappedNativeTransactionTokenUtils';
 import { getPushErrorType } from '../yield/yieldTransactionThunks';
 
 const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrapped-native-token`;
@@ -57,8 +57,7 @@ export type SignedWrappedNativeTokenTransaction = {
 
 type SignWrappedNativeTokenPayload = {
     account: Account;
-    /** Token being spent — the native coin for a wrap, the wrapped token for an unwrap. */
-    token: YieldFlowDisplayToken;
+    flowType: WrappedNativeFlowType;
     amount: string;
     unsignedTransaction: string;
 };
@@ -90,7 +89,7 @@ export const signWrappedNativeTokenThunk = createThunk<
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/sign`,
     async (
-        { account, token, amount, unsignedTransaction },
+        { account, flowType, amount, unsignedTransaction },
         { getState, rejectWithValue, extra },
     ) => {
         const device = selectSelectedDevice(getState());
@@ -106,6 +105,15 @@ export const signWrappedNativeTokenThunk = createThunk<
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Firmware does not support wrap/unwrap.',
+            });
+        }
+
+        const token = getWrappedNativeTransactionToken(account.symbol, flowType);
+
+        if (flowType === 'unwrap' && !token) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'The network has no wrapped native token.',
             });
         }
 

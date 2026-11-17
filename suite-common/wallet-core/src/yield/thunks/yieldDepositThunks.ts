@@ -97,7 +97,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
         });
         const requestSubunits = unitsToSubunits({
             value: asAmountUnit(new BigNumber(requestAmount)),
-            decimals: token.decimals,
+            decimals: vault.token.decimals,
         });
 
         if (allowanceSubunits.lt(requestSubunits)) {
@@ -139,8 +139,8 @@ export const composeYieldDepositTransactionThunk = createThunk<
             getWithdrawRequestAmount({
                 networkSymbol: account.symbol,
                 amount,
-                token: flowData.token,
-                receiptToken: flowData.receiptToken,
+                token: vault.token,
+                receiptToken: vault.outputToken,
                 pricePerShare: flowData.vault.state?.pricePerShareState?.price,
             }) ?? amount;
 

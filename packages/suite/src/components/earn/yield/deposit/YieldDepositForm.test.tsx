@@ -56,8 +56,8 @@ jest.mock('./useYieldDepositContext', () => ({
     useYieldDepositContext: () => ({
         account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
         vault: { id: 'vault-1', token: { symbol: 'USDC' } },
-        token: { networkSymbol: 'eth', symbol: 'USDC', balance: '10', decimals: 6 },
-        receiptToken: { symbol: 'vaultUSDC' },
+        token: { networkSymbol: 'eth', balance: '10' },
+        receiptToken: { networkSymbol: 'eth' },
         amountIssues: [],
         gasReserve: { recommended: '0', minimum: '0' },
         nativeFeeStatus: 'sufficient',

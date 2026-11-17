@@ -45,8 +45,7 @@ const createMockOpportunity = (
         hasRewardsData,
         depositedAmount: '0',
         additionalDepositAmount: '0',
-        depositedSymbol: 'usdc' as YieldAccountOpportunity['depositedSymbol'],
-        depositedContractAddress: null,
+        depositedToken: { networkSymbol: account.symbol },
         apyPercentage: 5,
     }) as YieldAccountOpportunity;
 

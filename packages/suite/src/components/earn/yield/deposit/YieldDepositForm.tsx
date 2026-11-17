@@ -3,7 +3,6 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getWrapReserveStatus,
     getYieldFlowStepSequence,
@@ -399,7 +398,12 @@ export const YieldDepositForm = () => {
                                             nativeSymbol: (
                                                 <AssetSymbol networkSymbol={account.symbol} />
                                             ),
-                                            tokenSymbol: token.symbol,
+                                            tokenSymbol: (
+                                                <AssetSymbol
+                                                    networkSymbol={token.networkSymbol}
+                                                    contractAddress={token.contractAddress}
+                                                />
+                                            ),
                                         }}
                                     />
                                 ),
@@ -472,7 +476,8 @@ export const YieldDepositForm = () => {
                                         summaryValue={
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
-                                                networkSymbol={token.symbol}
+                                                networkSymbol={token.networkSymbol}
+                                                contractAddress={token.contractAddress}
                                             />
                                         }
                                         approvedAmount={allowanceAmount || undefined}
@@ -525,7 +530,8 @@ export const YieldDepositForm = () => {
                                         summaryValue={
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
-                                                networkSymbol={token.symbol}
+                                                networkSymbol={token.networkSymbol}
+                                                contractAddress={token.contractAddress}
                                             />
                                         }
                                         warning={
@@ -573,13 +579,7 @@ export const YieldDepositForm = () => {
                                             // a deposit of already-held WETH keeps the token symbol.
                                             token:
                                                 wrappedAmount !== null
-                                                    ? {
-                                                          networkSymbol: account.symbol,
-                                                          symbol: getNetworkDisplaySymbol(
-                                                              account.symbol,
-                                                          ),
-                                                          decimals: token.decimals,
-                                                      }
+                                                    ? { networkSymbol: account.symbol }
                                                     : token,
                                             amount: completedAmount,
                                         }}

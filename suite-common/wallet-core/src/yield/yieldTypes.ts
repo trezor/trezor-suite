@@ -1,5 +1,6 @@
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import type { EvmHexString } from '@suite-common/schemas/src/evm';
+import type { TokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account, AllowanceTransactionType } from '@suite-common/wallet-types';
 
@@ -23,9 +24,7 @@ export type YieldFlowFormValues = {
 
 export type YieldFlowDisplayToken = {
     networkSymbol: NetworkSymbol;
-    symbol: string;
-    decimals: number;
-    contractAddress?: string | null;
+    contractAddress?: TokenAddress;
 };
 
 export type YieldFlowToken = YieldFlowDisplayToken & {
@@ -96,6 +95,8 @@ export type YieldPendingTransactionState = {
 
 export type YieldFlowCompleteRewardItem = {
     token: YieldFlowDisplayToken;
+    /** Captured at the claim, because a claimed reward can drop out of the account's rewards. */
+    tokenInfo: { symbol: string; decimals: number };
     value: string;
     fiatValue?: string | null;
 };
