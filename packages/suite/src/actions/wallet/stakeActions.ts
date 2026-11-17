@@ -62,11 +62,21 @@ import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
-type ComposeTransactionThunkState = BlockchainRootState & StakeRootState;
+type ComposeTransactionThunkState = BlockchainRootState &
+    StakeRootState &
+    stakeFormSolanaActions.ComposeTransactionThunkState;
+
+type ComposeTransactionThunkDeps = stakeFormSolanaActions.ComposeTransactionThunkDeps;
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
-    (dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>) => {
+    (
+        dispatch: ThunkDispatch<
+            ComposeTransactionThunkState,
+            ComposeTransactionThunkDeps,
+            UnknownAction
+        >,
+    ) => {
         const { account } = formState;
 
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
