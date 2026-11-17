@@ -21,10 +21,12 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
+import {
+    SOL_COMPUTE_UNIT_LIMIT,
+    tokenStandardToTokenProgramName,
+} from '@trezor/network-solana/constants';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -173,7 +175,7 @@ const getTokenTransferInfo = async (
 
     const payload: Parameters<typeof TrezorConnect.solanaComposeTransaction>[0]['tokenTransfer'] = {
         mint: tokenInfo.contract,
-        program: solanaUtils.tokenStandardToTokenProgramName(tokenInfo.standard),
+        program: tokenStandardToTokenProgramName(tokenInfo.standard),
         decimals: tokenInfo.decimals,
         accounts: tokenInfo.accounts ?? [],
         recipientAccountOwner: null,

@@ -21,7 +21,7 @@ import type {
     Overloads,
 } from '@trezor/type-utils';
 
-import type { tokenProgramNames } from '../constants';
+import type { tokenProgramNames } from '../constants/common';
 
 export type TokenProgramName = (typeof tokenProgramNames)[number];
 

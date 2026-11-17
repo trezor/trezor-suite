@@ -1,8 +1,10 @@
 import type { MessageTypes, Response } from '@trezor/blockchain-link-types';
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { SOLANA_MAINNET_GENESIS_HASH } from '@trezor/network-solana/constants';
+import {
+    SOLANA_MAINNET_GENESIS_HASH,
+    getSolanaTokenMetadata,
+} from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type { SolanaAPI } from '@trezor/network-solana/types';
 import { type IntervalId, type TimerId } from '@trezor/type-utils';
@@ -50,7 +52,7 @@ export class SolanaWorker extends BaseWorker<SolanaAPI> {
         return !!api;
     }
 
-    private lazyTokens = createLazy(() => solanaUtils.getTokenMetadata());
+    private lazyTokens = createLazy(() => getSolanaTokenMetadata());
     private isTestnet = false;
     private resubscribeTimeout?: TimerId;
     private resubscribeAttempt = 0;

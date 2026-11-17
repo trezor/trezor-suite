@@ -3,12 +3,11 @@ import type {
     StakeType,
     Target,
     TokenDetailByMint,
-    TokenInfo,
-    TokenStandard,
     TokenTransfer,
     Transaction,
-} from '@trezor/blockchain-link-types/src';
-import { isCodesignBuild } from '@trezor/env-utils';
+} from '@trezor/blockchain-link-types';
+import { BigNumber, arrayPartition, isArrayMember, isNotNullOrUndefined } from '@trezor/utils';
+
 import {
     ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
     COMPUTE_BUDGET_PROGRAM_ID,
@@ -19,163 +18,24 @@ import {
     STAKE_PROGRAM_PUBLIC_KEY,
     SYSTEM_PROGRAM_PUBLIC_KEY,
     WSOL_MINT,
-    tokenProgramNames,
     tokenProgramsInfo,
-} from '@trezor/network-solana/constants';
+} from './common';
+import { getTokenNameAndSymbol, isTokenProgramName } from './tokens';
 import type {
-    AccountInfo,
     Address,
-    ParsedAccountData,
     ParsedInstruction,
     ParsedTransactionWithMeta,
     PartiallyDecodedInstruction,
     SolanaTokenAccountInfo,
     SolanaValidParsedTxWithMeta,
     TokenProgramName,
-} from '@trezor/network-solana/types';
-import { arrayPartition, isArrayMember, isNotNullOrUndefined } from '@trezor/utils';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-export type ApiTokenAccount = {
-    account: AccountInfo<ParsedAccountData>;
-    pubkey: Address;
-};
+} from '../types';
 
 const tokenTransferInstructionTypes = [
     'transfer',
     'transferChecked',
     'transferCheckedWithFee',
 ] as const;
-
-export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
-    const env = isCodesignBuild() ? 'stable' : 'develop';
-
-    const response = await fetch(
-        `https://data.trezor.io/suite/definitions/${env}/solana.advanced.coin.definitions.v1.json`,
-    );
-
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-
-    const data: TokenDetailByMint = await response.json();
-
-    // Explicitly set Wrapped SOL symbol to wSol instead of the official 'SOL' which leads to confusion in UI
-    data[WSOL_MINT] = { symbol: 'wSOL', name: 'Wrapped SOL' };
-
-    return data;
-};
-
-export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
-    const tokenDetail = tokenDetailByMint[mint];
-
-    return tokenDetail
-        ? { name: tokenDetail.name, symbol: tokenDetail.symbol }
-        : {
-              name: mint,
-              symbol: mint,
-          };
-};
-
-const isTokenProgramName = (programName: string): programName is TokenProgramName =>
-    isArrayMember(programName, tokenProgramNames);
-
-export const tokenStandardToTokenProgramName = (standard: TokenStandard): TokenProgramName => {
-    const tokenProgram = Object.entries(tokenProgramsInfo).find(
-        ([_, programInfo]) => programInfo.tokenStandard === standard,
-    );
-    if (!tokenProgram)
-        throw new Error(`Cannot convert token standard ${standard} to Solana token program name`);
-
-    return tokenProgram[0] as TokenProgramName;
-};
-
-type SplTokenAccountData = {
-    /** Name of the program that owns this account */
-    program: TokenProgramName;
-    /** Parsed account data */
-    parsed: {
-        info: {
-            mint: string;
-            tokenAmount: {
-                amount: string;
-                decimals: number;
-            };
-        };
-        type: string;
-    };
-    /** Space used by account data */
-    space: bigint;
-};
-
-type SplTokenAccount = { account: AccountInfo<SplTokenAccountData>; pubkey: Address };
-
-const isSplTokenAccount = (tokenAccount: ApiTokenAccount): tokenAccount is SplTokenAccount => {
-    const { parsed } = tokenAccount.account.data;
-
-    return (
-        isTokenProgramName(tokenAccount.account.data.program) &&
-        'info' in parsed &&
-        !!parsed.info &&
-        'mint' in parsed.info &&
-        typeof parsed.info.mint === 'string' &&
-        'tokenAmount' in parsed.info &&
-        !!parsed.info.tokenAmount &&
-        typeof parsed.info.tokenAmount === 'object' &&
-        'amount' in parsed.info.tokenAmount &&
-        typeof parsed.info.tokenAmount.amount === 'string' &&
-        'decimals' in parsed.info.tokenAmount &&
-        typeof parsed.info.tokenAmount.decimals === 'number'
-    );
-};
-
-export const transformTokenInfo = (
-    tokenAccounts: readonly ApiTokenAccount[],
-    tokenDetailByMint: TokenDetailByMint,
-) => {
-    const acc: { [mint: string]: TokenInfo } = {};
-    // since ApiTokenAccount type is not precise enough, we type-guard the account to make sure they contain all the necessary data
-    for (const tokenAccount of tokenAccounts) {
-        if (!isSplTokenAccount(tokenAccount)) continue;
-        const {
-            parsed: { info },
-            program,
-        } = tokenAccount.account.data;
-        const token = {
-            type: tokenProgramsInfo[program].tokenStandard,
-            contract: info.mint,
-            balance: info.tokenAmount.amount,
-            decimals: info.tokenAmount.decimals,
-            ...getTokenNameAndSymbol(info.mint, tokenDetailByMint),
-            address: tokenAccount.pubkey,
-            standard: tokenProgramsInfo[program].tokenStandard,
-        };
-        const existing = acc[token.contract];
-        if (existing != null) {
-            existing.balance = new BigNumber(existing.balance || '0')
-                .plus(token.balance || '0')
-                .toString();
-            existing.accounts?.push({
-                publicKey: token.address,
-                balance: token.balance || '0',
-            });
-        } else {
-            const { standard, contract, balance, decimals, name, symbol } = token;
-            acc[token.contract] = {
-                standard,
-                contract,
-                balance,
-                decimals,
-                name,
-                symbol,
-                accounts: [{ publicKey: token.address, balance: balance || '0' }],
-            };
-        }
-    }
-    const tokens: TokenInfo[] = Object.values(acc);
-
-    return tokens;
-};
 
 // First step in parsing a tx, is getting Solana effects on accounts that were in the transaction, from this effects we later parse the other tx properties.
 export const extractAccountBalanceDiff = (
@@ -505,6 +365,8 @@ export const getTxType = (
     return getTxTypeFromBalanceChanges();
 };
 
+type VinEffect = { address: string; amount?: BigNumber };
+
 export const getDetails = (
     transaction: ParsedTransactionWithMeta,
     effects: TransactionEffect[],
@@ -526,7 +388,7 @@ export const getDetails = (
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const txSignature: string = signatures[0];
 
-    const getVin = ({ address, amount }: { address: string; amount?: BigNumber }, i: number) => ({
+    const getVin = ({ address, amount }: VinEffect, i: number) => ({
         txid: txSignature.toString(),
         version: transaction.version?.toString(),
         isAddress: true,
@@ -835,7 +697,7 @@ const getMemo = (tx: SolanaValidParsedTxWithMeta): string | undefined => {
     return memos.length > 0 ? memos.join('\n') : undefined;
 };
 
-export const transformTransaction = (
+export const transformSolanaTransaction = (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
     tokenAccountsInfos: SolanaTokenAccountInfo[],

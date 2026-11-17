@@ -14,7 +14,7 @@ import type {
 } from '@solana/kit';
 import type { StakeStateAccount } from '@solana-program/stake';
 
-import type { Network } from '../constants';
+import type { Network } from '../constants/common';
 
 export type PriorityFees = {
     computeUnitPrice: bigint;

@@ -58,6 +58,8 @@
         "@solana/kit": "^8.4.0",
         "@solana/rpc-api": "^8.4.0",
         "@solana/rpc-types": "^8.4.0",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/network-solana-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
