@@ -51,6 +51,12 @@ describe(buildCustomEvmNetworkConfig.name, () => {
         });
     });
 
+    it.each([undefined, ''])('rejects a missing explorer URL (%p)', explorerUrl => {
+        expect(() =>
+            buildCustomEvmNetworkConfig({ ...params, explorerUrl: explorerUrl as string }),
+        ).toThrow('has no explorer URL');
+    });
+
     it('keeps the testnet flag', () => {
         expect(buildCustomEvmNetworkConfig({ ...params, testnet: true }).testnet).toBe(true);
     });

@@ -37,6 +37,11 @@ const CUSTOM_NETWORK_DISPLAY_ORDER = asDisplayOrderKey('b');
 export const buildCustomEvmNetworkConfig = (
     params: CustomEvmNetworkConfigParams,
 ): SuiteCommonNetworkConfig => {
+    // Params also come from storage, which the type cannot vouch for.
+    if (typeof params.explorerUrl !== 'string' || !params.explorerUrl) {
+        throw new Error(`Custom network ${params.chainId} has no explorer URL`);
+    }
+
     const explorerBase = removeTrailingSlashes(params.explorerUrl);
 
     return {
