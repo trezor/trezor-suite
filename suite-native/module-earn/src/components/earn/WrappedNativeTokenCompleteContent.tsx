@@ -2,7 +2,9 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { wrappedNativeToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type WrappedNativeFlowType,
@@ -18,7 +20,6 @@ import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnCompleteScreenContent } from './EarnCompleteScreenContent';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
-import { wrappedNativeToTokenMetadataSources } from '../../utils/earn/wrappedNativeToTokenMetadataSources';
 import { getWrappedNativeCompleteRows } from '../yield/YieldCompleteScreenPresets';
 
 type WrappedNativeTokenCompleteContentProps = {
@@ -100,7 +101,14 @@ export const WrappedNativeTokenCompleteContent = ({
                                 color="contentSecondary"
                             />
                         ),
-                        wrappedSymbol: wrappedNative.symbol,
+                        wrappedSymbol: (
+                            <AssetSymbol
+                                networkSymbol={account.symbol}
+                                contractAddress={toTokenAddress(wrappedNative.address)}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            />
+                        ),
                     }}
                 />
             }

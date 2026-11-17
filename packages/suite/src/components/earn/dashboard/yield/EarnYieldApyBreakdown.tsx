@@ -1,19 +1,22 @@
+import { useMemo } from 'react';
+
 import styled from 'styled-components';
 
-import { AssetSymbol } from '@suite/assets';
+import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { yieldRewardsToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import {
     type RewardDtoV2,
     type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
-import { TokenIcon } from '@trezor/product-components';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 const RewardList = styled.div`
@@ -107,101 +110,107 @@ export const EarnYieldApyBreakdown = ({
 }: EarnYieldApyBreakdownProps) => {
     const { PercentageFormatter } = useFormatters();
     const sortedRewards = sortRewardsByUnderlyingToken(rewards, underlyingToken);
+    const metadataSources = useMemo(
+        () => yieldRewardsToTokenMetadataSources({ networkSymbol, rewards }),
+        [networkSymbol, rewards],
+    );
     // Only mention APR in the footer when a row actually shows an APR rate.
     const footerId = sortedRewards.some(isAprReward)
         ? 'TR_EARN_YIELD_APY_APR_TOOLTIP_FOOTER'
         : 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER';
 
     return (
-        <Column gap={16} padding={{ vertical: 10, horizontal: 8 }}>
-            <RewardList>
-                {sortedRewards.map((reward, index) => {
-                    const ratePercent = getApyPercent(reward.rate);
-                    const hasRatePercent = ratePercent !== null && ratePercent > 0;
-                    const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
-                    const rateTranslationId = getRateTranslationId(reward.yieldSource);
-                    // A wrapped-native reward (e.g. WETH in an ETH vault) is presented as its native
-                    // asset (#29881), matching how the vault itself is labelled across the earn UI.
-                    const displaySymbol = isWrappedNativeToken(
-                        networkSymbol,
-                        reward.token.address,
-                    ) ? (
-                        <AssetSymbol networkSymbol={networkSymbol} />
-                    ) : (
-                        reward.token.symbol
-                    );
+        <TokenMetadataProvider sources={metadataSources}>
+            <Column gap={16} padding={{ vertical: 10, horizontal: 8 }}>
+                <RewardList>
+                    {sortedRewards.map((reward, index) => {
+                        const ratePercent = getApyPercent(reward.rate);
+                        const hasRatePercent = ratePercent !== null && ratePercent > 0;
+                        const descriptionId = getYieldSourceDescriptionId(reward.yieldSource);
+                        const rateTranslationId = getRateTranslationId(reward.yieldSource);
+                        const contractAddress = reward.token.address
+                            ? toTokenAddress(reward.token.address)
+                            : undefined;
 
-                    let rateNode;
-                    if (!hasRatePercent) {
-                        rateNode = <Translation id="TR_EARN_APY_N_A" />;
-                    } else if (rateTranslationId) {
-                        rateNode = (
-                            <Translation
-                                id={rateTranslationId}
-                                values={{ rate: PercentageFormatter.format(ratePercent) }}
-                            />
-                        );
-                    } else {
-                        rateNode = (
-                            <>+{PercentageFormatter.format(ratePercent, { withSymbol: true })}</>
-                        );
-                    }
+                        let rateNode;
+                        if (!hasRatePercent) {
+                            rateNode = <Translation id="TR_EARN_APY_N_A" />;
+                        } else if (rateTranslationId) {
+                            rateNode = (
+                                <Translation
+                                    id={rateTranslationId}
+                                    values={{ rate: PercentageFormatter.format(ratePercent) }}
+                                />
+                            );
+                        } else {
+                            rateNode = (
+                                <>
+                                    +{PercentageFormatter.format(ratePercent, { withSymbol: true })}
+                                </>
+                            );
+                        }
 
-                    return (
-                        <RewardRow key={index}>
-                            <TokenIcon
-                                placeholder={reward.token.symbol || reward.token.name || 'token'}
-                                networkSymbol={networkSymbol}
-                                contractAddress={reward.token.address}
-                                showNetworkIcon
-                                wrappedTokenIcon="network"
-                                size={20}
-                                isBordered={false}
-                            />
-                            <Column flex="1">
-                                <Text
-                                    data-testid="@earn/dashboard/apy-breakdown/symbol"
-                                    typographyStyle="body-sm"
-                                >
-                                    {displaySymbol}
-                                </Text>
-                                {descriptionId && (
+                        return (
+                            <RewardRow key={index}>
+                                <AssetIcon
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={contractAddress}
+                                    showNetworkIcon
+                                    wrappedTokenIcon="network"
+                                    size={20}
+                                    isBordered={false}
+                                />
+                                <Column flex="1">
+                                    <Text
+                                        data-testid="@earn/dashboard/apy-breakdown/symbol"
+                                        typographyStyle="body-sm"
+                                    >
+                                        {/* A wrapped-native reward (e.g. WETH in an ETH vault) is
+                                    presented as its native asset (#29881), as the vault is. */}
+                                        <AssetSymbol
+                                            networkSymbol={networkSymbol}
+                                            contractAddress={contractAddress}
+                                            isWrappedNativeShownAsNative
+                                        />
+                                    </Text>
+                                    {descriptionId && (
+                                        <Text
+                                            typographyStyle="body-sm"
+                                            intent="neutral"
+                                            priority="secondary"
+                                            data-testid="@earn/dashboard/apy-breakdown/description"
+                                        >
+                                            <Translation id={descriptionId} />
+                                        </Text>
+                                    )}
+                                </Column>
+                                <RewardRate>
                                     <Text
                                         typographyStyle="body-sm"
-                                        intent="neutral"
-                                        priority="secondary"
-                                        data-testid="@earn/dashboard/apy-breakdown/description"
+                                        intent={hasRatePercent ? 'brand' : 'neutral'}
+                                        priority={hasRatePercent ? 'primary' : 'secondary'}
+                                        data-testid="@earn/dashboard/apy-breakdown/rate-percent"
                                     >
-                                        <Translation id={descriptionId} />
+                                        {rateNode}
                                     </Text>
-                                )}
-                            </Column>
-                            <RewardRate>
-                                <Text
-                                    typographyStyle="body-sm"
-                                    intent={hasRatePercent ? 'brand' : 'neutral'}
-                                    priority={hasRatePercent ? 'primary' : 'secondary'}
-                                    data-testid="@earn/dashboard/apy-breakdown/rate-percent"
-                                >
-                                    {rateNode}
-                                </Text>
-                            </RewardRate>
-                        </RewardRow>
-                    );
-                })}
-            </RewardList>
-            <Divider margin={0} />
-            <Row gap={4} alignItems="center">
-                <Icon as={ChartLineIcon} size={14} intent="neutral" priority="secondary" />
-                <Text
-                    data-testid="@earn/dashboard/apy-breakdown/footer"
-                    typographyStyle="body-sm"
-                    intent="neutral"
-                    priority="secondary"
-                >
-                    <Translation id={footerId} />
-                </Text>
-            </Row>
-        </Column>
+                                </RewardRate>
+                            </RewardRow>
+                        );
+                    })}
+                </RewardList>
+                <Divider margin={0} />
+                <Row gap={4} alignItems="center">
+                    <Icon as={ChartLineIcon} size={14} intent="neutral" priority="secondary" />
+                    <Text
+                        data-testid="@earn/dashboard/apy-breakdown/footer"
+                        typographyStyle="body-sm"
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        <Translation id={footerId} />
+                    </Text>
+                </Row>
+            </Column>
+        </TokenMetadataProvider>
     );
 };

@@ -120,7 +120,6 @@ describe('buildStablecoinYieldTransactionReview', () => {
 
 const feeLevelReviewParams = {
     amount: '1',
-    token: { decimals: 18, symbol: 'ETH' },
     symbol: asNetworkSymbol('eth'),
     unsignedTransaction: JSON.stringify({
         from: '0x1111111111111111111111111111111111111111',

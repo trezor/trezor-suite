@@ -34,10 +34,9 @@ describe('getYieldClaimRewardsSnapshot', () => {
             {
                 token: {
                     networkSymbol: ethSymbol,
-                    symbol: 'USDC',
-                    decimals: 6,
                     contractAddress: '0x0000000000000000000000000000000000000001',
                 },
+                tokenInfo: { symbol: 'USDC', decimals: 6 },
                 value: '1',
                 fiatValue: '1.25',
             },

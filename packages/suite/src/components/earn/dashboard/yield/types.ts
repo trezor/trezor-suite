@@ -1,6 +1,7 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
+import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 export type YieldAccountOpportunity = {
@@ -13,9 +14,8 @@ export type YieldAccountOpportunity = {
     hasRewardsData: boolean;
     depositedAmount: string;
     additionalDepositAmount: string;
-    depositedSymbol: TokenSymbol;
-    depositedContractAddress: string | null;
-    depositedDecimals: number;
+    /** The asset amounts are denominated in; a wrapped-native vault's is the native coin. */
+    depositedToken: YieldFlowDisplayToken;
     apyPercentage: number | null;
 };
 
@@ -31,7 +31,5 @@ export type YieldOpportunityData = Pick<
     | 'hasRewardsData'
     | 'depositedAmount'
     | 'additionalDepositAmount'
-    | 'depositedSymbol'
-    | 'depositedContractAddress'
-    | 'depositedDecimals'
+    | 'depositedToken'
 >;

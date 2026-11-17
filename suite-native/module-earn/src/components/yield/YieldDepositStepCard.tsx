@@ -1,6 +1,7 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { AssetSymbol } from '@suite-native/assets';
 import { Translation } from '@suite-native/intl';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
 import { type YieldFlowStep, YieldFlowStepCard } from './YieldFlowStepCard';
 
@@ -8,6 +9,7 @@ type YieldDepositStepId = 'wrap' | 'approval' | 'deposit';
 
 const getWrapStep = (
     networkSymbol: NetworkSymbol,
+    wrappedTokenContract: TokenAddress | undefined,
     isSkipped: boolean,
 ): YieldFlowStep<YieldDepositStepId> => ({
     id: 'wrap',
@@ -16,8 +18,13 @@ const getWrapStep = (
         <Translation
             id="earn.yieldDepositFlowScreen.wrapStepTitle"
             values={{
-                nativeSymbol: getNetworkDisplaySymbol(networkSymbol),
-                tokenSymbol: getWrappedNativeSymbol(networkSymbol) ?? '',
+                nativeSymbol: <AssetSymbol networkSymbol={networkSymbol} />,
+                tokenSymbol: (
+                    <AssetSymbol
+                        networkSymbol={networkSymbol}
+                        contractAddress={wrappedTokenContract}
+                    />
+                ),
             }}
         />
     ),
@@ -42,6 +49,8 @@ type YieldDepositStepCardProps = {
     /** Set once the wrap step was resolved without wrapping anything. */
     isWrapStepSkipped?: boolean;
     networkSymbol: NetworkSymbol;
+    /** The vault's wrapped native token, which the wrap step produces from the native coin. */
+    wrappedTokenContract: TokenAddress | undefined;
     /** Handlers returning to an already finished step, keyed by the step it belongs to. */
     onEditStep?: Partial<Record<YieldDepositStepId, () => void>>;
 } & (
@@ -61,6 +70,7 @@ export const YieldDepositStepCard = ({
     isApprovalStepSkipped = false,
     isWrapStepSkipped = false,
     networkSymbol,
+    wrappedTokenContract,
     onEditStep,
 }: YieldDepositStepCardProps) => (
     <YieldFlowStepCard
@@ -70,7 +80,7 @@ export const YieldDepositStepCard = ({
         steps={
             hasWrapStep
                 ? [
-                      getWrapStep(networkSymbol, isWrapStepSkipped),
+                      getWrapStep(networkSymbol, wrappedTokenContract, isWrapStepSkipped),
                       ...getBaseSteps(isApprovalStepSkipped),
                   ]
                 : getBaseSteps(isApprovalStepSkipped)

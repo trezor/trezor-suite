@@ -97,7 +97,7 @@ export const useYieldWithdraw = ({
         unwrappedAmount,
         token,
         receiptToken,
-        pricePerShareState: vault.state?.pricePerShareState,
+        vault,
     });
 
     return {

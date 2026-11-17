@@ -52,18 +52,18 @@ const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account
 
 const flowData = {
     account,
-    vault: { id: 'vault-1' },
+    vault: {
+        id: 'vault-1',
+        token: { symbol: 'usdc', decimals: 6 },
+        outputToken: { symbol: 'musdc', decimals: 18 },
+    },
     token: {
         networkSymbol: 'eth',
-        symbol: 'usdc',
-        decimals: 6,
         contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         balance: '100',
     },
     receiptToken: {
         networkSymbol: 'eth',
-        symbol: 'musdc',
-        decimals: 18,
         contractAddress: '0xd63070114470f685b75B74D60EEc7c1113d33a3D',
     },
 } as unknown as YieldFlowResolvedData;
@@ -263,7 +263,7 @@ describe('submitYieldWithdrawThunk', () => {
             flowData: {
                 ...flowData,
                 vault: {
-                    id: 'vault-1',
+                    ...flowData.vault,
                     state: {
                         pricePerShareState: {
                             shareToken: { symbol: 'musdc', decimals: 18 },

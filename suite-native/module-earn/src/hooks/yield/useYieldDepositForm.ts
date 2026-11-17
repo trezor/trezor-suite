@@ -22,6 +22,7 @@ import { getFiatFormValue, getYieldTokenContract } from '../../utils/yield/yield
 type UseYieldDepositFormParams = {
     defaultAmount?: string | null;
     token: YieldFlowToken | null;
+    decimals: number | undefined;
     tokenSymbol: TokenSymbol | null;
     wrappedAmount?: string | null;
 };
@@ -29,6 +30,7 @@ type UseYieldDepositFormParams = {
 export const useYieldDepositForm = ({
     defaultAmount,
     token,
+    decimals,
     tokenSymbol,
     wrappedAmount,
 }: UseYieldDepositFormParams) => {
@@ -62,7 +64,7 @@ export const useYieldDepositForm = ({
         mode: 'onChange',
         context: {
             availableBalance,
-            decimals: token?.decimals,
+            decimals,
             tokenSymbol,
             translate,
         },

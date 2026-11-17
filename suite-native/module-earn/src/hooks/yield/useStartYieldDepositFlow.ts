@@ -23,7 +23,6 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -32,6 +31,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 type UseStartYieldDepositFlowParams = {
     flowData: YieldFlowResolvedData | null;
     flowKey: string | null;
+    isWrappedNativeVault: boolean;
     routeParams: YieldFlowParams;
     shouldReplaceRoute?: boolean;
 };
@@ -57,6 +57,7 @@ type YieldDepositFlowRoute =
 export const useStartYieldDepositFlow = ({
     flowData,
     flowKey,
+    isWrappedNativeVault,
     routeParams,
     shouldReplaceRoute = false,
 }: UseStartYieldDepositFlowParams) => {
@@ -73,10 +74,6 @@ export const useStartYieldDepositFlow = ({
             }
 
             const sessionParams = { flowType: 'deposit' as const, flowKey };
-            const isWrappedNativeVault = isWrappedNativeToken(
-                flowData.account.symbol,
-                flowData.token.contractAddress,
-            );
 
             isStartingDepositFlowRef.current = true;
             setIsStartingDepositFlow(true);
@@ -177,7 +174,16 @@ export const useStartYieldDepositFlow = ({
             }
 
             return 'deposit-form';
-        }, [dispatch, flowData, flowKey, navigation, routeParams, store, shouldReplaceRoute]);
+        }, [
+            dispatch,
+            flowData,
+            flowKey,
+            isWrappedNativeVault,
+            navigation,
+            routeParams,
+            store,
+            shouldReplaceRoute,
+        ]);
 
     return {
         handleStartYieldDepositFlow,

@@ -1,5 +1,7 @@
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
+import { AssetSymbol } from '@suite-native/assets';
 import {
     AnimatedDoubleInput,
     Box,
@@ -34,7 +36,6 @@ import {
 } from '../../constants';
 import { useYieldWithdrawController } from '../../hooks/yield/controllers/useYieldWithdrawController';
 import { getYieldTokenContract } from '../../utils/yield/yieldFiatAmountUtils';
-import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 const withdrawFormCardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderNeutral,
@@ -109,6 +110,7 @@ export const YieldWithdrawScreen = () => {
                     currentStepId="withdraw"
                     hasUnwrapStep={stepCard.hasUnwrapStep}
                     networkSymbol={account.symbol}
+                    wrappedTokenContract={stepCard.wrappedTokenContract}
                 />
                 <VStack spacing="sp16" paddingHorizontal="sp16">
                     <ContextMessage context={Context.getEarnYield('withdraw')} />
@@ -155,16 +157,16 @@ export const YieldWithdrawScreen = () => {
                                             'earn.yieldWithdrawFlowScreen.amountToWithdraw',
                                         )}
                                         rightIcon={
-                                            <Text
+                                            <AssetSymbol
+                                                networkSymbol={account.symbol}
+                                                contractAddress={amountForm.underlyingTokenContract}
                                                 color={
                                                     isDisabled
                                                         ? 'contentSecondary'
                                                         : 'contentPrimary'
                                                 }
                                                 numberOfLines={1}
-                                            >
-                                                {amountForm.underlyingTokenSymbol}
-                                            </Text>
+                                            />
                                         }
                                     />
                                 )}
@@ -185,16 +187,16 @@ export const YieldWithdrawScreen = () => {
                                             'earn.yieldWithdrawFlowScreen.amountToWithdraw',
                                         )}
                                         rightIcon={
-                                            <Text
+                                            <AssetSymbol
+                                                networkSymbol={account.symbol}
+                                                contractAddress={amountForm.receiptTokenContract}
                                                 color={
                                                     isDisabled
                                                         ? 'contentSecondary'
                                                         : 'contentPrimary'
                                                 }
                                                 numberOfLines={1}
-                                            >
-                                                {amountForm.vaultTokenSymbol}
-                                            </Text>
+                                            />
                                         }
                                     />
                                 )}

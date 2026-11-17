@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type YieldRootState,
@@ -25,7 +26,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
-import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawComplete>;
 type NavigationProps = StackNavigationProps<
@@ -104,7 +104,7 @@ export const YieldWithdrawCompleteScreen = () => {
             unwrappedAmount,
             token,
             receiptToken,
-            pricePerShareState: vault.state?.pricePerShareState,
+            vault,
         });
 
         return getYieldWithdrawCompleteRows({

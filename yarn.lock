@@ -11748,6 +11748,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-app/module-earn@workspace:suite-app/module-earn"
   dependencies:
+    "@suite-common/earn-stablecoin": "workspace:*"
+    "@suite-common/token": "workspace:*"
+    "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/account": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -12417,6 +12420,7 @@ __metadata:
     "@suite-common/earn-stablecoin-api": "workspace:^"
     "@suite-common/message-system": "workspace:^"
     "@suite-common/schemas": "workspace:^"
+    "@suite-common/token": "workspace:*"
     "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-config": "workspace:^"
     "@suite-common/wallet-core": "workspace:^"
@@ -17529,6 +17533,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/discreet-mode": "workspace:*"
     "@suite/token": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/product-components": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.0"

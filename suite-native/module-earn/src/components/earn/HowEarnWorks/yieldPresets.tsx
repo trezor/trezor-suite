@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 
@@ -14,7 +16,8 @@ type UseHowYieldWorksPresetProps = {
     apy: number | null;
     onApyPress: () => void;
     bonusRewardTokenSymbol?: string | null;
-    wrappedNativeSymbol: string | null;
+    networkSymbol?: NetworkSymbol;
+    isWrappedNativeVault: boolean;
 };
 
 export const useHowYieldWorksPreset = ({
@@ -23,12 +26,20 @@ export const useHowYieldWorksPreset = ({
     apy,
     onApyPress,
     bonusRewardTokenSymbol,
-    wrappedNativeSymbol,
+    networkSymbol,
+    isWrappedNativeVault,
 }: UseHowYieldWorksPresetProps): HowEarnWorksScreenPreset => {
     const formattedApy = useFormattedEarnRate(apy);
+    const nativeSymbol = useMemo(
+        () =>
+            isWrappedNativeVault && networkSymbol ? (
+                <AssetSymbol networkSymbol={networkSymbol} />
+            ) : null,
+        [isWrappedNativeVault, networkSymbol],
+    );
 
     const benefitItems: HowEarnWorksBenefitItem[] = useMemo(() => {
-        if (wrappedNativeSymbol !== null) {
+        if (nativeSymbol !== null) {
             return [
                 {
                     id: 'yield-benefit-lock',
@@ -36,13 +47,13 @@ export const useHowYieldWorksPreset = ({
                     title: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.first.title"
-                            values={{ nativeSymbol: wrappedNativeSymbol }}
+                            values={{ nativeSymbol }}
                         />
                     ),
                     description: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.first.description"
-                            values={{ nativeSymbol: wrappedNativeSymbol }}
+                            values={{ nativeSymbol }}
                         />
                     ),
                 },
@@ -52,7 +63,7 @@ export const useHowYieldWorksPreset = ({
                     title: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.second.title"
-                            values={{ nativeSymbol: wrappedNativeSymbol, vaultTokenSymbol }}
+                            values={{ nativeSymbol, vaultTokenSymbol }}
                         />
                     ),
                     description: (
@@ -71,7 +82,7 @@ export const useHowYieldWorksPreset = ({
                     description: (
                         <Translation
                             id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.third.description"
-                            values={{ nativeSymbol: wrappedNativeSymbol }}
+                            values={{ nativeSymbol }}
                         />
                     ),
                 },
@@ -148,7 +159,7 @@ export const useHowYieldWorksPreset = ({
                   ]
                 : []),
         ];
-    }, [wrappedNativeSymbol, tokenSymbol, vaultTokenSymbol, bonusRewardTokenSymbol]);
+    }, [nativeSymbol, tokenSymbol, vaultTokenSymbol, bonusRewardTokenSymbol]);
 
     const timelineSections: HowEarnWorksTimelineSectionPreset[] = useMemo(
         () => [
@@ -157,7 +168,7 @@ export const useHowYieldWorksPreset = ({
                 title: <Translation id="earn.howYieldWorksScreen.depositTimelineTitle" />,
                 iconName: 'arrowUpRight',
                 items: [
-                    ...(wrappedNativeSymbol !== null
+                    ...(nativeSymbol !== null
                         ? [
                               {
                                   id: 'deposit.wrap',
@@ -165,7 +176,7 @@ export const useHowYieldWorksPreset = ({
                                       <Translation
                                           id="earn.howYieldWorksScreen.depositTimeline.wrap.title"
                                           values={{
-                                              nativeSymbol: wrappedNativeSymbol,
+                                              nativeSymbol,
                                               tokenSymbol,
                                           }}
                                       />
@@ -230,7 +241,7 @@ export const useHowYieldWorksPreset = ({
                             <Translation id="earn.howYieldWorksScreen.withdrawTimeline.first.description" />
                         ),
                     },
-                    ...(wrappedNativeSymbol !== null
+                    ...(nativeSymbol !== null
                         ? [
                               {
                                   id: 'withdraw.unwrap',
@@ -238,7 +249,7 @@ export const useHowYieldWorksPreset = ({
                                       <Translation
                                           id="earn.howYieldWorksScreen.withdrawTimeline.unwrap.title"
                                           values={{
-                                              nativeSymbol: wrappedNativeSymbol,
+                                              nativeSymbol,
                                               tokenSymbol,
                                           }}
                                       />
@@ -255,7 +266,7 @@ export const useHowYieldWorksPreset = ({
                             <Translation
                                 id="earn.howYieldWorksScreen.withdrawTimeline.second.title"
                                 values={{
-                                    tokenSymbol: wrappedNativeSymbol ?? tokenSymbol,
+                                    tokenSymbol: nativeSymbol ?? tokenSymbol,
                                 }}
                             />
                         ),
@@ -299,7 +310,7 @@ export const useHowYieldWorksPreset = ({
                 : []),
         ],
         [
-            wrappedNativeSymbol,
+            nativeSymbol,
             tokenSymbol,
             vaultTokenSymbol,
             apy,

@@ -48,7 +48,6 @@ export const useYieldDepositRevokeScreen = () => {
         flowData,
         flowKey,
         providerName,
-        token,
         tokenSymbol,
         vaultTokenName,
         resolutionStatus,
@@ -75,7 +74,10 @@ export const useYieldDepositRevokeScreen = () => {
         transactionType: 'revoke',
         vaultId: yieldFlowData.vault?.id,
     });
-    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({
+        session,
+        tokenDecimals: yieldFlowData.vault?.token.decimals,
+    });
     const intendedDepositAmount = route.params.amount ?? session?.action.amount ?? undefined;
     const revokeRequestAmount = intendedDepositAmount ?? allowanceAmount ?? '';
     const approvedAllowanceAmount = allowanceAmount ?? '';

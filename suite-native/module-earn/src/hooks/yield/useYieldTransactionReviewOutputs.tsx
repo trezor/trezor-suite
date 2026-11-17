@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 import { toTokenAddress } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     AddressFormatter,
@@ -16,7 +16,7 @@ import {
     TransactionReviewOutputHexData,
     TransactionReviewOutputItemValues,
 } from '@suite-native/transaction-review';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
+import { getWrappedNativeAddress } from '@trezor/network-ethereum-suite-common';
 
 import {
     type YieldApprovalReviewEvmTransactionPurpose,
@@ -211,14 +211,31 @@ export const useYieldTransactionReviewOutputs = ({
                     if (evmTransactionPurpose !== 'wrap' && evmTransactionPurpose !== 'unwrap')
                         return;
 
-                    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
-                    const tokenSymbol = getWrappedNativeSymbol(account.symbol) ?? '';
+                    const wrappedNativeAddress = getWrappedNativeAddress(account.symbol);
 
                     return (
                         <Text variant="body-sm">
                             <Translation
                                 id={wrappedNativeIntentMessages[evmTransactionPurpose]}
-                                values={{ nativeSymbol, tokenSymbol }}
+                                values={{
+                                    nativeSymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            variant="body-sm"
+                                        />
+                                    ),
+                                    tokenSymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            variant="body-sm"
+                                            contractAddress={
+                                                wrappedNativeAddress
+                                                    ? toTokenAddress(wrappedNativeAddress)
+                                                    : undefined
+                                            }
+                                        />
+                                    ),
+                                }}
                             />
                         </Text>
                     );

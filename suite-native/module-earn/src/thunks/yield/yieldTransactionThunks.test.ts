@@ -4,6 +4,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowResolvedData,
@@ -89,9 +90,7 @@ const otherAccount = buildAccount('0xfffffffffffffffffffffffffffffffffffffffd');
 
 const wethVaultToken = {
     networkSymbol: account.symbol,
-    symbol: 'weth',
-    decimals: 18,
-    contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    contractAddress: toTokenAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
     balance: '1',
 } satisfies YieldFlowToken;
 

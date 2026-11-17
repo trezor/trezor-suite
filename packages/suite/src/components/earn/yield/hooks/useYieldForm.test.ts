@@ -4,7 +4,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     FALLBACK_YIELD_GAS_RESERVE,
@@ -67,18 +67,12 @@ const vault = {
 } satisfies YieldDtoV2 as unknown as YieldDtoV2;
 const token = {
     networkSymbol: account.symbol,
-    symbol: 'WETH',
-    decimals: 18,
-    contractAddress: TOKEN_ADDRESS,
-    coingeckoId: 'weth',
+    contractAddress: toTokenAddress(TOKEN_ADDRESS),
     balance: '25',
 };
 const receiptToken = {
     networkSymbol: account.symbol,
-    symbol: 'mvWETH',
-    decimals: 18,
-    contractAddress: RECEIPT_TOKEN_ADDRESS,
-    coingeckoId: 'weth',
+    contractAddress: toTokenAddress(RECEIPT_TOKEN_ADDRESS),
 };
 const flowData = {
     resolutionStatus: 'resolved',
@@ -92,7 +86,6 @@ const flowData = {
     depositedAmount: '10',
     depositedSharesAmount: '4',
     isWrappedNativeVault: true,
-    wrappedNativeSymbol: 'ETH',
     bonusRewardTokenSymbol: null,
     providerName: 'Morpho',
     tokenSymbol: toTokenSymbol('WETH'),

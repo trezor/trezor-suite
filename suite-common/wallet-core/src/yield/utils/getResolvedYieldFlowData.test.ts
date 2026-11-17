@@ -75,17 +75,14 @@ describe('getResolvedYieldFlowData', () => {
             throw new Error('Expected resolved yield flow data.');
         }
 
-        expect(result.token.symbol).toBe('USDC');
-        expect(result.token.decimals).toBe(6);
         expect(result.token.contractAddress).toBe(underlyingTokenAddress);
         expect(result.token.balance).toBe('25');
-        expect(result.receiptToken.symbol).toBe('trSHUSDCp');
         expect(result.receiptToken.contractAddress).toBe(receiptTokenAddress);
         expect(result.vaultName).toBe('Steakhouse USDC Prime');
         expect(result.vaultTokenName).toBe('Trezor Steakhouse USDC Prime');
         expect(result.vaultTokenSymbol).toBe('trSHUSDCp');
         expect(result.providerName).toBe('Morpho');
-        expect(result.flowData.token.symbol).toBe('USDC');
+        expect(result.flowData.token.contractAddress).toBe(underlyingTokenAddress);
         expect(result.depositedSharesAmount).toBe('1.5');
     });
 
@@ -104,9 +101,9 @@ describe('getResolvedYieldFlowData', () => {
 
         expect(result.flowKey).toBe(`${accountKey}:${yieldId}:${receiptTokenAddress}`);
         // Being addressed by the receipt token must not change what the tokens themselves are.
-        expect(result.token?.symbol).toBe('USDC');
+        expect(result.token?.contractAddress).toBe(underlyingTokenAddress);
         expect(result.token?.balance).toBe('25');
-        expect(result.receiptToken?.symbol).toBe('trSHUSDCp');
+        expect(result.receiptToken?.contractAddress).toBe(receiptTokenAddress);
     });
 
     it('matches account tokens by contract address regardless of letter case', () => {
@@ -125,8 +122,7 @@ describe('getResolvedYieldFlowData', () => {
 
         const result = getResolvedYieldFlowData({ account: emptyAccount, vault });
 
-        expect(result.token?.symbol).toBe('USDC');
-        expect(result.token?.decimals).toBe(6);
+        expect(result.token?.contractAddress).toBe(underlyingTokenAddress);
         expect(result.token?.balance).toBe('0');
         expect(result.depositedSharesAmount).toBe('0');
         expect(result.depositedAmount).toBe('0');

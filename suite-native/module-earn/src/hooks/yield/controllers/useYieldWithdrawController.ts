@@ -3,7 +3,7 @@ import { Keyboard } from 'react-native';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWithdrawErrorReason,
@@ -11,6 +11,7 @@ import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getWithdrawRequestAmount,
     getYieldWithdrawInputToken,
+    getYieldWithdrawInputVaultToken,
     splitYieldPendingTransaction,
     yieldActions,
 } from '@suite-common/wallet-core';
@@ -97,7 +98,9 @@ export const useYieldWithdrawController = () => {
         : undefined;
     const amountValidationError = getYieldWithdrawAmountValidationError({
         amount,
-        decimals: activeInputToken?.decimals,
+        decimals: flowData
+            ? getYieldWithdrawInputVaultToken({ flowData, flowType })?.decimals
+            : undefined,
     });
 
     const isAmountValidationErrorDisplayed = !!amountValidationError;
@@ -250,12 +253,12 @@ export const useYieldWithdrawController = () => {
                     networkSymbol: account.symbol,
                     amount: value,
                     token: vault.token,
-                    receiptToken: flowData.receiptToken,
+                    receiptToken: vault.outputToken,
                     pricePerShare: vault.state?.pricePerShareState?.price,
                 }) ?? ''
             );
         },
-        [account, flowData, resolutionStatus, vault],
+        [account, resolutionStatus, vault],
     );
 
     const getAssetAmountFromSharesAmount = useCallback(
@@ -333,7 +336,7 @@ export const useYieldWithdrawController = () => {
 
             const inputDecimals = isSharesInput
                 ? vault?.outputToken?.decimals
-                : flowData.token.decimals;
+                : vault?.token.decimals;
 
             if (
                 inputDecimals != null &&
@@ -357,7 +360,7 @@ export const useYieldWithdrawController = () => {
             getAssetAmountFromSharesAmount,
             getSharesAmountFromAssetAmount,
             isSharesInput,
-            vault?.outputToken?.decimals,
+            vault,
         ],
     );
 
@@ -432,8 +435,6 @@ export const useYieldWithdrawController = () => {
 
     const resolvedAccount = yieldFlowData.account;
     const resolvedVault = yieldFlowData.vault;
-    const underlyingTokenSymbol = toTokenSymbol(yieldFlowData.flowData.token.symbol);
-    const vaultTokenSymbol = toTokenSymbol(yieldFlowData.flowData.receiptToken.symbol);
 
     const activeUnitTokenContract = activeInputToken.contractAddress
         ? toTokenAddress(activeInputToken.contractAddress)
@@ -460,6 +461,7 @@ export const useYieldWithdrawController = () => {
         },
         stepCard: {
             hasUnwrapStep: isWrappedNativeVault,
+            wrappedTokenContract: yieldFlowData.token?.contractAddress,
         },
         amountForm: {
             assetAmount,
@@ -470,8 +472,8 @@ export const useYieldWithdrawController = () => {
             onInputSwitch: handleInputSwitch,
             onMaxChange: handleMaxChange,
             validationError: amountValidationError,
-            underlyingTokenSymbol,
-            vaultTokenSymbol,
+            underlyingTokenContract: yieldFlowData.flowData.token.contractAddress,
+            receiptTokenContract: yieldFlowData.flowData.receiptToken.contractAddress,
         },
         depositedRow: maxAmount
             ? {

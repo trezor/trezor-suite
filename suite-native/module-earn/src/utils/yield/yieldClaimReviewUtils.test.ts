@@ -1,3 +1,4 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldActionReviewState } from '@suite-common/wallet-core';
 
@@ -7,12 +8,14 @@ type YieldClaimReview = Extract<YieldActionReviewState, { type: 'claim' }>;
 
 const TOKEN_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
 
-const createClaimReview = (
-    rewards: YieldClaimReview['rewards'][number]['token'][],
-): YieldClaimReview => ({
+type ClaimRewardToken = YieldClaimReview['rewards'][number]['token'] &
+    YieldClaimReview['rewards'][number]['tokenInfo'];
+
+const createClaimReview = (rewards: ClaimRewardToken[]): YieldClaimReview => ({
     type: 'claim',
-    rewards: rewards.map(token => ({
-        token,
+    rewards: rewards.map(({ networkSymbol, contractAddress, symbol, decimals }) => ({
+        token: { networkSymbol, contractAddress },
+        tokenInfo: { symbol, decimals },
         value: '0.848795999565318',
         fiatValue: '1.25',
     })),
@@ -34,7 +37,7 @@ describe('buildYieldClaimRewards', () => {
                 networkSymbol: asNetworkSymbol('eth'),
                 symbol: 'USDC',
                 decimals: 6,
-                contractAddress: TOKEN_ADDRESS,
+                contractAddress: toTokenAddress(TOKEN_ADDRESS),
             },
         ]);
 
@@ -49,13 +52,13 @@ describe('buildYieldClaimRewards', () => {
                 networkSymbol: asNetworkSymbol('eth'),
                 symbol: 'USDC',
                 decimals: 6,
-                contractAddress: TOKEN_ADDRESS,
+                contractAddress: toTokenAddress(TOKEN_ADDRESS),
             },
             {
                 networkSymbol: asNetworkSymbol('eth'),
                 symbol: 'MORPHO',
                 decimals: 18,
-                contractAddress: null,
+                contractAddress: undefined,
             },
         ]);
 

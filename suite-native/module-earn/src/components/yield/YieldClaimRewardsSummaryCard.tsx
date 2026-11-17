@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { yieldClaimAccountItemsToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { TokenMetadataProvider } from '@suite-common/token';
 import {
     type EarnListRootState,
@@ -30,7 +31,6 @@ import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
-import { yieldClaimAccountItemsToTokenMetadataSources } from '../../utils/yield/yieldClaimAccountItemsToTokenMetadataSources';
 import { EarnClaimTokenIconSet } from '../earn/EarnClaimTokenIconSet';
 
 export const YieldClaimRewardsSummaryCard = () => {

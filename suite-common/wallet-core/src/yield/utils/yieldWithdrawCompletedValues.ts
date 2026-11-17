@@ -1,14 +1,9 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import type {
     YieldFlowCompleteValue,
     YieldFlowDisplayToken,
-    YieldFlowToken,
     YieldWithdrawFlowType,
 } from '../yieldTypes';
 import {
@@ -16,16 +11,14 @@ import {
     getWithdrawRequestAmount,
 } from './yieldUtils';
 
-type PricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
-
 type GetYieldWithdrawCompletedValuesParams = {
     networkSymbol: NetworkSymbol;
     flowType: YieldWithdrawFlowType;
     completedAmount: string;
     unwrappedAmount: string | null;
-    token: YieldFlowToken;
+    token: YieldFlowDisplayToken;
     receiptToken: YieldFlowDisplayToken;
-    pricePerShareState: PricePerShareState;
+    vault: Pick<YieldDtoV2, 'token' | 'outputToken' | 'state'>;
 };
 
 type YieldWithdrawCompletedValues = {
@@ -52,19 +45,21 @@ export const getYieldWithdrawCompletedValues = ({
     unwrappedAmount,
     token,
     receiptToken,
-    pricePerShareState,
+    vault,
 }: GetYieldWithdrawCompletedValuesParams): YieldWithdrawCompletedValues => {
     const isSharesInput = flowType === 'redeem';
+    const pricePerShareState = vault.state?.pricePerShareState;
 
-    const sentReceiptAmount = isSharesInput
-        ? completedAmount
-        : (getWithdrawRequestAmount({
-              networkSymbol,
-              amount: completedAmount,
-              token,
-              receiptToken,
-              pricePerShare: pricePerShareState?.price,
-          }) ?? completedAmount);
+    const sentReceiptAmount =
+        isSharesInput || !vault.outputToken
+            ? completedAmount
+            : (getWithdrawRequestAmount({
+                  networkSymbol,
+                  amount: completedAmount,
+                  token: vault.token,
+                  receiptToken: vault.outputToken,
+                  pricePerShare: pricePerShareState?.price,
+              }) ?? completedAmount);
 
     const input: YieldFlowCompleteValue = {
         token: receiptToken,
@@ -74,14 +69,7 @@ export const getYieldWithdrawCompletedValues = ({
     if (unwrappedAmount !== null) {
         return {
             input,
-            output: {
-                token: {
-                    networkSymbol,
-                    symbol: getNetworkDisplaySymbol(networkSymbol),
-                    decimals: getNetwork(networkSymbol).decimals,
-                },
-                amount: unwrappedAmount,
-            },
+            output: { token: { networkSymbol }, amount: unwrappedAmount },
         };
     }
 
@@ -93,8 +81,8 @@ export const getYieldWithdrawCompletedValues = ({
                 isSharesInput && pricePerShareState
                     ? getConvertedOutputTokenBalanceToInputTokenAmount({
                           networkSymbol,
-                          token,
-                          outputToken: receiptToken,
+                          token: vault.token,
+                          outputToken: vault.outputToken,
                           outputTokenBalance: completedAmount,
                           pricePerShareState,
                       })

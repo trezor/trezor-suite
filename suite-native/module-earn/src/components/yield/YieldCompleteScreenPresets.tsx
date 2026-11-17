@@ -163,11 +163,11 @@ export const getYieldClaimCompleteRows = (
             <VStack spacing="sp12">
                 {rewards.map((reward, index) => (
                     <YieldClaimRewardRow
-                        key={`${reward.token.contractAddress ?? reward.token.symbol}:${index}`}
+                        key={`${reward.token.contractAddress ?? reward.token.networkSymbol}:${index}`}
                         amount={reward.value}
                         fiatAmount={getYieldClaimRewardFiatAmount(reward.fiatValue)}
                         networkSymbol={reward.token.networkSymbol}
-                        tokenContractAddress={reward.token.contractAddress ?? undefined}
+                        tokenContractAddress={reward.token.contractAddress}
                     />
                 ))}
             </VStack>

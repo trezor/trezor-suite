@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldRootState,
     type YieldWithdrawFlowType,
@@ -36,7 +35,6 @@ interface UseYieldWithdrawReviewProps {
     flowKey: string;
     flowType: YieldWithdrawFlowType;
     onReviewLeave?: () => void;
-    reviewToken: YieldFlowDisplayToken;
 }
 
 export const useYieldWithdrawReview = ({
@@ -44,7 +42,6 @@ export const useYieldWithdrawReview = ({
     flowKey,
     flowType,
     onReviewLeave,
-    reviewToken,
 }: UseYieldWithdrawReviewProps) => {
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
@@ -78,10 +75,9 @@ export const useYieldWithdrawReview = ({
                     flowData,
                     flowKey,
                     flowType,
-                    reviewToken,
                 }),
             ),
-        [dispatch, flowData, flowKey, flowType, reviewToken],
+        [dispatch, flowData, flowKey, flowType],
     );
 
     const pushAction = useCallback(

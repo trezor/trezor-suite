@@ -1,13 +1,13 @@
 import { type ReactNode } from 'react';
 
-import { AssetSymbol } from '@suite/assets';
+import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { getNetwork } from '@suite-common/wallet-config';
 import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
 import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
@@ -49,7 +49,7 @@ export const YieldWrapStep = ({
     <Column gap={16}>
         <YieldAmountCard
             tokenSymbol={<AssetSymbol networkSymbol={token.networkSymbol} />}
-            decimals={token.decimals}
+            decimals={getNetwork(token.networkSymbol).decimals}
             isDisabled={!!pendingTransaction}
             // The wrap amount is the native coin, so no token contract address.
             approxFiat={{ symbol: token.networkSymbol }}
@@ -62,7 +62,6 @@ export const YieldWrapStep = ({
                     <FormattedCryptoAmount
                         value={availableAmount}
                         networkSymbol={token.networkSymbol}
-                        tokenDecimals={token.decimals}
                     />
                 ),
                 onMaxClick: pendingTransaction ? undefined : onMaxClick,
@@ -78,11 +77,10 @@ export const YieldWrapStep = ({
                         <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
                     </Text>
                     <Row alignItems="center" gap={8} minWidth={0}>
-                        <TokenIcon
+                        <AssetIcon
                             size={20}
                             networkSymbol={token.networkSymbol}
-                            contractAddress={token.contractAddress ?? null}
-                            placeholder={token.symbol}
+                            contractAddress={token.contractAddress}
                             showNetworkIcon
                             isBordered={false}
                         />
@@ -94,7 +92,8 @@ export const YieldWrapStep = ({
                                 <Text typographyStyle="body-md" ellipsisLineCount={1}>
                                     <FormattedCryptoAmount
                                         value={receivingAmount}
-                                        networkSymbol={token.symbol}
+                                        networkSymbol={token.networkSymbol}
+                                        contractAddress={token.contractAddress}
                                     />
                                 </Text>
                             </TruncatedAmount>

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type ComposeYieldWrapErrorReason,
     type WrappedNativeFlowType,
@@ -16,6 +16,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';
 import { EARN_MODULE_PREFIX } from '../../constants';
+import { getWrappedNativeTransactionToken } from '../../utils/earn/wrappedNativeTransactionTokenUtils';
 
 export type PreparedWrappedNativeTokenAction = {
     amount: string;
@@ -66,8 +67,8 @@ export const useWrappedNativeTokenFees = ({
             const composePayload = {
                 account,
                 token: {
-                    contractAddress: wrappedNative.address,
-                    decimals: wrappedNative.decimals,
+                    networkSymbol: account.symbol,
+                    contractAddress: toTokenAddress(wrappedNative.address),
                 },
             };
             const result =
@@ -89,24 +90,11 @@ export const useWrappedNativeTokenFees = ({
                 return { type: 'error', reason: result.reason };
             }
 
-            const spentToken =
-                flowType === 'wrap'
-                    ? {
-                          contractAddress: null,
-                          decimals: getNetwork(account.symbol).decimals,
-                          symbol: getNetworkDisplaySymbol(account.symbol),
-                      }
-                    : {
-                          contractAddress: wrappedNative.address,
-                          decimals: wrappedNative.decimals,
-                          symbol: wrappedNative.symbol,
-                      };
-
             return {
                 type: 'ready',
                 transaction: {
                     symbol: account.symbol,
-                    token: spentToken,
+                    token: getWrappedNativeTransactionToken(account.symbol, flowType),
                     unsignedTransaction: result.unsignedTransaction,
                 },
             };
