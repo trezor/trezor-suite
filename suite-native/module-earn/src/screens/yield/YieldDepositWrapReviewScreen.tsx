@@ -56,7 +56,7 @@ export const YieldDepositWrapReviewScreen = () => {
     const actionReview = session?.action.review;
     const review = actionReview?.type === 'wrap' ? actionReview : null;
 
-    const { preview, spentToken } = useWrappedNativeReviewPreview({
+    const preview = useWrappedNativeReviewPreview({
         account,
         amount: review?.amount,
         flowType: 'wrap',
@@ -97,7 +97,7 @@ export const YieldDepositWrapReviewScreen = () => {
         [dispatch, flowKey, navigation, review, route.params],
     );
 
-    if (resolutionStatus !== 'resolved' || !account || !spentToken || !review || !preview) {
+    if (resolutionStatus !== 'resolved' || !account || !review || !preview) {
         return null;
     }
 
@@ -110,7 +110,6 @@ export const YieldDepositWrapReviewScreen = () => {
             onBroadcast={handleBroadcast}
             onError={handleReviewError}
             preview={preview}
-            spentToken={spentToken}
             unsignedTransaction={review.unsignedTransaction}
         />
     );

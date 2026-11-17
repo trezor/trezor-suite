@@ -8,6 +8,7 @@ import {
     type YieldFlowResolvedData,
     composeYieldDepositTransactionThunk,
     getYieldDepositErrorTranslationKey,
+    getYieldFlowTransactionToken,
     notifyEarnTransactionBroadcastThunk,
     openYieldApproveModal,
     setYieldError,
@@ -132,7 +133,7 @@ export const submitYieldDepositThunk = createThunk<
             const sendResult = await sendYieldTransaction({
                 account: flowData.account,
                 amount,
-                token: flowData.token,
+                transactionToken: getYieldFlowTransactionToken({ flowData, flowType }),
                 unsignedTransaction: result.unsignedTransaction,
                 flowKey,
                 flowType,

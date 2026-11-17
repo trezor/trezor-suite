@@ -6,11 +6,7 @@ import {
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin';
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
-import {
-    getEarnYieldClaimContractAddress,
-    getNetwork,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { getEarnYieldClaimContractAddress } from '@suite-common/wallet-config';
 import {
     type ComposeYieldEvmTransactionErrorReason,
     type StablecoinYieldAccountRewards,
@@ -81,10 +77,6 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                   type: 'ready',
                   transaction: {
                       symbol: account.symbol,
-                      token: {
-                          decimals: getNetwork(account.symbol).decimals,
-                          symbol: getNetworkDisplaySymbol(account.symbol),
-                      },
                       unsignedTransaction: result.unsignedTransaction,
                   },
               };

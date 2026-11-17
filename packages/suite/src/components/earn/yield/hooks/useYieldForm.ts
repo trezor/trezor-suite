@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ResolvedYieldFlowData,
     type YieldFlowFormValues,
@@ -71,7 +70,7 @@ export const useYieldForm = ({
     const methodsRef = useCurrentRef(methods);
     const unwrapDefaultAmountRef = useRef<string | null>(null);
 
-    const { token, receiptToken } = flowData;
+    const { token } = flowData;
     const depositedAmount = flowData.depositedAmount ?? '0';
     const depositedSharesAmount = flowData.depositedSharesAmount ?? '0';
 
@@ -89,7 +88,7 @@ export const useYieldForm = ({
         methods,
         symbol: rateToken?.symbol,
         tokenAddress: rateToken?.tokenAddress,
-        decimals: token?.decimals ?? getNetwork(account.symbol).decimals,
+        decimals: vault.token.decimals,
         vaultId: vault.id,
     });
     const resetAmountsRef = useCurrentRef(resetAmounts);
@@ -140,25 +139,27 @@ export const useYieldForm = ({
     // — that would sweep in unrelated WETH (trezor/trezor-suite#30559).
     const pricePerShareState = vault.state?.pricePerShareState;
     const unwrapDefaultAmount = useMemo(() => {
-        if (!token || !receiptToken || !isYieldWithdrawFlow(flowType)) {
+        if (!isYieldWithdrawFlow(flowType)) {
             return '';
         }
 
         return getYieldUnwrapDefaultAmount({
+            networkSymbol: account.symbol,
             flowType,
             withdrawnAmount: session.result.completedAmount,
-            token,
-            receiptToken,
+            token: vault.token,
+            receiptToken: vault.outputToken,
             pricePerShareState,
             persistedAssetAmount: session.result.completedReceiptAmount,
         });
     }, [
+        account.symbol,
         flowType,
         pricePerShareState,
-        receiptToken,
         session.result.completedAmount,
         session.result.completedReceiptAmount,
-        token,
+        vault.outputToken,
+        vault.token,
     ]);
 
     useEffect(() => {

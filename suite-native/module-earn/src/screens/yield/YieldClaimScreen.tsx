@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { getClaimFeeWarning } from '@suite-common/earn-stablecoin';
+import {
+    getClaimFeeWarning,
+    yieldAccountRewardsToTokenMetadataSources,
+} from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -49,7 +52,6 @@ import { useYieldClaimRewards } from '../../hooks/yield/useYieldClaimRewards';
 import { useYieldPendingTransaction } from '../../hooks/yield/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../../hooks/yield/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../../hooks/yield/useYieldSession';
-import { yieldAccountRewardsToTokenMetadataSources } from '../../utils/yield/yieldAccountRewardsToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaim>;

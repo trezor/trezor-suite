@@ -2,6 +2,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { injectIsWrappedNativeToken } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -13,7 +14,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
 import {
@@ -41,7 +41,10 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
-    const { analytics } = useServices(injectDesktopAnalytics);
+    const { analytics, isWrappedNativeToken } = useServices(
+        injectDesktopAnalytics,
+        injectIsWrappedNativeToken,
+    );
 
     const { handleAction, onCancelClick } = useEarnInANutshell({
         flow: EarnFlow.Yield,

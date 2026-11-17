@@ -15,6 +15,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite-common/earn-stablecoin": "workspace:*",
+        "@suite-common/token": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/account": "workspace:*",
         "@suite/intl": "workspace:*",

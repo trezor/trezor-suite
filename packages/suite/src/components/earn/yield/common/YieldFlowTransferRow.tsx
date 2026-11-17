@@ -28,10 +28,7 @@ export const YieldFlowTransferRow = ({
                 <Translation id={inputLabelId} />
             </Text>
             <YieldTokenValue
-                token={{
-                    ...input.token,
-                    contractAddress: input.token.contractAddress ?? null,
-                }}
+                token={input.token}
                 amount={input.amount}
                 data-testid="@yield/flow-complete/transfer/input"
             />
@@ -44,10 +41,7 @@ export const YieldFlowTransferRow = ({
                 <Translation id={outputLabelId} />
             </Text>
             <YieldTokenValue
-                token={{
-                    ...output.token,
-                    contractAddress: output.token.contractAddress ?? null,
-                }}
+                token={output.token}
                 amount={output.amount}
                 data-testid="@yield/flow-complete/transfer/output"
             />

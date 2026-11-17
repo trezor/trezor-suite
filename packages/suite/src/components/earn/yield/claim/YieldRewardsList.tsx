@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
-import { toTokenSymbol } from '@suite-common/tokens';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row, Spinner, Text } from '@trezor/components';
@@ -15,7 +15,7 @@ type YieldRewardsListProps = {
 };
 
 export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsListProps) => {
-    const { BaseCurrencyAmountFormatter, CryptoAmountFormatter } = useFormatters();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
 
     if (isLoading) {
         return (
@@ -40,13 +40,6 @@ export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsList
                     value: asAmountSubunit(new BigNumber(reward.claimable)),
                     decimals: reward.token.decimals,
                 });
-                const formattedAmount = CryptoAmountFormatter.format(claimableUnits.toString(), {
-                    symbol: toTokenSymbol(reward.token.symbol),
-                    withSymbol: false,
-                    isBalance: true,
-                    maxDisplayedDecimals: reward.token.decimals,
-                    isEllipsisAppended: false,
-                });
                 const formattedFiatAmount = reward.fiat.claimable
                     ? BaseCurrencyAmountFormatter.format(
                           asBaseCurrencyAmount(new BigNumber(reward.fiat.claimable)),
@@ -56,11 +49,10 @@ export const YieldRewardsList = ({ accountRewards, isLoading }: YieldRewardsList
                 return (
                     <YieldRewardItem
                         key={`${reward.token.address}:${index}`}
-                        formattedAmount={formattedAmount}
+                        amount={claimableUnits}
                         formattedFiatAmount={formattedFiatAmount}
-                        tokenSymbol={reward.token.symbol}
-                        tokenAddress={reward.token.address}
                         networkSymbol={accountRewards.account.symbol}
+                        contractAddress={toTokenAddress(reward.token.address)}
                     />
                 );
             })}

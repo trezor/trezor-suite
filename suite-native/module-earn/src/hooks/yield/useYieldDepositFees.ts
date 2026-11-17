@@ -4,6 +4,7 @@ import {
     type ResolvedYieldFlowData,
     type YieldDepositErrorReason,
     composeYieldDepositTransactionThunk,
+    getYieldFlowTransactionToken,
 } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -72,7 +73,7 @@ export const useYieldDepositFees = ({
                 transaction: {
                     receiptAmount: result.receiptAmount,
                     symbol: flowData.account.symbol,
-                    token: flowData.token,
+                    token: getYieldFlowTransactionToken({ flowData, flowType: 'deposit' }),
                     unsignedTransaction: result.unsignedTransaction,
                 },
             };

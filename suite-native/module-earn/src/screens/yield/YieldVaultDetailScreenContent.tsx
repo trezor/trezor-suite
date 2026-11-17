@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { yieldVaultDetailToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { useFormatters } from '@suite-common/formatters';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
@@ -44,7 +45,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { ApyDottedUnderline } from '../../components/earn/ApyDottedUnderline';
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
-import { yieldVaultDetailToTokenMetadataSources } from '../../utils/yield/yieldVaultDetailToTokenMetadataSources';
 
 const stakedSectionStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.sp16,
@@ -80,7 +80,7 @@ export const YieldVaultDetailScreenContent = ({
         tokenContract: yieldToken.contract,
     });
 
-    const { vault, apy, depositedSharesAmount, token, wrappedNativeSymbol } = yieldFlowData;
+    const { vault, apy, depositedSharesAmount, token, isWrappedNativeVault } = yieldFlowData;
 
     const apyValue = apy && isApyAvailable(apy) ? PercentageFormatter.format(apy) : null;
 
@@ -290,7 +290,7 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.yearlyRewards" />
                             </Text>
 
-                            {wrappedNativeSymbol ? (
+                            {isWrappedNativeVault ? (
                                 <CompactCryptoAmountFormatter
                                     value={asDecimalTokenAmount(yearlyRewards)}
                                     symbol={account.symbol}
@@ -312,7 +312,7 @@ export const YieldVaultDetailScreenContent = ({
                                     <Translation
                                         id="earn.yearlyRewardsDeposited"
                                         values={{
-                                            amountWithSymbol: wrappedNativeSymbol ? (
+                                            amountWithSymbol: isWrappedNativeVault ? (
                                                 <CompactCryptoAmountFormatter
                                                     value={asDecimalTokenAmount(
                                                         depositedPosition.balance,
@@ -347,7 +347,7 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.potentialRewards" />
                             </Text>
 
-                            {wrappedNativeSymbol ? (
+                            {isWrappedNativeVault ? (
                                 <CompactCryptoAmountFormatter
                                     value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
                                     symbol={account.symbol}
@@ -369,7 +369,7 @@ export const YieldVaultDetailScreenContent = ({
                                     <Translation
                                         id="earn.potentialRewardsIfYouAdd"
                                         values={{
-                                            amountWithSymbol: wrappedNativeSymbol ? (
+                                            amountWithSymbol: isWrappedNativeVault ? (
                                                 <CompactCryptoAmountFormatter
                                                     value={asDecimalTokenAmount(
                                                         potentialRewards.additionalDepositAmount,

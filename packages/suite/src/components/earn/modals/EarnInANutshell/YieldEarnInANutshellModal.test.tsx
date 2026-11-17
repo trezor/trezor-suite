@@ -20,7 +20,7 @@ const mockOnCancelClick = mock<ReturnType<typeof useEarnInANutshell>['onCancelCl
 
 jest.mock('@trezor/dependency-injection', () => ({
     ...jest.requireActual('@trezor/dependency-injection'),
-    useServices: () => ({ analytics: mockAnalytics }),
+    useServices: () => ({ analytics: mockAnalytics, isWrappedNativeToken: () => false }),
 }));
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),

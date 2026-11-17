@@ -1,36 +1,34 @@
+import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
-import { type TokenSymbol } from '@suite-common/tokens';
+import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Column, Paragraph } from '@trezor/components';
 
+import { EarnYieldCompactAmount } from './EarnYieldCompactAmount';
 import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
 
 type EarnYieldYearlyRewardsProps = {
-    symbol: TokenSymbol;
+    token: YieldFlowDisplayToken;
     rewards: string;
     apy: number | null;
-    tokenDecimals: number;
     hasDisplayableDepositedAmount: boolean;
-    formattedDepositedAmount: string;
-    displaySymbol: string;
+    depositedAmount: string;
 };
 
 export const EarnYieldYearlyRewards = ({
-    symbol,
+    token,
     rewards,
     apy,
-    tokenDecimals,
     hasDisplayableDepositedAmount,
-    formattedDepositedAmount,
-    displaySymbol,
+    depositedAmount,
 }: EarnYieldYearlyRewardsProps) => (
     <Column gap={4}>
         <EarnRewardsAmount
             data-testid="@earn/dashboard/yearly-rewards/amount"
-            symbol={symbol}
+            symbol={token.networkSymbol}
+            contractAddress={token.contractAddress}
             rewards={rewards}
             apy={apy}
-            tokenDecimals={tokenDecimals}
         />
 
         {hasDisplayableDepositedAmount && (
@@ -43,7 +41,17 @@ export const EarnYieldYearlyRewards = ({
                 <HiddenPlaceholder>
                     <Translation
                         id="TR_EARN_YIELD_DASHBOARD_DEPOSITED"
-                        values={{ amount: formattedDepositedAmount, displaySymbol }}
+                        values={{
+                            amount: (
+                                <EarnYieldCompactAmount amount={depositedAmount} token={token} />
+                            ),
+                            displaySymbol: (
+                                <AssetSymbol
+                                    networkSymbol={token.networkSymbol}
+                                    contractAddress={token.contractAddress}
+                                />
+                            ),
+                        }}
                     />
                 </HiddenPlaceholder>
             </Paragraph>

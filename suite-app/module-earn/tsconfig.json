@@ -4,6 +4,11 @@
     "include": [".", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/earn-stablecoin"
+        },
+        { "path": "../../suite-common/token" },
+        { "path": "../../suite-common/tokens" },
+        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../../suite/account" },

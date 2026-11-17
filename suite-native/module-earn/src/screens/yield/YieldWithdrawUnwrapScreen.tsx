@@ -1,5 +1,7 @@
+import { yieldFlowDataToTokenMetadataSources } from '@suite-common/earn-stablecoin';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { getNetwork } from '@suite-common/wallet-config';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { YieldDisabledAlert } from '@suite-native/earn';
 import { Form } from '@suite-native/forms';
@@ -15,7 +17,6 @@ import { YieldWithdrawStepCard } from '../../components/yield/YieldWithdrawStepC
 import { YieldWrappedNativeReceivingCard } from '../../components/yield/YieldWrappedNativeReceivingCard';
 import { YieldWrappedNativeStepFooter } from '../../components/yield/YieldWrappedNativeStepFooter';
 import { useYieldWithdrawUnwrapController } from '../../hooks/yield/controllers/useYieldWithdrawUnwrapController';
-import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldWithdrawUnwrapScreen = () => {
     const controller = useYieldWithdrawUnwrapController();
@@ -39,7 +40,6 @@ export const YieldWithdrawUnwrapScreen = () => {
         simulationSheet,
         tokenContract,
         wrappedTokenContract,
-        wrappedTokenSymbol,
         yieldFlowData,
     } = controller;
     const { account } = yieldFlowData;
@@ -86,6 +86,7 @@ export const YieldWithdrawUnwrapScreen = () => {
                             currentStepId="unwrap"
                             hasUnwrapStep
                             networkSymbol={account.symbol}
+                            wrappedTokenContract={wrappedTokenContract}
                         />
 
                         <Box paddingHorizontal="sp16">
@@ -94,7 +95,14 @@ export const YieldWithdrawUnwrapScreen = () => {
                                     id="earn.yieldWithdrawFlowScreen.unwrapStepDescription"
                                     values={{
                                         networkName: getNetwork(account.symbol).name,
-                                        tokenSymbol: wrappedTokenSymbol,
+                                        tokenSymbol: (
+                                            <AssetSymbol
+                                                networkSymbol={account.symbol}
+                                                contractAddress={wrappedTokenContract}
+                                                variant="body-sm"
+                                                color="contentSecondary"
+                                            />
+                                        ),
                                     }}
                                 />
                             </Text>

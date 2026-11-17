@@ -2,6 +2,7 @@ import { Form } from '@suite/form';
 import { ContextMessage } from '@suite/message-system';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
@@ -38,17 +39,19 @@ export const YieldWithdraw = ({ account, vault }: YieldWithdrawProps) => {
     const isFormHidden = isDisabled && !yieldWithdrawContextValues.hasTransactionActivity;
 
     return (
-        <Column gap={24}>
-            <ContextMessage context={Context.getEarnYield('withdraw')} />
-            {isFormHidden ? (
-                <YieldDisabledBanner type="withdraw" content={content} variant={variant} />
-            ) : (
-                <YieldWithdrawContext.Provider value={yieldWithdrawContextValues}>
-                    <Form form={yieldWithdrawContextValues.methods} formState={formState}>
-                        <YieldWithdrawForm />
-                    </Form>
-                </YieldWithdrawContext.Provider>
-            )}
-        </Column>
+        <TokenMetadataProvider sources={yieldWithdrawContextValues.tokenMetadataSources}>
+            <Column gap={24}>
+                <ContextMessage context={Context.getEarnYield('withdraw')} />
+                {isFormHidden ? (
+                    <YieldDisabledBanner type="withdraw" content={content} variant={variant} />
+                ) : (
+                    <YieldWithdrawContext.Provider value={yieldWithdrawContextValues}>
+                        <Form form={yieldWithdrawContextValues.methods} formState={formState}>
+                            <YieldWithdrawForm />
+                        </Form>
+                    </YieldWithdrawContext.Provider>
+                )}
+            </Column>
+        </TokenMetadataProvider>
     );
 };

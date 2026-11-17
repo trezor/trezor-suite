@@ -1,6 +1,5 @@
 import { AssetIcon } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { toTokenAddress } from '@suite-common/tokens';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Card, IconButton, Row, Text } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
@@ -22,9 +21,9 @@ export const YieldApprovedAmountCard = ({
     hasError = false,
     onRevoke,
 }: YieldApprovedAmountCardProps) => {
-    if (!amount || amount.trim() === '' || amount === '0' || !token.contractAddress) return null;
+    const { networkSymbol, contractAddress } = token;
 
-    const contractAddress = toTokenAddress(token.contractAddress);
+    if (!amount || amount.trim() === '' || amount === '0' || !contractAddress) return null;
 
     return (
         <Card type="contrast" paddingType="small">
@@ -35,14 +34,14 @@ export const YieldApprovedAmountCard = ({
                 <Row alignItems="center" gap={8}>
                     <AssetIcon
                         size={20}
-                        networkSymbol={token.networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
                         showNetworkIcon
                         isBordered={false}
                     />
                     <AllowanceAmount
                         amount={amount}
-                        networkSymbol={token.networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
                         isLoading={isLoading}
                         hasError={hasError}
