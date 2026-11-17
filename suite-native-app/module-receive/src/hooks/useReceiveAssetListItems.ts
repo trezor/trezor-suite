@@ -63,8 +63,11 @@ export const useReceiveAssetListItems = ({
         setOtherAssetsLimit(OTHER_ASSETS_PAGE_SIZE);
     }, []);
 
+    // Global Receive lists only the ranked catalog, built from Trezor's token definitions, even
+    // on networks whose definitions are not loaded.
     const metadataSources = receiveAssetOptionsToTokenMetadataSources(
         [...myAssets, ...otherAssets].map(item => item.asset),
+        { isRecognized: true },
     );
 
     return { items, metadataSources, loadMoreOtherAssets, resetOtherAssetsLimit };
