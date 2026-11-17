@@ -46,7 +46,8 @@
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../trading-fixtures" }
+        { "path": "../trading-fixtures" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

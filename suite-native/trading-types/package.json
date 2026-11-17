@@ -23,6 +23,7 @@
         "@trezor/blockchain-link-types": "workspace:*"
     },
     "devDependencies": {
+        "@trezor/requirements": "workspace:*",
         "@types/invity-api": "^1.1.23"
     }
 }
