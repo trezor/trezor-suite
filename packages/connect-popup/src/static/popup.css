@@ -119,8 +119,7 @@ body {
         margin-left: 34px;
     }
 }
-.deprecation-banner strong,
-.deprecation-banner span {
+.deprecation-banner strong {
     font-weight: 600;
 }
 main {
