@@ -1,8 +1,10 @@
 import { type ReactElement } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { Icon, Input } from '@trezor/components';
+import { Icon, Input, Row } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
+
+import { AddCustomNetworkButton } from './AddCustomNetworkButton';
 
 type NetworkSettingsSearchInputProps = {
     searchQuery: string;
@@ -10,6 +12,7 @@ type NetworkSettingsSearchInputProps = {
     onSearchClear: () => void;
     dataTestId?: string;
     rightContent?: ReactElement;
+    onAddNetworkClick?: () => void;
 };
 
 export const NetworkSettingsSearchInput = ({
@@ -18,10 +21,11 @@ export const NetworkSettingsSearchInput = ({
     onSearchClear,
     dataTestId = '@settings-coins/network-search-input',
     rightContent,
+    onAddNetworkClick,
 }: NetworkSettingsSearchInputProps) => {
     const { translationString } = useTranslation();
 
-    return (
+    const input = (
         <Input
             value={searchQuery}
             onChange={event => onSearchChange(event.target.value)}
@@ -35,5 +39,16 @@ export const NetworkSettingsSearchInput = ({
             }
             rightContent={searchQuery ? undefined : rightContent}
         />
+    );
+
+    if (!onAddNetworkClick) {
+        return input;
+    }
+
+    return (
+        <Row gap={8} width="100%" alignItems="center">
+            {input}
+            <AddCustomNetworkButton onClick={onAddNetworkClick} />
+        </Row>
     );
 };

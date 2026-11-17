@@ -96,6 +96,13 @@ export const NotificationRenderer = ({
                 values: { networkName: notification.networkName },
             });
 
+        case 'custom-network-added':
+            return renderNotificationView(render, notification, {
+                variant: 'success',
+                message: 'TR_NETWORK_ADDED_TOAST',
+                values: { networkName: notification.networkName },
+            });
+
         case 'accounts-discovered':
             return renderNotificationView(render, notification, {
                 variant: 'transparent',

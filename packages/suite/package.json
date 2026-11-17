@@ -219,7 +219,8 @@
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
-        "styled-components": "^6.5.3"
+        "styled-components": "^6.5.3",
+        "viem": "^2.57.2"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "7.0.1",
