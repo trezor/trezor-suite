@@ -1,14 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type StakingAccountProductRootState,
     type StakingRootState,
     formatStakingAmount,
-    getStakingDaysUntil,
     selectIsStakingOperationPending,
-    selectStakingAccountProductDescriptor,
-    selectStakingAccountTotals,
-    selectStakingPosition,
+    useStakingAccountPosition,
+    useStakingDaysUntil,
     useStakingPeriods,
 } from '@suite-common/earn-staking';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
@@ -25,9 +22,9 @@ import {
 } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { useNow } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { StakingDaysLabel } from './StakingDaysLabel';
 import {
     StakingDetailModalStep,
     StakingManagementModalStepIndicator,
@@ -51,8 +48,6 @@ const backgroundStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillRaised,
 }));
 
-const DAY_COUNT_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
-
 export const StakingManagementPendingStakeModal = ({
     ref,
     accountKey,
@@ -61,28 +56,17 @@ export const StakingManagementPendingStakeModal = ({
     const { applyStyle } = useNativeStyles();
     const { networkSymbol } = parseAccountKey(accountKey);
 
-    const productId = useSelector(
-        (state: StakingAccountProductRootState) =>
-            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
-    );
-    const position = useSelector((state: StakingRootState) =>
-        productId === null ? null : selectStakingPosition(state, accountKey, productId),
-    );
-    const totals = useSelector((state: StakingRootState) =>
-        selectStakingAccountTotals(state, accountKey),
-    );
+    const { productId, position, totals } = useStakingAccountPosition(accountKey);
     const isStakeConfirming = useSelector((state: StakingRootState) =>
         selectIsStakingOperationPending(state, accountKey, 'stake'),
     );
     const { entryPeriodDays } = useStakingPeriods(productId);
-    const now = useNow(DAY_COUNT_REFRESH_INTERVAL_MS);
-
-    const totalStakePending = formatStakingAmount({ amount: totals.pending, networkSymbol });
 
     // The first activation dates the stake; a position that cannot date it shows the entry period.
-    const activationAt = position?.activations[0]?.availableAt ?? null;
-    const daysUntilActive =
-        activationAt === null ? entryPeriodDays : getStakingDaysUntil(activationAt, now);
+    const daysUntilActivation = useStakingDaysUntil(position?.activations[0]?.availableAt ?? null);
+    const daysUntilActive = daysUntilActivation ?? entryPeriodDays;
+
+    const totalStakePending = formatStakingAmount({ amount: totals.pending, networkSymbol });
 
     const currentStep: StakingDetailModalStep = (() => {
         if (isStakeConfirming) return StakingDetailModalStep.TransactionConfirmed;
@@ -93,27 +77,21 @@ export const StakingManagementPendingStakeModal = ({
 
     const isSolanaStaking = getNetworkType(networkSymbol) === 'solana';
 
-    const inProgressLabel = (() => {
-        if (isSolanaStaking) {
-            return daysUntilActive === null ? (
-                <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriodWithoutDays" />
-            ) : (
-                <Translation
-                    id="earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriod"
-                    values={{ days: daysUntilActive }}
-                />
-            );
-        }
-
-        return daysUntilActive === null ? (
-            <Translation id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriodWithoutDays" />
-        ) : (
-            <Translation
-                id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriod"
-                values={{ days: daysUntilActive }}
-            />
-        );
-    })();
+    const inProgressLabel = (
+        <StakingDaysLabel
+            days={daysUntilActive}
+            withDaysId={
+                isSolanaStaking
+                    ? 'earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriod'
+                    : 'earn.stakingManagementScreen.pendingItemModal.stepEntryPeriod'
+            }
+            withoutDaysId={
+                isSolanaStaking
+                    ? 'earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriodWithoutDays'
+                    : 'earn.stakingManagementScreen.pendingItemModal.stepEntryPeriodWithoutDays'
+            }
+        />
+    );
 
     const completedLabel = isSolanaStaking ? (
         <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepStakedReceivingRewards" />

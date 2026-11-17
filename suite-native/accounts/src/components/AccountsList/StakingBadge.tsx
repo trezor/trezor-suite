@@ -7,6 +7,7 @@ import {
     selectDeviceStakingPositionEntriesBySymbol,
     selectHasStakingAccountWarning,
 } from '@suite-common/earn-staking';
+import { hasStakingPositionWarning } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { CompoundRoundedIcon } from '@suite-native/atoms';
@@ -32,7 +33,7 @@ const WARNING_ICON: CompoundIcon = {
 };
 
 const hasOutdatedProvider = ({ position }: StakingPositionEntry) =>
-    position.warnings.some(warning => warning.code === 'outdated-provider');
+    hasStakingPositionWarning(position, 'outdated-provider');
 
 type StakingBadgeProps = {
     networkSymbol: NetworkSymbol;

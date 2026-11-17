@@ -34,6 +34,8 @@ import {
     selectStakingAccountAmount,
     selectStakingAccountBalanceWithStaking,
     selectStakingAccountFiatAmount,
+    selectStakingAccountPositionDetails,
+    selectStakingAccountPositionEntry,
     selectStakingPositionEntriesByAccount,
 } from './stakingAccountSelectors';
 import { mockStakingState } from '../../mocks';
@@ -259,6 +261,66 @@ describe('selectCountedStakingPositionEntriesByAccount', () => {
         expect(selectCountedStakingPositionEntriesByAccount(createState(), solAccount.key)).toBe(
             selectCountedStakingPositionEntriesByAccount(createState(), solAccount.key),
         );
+    });
+});
+
+describe('selectStakingAccountPositionEntry', () => {
+    it('is the counted entry of the account', () => {
+        expect(selectStakingAccountPositionEntry(createState(), solAccount.key)).toEqual({
+            accountKey: solAccount.key,
+            position: solPosition,
+            descriptor: sol,
+        });
+    });
+
+    it('is null without a counted position', () => {
+        expect(selectStakingAccountPositionEntry(createState(), unknownAccountKey)).toBeNull();
+        expect(
+            selectStakingAccountPositionEntry(
+                createState({ positions: { [solAccount.key]: [solExternalPosition] } }),
+                solAccount.key,
+            ),
+        ).toBeNull();
+    });
+
+    it('keeps the reference while the state is unchanged', () => {
+        const state = createState();
+
+        expect(selectStakingAccountPositionEntry(state, ethAccount.key)).toBe(
+            selectStakingAccountPositionEntry(state, ethAccount.key),
+        );
+    });
+});
+
+describe('selectStakingAccountPositionDetails', () => {
+    const tronDetails = {
+        kind: 'tron-staking' as const,
+        frozen: { energy: amount('0'), bandwidth: amount('0') },
+        delegated: { energy: amount('0'), bandwidth: amount('0') },
+        votingPower: amount('5000000'),
+        unallocatedVotingPower: amount('2000000'),
+        rewardClaimAvailableAt: null,
+    };
+    const state = createState({
+        positions: { ...POSITIONS, [trxAccount.key]: [{ ...trxPosition, details: tronDetails }] },
+    });
+
+    it('is the details of the account position when they are of the kind', () => {
+        expect(selectStakingAccountPositionDetails(state, trxAccount.key, 'tron-staking')).toBe(
+            tronDetails,
+        );
+    });
+
+    it('is null for details of another kind or without a position', () => {
+        expect(
+            selectStakingAccountPositionDetails(state, trxAccount.key, 'cardano-delegation'),
+        ).toBeNull();
+        expect(
+            selectStakingAccountPositionDetails(state, ethAccount.key, 'tron-staking'),
+        ).toBeNull();
+        expect(
+            selectStakingAccountPositionDetails(state, unknownAccountKey, 'tron-staking'),
+        ).toBeNull();
     });
 });
 

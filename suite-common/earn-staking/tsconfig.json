@@ -20,6 +20,7 @@
         {
             "path": "../../networks/network-module/network-module-types"
         },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/zod" },

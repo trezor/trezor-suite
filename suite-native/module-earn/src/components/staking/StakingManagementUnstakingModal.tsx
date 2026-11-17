@@ -1,11 +1,6 @@
-import { useSelector } from 'react-redux';
-
 import {
-    type StakingAccountProductRootState,
-    type StakingRootState,
     formatStakingAmount,
-    selectStakingAccountProductDescriptor,
-    selectStakingAccountTotals,
+    useStakingAccountPosition,
     useStakingPeriods,
 } from '@suite-common/earn-staking';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
@@ -24,6 +19,7 @@ import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { StakingDaysLabel } from './StakingDaysLabel';
 import {
     StakingDetailModalStep,
     StakingManagementModalStepIndicator,
@@ -59,13 +55,7 @@ export const StakingManagementUnstakingModal = ({
     const { applyStyle } = useNativeStyles();
     const { networkSymbol } = parseAccountKey(accountKey);
 
-    const productId = useSelector(
-        (state: StakingAccountProductRootState) =>
-            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
-    );
-    const totals = useSelector((state: StakingRootState) =>
-        selectStakingAccountTotals(state, accountKey),
-    );
+    const { productId, totals } = useStakingAccountPosition(accountKey);
     const { exitPeriodDays } = useStakingPeriods(productId);
 
     const unstakingBalance = formatStakingAmount({ amount: totals.unstaking, networkSymbol });
@@ -84,27 +74,21 @@ export const StakingManagementUnstakingModal = ({
 
     const isSolanaStaking = getNetworkType(networkSymbol) === 'solana';
 
-    const inProgressLabel = (() => {
-        if (isSolanaStaking) {
-            return exitPeriodDays === null ? (
-                <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepCoolDownPeriodWithoutDays" />
-            ) : (
-                <Translation
-                    id="earn.stakingManagementScreen.pendingItemModal.sol.stepCoolDownPeriod"
-                    values={{ days: exitPeriodDays }}
-                />
-            );
-        }
-
-        return exitPeriodDays === null ? (
-            <Translation id="earn.stakingManagementScreen.pendingItemModal.stepWithdrawalPeriodWithoutDays" />
-        ) : (
-            <Translation
-                id="earn.stakingManagementScreen.pendingItemModal.stepWithdrawalPeriod"
-                values={{ days: exitPeriodDays }}
-            />
-        );
-    })();
+    const inProgressLabel = (
+        <StakingDaysLabel
+            days={exitPeriodDays}
+            withDaysId={
+                isSolanaStaking
+                    ? 'earn.stakingManagementScreen.pendingItemModal.sol.stepCoolDownPeriod'
+                    : 'earn.stakingManagementScreen.pendingItemModal.stepWithdrawalPeriod'
+            }
+            withoutDaysId={
+                isSolanaStaking
+                    ? 'earn.stakingManagementScreen.pendingItemModal.sol.stepCoolDownPeriodWithoutDays'
+                    : 'earn.stakingManagementScreen.pendingItemModal.stepWithdrawalPeriodWithoutDays'
+            }
+        />
+    );
 
     const completedLabel = isSolanaStaking ? (
         <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepUnstakedReadyToClaim" />

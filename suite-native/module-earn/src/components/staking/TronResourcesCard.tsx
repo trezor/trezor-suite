@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { type StakingRootState, formatStakingAmount } from '@suite-common/earn-staking';
+import {
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingAccountPositionDetails,
+} from '@suite-common/earn-staking';
 import { type StakingAmount } from '@suite-common/earn-staking-common';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -20,7 +24,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakingVotesBottomSheet } from './TronStakingVotesBottomSheet';
-import { selectTronStakingDetails } from '../../tronStakingSelectors';
 
 type TronResourcesCardProps = {
     accountKey: AccountKey;
@@ -61,8 +64,9 @@ export const TronResourcesCard = ({ accountKey }: TronResourcesCardProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+
     const stakingDetails = useSelector((state: StakingRootState) =>
-        selectTronStakingDetails(state, accountKey),
+        selectStakingAccountPositionDetails(state, accountKey, 'tron-staking'),
     );
 
     // Resource meters are account data, not staking state.

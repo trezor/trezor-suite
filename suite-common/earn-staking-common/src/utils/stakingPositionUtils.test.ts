@@ -6,6 +6,7 @@ import {
     getStakingPositionPrincipal,
     getStakingPositionRate,
     hasPendingStakingOperation,
+    hasStakingPositionWarning,
     isStakingPositionActive,
 } from './stakingPositionUtils';
 import { stakingProviderIdSchema } from '../stakingProvider';
@@ -155,6 +156,26 @@ describe('hasPendingStakingOperation', () => {
     it('answers for the given operation only', () => {
         expect(hasPendingStakingOperation(position, 'stake')).toBe(true);
         expect(hasPendingStakingOperation(position, 'unstake')).toBe(false);
+    });
+});
+
+describe('hasStakingPositionWarning', () => {
+    const position = mockStakingPosition({
+        warnings: [
+            {
+                code: 'outdated-provider',
+                providerId: stakingProviderIdSchema.parse('fivebinaries'),
+            },
+        ],
+    });
+
+    it('finds a warning the position carries', () => {
+        expect(hasStakingPositionWarning(position, 'outdated-provider')).toBe(true);
+    });
+
+    it('is false for a warning the position does not carry', () => {
+        expect(hasStakingPositionWarning(position, 'missing-drep')).toBe(false);
+        expect(hasStakingPositionWarning(mockStakingPosition(), 'outdated-provider')).toBe(false);
     });
 });
 

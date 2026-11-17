@@ -8,7 +8,10 @@ import {
     selectIsStakingAccountDelegatedOutside,
     useStakingRate,
 } from '@suite-common/earn-staking';
-import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
+import {
+    getStakingPositionAmount,
+    hasStakingPositionWarning,
+} from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -52,9 +55,7 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
         selectIsStakingAccountDelegatedOutside(state, accountKey),
     );
 
-    const hasOutdatedProvider = position.warnings.some(
-        warning => warning.code === 'outdated-provider',
-    );
+    const hasOutdatedProvider = hasStakingPositionWarning(position, 'outdated-provider');
 
     const amount = formatStakingAmount({
         amount: getStakingPositionAmount(position),

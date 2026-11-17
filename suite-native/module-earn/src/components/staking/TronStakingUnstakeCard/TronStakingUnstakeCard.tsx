@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     type StakingRootState,
     formatStakingAmount,
-    selectCountedStakingPositionEntriesByAccount,
+    selectStakingAccountPositionEntry,
 } from '@suite-common/earn-staking';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -30,13 +30,13 @@ type TronStakingUnstakeCardProps = {
 };
 
 export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardProps) => {
-    const positionEntry = useSelector(
-        (state: StakingRootState) =>
-            selectCountedStakingPositionEntriesByAccount(state, accountKey)[0] ?? null,
-    );
+    const [isExpanded, setIsExpanded] = useState(false);
+
     const nowMs = useNow(UNSTAKING_REFRESH_INTERVAL_MS);
 
-    const [isExpanded, setIsExpanded] = useState(false);
+    const positionEntry = useSelector((state: StakingRootState) =>
+        selectStakingAccountPositionEntry(state, accountKey),
+    );
 
     const handleToggle = () => {
         setIsExpanded(!isExpanded);

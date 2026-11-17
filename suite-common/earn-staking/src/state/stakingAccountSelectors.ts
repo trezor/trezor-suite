@@ -2,10 +2,12 @@ import {
     type StakingAmount,
     type StakingOperation,
     type StakingPosition,
+    type StakingPositionDetails,
     type StakingPositionWarningCode,
     type StakingProductDescriptor,
     getStakingPositionAmount,
     hasPendingStakingOperation,
+    hasStakingPositionWarning,
     isStakingPositionActive,
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
@@ -94,6 +96,33 @@ export const selectCountedStakingPositionEntriesByAccount = createWeakMapSelecto
         ),
 );
 
+// With today's catalog an account has at most one counted position.
+export const selectStakingAccountPositionEntry = (
+    state: StakingRootState,
+    accountKey: AccountKey,
+): StakingPositionEntry | null =>
+    selectCountedStakingPositionEntriesByAccount(state, accountKey)[0] ?? null;
+
+export type StakingPositionDetailsOfKind<TKind extends StakingPositionDetails['kind']> = Extract<
+    StakingPositionDetails,
+    { kind: TKind }
+>;
+
+const isStakingPositionDetailsOfKind = <TKind extends StakingPositionDetails['kind']>(
+    details: StakingPositionDetails,
+    kind: TKind,
+): details is StakingPositionDetailsOfKind<TKind> => details.kind === kind;
+
+export const selectStakingAccountPositionDetails = <TKind extends StakingPositionDetails['kind']>(
+    state: StakingRootState,
+    accountKey: AccountKey,
+    kind: TKind,
+): StakingPositionDetailsOfKind<TKind> | null => {
+    const details = selectStakingAccountPositionEntry(state, accountKey)?.position.details ?? null;
+
+    return details !== null && isStakingPositionDetailsOfKind(details, kind) ? details : null;
+};
+
 export const selectIsStakingAccountActive = (
     state: StakingRootState,
     accountKey: AccountKey,
@@ -130,7 +159,7 @@ export const selectHasStakingAccountWarning = (
     code: StakingPositionWarningCode,
 ): boolean =>
     selectStakingPositionsByAccount(state, accountKey).some(position =>
-        position.warnings.some(warning => warning.code === code),
+        hasStakingPositionWarning(position, code),
     );
 
 const selectAccountAvailableBalanceParam = (state: AccountsRootState, accountKey: AccountKey) =>

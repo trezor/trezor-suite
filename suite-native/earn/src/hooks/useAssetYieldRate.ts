@@ -8,6 +8,7 @@ import {
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     type StakingAccessRootState,
+    selectIsStakingManageableSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     useNetworkStakingRate,
     useStakingAccess,
@@ -22,7 +23,6 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 
 import { useMessageSystemYield } from './useMessageSystemYield';
-import { selectIsStakingManageableSymbol } from '../stakingSelectors';
 import { type YieldRateLabelType, getYieldRateLabelType } from '../utils/getYieldRateLabelType';
 import { getBestPromotedRate } from '../utils/promotedRateUtils';
 

@@ -56,6 +56,12 @@ export {
     type UseNetworkStakingRateParams,
 } from './hooks/useNetworkStakingRate';
 export { useStakingAccess } from './hooks/useStakingAccess';
+export {
+    useStakingAccountPosition,
+    type StakingAccountPosition,
+    type StakingAccountPositionRootState,
+} from './hooks/useStakingAccountPosition';
+export { useStakingDaysUntil } from './hooks/useStakingDaysUntil';
 export { useStakingPeriods, type StakingPeriods } from './hooks/useStakingPeriods';
 export {
     useStakingProductInfo,
@@ -82,6 +88,7 @@ export type {
 } from './stakingServices';
 export {
     selectIsStakingAccountDelegatedOutside,
+    selectIsStakingManageableSymbol,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakeableStakingProductDescriptorsBySymbol,
     selectStakingAccountProductDescriptor,
@@ -103,8 +110,11 @@ export {
     selectStakingAccountAmount,
     selectStakingAccountBalanceWithStaking,
     selectStakingAccountFiatAmount,
+    selectStakingAccountPositionDetails,
+    selectStakingAccountPositionEntry,
     selectStakingPositionEntriesByAccount,
     type StakingAccountFiatRootState,
+    type StakingPositionDetailsOfKind,
     type StakingPositionEntry,
 } from './state/stakingAccountSelectors';
 export {
@@ -211,6 +221,12 @@ export {
     type PotentialStakingRewardsAccount,
 } from './utils/getPotentialStakingRewards';
 export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
+export {
+    getStakingOperationAvailability,
+    STAKING_OPERATION_AVAILABILITIES,
+    type GetStakingOperationAvailabilityParams,
+    type StakingOperationAvailability,
+} from './utils/getStakingOperationAvailability';
 export {
     isStakingOperationAvailable,
     type IsStakingOperationAvailableParams,

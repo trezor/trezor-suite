@@ -27,7 +27,6 @@ export { useYieldDetailNavigation } from './hooks/useYieldDetailNavigation';
 export { useYieldEntryNavigationAnalytics } from './hooks/useYieldEntryNavigationAnalytics';
 export type { YieldEntrySheet } from './hooks/useYieldEntryNavigationAnalytics';
 export { useYieldFlowData } from './hooks/useYieldFlowData';
-export { selectIsStakingManageableSymbol } from './stakingSelectors';
 export { upToYieldRateTranslationIds } from './utils/getYieldRateLabelType';
 export type { YieldRateLabelType } from './utils/getYieldRateLabelType';
 export type { StakingNavigateFn } from './utils/navigateByAccountState';

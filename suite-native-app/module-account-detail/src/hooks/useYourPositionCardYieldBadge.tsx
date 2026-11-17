@@ -2,16 +2,16 @@ import { useSelector } from 'react-redux';
 
 import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import { type StakingAccessRootState, useNetworkStakingRate } from '@suite-common/earn-staking';
+import {
+    type StakingAccessRootState,
+    selectIsStakingManageableSymbol,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
 import { type TokenInfoBranded } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
-import {
-    getBestPromotedRate,
-    selectIsStakingManageableSymbol,
-    useYieldBadge,
-} from '@suite-native/earn';
+import { getBestPromotedRate, useYieldBadge } from '@suite-native/earn';
 
 interface UseYourPositionCardYieldBadgeProps {
     account?: Account | null;

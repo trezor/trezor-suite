@@ -3,15 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    type StakingAccountProductRootState,
     type StakingRootState,
     formatStakingAmount,
-    getStakingDaysUntil,
     selectHasStakingAccountWarning,
-    selectStakingAccountProductDescriptor,
-    selectStakingAccountTotals,
-    selectStakingPosition,
-    useStakingAccess,
+    useStakingAccountPosition,
+    useStakingDaysUntil,
     useStakingPeriods,
     useStakingRate,
 } from '@suite-common/earn-staking';
@@ -46,7 +42,6 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
-import { useNow } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
@@ -82,8 +77,6 @@ const buttonsRowStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
 }));
 
-const DAY_COUNT_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
-
 const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
@@ -103,28 +96,23 @@ export const StakingManagementStakedCard = ({
     const isCardanoStaking = networkType === 'cardano';
     const isSolanaStaking = networkType === 'solana';
 
-    const productDescriptor = useSelector((state: StakingAccountProductRootState) =>
-        selectStakingAccountProductDescriptor(state, accountKey),
-    );
-    const productId = productDescriptor?.id ?? null;
+    const {
+        productId,
+        descriptor: productDescriptor,
+        position,
+        totals,
+        access,
+    } = useStakingAccountPosition(accountKey);
 
-    const position = useSelector((state: StakingRootState) =>
-        productId === null ? null : selectStakingPosition(state, accountKey, productId),
-    );
-    const totals = useSelector((state: StakingRootState) =>
-        selectStakingAccountTotals(state, accountKey),
-    );
     const hasOutdatedProvider = useSelector((state: StakingRootState) =>
         selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
-    const access = useStakingAccess(productId);
     const stakeMessage = useStakingOperationMessage(productId, 'stake');
     const unstakeMessage = useStakingOperationMessage(productId, 'unstake');
     const { rate, rateKind } = useStakingRate({ productId, accountKey });
     const { rewardPeriodDays, nextRewardAt } = useStakingPeriods(productId);
     const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
-
-    const now = useNow(DAY_COUNT_REFRESH_INTERVAL_MS);
+    const nextRewardInDays = useStakingDaysUntil(nextRewardAt);
 
     const principal =
         position === null || productDescriptor === null
@@ -142,7 +130,6 @@ export const StakingManagementStakedCard = ({
     // Rewards that cannot be claimed on their own stay in the stake.
     const areRewardsAutoRestaked =
         productDescriptor !== null && !productDescriptor.operations.includes('claim');
-    const nextRewardInDays = nextRewardAt === null ? null : getStakingDaysUntil(nextRewardAt, now);
 
     const handleStake = () => {
         if (isPortfolioTrackerDevice) {

@@ -5,6 +5,7 @@ import {
     type StakingDeviceRootState,
     selectDeviceStakingPositionEntriesBySymbol,
 } from '@suite-common/earn-staking';
+import { hasStakingPositionWarning } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StakingBadge, ZeroApyBadge } from '@suite-native/accounts';
 
@@ -22,7 +23,7 @@ export const AssetItemStakingBadge = memo(({ symbol }: AssetItemStakingBadgeProp
     }
 
     const hasOutdatedProvider = positionEntries.some(({ position }) =>
-        position.warnings.some(warning => warning.code === 'outdated-provider'),
+        hasStakingPositionWarning(position, 'outdated-provider'),
     );
 
     if (hasOutdatedProvider) {

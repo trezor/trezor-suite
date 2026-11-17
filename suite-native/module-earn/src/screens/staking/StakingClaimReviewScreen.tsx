@@ -4,14 +4,9 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
-    type StakingAccountProductRootState,
-    type StakingRootState,
     formatStakingAmount,
     isStakingOperationAvailable,
-    selectStakingAccountProductDescriptor,
-    selectStakingAccountTotals,
-    selectStakingPosition,
-    useStakingAccess,
+    useStakingAccountPosition,
 } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -62,17 +57,8 @@ export const StakingClaimReviewScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const productId = useSelector(
-        (state: StakingAccountProductRootState) =>
-            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
-    );
-    const position = useSelector((state: StakingRootState) =>
-        productId === null ? null : selectStakingPosition(state, accountKey, productId),
-    );
-    const totals = useSelector((state: StakingRootState) =>
-        selectStakingAccountTotals(state, accountKey),
-    );
-    const access = useStakingAccess(productId);
+
+    const { position, totals, access } = useStakingAccountPosition(accountKey);
 
     const canClaimInstantly = isStakingOperationAvailable({
         position,
