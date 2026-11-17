@@ -11,12 +11,9 @@ import {
     injectGetTokenLogoIdentifiers,
     injectIsWrappedNativeToken,
     selectNetworkCoingeckoId,
+    selectNetworkDisplaySymbol,
 } from '@suite-common/networks';
-import {
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -139,6 +136,9 @@ const TokenIconComponent = ({
     const coingeckoId = useSelector((state: NetworksRootState) =>
         selectNetworkCoingeckoId(state, networkSymbol),
     );
+    const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        selectNetworkDisplaySymbol(state, networkSymbol),
+    );
 
     const sizeNumber = typeof size === 'number' ? size : tokenIconSizes[size];
     const iconContainerStyle = useMemo(
@@ -149,7 +149,7 @@ const TokenIconComponent = ({
     // FlashList recycling reuses this instance for different assets, so the async and retry
     // state is keyed by the asset and discarded on mismatch to never render a stale icon
     const key = contractAddress ? `${networkSymbol}:${contractAddress}` : networkSymbol;
-    const accessibilityLabel = contractAddress ? key : getNetworkDisplaySymbol(networkSymbol);
+    const accessibilityLabel = contractAddress ? key : networkDisplaySymbol;
     // size is part of the source identity because it is encoded in the CDN filename
     const asyncKey = `${key}#${sizeNumber}`;
 

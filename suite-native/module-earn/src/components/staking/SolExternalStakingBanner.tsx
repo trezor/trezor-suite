@@ -6,8 +6,9 @@ import {
     selectStakingPositionEntriesByAccount,
 } from '@suite-common/earn-staking';
 import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -31,8 +32,6 @@ export const SolExternalStakingBanner = ({
 
     if (externalPositionEntry === null) return null;
 
-    const displaySymbol = getNetworkDisplaySymbol(networkSymbol);
-
     const totalStakedInUnits = formatStakingAmount({
         amount: getStakingPositionAmount(externalPositionEntry.position),
         networkSymbol,
@@ -49,7 +48,7 @@ export const SolExternalStakingBanner = ({
                     id="earn.stakingManagementScreen.outsideStakingBanner.description"
                     values={{
                         amount: totalStakedInUnits,
-                        symbol: displaySymbol,
+                        symbol: <AssetSymbol networkSymbol={networkSymbol} variant="body-sm" />,
                         fiat: (
                             <CryptoToFiatAmountFormatter
                                 value={totalStakedInUnits}

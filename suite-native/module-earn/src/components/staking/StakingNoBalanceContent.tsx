@@ -8,9 +8,9 @@ import {
 } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -48,8 +48,6 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
         return null;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-
     return (
         <Screen
             header={
@@ -64,7 +62,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
             }
             footer={
                 <EarnNoBalanceFooter
-                    displaySymbol={displaySymbol}
+                    networkSymbol={account.symbol}
                     onBuyPress={handleBuyPress}
                     onReceivePress={handleReceivePress}
                 />
@@ -75,7 +73,17 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                 <EarnNoBalanceCard
                     apy={rate}
                     title={
-                        <Translation id="earn.noBalance.staking.title" values={{ displaySymbol }} />
+                        <Translation
+                            id="earn.noBalance.staking.title"
+                            values={{
+                                displaySymbol: (
+                                    <AssetSymbol
+                                        networkSymbol={account.symbol}
+                                        variant="headline-sm"
+                                    />
+                                ),
+                            }}
+                        />
                     }
                     subtitle={
                         stakingLimits ? (
@@ -93,13 +101,25 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                                             withSymbol: false,
                                         },
                                     ),
-                                    displaySymbol,
+                                    displaySymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            color="contentSecondary"
+                                        />
+                                    ),
                                 }}
                             />
                         ) : (
                             <Translation
                                 id="earn.noBalance.staking.subtitleWithoutMinimum"
-                                values={{ displaySymbol }}
+                                values={{
+                                    displaySymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            color="contentSecondary"
+                                        />
+                                    ),
+                                }}
                             />
                         )
                     }

@@ -1,6 +1,7 @@
 import { Context } from '@suite-common/message-system';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull, Box, Button, VStack } from '@suite-native/atoms';
 import { YieldDisabledAlert } from '@suite-native/earn';
 import { Form } from '@suite-native/forms';
@@ -41,7 +42,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
         metadataSources,
-        nativeSymbol,
         pendingModal,
         simulationSheet,
         spentTokenContract,
@@ -61,7 +61,10 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                     title={
                         <Translation
                             id={messages.title}
-                            values={{ nativeSymbol, wrappedSymbol: wrappedTokenSymbol }}
+                            values={{
+                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                                wrappedSymbol: wrappedTokenSymbol,
+                            }}
                         />
                     }
                     tokenContract={wrappedTokenContract}

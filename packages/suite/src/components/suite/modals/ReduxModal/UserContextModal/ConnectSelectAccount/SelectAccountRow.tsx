@@ -1,8 +1,8 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { type SelectAccountCandidate } from '@suite-common/connect-popup';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
 import {
     Badge,
     Button,
@@ -107,7 +107,7 @@ export const SelectAccountRow = ({
             return (
                 <Row alignItems="center" gap={8}>
                     <Text typographyStyle="body-sm">
-                        {balance ?? '0'} {getNetworkDisplaySymbol(symbol)}
+                        {balance ?? '0'} <AssetSymbol networkSymbol={symbol} />
                     </Text>
                     <Icon as={CaretRightIcon} size={16} intent="neutral" />
                 </Row>
@@ -117,7 +117,7 @@ export const SelectAccountRow = ({
         return (
             <>
                 <Text typographyStyle="body-sm">
-                    {balance ?? '0'} {getNetworkDisplaySymbol(symbol)}
+                    {balance ?? '0'} <AssetSymbol networkSymbol={symbol} />
                 </Text>
                 {displayValue && (
                     <Row alignItems="center" gap={8} onClick={stop}>

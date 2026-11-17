@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { hasYieldDepositableBalance } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useYieldFlowData } from '@suite-native/earn';
@@ -25,6 +26,7 @@ import {
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useRefreshWrappedNativeTokenOnFocus } from '../../hooks/yield/useRefreshWrappedNativeTokenOnFocus';
 import { useStartYieldDepositFlow } from '../../hooks/yield/useStartYieldDepositFlow';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositNoBalance>;
 
@@ -138,39 +140,44 @@ export const YieldDepositNoBalanceScreen = () => {
     const depositSymbol = wrappedNativeSymbol ?? tokenSymbol;
 
     return (
-        <Screen
-            header={
-                <YieldFlowScreenHeader
-                    account={account}
-                    closeAction={navigateToInitialScreen}
-                    title={vaultTokenName}
-                    tokenContract={route.params.tokenContract}
-                />
-            }
-            footer={
-                <EarnNoBalanceFooter
-                    displaySymbol={depositSymbol}
-                    onBuyPress={handleBuyPress}
-                    onReceivePress={handleReceivePress}
-                    onSwapPress={handleSwapPress}
-                />
-            }
-        >
-            <EarnNoBalanceCard
-                apy={apy}
-                title={
-                    <Translation
-                        id="earn.noBalance.yield.title"
-                        values={{ tokenSymbol: depositSymbol }}
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            <Screen
+                header={
+                    <YieldFlowScreenHeader
+                        account={account}
+                        closeAction={navigateToInitialScreen}
+                        title={vaultTokenName}
+                        tokenContract={route.params.tokenContract}
                     />
                 }
-                subtitle={
-                    <Translation
-                        id="earn.noBalance.yield.subtitle"
-                        values={{ tokenSymbol: depositSymbol }}
+                footer={
+                    <EarnNoBalanceFooter
+                        networkSymbol={account.symbol}
+                        contractAddress={
+                            isWrappedNativeVault ? undefined : route.params.tokenContract
+                        }
+                        onBuyPress={handleBuyPress}
+                        onReceivePress={handleReceivePress}
+                        onSwapPress={handleSwapPress}
                     />
                 }
-            />
-        </Screen>
+            >
+                <EarnNoBalanceCard
+                    apy={apy}
+                    title={
+                        <Translation
+                            id="earn.noBalance.yield.title"
+                            values={{ tokenSymbol: depositSymbol }}
+                        />
+                    }
+                    subtitle={
+                        <Translation
+                            id="earn.noBalance.yield.subtitle"
+                            values={{ tokenSymbol: depositSymbol }}
+                        />
+                    }
+                />
+            </Screen>
+        </TokenMetadataProvider>
     );
 };

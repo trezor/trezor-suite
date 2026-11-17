@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, isValidElement } from 'react';
 
 import { render, screen, waitFor } from '@testing-library/react';
 
@@ -24,7 +24,11 @@ jest.mock('#src/hooks/suite/useSelector', () => ({
 }));
 jest.mock('@suite/intl', () => ({
     Translation: ({ id, values }: { id: string; values: Record<string, unknown> }) =>
-        `${id} ${JSON.stringify(values)}`,
+        `${id} ${JSON.stringify(values, (_key, value) =>
+            isValidElement<{ networkSymbol: string }>(value)
+                ? value.props.networkSymbol.toUpperCase()
+                : value,
+        )}`,
 }));
 jest.mock('@trezor/components', () => ({
     Banner: ({ description }: { description: ReactNode }) => (

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getStakingDataForNetwork,
     selectAreFeesLoading,
@@ -152,7 +152,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
             heading={
                 <Translation
                     id={isCardanoNetworkType ? 'TR_EARN_CLAIM_REWARDS' : 'TR_STAKE_CLAIM_TOKEN'}
-                    values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
+                    values={{ symbol: <AssetSymbol networkSymbol={account.symbol} /> }}
                 />
             }
             description={
@@ -162,7 +162,9 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                             ? 'TR_STAKE_CLAIM_REWARDS_DESCRIPTION'
                             : 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED'
                     }
-                    values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                    values={{
+                        networkDisplaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                    }}
                 />
             }
             width={600}
