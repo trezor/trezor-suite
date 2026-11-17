@@ -819,15 +819,13 @@ export const findChainedTransactions = [
     },
 ];
 
-const getOpReturnRbfParams = ({
-    description,
-    opReturn,
-    data,
-}: {
+type OpReturnRbfParamsFixture = {
     description: string;
     opReturn: { addresses: string[]; hex?: string };
     data?: { dataHex: string; dataAscii: string };
-}) => ({
+};
+
+const getOpReturnRbfParams = ({ description, opReturn, data }: OpReturnRbfParamsFixture) => ({
     description,
     account: {
         networkType: 'bitcoin',
