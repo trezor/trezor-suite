@@ -123,7 +123,21 @@ const transferCheckedWithFeeTransaction = createTransaction({
     },
 });
 
-const createApiMock = (transaction: Transaction) =>
+type EpochInfo = { epoch: bigint; slotIndex: bigint; slotsInEpoch: bigint };
+
+const SLOTS_IN_EPOCH = 432000n;
+
+const midEpochInfo: EpochInfo = { epoch: 7n, slotIndex: 1000n, slotsInEpoch: SLOTS_IN_EPOCH };
+
+type CreateApiMockParams = {
+    transaction: Transaction;
+    getEpochInfo?: () => Promise<EpochInfo>;
+};
+
+const createApiMock = ({
+    transaction,
+    getEpochInfo = () => Promise.resolve(midEpochInfo),
+}: CreateApiMockParams) =>
     ({
         rpc: {
             getAccountInfo: (_address: string, { encoding }: { encoding: string }) => ({
@@ -181,25 +195,32 @@ const createApiMock = (transaction: Transaction) =>
             }),
             getTransaction: () => ({ send: () => Promise.resolve(transaction) }),
             getBalance: () => ({ send: () => Promise.resolve({ value: 995000n }) }),
-            getEpochInfo: () => ({ send: () => Promise.resolve({ epoch: 7n }) }),
+            getEpochInfo: () => ({ send: getEpochInfo }),
             getProgramAccounts: () => ({ send: () => Promise.resolve([]) }),
             getMinimumBalanceForRentExemption: () => ({ send: () => Promise.resolve(890880n) }),
         },
     }) as unknown as SolanaAPI;
 
-const createRequest = (transaction: Transaction): Request<MessageTypes.GetAccountInfo> => ({
+type CreateRequestParams = CreateApiMockParams & {
+    state?: WorkerState;
+};
+
+const createRequest = ({
+    state = new WorkerState(),
+    ...apiMockParams
+}: CreateRequestParams): Request<MessageTypes.GetAccountInfo> => ({
     type: MESSAGES.GET_ACCOUNT_INFO,
     payload: { descriptor, details: 'txs' },
-    connect: () => Promise.resolve(createApiMock(transaction)),
+    connect: () => Promise.resolve(createApiMock(apiMockParams)),
     post: () => {},
-    state: new WorkerState(),
+    state,
     getTokenMetadata: () => Promise.resolve({ [mint]: { name: 'Token', symbol: 'TKN' } }),
     onSubscriptionsClosed: () => {},
 });
 
 describe('solana getAccountInfo', () => {
     it('loads the account when a token transfer is derived from a balance change', async () => {
-        const response = await getAccountInfo(createRequest(mintToTransaction));
+        const response = await getAccountInfo(createRequest({ transaction: mintToTransaction }));
 
         expect(response.type).toBe(RESPONSES.GET_ACCOUNT_INFO);
         expect(response.payload.history.transactions?.[0]?.tokens).toEqual([
@@ -214,7 +235,9 @@ describe('solana getAccountInfo', () => {
     });
 
     it('resolves the sender of a transferCheckedWithFee transfer', async () => {
-        const response = await getAccountInfo(createRequest(transferCheckedWithFeeTransaction));
+        const response = await getAccountInfo(
+            createRequest({ transaction: transferCheckedWithFeeTransaction }),
+        );
 
         expect(response.payload.history.transactions?.[0]?.tokens).toEqual([
             expect.objectContaining({
@@ -225,5 +248,114 @@ describe('solana getAccountInfo', () => {
                 amount: '100000000',
             }),
         ]);
+    });
+
+    describe('epoch cache', () => {
+        const startTime = 1_790_000_000_000;
+        const minuteMs = 60 * 1000;
+        // Stake accounts deactivated in a new epoch read as active under the previous one.
+        // 9 000 slots take 30 minutes at the 200 ms mainnet slot time.
+        const slotsLeftInEpoch = 9_000n;
+        const lastSlotsEpochInfo: EpochInfo = {
+            epoch: 7n,
+            slotIndex: SLOTS_IN_EPOCH - slotsLeftInEpoch,
+            slotsInEpoch: SLOTS_IN_EPOCH,
+        };
+        const nextEpochInfo: EpochInfo = { epoch: 8n, slotIndex: 0n, slotsInEpoch: SLOTS_IN_EPOCH };
+
+        let now = startTime;
+
+        beforeEach(() => {
+            now = startTime;
+            jest.spyOn(Date, 'now').mockImplementation(() => now);
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        const getSolEpochTwice = async (secondCallDelayMs: number) => {
+            const state = new WorkerState();
+            const getEpochInfo = jest
+                .fn<Promise<EpochInfo>, []>()
+                .mockResolvedValueOnce(lastSlotsEpochInfo)
+                .mockResolvedValueOnce(nextEpochInfo);
+
+            const first = await getAccountInfo(
+                createRequest({ transaction: mintToTransaction, state, getEpochInfo }),
+            );
+            now += secondCallDelayMs;
+            const second = await getAccountInfo(
+                createRequest({ transaction: mintToTransaction, state, getEpochInfo }),
+            );
+
+            return {
+                solEpochs: [first.payload.misc?.solEpoch, second.payload.misc?.solEpoch],
+                epochInfoCalls: getEpochInfo.mock.calls.length,
+            };
+        };
+
+        it('refetches the epoch once it has ended at the 200 ms slot time', async () => {
+            const { solEpochs, epochInfoCalls } = await getSolEpochTwice(35 * minuteMs);
+
+            expect(solEpochs).toEqual([7, 8]);
+            expect(epochInfoCalls).toBe(2);
+        });
+
+        it('reuses the cached epoch while it lasts', async () => {
+            const { solEpochs, epochInfoCalls } = await getSolEpochTwice(10 * minuteMs);
+
+            expect(solEpochs).toEqual([7, 7]);
+            expect(epochInfoCalls).toBe(1);
+        });
+
+        it.each([
+            { slotsLeft: 1n, rpcDelayMs: 0 },
+            { slotsLeft: 2n, rpcDelayMs: 200 },
+        ])(
+            'refetches immediately with $slotsLeft slots left and a $rpcDelayMs ms response',
+            async ({ slotsLeft, rpcDelayMs }) => {
+                const state = new WorkerState();
+                const getEpochInfo = jest
+                    .fn<Promise<EpochInfo>, []>()
+                    .mockImplementationOnce(() => {
+                        now += rpcDelayMs;
+
+                        return Promise.resolve({
+                            ...lastSlotsEpochInfo,
+                            slotIndex: SLOTS_IN_EPOCH - slotsLeft,
+                        });
+                    })
+                    .mockResolvedValueOnce(nextEpochInfo);
+                const request = createRequest({
+                    transaction: mintToTransaction,
+                    state,
+                    getEpochInfo,
+                });
+
+                expect((await getAccountInfo(request)).payload.misc?.solEpoch).toBe(7);
+                expect((await getAccountInfo(request)).payload.misc?.solEpoch).toBe(8);
+            },
+        );
+
+        it('does not keep a failed epoch request in the cache', async () => {
+            const state = new WorkerState();
+            const getEpochInfo = jest
+                .fn<Promise<EpochInfo>, []>()
+                .mockRejectedValueOnce(new Error('RPC unavailable'))
+                .mockResolvedValueOnce(midEpochInfo);
+
+            await expect(
+                getAccountInfo(
+                    createRequest({ transaction: mintToTransaction, state, getEpochInfo }),
+                ),
+            ).rejects.toThrow('RPC unavailable');
+
+            const response = await getAccountInfo(
+                createRequest({ transaction: mintToTransaction, state, getEpochInfo }),
+            );
+
+            expect(response.payload.misc?.solEpoch).toBe(7);
+        });
     });
 });

@@ -70,7 +70,9 @@ const createApiMock = () => {
                     return Promise.resolve([{ signature: `sig-${address}`, slot: 1n }]);
                 },
             }),
-            getEpochInfo: () => ({ send: () => Promise.resolve({ epoch: 7n }) }),
+            getEpochInfo: () => ({
+                send: () => Promise.resolve({ epoch: 7n, slotIndex: 1000n, slotsInEpoch: 432000n }),
+            }),
         },
     } as unknown as SolanaAPI;
 
