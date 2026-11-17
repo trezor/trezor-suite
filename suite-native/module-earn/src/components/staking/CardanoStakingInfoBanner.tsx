@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
 import { type StakingRootState, selectHasStakingAccountWarning } from '@suite-common/earn-staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull, BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -58,7 +58,15 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
             title={
                 <Translation
                     id="earn.stakingManagementScreen.cardanoDesktopOnlyBanner"
-                    values={{ symbol: getNetworkDisplaySymbol(networkSymbol) }}
+                    values={{
+                        symbol: (
+                            <AssetSymbol
+                                networkSymbol={networkSymbol}
+                                variant="body-sm"
+                                color="contentInfo"
+                            />
+                        ),
+                    }}
                 />
             }
         />

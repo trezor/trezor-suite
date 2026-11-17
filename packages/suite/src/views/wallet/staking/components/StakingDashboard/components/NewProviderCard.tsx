@@ -1,7 +1,7 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Link, Tooltip } from '@trezor/components';
@@ -28,7 +28,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
 
     const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
 
-    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
+    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
 
     const openStakeInANutshellModal = () => {
         if (!isStakingDisabled) {

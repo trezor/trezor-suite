@@ -50,7 +50,7 @@ export type YieldAmountCardFiatToggleProps = {
 };
 
 type YieldAmountCardProps = {
-    tokenSymbol: string;
+    tokenSymbol: ReactNode;
     decimals?: number;
     summary?: YieldAmountCardSummaryProps;
     heading?: YieldAmountCardHeadingProps;

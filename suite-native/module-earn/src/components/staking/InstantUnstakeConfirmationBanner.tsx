@@ -1,4 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerFull } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
@@ -16,7 +17,7 @@ export const InstantUnstakeConfirmationBanner = ({
 
     if (!data) return null;
 
-    const { amount, displaySymbol, unstakingPeriodInDays, dismiss } = data;
+    const { amount, symbol, unstakingPeriodInDays, dismiss } = data;
     const hasDays = unstakingPeriodInDays !== null && unstakingPeriodInDays > 0;
 
     const description = hasDays ? (
@@ -24,14 +25,14 @@ export const InstantUnstakeConfirmationBanner = ({
             id="earn.stakingManagementScreen.instantUnstakeBanner.descriptionWithDays"
             values={{
                 amount,
-                symbol: displaySymbol,
+                symbol: <AssetSymbol networkSymbol={symbol} variant="body-sm" />,
                 days: unstakingPeriodInDays,
             }}
         />
     ) : (
         <Translation
             id="earn.stakingManagementScreen.instantUnstakeBanner.descriptionWithoutDays"
-            values={{ amount, symbol: displaySymbol }}
+            values={{ amount, symbol: <AssetSymbol networkSymbol={symbol} variant="body-sm" /> }}
         />
     );
 
@@ -43,7 +44,7 @@ export const InstantUnstakeConfirmationBanner = ({
             title={
                 <Translation
                     id="earn.stakingManagementScreen.instantUnstakeBanner.title"
-                    values={{ amount, symbol: displaySymbol }}
+                    values={{ amount, symbol: <AssetSymbol networkSymbol={symbol} /> }}
                 />
             }
             description={description}

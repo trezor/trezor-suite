@@ -8,7 +8,6 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
@@ -68,7 +67,6 @@ export const YieldEarnInANutshellModal = ({
     // an intro highlight plus a wrap step on deposit and an unwrap step on withdrawal.
     const isWrappedNativeVault =
         vault !== undefined && isWrappedNativeToken(account.symbol, vault.token.address);
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
 
     const processes: EarnInANutshellProcess[] = [
         {
@@ -89,7 +87,6 @@ export const YieldEarnInANutshellModal = ({
                     depositSymbol={depositSymbol}
                     vaultSymbol={vaultSymbol}
                     isWrappedNativeVault={isWrappedNativeVault}
-                    nativeSymbol={nativeSymbol}
                 />
             ),
         },
@@ -105,9 +102,9 @@ export const YieldEarnInANutshellModal = ({
             ),
             content: (
                 <YieldWithdrawingInfo
+                    networkSymbol={account.symbol}
                     depositSymbol={depositSymbol}
                     isWrappedNativeVault={isWrappedNativeVault}
-                    nativeSymbol={nativeSymbol}
                 />
             ),
         },
@@ -181,11 +178,11 @@ export const YieldEarnInANutshellModal = ({
             hasCancelButton={actionType !== 'close'}
         >
             <YieldEarnInANutshellHighlights
+                networkSymbol={account.symbol}
                 depositSymbol={depositSymbol}
                 vaultSymbol={vaultSymbol}
                 rewardsSymbols={rewardsSymbols}
                 isWrappedNativeVault={isWrappedNativeVault}
-                nativeSymbol={nativeSymbol}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
             <EarnInANutshellProcesses items={processes} onItemToggle={handleProcessToggle} />

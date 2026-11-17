@@ -11,7 +11,6 @@ import {
     useNetworkStakingRate,
     useStakingAccess,
 } from '@suite-common/earn-staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type EarnOnboardingRootState,
@@ -20,6 +19,7 @@ import {
     selectIsEarnOnboardingConfirmed,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline, Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { useStakingOperationMessage } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
@@ -128,8 +128,6 @@ export const HowStakeWorksScreen = () => {
     const { entryPeriodDays, exitPeriodDays } = useNetworkStakingPeriods(symbol);
     const { rate } = useNetworkStakingRate({ networkSymbol: symbol });
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
-
     const { benefitItems, timelineSections } = useHowStakeWorksPreset({
         symbol,
         entryPeriodInDays: entryPeriodDays,
@@ -150,13 +148,25 @@ export const HowStakeWorksScreen = () => {
                         title={
                             <Translation
                                 id="earn.howStakeWorksScreen.title"
-                                values={{ displaySymbol }}
+                                values={{
+                                    displaySymbol: (
+                                        <AssetSymbol networkSymbol={symbol} variant="headline-md" />
+                                    ),
+                                }}
                             />
                         }
                         subtitle={
                             <Translation
                                 id="earn.howStakeWorksScreen.subtitle"
-                                values={{ displaySymbol }}
+                                values={{
+                                    displaySymbol: (
+                                        <AssetSymbol
+                                            networkSymbol={symbol}
+                                            variant="body-sm"
+                                            color="contentSecondary"
+                                        />
+                                    ),
+                                }}
                             />
                         }
                     />

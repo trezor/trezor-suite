@@ -1,3 +1,4 @@
+import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -11,7 +12,6 @@ type EarnStakingCurrentRewardsProps = {
     apy: number | null;
     isStakingActive: boolean;
     formattedStakingBalance: string;
-    displaySymbol: string;
 };
 
 export const EarnStakingCurrentRewards = ({
@@ -20,7 +20,6 @@ export const EarnStakingCurrentRewards = ({
     apy,
     isStakingActive,
     formattedStakingBalance,
-    displaySymbol,
 }: EarnStakingCurrentRewardsProps) => (
     <Column alignItems="flex-start" gap={4}>
         <EarnRewardsAmount symbol={symbol} rewards={isStakingActive ? rewards : '0'} apy={apy} />
@@ -30,7 +29,10 @@ export const EarnStakingCurrentRewards = ({
                 <HiddenPlaceholder>
                     <Translation
                         id="TR_EARN_STAKING_DASHBOARD_STAKED"
-                        values={{ amount: formattedStakingBalance, displaySymbol }}
+                        values={{
+                            amount: formattedStakingBalance,
+                            displaySymbol: <AssetSymbol networkSymbol={symbol} />,
+                        }}
                     />
                 </HiddenPlaceholder>
             </Paragraph>

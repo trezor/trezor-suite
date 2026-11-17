@@ -1,7 +1,7 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, getStakingDataForNetwork } from '@suite-common/wallet-core';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
@@ -57,7 +57,7 @@ export const UnstakeInputs = () => {
     const isRewardsDisabled = restakedReward === '0';
 
     const { symbol } = account;
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = <AssetSymbol networkSymbol={symbol} />;
 
     const { outputs } = getValues();
     const amount = outputs?.[0]?.amount;

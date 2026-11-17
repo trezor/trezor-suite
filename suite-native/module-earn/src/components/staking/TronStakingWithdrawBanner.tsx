@@ -5,9 +5,9 @@ import {
     formatStakingAmount,
     selectStakingAccountPositionEntry,
 } from '@suite-common/earn-staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -43,7 +43,13 @@ export const TronStakingWithdrawBanner = ({
                     id="earn.tron.readyToWithdrawAlert"
                     values={{
                         amount: withdrawableBalance,
-                        displaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                        displaySymbol: (
+                            <AssetSymbol
+                                networkSymbol={networkSymbol}
+                                variant="body-sm"
+                                color="contentInfo"
+                            />
+                        ),
                     }}
                 />
             }

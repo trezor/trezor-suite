@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { AssetSymbol } from '@suite-native/assets';
 import {
     BottomSheetModal,
     Button,
@@ -30,8 +31,6 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
     const { translate } = useTranslate();
     const [localNote, setLocalNote] = useState('');
-
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
     const value = useWatch({ control, name: 'destinationTag' }) ?? '';
     const hexByteSize = countBytesInString(localNote);
@@ -86,7 +85,11 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                             <Text variant="body-sm">
                                 <Translation
                                     id="moduleSend.tron.note.info"
-                                    values={{ networkDisplaySymbol }}
+                                    values={{
+                                        networkDisplaySymbol: (
+                                            <AssetSymbol networkSymbol={symbol} variant="body-sm" />
+                                        ),
+                                    }}
                                 />
                             </Text>
                         </HStack>
@@ -115,7 +118,11 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
                         <Text variant="body-sm">
                             <Translation
                                 id="moduleSend.tron.note.info"
-                                values={{ networkDisplaySymbol }}
+                                values={{
+                                    networkDisplaySymbol: (
+                                        <AssetSymbol networkSymbol={symbol} variant="body-sm" />
+                                    ),
+                                }}
                             />
                         </Text>
                     </HStack>

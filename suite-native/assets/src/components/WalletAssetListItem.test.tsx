@@ -1,4 +1,4 @@
-import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { mockNetworksServices, mockNetworksState } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
@@ -62,6 +62,7 @@ const namelessOnPolygonKey = getWalletAssetKey({
 });
 
 const createPreloadedState = (accounts: Account[]) => ({
+    networks: mockNetworksState([BTC, POL]),
     device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
     wallet: {
         accounts,

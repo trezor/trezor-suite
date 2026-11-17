@@ -1,7 +1,7 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
@@ -56,7 +56,7 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
                         id={
                             isUpdateProviderFlow ? 'TR_EARN_UPDATE_PROVIDER' : 'TR_EARN_STAKE_TOKEN'
                         }
-                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
+                        values={{ symbol: <AssetSymbol networkSymbol={account.symbol} /> }}
                     />
                 }
                 onCancel={onCancelClick}

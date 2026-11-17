@@ -1,12 +1,27 @@
+import { type ReactNode } from 'react';
+import { Provider } from 'react-redux';
+
+import { configureStore } from '@reduxjs/toolkit';
 import { render, screen } from '@testing-library/react';
 
 import { IntlProviderForTests, messages } from '@suite/intl';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import { StakingProviderConsentBanners } from './StakingProviderConsentBanners';
+
+const store = configureStore({
+    reducer: { networks: () => mockNetworksState([asNetworkSymbol('ada')]) },
+});
+
+const Wrapper = ({ children }: { children: ReactNode }) => (
+    <Provider store={store}>
+        <IntlProviderForTests>{children}</IntlProviderForTests>
+    </Provider>
+);
 
 const cardanoAccount = (poolId: string | null, isActive = true) =>
     mockWalletAccount(
@@ -42,7 +57,7 @@ describe('Cardano consent voting defaults', () => {
         },
     ] as const)('$name', ({ flow, account, message }) => {
         render(<StakingProviderConsentBanners account={account} flow={flow} />, {
-            wrapper: IntlProviderForTests,
+            wrapper: Wrapper,
         });
 
         expect(

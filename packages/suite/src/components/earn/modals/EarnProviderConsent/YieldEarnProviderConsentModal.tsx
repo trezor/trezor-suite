@@ -1,4 +1,5 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -8,7 +9,6 @@ import {
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -65,7 +65,7 @@ export const YieldEarnProviderConsentModal = ({
         networkSymbol: account.symbol,
         yieldContext,
     });
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
     const depositSymbol = isWrappedNativeToken(account.symbol, normalizedTokenContractAddress)
         ? displaySymbol
         : (tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol);

@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import { getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
@@ -25,7 +26,7 @@ export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBanne
     const formatApyValue = useFormatApy();
     const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
 
-    const displaySymbol = getDisplaySymbol(account.symbol);
+    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
     // Tron pays its rate as an APR, as its Earn modal says.
     const isAprRate = getNetworkType(account.symbol) === 'tron';
     const formattedRate = formatApyValue(rate);

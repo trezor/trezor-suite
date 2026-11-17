@@ -9,6 +9,7 @@ import {
     mockStakingPosition,
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -49,6 +50,7 @@ const renderSection = ({ unlocks, withdrawable = zero }: RenderSectionParams) =>
 
     return renderWithStoreProvider(<TronStakingPendingSection accountKey={account.key} />, {
         preloadedState: {
+            networks: mockNetworksState([account.symbol]),
             wallet: {
                 accounts: [account],
                 fiat: { current: {}, lastWeek: {} },

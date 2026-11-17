@@ -2,9 +2,9 @@ import { useLayoutEffect, useMemo } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     CARDANO_ALWAYS_ABSTAIN_DREP_ID,
@@ -221,7 +221,9 @@ export const StakeChangeDelegateModalLoaded = ({
                                 <Translation
                                     id="TR_STAKING_NEW_PREFERENCE_DESCRIPTION"
                                     values={{
-                                        displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                        displaySymbol: (
+                                            <AssetSymbol networkSymbol={account.symbol} />
+                                        ),
                                     }}
                                 />
                             }

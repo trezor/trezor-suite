@@ -1,22 +1,25 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StepList } from '@trezor/components';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
 interface YieldWithdrawingInfoProps {
+    networkSymbol: NetworkSymbol;
     depositSymbol: string;
     isWrappedNativeVault?: boolean;
-    nativeSymbol?: string;
 }
 
 export const YieldWithdrawingInfo = ({
+    networkSymbol,
     depositSymbol,
     isWrappedNativeVault = false,
-    nativeSymbol,
 }: YieldWithdrawingInfoProps) => {
     // The user's account receives the native coin (e.g. ETH); `depositSymbol` is the wrapped
     // token the vault redeems into (e.g. WETH), which the unwrap step then converts back.
-    const receiveSymbol = isWrappedNativeVault && nativeSymbol ? nativeSymbol : depositSymbol;
+    const nativeSymbol = <AssetSymbol networkSymbol={networkSymbol} />;
+    const receiveSymbol = isWrappedNativeVault ? nativeSymbol : depositSymbol;
 
     return (
         <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
@@ -30,7 +33,7 @@ export const YieldWithdrawingInfo = ({
                 }
                 content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
             />
-            {isWrappedNativeVault && nativeSymbol && (
+            {isWrappedNativeVault && (
                 <EarnInfoRow
                     heading={
                         <Translation

@@ -1,11 +1,11 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
     getNetworkAdjustedStakingBalance,
@@ -55,7 +55,6 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         selectPoolStatsApy(state, { networkSymbol: account.symbol }),
     );
 
-    const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
     const isClaimPending = useSelector(state =>
@@ -193,7 +192,6 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         apy: rate,
         isStakingActive,
         formattedStakingBalance,
-        displaySymbol,
     } as const;
 
     const potentialRewardsProps = {
@@ -202,7 +200,6 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         apy: rate,
         isCardanoNetworkType,
         formattedAccountBalance,
-        displaySymbol,
     } as const;
 
     const minStakeParagraph = (
@@ -213,7 +210,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     amount: minStakingAmount
                         ? formatCryptoAmount(minStakingAmount.toString())
                         : undefined,
-                    displaySymbol,
+                    displaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
                 }}
             />
         </Paragraph>

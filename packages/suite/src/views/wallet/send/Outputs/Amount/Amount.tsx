@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { TokenSymbol } from '@suite/token';
@@ -114,7 +115,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     }
 
     const withTokens = hasNetworkFeatures(account, 'tokens');
-    const displayTicker = shouldSendInSats ? 'sat' : getNetworkDisplaySymbol(symbol);
+    const displayTicker = shouldSendInSats ? 'sat' : <AssetSymbol networkSymbol={symbol} />;
     const amountSymbol = withTokens && token ? token.symbol : displayTicker;
     const isLowAnonymity = isLowAnonymityWarning(outputError);
     const hasError = !!error;

@@ -1,10 +1,10 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import {
     EarnFlow,
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getEarnOpportunityKey, selectIsEarnOnboardingConfirmed } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -45,13 +45,17 @@ export const StakingEarnProviderConsentModal = ({
         ),
     );
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (
         <EarnProviderConsentModalLayout
             requiresAcknowledgement={!isConfirmed}
-            heading={<Translation id="TR_EARN_STAKE_TOKEN" values={{ symbol: displaySymbol }} />}
+            heading={
+                <Translation
+                    id="TR_EARN_STAKE_TOKEN"
+                    values={{ symbol: <AssetSymbol networkSymbol={account.symbol} /> }}
+                />
+            }
             description={
                 !isConfirmed && (
                     <Translation
