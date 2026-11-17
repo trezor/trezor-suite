@@ -29,6 +29,7 @@ import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
 import type { AmountLimitProps } from 'src/utils/suite/validation';
 
+import { useRevalidateAmountOnBalanceChange } from './useRevalidateAmountOnBalanceChange';
 import {
     type WithdrawalContextValues as WithdrawalContextValuesBase,
     type WithdrawalFormState,
@@ -115,7 +116,8 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         defaultValues: isDraft ? draft : defaultValues,
     });
 
-    const { register, control, formState, setValue, reset, getValues, clearErrors } = methods;
+    const { register, control, formState, setValue, reset, getValues, clearErrors, trigger } =
+        methods;
 
     const values = useWatch<WithdrawalFormState>({ control });
 
@@ -171,6 +173,13 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         ...methods,
         formState,
         state,
+    });
+
+    useRevalidateAmountOnBalanceChange({
+        stakedBalance: autocompoundBalance,
+        getValues,
+        trigger,
+        composeRequest,
     });
 
     const { changeFeeLevel, selectedFee: _selectedFee } = useFees({

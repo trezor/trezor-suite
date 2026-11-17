@@ -1,78 +1,21 @@
-import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
+import { useSelector } from 'react-redux';
 
-import { WithdrawalFormContext, useWithdrawalForm } from 'src/hooks/earn/useWithdrawalForm';
-import { useLayoutSize } from 'src/hooks/suite';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 
-import { UnstakeButton } from './UnstakeForm/UnstakeButton';
-import { UnstakeForm } from './UnstakeForm/UnstakeForm';
-import { EarnWithdrawingInfo } from '../EarnInANutshell/components/EarnWithdrawingInfo';
+import { UnstakeModalContent } from './UnstakeModalContent';
 
 type UnstakeModalProps = {
     onCancel?: () => void;
-    account: Account;
+    accountKey: AccountKey;
 };
 
-export const UnstakeModal = ({ onCancel, account }: UnstakeModalProps) => {
-    const { analytics } = useServices(injectDesktopAnalytics);
-    const withdrawalContextValues = useWithdrawalForm({ account });
-    const { isBelowTablet } = useLayoutSize();
-
-    const onCancelClick = () => {
-        onCancel?.();
-
-        analytics.report({
-            type: events.stakingUnstakeEvent.name,
-            payload: {
-                action: 'cancel',
-                step: 'unstake-form-modal',
-                networkSymbol: account.symbol,
-            },
-        });
-    };
-
-    return (
-        <WithdrawalFormContext.Provider value={withdrawalContextValues}>
-            <Modal
-                width={960}
-                heading={
-                    <Translation
-                        id="TR_STAKE_UNSTAKE_TOKEN"
-                        values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
-                    />
-                }
-                description={
-                    account.networkType === 'cardano' ? (
-                        <Translation id="TR_STAKE_UNSTAKE_WITH_REWARDS" />
-                    ) : (
-                        <Translation id="TR_STAKE_CLAIM_AFTER_UNSTAKING" />
-                    )
-                }
-                onCancel={onCancelClick}
-                bottomContent={<UnstakeButton />}
-            >
-                <Grid columns={isBelowTablet ? 1 : 2} gap={32} forceEqualColumns>
-                    <UnstakeForm />
-                    <Column gap={20}>
-                        <CollapsibleBox
-                            heading={
-                                <H3 typographyStyle="body-md-strong">
-                                    <Translation id="TR_EARN_UNSTAKING_PROCESS" />
-                                </H3>
-                            }
-                            hasDivider={false}
-                            defaultIsOpen
-                        >
-                            <EarnWithdrawingInfo account={account} flow={EarnFlow.Stake} />
-                        </CollapsibleBox>
-                    </Column>
-                </Grid>
-            </Modal>
-        </WithdrawalFormContext.Provider>
+export const UnstakeModal = ({ onCancel, accountKey }: UnstakeModalProps) => {
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
+
+    if (!account) return null;
+
+    return <UnstakeModalContent onCancel={onCancel} account={account} />;
 };
