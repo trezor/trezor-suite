@@ -5,7 +5,7 @@ import {
     type AssetAccountsRootState,
     type HomeAssetTableState,
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -28,8 +28,8 @@ type AssetSendReceiveProps = {
 };
 
 export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
-    const symbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetSymbol(state, assetKey),
+    const networkSymbol = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetNetworkSymbol(state, assetKey),
     );
     const contractAddress = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
@@ -38,17 +38,17 @@ export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
         selectAssetSendTargets(state, assetKey),
     );
     const receiveAccounts = useSelector((state: ReceiveAccountsByNetworkSymbolState) =>
-        selectReceiveAccountsByNetworkSymbol(state, symbol),
+        selectReceiveAccountsByNetworkSymbol(state, networkSymbol),
     );
     const [activeModal, setActiveModal] = useState<GlobalSendReceiveType>(null);
     const { reportOpen } = useGlobalSendReceiveAnalytics();
     const { startSend, startReceive } = useStartSendReceiveWithAnalytics();
 
-    if (symbol === undefined) {
+    if (networkSymbol === undefined) {
         return null;
     }
 
-    const asset = buildGlobalReceiveAssetOption({ symbol, contractAddress });
+    const asset = buildGlobalReceiveAssetOption({ symbol: networkSymbol, contractAddress });
 
     const handleOpen = (modal: NonNullable<GlobalSendReceiveType>) => {
         const sendTarget = modal === 'send' ? getOnlyItem(sendTargets) : undefined;

@@ -3,7 +3,7 @@ import { memo } from 'react';
 import {
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
@@ -22,7 +22,9 @@ type HomeAssetBalanceProps = {
 };
 
 export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalanceProps) => {
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, isHidden));
+    const networkSymbol = useSelector(state =>
+        selectWalletAssetNetworkSymbol(state, assetKey, isHidden),
+    );
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, isHidden),
     );
@@ -34,13 +36,17 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
     );
     const amount = useSelector(state => selectWalletAssetAmount(state, assetKey, isHidden));
 
-    if (symbol === undefined || amount === undefined) {
+    if (networkSymbol === undefined || amount === undefined) {
         return null;
     }
 
     return (
         <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
-            <BaseCurrencyValue amount={amount} symbol={symbol} tokenAddress={contractAddress} />
+            <BaseCurrencyValue
+                amount={amount}
+                symbol={networkSymbol}
+                tokenAddress={contractAddress}
+            />
             <Text
                 intent="neutral"
                 priority="secondary"
@@ -51,7 +57,7 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
                 <TruncatedAmount>
                     <FormattedCryptoAmount
                         value={amount}
-                        symbol={tokenSymbol ?? symbol}
+                        symbol={tokenSymbol ?? networkSymbol}
                         contractAddress={contractAddress}
                         tokenDecimals={tokenDecimals}
                         isCompact

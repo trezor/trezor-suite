@@ -2,7 +2,7 @@ import { type RouterRootState, selectRouterParams } from '@suite/router';
 import {
     type HomeAssetTableState,
     selectWalletAssetKey,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { toTokenAddress } from '@suite-common/tokens';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -23,7 +23,7 @@ export const selectRoutedAssetKey = (state: RoutedAssetState): WalletAssetKey | 
         contractAddress === undefined ? undefined : toTokenAddress(contractAddress),
     );
 
-    return assetKey !== undefined && selectWalletAssetSymbol(state, assetKey) !== undefined
+    return assetKey !== undefined && selectWalletAssetNetworkSymbol(state, assetKey) !== undefined
         ? assetKey
         : undefined;
 };

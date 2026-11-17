@@ -34,10 +34,10 @@ const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress
 
 const USDC_ASSET_KEY = getWalletAssetKey({
     deviceState: DEVICE_STATE,
-    symbol: ETH,
+    networkSymbol: ETH,
     contractAddress: USDC_ON_ETH,
 });
-const ETH_ASSET_KEY = getWalletAssetKey({ deviceState: DEVICE_STATE, symbol: ETH });
+const ETH_ASSET_KEY = getWalletAssetKey({ deviceState: DEVICE_STATE, networkSymbol: ETH });
 
 const ethereumAccount = mockWalletAccount({
     symbol: ETH,

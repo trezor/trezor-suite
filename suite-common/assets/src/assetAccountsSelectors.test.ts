@@ -120,10 +120,10 @@ const createState = ({
     } as unknown as AssetAccountsRootState;
 };
 
-const aliceCoin = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
+const aliceCoin = getWalletAssetKey({ deviceState: ALICE, networkSymbol: ETH });
 const aliceUsdc = getWalletAssetKey({
     deviceState: ALICE,
-    symbol: ETH,
+    networkSymbol: ETH,
     contractAddress: USDC_ON_ETH,
 });
 
@@ -266,7 +266,7 @@ describe('what becomes a assetAccount', () => {
         });
 
         expect(
-            accountsOfAsset(state, getWalletAssetKey({ deviceState: ALICE, symbol: ADA })),
+            accountsOfAsset(state, getWalletAssetKey({ deviceState: ALICE, networkSymbol: ADA })),
         ).toEqual([expect.objectContaining({ cryptoBalance: '5' })]);
     });
 
@@ -299,7 +299,7 @@ describe('what becomes a assetAccount', () => {
                 state,
                 getWalletAssetKey({
                     deviceState: ALICE,
-                    symbol: ETH,
+                    networkSymbol: ETH,
                     contractAddress: UNKNOWN_TOKEN,
                 }),
             ),
@@ -322,7 +322,7 @@ describe('what becomes a assetAccount', () => {
                 state,
                 getWalletAssetKey({
                     deviceState: ALICE,
-                    symbol: DSOL,
+                    networkSymbol: DSOL,
                     contractAddress: UNKNOWN_TOKEN,
                 }),
             ),
@@ -361,7 +361,11 @@ describe('the groups a assetAccount is in', () => {
         expect(
             accountsOfAsset(
                 state,
-                getWalletAssetKey({ deviceState: BOB, symbol: ETH, contractAddress: USDC_ON_ETH }),
+                getWalletAssetKey({
+                    deviceState: BOB,
+                    networkSymbol: ETH,
+                    contractAddress: USDC_ON_ETH,
+                }),
             ).map(assetAccount => assetAccount.cryptoBalance),
         ).toEqual(['9']);
     });
@@ -397,7 +401,7 @@ describe('what a write does not change', () => {
     it('does not change what an account nothing wrote to holds', () => {
         const untouched = mockAccount({ symbol: BTC, index: 0 });
         const before = mockAccount({ symbol: ETH, index: 1, balance: '1' });
-        const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
+        const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, networkSymbol: BTC });
 
         const firstAccounts = accountsOfAsset(
             createState({ accounts: [untouched, before] }),

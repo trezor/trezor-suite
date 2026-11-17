@@ -115,12 +115,24 @@ const createState = ({ accounts, stakingPositions = {} }: MockStateParams): Home
         networks: {},
     }) as unknown as HomeAssetTableState;
 
-const bitcoin = getWalletAssetKey({ deviceState: ALICE, symbol: BTC, contractAddress: undefined });
-const cardano = getWalletAssetKey({ deviceState: ALICE, symbol: ADA, contractAddress: undefined });
-const ethereum = getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: undefined });
+const bitcoin = getWalletAssetKey({
+    deviceState: ALICE,
+    networkSymbol: BTC,
+    contractAddress: undefined,
+});
+const cardano = getWalletAssetKey({
+    deviceState: ALICE,
+    networkSymbol: ADA,
+    contractAddress: undefined,
+});
+const ethereum = getWalletAssetKey({
+    deviceState: ALICE,
+    networkSymbol: ETH,
+    contractAddress: undefined,
+});
 const usdc = getWalletAssetKey({
     deviceState: ALICE,
-    symbol: ETH,
+    networkSymbol: ETH,
     contractAddress: USDC_ON_ETH,
 });
 

@@ -2,7 +2,7 @@ import {
     type HomeAssetTableState,
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetUnstakedAccounts,
 } from '@suite-common/assets';
 import {
@@ -22,7 +22,7 @@ const selectIsWalletAssetStakingSupported = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey | undefined,
 ): boolean => {
-    const networkSymbol = selectWalletAssetSymbol(state, assetKey);
+    const networkSymbol = selectWalletAssetNetworkSymbol(state, assetKey);
 
     return (
         networkSymbol !== undefined &&
@@ -48,7 +48,7 @@ export const selectWalletAssetStakingBannerAccounts = (
     state: AssetDetailStakingBannerState,
     assetKey: WalletAssetKey | undefined,
 ): readonly Account[] => {
-    const networkSymbol = selectWalletAssetSymbol(state, assetKey);
+    const networkSymbol = selectWalletAssetNetworkSymbol(state, assetKey);
 
     if (
         networkSymbol === undefined ||

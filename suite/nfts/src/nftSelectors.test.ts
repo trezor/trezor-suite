@@ -101,11 +101,19 @@ const createState = ({
     } as unknown as NftState;
 };
 
-const punksOnEth = getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: PUNKS });
-const apesOnEth = getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: APES });
+const punksOnEth = getWalletAssetKey({
+    deviceState: ALICE,
+    networkSymbol: ETH,
+    contractAddress: PUNKS,
+});
+const apesOnEth = getWalletAssetKey({
+    deviceState: ALICE,
+    networkSymbol: ETH,
+    contractAddress: APES,
+});
 const scamOnEth = getWalletAssetKey({
     deviceState: ALICE,
-    symbol: ETH,
+    networkSymbol: ETH,
     contractAddress: SCAM_DROP,
 });
 
@@ -241,7 +249,11 @@ describe('the collections the section hides', () => {
         });
 
         expect(selectShownNftCollectionKeys(state)).toEqual([
-            getWalletAssetKey({ deviceState: ALICE, symbol: SEPOLIA, contractAddress: SCAM_DROP }),
+            getWalletAssetKey({
+                deviceState: ALICE,
+                networkSymbol: SEPOLIA,
+                contractAddress: SCAM_DROP,
+            }),
         ]);
         expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
     });

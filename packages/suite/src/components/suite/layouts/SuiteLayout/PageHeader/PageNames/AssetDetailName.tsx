@@ -1,7 +1,10 @@
 import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
-import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
+import {
+    selectWalletAssetContractAddress,
+    selectWalletAssetNetworkSymbol,
+} from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -36,26 +39,29 @@ const AssetDetailBackButton = () => {
 export const AssetDetailName = () => {
     const assetKey = useSelector(selectRoutedAssetKey);
     const { NetworkNameFormatter } = useFormatters();
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
 
     return (
         <Row alignItems="center" gap={16}>
             <AssetDetailBackButton />
-            {symbol !== undefined && (
+            {networkSymbol !== undefined && (
                 <Row gap={12} minWidth={0}>
                     <AssetIcon
-                        networkSymbol={symbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
                         size={32}
                         showNetworkIcon
                     />
                     <Column alignItems="flex-start" minWidth={0}>
                         <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
-                            <AssetName networkSymbol={symbol} contractAddress={contractAddress} />
+                            <AssetName
+                                networkSymbol={networkSymbol}
+                                contractAddress={contractAddress}
+                            />
                         </Text>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <NetworkNameFormatter value={symbol} />
+                            <NetworkNameFormatter value={networkSymbol} />
                         </Text>
                     </Column>
                 </Row>

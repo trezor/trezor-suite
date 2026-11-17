@@ -52,7 +52,7 @@ const toNftHolding = ({ deviceState, symbol, token }: ToNftHoldingParams): NftHo
     const contractAddress = token.contract as TokenAddress;
 
     return {
-        assetKey: getWalletAssetKey({ deviceState, symbol, contractAddress }),
+        assetKey: getWalletAssetKey({ deviceState, networkSymbol: symbol, contractAddress }),
         symbol,
         contractAddress,
         token,

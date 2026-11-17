@@ -9,8 +9,8 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetExplorerUrl,
     selectWalletAssetHiddenReason,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetSignVerifyAccounts,
-    selectWalletAssetSymbol,
     selectWalletAssetTokenInfo,
 } from '@suite-common/assets';
 import {
@@ -60,7 +60,7 @@ type AssetDetailMenuProps = {
 
 export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const accountCount = useSelector(state => selectWalletAssetAccountCount(state, assetKey));
     const tokenInfo = useSelector(state => selectWalletAssetTokenInfo(state, assetKey));
@@ -76,7 +76,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
     const [isAccountsModalOpen, setIsAccountsModalOpen] = useState(false);
     const [isSignVerifyModalOpen, setIsSignVerifyModalOpen] = useState(false);
 
-    if (symbol === undefined) {
+    if (networkSymbol === undefined) {
         return null;
     }
 
@@ -91,14 +91,16 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
             type: events.assetsActionsEvent.name,
             payload: {
                 action: 'more-menu',
-                networkSymbol: symbol,
+                networkSymbol,
                 ...(contractAddress ? { contractAddress } : {}),
             },
         });
     };
 
     const addressFieldLabels: Record<AddressType, ReactElement> = {
-        contract: <Translation id={getTokenAddressTranslationId(getNetwork(symbol).networkType)} />,
+        contract: (
+            <Translation id={getTokenAddressTranslationId(getNetwork(networkSymbol).networkType)} />
+        ),
         fingerprint: <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />,
         policyId: <Translation id="TR_ASSET_DETAIL_POLICY_ID" />,
     };
@@ -138,7 +140,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
 
         dispatch(
             tokenDefinitionsActions.setTokenStatus({
-                symbol,
+                symbol: networkSymbol,
                 contractAddress,
                 status,
                 type: DefinitionType.COIN,
@@ -153,7 +155,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
 
         analytics.report({
             type: events.assetsActionsEvent.name,
-            payload: { action: 'hide-token', networkSymbol: symbol, contractAddress },
+            payload: { action: 'hide-token', networkSymbol, contractAddress },
         });
         setTokenStatus(TokenManagementAction.HIDE);
     };
@@ -204,7 +206,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
             label: <Translation id="TR_WALLETCONNECT" />,
             icon: LinkIcon,
             onClick: goToConnectedApps,
-            isHidden: !isWalletConnectSupportedNetwork(symbol),
+            isHidden: !isWalletConnectSupportedNetwork(networkSymbol),
             'data-testid': '@asset-detail/menu/walletconnect',
         },
         {
@@ -241,7 +243,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
                 onOpenChange={reportMenuOpen}
                 content={
                     <Column alignItems="stretch">
-                        <AssetDetailMenuNetworkRow symbol={symbol} />
+                        <AssetDetailMenuNetworkRow symbol={networkSymbol} />
                         <Divider margin={{ top: 8, bottom: 0 }} />
                         {addressFields.length > 0 && (
                             <>
@@ -263,7 +265,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
             />
             {isSignVerifyModalOpen && (
                 <AssetDetailSignVerifyModal
-                    symbol={symbol}
+                    symbol={networkSymbol}
                     accounts={signVerifyAccounts}
                     onAccountClick={goToSignVerify}
                     onClose={() => setIsSignVerifyModalOpen(false)}

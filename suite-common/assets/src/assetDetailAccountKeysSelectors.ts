@@ -77,7 +77,7 @@ export const selectWalletAssetAccountKeys = createMemoizedSelector(
             assetAccounts
                 .filter(
                     assetAccount =>
-                        assetAccount.symbol === networkSymbol &&
+                        assetAccount.networkSymbol === networkSymbol &&
                         assetAccount.contractAddress === tokenContract,
                 )
                 .map(assetAccount => assetAccount.accountKey),

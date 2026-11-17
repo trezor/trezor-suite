@@ -1,7 +1,10 @@
 import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
+import {
+    selectWalletAssetContractAddress,
+    selectWalletAssetNetworkSymbol,
+} from '@suite-common/assets';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Column, type Padding, Row } from '@trezor/components';
@@ -42,12 +45,14 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
         experimentId: ExperimentId.assetFirstHomeTable,
         variant: 'B',
     });
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, true));
+    const networkSymbol = useSelector(state =>
+        selectWalletAssetNetworkSymbol(state, assetKey, true),
+    );
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, true),
     );
 
-    if (symbol === undefined) {
+    if (networkSymbol === undefined) {
         return null;
     }
 
@@ -58,7 +63,12 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
             return;
         }
 
-        dispatch(gotoThunk({ routeName: 'suite-asset', params: { symbol, contractAddress } }));
+        dispatch(
+            gotoThunk({
+                routeName: 'suite-asset',
+                params: { symbol: networkSymbol, contractAddress },
+            }),
+        );
     };
 
     return (
@@ -66,19 +76,19 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
             onClick={handleClick}
             cursor="pointer"
             backgroundColorOnInteraction="elementFillGhostHovered"
-            data-testid={`@hidden-tokens/item/${symbol}/${contractAddress ?? 'coin'}`}
+            data-testid={`@hidden-tokens/item/${networkSymbol}/${contractAddress ?? 'coin'}`}
         >
             <Row gap={16} padding={HIDDEN_TOKEN_ROW_PADDING}>
                 <Row flex="1" minWidth={0}>
-                    <HomeAssetIdentity symbol={symbol} contractAddress={contractAddress} />
+                    <HomeAssetIdentity symbol={networkSymbol} contractAddress={contractAddress} />
                 </Row>
                 <Column
                     width={HIDDEN_TOKEN_PRICE_WIDTH}
                     alignItems="flex-end"
                     gap={HOME_ASSET_LINE_GAP}
                 >
-                    <PriceTicker symbol={symbol} contractAddress={contractAddress} />
-                    <TrendTicker symbol={symbol} contractAddress={contractAddress} />
+                    <PriceTicker symbol={networkSymbol} contractAddress={contractAddress} />
+                    <TrendTicker symbol={networkSymbol} contractAddress={contractAddress} />
                 </Column>
                 <Column width={HIDDEN_TOKEN_BALANCE_WIDTH} alignItems="flex-end">
                     <HomeAssetBalance assetKey={assetKey} isHidden />
