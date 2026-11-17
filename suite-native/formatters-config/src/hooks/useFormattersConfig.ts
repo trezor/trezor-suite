@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { getCalendars } from 'expo-localization';
 
 import { type FormatterProviderConfig } from '@suite-common/formatters';
+import { type NetworksRootState, selectNetworkDisplaySymbols } from '@suite-common/networks';
 import { selectBaseCurrency, selectBitcoinAmountUnit } from '@suite-common/wallet-core';
 import { selectLocale } from '@suite-native/intl';
 
@@ -13,6 +14,9 @@ export const useFormattersConfig = (): FormatterProviderConfig => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
     const locale = useSelector(selectLocale);
+    const networkDisplaySymbols = useSelector((state: NetworksRootState) =>
+        selectNetworkDisplaySymbols(state),
+    );
 
     return useMemo(
         () => ({
@@ -20,7 +24,8 @@ export const useFormattersConfig = (): FormatterProviderConfig => {
             bitcoinAmountUnit,
             is24HourFormat,
             baseCurrency: baseCurrencyCode,
+            networkDisplaySymbols,
         }),
-        [baseCurrencyCode, bitcoinAmountUnit, locale],
+        [baseCurrencyCode, bitcoinAmountUnit, locale, networkDisplaySymbols],
     );
 };

@@ -1,3 +1,4 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { getExchangeAllowanceCoverage } from '@suite-common/trading';
 import { Banner, Card, Column, Spinner, Text } from '@trezor/components';
@@ -52,7 +53,13 @@ export const TradingExchangeAllowance = () => {
     });
     const values = {
         provider: provider.companyName ?? provider.name ?? '',
-        displaySymbol: token.symbol,
+        displaySymbol: (
+            <AssetSymbol
+                networkSymbol={token.networkSymbol}
+                contractAddress={token.contractAddress}
+                isTruncated
+            />
+        ),
         needed:
             neededAmount !== undefined ? (
                 <FormattedCryptoAmount

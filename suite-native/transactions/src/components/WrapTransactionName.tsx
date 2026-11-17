@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getUnwrapAmountByEthereumDataHex } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
@@ -25,13 +27,17 @@ export const WrapTransactionName = ({
     const { isDiscreetMode } = useDiscreetMode();
 
     const { symbol } = transaction;
+    // `@suite-native/assets` depends on this package, so `AssetSymbol` is not available here.
+    const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        selectNetworkDisplaySymbol(state, symbol),
+    );
 
     const subunits =
         kind === 'wrap'
             ? transaction.amount
             : getUnwrapAmountByEthereumDataHex(transaction.ethereumSpecific?.data);
 
-    const wrappedSymbol = getWrappedNativeSymbol(symbol) ?? getNetworkDisplaySymbol(symbol);
+    const wrappedSymbol = getWrappedNativeSymbol(symbol) ?? networkDisplaySymbol;
 
     // The formatter's `symbol` drives both the subunit→unit conversion and the appended ticker, and
     // the wrapped symbol (WETH) is not a NetworkSymbol. So convert using the native symbol's decimals
@@ -54,7 +60,7 @@ export const WrapTransactionName = ({
         <Text {...textProps}>
             <Translation
                 id={kind === 'wrap' ? 'transactions.name.wrap' : 'transactions.name.unwrap'}
-                values={{ nativeSymbol: getNetworkDisplaySymbol(symbol), wrappedAmount }}
+                values={{ nativeSymbol: networkDisplaySymbol, wrappedAmount }}
             />
         </Text>
     );
