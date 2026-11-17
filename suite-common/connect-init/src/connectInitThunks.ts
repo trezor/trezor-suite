@@ -22,6 +22,7 @@ import {
     defaultTrezorUIEventHandlerThunk,
     deviceConnectThunk,
     isScopedCallId,
+    selectCustomEvmNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
@@ -190,6 +191,12 @@ export const connectInitThunk = createThunk<
         thp.hostName = thpHostName;
     }
 
+    const customEvmNetworks = selectCustomEvmNetworks(getState());
+    const isCustomEvmNetwork = (coin: string) =>
+        customEvmNetworks.some(({ symbol }) => symbol === coin);
+    // Connect keeps only its bundled coins in this list; custom networks are registered below.
+    const enabledNetworks = selectEnabledNetworks(getState());
+
     try {
         await TrezorConnect.init({
             ...connectInitSettings,
@@ -202,9 +209,9 @@ export const connectInitThunk = createThunk<
             firmwareChannel: selectEffectiveFirmwareChannel(getState(), getAllowPrerelease()),
             definitionsChannel,
             // Suite's enabled coins, declared to Connect one-way (Suite is the source of truth).
-            enabledNetworks: selectEnabledNetworks(getState()).map(coin => ({
-                coin: asCoinSymbol(coin),
-            })),
+            enabledNetworks: enabledNetworks
+                .filter(coin => !isCustomEvmNetwork(coin))
+                .map(coin => ({ coin: asCoinSymbol(coin) })),
         });
     } catch (error) {
         let formattedError: string;
@@ -215,4 +222,29 @@ export const connectInitThunk = createThunk<
         }
         throw new Error(formattedError, { cause: error });
     }
+
+    // Connect forgets runtime-registered networks on every start. A network that fails to register
+    // must not take the whole initialization down, it just stays unusable until the next start.
+    await Promise.all(
+        customEvmNetworks.map(async definition => {
+            try {
+                const result = await TrezorConnect.blockchainRegisterEvmNetwork({
+                    symbol: definition.symbol,
+                    name: definition.name,
+                    chainId: definition.chainId,
+                    rpcUrls: definition.rpcUrls,
+                    testnet: definition.testnet,
+                });
+
+                if (!result.success) {
+                    console.warn(
+                        `Custom network ${definition.symbol} not registered`,
+                        result.error,
+                    );
+                }
+            } catch (error) {
+                console.warn(`Custom network ${definition.symbol} not registered`, error);
+            }
+        }),
+    );
 });
