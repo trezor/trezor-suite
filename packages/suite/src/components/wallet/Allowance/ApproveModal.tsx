@@ -1,7 +1,8 @@
+import { AssetSymbol } from '@suite/assets';
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type Account, type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Banner, CardList, Column, Modal } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
@@ -87,7 +88,10 @@ export const ApproveModal = ({
     // when the signing fails, so the user can retry or cancel.
     if (!token?.symbol || isSending) return null;
 
-    const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const tokenContract = toTokenAddress(token.contract);
+    const displaySymbol = (
+        <AssetSymbol networkSymbol={account.symbol} contractAddress={tokenContract} isTruncated />
+    );
     const currentLimit =
         preapprovedAmount && preapprovedAmount !== '0' ? preapprovedAmount : undefined;
     const hasCurrentLimit = currentLimit !== undefined;
@@ -140,9 +144,7 @@ export const ApproveModal = ({
                             <AllowanceCurrentLimitRow
                                 label="TR_APPROVAL_CURRENT_LIMIT"
                                 networkSymbol={account.symbol}
-                                contractAddress={token.contract}
-                                symbol={displaySymbol}
-                                decimals={token.decimals}
+                                contractAddress={tokenContract}
                                 amount={currentLimit}
                             />
                         )}
@@ -152,7 +154,7 @@ export const ApproveModal = ({
                             networkSymbol={account.symbol}
                             onSelect={selectLimitType}
                             provider={provider}
-                            token={token}
+                            contractAddress={tokenContract}
                             displayAmount={inputAmount}
                             hasPreapprovedAmount={hasCurrentLimit}
                         />

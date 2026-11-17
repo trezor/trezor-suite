@@ -1,4 +1,7 @@
 import { Translation } from '@suite/intl';
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Spinner, Text } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
@@ -7,9 +10,8 @@ import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmou
 
 type AllowanceAmountProps = {
     amount: string;
-    symbol?: string;
-    decimals: number;
-    contractAddress?: string | null;
+    networkSymbol: NetworkSymbol;
+    contractAddress: TokenAddress;
     typographyStyle?: TypographyStyle;
     isLoading?: boolean;
     hasError?: boolean;
@@ -18,14 +20,15 @@ type AllowanceAmountProps = {
 
 export const AllowanceAmount = ({
     amount,
-    symbol,
-    decimals,
+    networkSymbol,
     contractAddress,
     typographyStyle = 'body-md',
     isLoading = false,
     hasError = false,
     'data-testid': dataTest,
 }: AllowanceAmountProps) => {
+    const token = useTokenMetadata(networkSymbol, contractAddress);
+
     if (isLoading) {
         return <Spinner size={16} isDisabled />;
     }
@@ -34,7 +37,10 @@ export const AllowanceAmount = ({
         return <Text typographyStyle={typographyStyle}>-</Text>;
     }
 
-    if (isAllowanceUnlimited({ amount, decimals })) {
+    if (
+        token?.decimals !== undefined &&
+        isAllowanceUnlimited({ amount, decimals: token.decimals })
+    ) {
         return (
             <Text typographyStyle={typographyStyle}>
                 <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
@@ -46,9 +52,8 @@ export const AllowanceAmount = ({
         <Text typographyStyle={typographyStyle}>
             <FormattedCryptoAmount
                 value={amount}
-                networkSymbol={symbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
-                tokenDecimals={decimals}
                 data-testid={dataTest}
             />
         </Text>
