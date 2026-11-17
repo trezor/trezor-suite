@@ -166,6 +166,12 @@ export interface GetEvmChainId {
     payload: number;
 }
 
+export interface GetEvmBlockTime {
+    type: typeof RESPONSES.GET_EVM_BLOCK_TIME;
+    /** Average block time in seconds. */
+    payload: number;
+}
+
 export interface GetContractInfo {
     type: typeof RESPONSES.GET_CONTRACT_INFO;
     payload: ContractInfoResponse;
@@ -201,4 +207,5 @@ export type Response =
     | ChannelMessage<Notification>
     | ChannelMessage<PushTransaction>
     | ChannelMessage<GetEvmChainId>
+    | ChannelMessage<GetEvmBlockTime>
     | ChannelMessage<GetContractInfo>;
