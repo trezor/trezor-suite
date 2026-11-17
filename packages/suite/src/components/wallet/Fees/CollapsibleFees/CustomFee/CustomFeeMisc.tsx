@@ -40,7 +40,6 @@ export const CustomFeeMisc = ({
     const feeRules = {
         ...sharedRules,
         validate: {
-            ...sharedRules.validate,
             bitcoinDecimalsLimit: validateDecimals(translationString, {
                 decimals: 2,
                 except: networkType !== 'bitcoin',
