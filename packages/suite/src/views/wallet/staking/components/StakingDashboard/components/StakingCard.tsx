@@ -207,7 +207,7 @@ export const StakingCard = ({
 
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled && !isDrepDelegationRequired) {
-            dispatch(openModal({ type: 'unstake', account }));
+            dispatch(openModal({ type: 'unstake', accountKey: account.key }));
 
             analytics.report({
                 type: events.stakingUnstakeEvent.name,
