@@ -26,13 +26,11 @@ import {
     type CreateImportedDeviceThunkState,
     type InitBlockchainThunkDeps,
     type InitBlockchainThunkState,
-    type InitStakeDataThunkState,
     type PeriodicFetchFiatRatesThunkDeps,
     type PeriodicFetchFiatRatesThunkState,
     createImportedDeviceThunk,
     initBlockchainThunk,
     initDevicesThunk,
-    initStakeDataThunk,
     periodicFetchFiatRatesThunk,
     selectBaseCurrency,
 } from '@suite-common/wallet-core';
@@ -60,7 +58,6 @@ const ACTION_PREFIX = '@suite-native/app';
 type PostOnboardingInitThunkState = ConnectInitThunkState &
     InitBlockchainThunkState &
     InitTokenDefinitionsThunkState &
-    InitStakeDataThunkState &
     PeriodicFetchFiatRatesThunkState &
     CreateImportedDeviceThunkState &
     WalletConnectInitThunkState;
@@ -94,7 +91,6 @@ export const postOnboardingInitThunk = createThunk<
     }
 
     dispatch(periodicCheckTokenDefinitionsThunk());
-    dispatch(initStakeDataThunk());
 
     dispatch(
         periodicFetchFiatRatesThunk({

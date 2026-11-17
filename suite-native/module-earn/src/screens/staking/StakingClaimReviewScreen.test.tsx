@@ -1,5 +1,17 @@
 import { type PropsWithChildren, type ReactNode } from 'react';
 
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import {
+    type StakingOperation,
+    type StakingProductDescriptor,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -13,10 +25,11 @@ import {
     useComposeEarnFees,
 } from '../../hooks/earn/useComposeEarnFees';
 
+type ClaimSymbol = 'eth' | 'sol';
+
 const mockNavigate = jest.fn();
 let mockAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
-let mockSymbol: 'eth' | 'sol' = 'eth';
-let mockCanClaim = true;
+let mockSymbol: ClaimSymbol = 'eth';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -32,11 +45,6 @@ jest.mock('@suite-native/navigation', () => ({
         </>
     ),
     ScreenHeader: () => null,
-}));
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    selectCanClaimByAccountKey: () => mockCanClaim,
-    selectClaimableAmountByAccountKey: () => '1',
 }));
 jest.mock('../../hooks/earn/useComposeEarnFees');
 jest.mock('../../hooks/earn/useEarnDeviceStatus', () => ({ useEarnDeviceStatus: () => undefined }));
@@ -57,17 +65,66 @@ jest.mock('../../components/earn/EarnFeeSection', () => ({
     EarnFeeSection: () => null,
 }));
 
-const renderClaim = () => {
+const ethProduct = mockStakingProductDescriptor();
+const solProduct = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('sol'),
+    type: 'native',
+    operations: ['stake', 'unstake', 'withdraw'],
+    rewardsKind: 'expected',
+});
+const productBySymbol: Record<ClaimSymbol, StakingProductDescriptor> = {
+    eth: ethProduct,
+    sol: solProduct,
+};
+const zero = stakingAmountSchema.parse('0');
+// One coin ready to withdraw.
+const withdrawableBySymbol: Record<ClaimSymbol, string> = {
+    eth: '1000000000000000000',
+    sol: '1000000000',
+};
+
+const selectedDevice = mockSuiteDevice();
+
+const renderClaim = (operations: StakingOperation[] = ['stake', 'unstake', 'withdraw']) => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
+    const product = productBySymbol[mockSymbol];
 
     mockAccount = mockWalletAccount({
         symbol: asNetworkSymbol(mockSymbol),
         availableBalance: mockSymbol === 'eth' ? '100000000000000' : '10000',
+        deviceState: selectedDevice.state?.staticSessionId,
     });
 
     return renderWithStoreProvider(<StakingClaimReviewScreen />, {
         services,
         preloadedState: {
+            device: { devices: [selectedDevice], selectedDevice },
+            messageSystem: messageSystemInitialState,
+            earn: {
+                staking: mockStakingState({
+                    platform: 'mobile',
+                    descriptors: [ethProduct, solProduct],
+                    positions: {
+                        [mockAccount.key]: [
+                            mockStakingPosition({
+                                productId: product.id,
+                                balances: {
+                                    staked: zero,
+                                    pending: zero,
+                                    unstaking: zero,
+                                    withdrawable: stakingAmountSchema.parse(
+                                        withdrawableBySymbol[mockSymbol],
+                                    ),
+                                    rewards: zero,
+                                },
+                                unlocks: [],
+                                targets: [],
+                                operations,
+                            }),
+                        ],
+                    },
+                }),
+            },
             wallet: {
                 accounts: [mockAccount],
             },
@@ -89,7 +146,6 @@ describe('StakingClaimReviewScreen fee readiness', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockSymbol = 'eth';
-        mockCanClaim = true;
         jest.mocked(useComposeEarnFees).mockReturnValue(createFeeState());
     });
 
@@ -126,9 +182,8 @@ describe('StakingClaimReviewScreen fee readiness', () => {
         },
     );
 
-    it('blocks a claim that is not claimable yet', async () => {
-        mockCanClaim = false;
-        const view = await renderClaim();
+    it('blocks a claim while the position does not offer the withdrawal', async () => {
+        const view = await renderClaim(['stake', 'unstake']);
 
         expect(
             view.getByText(getTranslation('earn.claimReviewScreen.reviewAndSignButton')),

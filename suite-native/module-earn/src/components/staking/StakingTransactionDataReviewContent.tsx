@@ -3,13 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { StackActions, useNavigation } from '@react-navigation/native';
 
-import {
-    type AccountsRootState,
-    type StakeRootState,
-    isSupportedSolStakingNetworkSymbol,
-    selectAccountByKey,
-    selectClaimableAmountByAccountKey,
-} from '@suite-common/wallet-core';
+import { type StakingRootState, selectStakingAccountTotals } from '@suite-common/earn-staking';
+import { getNetworkType } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { isDeviceReviewOnlyTransaction } from '@suite-common/wallet-utils';
 import { Button, VStack } from '@suite-native/atoms';
@@ -88,12 +84,12 @@ export const StakingTransactionDataReviewContent = ({
     const navigation = useNavigation();
 
     const networkSymbol = account?.symbol;
-    const isSolanaStaking = !!networkSymbol && isSupportedSolStakingNetworkSymbol(networkSymbol);
+    const isSolanaStaking = !!networkSymbol && getNetworkType(networkSymbol) === 'solana';
 
     const isReadyToContinue = isTransactionAlreadySigned && !!account;
 
-    const claimableAmount = useSelector((state: StakeRootState) =>
-        stakeType === 'claim' ? selectClaimableAmountByAccountKey(state, accountKey) : undefined,
+    const withdrawableAmount = useSelector(
+        (state: StakingRootState) => selectStakingAccountTotals(state, accountKey).withdrawable,
     );
 
     const pendingAmountInBaseUnits = useMemo(() => {
@@ -112,10 +108,7 @@ export const StakingTransactionDataReviewContent = ({
                 return amount ? getAmountInBaseUnits(amount, networkSymbol) : '0';
             case 'claim':
                 return getEarnPendingAmountInBaseUnits({
-                    fallbackAmountInBaseUnits: getAmountInBaseUnits(
-                        claimableAmount ?? '0',
-                        networkSymbol,
-                    ),
+                    fallbackAmountInBaseUnits: withdrawableAmount,
                     isSolanaStaking,
                     precomposedTransaction,
                 });
@@ -126,7 +119,7 @@ export const StakingTransactionDataReviewContent = ({
         stakeType,
         isSolanaStaking,
         precomposedTransaction,
-        claimableAmount,
+        withdrawableAmount,
     ]);
 
     const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =

@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useNetworkStakingPeriods } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type StakeRootState,
     type TransactionsRootState,
     getChangedInternalTx,
     getInstantStakeType,
     isSupportedEthStakingNetworkSymbol,
     selectAccountByKey,
     selectAccountTransactions,
-    selectUnstakingPeriodInDaysBySymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -19,7 +18,7 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 type InstantUnstakeBannerData = {
     amount: string;
     displaySymbol: string;
-    unstakingPeriodInDays: number | undefined;
+    unstakingPeriodInDays: number | null;
     dismiss: () => void;
 };
 
@@ -35,9 +34,7 @@ export const useInstantUnstakeBanner = (
     const descriptor = account?.descriptor;
     const symbol = account?.symbol;
 
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
-        selectUnstakingPeriodInDaysBySymbol(state, symbol ?? undefined),
-    );
+    const { exitPeriodDays: unstakingPeriodInDays } = useNetworkStakingPeriods(symbol ?? null);
 
     const [amount, setAmount] = useState<string | null>(null);
     const [isVisible, setIsVisible] = useState(false);

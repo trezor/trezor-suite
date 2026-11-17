@@ -1,7 +1,16 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingAmountSchema } from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
+import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { StakeState } from '@trezor/network-solana/constants';
+import { BigNumber } from '@trezor/utils';
 
 import { useUnstakeForm } from './useUnstakeForm';
 import { useComposeEarnFees } from '../earn/useComposeEarnFees';
@@ -11,9 +20,19 @@ jest.mock('./useApproximateInstantUnstakeAmount', () => ({
     useApproximateInstantUnstakeAmount: () => null,
 }));
 
+const solProduct = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('sol'),
+    type: 'native',
+    operations: ['stake', 'unstake', 'withdraw'],
+    rewardsKind: 'expected',
+});
+const selectedDevice = mockSuiteDevice();
+const zero = stakingAmountSchema.parse('0');
+
+// The stake accounts feed the amount-bounds check of the form; their sum is the position.
 const renderUnstake = (stakes: string[]) => {
     const account = mockWalletAccount(
-        { symbol: asNetworkSymbol('sol') },
+        { symbol: asNetworkSymbol('sol'), deviceState: selectedDevice.state?.staticSessionId },
         {
             misc: {
                 solStakingAccounts: stakes.map(stake => ({
@@ -24,9 +43,33 @@ const renderUnstake = (stakes: string[]) => {
             },
         },
     );
+    const position = mockStakingPosition({
+        productId: solProduct.id,
+        balances: {
+            staked: stakingAmountSchema.parse(BigNumber.sum(0, ...stakes).toFixed(0)),
+            pending: zero,
+            unstaking: zero,
+            withdrawable: zero,
+            rewards: zero,
+        },
+        unlocks: [],
+        targets: [],
+        operations: ['stake', 'unstake'],
+    });
 
     return renderHookWithStoreProvider(() => useUnstakeForm(account.key), {
-        preloadedState: { wallet: { accounts: [account] } },
+        preloadedState: {
+            device: { devices: [selectedDevice], selectedDevice },
+            messageSystem: messageSystemInitialState,
+            earn: {
+                staking: mockStakingState({
+                    platform: 'mobile',
+                    descriptors: [solProduct],
+                    positions: { [account.key]: [position] },
+                }),
+            },
+            wallet: { accounts: [account] },
+        },
     });
 };
 

@@ -1,19 +1,25 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+    type StakingAccountProductRootState,
+    type StakingRootState,
+    formatStakingAmount,
+    isStakingOperationAvailable,
+    selectStakingAccountProductDescriptor,
+    selectStakingAccountTotals,
+    selectStakingPosition,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type StakeRootState,
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE_MOBILE,
     buildUnstakeData,
     getEthereumStakingAddressByType,
     getStakingLimitsByNetworkSymbol,
     selectAccountByKey,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
-    selectUnstakableBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { fromEther, isPositiveBalance } from '@suite-common/wallet-utils';
@@ -33,18 +39,28 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const unstakableBalance = useSelector((state: StakeRootState) =>
-        selectUnstakableBalanceByAccountKey(state, accountKey),
+    const productId = useSelector(
+        (state: StakingAccountProductRootState) =>
+            selectStakingAccountProductDescriptor(state, accountKey)?.id ?? null,
     );
-    const canClaim = useSelector((state: StakeRootState) =>
-        selectCanClaimByAccountKey(state, accountKey),
+    const position = useSelector((state: StakingRootState) =>
+        productId === null ? null : selectStakingPosition(state, accountKey, productId),
     );
-    const claimableAmount =
-        useSelector((state: StakeRootState) =>
-            selectClaimableAmountByAccountKey(state, accountKey),
-        ) ?? '0';
+    const totals = useSelector((state: StakingRootState) =>
+        selectStakingAccountTotals(state, accountKey),
+    );
+    const access = useStakingAccess(productId);
 
     const network = account ? getNetwork(account.symbol) : null;
+
+    // The whole stake can be unstaked; a withdrawal waits for its own flow.
+    const unstakableBalance = account
+        ? formatStakingAmount({ amount: totals.staked, networkSymbol: account.symbol })
+        : '0';
+    const canClaim = isStakingOperationAvailable({ position, access, operation: 'withdraw' });
+    const claimableAmount = account
+        ? formatStakingAmount({ amount: totals.withdrawable, networkSymbol: account.symbol })
+        : '0';
 
     const form = useForm<EarnFormValues>({
         validation: unstakeFormValidationSchema,
