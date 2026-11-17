@@ -14,6 +14,30 @@ import { createDeferred, isNotNullOrUndefined } from '@trezor/utils';
 import type { Request } from '../types';
 import { fetchTransactionPage, getSignaturesForAddresses, isValidTransaction } from '../utils';
 
+const EPOCH_CACHE_KEY = 'epoch';
+const EPOCH_CACHE_MAX_TTL = 60 * 60 * 1000;
+// Half the 200 ms mainnet slot target (SIMD-0525).
+const MIN_SLOT_DURATION_MS = 100;
+
+type GetEpochCacheTtlParams = {
+    slotIndex: bigint;
+    slotsInEpoch: bigint;
+    requestStartedAt: number;
+};
+
+// Stake account statuses are derived from the epoch, so a cached epoch must not outlive it.
+const getEpochCacheTtl = ({
+    slotIndex,
+    slotsInEpoch,
+    requestStartedAt,
+}: GetEpochCacheTtlParams) => {
+    // The sampled slot may already be ending, and the response may still be in transit.
+    const fullSlotsLeft = Number(slotsInEpoch - slotIndex - 1n);
+    const msUntilEpochEnd = fullSlotsLeft * MIN_SLOT_DURATION_MS - (Date.now() - requestStartedAt);
+
+    return Math.min(EPOCH_CACHE_MAX_TTL, Math.max(0, msUntilEpochEnd));
+};
+
 export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
     const { details = 'basic' } = payload;
@@ -78,7 +102,7 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
     };
 
     const getEpoch = async (): Promise<number> => {
-        const cachedEpoch = await request.state.cache.get('epoch');
+        const cachedEpoch = request.state.cache.get(EPOCH_CACHE_KEY);
 
         if (cachedEpoch) {
             return cachedEpoch;
@@ -86,10 +110,22 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
 
         // for parallel requests we store the promise in the cache immediately
         const deferred = createDeferred<number>();
-        request.state.cache.set('epoch', deferred.promise, 3_600_000);
+        request.state.cache.set(EPOCH_CACHE_KEY, deferred.promise, EPOCH_CACHE_MAX_TTL);
 
-        const { epoch } = await api.rpc.getEpochInfo().send();
-        deferred.resolve(Number(epoch));
+        try {
+            const requestStartedAt = Date.now();
+            const { epoch, slotIndex, slotsInEpoch } = await api.rpc.getEpochInfo().send();
+            const ttl = getEpochCacheTtl({ slotIndex, slotsInEpoch, requestStartedAt });
+            if (ttl > 0) {
+                request.state.cache.set(EPOCH_CACHE_KEY, deferred.promise, ttl);
+            } else {
+                request.state.cache.delete(EPOCH_CACHE_KEY);
+            }
+            deferred.resolve(Number(epoch));
+        } catch (error) {
+            request.state.cache.delete(EPOCH_CACHE_KEY);
+            deferred.reject(error);
+        }
 
         return deferred.promise;
     };
