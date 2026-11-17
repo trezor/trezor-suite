@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { type ExtendedMessageDescriptor, type TranslationKey, isTranslationKey } from '@suite/intl';
 import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
@@ -74,7 +74,6 @@ export const useAllowanceTransaction = ({
         composedLevels,
         composedTransaction,
         selectedFee,
-        composeRequest,
         methods,
         changeFeeLevel,
     } = useAllowanceCompose({
@@ -110,7 +109,6 @@ export const useAllowanceTransaction = ({
     const canSubmit =
         isTokenResolved && !isComposing && !!composedTransaction && !composedLevelsError;
 
-    const composeRequestRef = useCurrentRef(composeRequest);
     const callbacksRef = useCurrentRef({
         onSelectLimitType,
         onConfirm,
@@ -119,10 +117,6 @@ export const useAllowanceTransaction = ({
         onSendFailed,
         onCancel,
     });
-
-    useEffect(() => {
-        composeRequestRef.current();
-    }, [allowanceAmount, composeRequestRef]);
 
     const selectLimitType = useCallback(
         (nextLimitType: AllowanceLimitType) => {
@@ -176,6 +170,5 @@ export const useAllowanceTransaction = ({
         confirmAndSend,
         handleCancel,
         handleFeeChange: changeFeeLevel,
-        composeRequest,
     };
 };

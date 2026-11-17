@@ -36,21 +36,14 @@ export const TradingExchangeApprovalFeeModal = ({
     onConfirm,
     onClose,
 }: TradingExchangeApprovalFeeModalProps) => {
-    const {
-        feeInfo,
-        isComposing,
-        composedLevels,
-        selectedFee,
-        composeRequest,
-        methods,
-        changeFeeLevel,
-    } = useAllowanceCompose({
-        account,
-        contract: tokenContractAddress,
-        spender,
-        amount: allowanceAmount,
-        token,
-    });
+    const { feeInfo, isComposing, composedLevels, selectedFee, methods, changeFeeLevel } =
+        useAllowanceCompose({
+            account,
+            contract: tokenContractAddress,
+            spender,
+            amount: allowanceAmount,
+            token,
+        });
 
     const fees = useFeesContextValue({
         account,
@@ -61,12 +54,11 @@ export const TradingExchangeApprovalFeeModal = ({
         isComposing,
     });
 
-    const openingRef = useCurrentRef({ methods, defaultFeeValues, composeRequest });
+    const openingRef = useCurrentRef({ methods, defaultFeeValues });
 
     useLayoutEffect(() => {
         const { current } = openingRef;
         setAllowanceFeeValues(current.methods, current.defaultFeeValues);
-        current.composeRequest();
     }, [openingRef]);
 
     const composedLevel = composedLevels?.[selectedFee];

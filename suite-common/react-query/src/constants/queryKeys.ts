@@ -9,6 +9,7 @@ type TransactionsPageQueryKeyParams = {
 
 export const commonQueryKeys = {
     networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
+    allowanceCompose: (params: Record<string, unknown>) => ['allowance-compose', params],
     dappScan: (url?: string) => ['dapp-scan', url],
     validatorsQueue: (accountKey: string | undefined, timestamp?: number) => [
         'everstake',

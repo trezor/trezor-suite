@@ -1,33 +1,30 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useMemo } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useMutation } from '@suite-common/react-query';
+import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
-    type ComposeAllowanceTransactionThunkParams,
     type FeesRootState,
     composeAllowanceTransactionThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type FeeLevelLabel,
-    type FormState,
-    type PrecomposedLevels,
-} from '@suite-common/wallet-types';
+import { type Account, type FeeLevelLabel, type FormState } from '@suite-common/wallet-types';
 import {
     buildApprovalTransactionData,
     getConvertedOrDefaultFeeInfo,
 } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useServices } from '@trezor/dependency-injection';
-import { useCurrentRef, useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { useFees } from '#src/hooks/wallet/form/useFees';
+
+// Typing a custom fee would otherwise compose on every keystroke.
+const CUSTOM_FEE_DEBOUNCE_MS = 300;
 
 type UseAllowanceComposeParams = {
     account: Account;
@@ -45,7 +42,6 @@ export const useAllowanceCompose = ({
     token,
 }: UseAllowanceComposeParams) => {
     const { dispatch } = useServices(injectDispatch);
-    const debounce = useDebounce();
 
     const { networkType, symbol } = account;
 
@@ -65,98 +61,56 @@ export const useAllowanceCompose = ({
             options: ['broadcast'],
         },
     });
+    const { control, setValue } = methods;
 
-    const [composedLevels, setComposedLevels] = useState<PrecomposedLevels | undefined>(undefined);
-    const composeRequestIdRef = useRef(0);
-    const prevFeeInfoBlockHeightRef = useRef<number | null>(null);
-    const methodsRef = useCurrentRef(methods);
+    const [watchedFee, feePerUnit, feeLimit, maxFeePerGas, maxPriorityFeePerGas] = useWatch({
+        control,
+        name: ['selectedFee', 'feePerUnit', 'feeLimit', 'maxFeePerGas', 'maxPriorityFeePerGas'],
+    });
 
     const data = useMemo(
         () => buildApprovalTransactionData({ amount, spender }),
         [amount, spender],
     );
 
-    const { mutate, isPending: isComposing } = useMutation({
-        mutationFn: async () => {
-            composeRequestIdRef.current += 1;
-            const currentRequestId = composeRequestIdRef.current;
+    // Preset fee levels are all composed at once, so only a custom fee is part of the request.
+    const customFee = useMemo(
+        () =>
+            watchedFee === 'custom'
+                ? {
+                      feePerUnit: feePerUnit ?? '',
+                      feeLimit: feeLimit ?? '',
+                      maxFeePerGas,
+                      maxPriorityFeePerGas,
+                  }
+                : undefined,
+        [watchedFee, feePerUnit, feeLimit, maxFeePerGas, maxPriorityFeePerGas],
+    );
 
-            const formValues = methods.getValues();
-            const feeLevel = (formValues.selectedFee ?? 'normal') satisfies FeeLevelLabel;
+    const { data: composedLevels, isFetching: isComposing } = useQuery({
+        queryKey: commonQueryKeys.allowanceCompose({ account, feeInfo, contract, data, customFee }),
+        queryFn: async ({ signal }) => {
+            if (customFee) {
+                await resolveAfter(CUSTOM_FEE_DEBOUNCE_MS, signal);
+            }
 
-            const customFee =
-                feeLevel === 'custom'
-                    ? {
-                          feePerUnit: formValues.feePerUnit ?? '',
-                          feeLimit: formValues.feeLimit ?? '',
-                          maxFeePerGas: formValues.maxFeePerGas,
-                          maxPriorityFeePerGas: formValues.maxPriorityFeePerGas,
-                      }
-                    : undefined;
-
-            const thunkParams: ComposeAllowanceTransactionThunkParams = {
-                feeInfo,
-                account,
-                contract,
-                data,
-                selectedFee: feeLevel,
-                customFee,
-            };
-
-            const result = await debounce(() =>
-                dispatch(composeAllowanceTransactionThunk(thunkParams)).then(res =>
-                    isFulfilled(res) ? res.payload : undefined,
-                ),
+            const result = await dispatch(
+                composeAllowanceTransactionThunk({
+                    feeInfo,
+                    account,
+                    contract,
+                    data,
+                    selectedFee: customFee ? 'custom' : 'normal',
+                    customFee,
+                }),
             );
 
-            if (currentRequestId !== composeRequestIdRef.current) {
-                return null;
-            }
-
-            return result ? { levels: result, feeLevel } : null;
+            return isFulfilled(result) ? result.payload : null;
         },
-        onMutate: () => {
-            setComposedLevels(undefined);
-        },
-        onSuccess: result => {
-            if (!result) return;
-
-            const { levels, feeLevel } = result;
-            setComposedLevels(levels);
-
-            const selected = levels[feeLevel];
-            if (selected?.type === 'final' && selected.estimatedFeeLimit) {
-                methods.setValue('estimatedFeeLimit', selected.estimatedFeeLimit, {
-                    shouldDirty: true,
-                });
-            }
-        },
+        staleTime: Infinity,
+        gcTime: 0,
+        retry: false,
     });
-
-    const composeRequest = useCallback(
-        (_field?: string) => {
-            mutate();
-        },
-        [mutate],
-    );
-    const composeRequestRef = useCurrentRef(composeRequest);
-
-    const onFeeLevelChange = useCallback(
-        (prev?: string, current?: string) => {
-            if (!current || !composedLevels) return;
-
-            if (current === 'custom') {
-                const prevLevel = composedLevels[prev || 'normal'];
-                if (prevLevel) {
-                    setComposedLevels({
-                        ...composedLevels,
-                        custom: prevLevel,
-                    });
-                }
-            }
-        },
-        [composedLevels],
-    );
 
     // Keep `formState` as its own binding: the spread object is a react-hook-form ref that
     // never changes identity, so without it the React Compiler caches this argument once and
@@ -168,26 +122,21 @@ export const useAllowanceCompose = ({
         formState,
         defaultValue: 'normal',
         feeInfo,
-        onChange: onFeeLevelChange,
-        composeRequest,
-        composedLevels,
+        composedLevels: composedLevels ?? undefined,
     });
     const selectedFee = formSelectedFee ?? ('normal' satisfies FeeLevelLabel);
 
-    const composedTransaction = useMemo(() => {
-        if (!composedLevels) return undefined;
+    const selectedLevel = composedLevels?.[selectedFee];
+    const composedTransaction = selectedLevel?.type === 'final' ? selectedLevel : undefined;
+    const estimatedFeeLimit = composedTransaction?.estimatedFeeLimit;
 
-        const selected = composedLevels[selectedFee];
-
-        return selected?.type === 'final' ? selected : undefined;
-    }, [composedLevels, selectedFee]);
+    // The fee inputs read the transaction data, the output and the estimated limit from the form.
+    useEffect(() => {
+        setValue('transactionData', data, { shouldDirty: true });
+    }, [data, setValue]);
 
     useEffect(() => {
-        methodsRef.current.setValue('transactionData', data, { shouldDirty: true });
-    }, [data, methodsRef]);
-
-    useEffect(() => {
-        methodsRef.current.setValue(
+        setValue(
             'outputs',
             [
                 {
@@ -199,30 +148,21 @@ export const useAllowanceCompose = ({
             ],
             { shouldDirty: true },
         );
-    }, [contract, token?.contract, methodsRef]);
+    }, [contract, token?.contract, setValue]);
 
     useEffect(() => {
-        if (prevFeeInfoBlockHeightRef.current === null) {
-            prevFeeInfoBlockHeightRef.current = feeInfo.blockHeight;
-
-            return;
+        if (estimatedFeeLimit) {
+            setValue('estimatedFeeLimit', estimatedFeeLimit, { shouldDirty: true });
         }
-
-        if (feeInfo.blockHeight > prevFeeInfoBlockHeightRef.current && composedLevels) {
-            prevFeeInfoBlockHeightRef.current = feeInfo.blockHeight;
-
-            composeRequestRef.current();
-        }
-    }, [composedLevels, feeInfo.blockHeight, composeRequestRef]);
+    }, [estimatedFeeLimit, setValue]);
 
     return {
         data,
         feeInfo,
         isComposing,
-        composedLevels,
+        composedLevels: composedLevels ?? undefined,
         composedTransaction,
         selectedFee,
-        composeRequest,
         methods,
         changeFeeLevel,
     };

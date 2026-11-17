@@ -102,7 +102,6 @@ export const TradingExchangeApprovalStepCard = ({
         methods,
         selectLimitType,
         confirmAndSend,
-        composeRequest,
     } = useAllowanceTransaction({
         type: transactionType,
         amount: quote.sendStringAmount ?? '0',
@@ -173,7 +172,6 @@ export const TradingExchangeApprovalStepCard = ({
     const onConfirmFee = (feeValues: AllowanceFeeValues) => {
         setAllowanceFeeValues(methods, feeValues);
         reportAction('fee-change', feeValues.selectedFee);
-        composeRequest();
     };
 
     const onTxidClick = () => {
