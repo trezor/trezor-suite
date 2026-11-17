@@ -4,7 +4,7 @@ import { useFormContext, useFormState } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { type FormState } from '@suite-common/wallet-types';
-import { isEip1559 } from '@suite-common/wallet-utils';
+import { isEip1559, isInteger } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
@@ -48,7 +48,16 @@ export const CustomFeeEthereum = ({
     const gasLimitRules = {
         required: translationString('GAS_LIMIT_IS_NOT_SET'),
         validate: {
-            ...sharedRules.validate,
+            integer: (value: string) => {
+                if (!isInteger(value)) {
+                    return translationString('CUSTOM_FEE_IS_NOT_INTEGER');
+                }
+            },
+            positive: (value: string) => {
+                if (new BigNumber(value).isZero()) {
+                    return translationString('GAS_LIMIT_IS_NOT_SET');
+                }
+            },
             feeLimit: (value: string) => {
                 const estimatedFeeLimit = getValues('estimatedFeeLimit');
                 const feeBig = new BigNumber(value);
@@ -76,7 +85,6 @@ export const CustomFeeEthereum = ({
     const gasPriceRules = {
         ...sharedRules,
         validate: {
-            ...sharedRules.validate,
             ethereumDecimalsLimit: validateDecimals(translationString, {
                 decimals: 9,
                 except: networkType !== 'ethereum',
@@ -97,7 +105,6 @@ export const CustomFeeEthereum = ({
     const maxFeePerGasRules = {
         ...sharedRules,
         validate: {
-            ...sharedRules.validate,
             ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
             customMaxFeePerGasRange: (value: string) => {
                 const customMaxFeePerGas = new BigNumber(value);
@@ -141,6 +148,7 @@ export const CustomFeeEthereum = ({
             : undefined;
 
     const maxPriorityFeePerGasRules = {
+        ...sharedRules,
         validate: {
             ethereumDecimalsLimit: gasPriceRules.validate.ethereumDecimalsLimit,
             customPriorityFeePerGas: (value: string) => {

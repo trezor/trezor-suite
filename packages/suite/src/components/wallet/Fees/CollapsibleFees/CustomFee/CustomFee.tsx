@@ -1,5 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
+import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 
 import { CurrentFee } from './CurrentFee';
@@ -23,12 +23,6 @@ export const CustomFee = ({ showCurrentFee }: CustomFeeProps) => {
     const { translationString } = useTranslation();
     const sharedRules = {
         required: translationString('CUSTOM_FEE_IS_NOT_SET'),
-        // Allow decimals in ETH since GWEI is not a satoshi.
-        validate: (value: string) => {
-            if (['bitcoin', 'ethereum'].includes(networkType) && !isInteger(value)) {
-                return translationString('CUSTOM_FEE_IS_NOT_INTEGER');
-            }
-        },
     };
 
     const feeUnits = getFeeUnits(networkType);
