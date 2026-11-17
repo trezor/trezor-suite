@@ -1,4 +1,4 @@
-# Compose application logic from injected services instead of thunks
+# Dependency Injection
 
 ## Context
 
