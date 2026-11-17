@@ -6,6 +6,7 @@ import { isCodesignBuild } from '@trezor/env-utils';
 
 import { createDesktopMainCompositionRoot } from './createDesktopMainCompositionRoot';
 import { hasSwitch } from './libs/process-switches';
+import { exitIfLaunchDeeplinkIsUnpermitted } from './libs/protocol';
 import { clearUserDataOptimistically, initUserData } from './libs/user-data';
 
 process.traceProcessWarnings = true;
@@ -29,10 +30,17 @@ const parseRemoveUserDataSwitch = () => {
         clearUserDataOptimistically();
     }
 };
-parseRemoveUserDataSwitch();
 
-initUserData(); // has to be before initSentry and logger
+const startApp = () => {
+    parseRemoveUserDataSwitch();
 
-const { app } = createDesktopMainCompositionRoot();
+    initUserData(); // has to be before initSentry and logger
 
-app();
+    const { app } = createDesktopMainCompositionRoot();
+
+    app();
+};
+
+if (!exitIfLaunchDeeplinkIsUnpermitted()) {
+    startApp();
+}
