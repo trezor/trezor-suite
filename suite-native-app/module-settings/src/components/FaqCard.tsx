@@ -13,7 +13,7 @@ import {
 import { useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { selectIsTradingEnabled } from '@suite-native/trading-state';
+import { selectIsTradingEnabled } from '@suite-native/trading-shared';
 import { isAndroid } from '@trezor/env-utils';
 import {
     TREZOR_SUPPORT_BLUETOOTH_TROUBLESHOOTING,

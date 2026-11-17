@@ -25,7 +25,7 @@ import {
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
-import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
+import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-shared';
 import { AppsEmbeddingScreen } from '@suite-native-app/apps-embedding-demo';
 import { AccountDetailStackNavigator } from '@suite-native-app/module-account-detail';
 import { AccountOverviewScreen } from '@suite-native-app/module-accounts';

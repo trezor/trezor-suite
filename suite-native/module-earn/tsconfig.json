@@ -80,7 +80,7 @@
         { "path": "../settings" },
         { "path": "../test-utils" },
         { "path": "../tokens" },
-        { "path": "../trading-state" },
+        { "path": "../trading-shared" },
         { "path": "../transaction-management" },
         { "path": "../transaction-review" },
         { "path": "../transactions" },

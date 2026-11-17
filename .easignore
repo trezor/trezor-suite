@@ -243,6 +243,7 @@
 !/suite-native/trading-provider-utils
 !/suite-native/trading-quote-utils
 !/suite-native/trading-residence
+!/suite-native/trading-shared
 !/suite-native/trading-slippage
 !/suite-native/trading-state
 !/suite-native/trading-types

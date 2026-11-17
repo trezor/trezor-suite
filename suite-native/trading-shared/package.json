@@ -1,0 +1,21 @@
+{
+    "name": "@suite-native/trading-shared",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-native/trading-state": "workspace:*",
+        "@suite-native/trading-types": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    }
+}

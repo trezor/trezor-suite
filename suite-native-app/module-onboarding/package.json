@@ -25,7 +25,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
-        "@suite-native/trading-state": "workspace:*",
+        "@suite-native/trading-shared": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/redux-utils": "workspace:*",

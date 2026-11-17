@@ -44,7 +44,7 @@ import { nativeFirmwareInitialState } from '@suite-native/firmware';
 import { graphInitialState } from '@suite-native/graph';
 import { TxKeyPath, localeInitialState } from '@suite-native/intl';
 import { appSettingsInitialState } from '@suite-native/settings';
-import { tradingInitialState } from '@suite-native/trading-state';
+import { tradingInitialState } from '@suite-native/trading-shared';
 import { sendFormInitialState } from '@suite-native/transaction-management';
 
 import { appSliceInitialState } from '../src/appSlice';

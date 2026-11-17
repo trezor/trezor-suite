@@ -23,7 +23,7 @@ import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
-import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
+import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-shared';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sync';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';

@@ -82,7 +82,7 @@
             "path": "../../suite-native/trading-residence"
         },
         {
-            "path": "../../suite-native/trading-state"
+            "path": "../../suite-native/trading-shared"
         },
         { "path": "../../suite-native/wallet" },
         {

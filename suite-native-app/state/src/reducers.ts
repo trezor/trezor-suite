@@ -86,7 +86,7 @@ import {
     migrateTradingAddTradeApiInstallSalt,
     tradingInitialState,
     tradingSlice,
-} from '@suite-native/trading-state';
+} from '@suite-native/trading-shared';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';

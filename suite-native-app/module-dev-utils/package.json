@@ -37,7 +37,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
-        "@suite-native/trading-state": "workspace:*",
+        "@suite-native/trading-shared": "workspace:*",
         "@trezor/connect-common": "workspace:^",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/env-utils": "workspace:*",

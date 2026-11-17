@@ -123,7 +123,7 @@
             "path": "../../suite-native/trading-residence"
         },
         {
-            "path": "../../suite-native/trading-state"
+            "path": "../../suite-native/trading-shared"
         },
         {
             "path": "../../packages/blockchain-link-types"

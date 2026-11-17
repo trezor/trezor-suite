@@ -6,8 +6,8 @@ import { TradingSettingsCard, type TradingSettingsCardProps } from './TradingSet
 let mockIsTradingCountrySet: boolean;
 let mockIsTradingResidenceSelectionAvailable: boolean;
 
-jest.mock('@suite-native/trading-state', () => ({
-    ...jest.requireActual('@suite-native/trading-state'),
+jest.mock('@suite-native/trading-shared', () => ({
+    ...jest.requireActual('@suite-native/trading-shared'),
     selectIsTradingCountrySet: () => mockIsTradingCountrySet,
     selectIsTradingResidenceSelectionAvailable: () => mockIsTradingResidenceSelectionAvailable,
 }));

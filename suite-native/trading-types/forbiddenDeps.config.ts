@@ -1,11 +1,6 @@
 import type { ForbiddenDepsConfig } from '@trezor/requirements';
 
-const allowedConsumers = [
-    '@suite-native/trading-.*',
-    '@suite-native-app/module-trading',
-    // trading flags - should deprecate?
-    '@suite-native/banners',
-];
+const allowedConsumers = ['@suite-native/trading-.*', '@suite-native-app/module-trading'];
 
 export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'forbidden-in': {
