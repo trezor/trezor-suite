@@ -7,6 +7,7 @@ import {
     selectConnectingBackends,
     selectCustomBackendsStatus,
     selectHasConnectedNetworkBackend,
+    selectIsAccountCustomBackendUnreachable,
     selectIsCustomBackendUnreachable,
     selectUnreachableCustomBackendSymbol,
 } from './backendSelectors';
@@ -200,5 +201,68 @@ describe('selectUnreachableCustomBackendSymbol', () => {
         );
 
         expect(selectUnreachableCustomBackendSymbol(state)).toBeUndefined();
+    });
+});
+
+describe('selectIsAccountCustomBackendUnreachable', () => {
+    const btcAccount = mockWalletAccount({ symbol: btc });
+    const ltcAccount = mockWalletAccount({ symbol: ltc });
+    const ethAccount = mockWalletAccount({ symbol: eth });
+    const ethCustomBackend: Blockchain['backends'] = {
+        selected: 'blockbook',
+        urls: { blockbook: ['https://eth.example'] },
+    };
+
+    it('is true for an account whose custom backend failed to connect', () => {
+        expect(
+            selectIsAccountCustomBackendUnreachable(
+                withBlockchain(createState(), 'btc', { error: 'connect failed' }),
+                btcAccount,
+            ),
+        ).toBe(true);
+    });
+
+    it('is false while the custom backend is still connecting', () => {
+        expect(selectIsAccountCustomBackendUnreachable(createState(), btcAccount)).toBe(false);
+    });
+
+    it('is false for an account on a failed default backend', () => {
+        expect(
+            selectIsAccountCustomBackendUnreachable(
+                withBlockchain(createState(), 'ltc', { error: 'connect failed' }),
+                ltcAccount,
+            ),
+        ).toBe(false);
+    });
+
+    it('is false for an account that does not sync through Trezor Connect', () => {
+        expect(
+            selectIsAccountCustomBackendUnreachable(
+                withBlockchain(createState(), 'btc', { error: 'connect failed' }),
+                { ...btcAccount, backendType: 'coinjoin' },
+            ),
+        ).toBe(false);
+    });
+
+    it('follows the connection of the account identity rather than the network', () => {
+        const state = withBlockchain(createState(), 'eth', {
+            backends: ethCustomBackend,
+            connected: true,
+            identityConnections: {
+                [ethAccount.deviceState]: { connected: false, error: 'connect failed' },
+            },
+        });
+
+        expect(selectIsAccountCustomBackendUnreachable(state, ethAccount)).toBe(true);
+    });
+
+    it('is false when the account identity is connected while the network is not', () => {
+        const state = withBlockchain(createState(), 'eth', {
+            backends: ethCustomBackend,
+            error: 'connect failed',
+            identityConnections: { [ethAccount.deviceState]: { connected: true } },
+        });
+
+        expect(selectIsAccountCustomBackendUnreachable(state, ethAccount)).toBe(false);
     });
 });
