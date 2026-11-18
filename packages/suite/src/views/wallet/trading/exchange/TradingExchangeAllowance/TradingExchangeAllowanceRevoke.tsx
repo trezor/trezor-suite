@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { Address } from '@suite/address';
-import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -18,6 +17,7 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { type AllowanceStepToken } from '#src/components/wallet/Allowance/AllowanceStepToken';
 import { useAllowanceTransaction } from '#src/components/wallet/Allowance/hooks/useAllowanceTransaction';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 import { TradingExchangeApprovalFeeModal } from '#src/views/wallet/trading/exchange/TradingExchangeApproval/TradingExchangeApprovalFeeModal';
 import {
     type AllowanceFeeValues,
@@ -52,10 +52,11 @@ export const TradingExchangeAllowanceRevoke = ({
     onContinueSwap,
 }: TradingExchangeAllowanceRevokeProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const { device } = useDevice();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const [isFeeModalOpen, setIsFeeModalOpen] = useState(false);
     const { handleClick: handleContinueSwapClick, disabled: isContinueSwapPending } =
         useAsyncClickHandler();
+    const { handleClick: handleRevokeClick, disabled: isCheckingDevice } = useAsyncClickHandler();
 
     const {
         token: accountToken,
@@ -109,15 +110,22 @@ export const TradingExchangeAllowanceRevoke = ({
         );
     };
 
+    const onRevokeClick = () =>
+        handleRevokeClick(async () => {
+            if (await ensureDeviceReady()) {
+                await confirmAndSend();
+            }
+        });
+
     const revokeButton = (
         <Button
-            onClick={confirmAndSend}
+            onClick={onRevokeClick}
             intent={isRevokePending ? 'brand' : 'neutral'}
             priority={isRevokePending ? 'primary' : 'secondary'}
             size="large"
             width="100%"
-            isDisabled={isRevokePending || !device?.connected || !canSubmit}
-            isLoading={isRevokePending || isSending}
+            isDisabled={isRevokePending || isCheckingDevice || !canSubmit}
+            isLoading={isRevokePending || isSending || isCheckingDevice}
             data-testid="@trading/allowance/revoke-button"
         >
             <Translation

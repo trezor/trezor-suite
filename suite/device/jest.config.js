@@ -8,4 +8,6 @@ const baseConfig = require('../../jest.config.base.swc');
 
 module.exports = {
     ...baseConfig,
+    testEnvironment: 'jsdom',
+    setupFilesAfterEnv: [require('path').resolve(__dirname, '../../packages/suite/jest.setup.js')],
 };

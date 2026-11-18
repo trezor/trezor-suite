@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { type ExchangeTrade } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { openModal } from '@suite/modal';
 import { toTokenAddress } from '@suite-common/tokens';
@@ -28,6 +27,7 @@ import { type AllowanceStepToken } from '#src/components/wallet/Allowance/Allowa
 import { useAllowanceTransaction } from '#src/components/wallet/Allowance/hooks/useAllowanceTransaction';
 import { useExchangeApproval } from '#src/hooks/wallet/trading/form/exchange/useExchangeApproval';
 import { type GetTradingExchangeCryptoInfo } from '#src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 
 import { TradingExchangeApprovalFeeModal } from './TradingExchangeApprovalFeeModal';
 import {
@@ -69,7 +69,7 @@ export const TradingExchangeApprovalStepCard = ({
     getCryptoInfo,
 }: TradingExchangeApprovalStepCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { device } = useDevice();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const { confirmApproval, confirmPendingApproval } = useExchangeApproval({ account });
     const { handleClick, disabled: isPreparingApproval } = useAsyncClickHandler();
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
@@ -171,6 +171,19 @@ export const TradingExchangeApprovalStepCard = ({
         setIsLimitModalOpen(false);
     };
 
+    const onContinue = () =>
+        handleClick(async () => {
+            if (!(await ensureDeviceReady())) {
+                return;
+            }
+
+            if (variant === 'revoke') {
+                await confirmAndSend();
+            } else {
+                await prepareApprovalAndSend();
+            }
+        });
+
     const onConfirmFee = (feeValues: AllowanceFeeValues) => {
         setAllowanceFeeValues(methods, feeValues);
 
@@ -226,13 +239,9 @@ export const TradingExchangeApprovalStepCard = ({
                 onEditFee={() => setIsFeeModalOpen(true)}
                 txid={txid}
                 onTxidClick={onTxidClick}
-                isContinueDisabled={!device?.connected || !canSubmit}
+                isContinueDisabled={!canSubmit || isPreparingApproval}
                 isContinueLoading={isComposing || isSending || isPreparingApproval}
-                onContinue={
-                    variant === 'revoke'
-                        ? confirmAndSend
-                        : () => handleClick(prepareApprovalAndSend)
-                }
+                onContinue={onContinue}
                 data-testid={`@approval-step/${variant}`}
             />
             {isLimitModalOpen && (

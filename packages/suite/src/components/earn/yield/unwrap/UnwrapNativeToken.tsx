@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { useMutation } from '@tanstack/react-query';
 
@@ -25,14 +26,13 @@ import { BigNumber } from '@trezor/utils';
 
 import { submitUnwrapNativeTokenThunk } from '#src/actions/wallet/unwrapNativeTokenThunks';
 import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
-import { useSelector } from '#src/hooks/suite/useSelector';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
-import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
 import { useWrappedNativeFlowAnalytics } from '../common/useWrappedNativeFlowAnalytics';
 import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
@@ -60,7 +60,7 @@ export const UnwrapNativeToken = ({
     onFlowCompleteChange,
 }: UnwrapNativeTokenProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const ensureDeviceReady = useWrappedNativeDeviceGuard();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const {
         isDisabled,
         content: disabledContent,
