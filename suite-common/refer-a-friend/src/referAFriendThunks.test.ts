@@ -170,6 +170,37 @@ describe('fetchReferralProgramThunk', () => {
             referAFriendActions.programFailed({ message: 'Unsupported fiat currency' }),
         );
     });
+
+    it('accepts terms on a trezor.io subdomain', async () => {
+        const subdomainProgram = { ...program, termsUrl: 'https://shop.trezor.io/terms' };
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: { 'GET v1/program': ok(subdomainProgram) },
+        });
+
+        await fetchReferralProgramThunk()(dispatch, getState, extra);
+
+        expect(actions).toContainEqual(referAFriendActions.programLoaded(subdomainProgram));
+    });
+
+    it.each([
+        'https://trezor.io.example.com/terms',
+        'https://eviltrezor.io/terms',
+        'https://trezor.io@example.com/terms',
+        'https://example.com\\@trezor.io/terms',
+        'javascript://trezor.io/%0aalert(1)',
+        'http://trezor.io/terms',
+        'not a url',
+    ])('fails on terms outside https://trezor.io: %s', async termsUrl => {
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: { 'GET v1/program': ok({ ...program, termsUrl }) },
+        });
+
+        await fetchReferralProgramThunk()(dispatch, getState, extra);
+
+        expect(actions).toContainEqual(
+            referAFriendActions.programFailed({ message: 'Invalid terms URL' }),
+        );
+    });
 });
 
 describe('fetchReferralAccountThunk', () => {

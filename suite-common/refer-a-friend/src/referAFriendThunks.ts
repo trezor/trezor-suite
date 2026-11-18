@@ -10,7 +10,7 @@ import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
-import { hasProp } from '@trezor/utils';
+import { hasProp, isWhitelistedHost } from '@trezor/utils';
 
 import { type ReferAFriendDep } from './createReferAFriendCompositionRoot';
 import {
@@ -229,6 +229,20 @@ const hasSupportedFiatCurrency = (program: unknown) =>
     typeof program.fiatCurrency === 'string' &&
     isFiatBaseCurrencyCode(program.fiatCurrency.toLowerCase());
 
+const REFER_A_FRIEND_ALLOWED_HOSTS = ['localhost', 'trezor.io', 'sldev.cz'];
+
+const hasTrezorTermsUrl = (program: unknown) => {
+    if (!hasProp(program, 'termsUrl') || typeof program.termsUrl !== 'string') return false;
+
+    try {
+        const { protocol, hostname } = new URL(program.termsUrl);
+
+        return protocol === 'https:' && isWhitelistedHost(hostname, REFER_A_FRIEND_ALLOWED_HOSTS);
+    } catch {
+        return false;
+    }
+};
+
 export type FetchReferralProgramThunkDeps = ReferAFriendThunkDeps;
 
 export const fetchReferralProgramThunk = createThunk<
@@ -251,6 +265,12 @@ export const fetchReferralProgramThunk = createThunk<
 
     if (!hasSupportedFiatCurrency(result.payload)) {
         dispatch(referAFriendActions.programFailed({ message: 'Unsupported fiat currency' }));
+
+        return;
+    }
+
+    if (!hasTrezorTermsUrl(result.payload)) {
+        dispatch(referAFriendActions.programFailed({ message: 'Invalid terms URL' }));
 
         return;
     }
