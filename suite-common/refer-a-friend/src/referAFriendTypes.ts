@@ -19,7 +19,7 @@ export type ReferralAccount = {
     redemptionLimitResetsAt: string | null;
 };
 
-export type ReferralVoucherStatus = 'pending' | 'ready' | 'used' | 'expired' | 'canceled';
+export type ReferralVoucherStatus = 'pending' | 'available' | 'used' | 'expired' | 'canceled';
 
 export type ReferralVoucher = {
     // null if the voucher hasn't been processed yet.

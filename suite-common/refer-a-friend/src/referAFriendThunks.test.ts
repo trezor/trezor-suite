@@ -62,7 +62,7 @@ const accountWithoutCode = (status: 'none' | 'left'): ReferralAccount => ({
 const vouchers: ReferralVoucher[] = [
     {
         voucher: 'TREF-8K2M-X9P4',
-        status: 'ready',
+        status: 'available',
         amount: 20,
         fiatCurrency: 'USD',
         orderPaidAt: '2026-09-15T15:30:00Z',
