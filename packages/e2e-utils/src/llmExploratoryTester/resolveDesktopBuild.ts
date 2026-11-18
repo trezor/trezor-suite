@@ -12,7 +12,10 @@ type PullRequest = {
 type ResolveDesktopBuildParams = {
     github: Pick<Octokit, 'rest'>;
     context: { repo: { owner: string; repo: string } };
-    core: { setOutput: (name: string, value: string | number) => void };
+    core: {
+        info: (message: string) => void;
+        setOutput: (name: string, value: string | number) => void;
+    };
 };
 
 export const resolveDesktopBuild = async ({
@@ -38,30 +41,42 @@ export const resolveDesktopBuild = async ({
         throw new Error('Desktop testing of fork PRs is not supported');
     }
 
-    const workflowRunsResponse = await github.rest.actions.listWorkflowRuns({
-        ...context.repo,
-        workflow_id: 'test-suite-web-desktop-e2e-pr.yml',
-        head_sha: pr.headRefOid,
-        per_page: 1,
-    });
-    const latestRun = workflowRunsResponse.data.workflow_runs[0];
-    if (!latestRun) {
-        throw new Error(
-            `No regular E2E run found for PR #${pr.number} at ${pr.headRefOid}. Run the regular E2E workflow first.`,
-        );
+    const deadline = Date.now() + 30 * 60_000;
+    core.info(
+        `Waiting up to 30 minutes for the desktop build of PR #${pr.number} at ${pr.headRefOid}.`,
+    );
+
+    while (Date.now() < deadline) {
+        const workflowRunsResponse = await github.rest.actions.listWorkflowRuns({
+            ...context.repo,
+            workflow_id: 'test-suite-web-desktop-e2e-pr.yml',
+            head_sha: pr.headRefOid,
+            per_page: 1,
+        });
+        const latestRun = workflowRunsResponse.data.workflow_runs[0];
+        if (latestRun) {
+            const artifactsResponse = await github.rest.actions.listWorkflowRunArtifacts({
+                ...context.repo,
+                run_id: latestRun.id,
+                name: 'desktop-app-build-e2e',
+            });
+            if (artifactsResponse.data.artifacts.some(artifact => !artifact.expired)) {
+                core.setOutput('run-id', latestRun.id);
+
+                return;
+            }
+
+            if (latestRun.status === 'completed') {
+                throw new Error(
+                    `Desktop build artifact is missing or expired in completed run ${latestRun.id}. Rerun the regular E2E workflow.`,
+                );
+            }
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 30_000));
     }
 
-    const artifactsResponse = await github.rest.actions.listWorkflowRunArtifacts({
-        ...context.repo,
-        run_id: latestRun.id,
-        name: 'desktop-app-build-e2e',
-    });
-    const hasAvailableBuild = artifactsResponse.data.artifacts.some(artifact => !artifact.expired);
-    if (!hasAvailableBuild) {
-        throw new Error(
-            `Desktop build artifact is missing or expired in run ${latestRun.id}. Wait for the regular E2E desktop build to finish, or rerun it.`,
-        );
-    }
-
-    core.setOutput('run-id', latestRun.id);
+    throw new Error(
+        `Timed out waiting for the desktop build of PR #${pr.number} at ${pr.headRefOid}. Check the regular E2E workflow.`,
+    );
 };
