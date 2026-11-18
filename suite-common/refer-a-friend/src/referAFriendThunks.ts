@@ -1,8 +1,10 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
+import { hasProp } from '@trezor/utils';
 
 import { type ReferAFriendDep } from './createReferAFriendCompositionRoot';
 import {
@@ -183,6 +185,12 @@ const joinWithReferralKey = async (
     return applyReferralAccount({ ...params, account: createResult.payload as ReferralAccount });
 };
 
+// The API sends uppercase ISO codes, while the supported base currencies are keyed in lowercase.
+const hasSupportedFiatCurrency = (program: unknown) =>
+    hasProp(program, 'fiatCurrency') &&
+    typeof program.fiatCurrency === 'string' &&
+    isFiatBaseCurrencyCode(program.fiatCurrency.toLowerCase());
+
 export type FetchReferralProgramThunkDeps = ReferAFriendThunkDeps;
 
 export const fetchReferralProgramThunk = createThunk<
@@ -199,6 +207,12 @@ export const fetchReferralProgramThunk = createThunk<
 
     if (!result.success) {
         dispatch(referAFriendActions.programFailed(result.error));
+
+        return;
+    }
+
+    if (!hasSupportedFiatCurrency(result.payload)) {
+        dispatch(referAFriendActions.programFailed({ message: 'Unsupported fiat currency' }));
 
         return;
     }

@@ -152,6 +152,18 @@ describe('fetchReferralProgramThunk', () => {
 
         expect(actions).toContainEqual(referAFriendActions.programLoaded(program));
     });
+
+    it('fails on an unsupported fiat currency', async () => {
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: { 'GET v1/program': ok({ ...program, fiatCurrency: 'XYZ' }) },
+        });
+
+        await fetchReferralProgramThunk()(dispatch, getState, extra);
+
+        expect(actions).toContainEqual(
+            referAFriendActions.programFailed({ message: 'Unsupported fiat currency' }),
+        );
+    });
 });
 
 describe('fetchReferralAccountThunk', () => {
