@@ -3,7 +3,7 @@ import { type ReferralVoucher, type ReferralVoucherStatus } from './referAFriend
 const earnedVoucherStatuses: ReferralVoucherStatus[] = ['ready', 'used', 'expired'];
 
 // Every voucher can have a different amount, so the total is a sum, not a multiple.
-export const getReferralRewardsSummary = (vouchers: ReferralVoucher[]) => ({
+export const getReferralRewardsSummary = (vouchers: ReferralVoucher[] = []) => ({
     totalEarned: vouchers
         .filter(voucher => earnedVoucherStatuses.includes(voucher.status))
         .reduce((total, voucher) => total + voucher.amount, 0),

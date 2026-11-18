@@ -15,6 +15,7 @@ const createVoucher = (status: ReferralVoucherStatus, amount: number): ReferralV
 describe(getReferralRewardsSummary.name, () => {
     it('returns zeros for no vouchers', () => {
         expect(getReferralRewardsSummary([])).toEqual({ totalEarned: 0, readyVoucherCount: 0 });
+        expect(getReferralRewardsSummary()).toEqual({ totalEarned: 0, readyVoucherCount: 0 });
     });
 
     it('sums amounts of earned vouchers and counts ready ones', () => {
