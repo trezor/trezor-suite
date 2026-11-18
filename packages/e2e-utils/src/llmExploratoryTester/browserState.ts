@@ -35,8 +35,8 @@ async function waitForProcessGroupExit(runnerPid: number): Promise<void> {
 
     while (Date.now() < deadline) {
         try {
-            // A negative PID targets the runner's process group. Signal 0 only checks
-            // whether it exists; it does not stop anything.
+            // Node calls its signal-sending function "kill". Here, 0 means "just check":
+            // is any process in the runner's group still there? Nothing gets stopped.
             process.kill(-runnerPid, 0);
         } catch (processError) {
             // ESRCH means the process group no longer exists: shutdown is complete.
