@@ -30,7 +30,7 @@ const loadFirmwareUpdate = () =>
 const FirmwareUpdate = lazy(() => loadFirmwareUpdate().then(m => ({ default: m.FirmwareUpdate })));
 
 const loadRecovery = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/recovery');
+    import(/* webpackChunkName: "modals-foreground" */ '#src/views/recovery/Recovery');
 const Recovery = lazy(() => loadRecovery().then(m => ({ default: m.Recovery })));
 
 const loadBridgeUnavailable = () =>
@@ -40,7 +40,9 @@ const BridgeUnavailable = lazy(() =>
 );
 
 const loadBridgeDeprecated = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge-deprecated');
+    import(
+        /* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge-deprecated/BridgeDeprecated'
+    );
 const BridgeDeprecated = lazy(() =>
     loadBridgeDeprecated().then(m => ({ default: m.BridgeDeprecated })),
 );
