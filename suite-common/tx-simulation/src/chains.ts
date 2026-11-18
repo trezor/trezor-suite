@@ -25,12 +25,12 @@ const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
     [getNetwork('rhc').chainId]: 'robinhood',
     [getNetwork('hype').chainId]: 'hyperevm',
     [getNetwork('avax').chainId]: 'avalanche',
+    [getNetwork('arc').chainId]: 'arc',
     [getNetwork('tsep').chainId]: 'ethereum-sepolia',
     // Blockaid has no Ethereum Classic chain; the old 'ethereumClassic' value is rejected.
     [getNetwork('etc').chainId]: null,
     [getNetwork('thod').chainId]: null, // Hoodi is not a supported testnet
-    [getNetwork('arc').chainId]: null, // Blockaid has no Arc chain
-    [getNetwork('tarc').chainId]: null, // Blockaid has no Arc chain
+    [getNetwork('tarc').chainId]: null, // Blockaid has no Arc testnet chain
 } as const satisfies Readonly<Record<EvmChainId, TransactionScanSupportedChain | null>>;
 
 const BLOCKAID_SOLANA_CHAIN_BY_SYMBOL = {

@@ -12,6 +12,7 @@ describe('resolveBlockaidEvmChain', () => {
         [getNetwork('hype').chainId, 'hyperevm'],
         [getNetwork('rhc').chainId, 'robinhood'],
         [getNetwork('tsep').chainId, 'ethereum-sepolia'],
+        [getNetwork('arc').chainId, 'arc'],
     ])('maps chainId %i to %s', (chainId, expected) => {
         expect(resolveBlockaidEvmChain(chainId)).toBe(expected);
     });
@@ -23,7 +24,6 @@ describe('resolveBlockaidEvmChain', () => {
     it.each([
         ['Ethereum Classic', getNetwork('etc').chainId],
         ['Ethereum Hoodi', getNetwork('thod').chainId],
-        ['Arc', getNetwork('arc').chainId],
         ['Arc Testnet', getNetwork('tarc').chainId],
     ])('has no chain for %s', (_name, chainId) => {
         expect(resolveBlockaidEvmChain(chainId)).toBeNull();
