@@ -18,6 +18,7 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/assets": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
@@ -40,6 +41,7 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/discovery": "workspace:*",
+        "@suite-native/earn": "workspace:*",
         "@suite-native/experimental-features": "workspace:*",
         "@suite-native/feature-feedback": "workspace:*",
         "@suite-native/feedback-form": "workspace:*",
@@ -54,7 +56,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "@suite-native/toasts": "workspace:*",
-        "@suite-native/trading-state": "workspace:*",
+        "@suite-native/trading-shared": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
@@ -72,6 +74,7 @@
     },
     "devDependencies": {
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/earn-staking": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/requirements": "workspace:*"

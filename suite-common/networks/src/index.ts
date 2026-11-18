@@ -11,6 +11,7 @@ export {
 export { type NetworkMetadata } from '../reduxState/NetworkMetadata';
 export {
     selectNativeTokenName,
+    selectIsNativeTokenNetworkNameRedundant,
     selectNetworkCoingeckoId,
     selectNetworkColor,
     selectNetworkConfig,

@@ -4,6 +4,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { useMessageSystemWrappedNative } from '@suite-native/earn';
 import {
     act,
     createLightStore,
@@ -11,7 +12,6 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 
-import { useMessageSystemWrappedNative } from './useMessageSystemWrappedNative';
 import { useStandaloneWrappedNativeController } from './useStandaloneWrappedNativeController';
 import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
@@ -26,7 +26,10 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () => ({ params: mockRouteParams }),
 }));
-jest.mock('./useMessageSystemWrappedNative');
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useMessageSystemWrappedNative: jest.fn(),
+}));
 jest.mock('./useStandaloneWrappedNativeFlow');
 jest.mock('./useWrappedNativeTokenFees');
 jest.mock('./useWrappedNativeTokenForm');

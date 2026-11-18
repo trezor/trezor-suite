@@ -28,3 +28,20 @@ export {
     type DecodedClearSignedSwap,
     type ClearSignedSwapLeg,
 } from './calldata/clearSigningSwap';
+
+export {
+    createSignEthereumMessage,
+    injectSignEthereumMessage,
+    type SignEthereumMessage,
+    type SignEthereumMessageDep,
+    type SignEthereumMessageDeps,
+    type SignEthereumMessageParams,
+} from './signVerify/createSignEthereumMessage';
+export {
+    createVerifyEthereumMessage,
+    injectVerifyEthereumMessage,
+    type VerifyEthereumMessage,
+    type VerifyEthereumMessageDep,
+    type VerifyEthereumMessageDeps,
+    type VerifyEthereumMessageParams,
+} from './signVerify/createVerifyEthereumMessage';

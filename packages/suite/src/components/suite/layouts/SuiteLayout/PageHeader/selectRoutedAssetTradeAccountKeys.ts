@@ -1,4 +1,5 @@
 import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
+import { type AssetAccount, selectDeviceAssetAccounts } from '@suite-common/assets';
 import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
@@ -6,12 +7,7 @@ import {
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { getCryptoId, isAccountEligibleForTrade, isSellableAccount } from '@suite-common/trading';
-import {
-    type AssetAccount,
-    selectAccounts,
-    selectDeviceAssetAccounts,
-    selectVisibleDeviceAccountsMap,
-} from '@suite-common/wallet-core';
+import { selectAccounts, selectVisibleDeviceAccountsMap } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { filterReceiveAccounts, isPositiveBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -59,7 +55,7 @@ export const selectRoutedAssetTradeAccountKeys = createMemoizedSelector(
         const routedAssetAccounts = assetAccounts.filter(
             assetAccount => assetAccount.assetKey === assetKey,
         );
-        const networkSymbol = routedAssetAccounts[0]?.symbol;
+        const networkSymbol = routedAssetAccounts[0]?.networkSymbol;
 
         const [buyAccount] =
             networkSymbol === undefined
@@ -88,7 +84,7 @@ export const selectRoutedAssetTradeAccountKeys = createMemoizedSelector(
                       account,
                       'sell',
                       tokenDefinitions,
-                      getCryptoId(assetAccount.symbol, assetAccount.contractAddress),
+                      getCryptoId(assetAccount.networkSymbol, assetAccount.contractAddress),
                   );
 
         return {

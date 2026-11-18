@@ -39,6 +39,7 @@ describe('fetchEthereumEverstakePooledProductInfo', () => {
             rate: 3.08,
             entryPeriodDays: 4,
             exitPeriodDays: 3,
+            rewardPeriodDays: null,
             nextRewardAt: NOW + 5 * SECONDS_IN_DAY * 1000,
             targets: [],
         });
@@ -69,22 +70,19 @@ describe('fetchEthereumEverstakePooledProductInfo', () => {
     it.each([
         { name: 'shorter than half a day', seconds: 60 },
         { name: 'of zero seconds', seconds: 0 },
-    ])(
-        'reports at least one entry day but zero exit days for a queue $name',
-        async ({ seconds }) => {
-            const deps = createDeps(ethStats, {
-                activationTime: seconds,
-                addingDelay: seconds,
-                withdrawTime: seconds,
-                exitTime: seconds,
-            });
+    ])('keeps the exact fraction of a day for a queue $name', async ({ seconds }) => {
+        const deps = createDeps(ethStats, {
+            activationTime: seconds,
+            addingDelay: seconds,
+            withdrawTime: seconds,
+            exitTime: seconds,
+        });
 
-            await expect(fetchEthereumEverstakePooledProductInfo(deps, {})).resolves.toMatchObject({
-                entryPeriodDays: 1,
-                exitPeriodDays: 0,
-            });
-        },
-    );
+        await expect(fetchEthereumEverstakePooledProductInfo(deps, {})).resolves.toMatchObject({
+            entryPeriodDays: (2 * seconds) / SECONDS_IN_DAY,
+            exitPeriodDays: (2 * seconds) / SECONDS_IN_DAY,
+        });
+    });
 
     it('rounds the next reward time to the hour so that a refetch yields equal info', async () => {
         const deps = createDeps();
@@ -133,6 +131,7 @@ describe('fetchEthereumEverstakePooledProductInfo', () => {
             rate: 3.08,
             entryPeriodDays: null,
             exitPeriodDays: null,
+            rewardPeriodDays: null,
             nextRewardAt: NOW + 5 * SECONDS_IN_DAY * 1000,
             targets: [],
         });

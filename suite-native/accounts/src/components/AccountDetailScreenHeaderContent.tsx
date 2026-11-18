@@ -1,4 +1,6 @@
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { useSelector } from 'react-redux';
+
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import type { Account } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
@@ -11,26 +13,32 @@ type AccountDetailScreenHeaderContentProps = {
 
 export const AccountDetailScreenHeaderContent = ({
     account,
-}: AccountDetailScreenHeaderContentProps) => (
-    <HStack alignItems="center" flexShrink={1}>
-        <TokenIcon
-            tokenSymbol={account.symbol}
-            networkSymbol={account.symbol}
-            size="small"
-            showNetworkIcon
-        />
-        <VStack spacing={0} flexShrink={1}>
-            <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
-                {getNetworkDisplaySymbolName(account.symbol)}
-            </Text>
-            <AccountLabel
-                account={account}
-                variant="body-xs"
-                color="contentSecondary"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                showAccountTypeBadge
+}: AccountDetailScreenHeaderContentProps) => {
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        selectNativeTokenName(state, account.symbol),
+    );
+
+    return (
+        <HStack alignItems="center" flexShrink={1}>
+            <TokenIcon
+                tokenSymbol={account.symbol}
+                networkSymbol={account.symbol}
+                size="small"
+                showNetworkIcon
             />
-        </VStack>
-    </HStack>
-);
+            <VStack spacing={0} flexShrink={1}>
+                <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
+                    {nativeTokenName}
+                </Text>
+                <AccountLabel
+                    account={account}
+                    variant="body-xs"
+                    color="contentSecondary"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    showAccountTypeBadge
+                />
+            </VStack>
+        </HStack>
+    );
+};

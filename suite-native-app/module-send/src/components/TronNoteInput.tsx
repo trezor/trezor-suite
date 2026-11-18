@@ -17,6 +17,7 @@ import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { TRON_NOTE_MAX_BYTES } from '@trezor/network-tron/constants';
+import { countBytesInString } from '@trezor/utils';
 
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
@@ -33,7 +34,7 @@ export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
     const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
 
     const value = useWatch({ control, name: 'destinationTag' }) ?? '';
-    const hexByteSize = Buffer.from(localNote || '', 'utf8').length;
+    const hexByteSize = countBytesInString(localNote);
     const isHexTooLong = hexByteSize > TRON_NOTE_MAX_BYTES;
 
     useEffect(() => {

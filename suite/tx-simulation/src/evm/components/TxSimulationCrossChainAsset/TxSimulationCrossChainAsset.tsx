@@ -48,7 +48,7 @@ export function TxSimulationCrossChainAsset({ assetDiff }: TxSimulationCrossChai
         <Row columnGap={8} padding={{ horizontal: 16, vertical: 12 }}>
             {network && asset.symbol ? (
                 <TokenIcon
-                    symbol={network.symbol}
+                    networkSymbol={network.symbol}
                     contractAddress={'address' in asset ? asset.address : undefined}
                     size={32}
                     placeholder={asset.name ?? asset.symbol}

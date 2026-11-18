@@ -1,11 +1,9 @@
-import type { TrezorDevice } from '@suite-common/suite-types';
+import type { DeviceAuthenticityCheckSettings, TrezorDevice } from '@suite-common/suite-types';
 
 import { getIsDeviceReadyForAuthenticityCheck } from './getIsDeviceReadyForAuthenticityCheck';
 
-type IsDeviceAuthenticityCheckSupportedAndEnabledParams = {
+type IsDeviceAuthenticityCheckSupportedAndEnabledParams = DeviceAuthenticityCheckSettings & {
     device: TrezorDevice | undefined;
-    isDeviceAuthenticityCheckEnabled: boolean;
-    isUnlockedBootloaderAllowed: boolean;
 };
 /**
  * Select whether the device supports Device Authenticity Check (DAC), and it is not disabled by either:

@@ -4,6 +4,7 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/assets" },
+        { "path": "../../suite/assets" },
         { "path": "../../suite/intl" },
         { "path": "../../packages/components" },
         { "path": "../../packages/suite" },

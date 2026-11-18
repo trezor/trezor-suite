@@ -2,7 +2,7 @@ import {
     AppsEmbeddingShowcase,
     selectIsAppsEmbeddingAvailable,
     useAppsEmbeddingShowcase,
-} from '@suite/apps-embedding-demo';
+} from '@suite-app/apps-embedding-demo';
 import { Banner } from '@trezor/components';
 import { PageHeader, useLayout, usePreferredModal, useSelector } from '@trezor/suite';
 

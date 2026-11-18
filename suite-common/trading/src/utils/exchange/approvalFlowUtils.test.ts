@@ -2,6 +2,7 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { testMocks } from '@suite-common/test-utils';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
 import {
     type ApprovalFlowStepType,
@@ -19,6 +20,53 @@ const QUOTE: ExchangeTrade = {
     send: DAI_CRYPTO_ID,
     status: 'APPROVAL_REQ',
 };
+
+const DAI_CONTRACT = '0x6b175474e89094c44da98b954eedeac495271d0f';
+const SPENDER = '0x1111111254eeb25477b68fb85ed929f73a960582';
+const OTHER_SPENDER = '0x9008d19f58aabd9ed0d60971565aa8510560ab41';
+
+const getApproveData = (spender: string) => buildApprovalTransactionData({ spender, amount: '0' });
+
+const APPROVAL_QUOTE: ExchangeTrade = {
+    ...QUOTE,
+    dexTx: { from: '0xowner', to: DAI_CONTRACT, data: getApproveData(SPENDER), value: '0' },
+};
+
+type ApprovalTxParams = {
+    txid?: string;
+    contract?: string;
+    data?: string;
+    blockHeight?: number;
+    type?: WalletAccountTransaction['type'];
+};
+
+const getApprovalTx = ({
+    txid = '0xpending',
+    contract = DAI_CONTRACT,
+    data = getApproveData(SPENDER),
+    blockHeight = 0,
+    type = 'sent',
+}: ApprovalTxParams = {}): WalletAccountTransaction => {
+    const tx = testMocks.getWalletTransaction({ txid, blockHeight, type });
+
+    return {
+        ...tx,
+        ethereumSpecific: {
+            status: -1,
+            nonce: 1,
+            gasLimit: 60000,
+            gasUsed: 0,
+            gasPrice: '1',
+            data,
+        },
+        details: {
+            ...tx.details,
+            vout: [{ addresses: [contract], isAddress: true, n: 0, value: '0' }],
+        },
+    };
+};
+
+const UNTRACKED = { sentTxids: {}, transactions: [], hasPendingApprovalTx: false };
 
 const USDT_STEPS: ApprovalFlowStepType[] = ['revoke', 'approve', 'swap'];
 const APPROVE_STEPS: ApprovalFlowStepType[] = ['approve', 'swap'];
@@ -49,11 +97,22 @@ describe('getApprovalFlowSteps', () => {
 });
 
 describe('getApprovalFlowStepStatuses', () => {
-    const getStatuses = (steps: ApprovalFlowStepType[], quote: Partial<ExchangeTrade>) =>
-        getApprovalFlowStepStatuses(steps, { ...QUOTE, ...quote }).map(({ status }) => status);
+    const getStatuses = (
+        steps: ApprovalFlowStepType[],
+        quote: Partial<ExchangeTrade>,
+        params: Partial<typeof UNTRACKED> = {},
+    ) =>
+        getApprovalFlowStepStatuses({
+            steps,
+            quote: { ...QUOTE, ...quote },
+            ...UNTRACKED,
+            ...params,
+        }).map(({ status }) => status);
 
     it('returns no statuses without a quote', () => {
-        expect(getApprovalFlowStepStatuses(USDT_STEPS, undefined)).toEqual([]);
+        expect(
+            getApprovalFlowStepStatuses({ steps: USDT_STEPS, quote: undefined, ...UNTRACKED }),
+        ).toEqual([]);
     });
 
     it.each<[string, Partial<ExchangeTrade>, string[]]>([
@@ -74,13 +133,13 @@ describe('getApprovalFlowStepStatuses', () => {
             ['pending', 'upcoming', 'upcoming'],
         ],
         [
-            'revoke confirmed, quote not refreshed yet',
+            'provider reports a sent revoke without a tracked tx',
             {
                 preapprovedStringAmount: '10',
                 approvalType: 'ZERO',
                 approvalSendTxHash: '0xrevoke',
             },
-            ['done', 'active', 'upcoming'],
+            ['active', 'upcoming', 'upcoming'],
         ],
         [
             'revoke confirmed, quote refreshed',
@@ -119,14 +178,96 @@ describe('getApprovalFlowStepStatuses', () => {
         expect(getStatuses(APPROVE_STEPS, quote)).toEqual(expected);
     });
 
-    it('keeps a confirmed revoke done when the refreshed quote still reports the old limit', () => {
-        expect(
-            getApprovalFlowStepStatuses(
-                USDT_STEPS,
-                { ...QUOTE, preapprovedStringAmount: '10', approvalType: 'MINIMAL' },
-                ['revoke'],
-            ).map(({ status }) => status),
-        ).toEqual(['done', 'active', 'upcoming']);
+    describe('with a tracked tx', () => {
+        const REVOKE_QUOTE: Partial<ExchangeTrade> = {
+            preapprovedStringAmount: '10',
+            status: 'APPROVAL_REQ',
+            approvalType: 'ZERO',
+            approvalSendTxHash: '0xrevoke',
+        };
+
+        const getRevokeStatuses = (transactions: WalletAccountTransaction[]) =>
+            getApprovalFlowStepStatuses({
+                steps: USDT_STEPS,
+                quote: { ...QUOTE, ...REVOKE_QUOTE },
+                sentTxids: { revoke: '0xrevoke' },
+                transactions,
+                hasPendingApprovalTx: false,
+            });
+
+        it.each<[string, WalletAccountTransaction[]]>([
+            ['absent from history', []],
+            ['pending', [getApprovalTx({ txid: '0xrevoke' })]],
+        ])('keeps a revoke %s pending although the provider reports it', (_, transactions) => {
+            expect(getRevokeStatuses(transactions)).toEqual([
+                { type: 'revoke', status: 'pending' },
+                { type: 'approve', status: 'upcoming' },
+                { type: 'swap', status: 'upcoming' },
+            ]);
+        });
+
+        it('returns a failed revoke to active and keeps approve locked', () => {
+            expect(
+                getRevokeStatuses([
+                    getApprovalTx({ txid: '0xrevoke', blockHeight: 100, type: 'failed' }),
+                ]),
+            ).toEqual([
+                { type: 'revoke', status: 'active' },
+                { type: 'approve', status: 'upcoming' },
+                { type: 'swap', status: 'upcoming' },
+            ]);
+        });
+
+        it('completes a revoke once its tx is confirmed', () => {
+            expect(
+                getRevokeStatuses([getApprovalTx({ txid: '0xrevoke', blockHeight: 100 })]).map(
+                    ({ status }) => status,
+                ),
+            ).toEqual(['done', 'active', 'upcoming']);
+        });
+
+        it('does not complete a revoke replaced by a confirmed cancel tx', () => {
+            expect(
+                getRevokeStatuses([
+                    getApprovalTx({ txid: '0xrevoke', blockHeight: 100, data: '0x' }),
+                ]),
+            ).toEqual([
+                { type: 'revoke', status: 'active' },
+                { type: 'approve', status: 'upcoming' },
+                { type: 'swap', status: 'upcoming' },
+            ]);
+        });
+
+        it('keeps a confirmed revoke done when an approve fails', () => {
+            expect(
+                getApprovalFlowStepStatuses({
+                    steps: USDT_STEPS,
+                    quote: { ...QUOTE, ...REVOKE_QUOTE },
+                    sentTxids: { revoke: '0xrevoke', approve: '0xapprove' },
+                    transactions: [
+                        getApprovalTx({ txid: '0xrevoke', blockHeight: 100 }),
+                        getApprovalTx({ txid: '0xapprove', blockHeight: 101, type: 'failed' }),
+                    ],
+                    hasPendingApprovalTx: false,
+                }),
+            ).toEqual([
+                { type: 'revoke', status: 'done' },
+                { type: 'approve', status: 'active' },
+                { type: 'swap', status: 'upcoming' },
+            ]);
+        });
+
+        it('completes all approval steps once the provider can swap', () => {
+            expect(
+                getApprovalFlowStepStatuses({
+                    steps: USDT_STEPS,
+                    quote: { ...QUOTE, ...REVOKE_QUOTE, status: 'CONFIRM' },
+                    sentTxids: { revoke: '0xrevoke', approve: '0xapprove' },
+                    transactions: [],
+                    hasPendingApprovalTx: false,
+                }).map(({ status }) => status),
+            ).toEqual(['done', 'done', 'upcoming']);
+        });
     });
 
     it('marks an increase done once the quote is confirmable', () => {
@@ -159,77 +300,26 @@ describe('getApprovalFlowStepStatuses', () => {
     ])(
         'marks the current %s step pending with a pending approval tx',
         (_, steps, quote, expected) => {
-            expect(
-                getApprovalFlowStepStatuses(steps, { ...QUOTE, ...quote }, [], true).map(
-                    ({ status }) => status,
-                ),
-            ).toEqual(expected);
+            expect(getStatuses(steps, quote, { hasPendingApprovalTx: true })).toEqual(expected);
         },
     );
 
     it('keeps confirmed steps done with a pending approval tx', () => {
         expect(
-            getApprovalFlowStepStatuses(
-                APPROVE_STEPS,
-                { ...QUOTE, status: 'CONFIRM' },
-                [],
-                true,
-            ).map(({ status }) => status),
+            getStatuses(APPROVE_STEPS, { status: 'CONFIRM' }, { hasPendingApprovalTx: true }),
         ).toEqual(['done', 'upcoming']);
     });
 
     it('keeps step types in order', () => {
-        expect(getApprovalFlowStepStatuses(USDT_STEPS, QUOTE).map(({ type }) => type)).toEqual(
-            USDT_STEPS,
-        );
+        expect(
+            getApprovalFlowStepStatuses({ steps: USDT_STEPS, quote: QUOTE, ...UNTRACKED }).map(
+                ({ type }) => type,
+            ),
+        ).toEqual(USDT_STEPS);
     });
 });
 
 describe('findPendingApprovalTxid', () => {
-    const DAI_CONTRACT = '0x6b175474e89094c44da98b954eedeac495271d0f';
-    const SPENDER = '0x1111111254eeb25477b68fb85ed929f73a960582';
-    const OTHER_SPENDER = '0x9008d19f58aabd9ed0d60971565aa8510560ab41';
-
-    const getApproveData = (spender: string) =>
-        `0x095ea7b3${spender.slice(2).padStart(64, '0')}${'0'.padStart(64, '0')}`;
-
-    const APPROVAL_QUOTE: ExchangeTrade = {
-        ...QUOTE,
-        dexTx: { from: '0xowner', to: DAI_CONTRACT, data: getApproveData(SPENDER), value: '0' },
-    };
-
-    type ApprovalTxParams = {
-        txid?: string;
-        contract?: string;
-        data?: string;
-        blockHeight?: number;
-    };
-
-    const getApprovalTx = ({
-        txid = '0xpending',
-        contract = DAI_CONTRACT,
-        data = getApproveData(SPENDER),
-        blockHeight = 0,
-    }: ApprovalTxParams = {}): WalletAccountTransaction => {
-        const tx = testMocks.getWalletTransaction({ txid, blockHeight });
-
-        return {
-            ...tx,
-            ethereumSpecific: {
-                status: -1,
-                nonce: 1,
-                gasLimit: 60000,
-                gasUsed: 0,
-                gasPrice: '1',
-                data,
-            },
-            details: {
-                ...tx.details,
-                vout: [{ addresses: [contract], isAddress: true, n: 0, value: '0' }],
-            },
-        };
-    };
-
     it('finds a pending approve to the quote token and spender', () => {
         expect(findPendingApprovalTxid([getApprovalTx()], APPROVAL_QUOTE)).toBe('0xpending');
     });

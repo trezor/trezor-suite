@@ -32,7 +32,7 @@ export const SuiteSyncRelaySettings = () => {
             suiteSyncRelayUrl: suiteSyncRelayUrl ?? DEFAULT_CUSTOM_RELAY_URL,
         },
         validation: yup.object({
-            suiteSyncRelayUrl: yup.string(),
+            suiteSyncRelayUrl: yup.string().defined(),
         }),
     });
 

@@ -23,13 +23,13 @@ export function TxSimulationAssetLogo({
     const iconCircleSize = size === 20 ? 24 : size;
 
     if (assetType === 'NATIVE' && asset?.symbol && hasNetworkIcon(asset.symbol)) {
-        return <TokenIcon symbol={asset.symbol} size={size} />;
+        return <TokenIcon networkSymbol={asset.symbol} size={size} />;
     }
 
     if (asset?.symbol && 'address' in asset) {
         return (
             <TokenIcon
-                symbol={network.symbol}
+                networkSymbol={network.symbol}
                 contractAddress={asset.address}
                 size={size}
                 placeholder={asset.name ?? asset.symbol}

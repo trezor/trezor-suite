@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/device-authenticity"
+        },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/message-system"
@@ -57,6 +60,7 @@
         {
             "path": "../../suite-native/discovery"
         },
+        { "path": "../../suite-native/earn" },
         {
             "path": "../../suite-native/experimental-features"
         },
@@ -86,7 +90,7 @@
         },
         { "path": "../../suite-native/toasts" },
         {
-            "path": "../../suite-native/trading-state"
+            "path": "../../suite-native/trading-shared"
         },
         {
             "path": "../../packages/dependency-injection"
@@ -99,6 +103,9 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/earn-staking"
+        },
         { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-native/test-utils-store"

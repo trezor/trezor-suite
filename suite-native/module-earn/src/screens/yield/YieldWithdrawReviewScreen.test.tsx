@@ -84,7 +84,10 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     default: { ethereumSignTransaction: jest.fn() },
 }));
-jest.mock('../../hooks/yield/useYieldFlowData', () => ({ useYieldFlowData: () => mockData }));
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useYieldFlowData: () => mockData,
+}));
 jest.mock('../../components/earn/EarnDeviceConnectionGuard', () => ({
     EarnDeviceConnectionGuard: ({ children }: PropsWithChildren) => children,
 }));

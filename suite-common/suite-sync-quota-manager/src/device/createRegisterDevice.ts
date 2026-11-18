@@ -3,14 +3,10 @@ import {
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { DeviceError } from '@suite-common/device';
 import { type QuotaManagerCommunicationFailedErrType } from '@suite-common/suite-sync-types';
-import {
-    type DelegatedIdentityKey,
-    type DeviceErrorType,
-    type TrezorDeviceWithState,
-} from '@suite-common/suite-types';
+import { type DelegatedIdentityKey, type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { DeviceError, type DeviceErrorType } from '@trezor/device';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Dispatch } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';

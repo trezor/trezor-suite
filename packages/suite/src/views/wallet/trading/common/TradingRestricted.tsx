@@ -4,7 +4,7 @@ import { Feature, selectFeatureMessageContent } from '@suite-common/message-syst
 import { Banner } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
 import { useLayout, useSelector } from '#src/hooks/suite';
 
 export const TradingRestricted = () => {

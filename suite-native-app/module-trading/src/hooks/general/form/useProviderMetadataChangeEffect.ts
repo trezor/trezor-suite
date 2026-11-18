@@ -6,8 +6,11 @@ import {
 } from '@suite-common/trading';
 import { type Control, type FieldValues, type Path, useWatch } from '@suite-native/forms';
 
-export const useProviderMetadataChangeEffect = <TFieldValues extends FieldValues>(
-    control: Control<TFieldValues>,
+export const useProviderMetadataChangeEffect = <
+    TFieldValues extends FieldValues,
+    TTransformedValues = TFieldValues,
+>(
+    control: Control<TFieldValues, object, TTransformedValues>,
     tradingType: TradingType,
 ) => {
     const exchange = useWatch({

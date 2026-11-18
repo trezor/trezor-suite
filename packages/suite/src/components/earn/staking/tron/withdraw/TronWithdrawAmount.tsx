@@ -17,7 +17,7 @@ export const TronWithdrawAmount = () => {
         <Card paddingType="none">
             <TronStakeInfoRow label={<Translation id="AMOUNT" />}>
                 <Row alignItems="center" gap={8}>
-                    <TokenIcon symbol={account.symbol} size={24} />
+                    <TokenIcon networkSymbol={account.symbol} size={24} />
                     <Column gap={2} alignItems="flex-end">
                         <Text
                             typographyStyle="body-md-strong"

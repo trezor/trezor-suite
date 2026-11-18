@@ -3,9 +3,7 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        {
-            "path": "../../suite/apps-embedding-demo"
-        },
+        { "path": "../apps-embedding-demo" },
         { "path": "../../packages/components" },
         { "path": "../../packages/suite" },
         { "path": "../../packages/requirements" }

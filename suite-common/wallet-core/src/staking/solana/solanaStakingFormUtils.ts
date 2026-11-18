@@ -22,6 +22,7 @@ import solana from '@trezor/network-solana/runtime';
 import type {
     EstimatedFee,
     Fee,
+    PrepareStakeSolTxErrorCode,
     PrepareStakeSolTxResponse,
     SolanaTxMeta,
 } from '@trezor/network-solana/types';
@@ -206,8 +207,33 @@ const PREPARATION_FAILED_LEVEL: PrecomposedTransactionError = {
     errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
 };
 
-const buildPreparationFailedLevels = (predefinedLevels: FeeLevel[]): PrecomposedLevels =>
-    Object.fromEntries(predefinedLevels.map(level => [level.label, PREPARATION_FAILED_LEVEL]));
+const STAKED_BALANCE_CHANGED_LEVEL: PrecomposedTransactionError = {
+    type: 'error',
+    error: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+    errorMessage: { id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED' },
+};
+
+type BuildPreparationFailedLevelsParams = {
+    predefinedLevels: FeeLevel[];
+    errorCode?: PrepareStakeSolTxErrorCode;
+};
+
+const buildPreparationFailedLevels = ({
+    predefinedLevels,
+    errorCode,
+}: BuildPreparationFailedLevelsParams): PrecomposedLevels => {
+    const failedLevel =
+        errorCode === 'INSUFFICIENT_ACTIVE_STAKE'
+            ? STAKED_BALANCE_CHANGED_LEVEL
+            : PREPARATION_FAILED_LEVEL;
+
+    return Object.fromEntries(predefinedLevels.map(level => [level.label, failedLevel]));
+};
+
+export const hasStakedBalanceChangedError = (composedLevels?: PrecomposedLevels) =>
+    Object.values(composedLevels ?? {}).some(
+        level => level.type === 'error' && level.error === STAKED_BALANCE_CHANGED_LEVEL.error,
+    );
 
 type ComposeSolanaStakingTransactionParams = {
     formValues: StakeFormState;
@@ -248,7 +274,7 @@ export const composeSolanaStakingTransaction = async ({
     });
 
     if (!txData?.success) {
-        return buildPreparationFailedLevels(predefinedLevels);
+        return buildPreparationFailedLevels({ predefinedLevels, errorCode: txData?.errorCode });
     }
 
     const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);

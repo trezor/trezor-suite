@@ -2,11 +2,11 @@ import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
+import { useYieldFlowData } from '@suite-native/earn';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useYieldAllowanceFees } from './useYieldAllowanceFees';
 import { useYieldDepositRevokeScreen } from './useYieldDepositRevokeScreen';
-import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldSession } from './useYieldSession';
 import { mockYieldPendingTransactionResult } from '../../../mocks/mockYieldPendingTransactionResult';
@@ -31,7 +31,10 @@ jest.mock('@react-navigation/native', () => ({
     useIsFocused: () => mockIsFocused,
     useRoute: () => ({ params: { accountKey: 'account-key', tokenContract: 'token-contract' } }),
 }));
-jest.mock('./useYieldFlowData');
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useYieldFlowData: jest.fn(),
+}));
 jest.mock('./useYieldSession');
 jest.mock('./useYieldAllowanceFees');
 jest.mock('./useYieldPendingTransaction');

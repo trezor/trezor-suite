@@ -1,6 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { selectIsAnyDeviceCheckRequired } from '@suite-common/device-authenticity';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -19,9 +20,10 @@ import {
 import {
     type NativeDeviceRootState,
     selectCompromisedDeviceFailedCheck,
-    selectIsDeviceFirmwareSupported,
+    selectIsFirmwareUpdateRequiredInApp,
 } from '@suite-native/device';
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
+import { selectDeviceAuthenticityCheckSettings } from '@suite-native/settings';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
@@ -52,7 +54,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     const device = selectSelectedDevice(getState());
     if (!device) return action;
 
-    const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
+    const isFirmwareUpdateRequired = selectIsFirmwareUpdateRequiredInApp(getState());
     const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
     const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
 
@@ -103,11 +105,19 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     const trigger = getDiscoveryTrigger(action);
 
     if (trigger !== undefined) {
+        // Discovery is delayed while interactive device checks are pending (device onboarding flow is displayed).
+        const isAnyDeviceCheckRequired = selectIsAnyDeviceCheckRequired(
+            getState(),
+            device,
+            selectDeviceAuthenticityCheckSettings(getState()),
+        );
+
         if (
             isAnyNetworkEnabled &&
-            isDeviceFirmwareVersionSupported &&
+            !isFirmwareUpdateRequired &&
             device.connected &&
-            isDeviceAcquired(device)
+            isDeviceAcquired(device) &&
+            !isAnyDeviceCheckRequired
         ) {
             // Track every enabled coin for revert on passphrase failure
             if (

@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { AppsEmbeddingScreen } from '@suite-native/apps-embedding-demo';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import {
@@ -26,7 +25,8 @@ import {
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
-import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-state';
+import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-shared';
+import { AppsEmbeddingScreen } from '@suite-native-app/apps-embedding-demo';
 import { AccountDetailStackNavigator } from '@suite-native-app/module-account-detail';
 import { AccountOverviewScreen } from '@suite-native-app/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native-app/module-accounts-import';
@@ -59,10 +59,7 @@ import { PassphraseStackNavigator } from '@suite-native-app/module-passphrase';
 import { ReceiveStackNavigator } from '@suite-native-app/module-receive';
 import { SendStackNavigator } from '@suite-native-app/module-send';
 import { SettingsStackNavigator } from '@suite-native-app/module-settings';
-import {
-    SignAndVerifyScreen,
-    SignAndVerifyStackNavigator,
-} from '@suite-native-app/module-sign-verify';
+import { SignVerifyScreen, SignVerifyStackNavigator } from '@suite-native-app/module-sign-verify';
 import { StellarManageTokenStackNavigator } from '@suite-native-app/module-stellar-token-management';
 import { TradingStackNavigator } from '@suite-native-app/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native-app/module-transactions';
@@ -250,13 +247,10 @@ export const RootStackNavigator = () => {
                     name={RootStackRoutes.AddCoinAccountStack}
                     component={AddCoinAccountStackNavigator}
                 />
+                <RootStack.Screen name={RootStackRoutes.SignVerify} component={SignVerifyScreen} />
                 <RootStack.Screen
-                    name={RootStackRoutes.SignAndVerify}
-                    component={SignAndVerifyScreen}
-                />
-                <RootStack.Screen
-                    name={RootStackRoutes.SignAndVerifyStack}
-                    component={SignAndVerifyStackNavigator}
+                    name={RootStackRoutes.SignVerifyStack}
+                    component={SignVerifyStackNavigator}
                 />
                 <RootStack.Screen
                     name={RootStackRoutes.ReceiveStack}

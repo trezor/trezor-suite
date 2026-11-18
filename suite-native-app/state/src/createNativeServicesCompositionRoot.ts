@@ -11,6 +11,7 @@ import { notImplementedGetter } from '@suite-common/extra-dependencies';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createQueryClient } from '@suite-common/react-query';
+import { createSignVerify } from '@suite-common/sign-verify';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { analytics } from '@suite-native/analytics';
@@ -22,7 +23,7 @@ import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
-import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
+import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-shared';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sync';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';
@@ -107,6 +108,11 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     return {
         networks,
+        signVerify: createSignVerify({
+            networkModuleRepository: networks.networkModuleRepository,
+            analytics,
+            dispatch: deps.dispatch,
+        }),
         staking,
         queryClient,
         suiteSync,

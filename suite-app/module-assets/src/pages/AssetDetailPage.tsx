@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
+import { selectAssetNameText } from '@suite/assets';
 import { useTranslation } from '@suite/intl';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetName,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { Box, Column, Row } from '@trezor/components';
 import {
@@ -28,21 +28,23 @@ export const AssetDetailPage = () => {
     const { translationString } = useTranslation();
     const { isDiscoveryRunning } = useDiscovery();
     const assetKey = useSelector(selectRoutedAssetKey);
-    const name = useSelector(state => selectWalletAssetName(state, assetKey));
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
+    const name = useSelector(
+        state => networkSymbol && selectAssetNameText(state, networkSymbol, contractAddress),
+    );
     const pageHeader = useMemo(() => <PageHeader />, []);
 
     useLayout(name ?? translationString('TR_ASSET'), pageHeader);
 
-    if (assetKey === undefined || symbol === undefined) {
+    if (assetKey === undefined || networkSymbol === undefined) {
         return isDiscoveryRunning ? <AssetDetailBalanceSkeleton /> : <AssetNotExists />;
     }
 
     return (
         <Column gap={16} alignItems="stretch" data-testid="@asset-detail">
             <AssetDetailHiddenBanner assetKey={assetKey} />
-            <AssetDetailMarketPrice symbol={symbol} contractAddress={contractAddress} />
+            <AssetDetailMarketPrice symbol={networkSymbol} contractAddress={contractAddress} />
             <Row gap={16} alignItems="stretch" flexWrap="wrap">
                 <Box flex="1" minWidth={280}>
                     <AssetDetailBalance assetKey={assetKey} />

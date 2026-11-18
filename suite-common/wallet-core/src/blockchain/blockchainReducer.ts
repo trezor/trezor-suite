@@ -87,12 +87,15 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         return;
     }
 
+    const prev = draft[network.symbol as LegacyNetworkSymbol];
     draft[network.symbol as LegacyNetworkSymbol] = {
         url: info.url,
         connected: true,
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
         version: info.version,
+        cardanoProtocolParameters: info.cardanoProtocolParameters ?? prev.cardanoProtocolParameters,
+        consensusBranchId: info.consensusBranchId ?? prev.consensusBranchId,
         backends: draft[network.symbol as LegacyNetworkSymbol].backends,
         identityConnections: draft[network.symbol as LegacyNetworkSymbol].identityConnections,
     };
@@ -172,6 +175,13 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(blockchainActions.setCardanoProtocolParameters, (state, action) => {
+                const { symbol, cardanoProtocolParameters } = action.payload;
+                if (cardanoProtocolParameters) {
+                    state[symbol as LegacyNetworkSymbol].cardanoProtocolParameters =
+                        cardanoProtocolParameters;
+                }
+            })
             .addCase(blockchainActions.setBackendGapLimit, (state, action) => {
                 const { symbol, gapLimit } = action.payload;
                 if (gapLimit === undefined) {
@@ -245,6 +255,14 @@ export const selectIsCustomBackendConfigured = createMemoizedSelector(
 
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
     state.wallet.blockchain[symbol as LegacyNetworkSymbol]?.backends.gapLimit;
+
+export const selectCardanoProtocolParameters = (
+    state: BlockchainRootState,
+    symbol: NetworkSymbol,
+) => selectNetworkBlockchainInfo(state, symbol)?.cardanoProtocolParameters;
+
+export const selectConsensusBranchId = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    selectNetworkBlockchainInfo(state, symbol)?.consensusBranchId;
 
 const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
     BlockchainRootState & WalletSettingsRootState & NetworksRootState

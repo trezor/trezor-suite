@@ -10,7 +10,7 @@ import { CaretLeftIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
@@ -65,7 +65,7 @@ export const WrappedNativePageHeader = ({
                 <Row alignItems="center" gap={12} overflow="hidden">
                     {account && (
                         <TokenIcon
-                            symbol={account.symbol}
+                            networkSymbol={account.symbol}
                             contractAddress={contractAddress}
                             showNetworkIcon
                             size={32}

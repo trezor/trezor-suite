@@ -49,15 +49,15 @@ const polygonAccount = mockWalletAccount({
     ],
 });
 
-const bitcoinKey = getWalletAssetKey({ deviceState: DEVICE_STATE, symbol: BTC });
+const bitcoinKey = getWalletAssetKey({ deviceState: DEVICE_STATE, networkSymbol: BTC });
 const usdcOnPolygonKey = getWalletAssetKey({
     deviceState: DEVICE_STATE,
-    symbol: POL,
+    networkSymbol: POL,
     contractAddress: USDC_CONTRACT,
 });
 const namelessOnPolygonKey = getWalletAssetKey({
     deviceState: DEVICE_STATE,
-    symbol: POL,
+    networkSymbol: POL,
     contractAddress: NAMELESS_CONTRACT,
 });
 

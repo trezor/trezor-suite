@@ -48,6 +48,9 @@
         },
         { "path": "../../suite-common/receive" },
         {
+            "path": "../../suite-common/sign-verify"
+        },
+        {
             "path": "../../suite-common/suite-rbf-labels-migrations"
         },
         {
@@ -122,7 +125,7 @@
         { "path": "../../suite-native/settings" },
         { "path": "../../suite-native/storage" },
         {
-            "path": "../../suite-native/trading-state"
+            "path": "../../suite-native/trading-shared"
         },
         {
             "path": "../../suite-native/transaction-management"

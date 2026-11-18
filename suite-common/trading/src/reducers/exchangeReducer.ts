@@ -6,7 +6,8 @@ import {
     type ExchangeTradeQuoteRequest,
 } from 'invity-api';
 
-import { type AccountKey } from '@suite-common/wallet-types';
+import { transactionsActions } from '@suite-common/wallet-core';
+import { type AccountKey, type AllowanceStepVariant } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
@@ -149,17 +150,17 @@ const tradingExchangeSlice = createSlice({
             state: TradingExchangeState,
             action: PayloadAction<ApprovalFlowStepType[]>,
         ) {
-            state.approvalFlow = { steps: action.payload, completedSteps: [] };
+            state.approvalFlow = { steps: action.payload, sentTxids: {} };
         },
-        completeApprovalFlowStep(
+        setApprovalFlowStepTxid(
             state: TradingExchangeState,
-            action: PayloadAction<ApprovalFlowStepType>,
+            action: PayloadAction<{ step: AllowanceStepVariant; txid: string }>,
         ) {
-            if (!state.approvalFlow || state.approvalFlow.completedSteps.includes(action.payload)) {
+            if (!state.approvalFlow) {
                 return;
             }
 
-            state.approvalFlow.completedSteps.push(action.payload);
+            state.approvalFlow.sentTxids[action.payload.step] = action.payload.txid;
         },
         clearApprovalFlow(state: TradingExchangeState) {
             state.approvalFlow = undefined;
@@ -199,6 +200,21 @@ const tradingExchangeSlice = createSlice({
         ) {
             state.lastErrorMessage = action.payload;
         },
+    },
+    extraReducers: builder => {
+        builder.addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
+            const { approvalFlow } = state;
+
+            if (!approvalFlow) {
+                return;
+            }
+
+            approvalFlow.steps.forEach(step => {
+                if (step !== 'swap' && approvalFlow.sentTxids[step] === payload.txid) {
+                    approvalFlow.sentTxids[step] = payload.tx.txid;
+                }
+            });
+        });
     },
 });
 

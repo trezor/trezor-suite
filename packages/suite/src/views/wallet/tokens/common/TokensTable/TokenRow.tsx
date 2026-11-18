@@ -114,7 +114,7 @@ export const TokenRow = ({
                         >
                             <TokenIcon
                                 placeholder={token.name || token.symbol || 'token'}
-                                symbol={account.symbol}
+                                networkSymbol={account.symbol}
                                 contractAddress={token.contract}
                                 size={24}
                                 shouldTryToFetch={isTokenKnown}

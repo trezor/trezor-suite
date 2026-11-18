@@ -121,7 +121,7 @@ export const AllowanceLimitSelector = ({
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
                     <TokenIcon
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={token.contract}
                         size={20}
                         placeholder={displaySymbol}
@@ -148,7 +148,7 @@ export const AllowanceLimitSelector = ({
                     </Text>
                     <Row gap={8}>
                         <TokenIcon
-                            symbol={networkSymbol}
+                            networkSymbol={networkSymbol}
                             contractAddress={token.contract}
                             size={20}
                             placeholder={displaySymbol}

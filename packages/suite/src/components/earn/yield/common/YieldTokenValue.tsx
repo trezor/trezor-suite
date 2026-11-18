@@ -25,7 +25,7 @@ export const YieldTokenValue = ({
     <Row alignItems="center" gap={8}>
         <TokenIcon
             size={24}
-            symbol={token.networkSymbol}
+            networkSymbol={token.networkSymbol}
             contractAddress={token.contractAddress}
             placeholder={token.symbol}
             showNetworkIcon

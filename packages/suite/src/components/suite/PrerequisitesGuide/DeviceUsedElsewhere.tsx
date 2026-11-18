@@ -9,7 +9,7 @@ import { TroubleshootingTips } from '#src/components/suite/troubleshooting/Troub
 import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,
     TROUBLESHOOTING_TIP_RECONNECT,
-} from '#src/components/suite/troubleshooting/tips';
+} from '#src/components/suite/troubleshooting/tips/troubleshootingTipItems';
 
 import { AcquireDeviceButton } from '../AcquireDeviceButton';
 import { type TroubleshootingTipsItem } from '../troubleshooting/TroubleshootingTipsItem';

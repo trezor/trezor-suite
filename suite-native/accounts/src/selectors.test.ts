@@ -1,3 +1,6 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type TokenInfoBranded, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -490,6 +493,7 @@ describe.each(['xlm', 'txlm'])('activated Stellar tokens on %s', networkSymbol =
 
         return {
             ...state,
+            earn: { staking: mockStakingState() },
             wallet: {
                 ...state.wallet,
                 settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
@@ -570,6 +574,24 @@ describe('selectAccountFiatBalance', () => {
 
         return {
             ...state,
+            earn: {
+                staking: mockStakingState({
+                    positions: {
+                        [account.key]: [
+                            mockStakingPosition({
+                                balances: {
+                                    staked: stakingAmountSchema.parse('2050000000000000000'),
+                                    pending: stakingAmountSchema.parse('0'),
+                                    unstaking: stakingAmountSchema.parse('0'),
+                                    withdrawable: stakingAmountSchema.parse('0'),
+                                    rewards: stakingAmountSchema.parse('0'),
+                                },
+                                unlocks: [],
+                            }),
+                        ],
+                    },
+                }),
+            },
             wallet: {
                 ...state.wallet,
                 settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
@@ -710,12 +732,8 @@ describe('selectAccountFiatBalance', () => {
         ).toBe('7450');
     });
 
-    it('preserves the options to exclude staking or tokens', () => {
-        const state = createState();
-
-        expect(selectAccountFiatBalance(state, account.key, false).toString()).toBe('3250');
-        expect(selectAccountFiatBalance(state, account.key, true, false).toString()).toBe('7100');
-        expect(selectAccountFiatBalance(state, account.key, false, false).toString()).toBe('3000');
+    it('preserves the option to exclude tokens', () => {
+        expect(selectAccountFiatBalance(createState(), account.key, false).toString()).toBe('7100');
     });
 
     it('returns zero for an unknown account', () => {

@@ -69,12 +69,16 @@ export const messages = {
             },
         },
         tokens: '+ Tokens',
+        unknownToken: 'Unknown token',
         warning: 'Warning',
     },
     icons: {
         networkIconHint: 'Network Icon',
         tokenIconHint: 'Token Icon',
         cryptoIconHint: 'Crypto Icon',
+    },
+    stepCards: {
+        stepper: 'Step {stepNumber} of {stepCount}',
     },
     messageSystem: {
         killswitch: {
@@ -165,6 +169,16 @@ export const messages = {
                 title: 'Your Trezor is ready to set up',
                 subtitle: 'You can do this anytime.',
                 button: 'Set up my Trezor',
+            },
+            deviceChecksRequired: {
+                title: 'Check your Trezor',
+                subtitle: 'Confirm your Trezor is genuine before using it.',
+                button: 'Check my Trezor',
+            },
+            firmwareUpdateRequired: {
+                title: 'Firmware update required',
+                subtitle: 'Update the firmware to continue using your Trezor with this app.',
+                button: 'Update firmware',
             },
             initializedDevice: {
                 title: 'Your wallet is ready',
@@ -5125,6 +5139,8 @@ export const messages = {
                 stakeNotEnoughFunds: 'Insufficient funds for staking.',
                 stakeTxPreparationFailed:
                     'The transaction could not be prepared. Make sure the account is up to date and try again.',
+                stakedBalanceChanged:
+                    'Your staked balance has changed. Check the updated amount and try again.',
                 remainingBalanceLessThanRent:
                     'After sending this amount, your account will have SOL remaining lower than the rent.',
                 amountNotEnoughCurrencyFeeWithEthAmount:

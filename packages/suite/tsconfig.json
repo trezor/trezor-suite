@@ -40,6 +40,7 @@
         {
             "path": "../../suite-common/discreet-mode"
         },
+        { "path": "../../suite-common/earn" },
         {
             "path": "../../suite-common/earn-stablecoin"
         },
@@ -51,6 +52,9 @@
         },
         {
             "path": "../../suite-common/earn-staking-api"
+        },
+        {
+            "path": "../../suite-common/earn-staking-common"
         },
         { "path": "../../suite-common/feedback" },
         {
@@ -244,6 +248,9 @@
         { "path": "../env-utils" },
         { "path": "../icons" },
         { "path": "../logger" },
+        {
+            "path": "../../networks/cardano/network-cardano-suite-common"
+        },
         {
             "path": "../../networks/ethereum/network-ethereum"
         },

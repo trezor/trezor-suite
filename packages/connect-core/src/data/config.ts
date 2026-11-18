@@ -42,13 +42,6 @@ export const config: Config = {
             comment: ['Since 2.4.3 Cardano derivation behavior has changed'],
         },
         {
-            methods: ['tezosSignTransaction'],
-            min: { T1B1: '0', T2T1: '2.1.8' },
-            comment: [
-                'Since 2.1.8 there are new protobuf fields in tezos transaction (Babylon fork)',
-            ],
-        },
-        {
             methods: ['stellarSignTransaction'],
             min: { T1B1: '1.9.0', T2T1: '2.3.0' },
             comment: [
@@ -131,6 +124,7 @@ export const config: Config = {
             min: {
                 T1B1: '0',
                 T2T1: '0',
+                // Informational only: T3T1 < 2.8.0 is unsupported, because 2.8.0 is marked as required in @trezor/connect-data.
                 T3T1: '2.8.0',
             },
         },
@@ -153,6 +147,7 @@ export const config: Config = {
                 T2B1: '0',
                 T3B1: '0',
                 T3T1: '0',
+                // Informational only: T3W1 < 2.12.1 is unsupported, because 2.12.1 is marked as required in @trezor/connect-data.
                 T3W1: '2.12.1',
             },
         },

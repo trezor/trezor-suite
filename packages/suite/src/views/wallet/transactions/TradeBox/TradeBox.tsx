@@ -7,7 +7,7 @@ import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
 
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
 import { PriceTicker, TrendTicker } from '#src/components/suite';
 import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
@@ -43,7 +43,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         gap={isBelowMobile ? 16 : 40}
                     >
                         <AssetDetailLink symbol={account.symbol} gap={12}>
-                            <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
+                            <TokenIcon size={40} networkSymbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="body-md-strong"

@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
 
-import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { areTypeAwareRulesConfigured, isTypeInformationNeeded } from './ruleSets.mjs';
 import { allRoots } from './workspaceRoots.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
@@ -291,12 +291,30 @@ export const typescriptConfig = [
             '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         },
     },
-    ...(areExpensiveChecksEnabled
+    ...(isTypeInformationNeeded
         ? []
         : [
               {
-                  ...tseslint.configs.disableTypeChecked,
+                  /**
+                   * The basic rule set needs no type information,
+                   * so skip the TypeScript project service, which would only slow ESLint down.
+                   */
                   files: ['**/src/**/*.{ts,tsx}'],
+                  languageOptions: tseslint.configs.disableTypeChecked.languageOptions,
+              },
+          ]),
+    ...(areTypeAwareRulesConfigured
+        ? []
+        : [
+              {
+                  /**
+                   * Without the runner's rule filter, a type-aware rule configured on would crash
+                   * on the missing program; see `ruleSets.mjs`.
+                   * The runner always sets `ESLINT_RULE_FILTER_ACTIVE`,
+                   * so this only covers running `eslint` directly, e.g. from an IDE integration.
+                   */
+                  files: ['**/src/**/*.{ts,tsx}'],
+                  rules: tseslint.configs.disableTypeChecked.rules,
               },
           ]),
 ];

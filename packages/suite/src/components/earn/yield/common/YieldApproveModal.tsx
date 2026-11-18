@@ -45,7 +45,7 @@ const getVaultTokenLogo = ({
 }: GetVaultTokenLogoParams): AllowanceProvider['logo'] => {
     if (isWrappedNativeToken(networkSymbol, contractAddress)) {
         return {
-            symbol: networkSymbol,
+            networkSymbol,
             size: 20,
             showNetworkIcon: true,
             wrappedTokenIcon: 'network',

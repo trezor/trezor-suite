@@ -13,9 +13,9 @@ import {
     selectAccountFiatBalance,
 } from '@suite-native/accounts';
 import { HStack, IconButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { TokenSettingsBottomSheet } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
-import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
 import {
     type AccountDetailStackParamList,
     AccountDetailStackRoutes,

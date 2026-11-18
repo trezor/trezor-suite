@@ -5,6 +5,7 @@ import type {
     TronAccountExtraData,
     TronStakingInfo,
 } from '@trezor/blockchain-link-types';
+import { BigNumber } from '@trezor/utils';
 
 import { mockWalletAccount } from './mockWalletAccount';
 import { type AccountBase, type AccountWithNetworkType, asAccountDescriptor } from '../src/account';
@@ -310,11 +311,14 @@ export const mockCardanoStakingAccount = (
     scenario: CardanoStakingScenario,
     { symbol = asNetworkSymbol('ada'), ...account }: MockStakingAccountParams = {},
 ): AccountWithNetworkType<'cardano'> => {
+    const staking = CARDANO_STAKING[scenario];
+    const availableBalance = account.availableBalance ?? '1000000000';
     const walletAccount = mockWalletAccount({
         descriptor: getMockDescriptor(symbol, scenario),
-        balance: '1000000000',
-        availableBalance: '1000000000',
-        formattedBalance: '1000',
+        // Blockfrost adds the reward balance to the balance and keeps it out of the available one.
+        balance: new BigNumber(availableBalance).plus(staking.rewards).toFixed(),
+        availableBalance,
+        formattedBalance: new BigNumber(availableBalance).shiftedBy(-6).toFixed(),
         ...account,
         symbol,
     });
@@ -323,7 +327,7 @@ export const mockCardanoStakingAccount = (
         throw new Error(`${symbol} is not a Cardano network.`);
     }
 
-    return { ...walletAccount, misc: { staking: CARDANO_STAKING[scenario] } };
+    return { ...walletAccount, misc: { staking } };
 };
 
 export type TronStakingScenario =

@@ -33,7 +33,7 @@ const WalletConnectAccountOptionComponent = ({ account }: WalletConnectAccountOp
     return (
         <Row gap={16} justifyContent="space-between" width="100%">
             <Row gap={12} flex="1" minWidth={0} overflow="hidden">
-                <TokenIcon symbol={account.symbol} size={24} />
+                <TokenIcon networkSymbol={account.symbol} size={24} />
                 <Column alignItems="flex-start" minWidth={0} overflow="hidden" width="100%">
                     <Row gap={8} minWidth={0} width="100%">
                         <AccountLabel

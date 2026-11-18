@@ -26,6 +26,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:^",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",

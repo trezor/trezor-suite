@@ -16,7 +16,7 @@ import {
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
-} from '@suite-native/trading-state';
+} from '@suite-native/trading-shared';
 
 export type EarnNoBalanceAction = 'buy' | 'swap' | 'receive';
 

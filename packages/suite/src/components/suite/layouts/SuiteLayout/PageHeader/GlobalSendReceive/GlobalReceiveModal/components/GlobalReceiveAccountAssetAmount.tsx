@@ -1,10 +1,11 @@
+import { AssetValue } from '@suite/assets';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { findToken } from '@suite-common/wallet-utils';
+import { asAmountUnit, findToken } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type GlobalReceiveAccountAssetAmountProps = {
     account: Account;
@@ -33,11 +34,10 @@ export const GlobalReceiveAccountAssetAmount = ({
                 />
             </Text>
             <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
-                <FormattedCryptoAmount
-                    value={amount}
-                    symbol={token?.symbol ?? asset.displaySymbol}
+                <AssetValue
+                    amount={asAmountUnit(new BigNumber(amount))}
+                    networkSymbol={account.symbol}
                     contractAddress={tokenAddress}
-                    tokenDecimals={token?.decimals}
                     isCompact
                 />
             </Text>

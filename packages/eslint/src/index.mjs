@@ -3,7 +3,6 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
-import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 import {
     allowDevDependenciesIn,
     allowTypeOnlyDevDependenciesIn,
@@ -22,6 +21,7 @@ import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
 import { reactConfig } from './reactConfig.mjs';
 import { reactQueryConfig } from './reactQueryConfig.mjs';
+import { reportUnusedDisableDirectives } from './ruleSets.mjs';
 import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
@@ -62,7 +62,7 @@ export const eslint = [
     { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
     {
         linterOptions: {
-            reportUnusedDisableDirectives: areExpensiveChecksEnabled ? 'warn' : 'off',
+            reportUnusedDisableDirectives,
         },
     },
     { languageOptions: { globals: globals.browser } },

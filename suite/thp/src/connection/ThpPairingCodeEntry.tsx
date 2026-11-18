@@ -50,6 +50,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
                 isDisabled={isLoading || disabled === true}
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={true}
+                shouldKeepFocus={true}
                 defaultCode={lastCode}
             />
             {isLoading && <Spinner size={SPINNER_SIZE} isDisabled={true} />}

@@ -42,6 +42,7 @@ describe('fetchCardanoProductInfo', () => {
             rate: 2.06,
             entryPeriodDays: null,
             exitPeriodDays: 5,
+            rewardPeriodDays: 5,
             nextRewardAt: null,
             targets: [
                 {
@@ -156,6 +157,7 @@ describe('CARDANO_UNMANAGED_PRODUCT_INFO', () => {
             rate: null,
             entryPeriodDays: null,
             exitPeriodDays: 5,
+            rewardPeriodDays: 5,
             nextRewardAt: null,
             targets: [],
         });

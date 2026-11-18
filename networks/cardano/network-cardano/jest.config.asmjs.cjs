@@ -1,4 +1,4 @@
-// Coin-selection tests against the generated asm.js build shipped by the mobile app. SWC because
+// Coin-selection tests against the generated asm.js build shipped by the mobile and web apps. SWC because
 // Babel runs out of heap on the multi-megabyte file.
 const baseConfig = require('../../../jest.config.base.swc');
 

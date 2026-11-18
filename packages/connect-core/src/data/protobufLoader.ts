@@ -6,7 +6,6 @@ import * as cardanoProto from '@trezor/protobuf/src/definitions/messages-cardano
 import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
 import * as cryptoProto from '@trezor/protobuf/src/definitions/messages-crypto_pb';
 import * as definitionsProto from '@trezor/protobuf/src/definitions/messages-definitions_pb';
-import * as eosProto from '@trezor/protobuf/src/definitions/messages-eos_pb';
 import * as ethereumEip712Proto from '@trezor/protobuf/src/definitions/messages-ethereum-eip712_pb';
 import * as ethereumProto from '@trezor/protobuf/src/definitions/messages-ethereum_pb';
 import * as evoluProto from '@trezor/protobuf/src/definitions/messages-evolu_pb';
@@ -17,7 +16,6 @@ import * as rippleProto from '@trezor/protobuf/src/definitions/messages-ripple_p
 import * as solanaProto from '@trezor/protobuf/src/definitions/messages-solana_pb';
 import * as stellarProto from '@trezor/protobuf/src/definitions/messages-stellar_pb';
 import * as telemetryProto from '@trezor/protobuf/src/definitions/messages-telemetry_pb';
-import * as tezosProto from '@trezor/protobuf/src/definitions/messages-tezos_pb';
 import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import * as tronProto from '@trezor/protobuf/src/definitions/messages-tron_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
@@ -32,7 +30,6 @@ export const loadProtobufModules = () => {
         commonProto,
         cryptoProto,
         definitionsProto,
-        eosProto,
         ethereumEip712Proto,
         ethereumProto,
         evoluProto,
@@ -43,7 +40,6 @@ export const loadProtobufModules = () => {
         solanaProto,
         stellarProto,
         telemetryProto,
-        tezosProto,
         thpProto,
         tronProto,
         messagesProto,

@@ -17,7 +17,7 @@ import {
     TokenYieldRateBadge,
     useStakingDetailNavigation,
     useStakingNavigateAnalytics,
-} from '@suite-native/module-earn';
+} from '@suite-native/earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';

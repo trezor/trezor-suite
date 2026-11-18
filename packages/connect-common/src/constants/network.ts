@@ -4,7 +4,6 @@ export const TYPES = {
     stellar: 'Stellar',
     cardano: 'Cardano',
     ripple: 'Ripple',
-    tezos: 'Tezos',
     tron: 'Tron',
     binance: 'Binance',
     solana: 'Solana',
@@ -19,7 +18,6 @@ export const MODULES = [
     'ripple',
     'solana',
     'stellar',
-    'tezos',
     'tron',
 ] as const;
 

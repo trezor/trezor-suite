@@ -6,8 +6,11 @@ import {
 
 import {
     findEverstakePoolByAccount,
+    getEverstakeLatestTxBlockTimeByOperation,
     getEverstakePendingTransactions,
     getEverstakePoolBalances,
+    getPeriodEnd,
+    getPositionActivations,
     getPositionOperations,
     getPositionStatus,
     getPositionTargets,
@@ -24,6 +27,7 @@ export const getEthereumEverstakePooledProductPosition = ({
     productId,
     poolAddress,
     account,
+    productInfo,
     transactions,
 }: GetEthereumEverstakePooledPositionParams): StakingPosition | null => {
     const pool = findEverstakePoolByAccount(account);
@@ -39,7 +43,30 @@ export const getEthereumEverstakePooledProductPosition = ({
     const status = getPositionStatus({ balances, isStakePending });
 
     const operations = getPositionOperations({ balances, pendingTransactions });
-    const unlocks = getPositionUnlocks({ balances });
+
+    // Each period starts at the latest mined transaction of its operation, as legacy estimated.
+    const activations = getPositionActivations({
+        balances,
+        availableAt: getPeriodEnd({
+            startedAt: getEverstakeLatestTxBlockTimeByOperation({
+                operation: 'stake',
+                transactions,
+            }),
+            periodDays: productInfo?.entryPeriodDays ?? null,
+        }),
+    });
+
+    const unlocks = getPositionUnlocks({
+        balances,
+        availableAt: getPeriodEnd({
+            startedAt: getEverstakeLatestTxBlockTimeByOperation({
+                operation: 'unstake',
+                transactions,
+            }),
+            periodDays: productInfo?.exitPeriodDays ?? null,
+        }),
+    });
+
     const targets = getPositionTargets({ pool, poolAddress, balances });
 
     return {
@@ -47,6 +74,7 @@ export const getEthereumEverstakePooledProductPosition = ({
         status,
         lockup: 'locked',
         balances,
+        activations,
         unlocks,
         targets,
         operations,

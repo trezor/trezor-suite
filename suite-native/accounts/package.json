@@ -19,6 +19,7 @@
         "@shopify/flash-list": "2.3.2",
         "@suite-common/address": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/earn-staking": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/networks": "workspace:*",
@@ -52,13 +53,14 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:^",
         "react": "19.3.0",
-        "react-hook-form": "^7.77.0",
+        "react-hook-form": "^7.91.0",
         "react-native": "0.88.1",
         "react-native-reanimated": "4.7.1",
         "react-native-safe-area-context": "~5.10.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/test-utils": "workspace:*",

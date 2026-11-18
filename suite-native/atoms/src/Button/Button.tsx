@@ -7,13 +7,13 @@ import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@tr
 import { type Color, nativeSpacings } from '@trezor/theme';
 
 import { AnimatedPressable } from '../Animated/AnimatedPressable';
+import { AnimatedHStack } from '../Animated/AnimatedStack';
 import { AnimatedView } from '../Animated/AnimatedView';
 import { Loader } from '../Loader';
-import { HStack } from '../Stack';
 import { Text } from '../Text';
 import { type TestProps } from '../types';
 import { type ButtonColorProps, type ButtonSize } from './types';
-import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import { useButtonPressAnimatedStyles } from './useButtonPressAnimatedStyles';
 import {
     buttonGapMap,
     buttonSizeToDimensionsMap,
@@ -44,6 +44,7 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
     children: ReactNode;
     size?: ButtonSize;
     style?: NativeStyleObject;
+    isFloating?: boolean;
     isDisabled?: boolean;
     isLoading?: boolean;
     flex?: number;
@@ -79,27 +80,25 @@ export type ButtonTextStyleProps = {
 
 const LOADER_FADE_IN_DURATION = 500;
 
-export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
-    (utils, { size, backgroundColor, flex, isFullWidth }) => {
-        const sizeDimensions = buttonSizeToDimensionsMap[size];
+const buttonPressableStyle = prepareNativeStyle<ButtonStyleProps>(
+    ({ colors }, { size, backgroundColor, flex, isFullWidth }) => ({
+        flex,
+        width: isFullWidth ? '100%' : 'auto',
+        borderRadius: buttonSizeToDimensionsMap[size].borderRadius,
+        backgroundColor: colors[backgroundColor],
+    }),
+);
 
-        return {
-            flex,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: utils.colors[backgroundColor],
-            ...sizeDimensions,
-            extend: [
-                {
-                    condition: isFullWidth,
-                    style: {
-                        width: '100%',
-                    },
-                },
-            ],
-        };
-    },
+export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
+    ({ colors }, { size, backgroundColor, flex, isFullWidth }) => ({
+        flex,
+        width: isFullWidth ? '100%' : 'auto',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors[backgroundColor],
+        ...buttonSizeToDimensionsMap[size],
+    }),
 );
 
 const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>((utils, { buttonSize }) => ({
@@ -129,6 +128,7 @@ export const Button = ({
     iconLeft,
     iconRight,
     intent = 'brand',
+    isFloating = false,
     isDisabled = false,
     isFullWidth = false,
     isInverse = false,
@@ -151,7 +151,7 @@ export const Button = ({
         isDisabled: hasDisabledVisualState,
     });
 
-    const animatedPressStyle = useButtonPressAnimatedStyle(
+    const [buttonPressStyle, buttonColorStyle] = useButtonPressAnimatedStyles(
         isPressed,
         hasDisabledVisualState,
         backgroundColor,
@@ -167,19 +167,31 @@ export const Button = ({
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             style={[
-                animatedPressStyle,
-                applyStyle(buttonStyle, {
+                buttonPressStyle,
+                applyStyle(buttonPressableStyle, {
                     size,
-                    backgroundColor,
+                    backgroundColor: isFloating ? 'surfaceFillRaised' : 'transparent',
                     flex,
                     isFullWidth,
                 }),
-                style,
             ]}
             testID={testID}
             {...pressableProps}
         >
-            <HStack alignItems="center" justifyContent="center" spacing={buttonGapMap[size]}>
+            <AnimatedHStack
+                alignItems="center"
+                justifyContent="center"
+                spacing={buttonGapMap[size]}
+                style={[
+                    buttonColorStyle,
+                    applyStyle(buttonStyle, {
+                        size,
+                        backgroundColor,
+                        isFullWidth,
+                    }),
+                    style,
+                ]}
+            >
                 {isLoading && (
                     <AnimatedView
                         entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}
@@ -219,7 +231,7 @@ export const Button = ({
                         iconSize={size}
                     />
                 )}
-            </HStack>
+            </AnimatedHStack>
         </AnimatedPressable>
     );
 };

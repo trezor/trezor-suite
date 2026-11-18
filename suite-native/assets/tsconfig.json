@@ -5,6 +5,9 @@
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
             "path": "../../suite-common/fiat-services"
         },
         {
@@ -41,7 +44,6 @@
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../tokens" },
         { "path": "../transactions" },
@@ -53,6 +55,9 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/earn-staking-common"
+        },
         { "path": "../test-utils-store" }
     ]
 }

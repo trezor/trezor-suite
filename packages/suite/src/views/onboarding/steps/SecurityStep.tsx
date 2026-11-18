@@ -14,7 +14,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { resetDeviceThunk } from '#src/actions/settings/deviceSettingsActions';
-import { BackupSeedCards } from '#src/components/backup';
+import { BackupSeedCards } from '#src/components/backup/BackupSeedCards';
 import { SkipStepConfirmation } from '#src/components/onboarding/SkipStepConfirmation';
 import { ConfirmActionModal } from '#src/components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
 import { useOnboarding, useSelector } from '#src/hooks/suite';

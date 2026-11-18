@@ -21,8 +21,10 @@ export enum RootStackRoutes {
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
     AppsEmbedding = 'AppsEmbedding',
-    SignAndVerify = 'SignAndVerify',
-    SignAndVerifyStack = 'SignAndVerifyStack',
+    // Route names are reported to analytics (screen change events) and Sentry (route tag, breadcrumbs);
+    // keep the original values so existing dashboards and filters still match.
+    SignVerify = 'SignAndVerify',
+    SignVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
@@ -79,9 +81,9 @@ export enum OnboardingStackRoutes {
 
 export enum DeviceOnboardingStackRoutes {
     DeviceDisconnected = 'DeviceDisconnected',
-    UninitializedDeviceLanding = 'UninitializedDeviceLanding',
+    DeviceVisualCheck = 'DeviceVisualCheck',
     SuspiciousDevice = 'SuspiciousDevice',
-    SecurityCheck = 'SecurityCheck',
+    PackagingVisualCheck = 'PackagingVisualCheck',
     FirmwareInfo = 'FirmwareInfo',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
@@ -89,7 +91,7 @@ export enum DeviceOnboardingStackRoutes {
     ThpConfirmation = 'ThpConfirmation',
     ThpCodeEntry = 'ThpCodeEntry',
     ThpPairingSuccess = 'ThpPairingSuccess',
-    DeviceAuthenticity = 'DeviceAuthenticity ',
+    DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticitySuccess = 'DeviceAuthenticitySuccess',
     DeviceTutorial = 'DeviceTutorial',
     CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',
@@ -245,7 +247,7 @@ export enum AccountsStackRoutes {
     Accounts = 'Accounts',
 }
 
-export enum SignAndVerifyStackRoutes {
+export enum SignVerifyStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ContinueOnTrezor = 'ContinueOnTrezor',
 }

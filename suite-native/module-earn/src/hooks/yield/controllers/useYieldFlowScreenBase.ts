@@ -4,11 +4,10 @@ import {
     type YieldPositionFlowType,
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
-import { useMessageSystemYield } from '@suite-native/earn';
+import { useMessageSystemYield, useYieldFlowData } from '@suite-native/earn';
 import { type YieldFlowParams } from '@suite-native/navigation';
 
 import { useShowYieldTransactionFailureAlert } from '../useShowYieldTransactionFailureAlert';
-import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldSession } from '../useYieldSession';
 
 type UseYieldFlowScreenBaseParams = {

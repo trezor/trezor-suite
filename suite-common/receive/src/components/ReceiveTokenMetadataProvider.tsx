@@ -28,6 +28,7 @@ const rankedTokenDefinitionsToTokenMetadataSources = (
             contract: toTokenAddress(token.address),
             name: token.name,
             symbol: token.symbol.toUpperCase(),
+            isRecognized: true,
         });
         tokensByNetwork.set(networkSymbol, tokens);
     }

@@ -11,6 +11,7 @@ import {
     getYieldWithdrawInputToken,
     selectYieldSessionByFlowKey,
 } from '@suite-common/wallet-core';
+import { useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -18,7 +19,6 @@ import {
 } from '@suite-native/navigation';
 
 import { YieldWithdrawReviewContent } from '../../components/yield/YieldWithdrawReviewContent';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawReview>;

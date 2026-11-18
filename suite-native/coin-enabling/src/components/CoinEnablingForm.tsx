@@ -1,7 +1,5 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
 
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { changeCoinVisibilityThunk, selectEnabledNetworks } from '@suite-common/wallet-core';
@@ -9,6 +7,7 @@ import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useOnNavigationRemove } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -27,7 +26,6 @@ type CoinEnablingFormProps = {
 export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
-    const navigation = useNavigation();
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
@@ -78,13 +76,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
         });
     });
 
-    useEffect(
-        () =>
-            navigation.addListener('beforeRemove', () => {
-                handleSubmit();
-            }),
-        [navigation, handleSubmit],
-    );
+    useOnNavigationRemove({ onRemoveAttempt: () => handleSubmit() });
 
     return (
         <Form form={form}>

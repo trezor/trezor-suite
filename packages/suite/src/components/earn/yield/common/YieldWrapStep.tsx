@@ -81,7 +81,7 @@ export const YieldWrapStep = ({
                     <Row alignItems="center" gap={8} minWidth={0}>
                         <TokenIcon
                             size={20}
-                            symbol={token.networkSymbol}
+                            networkSymbol={token.networkSymbol}
                             contractAddress={token.contractAddress ?? null}
                             placeholder={token.symbol}
                             showNetworkIcon

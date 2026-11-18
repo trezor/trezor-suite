@@ -9,9 +9,12 @@ import {
 } from '@suite-native/navigation';
 
 import {
+    type DeviceConnectionFixturesRootState,
+    deviceConnectAuthorizedAfterInteractiveChecksFixtures,
     deviceConnectAuthorizedFixtures,
     deviceConnectBlockedFixtures,
     deviceConnectCompromisedFixtures,
+    deviceConnectInteractiveChecksFixtures,
     deviceConnectUninitializedFixtures,
     deviceDisconnectBlockedFixtures,
     deviceDisconnectDuringOnboardingFixtures,
@@ -20,11 +23,11 @@ import {
     deviceDisconnectOnHomeFixtures,
     discoveryEntropyCheckFailFixtures,
     discoveryEntropyCheckNoNavigationFixtures,
+    fixturesReducer,
     thpPairingBlockedFixtures,
     thpPairingNavigationFixtures,
 } from './__fixtures__/deviceConnectionFixtures';
 import { deviceConnectionMiddleware } from './middlewares/deviceConnectionMiddleware';
-import { type NativeDeviceRootState } from './selectors';
 
 jest.mock('@suite-native/navigation', () => {
     const navigation = jest.requireActual('@suite-native/navigation');
@@ -43,8 +46,9 @@ jest.mock('@suite-native/navigation', () => {
 });
 
 const createMockStoreAndDispatch = (initialState: any, action: UnknownAction) => {
-    const { store } = createTestCompositionRoot<void, NativeDeviceRootState>({
+    const { store } = createTestCompositionRoot<void, DeviceConnectionFixturesRootState>({
         middleware: [deviceConnectionMiddleware.middleware],
+        reducer: fixturesReducer,
         preloadedState: initialState,
     }).services;
     store.dispatch(action);
@@ -230,19 +234,36 @@ describe('deviceConnectionMiddleware', () => {
             );
         });
 
-        describe('when device is initialized', () => {
-            it.each(deviceConnectAuthorizedFixtures)(
+        describe('when initialized device needs interactive device checks', () => {
+            it.each(deviceConnectInteractiveChecksFixtures)(
                 '$description',
-                ({ action, expectedNavigation, initialState }) => {
+                ({ description, action, expectedReset, initialState }) => {
+                    if (description.includes('onboarding was cancelled')) {
+                        jest.mocked(checkIsHomeStackFocused).mockReturnValue(false);
+                    }
+
                     createMockStoreAndDispatch(initialState, action);
 
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
-                        expectedNavigation.route,
-                        expectedNavigation.params,
-                    );
-                    expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+                    expect(navigationContainerRef.reset).toHaveBeenCalledWith(expectedReset);
+                    expect(navigationContainerRef.reset).toHaveBeenCalledTimes(1);
+                    expect(navigationContainerRef.navigate).not.toHaveBeenCalled();
                 },
             );
+        });
+
+        describe('when device is initialized', () => {
+            it.each([
+                ...deviceConnectAuthorizedFixtures,
+                ...deviceConnectAuthorizedAfterInteractiveChecksFixtures,
+            ])('$description', ({ action, expectedNavigation, initialState }) => {
+                createMockStoreAndDispatch(initialState, action);
+
+                expect(navigationContainerRef.navigate).toHaveBeenCalledWith(
+                    expectedNavigation.route,
+                    expectedNavigation.params,
+                );
+                expect(navigationContainerRef.navigate).toHaveBeenCalledTimes(1);
+            });
         });
     });
 });

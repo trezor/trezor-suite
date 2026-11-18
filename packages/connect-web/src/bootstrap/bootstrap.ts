@@ -1,4 +1,4 @@
-import { BootstrapError } from './bootstrap-errors';
+import { BootstrapError, getPopupErrorURL } from './bootstrap-errors';
 
 const logger = (() => {
     let enabled = false;
@@ -28,10 +28,14 @@ const PEERS = {
     POPUP: '@trezor/connect-popup',
 };
 
-const HANDSHAKE_TIMEOUT = 500;
+const HANDSHAKE_RETRY_INTERVAL = 500;
+// The popup may still be loading on a slow network, but connect-web gives up on the iframe
+// after 5 × 2000 ms, and it should receive this error rather than its own generic one.
+const IFRAME_HANDSHAKE_TIMEOUT = 8000;
 const HANDSHAKE_REQ = 'channel-handshake-request';
 const HANDSHAKE_ERR = 'channel-handshake-error';
 const HANDSHAKE_CONF = 'channel-handshake-confirm';
+const HANDSHAKE_READY = 'channel-handshake-ready';
 
 const getParams = () => {
     if (typeof URLSearchParams === 'undefined') {
@@ -101,18 +105,12 @@ const getConfirmHandshake = (eventData: { channel: { here: string } }) => ({
 
 // @popup-only
 const redirectToSuite = (errorCode?: string): void => {
-    const currentUrl = new URL(window.location.href);
-    const nextUrl = new URL(currentUrl.toString());
+    const nextUrl = new URL(window.location.href);
     nextUrl.pathname = nextUrl.pathname.replace(/\/bootstrap\.html$/, '/');
 
-    if (errorCode) {
-        nextUrl.search = '';
-        nextUrl.searchParams.set('connect-popup-err', errorCode);
-    } else {
-        nextUrl.search = currentUrl.search;
-    }
-
-    window.location.href = nextUrl.toString();
+    window.location.href = errorCode
+        ? getPopupErrorURL(nextUrl.toString(), errorCode)
+        : nextUrl.toString();
 };
 
 // @popup-only
@@ -145,6 +143,14 @@ const handleBootstrapHandshake = (
             broadcast.removeEventListener('message', onHandshakeRequest);
             reject(BootstrapError.HANDSHAKE_TIMEOUT);
         }, timeout);
+
+        // BroadcastChannel does not buffer, so the iframe may have pinged before we listened.
+        // Announcing ourselves makes it ping again right away. It is not a handshake request,
+        // so that a Suite page still open on this channel ignores it.
+        broadcast.postMessage({
+            type: HANDSHAKE_READY,
+            channel: { here: PEERS.HERE, peer: PEERS.BOOTSTRAP },
+        });
     });
 
 // @popup-only
@@ -234,65 +240,58 @@ const startForwarding = (broadcast: BroadcastChannel, owner: Window, ownerOrigin
 };
 
 // @iframe-only
-// Step 2. Handshake iframe -> popup using iterative retry. (handled by handleBootstrapHandshake)
+// Step 2. Handshake iframe -> popup, retried until the popup confirms. (handled by handleBootstrapHandshake)
 const startBootstrapHandshake = (
     broadcast: BroadcastChannel,
-    maxAttempts: number = 5,
+    timeout: number = IFRAME_HANDSHAKE_TIMEOUT,
 ): { abort: () => void; promise: Promise<void> } => {
     const abortController = new AbortController();
 
+    const { signal } = abortController;
+
     const promise = new Promise<void>((resolve, reject) => {
         let attempt = 0;
-        let timer: ReturnType<typeof setTimeout>;
 
-        const tryOnce = () => {
+        const sendHandshakeRequest = () => {
             attempt++;
-
-            logger.log(PEERS.HERE, 'handshake attempt', attempt, 'of', maxAttempts);
-
-            const onHandshakeConfirm = (event: MessageEvent): void => {
-                const channel = event.data?.channel;
-                if (!channel) return;
-
-                if (
-                    event.data.type === HANDSHAKE_CONF &&
-                    channel.here === PEERS.BOOTSTRAP &&
-                    channel.peer === PEERS.HERE
-                ) {
-                    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                    cleanup();
-                    resolve();
-                }
-            };
-
-            const cleanup = () => {
-                clearTimeout(timer);
-                broadcast.removeEventListener('message', onHandshakeConfirm);
-            };
-
-            abortController.signal.addEventListener('abort', () => {
-                cleanup();
-                reject(BootstrapError.HANDSHAKE_TIMEOUT);
-            });
-
-            broadcast.addEventListener('message', onHandshakeConfirm);
+            logger.log(PEERS.HERE, 'handshake attempt', attempt);
 
             broadcast.postMessage({
                 type: HANDSHAKE_REQ,
                 channel: { here: PEERS.HERE, peer: PEERS.BOOTSTRAP },
             });
-
-            timer = setTimeout(() => {
-                broadcast.removeEventListener('message', onHandshakeConfirm);
-                if (attempt < maxAttempts) {
-                    tryOnce();
-                } else {
-                    reject(BootstrapError.HANDSHAKE_TIMEOUT);
-                }
-            }, HANDSHAKE_TIMEOUT);
         };
 
-        tryOnce();
+        // Time-based, because timer throttling in the background tab stretches every retry,
+        // and the whole handshake must still end before connect-web gives up.
+        const retryInterval = setInterval(sendHandshakeRequest, HANDSHAKE_RETRY_INTERVAL);
+        const deadline = setTimeout(() => abortController.abort(), timeout);
+
+        // Ends the handshake in every case; after a confirmation the rejection is a no-op.
+        signal.addEventListener('abort', () => {
+            clearInterval(retryInterval);
+            clearTimeout(deadline);
+            reject(BootstrapError.HANDSHAKE_TIMEOUT);
+        });
+
+        broadcast.addEventListener(
+            'message',
+            (event: MessageEvent): void => {
+                const channel = event.data?.channel;
+                if (channel?.here !== PEERS.BOOTSTRAP || channel.peer !== PEERS.HERE) return;
+
+                if (event.data.type === HANDSHAKE_CONF) {
+                    resolve();
+                    abortController.abort();
+                } else if (event.data.type === HANDSHAKE_READY) {
+                    // The popup has just started listening.
+                    sendHandshakeRequest();
+                }
+            },
+            { signal },
+        );
+
+        sendHandshakeRequest();
     });
 
     return {
@@ -371,6 +370,13 @@ const bootstrapIframe = (): Promise<void> => {
 
                     return;
                 }
+
+                // Once the popup leaves about:blank, COOP cuts it off from connect-web. connect-web
+                // holds it back until now, so it can still show a storage access denial in it.
+                window.parent.postMessage(
+                    { type: HANDSHAKE_READY, channel: { here: PEERS.HERE, peer: PEERS.WEB } },
+                    ownerOrigin,
+                );
 
                 const bootstrapHandshake = startBootstrapHandshake(broadcast);
                 try {

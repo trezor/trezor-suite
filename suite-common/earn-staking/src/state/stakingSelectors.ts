@@ -4,13 +4,15 @@ import {
     type StakingPositionBalances,
     type StakingProductDescriptor,
     type StakingProductId,
+    getStakingPositionAmountOutsideBalance,
     stakingAmountSchema,
 } from '@suite-common/earn-staking-common';
 import type { AccountKey } from '@suite-common/wallet-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
-import { BigNumber, isNotUndefined } from '@trezor/utils';
+import { BigNumber, isNotUndefined, typedObjectEntries } from '@trezor/utils';
 
+import type { StakingProductsState } from './stakingProductsReducer';
 import type { StakingRootState } from './stakingReducer';
 
 const selectStakingState = (state: StakingRootState) => state.earn.staking;
@@ -47,8 +49,10 @@ export const selectIsStakingSupportedSymbol = (
     networkSymbol: NetworkSymbol,
 ) => selectStakingProductDescriptorsBySymbol(state, networkSymbol).length > 0;
 
+const selectStakingPositions = (state: StakingRootState) => selectStakingState(state).positions;
+
 const selectAccountPositions = (state: StakingRootState, accountKey: AccountKey) =>
-    selectStakingState(state).positions[accountKey];
+    selectStakingPositions(state)[accountKey];
 
 export const selectStakingPositionsByAccount = createWeakMapSelector(
     [selectAccountPositions],
@@ -74,33 +78,58 @@ const sumBalance = (
             .toFixed(0),
     );
 
+const isCountedStakingPosition =
+    (products: StakingProductsState) =>
+    ({ productId }: StakingPosition) =>
+        products[productId]?.isCountedInAccountTotals === true;
+
 const selectCountedStakingPositions = createWeakMapSelector(
     [selectStakingPositionsByAccount, selectStakingProducts],
     (positions, products) =>
-        returnStableArrayIfEmpty(
-            positions.filter(
-                ({ productId }) => products[productId]?.isCountedInAccountTotals === true,
-            ),
-        ),
+        returnStableArrayIfEmpty(positions.filter(isCountedStakingPosition(products))),
 );
 
-// The stake of liquid positions is already in the account balance; only locked positions hold
-// funds outside it. Rewards are never added: they compound into the stake, are only expected, or
-// are part of the balance.
-export const selectStakingAccountAmountOutsideBalance = createWeakMapSelector(
-    [selectCountedStakingPositions],
-    (countedPositions): StakingAmount => {
-        const lockedPositions = countedPositions.filter(({ lockup }) => lockup === 'locked');
+const getStakingAmountOutsideBalance = (
+    countedPositions: readonly StakingPosition[],
+    products: StakingProductsState,
+): StakingAmount =>
+    stakingAmountSchema.parse(
+        countedPositions
+            .reduce((sum, position) => {
+                const descriptor = products[position.productId];
 
-        return stakingAmountSchema.parse(
-            (['staked', 'pending', 'unstaking', 'withdrawable'] as const)
-                .reduce(
-                    (sum, balance) => sum.plus(sumBalance(lockedPositions, balance)),
-                    new BigNumber(0),
-                )
-                .toFixed(0),
-        );
-    },
+                return descriptor === undefined
+                    ? sum
+                    : sum.plus(
+                          getStakingPositionAmountOutsideBalance(position, descriptor.rewardsKind),
+                      );
+            }, new BigNumber(0))
+            .toFixed(0),
+    );
+
+export const selectStakingAccountAmountOutsideBalance = createWeakMapSelector(
+    [selectCountedStakingPositions, selectStakingProducts],
+    getStakingAmountOutsideBalance,
+);
+
+export const selectStakingAmountsOutsideBalance = createWeakMapSelector(
+    [selectStakingPositions, selectStakingProducts],
+    (positionsByAccount, products): Partial<Record<AccountKey, StakingAmount>> =>
+        typedObjectEntries(positionsByAccount).reduce<Partial<Record<AccountKey, StakingAmount>>>(
+            (amounts, [accountKey, accountPositions]) => {
+                if (accountPositions !== undefined) {
+                    amounts[accountKey] = getStakingAmountOutsideBalance(
+                        Object.values(accountPositions)
+                            .filter(isNotUndefined)
+                            .filter(isCountedStakingPosition(products)),
+                        products,
+                    );
+                }
+
+                return amounts;
+            },
+            {},
+        ),
 );
 
 export const selectStakingAccountTotals = createWeakMapSelector(

@@ -4,7 +4,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountDetailScreenHeaderContent } from '@suite-native/accounts';
 import { IconButton, useBottomSheetModal } from '@suite-native/atoms';
-import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
+import { TokenSettingsBottomSheet } from '@suite-native/earn';
 import {
     type AccountDetailStackParamList,
     AccountDetailStackRoutes,

@@ -48,7 +48,7 @@ describe('createCardanoExternalNativeProduct', () => {
     });
 
     it('derives the position of a stake key delegated to a pool no managed provider owns', () => {
-        expect(getStakedBalance(createExternalProduct(), 'externalPool')).toBe('998000000');
+        expect(getStakedBalance(createExternalProduct(), 'externalPool')).toBe('1002000000');
     });
 
     it.each(['everstake', 'fiveBinaries'] as const)(
@@ -59,7 +59,7 @@ describe('createCardanoExternalNativeProduct', () => {
     );
 
     it('owns every pool when no provider is managed', () => {
-        expect(getStakedBalance(createExternalProduct([]), 'everstake')).toBe('994750000');
+        expect(getStakedBalance(createExternalProduct([]), 'everstake')).toBe('1005250000');
     });
 
     it('does not bound a stake', () => {

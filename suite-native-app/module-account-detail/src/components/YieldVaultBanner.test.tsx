@@ -10,8 +10,8 @@ import { YieldVaultBanner } from './YieldVaultBanner';
 
 const mockFlow = mockResolvedYieldFlowData();
 const mockNavigate = mock<(...args: unknown[]) => void>();
-jest.mock('@suite-native/module-earn', () => ({
-    ...jest.requireActual('@suite-native/module-earn'),
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
     useYieldFlowData: () => mockFlow,
     useYieldDetailNavigation: () => ({ navigateToYieldDetail: mockNavigate }),
 }));

@@ -37,7 +37,7 @@
         "framer-motion": "^14.0.0",
         "qrcode.react": "^4.2.0",
         "react": "19.3.0",
-        "react-hook-form": "^7.77.0",
+        "react-hook-form": "^7.91.0",
         "react-intl": "^12.1.4",
         "react-redux": "9.3.0",
         "react-svg": "19.2.0",

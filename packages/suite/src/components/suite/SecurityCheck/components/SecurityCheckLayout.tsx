@@ -23,7 +23,10 @@ type RotateModel = Extract<DeviceModelInternal, ModelFor<'ROTATE'>>;
 const isModelWithRotate = (model: DeviceModelInternal | undefined): model is RotateModel =>
     !!model && model !== DeviceModelInternal.UNKNOWN;
 
-const getDeviceModel = (deviceModelInternal: DeviceModelInternal | undefined): RotateModel =>
+// Get device model with available rotate video → fallback unknown device to T3W1 (unknown device cannot have an image, it's appearance is unknown).
+const getDeviceModelForDisplay = (
+    deviceModelInternal: DeviceModelInternal | undefined,
+): RotateModel =>
     isModelWithRotate(deviceModelInternal) ? deviceModelInternal : DeviceModelInternal.T3W1;
 
 export const SecurityCheckLayout = ({
@@ -32,7 +35,7 @@ export const SecurityCheckLayout = ({
     imageMode,
 }: SecurityCheckLayoutProps) => {
     const device = useSelector(selectSelectedDevice);
-    const model = getDeviceModel(device?.features?.internal_model);
+    const model = getDeviceModelForDisplay(device?.features?.internal_model);
     const isDeviceImageRotating = imageMode === 'ROTATE';
     const deviceUnitColor = getDeviceColorVariant(device);
     const image = getLargeModelImagePath(model, deviceUnitColor);

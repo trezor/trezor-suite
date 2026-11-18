@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { useYieldFlowData } from '@suite-native/earn';
 import { type YieldStackParamList, YieldStackRoutes } from '@suite-native/navigation';
 
 import { YieldDepositApprovalReviewContent } from '../../components/yield/YieldDepositApprovalReviewContent';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 type ApprovalReviewRouteProps = RouteProp<
     YieldStackParamList,

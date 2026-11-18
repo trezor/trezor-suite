@@ -271,9 +271,10 @@ export const TransactionReviewModalBodyInner = ({
                             broadcast={isBroadcastEnabled}
                             onDetailsClick={handleDetailsClick}
                             stakeType={stakeType}
+                            formFeeLimit={precomposedForm.feeLimit}
                             timer={
                                 showTxValidityTimer ? (
-                                    <Row gap={8}>
+                                    <Row gap={8} flex="none">
                                         <TransactionReviewOutputTimer
                                             deadline={deadline}
                                             onTryAgain={handleTryAgain}

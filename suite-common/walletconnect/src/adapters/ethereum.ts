@@ -20,7 +20,6 @@ import {
     fromIntegerString,
     getAccountIdentity,
     getGasLimitWithBuffer,
-    getMevProtectedTxData,
     sanitizeHex,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
@@ -257,16 +256,11 @@ const ethereumRequestThunk = createThunk<
             const typedSignPayload =
                 signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
-            const txData = getMevProtectedTxData(
-                account.symbol,
-                typedSignPayload.serializedTx,
-                isMevProtectionEnabled && isMevProtectionFeatureEnabled,
-            );
-
             const pushResponse = await TrezorConnect.pushTransaction({
-                tx: txData,
+                tx: typedSignPayload.serializedTx,
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
+                disableAlternativeRPC: !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
             });
             if (!pushResponse.success) {
                 console.error('eth_sendTransaction push error', pushResponse);

@@ -6,15 +6,17 @@ import {
 } from '@suite-common/wallet-types';
 import {
     formatMaxOutputAmount,
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
     getUnusedChangeAddress,
     isTestnet,
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO, type PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import {
+    getAddressParameters,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+} from '@trezor/network-cardano-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -25,11 +27,15 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import {
+    type BlockchainRootState,
+    selectCardanoProtocolParameters,
+} from '../blockchain/blockchainReducer';
+import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
 
-type ComposeCardanoTransactionFeeLevelsThunkState = void;
+type ComposeCardanoTransactionFeeLevelsThunkState = BlockchainRootState;
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevelsCardano,
@@ -37,7 +43,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError; state: ComposeCardanoTransactionFeeLevelsThunkState }
 >(
     `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { dispatch, getState, rejectWithValue }) => {
         const { account, feeInfo } = composeContext;
         const changeAddress = getUnusedChangeAddress(account.addresses?.change);
         if (!changeAddress || !account.utxo || !account.addresses)
@@ -63,6 +69,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
         );
 
         const addressParameters = getAddressParameters(account, changeAddress.path);
+        const protocolParameters = selectCardanoProtocolParameters(getState(), account.symbol);
 
         const response = await TrezorConnect.cardanoComposeTransaction({
             feeLevels: predefinedLevels,
@@ -74,6 +81,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
             changeAddress,
             addressParameters,
             testnet: isTestnet(account.symbol),
+            protocolParameters,
         });
 
         if (!response.success) {

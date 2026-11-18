@@ -20,7 +20,9 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 
 import { goToNextStepThunk, updateAnalytics } from '#src/actions/onboarding/onboardingActions';
-import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from '#src/components/recovery';
+import { SelectRecoveryType } from '#src/components/recovery/SelectRecoveryType';
+import { SelectRecoveryWord } from '#src/components/recovery/SelectRecoveryWord';
+import { SelectWordCount } from '#src/components/recovery/SelectWordCount';
 import { useSelector } from '#src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';

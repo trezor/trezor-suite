@@ -43,7 +43,6 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
-        "@suite-native/module-earn": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/price-chart": "workspace:*",
         "@suite-native/toasts": "workspace:*",
@@ -56,6 +55,8 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/earn-staking": "workspace:*",
+        "@suite-common/earn-staking-common": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/requirements": "workspace:*"

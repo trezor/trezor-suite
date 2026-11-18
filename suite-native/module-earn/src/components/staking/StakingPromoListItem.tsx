@@ -1,12 +1,15 @@
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
+import {
+    type NetworkSymbol,
+    type NetworksRootState,
+    selectNativeTokenName,
+} from '@suite-common/networks';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { useStakingRate } from '@suite-native/earn';
-import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -36,6 +39,9 @@ type StakingPromoListItemProps = {
 export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemProps) => {
     const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        selectNativeTokenName(state, symbol),
+    );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const { rate } = useStakingRate({ symbol });
@@ -56,9 +62,7 @@ export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemPr
                     </Box>
 
                     <Box style={applyStyle(accountDescriptionStyle)}>
-                        <Text>
-                            <NetworkDisplaySymbolNameFormatter value={symbol} />
-                        </Text>
+                        <Text>{nativeTokenName}</Text>
                     </Box>
                 </Box>
 

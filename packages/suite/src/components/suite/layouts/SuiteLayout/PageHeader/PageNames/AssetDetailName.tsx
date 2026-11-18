@@ -1,17 +1,14 @@
+import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
-import { TokenName } from '@suite/token';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
-    selectWalletAssetName,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite';
@@ -42,33 +39,29 @@ const AssetDetailBackButton = () => {
 export const AssetDetailName = () => {
     const assetKey = useSelector(selectRoutedAssetKey);
     const { NetworkNameFormatter } = useFormatters();
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
-    const name = useSelector(state => selectWalletAssetName(state, assetKey));
 
     return (
         <Row alignItems="center" gap={16}>
             <AssetDetailBackButton />
-            {symbol !== undefined && (
+            {networkSymbol !== undefined && (
                 <Row gap={12} minWidth={0}>
-                    <TokenIcon
-                        symbol={symbol}
+                    <AssetIcon
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
                         size={32}
                         showNetworkIcon
-                        placeholder={displaySymbol ?? ''}
                     />
                     <Column alignItems="flex-start" minWidth={0}>
                         <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
-                            {contractAddress ? (
-                                <TokenName networkSymbol={symbol} tokenContract={contractAddress} />
-                            ) : (
-                                name
-                            )}
+                            <AssetName
+                                networkSymbol={networkSymbol}
+                                contractAddress={contractAddress}
+                            />
                         </Text>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <NetworkNameFormatter value={symbol} />
+                            <NetworkNameFormatter value={networkSymbol} />
                         </Text>
                     </Column>
                 </Row>

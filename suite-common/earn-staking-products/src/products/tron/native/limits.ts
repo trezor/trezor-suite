@@ -9,4 +9,5 @@ export const TRON_NATIVE_PRODUCT_LIMITS = stakingProductLimitsSchema.parse({
     feeBufferBalance: '5000000',
     minBalanceForStaking: '1010000',
     minStakeAmountForDashboard: '1000000',
+    registrationDeposit: '0',
 });

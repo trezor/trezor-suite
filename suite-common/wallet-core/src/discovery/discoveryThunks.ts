@@ -241,7 +241,9 @@ const transformProgressEventData = (
             !response.empty ||
             !response.last || // empty account is visible if not the last one
             (response.type === 'normal' && response.index === 0), // first normal account is always visible on web & desktop
-        ...(!response.failed ? { failed: undefined } : { failed: true, error: response.error }),
+        ...(!response.failed
+            ? { failed: undefined }
+            : { failed: true, error: response.error, errorCode: response.code }),
     };
 
     const discoveryPayload: DiscoveryStatus = {
@@ -307,7 +309,13 @@ const completeDiscovery = (
     deviceState: TrezorDeviceWithState['state'],
     { dispatch, fetchAndSaveMetadata, getState }: CompleteDiscoveryParams,
 ) => {
-    dispatch(updateDiscoveryThunk({ status: { status: 'complete' }, path: devicePath }));
+    dispatch(
+        updateDiscoveryThunk({
+            status: { status: 'complete' },
+            path: devicePath,
+            staticSessionId: deviceState.staticSessionId,
+        }),
+    );
     dispatch(fetchAndSaveMetadata(deviceState.staticSessionId));
     dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
 
@@ -958,6 +966,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
                           errorCode: result.error.code,
                       },
                 path: updatedDevice.path,
+                staticSessionId,
             }),
         );
         dispatch(deviceActions.setDiscovered(staticSessionId, result.success));

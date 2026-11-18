@@ -15,8 +15,7 @@ import {
 } from '@suite-common/suite-constants';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type LocaleSliceRootState } from '@suite-native/intl';
-import { selectIsTradingEnabled } from '@suite-native/trading-state';
-import { type TradingRootState } from '@suite-native/trading-types';
+import { type TradingRootState, selectIsTradingEnabled } from '@suite-native/trading-shared';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 

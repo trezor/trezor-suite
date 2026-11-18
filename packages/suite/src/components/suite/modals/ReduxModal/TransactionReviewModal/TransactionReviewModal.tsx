@@ -20,7 +20,7 @@ import {
     removeSendFormDraftThunk,
     signAndPushSendFormTransactionThunk,
 } from '#src/actions/wallet/send/sendFormThunks';
-import { cancelSignYieldTxThunk } from '#src/actions/wallet/stablecoin-yield';
+import { cancelSignYieldTxThunk } from '#src/actions/wallet/stablecoin-yield/cancelSignYieldTx';
 import {
     cancelSignTxThunk as cancelSignStakingTx,
     signTransactionThunk,

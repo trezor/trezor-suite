@@ -2,14 +2,13 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+    type AssetAccountsRootState,
     type HomeAssetTableState,
     selectWalletAssetContractAddress,
-    selectWalletAssetName,
-    selectWalletAssetSymbol,
-    selectWalletAssetTokenSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
-import { type AssetAccountsRootState, type WalletAssetKey } from '@suite-common/wallet-core';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
 import { GlobalSendReceiveView } from './GlobalSendReceiveView';
@@ -29,33 +28,27 @@ type AssetSendReceiveProps = {
 };
 
 export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
-    const symbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetSymbol(state, assetKey),
+    const networkSymbol = useSelector((state: HomeAssetTableState) =>
+        selectWalletAssetNetworkSymbol(state, assetKey),
     );
     const contractAddress = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetContractAddress(state, assetKey),
-    );
-    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetTokenSymbol(state, assetKey),
-    );
-    const name = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetName(state, assetKey),
     );
     const sendTargets = useSelector((state: AssetAccountsRootState) =>
         selectAssetSendTargets(state, assetKey),
     );
     const receiveAccounts = useSelector((state: ReceiveAccountsByNetworkSymbolState) =>
-        selectReceiveAccountsByNetworkSymbol(state, symbol),
+        selectReceiveAccountsByNetworkSymbol(state, networkSymbol),
     );
     const [activeModal, setActiveModal] = useState<GlobalSendReceiveType>(null);
     const { reportOpen } = useGlobalSendReceiveAnalytics();
     const { startSend, startReceive } = useStartSendReceiveWithAnalytics();
 
-    if (symbol === undefined || name === undefined) {
+    if (networkSymbol === undefined) {
         return null;
     }
 
-    const asset = buildGlobalReceiveAssetOption({ symbol, contractAddress, tokenSymbol, name });
+    const asset = buildGlobalReceiveAssetOption({ symbol: networkSymbol, contractAddress });
 
     const handleOpen = (modal: NonNullable<GlobalSendReceiveType>) => {
         const sendTarget = modal === 'send' ? getOnlyItem(sendTargets) : undefined;

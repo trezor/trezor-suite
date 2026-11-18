@@ -37,7 +37,7 @@ export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountI
     return (
         <CardList.Item onClick={() => onAccountSelect(account)}>
             <Row gap={12}>
-                <TokenIcon size={24} symbol={account.symbol} />
+                <TokenIcon size={24} networkSymbol={account.symbol} />
 
                 <Column>
                     <Row alignItems="center" gap={8}>

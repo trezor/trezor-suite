@@ -3,6 +3,7 @@ import { expect as detoxExpect } from 'detox';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
@@ -15,18 +16,18 @@ describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator();
         await openApp({ args: { preloadedState } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
     });
 
     it('Coin Enabling', async () => {
-        await onHome.waitForScreen();
-        await onHome.tapGetStartedButton();
-
+        // Without any enabled network, passing the interactive device checks leads directly to the coin enabling.
         await onCoinEnabling.waitForInitScreen();
         await onCoinEnabling.toggleNetwork('btc');
         await onCoinEnabling.clickOnConfirmButton();
 
         await onDeviceConnecting.waitForDeviceConnectingScreen();
         await onHome.waitForScreen();
+        await onHome.waitForDiscoveryComplete();
         await onHome.scrollScreenToBottom();
         await waitForVisible(by.text('Bitcoin'));
 
@@ -37,6 +38,7 @@ describe('Coin enabling [@androidOnly @T3T1 @T3W1]', () => {
         await device.pressBack();
         await onTabBar.navigateToHome();
 
+        await onHome.waitForDiscoveryComplete();
         await onHome.scrollScreenToBottom();
         await waitForVisible(by.text('Ethereum'));
 

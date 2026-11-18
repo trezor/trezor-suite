@@ -55,7 +55,7 @@ export const AllowanceLimitModal = ({
                         <Column gap={4} alignItems="flex-start">
                             <Row gap={8}>
                                 <TokenIcon
-                                    symbol={token.networkSymbol}
+                                    networkSymbol={token.networkSymbol}
                                     contractAddress={token.contractAddress}
                                     size={20}
                                     placeholder={token.symbol}

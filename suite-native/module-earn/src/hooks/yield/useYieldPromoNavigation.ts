@@ -15,6 +15,12 @@ import { useAccountAlerts } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModalControls } from '@suite-native/atoms';
 import {
+    type YieldEntrySheet,
+    navigateByYieldAccountState,
+    useStablecoinYieldFirmwareUpdateAlert,
+    useYieldEntryNavigationAnalytics,
+} from '@suite-native/earn';
+import {
     AddCoinAccountStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
@@ -22,13 +28,7 @@ import {
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useStablecoinYieldFirmwareUpdateAlert } from './useStablecoinYieldFirmwareUpdateAlert';
-import {
-    type YieldEntrySheet,
-    useYieldEntryNavigationAnalytics,
-} from './useYieldEntryNavigationAnalytics';
 import { useEarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
-import { navigateByYieldAccountState } from '../../utils/yield/navigateByYieldAccountState';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>;
 

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
-import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
+import { selectIsFirmwareUpdateRequiredInApp } from '@suite-native/device';
 import { ConfirmFirmwareUpdateScreenFooter, FirmwareVersionCard } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
@@ -22,7 +22,7 @@ export const ConfirmFirmwareUpdateScreen = ({
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate
 >) => {
-    const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
+    const isFirmwareUpdateRequired = useSelector(selectIsFirmwareUpdateRequiredInApp);
 
     const updateOnboardingAnalytics = useSetAtom(updateOnboardingAnalyticsAtom);
 
@@ -48,11 +48,11 @@ export const ConfirmFirmwareUpdateScreen = ({
                 <ConfirmFirmwareUpdateScreenFooter
                     onUpdateConfirmation={handleUpdateConfirmation}
                     // Skip action is disabled for devices with unsupported (outdated) firmware.
-                    onSkipUpdate={isDeviceFirmwareSupported ? handleSkipUpdate : undefined}
+                    onSkipUpdate={isFirmwareUpdateRequired ? undefined : handleSkipUpdate}
                 />
             }
         >
-            <FirmwareVersionCard isUpdateRequired={!isDeviceFirmwareSupported} />
+            <FirmwareVersionCard isUpdateRequired={isFirmwareUpdateRequired} />
         </DeviceOnboardingScreenWithExitButton>
     );
 };

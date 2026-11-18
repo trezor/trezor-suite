@@ -15,7 +15,7 @@ import { useSelector } from '#src/hooks/suite';
 import { EarnYieldClaimRewardsBannerAccountsTooltip } from './EarnYieldClaimRewardsBannerAccountsTooltip';
 import { EarnYieldClaimRewardsBannerTokensTooltip } from './EarnYieldClaimRewardsBannerTokensTooltip';
 import { useYieldClaimRewardsData } from './hooks/useYieldClaimRewardsData';
-import { type useMerklRewards } from '../../yield/claim/hooks';
+import { type useMerklRewards } from '../../yield/claim/hooks/useMerklRewards';
 
 const Summary = styled.span`
     color: ${({ theme }) => theme.contentSecondary};

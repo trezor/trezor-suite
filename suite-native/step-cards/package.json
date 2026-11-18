@@ -1,0 +1,29 @@
+{
+    "name": "@suite-native/step-cards",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "test:unit": "yarn g:jest:native",
+        "test:unit:coverage": "yarn g:jest:native --coverage",
+        "test:unit:watch": "yarn g:jest:native --watch",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@storybook/react-native": "^10.6.2",
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@trezor/styles-native": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
+    }
+}

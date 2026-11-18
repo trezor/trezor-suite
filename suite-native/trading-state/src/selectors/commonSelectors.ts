@@ -341,7 +341,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                             account,
                             baseCurrencyCode: localCurrency,
                             rates: fiatRates,
-                            shouldIncludeStaking: false,
                             shouldIncludeTokens: false,
                         }),
                         cryptoId,

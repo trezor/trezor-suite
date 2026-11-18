@@ -11,6 +11,7 @@ import {
     selectAccountFiatBalance,
 } from '@suite-native/accounts';
 import { Box, HStack, IconButton } from '@suite-native/atoms';
+import { useYieldFlowData } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import {
@@ -21,8 +22,6 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,

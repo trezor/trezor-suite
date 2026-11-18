@@ -23,7 +23,7 @@ import { Button, Card, Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from '#src/components/dashboard';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { useSelector } from '#src/hooks/suite';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
@@ -33,7 +33,7 @@ import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountM
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
-import { useMerklRewards } from '../../yield/claim/hooks';
+import { useMerklRewards } from '../../yield/claim/hooks/useMerklRewards';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';

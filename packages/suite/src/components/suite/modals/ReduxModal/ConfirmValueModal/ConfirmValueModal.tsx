@@ -46,7 +46,7 @@ import {
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 import { type OriginalReduxThunk, injectDispatch } from '@trezor/redux-utils';
 
-import { useGuideOpenNode } from '#src/hooks/guide';
+import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
 import { useSelector } from '#src/hooks/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from '#src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
@@ -144,7 +144,7 @@ export const ConfirmValueModal = ({
                 description={
                     account && (
                         <Row gap={4}>
-                            <TokenIcon size={16} symbol={account.symbol} />
+                            <TokenIcon size={16} networkSymbol={account.symbol} />
                             <AccountLabel
                                 account={account}
                                 accountTypeBadgeSize="small"

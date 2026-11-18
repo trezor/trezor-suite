@@ -18,6 +18,7 @@
         { "path": "../navigation" },
         {
             "path": "../../packages/blockchain-link-types"
-        }
+        },
+        { "path": "../../packages/requirements" }
     ]
 }

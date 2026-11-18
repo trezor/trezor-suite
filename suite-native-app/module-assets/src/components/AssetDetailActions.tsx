@@ -6,8 +6,6 @@ import {
     type HomeAssetTableState,
     selectWalletAssetAccounts,
     selectWalletAssetKey,
-    selectWalletAssetName,
-    selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
@@ -41,12 +39,6 @@ export const AssetDetailActions = () => {
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
-    const assetName = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetName(state, assetKey),
-    );
-    const tokenSymbol = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetTokenSymbol(state, assetKey),
-    );
     const assetAccounts = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAccounts(state, assetKey),
     );
@@ -63,7 +55,7 @@ export const AssetDetailActions = () => {
         sendableAccountRows.length === 1 ? sendableAccountRows[0]?.accountKey : undefined;
 
     const handleReceivePress = () => {
-        if (assetName === undefined) {
+        if (assetKey === undefined) {
             return;
         }
 
@@ -86,8 +78,6 @@ export const AssetDetailActions = () => {
                 asset: buildGlobalReceiveAssetOption({
                     symbol: networkSymbol,
                     contractAddress: tokenContract,
-                    tokenSymbol,
-                    name: assetName,
                 }),
                 closeActionType: 'back',
             },

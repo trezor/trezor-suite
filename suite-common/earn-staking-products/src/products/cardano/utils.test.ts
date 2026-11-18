@@ -11,10 +11,13 @@ import { getParsedCardanoStakingInfo } from './utils';
 
 type CardanoStakingInfo = NonNullable<NonNullable<StakingAccount['misc']>['staking']>;
 
-const mockCardanoAccount = (staking: Partial<CardanoStakingInfo>, balance = '1000000000') =>
+const mockCardanoAccount = (
+    staking: Partial<CardanoStakingInfo>,
+    availableBalance = '1000000000',
+) =>
     mockStakingAccount({
         symbol: asNetworkSymbol('ada'),
-        balance,
+        availableBalance,
         misc: {
             staking: {
                 address: 'stake1u9ylzsgxaa6xctf4juup682ar3juj85n8tx3hthnljg47zctvm3rc',
@@ -42,7 +45,7 @@ describe('utils', () => {
             expect(
                 getParsedCardanoStakingInfo({ account: mockCardanoStakingAccount('everstake') }),
             ).toEqual({
-                balance: '1000000000',
+                availableBalance: '1000000000',
                 poolId: MOCK_CARDANO_EVERSTAKE_POOL,
                 rewards: '5250000',
                 drep: { id: MOCK_CARDANO_EVERSTAKE_DREP_ID, hasScript: false },
@@ -112,10 +115,12 @@ describe('utils', () => {
         });
 
         it.each(['', '-1', 'abc', 'NaN', '1000000000.5'])(
-            'reads nothing from an account with the balance %p',
-            balance => {
+            'reads nothing from an account with the available balance %p',
+            availableBalance => {
                 expect(
-                    getParsedCardanoStakingInfo({ account: mockCardanoAccount({}, balance) }),
+                    getParsedCardanoStakingInfo({
+                        account: mockCardanoAccount({}, availableBalance),
+                    }),
                 ).toBeNull();
             },
         );

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type StakeRootState,
@@ -15,13 +15,16 @@ import {
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
-import { getStakingRateLabelType, useStakingRate } from '@suite-native/earn';
+import {
+    getStakingRateLabelType,
+    useStakingDetailNavigation,
+    useStakingNavigateAnalytics,
+    useStakingRate,
+} from '@suite-native/earn';
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { useStakingDetailNavigation } from '../../hooks/staking/useStakingDetailNavigation';
-import { useStakingNavigateAnalytics } from '../../hooks/staking/useStakingNavigateAnalytics';
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 import { EarnTronVotingAlert } from '../earn/EarnTronVotingAlert';
@@ -34,6 +37,10 @@ type StakingPositionCardProps = {
 export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps) => {
     const { PercentageFormatter } = useFormatters();
     const { symbol, accountKey, balance } = item;
+
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        selectNativeTokenName(state, symbol),
+    );
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
@@ -79,7 +86,7 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                     wrappedTokenIcon="token"
                 />
             }
-            title={getNetworkDisplaySymbolName(symbol)}
+            title={nativeTokenName}
             description={
                 account?.accountLabel ? (
                     <Text variant="body-sm" color="contentSecondary">

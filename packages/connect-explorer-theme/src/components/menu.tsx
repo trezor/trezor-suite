@@ -217,7 +217,7 @@ export function Menu({
                     options={methodsOptions}
                     formatOptionLabel={option => (
                         <Option>
-                            {option.symbol && <TokenIcon size={20} symbol={option.symbol} />}
+                            {option.symbol && <TokenIcon size={20} networkSymbol={option.symbol} />}
                             <Label>{option.label}</Label>
                         </Option>
                     )}

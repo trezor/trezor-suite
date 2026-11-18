@@ -3,12 +3,8 @@ import {
     type CreateSuiteSyncOwnerError,
     type SuiteSyncOwner,
 } from '@suite-common/suite-sync-storage';
-import {
-    type DelegatedIdentityKey,
-    type DeviceErrorType,
-    type DeviceNotConnectedErrorType,
-    type TrezorDeviceWithState,
-} from '@suite-common/suite-types';
+import { type DelegatedIdentityKey, type TrezorDeviceWithState } from '@suite-common/suite-types';
+import type { DeviceErrorType, DeviceNotConnectedErrorType } from '@trezor/device';
 import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result } from '@trezor/type-utils';
 

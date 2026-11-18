@@ -1,5 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
+import {
+    type NetworksRootState,
+    selectIsNativeTokenNetworkNameRedundant,
+} from '@suite-common/networks';
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { AssetIcon, AssetName, AssetSymbol } from '@suite-native/assets';
@@ -51,7 +56,10 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
 
     const { applyStyle } = useNativeStyles();
 
-    const title = asset.displaySymbolName ?? asset.name;
+    const isNetworkNameRedundant = useSelector((state: NetworksRootState) =>
+        selectIsNativeTokenNetworkNameRedundant(state, asset.networkSymbol),
+    );
+    const shouldShowNetworkBadge = !asset.isNativeToken || !isNetworkNameRedundant;
     const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
 
     return (
@@ -82,7 +90,7 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                                 priority="secondary"
                             />
                         </Text>
-                        {title != asset.networkName && <Badge label={asset.networkName} />}
+                        {shouldShowNetworkBadge && <Badge label={asset.networkName} />}
                     </HStack>
                 }
                 mainValue={

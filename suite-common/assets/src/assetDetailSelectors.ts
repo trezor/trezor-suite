@@ -1,24 +1,21 @@
 import { shallowEqual } from 'react-redux';
 
-import {
-    type TransactionsRootState,
-    type WalletAssetKey,
-    isAccountStakingActiveByHistory,
-    selectAccounts,
-    selectDeviceAssetAccounts,
-    selectTransactions,
-} from '@suite-common/wallet-core';
+import { selectIsStakingAccountActive } from '@suite-common/earn-staking';
+import { type WalletAssetKey, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { hasAccountOrTokenSpendableBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { selectDeviceAssetAccounts } from './assetAccountsSelectors';
 import {
     type HomeAssetTableState,
     selectWalletAssetContractAddress,
 } from './homeAssetTableSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
+
+const selectState = (state: HomeAssetTableState) => state;
 
 export const selectWalletAssetAccounts = createMemoizedSelector(
     [
@@ -46,19 +43,12 @@ export const selectWalletAssetHasSpendableBalance = createMemoizedSelector(
         ),
 );
 
-const createStakingMemoizedSelector = createWeakMapSelector.withTypes<
-    HomeAssetTableState & TransactionsRootState
->();
-
-export const selectWalletAssetUnstakedAccounts = createStakingMemoizedSelector(
-    [selectWalletAssetAccounts, selectTransactions],
-    (accounts, transactions): readonly Account[] =>
+export const selectWalletAssetUnstakedAccounts = createMemoizedSelector(
+    [selectState, selectWalletAssetAccounts],
+    (state, accounts): readonly Account[] =>
         returnStableArrayIfEmpty(
             accounts
-                .filter(
-                    account =>
-                        !isAccountStakingActiveByHistory(account, transactions[account.key] ?? []),
-                )
+                .filter(account => !selectIsStakingAccountActive(state, account.key))
                 .sort(
                     (left, right) =>
                         new BigNumber(right.formattedBalance).comparedTo(left.formattedBalance) ??

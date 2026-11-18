@@ -66,7 +66,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             return (
                 <TokenIcon
                     size={24}
-                    symbol={symbol}
+                    networkSymbol={symbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol ?? ''}
                     showNetworkIcon={showNetworkIcon}
@@ -74,7 +74,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             );
         }
 
-        return <TokenIcon size={24} symbol={symbol} showNetworkIcon />;
+        return <TokenIcon size={24} networkSymbol={symbol} showNetworkIcon />;
     };
 
     return (

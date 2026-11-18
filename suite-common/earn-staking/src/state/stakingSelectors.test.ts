@@ -1,4 +1,4 @@
-import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
+import { type StakingProductId, stakingProviderIdSchema } from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
@@ -11,6 +11,7 @@ import {
     selectIsStakingSupportedSymbol,
     selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
+    selectStakingAmountsOutsideBalance,
     selectStakingPlatform,
     selectStakingPosition,
     selectStakingPositionsByAccount,
@@ -139,39 +140,47 @@ describe('staking selectors', () => {
         );
     });
 
-    it('counts only locked positions as held outside the account balance', () => {
+    it('holds locked positions and the rewards of liquid ones outside the account balance', () => {
         const ada = mockStakingProductDescriptor({
             networkSymbol: asNetworkSymbol('ada'),
             type: 'native',
         });
-        const stateWithLiquidPosition: StakingRootState = {
+        const solExpected = mockStakingProductDescriptor({
+            networkSymbol: asNetworkSymbol('sol'),
+            type: 'native',
+            rewardsKind: 'expected',
+        });
+        const liquid = (productId: StakingProductId, staked: string, rewards: string) =>
+            mockStakingPosition({
+                productId,
+                lockup: 'liquid',
+                balances: {
+                    ...mockStakingPosition().balances,
+                    staked: staked as never,
+                    unstaking: '0' as never,
+                    rewards: rewards as never,
+                },
+            });
+        const stateWithLiquidPositions: StakingRootState = {
             earn: {
                 staking: mockStakingState({
-                    descriptors: [eth, ada],
+                    descriptors: [eth, ada, solExpected],
                     positions: {
                         [accountKey]: [
                             ethPosition,
-                            mockStakingPosition({
-                                productId: ada.id,
-                                lockup: 'liquid',
-                                balances: {
-                                    ...mockStakingPosition().balances,
-                                    staked: '994750000' as never,
-                                    unstaking: '0' as never,
-                                    rewards: '5250000' as never,
-                                },
-                            }),
+                            liquid(ada.id, '1005250000', '5250000'),
+                            liquid(solExpected.id, '5000000000', '854795'),
                         ],
                     },
                 }),
             },
         };
 
-        expect(selectStakingAccountTotals(stateWithLiquidPosition, accountKey).staked).toBe(
-            '2000000000994750000',
+        expect(selectStakingAccountTotals(stateWithLiquidPositions, accountKey).staked).toBe(
+            '2000000006005250000',
         );
-        expect(selectStakingAccountAmountOutsideBalance(stateWithLiquidPosition, accountKey)).toBe(
-            '2500000000000000000',
+        expect(selectStakingAccountAmountOutsideBalance(stateWithLiquidPositions, accountKey)).toBe(
+            '2500000000005250000',
         );
         expect(selectStakingAccountAmountOutsideBalance(state, unknownAccountKey)).toBe('0');
     });
@@ -191,5 +200,15 @@ describe('staking selectors', () => {
             withdrawable: '0',
             rewards: '0',
         });
+    });
+    it('maps the amount outside the balance of every account with positions', () => {
+        const amounts = selectStakingAmountsOutsideBalance(state);
+
+        expect(amounts[accountKey]).toBe(
+            selectStakingAccountAmountOutsideBalance(state, accountKey),
+        );
+        expect(amounts[unknownAccountKey]).toBeUndefined();
+        expect(selectStakingAmountsOutsideBalance(state)).toBe(amounts);
+        expect(selectStakingAmountsOutsideBalance(empty)).toEqual({});
     });
 });

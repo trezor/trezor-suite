@@ -4,7 +4,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import {
     selectWalletAssetAccounts,
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
@@ -19,7 +19,7 @@ type AssetDetailTransactionsProps = {
 
 export const AssetDetailTransactions = ({ assetKey }: AssetDetailTransactionsProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const accounts = useSelector(state => selectWalletAssetAccounts(state, assetKey));
     const reportTransactionDetailOpen = useCallback(
@@ -31,7 +31,7 @@ export const AssetDetailTransactions = ({ assetKey }: AssetDetailTransactionsPro
         [analytics],
     );
 
-    if (symbol === undefined || accounts.length === 0) {
+    if (networkSymbol === undefined || accounts.length === 0) {
         return null;
     }
 
@@ -39,7 +39,7 @@ export const AssetDetailTransactions = ({ assetKey }: AssetDetailTransactionsPro
         <MultiAccountTransactionList
             key={[assetKey, ...accounts.map(account => account.key)].join('|')}
             accounts={accounts}
-            symbol={symbol}
+            symbol={networkSymbol}
             contractAddress={contractAddress}
             onTransactionDetailOpen={reportTransactionDetailOpen}
         />

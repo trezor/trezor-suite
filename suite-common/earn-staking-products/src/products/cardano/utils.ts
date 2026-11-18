@@ -20,16 +20,16 @@ import { ZERO_STAKING_AMOUNT, isPositiveStakingAmount } from '../../utils/stakin
 export const isCardanoStakeKeyRegistered = ({ misc }: StakingAccount) =>
     misc?.staking?.isActive === true;
 
-export const getParsedCardanoAccountBalance = ({
-    balance,
+export const getParsedCardanoAvailableBalance = ({
+    availableBalance,
 }: StakingAccount): StakingAmount | null => {
-    const parsedBalance = stakingAmountSchema.safeParse(balance);
+    const parsedBalance = stakingAmountSchema.safeParse(availableBalance);
 
     return parsedBalance.success ? parsedBalance.data : null;
 };
 
 type ParsedCardanoStakingInfo = {
-    balance: StakingAmount;
+    availableBalance: StakingAmount;
     poolId: string | null;
     rewards: StakingAmount;
     drep: CardanoDrep | null;
@@ -48,19 +48,19 @@ export const getParsedCardanoStakingInfo = ({
         return null;
     }
 
-    const balance = getParsedCardanoAccountBalance(account);
+    const availableBalance = getParsedCardanoAvailableBalance(account);
     const rewards = stakingAmountSchema.safeParse(staking.rewards);
 
     const poolId = staking.poolId
         ? cardanoPoolIdSchema.safeParse(staking.poolId.toLowerCase())
         : null;
 
-    if (balance === null || !rewards.success || poolId?.success === false) {
+    if (availableBalance === null || !rewards.success || poolId?.success === false) {
         return null;
     }
 
     return {
-        balance,
+        availableBalance,
         poolId: poolId?.data ?? null,
         rewards: rewards.data,
         drep: staking.drep?.drep_id

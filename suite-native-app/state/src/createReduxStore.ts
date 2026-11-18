@@ -21,7 +21,7 @@ import { sendFormMiddleware } from '@suite-native/send';
 import {
     prepareTradingLastErrorSentryMiddleware,
     prepareTradingMiddleware,
-} from '@suite-native/trading-state';
+} from '@suite-native/trading-shared';
 import {
     type ReducerState,
     type ReduxStoreWithThunk,

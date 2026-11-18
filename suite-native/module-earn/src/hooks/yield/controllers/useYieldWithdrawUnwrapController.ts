@@ -9,6 +9,7 @@ import {
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
 } from '@suite-common/wallet-core';
+import { useMessageSystemWrappedNative, useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -16,10 +17,8 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
-import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
-import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawUnwrap>;

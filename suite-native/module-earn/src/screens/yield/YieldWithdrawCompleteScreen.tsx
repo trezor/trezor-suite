@@ -12,6 +12,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { useYieldFlowData } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
@@ -24,7 +25,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { getYieldWithdrawCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawComplete>;

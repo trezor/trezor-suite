@@ -58,7 +58,7 @@ export const TradingReceiveAccountSuiteOption = ({
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <TokenIcon size={24} symbol={account.symbol} />
+                <TokenIcon size={24} networkSymbol={account.symbol} />
 
                 <Column>
                     <Text

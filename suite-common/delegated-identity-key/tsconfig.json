@@ -16,6 +16,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/device" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

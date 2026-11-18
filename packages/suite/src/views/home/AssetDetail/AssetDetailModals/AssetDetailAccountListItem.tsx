@@ -1,5 +1,9 @@
-import { selectWalletAssetTokenDecimals, selectWalletAssetTokenSymbol } from '@suite-common/assets';
-import { type AssetAccount, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AssetAccount,
+    selectWalletAssetTokenDecimals,
+    selectWalletAssetTokenSymbol,
+} from '@suite-common/assets';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Text } from '@trezor/components';
 
@@ -18,7 +22,7 @@ export const AssetDetailAccountListItem = ({
     assetAccount,
     onClick,
 }: AssetDetailAccountListItemProps) => {
-    const { accountKey, assetKey, symbol, contractAddress, cryptoBalance } = assetAccount;
+    const { accountKey, assetKey, networkSymbol, contractAddress, cryptoBalance } = assetAccount;
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
     const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
@@ -36,13 +40,13 @@ export const AssetDetailAccountListItem = ({
             <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
                 <BaseCurrencyValue
                     amount={cryptoBalance}
-                    symbol={symbol}
+                    symbol={networkSymbol}
                     tokenAddress={contractAddress}
                 />
                 <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <FormattedCryptoAmount
                         value={cryptoBalance}
-                        symbol={tokenSymbol ?? symbol}
+                        symbol={tokenSymbol ?? networkSymbol}
                         contractAddress={contractAddress}
                         tokenDecimals={tokenDecimals}
                         isCompact

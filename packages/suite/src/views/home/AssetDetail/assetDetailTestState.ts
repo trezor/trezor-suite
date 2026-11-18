@@ -12,7 +12,7 @@ const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
 export const ETH = asNetworkSymbol('eth');
 
-export const ETH_ASSET_KEY = getWalletAssetKey({ deviceState: DEVICE_STATE, symbol: ETH });
+export const ETH_ASSET_KEY = getWalletAssetKey({ deviceState: DEVICE_STATE, networkSymbol: ETH });
 
 // In dollars, the dollar rate is the rate itself.
 const mockRate = (rate: number) =>

@@ -6,7 +6,10 @@ import { useForm } from '@suite-native/forms';
 import { act, renderHookWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradingRootState, exchangeActions } from '@suite-native/trading-state';
-import { type ExchangeFormValues } from '@suite-native/trading-types';
+import {
+    type ExchangeFormValidatedValues,
+    type ExchangeFormValues,
+} from '@suite-native/trading-types';
 
 import { useExchangeReceiveAssetChange } from './useExchangeReceiveAssetChange';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
@@ -26,7 +29,7 @@ describe('useExchangeReceiveAssetChange', () => {
         renderHookWithStoreProvider(
             () => {
                 const { context } = useContextForTradingForm(undefined);
-                const form = useForm<ExchangeFormValues>({
+                const form = useForm<ExchangeFormValues, object, ExchangeFormValidatedValues>({
                     validation: exchangeFormValidationSchema,
                     context,
                 });

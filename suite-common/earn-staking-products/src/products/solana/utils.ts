@@ -2,6 +2,7 @@ import {
     type StakingAccount,
     type StakingAmount,
     type StakingOperation,
+    type StakingPositionActivation,
     type StakingPositionBalances,
     type StakingPositionTarget,
     type StakingPositionUnlock,
@@ -180,6 +181,25 @@ export const getPositionOperations = ({
     balances,
 }: GetPositionOperationsParams): StakingOperation[] =>
     operations.filter(operation => isPositionOperationAvailable({ operation, balances }));
+
+type GetPositionActivationsParams = {
+    balances: StakingPositionBalances;
+};
+
+export const getPositionActivations = ({
+    balances,
+}: GetPositionActivationsParams): StakingPositionActivation[] => {
+    if (!isPositiveStakingAmount(balances.pending)) {
+        return [];
+    }
+
+    const activation: StakingPositionActivation = {
+        amount: balances.pending,
+        availableAt: null,
+    };
+
+    return [activation];
+};
 
 type GetPositionUnlocksParams = {
     balances: StakingPositionBalances;

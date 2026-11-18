@@ -2,9 +2,8 @@ import { type ReactNode } from 'react';
 
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Badge, Card, CenteredTitleHeader, Pictogram, VStack } from '@suite-native/atoms';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
-
-import { useFormattedEarnRate } from '../../hooks/earn/useFormattedEarnRate';
 
 type EarnNoBalanceCardProps = {
     apy: number | null;

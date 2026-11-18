@@ -38,7 +38,7 @@ const renderIdentity = (contractAddress: TokenAddress) => {
 
     renderWithProviders(
         { ...services, networks: { networkIcon: mockNetworkIcon() } },
-        <HomeAssetIdentity symbol={ETH} contractAddress={contractAddress} displaySymbol="TKN" />,
+        <HomeAssetIdentity symbol={ETH} contractAddress={contractAddress} />,
     );
 };
 
@@ -46,12 +46,13 @@ describe('the icon of a Home asset', () => {
     it('is fetched for a token in the definitions', () => {
         renderIdentity(USDC_ON_ETH);
 
-        expect(screen.getByRole('img')).toHaveAttribute('src');
+        // The logo is decorative: the symbol is written next to it.
+        expect(screen.getByRole('presentation')).toHaveAttribute('src');
     });
 
     it('is not fetched for a token missing from the definitions, which shows a placeholder', () => {
         renderIdentity(UNKNOWN_ON_ETH);
 
-        expect(screen.queryByRole('img')).not.toBeInTheDocument();
+        expect(screen.queryByRole('presentation')).not.toBeInTheDocument();
     });
 });

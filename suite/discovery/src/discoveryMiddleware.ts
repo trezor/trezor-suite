@@ -2,12 +2,13 @@ import { type UnknownAction } from 'redux';
 
 import {
     type AuthenticityChecksRootState,
-    selectDeviceNeedsInteractiveDeviceChecks,
     selectShouldDisplayDeviceCompromised,
 } from '@suite/authenticity-checks';
 import { type LocksRootState } from '@suite/locks';
 import { type RouterRootState } from '@suite/router';
+import { selectDeviceAuthenticityCheckSettings } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectIsAnyDeviceCheckRequired } from '@suite-common/device-authenticity';
 import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
     type WalletCoreCompoundRootState,
@@ -71,7 +72,12 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     if (selectShouldDisplayDeviceCompromised(getState())) return action;
 
     // 4. Discovery is delayed while interactive device checks are pending.
-    if (selectDeviceNeedsInteractiveDeviceChecks(getState(), device)) return action;
+    const isAnyDeviceCheckRequired = selectIsAnyDeviceCheckRequired(
+        getState(),
+        device,
+        selectDeviceAuthenticityCheckSettings(getState()),
+    );
+    if (isAnyDeviceCheckRequired) return action;
 
     // 5. Discovery must be delayed if THP Autoconnect modal is open, because it is the only THP step that takes place
     //    *after* device acquisition, and also needs device interaction to complete (would block discovery).

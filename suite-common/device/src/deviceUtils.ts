@@ -1,33 +1,9 @@
-import type {
-    DeviceCancelledErrType,
-    DeviceErrorType,
-    DeviceNotConnectedErrorType,
-    TrezorDevice,
-    TrezorDeviceWithState,
-} from '@suite-common/suite-types';
+import type { TrezorDevice, TrezorDeviceWithState } from '@suite-common/suite-types';
 import { type Device } from '@trezor/connect';
 import { countBytesInString } from '@trezor/utils';
 
 import { PASSPHRASE_MAX_LENGTH } from './deviceConstants';
 
-export const DeviceCancelledErr = (): DeviceCancelledErrType => ({
-    type: 'DeviceCancelled' as const,
-});
-
-export const isCanceledErrorMessage = (errorMessage: string | null | undefined) =>
-    Boolean(errorMessage?.toLocaleLowerCase().includes('cancelled'));
-
-export const DeviceError = (message: string): DeviceErrorType => ({
-    type: 'DeviceError' as const,
-    message,
-});
-
-export const DeviceNotConnectedError = (
-    message: string | null = null,
-): DeviceNotConnectedErrorType => ({
-    type: 'DeviceNotConnectedError' as const,
-    message: message ?? 'Device is not connected',
-});
 type ShouldDeviceBeRememberedParams = {
     device: TrezorDevice | Device;
     isAutoEjectEnabled?: boolean;

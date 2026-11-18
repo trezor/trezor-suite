@@ -92,7 +92,7 @@ const PassphraseWalletIsEmptyContent = ({
                             </Paragraph>
                             <Row gap={4} flexWrap="wrap">
                                 {enabledNetworks.map(network => (
-                                    <TokenIcon key={network} symbol={network} size={16} />
+                                    <TokenIcon key={network} networkSymbol={network} size={16} />
                                 ))}
                             </Row>
                             {onCancel && (

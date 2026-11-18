@@ -18,7 +18,7 @@ export function StellarTxSimulationAssetLogo({
     if ('address' in asset) {
         return (
             <TokenIcon
-                symbol={network.symbol}
+                networkSymbol={network.symbol}
                 contractAddress={asset.address}
                 size={size}
                 placeholder={asset.name || asset.symbol}
@@ -31,5 +31,5 @@ export function StellarTxSimulationAssetLogo({
         return <IconCircle icon={CoinsIcon} size={size === 20 ? 24 : size} intent="neutral" />;
     }
 
-    return <TokenIcon symbol={network.symbol} size={size} />;
+    return <TokenIcon networkSymbol={network.symbol} size={size} />;
 }

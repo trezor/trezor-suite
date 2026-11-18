@@ -5,11 +5,22 @@ import userEvent from '@testing-library/user-event';
 
 import { messages } from '@suite/intl';
 import { initialMetadataState } from '@suite/metadata';
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { type StakingPosition, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+} from '@suite-common/earn-staking-common/mocks';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type CurrentRate, type Timestamp } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type CurrentRate,
+    type Timestamp,
+} from '@suite-common/wallet-types';
 import {
     mockAccountToken,
     mockCardanoStakingAccount,
@@ -41,6 +52,40 @@ const ethAccount = mockEthereumStakingAccount('none', { tokens: [token] });
 const networkIcon = mockNetworkIcon();
 const tokenCountLabel = '+1';
 
+const ETH_STAKING_PRODUCT = mockStakingProductDescriptor();
+const ADA_STAKING_PRODUCT = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('ada'),
+    type: 'native',
+    operations: ['stake', 'unstake', 'claim', 'vote'],
+    rewardsKind: 'claimable',
+});
+
+const amount = (value: string) => stakingAmountSchema.parse(value);
+
+const zeroBalances = {
+    staked: amount('0'),
+    pending: amount('0'),
+    unstaking: amount('0'),
+    withdrawable: amount('0'),
+    rewards: amount('0'),
+};
+
+/** 2.05 ether with Everstake, on top of the account balance. */
+const mockEthereumStake = () =>
+    mockStakingPosition({
+        balances: { ...zeroBalances, staked: amount('2050000000000000000') },
+        unlocks: [],
+    });
+
+const mockCardanoDelegation = () =>
+    mockStakingPosition({
+        productId: ADA_STAKING_PRODUCT.id,
+        lockup: 'liquid',
+        balances: { ...zeroBalances, staked: amount('1000000000') },
+        unlocks: [],
+        operations: ['unstake', 'claim', 'vote'],
+    });
+
 const createRate = (rate: number | undefined, isLoading = false): CurrentRate => {
     const status = {
         lastTickerTimestamp: 1700000000000 as Timestamp,
@@ -60,6 +105,7 @@ type RenderAccountParams = {
     nativeRate?: CurrentRate;
     isCollapsed?: boolean;
     isDiscreetMode?: boolean;
+    stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
 };
 
 const renderAccount = ({
@@ -69,9 +115,16 @@ const renderAccount = ({
     nativeRate = createRate(2000),
     isCollapsed = false,
     isDiscreetMode = false,
+    stakingPositions = {},
 }: RenderAccountParams = {}) => {
     const state: MockSuiteState = {
         ...mockInitialAppState,
+        earn: {
+            staking: mockStakingState({
+                descriptors: [ETH_STAKING_PRODUCT, ADA_STAKING_PRODUCT],
+                positions: stakingPositions,
+            }),
+        },
         metadata: initialMetadataState,
         networks: mockNetworksState([account.symbol]),
         suiteSettings: {
@@ -137,8 +190,10 @@ describe('compact account sidebar', () => {
     });
 
     it('includes staking and tokens in the same total', () => {
+        const account = mockEthereumStakingAccount('active', { tokens: [token] });
         const { container } = renderAccount({
-            account: mockEthereumStakingAccount('active', { tokens: [token] }),
+            account,
+            stakingPositions: { [account.key]: [mockEthereumStake()] },
         });
 
         expect(container).toHaveTextContent('$7,350');
@@ -165,14 +220,22 @@ describe('compact account sidebar', () => {
     });
 
     it('includes staking in the total even without tokens', () => {
-        const { container } = renderAccount({ account: mockEthereumStakingAccount('active') });
+        const account = mockEthereumStakingAccount('active');
+        const { container } = renderAccount({
+            account,
+            stakingPositions: { [account.key]: [mockEthereumStake()] },
+        });
 
         expect(container).toHaveTextContent('$7,100');
         expect(screen.queryByTestId('@wallet/coin-balance/value-eth')).not.toBeInTheDocument();
     });
 
     it('does not double-count delegated Cardano', () => {
-        const { container } = renderAccount({ account: mockCardanoStakingAccount('everstake') });
+        const account = mockCardanoStakingAccount('everstake');
+        const { container } = renderAccount({
+            account,
+            stakingPositions: { [account.key]: [mockCardanoDelegation()] },
+        });
 
         expect(container).toHaveTextContent('$2,000,000');
     });

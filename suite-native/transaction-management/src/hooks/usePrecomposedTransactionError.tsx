@@ -19,6 +19,7 @@ const VALID_PRECOMPOSED_ERRORS: PrecomposedTransactionError['error'][] = [
     'REMAINING_BALANCE_LESS_THAN_RENT',
     'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
     'TR_STAKE_TX_PREPARATION_FAILED',
+    'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
     'NOT-ENOUGH-FUNDS',
 ];
 
@@ -89,6 +90,11 @@ export const usePrecomposedTransactionError = ({
             case 'TR_STAKE_TX_PREPARATION_FAILED':
                 return (
                     <Translation id="transactionManagement.precomposedTransaction.errors.stakeTxPreparationFailed" />
+                );
+
+            case 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED':
+                return (
+                    <Translation id="transactionManagement.precomposedTransaction.errors.stakedBalanceChanged" />
                 );
 
             default:

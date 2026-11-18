@@ -22,7 +22,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
-import { PageHeader } from '#src/components/suite/layouts/SuiteLayout';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
@@ -160,7 +160,7 @@ export const YieldPageHeader = ({
                 <IdentityIcon>
                     <TokenIcon
                         placeholder={vault?.token?.symbol || vault?.token?.name || ''}
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={vault?.token?.address}
                         showNetworkIcon
                         size={32}
@@ -174,7 +174,7 @@ export const YieldPageHeader = ({
         if (!hasVaultIdentity && routeParams?.symbol) {
             return (
                 <IdentityIcon>
-                    <TokenIcon symbol={routeParams.symbol} size={32} isBordered={false} />
+                    <TokenIcon networkSymbol={routeParams.symbol} size={32} isBordered={false} />
                 </IdentityIcon>
             );
         }

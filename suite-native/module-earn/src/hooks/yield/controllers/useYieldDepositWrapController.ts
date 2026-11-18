@@ -12,18 +12,20 @@ import {
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { useMessageSystemYield } from '@suite-native/earn';
+import {
+    useMessageSystemWrappedNative,
+    useMessageSystemYield,
+    useYieldFlowData,
+} from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
-import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositWrap>;

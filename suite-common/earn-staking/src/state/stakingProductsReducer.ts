@@ -1,4 +1,4 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, type Reducer, createSlice } from '@reduxjs/toolkit';
 
 import type {
     StakingPlatform,
@@ -22,7 +22,7 @@ const stakingProductsSlice = createSlice({
         productsRegistered(
             _state: StakingProductsState,
             { payload }: PayloadAction<ProductsRegisteredPayload>,
-        ) {
+        ): StakingProductsState {
             const products: StakingProductsState = {};
 
             payload.descriptors.forEach(descriptor => {
@@ -36,4 +36,4 @@ const stakingProductsSlice = createSlice({
 
 export const stakingProductsActions = stakingProductsSlice.actions;
 
-export const stakingProductsReducer = stakingProductsSlice.reducer;
+export const stakingProductsReducer: Reducer<StakingProductsState> = stakingProductsSlice.reducer;

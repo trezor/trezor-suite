@@ -12,11 +12,12 @@ import {
 import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
     DynamicScreenHeader,
     Screen,
     ScreenHeader,
     type TradingStackRoutes,
-    useNavigationRemoveActionInterceptor,
+    useOnNavigationRemove,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { type TradingStackScreenProps } from '@suite-native/trading-types';
@@ -33,7 +34,6 @@ type TradingExchangeApprovalScreenProps =
 
 export const TradingExchangeApprovalScreen = ({
     route: { params },
-    navigation,
 }: TradingExchangeApprovalScreenProps) => {
     const { shouldIncreaseLimit, isRevoked } = params;
     const { dispatch } = useServices(injectDispatch);
@@ -113,11 +113,11 @@ export const TradingExchangeApprovalScreen = ({
         };
     }, [quote, isReady, isRevoked, dispatch, confirmApproval, reportToAnalytics]);
 
-    useNavigationRemoveActionInterceptor({
-        onInterceptedAction: action => {
+    useOnNavigationRemove({
+        actionTypes: DEFAULT_BACK_NAVIGATION_ACTIONS,
+        onRemoveAttempt: () => {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
             reportToAnalytics('cancel');
-            navigation.dispatch(action);
         },
     });
 

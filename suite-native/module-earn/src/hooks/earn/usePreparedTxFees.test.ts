@@ -87,6 +87,7 @@ const composeReady = (unsignedTransaction = BASE_UNSIGNED_TX) => ({
 type HookProps = {
     analyticsFlow: EarnTransactionFlow;
     amount: string | undefined;
+    availableBalance: string | undefined;
     composeTransaction: (amount: string) => Promise<ComposeTxResult<ComposedTxBase>>;
     formDraftKey: string;
     hasInvalidContext: boolean;
@@ -124,6 +125,7 @@ const createTestStore = (initialFees = FEES_STATE) =>
 const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
     analyticsFlow: 'yield-deposit',
     amount: '1',
+    availableBalance: '1000000000000000000',
     composeTransaction: jest.fn(),
     formDraftKey: FORM_DRAFT_KEY,
     hasInvalidContext: false,

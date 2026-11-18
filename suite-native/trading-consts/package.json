@@ -14,5 +14,8 @@
     "dependencies": {
         "@suite-common/trading": "workspace:*",
         "@suite-native/trading-types": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
     }
 }

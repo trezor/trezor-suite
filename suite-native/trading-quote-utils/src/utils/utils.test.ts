@@ -1,12 +1,9 @@
 import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
-import type { TradingType } from '@suite-common/trading';
-import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import {
     getErrorStrFromThunkRejectedValue,
-    getFormDraftKeyPrefixFromTradingType,
     getTradeOperationData,
     getTradeStatusStep,
 } from './utils';
@@ -107,16 +104,6 @@ describe('utils', () => {
         ])('should return correct step for sell trade with %s status', (status, expectedStep) => {
             const trade = getSellTrade({ status: status as SellTradeStatus });
             expect(getTradeStatusStep(trade)).toBe(expectedStep);
-        });
-    });
-
-    describe('getFormDraftKeyPrefixFromTradingType', () => {
-        it.each<[TradingType, FormDraftKeyPrefix]>([
-            ['buy', 'trading-buy'],
-            ['sell', 'trading-sell'],
-            ['exchange', 'trading-exchange'],
-        ])('should return correct prefix for %s', (tradingType, expectedPrefix) => {
-            expect(getFormDraftKeyPrefixFromTradingType(tradingType)).toBe(expectedPrefix);
         });
     });
 

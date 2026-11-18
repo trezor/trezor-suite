@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { getCallSourceName, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Row, Text } from '@trezor/components';
 
@@ -41,9 +41,7 @@ export const ConnectCallSource = ({ 'data-testid': dataTestId }: ConnectCallSour
             >
                 <Translation id="TR_CONNECTED_TO" />
                 {': '}
-                <Text intent="neutral">
-                    {connectPopupCall.source?.manifest?.appName || connectPopupCall.source?.origin}
-                </Text>
+                <Text intent="neutral">{getCallSourceName(connectPopupCall.source)}</Text>
             </Text>
         </Row>
     );

@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "@suite-common/assets": "workspace:*",
+        "@suite/assets": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/suite": "workspace:*",

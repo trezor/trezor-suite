@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { CARDANO, PROTO } from '@trezor/connect';
+import { getAddressParameters } from '@trezor/network-cardano-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
@@ -7,15 +7,9 @@ import * as fixtures from './__fixtures__/cardanoUtils';
 import { getUnusedChangeAddress } from './accountUtils';
 import {
     formatMaxOutputAmount,
-    getAddressParameters,
-    getAddressType,
     getCardanoTokenSendMinAdaAmount,
     getDelegationCertificates,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
     getShortFingerprint,
-    getStakingPath,
     getVotingCertificates,
     isCardanoTokenSendAdaInsufficient,
     isCardanoTx,
@@ -33,24 +27,6 @@ describe('cardano utils', () => {
     });
 
     it('basic test', () => {
-        expect(getProtocolMagic(asNetworkSymbol('ada'))).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
-
-        expect(getDerivationType('normal')).toEqual(1);
-        expect(getDerivationType('legacy')).toEqual(2);
-        expect(getDerivationType('ledger')).toEqual(0);
-        // TS does not allow this, but in runtime, the default case handles it
-        expect(getDerivationType(undefined as any)).toEqual(1);
-
-        expect(getNetworkId()).toEqual(CARDANO.NETWORK_IDS.mainnet);
-
-        expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
-        expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
-
-        // @ts-expect-error
-        expect(getStakingPath({ index: 1, symbol: 'ada' })).toEqual(`m/1852'/1815'/1'/2/0`);
-
-        // @ts-expect-error
-        expect(getStakingPath({ index: 12, symbol: 'ada' })).toEqual(`m/1852'/1815'/12'/2/0`);
         expect(getShortFingerprint('asset1dffrfk79uxwq2a8yaslcfedycgga55tuv5dezd')).toEqual(
             'asset1dffr…55tuv5dezd',
         );

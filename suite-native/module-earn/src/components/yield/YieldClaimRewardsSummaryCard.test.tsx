@@ -51,6 +51,10 @@ jest.mock('@suite-common/wallet-core', () => ({
 jest.mock('@suite-native/earn', () => ({
     ...jest.requireActual('@suite-native/earn'),
     useMessageSystemYield: () => ({ isDisabled: false }),
+    useStablecoinYieldFirmwareUpdateAlert: () => ({
+        isFirmwareSupported: () => mockFirmwareSupported,
+        showFirmwareUpdateAlert: jest.fn(),
+    }),
 }));
 jest.mock('@suite-native/icons', () => ({
     ...jest.requireActual('@suite-native/icons'),
@@ -59,12 +63,6 @@ jest.mock('@suite-native/icons', () => ({
 jest.mock('@suite-native/formatters', () => ({
     ...jest.requireActual('@suite-native/formatters'),
     BaseCurrencyAmountFormatter: () => null,
-}));
-jest.mock('../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert', () => ({
-    useStablecoinYieldFirmwareUpdateAlert: () => ({
-        isFirmwareSupported: () => mockFirmwareSupported,
-        showFirmwareUpdateAlert: jest.fn(),
-    }),
 }));
 jest.mock('@suite-native/atoms', () => ({
     ...jest.requireActual('@suite-native/atoms'),

@@ -20,10 +20,14 @@ import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
+import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite';
 import { FiatAmountHeadline } from '#src/views/home/HomeBalance/FiatAmountHeadline';
 
 import { AssetDetailPriceChange } from './AssetDetailPriceChange';
+
+/** The line height of the price headline, so its placeholders keep the card from jumping. */
+const PRICE_HEIGHT = 56;
 
 type AssetDetailMarketPriceProps = {
     symbol: NetworkSymbol;
@@ -112,7 +116,16 @@ export const AssetDetailMarketPrice = ({
                         )}
                         {isRateLoading && (
                             <Row data-testid="@asset-detail/market-price/skeleton">
-                                <Skeleton width={180} height={56} animate={shouldAnimateSkeleton} />
+                                <Skeleton
+                                    width={180}
+                                    height={PRICE_HEIGHT}
+                                    animate={shouldAnimateSkeleton}
+                                />
+                            </Row>
+                        )}
+                        {isRateMissing && (
+                            <Row height={PRICE_HEIGHT} alignItems="flex-start">
+                                <NoRatesTooltip />
                             </Row>
                         )}
                         {weekChange !== undefined && (

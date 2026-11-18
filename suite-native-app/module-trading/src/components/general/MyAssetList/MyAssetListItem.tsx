@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
@@ -28,6 +31,11 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
     const { symbol, name, balance, fiatBalance, tokenSymbol, contract, isEnabled } = asset;
+
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        selectNativeTokenName(state, symbol),
+    );
+    const assetName = contract ? name : (nativeTokenName ?? name);
 
     const hasFiatBalance = fiatBalance !== null;
 
@@ -61,13 +69,13 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
             accessible
             accessibilityRole="button"
             accessibilityState={{ disabled: !isEnabled }}
-            accessibilityLabel={name}
+            accessibilityLabel={assetName}
             style={[animatedStyle, applyStyle(containerStyle, { isDisabled: !isEnabled })]}
         >
             <Box paddingHorizontal="sp8" paddingVertical="sp12">
                 <TradingAsset
                     assetType="crypto"
-                    name={name}
+                    name={assetName}
                     symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
                     contractAddress={contract}
                     networkSymbol={symbol}

@@ -36,14 +36,14 @@ import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
-import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import {
     navigateByAccountState,
     navigateByYieldAccountState,
     useStablecoinYieldFirmwareUpdateAlert,
     useStakingNavigateAnalytics,
     useYieldEntryNavigationAnalytics,
-} from '@suite-native/module-earn';
+} from '@suite-native/earn';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import {
     AccountDetailStackRoutes,
     type AddCoinAccountStackParamList,

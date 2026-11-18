@@ -1,6 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
-import { getDerivationType, getPublicKeyForNetworkType } from '@suite-common/wallet-utils';
+import { getPublicKeyForNetworkType } from '@suite-common/wallet-utils';
+import { getDerivationType } from '@trezor/network-cardano-suite-common';
 
 export const showXpubOnDevice = (device: TrezorDevice, account: Account) =>
     getPublicKeyForNetworkType({

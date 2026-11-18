@@ -25,7 +25,7 @@ const AccountOverviewBalanceSkeleton = ({
         <Skeleton width={100} height={50} animate={animate} />
         <Row gap={4}>
             {symbol ? (
-                <TokenIcon size={16} symbol={symbol} />
+                <TokenIcon size={16} networkSymbol={symbol} />
             ) : (
                 <Skeleton type="circle" size={20} />
             )}

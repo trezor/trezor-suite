@@ -15,8 +15,8 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AccountsListTokenItem } from '@suite-native/accounts';
 import { BannerInline, Card, PictogramTitleHeader, Text } from '@suite-native/atoms';
+import { TokenYieldRateBadge } from '@suite-native/earn';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { TokenYieldRateBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type AccountAssetsTabListProps, type OnSelectAsset } from './types';

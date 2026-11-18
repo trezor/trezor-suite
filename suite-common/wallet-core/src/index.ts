@@ -1,7 +1,7 @@
 // TODO: remove this file and prefer scoped imports or divide to smaller packages. Creating these huge export index files leads to circular ESM.
 export * from './accounts/accountsActions';
 export * from './accounts/accountsConstants';
-export * from './accounts/assetAccountsSelectors';
+export * from './accounts/walletAssetKey';
 export * from './accounts/accountsMiddleware';
 export * from './accounts/accountsReducer';
 export * from './accounts/accountsRefreshTimeReducer';
@@ -12,6 +12,7 @@ export { useSelector as useAccountsSelector } from './accounts/hooks/useSelector
 export * from './allowance/allowanceConstants';
 export * from './allowance/composeAllowanceTransactionThunk';
 export * from './allowance/fetchAllowance';
+export * from './allowance/getAllowanceTransactionStatus';
 export * from './allowance/useAllowanceTxTracking';
 export * from './blockchain/blockchainActions';
 export * from './blockchain/blockchainMiddleware';
@@ -42,7 +43,6 @@ export * from './earn/earnTransactionsReducer';
 export * from './earn/earnTransactionsThunks';
 export * from './yield/utils/yieldClaimSummaryUtils';
 export * from './yield/hooks/useYieldClaimRewardsWithFiat';
-export * from './earn/useEarnMissingRateTickersQuery';
 export * from './yield/hooks/useYieldOpportunities';
 export * from './explorer/explorerActions';
 export * from './explorer/explorerReducer';

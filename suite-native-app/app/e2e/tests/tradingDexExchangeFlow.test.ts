@@ -2,6 +2,7 @@ import { MNEMONICS } from '@trezor/trezor-user-env-link';
 
 import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import {
     exchangeApprovalActions,
@@ -64,6 +65,7 @@ describe('Trade Exchange DEX [@androidOnly @T3T1]', () => {
             passphrase_protection: true,
         });
         await openApp({ args: { preloadedState: preloadedStateWithEthereum } });
+        await onDeviceOnboarding.passInitializedDeviceChecks();
         await waitForVisible(by.text('Connected'));
         await onPassphrase.openPassphraseWallet(passphrase!);
         await tradingExchangeActions.openForm();

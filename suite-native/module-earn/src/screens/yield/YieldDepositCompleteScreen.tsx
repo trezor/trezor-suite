@@ -12,13 +12,14 @@ import {
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text, useBottomSheetModal } from '@suite-native/atoms';
+import { useYieldFlowData } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
     useNavigateToInitialScreen,
-    useOverrideBackNavigation,
+    useNavigationRemoveGuard,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -28,7 +29,6 @@ import { ApyValue } from '../../components/earn/ApyValue';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
 import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { getYieldDepositCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
@@ -76,7 +76,9 @@ export const YieldDepositCompleteScreen = () => {
         navigateToInitialScreen();
     }, [account?.symbol, analytics, dispatch, flowKey, navigateToInitialScreen, vault?.id]);
 
-    useOverrideBackNavigation({ onNavigateBack: handleExit });
+    const { forceNavigation } = useNavigationRemoveGuard({
+        onBlocked: params => params.forceNavigation(handleExit),
+    });
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
@@ -84,7 +86,7 @@ export const YieldDepositCompleteScreen = () => {
         }
 
         if (!session) {
-            navigateToInitialScreen();
+            forceNavigation(navigateToInitialScreen);
 
             return;
         }
@@ -92,7 +94,14 @@ export const YieldDepositCompleteScreen = () => {
         if (session.step !== 'complete') {
             navigation.replace(YieldStackRoutes.YieldDeposit, route.params);
         }
-    }, [navigation, navigateToInitialScreen, resolutionStatus, route.params, session]);
+    }, [
+        forceNavigation,
+        navigation,
+        navigateToInitialScreen,
+        resolutionStatus,
+        route.params,
+        session,
+    ]);
 
     const rows = useMemo(() => {
         if (resolutionStatus !== 'resolved' || !session) {
@@ -131,7 +140,7 @@ export const YieldDepositCompleteScreen = () => {
                 type="deposit"
                 vaultId={vault.id}
                 buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
-                onButtonPress={handleExit}
+                onButtonPress={() => forceNavigation(handleExit)}
                 rows={rows}
                 title={<Translation id="earn.yieldDepositCompleteScreen.title" />}
                 subtitle={<Translation id="earn.yieldDepositCompleteScreen.subtitle" />}

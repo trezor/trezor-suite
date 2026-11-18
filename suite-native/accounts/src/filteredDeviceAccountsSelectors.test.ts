@@ -1,3 +1,4 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -125,6 +126,7 @@ const createSuiteSyncAccountsRecord = (accounts: SuiteSyncAccount[]) =>
     }, {});
 
 const createState = (accounts: Account[]): NativeAccountsWithNetworksRootState => ({
+    earn: { staking: mockStakingState() },
     networks: mockNetworksState(supportedNetworks),
     device: {
         devices: [selectedDevice],

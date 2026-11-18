@@ -117,6 +117,7 @@ export const useWrappedNativeTokenFees = ({
     const fees = usePreparedTxFees({
         analyticsFlow: flowType,
         amount,
+        availableBalance: account?.availableBalance,
         composeTransaction,
         formDraftKey,
         hasInvalidContext,

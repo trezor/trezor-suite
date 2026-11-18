@@ -32,7 +32,7 @@ export const AllowanceCurrentLimitRow = ({
         </Text>
         <Row gap={8}>
             <TokenIcon
-                symbol={networkSymbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
                 size={20}
                 placeholder={symbol}

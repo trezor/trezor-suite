@@ -16,13 +16,13 @@ import {
     getYieldNativeFeeStatus,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
+import { useMessageSystemWrappedNative } from '@suite-native/earn';
 import {
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
-import { useMessageSystemWrappedNative } from './useMessageSystemWrappedNative';
 import { useNavigateBackAnalytics } from './useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow';
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';

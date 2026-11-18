@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
+import { useTokenMetadata } from '@suite-common/token';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
@@ -21,9 +22,12 @@ export const TokenUrlBlur = ({
     tokenContract,
     tooltipContent = <Translation id="TR_URL_IN_TOKEN" />,
 }: TokenUrlBlurProps) => {
-    const isRecognized = useSelector((state: TokenDefinitionsRootState) =>
+    const isDefinitionKnown = useSelector((state: TokenDefinitionsRootState) =>
         selectIsSpecificCoinDefinitionKnown(state, networkSymbol, tokenContract),
     );
+    const tokenMetadata = useTokenMetadata(networkSymbol, tokenContract);
 
-    return isRecognized ? text : <BlurUrls text={text} tooltipContent={tooltipContent} />;
+    if (isDefinitionKnown || tokenMetadata?.isRecognized) return text;
+
+    return <BlurUrls text={text} tooltipContent={tooltipContent} />;
 };

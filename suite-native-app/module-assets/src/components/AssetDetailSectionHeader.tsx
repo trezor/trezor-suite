@@ -3,6 +3,9 @@ import { type ReactNode } from 'react';
 import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 
+// The link is only one small text line tall, which makes it hard to press.
+const ACCOUNTS_BUTTON_HIT_SLOP = 12;
+
 type AssetDetailSectionHeaderProps = {
     title: ReactNode;
     linkLabel: ReactNode;
@@ -20,7 +23,12 @@ export const AssetDetailSectionHeader = ({
         <Text variant="body-xs" color="contentSecondary">
             {title}
         </Text>
-        <PressableOpacity accessibilityRole="button" onPress={onPress} testID={testID}>
+        <PressableOpacity
+            accessibilityRole="button"
+            onPress={onPress}
+            hitSlop={ACCOUNTS_BUTTON_HIT_SLOP}
+            testID={testID}
+        >
             <HStack alignItems="center" spacing="sp4">
                 <Text variant="body-xs" color="contentBrand">
                     {linkLabel}

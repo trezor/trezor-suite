@@ -42,7 +42,7 @@ jest.mock('./GlobalReceiveModal/GlobalReceiveModal', () => ({
 
 const ethSymbol = asNetworkSymbol('eth');
 const deviceState = '1stTestnetAddress@device_id:0';
-const ethKey = getWalletAssetKey({ deviceState, symbol: ethSymbol });
+const ethKey = getWalletAssetKey({ deviceState, networkSymbol: ethSymbol });
 
 const ethAccount = (index: number) =>
     mockWalletAccount({

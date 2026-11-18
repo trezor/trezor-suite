@@ -19,8 +19,8 @@ type CollisionConfig = {
     getCounterpartChangedAction?: () => UnknownAction;
 };
 
-type UseTradeableAssetChangeConfig<TFieldValues extends FieldValues> = {
-    form: UseFormReturn<TFieldValues>;
+type UseTradeableAssetChangeConfig<TFieldValues extends FieldValues, TTransformedValues> = {
+    form: UseFormReturn<TFieldValues, object, TTransformedValues>;
     tradingType: TradingType;
     selectedValue: TradeableAsset | undefined;
     setSelectedValue: (asset: TradeableAsset) => void;
@@ -41,7 +41,10 @@ export type ChangeTradeableAsset = (
     options?: ChangeAssetOptions,
 ) => void;
 
-export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
+export const useTradeableAssetChange = <
+    TFieldValues extends FieldValues,
+    TTransformedValues = TFieldValues,
+>({
     form,
     tradingType,
     selectedValue,
@@ -51,7 +54,7 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     getAssetTokenChangedAction,
     getSetTradingAccountKeyAction,
     collision,
-}: UseTradeableAssetChangeConfig<TFieldValues>): ChangeTradeableAsset => {
+}: UseTradeableAssetChangeConfig<TFieldValues, TTransformedValues>): ChangeTradeableAsset => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { setValue, getValues } = form;
 

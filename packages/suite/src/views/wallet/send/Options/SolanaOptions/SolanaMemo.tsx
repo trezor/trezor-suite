@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
+import { countBytesInString } from '@trezor/utils';
 
 import { useSendFormContext } from '#src/hooks/wallet';
 
@@ -27,7 +28,7 @@ export const SolanaMemo = ({ close }: SolanaMemoProps) => {
     const inputName = 'destinationTag';
     const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
-    const memoByteSize = Buffer.from(watch(inputName) || '', 'utf8').length;
+    const memoByteSize = countBytesInString(watch(inputName) || '');
     const isMemoTooLong = memoByteSize > SOLANA_MEMO_MAX_BYTES;
 
     const handleClose = () => {

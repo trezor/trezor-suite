@@ -4,6 +4,7 @@ import { promisify } from 'node:util';
 
 import type { WorkspacePackage } from '@trezor/requirements';
 
+import { addChangelogEntry } from './connect-changelog';
 import {
     comment,
     commit,
@@ -62,6 +63,8 @@ const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
         '--pretty=tformat:"-   %s (%h)"',
         '--',
         `./${getTrezorPackageRelativePath(packageName)}`,
+        // Commits that only edit the changelog curate it, they do not change the package.
+        `:(exclude)./${getTrezorPackageRelativePath(packageName)}/CHANGELOG.md`,
     ]);
 
 const splitByNewlines = (input: string) => input.split('\n');
@@ -186,16 +189,19 @@ const bumpConnect = async () => {
 
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
-            if (newCommits.length && deploymentType === 'stable') {
+            if (deploymentType === 'stable') {
                 const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
                 if (!fs.existsSync(CHANGELOG_PATH)) {
                     await writeFile(CHANGELOG_PATH, '');
                 }
 
-                let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                const changelog = await readFile(CHANGELOG_PATH, 'utf-8');
 
-                changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
-                await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
+                await writeFile(
+                    CHANGELOG_PATH,
+                    addChangelogEntry(changelog, version, newCommits),
+                    'utf-8',
+                );
 
                 await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
             }

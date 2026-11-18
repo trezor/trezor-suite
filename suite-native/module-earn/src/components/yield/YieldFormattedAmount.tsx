@@ -4,6 +4,7 @@ import { type TextProps } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
+    type DiscreetMode,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 
@@ -14,6 +15,7 @@ export type YieldFormattedAmountValue = {
 
 type YieldFormattedAmountProps = YieldFormattedAmountValue & {
     networkSymbol: NetworkSymbol;
+    discreetMode?: DiscreetMode;
 } & Pick<
         TextProps,
         | 'adjustsFontSizeToFit'
@@ -29,6 +31,8 @@ export const YieldFormattedAmount = ({
     networkSymbol,
     tokenContract,
     value,
+    // Keep transaction amounts and allowance limits readable during yield actions.
+    discreetMode = 'disabled',
     ...textProps
 }: YieldFormattedAmountProps) => {
     if (tokenContract) {
@@ -37,8 +41,7 @@ export const YieldFormattedAmount = ({
                 networkSymbol={networkSymbol}
                 contractAddress={toTokenAddress(tokenContract)}
                 value={asDecimalTokenAmount(value)}
-                // Keep transaction amounts and allowance limits readable during yield actions.
-                discreetMode="disabled"
+                discreetMode={discreetMode}
                 {...textProps}
             />
         );
@@ -48,8 +51,7 @@ export const YieldFormattedAmount = ({
         <CompactCryptoAmountFormatter
             value={value}
             symbol={networkSymbol}
-            // Keep transaction amounts and allowance limits readable during yield actions.
-            discreetMode="disabled"
+            discreetMode={discreetMode}
             {...textProps}
         />
     );

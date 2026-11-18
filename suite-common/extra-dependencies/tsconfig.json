@@ -13,6 +13,7 @@
         { "path": "../networks" },
         { "path": "../platform-encryption" },
         { "path": "../react-query" },
+        { "path": "../sign-verify" },
         {
             "path": "../suite-rbf-labels-migrations-types"
         },

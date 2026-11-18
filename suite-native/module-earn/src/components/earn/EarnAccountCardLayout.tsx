@@ -31,7 +31,7 @@ const valuesStyle = prepareNativeStyle(utils => ({
 type EarnAccountCardLayoutProps = {
     accountKey: AccountKey;
     icon: ReactNode;
-    title: string;
+    title: ReactNode;
     value: ReactNode;
     onPress: () => void;
     description?: ReactNode;

@@ -48,7 +48,7 @@ import {
     type RootStackRoutes,
     type SendStackRoutes,
     type SettingsStackRoutes,
-    type SignAndVerifyStackRoutes,
+    type SignVerifyStackRoutes,
     type StellarManageTokenStackRoutes,
     type TradingStackRoutes,
     type TransactionDetailStackRoutes,
@@ -102,9 +102,9 @@ export type AccountDetailStackParamList = {
     [AccountDetailStackRoutes.AccountSettings]: { accountKey: AccountKey };
 };
 
-export type SignAndVerifyStackParamList = {
-    [SignAndVerifyStackRoutes.DeviceConnectionGuard]: undefined;
-    [SignAndVerifyStackRoutes.ContinueOnTrezor]: undefined;
+export type SignVerifyStackParamList = {
+    [SignVerifyStackRoutes.DeviceConnectionGuard]: undefined;
+    [SignVerifyStackRoutes.ContinueOnTrezor]: undefined;
 };
 
 export type AssetsStackParamList = {
@@ -328,13 +328,13 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceDisconnected]: {
         wasDeviceConnectedViaBluetooth: boolean;
     };
-    [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: {
+    [DeviceOnboardingStackRoutes.DeviceVisualCheck]: {
         deviceModel: DeviceModelInternal;
     };
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
     };
-    [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
+    [DeviceOnboardingStackRoutes.PackagingVisualCheck]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInfo]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
@@ -553,8 +553,8 @@ export type RootStackParamList = {
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
-    [RootStackRoutes.SignAndVerify]: { accountKey: AccountKey };
-    [RootStackRoutes.SignAndVerifyStack]: undefined;
+    [RootStackRoutes.SignVerify]: { accountKey: AccountKey };
+    [RootStackRoutes.SignVerifyStack]: undefined;
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;

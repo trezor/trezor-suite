@@ -11,17 +11,20 @@ import {
 import {
     formatNetworkAmount,
     getAddressForNetworkType,
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
     getPublicKeyForNetworkType,
     prepareNewAccountPayload,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodKeys } from '@trezor/connect';
+import { sanitizeName } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
+import {
+    getAddressParameters,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+} from '@trezor/network-cardano-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -29,6 +32,7 @@ import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromi
 import { type ConnectPopupStateRootState, selectConnectPopupCall } from './connectPopupReducer';
 import {
     CALL_SOURCE_DEEPLINK,
+    type ConnectCallSource,
     SELECT_ACCOUNT_PAGE_SIZE,
     type SelectAccountCandidate,
     isDeviceReconnectError,
@@ -61,6 +65,23 @@ const getCallAttributes = ({ method, payload, source }: PopupFlowParams<CallMeth
     paramNames: getCallParamNames(payload),
 });
 
+// Every call reaches a flow through `connectPopupCallInnerThunk`, so the names a caller picks are
+// sanitized here for every source. A name with nothing visible left becomes `''` and renderers show
+// the origin or the process path instead.
+const sanitizeCallSource = (source: ConnectCallSource): ConnectCallSource => {
+    const manifest = { ...source.manifest, appName: sanitizeName(source.manifest?.appName) ?? '' };
+
+    if (!source.process) {
+        return { ...source, manifest };
+    }
+
+    return {
+        ...source,
+        manifest,
+        process: { ...source.process, name: sanitizeName(source.process.name) ?? '' },
+    };
+};
+
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 export type ConnectPopupCallInnerThunkDeps = {
@@ -75,7 +96,8 @@ export const connectPopupCallInnerThunk = createThunk<
     void,
     PopupFlowParams<CallMethodKeys>,
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
->(`${CONNECT_POPUP_MODULE}/callThunk`, async (params, { dispatch, getState, extra }) => {
+>(`${CONNECT_POPUP_MODULE}/callThunk`, async (declaredParams, { dispatch, getState, extra }) => {
+    const params = { ...declaredParams, source: sanitizeCallSource(declaredParams.source) };
     const paramsCompat = applyRequestCompatibility(params);
     const flow = createPopupFlow(paramsCompat, { dispatch, getState });
 

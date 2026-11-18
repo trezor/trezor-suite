@@ -56,9 +56,6 @@
         { "path": "../../suite-native/intl" },
         { "path": "../../suite-native/link" },
         {
-            "path": "../../suite-native/module-earn"
-        },
-        {
             "path": "../../suite-native/navigation"
         },
         {
@@ -74,6 +71,12 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },
+        {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
+            "path": "../../suite-common/earn-staking-common"
+        },
         {
             "path": "../../suite-common/message-system"
         },

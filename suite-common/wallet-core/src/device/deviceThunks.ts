@@ -47,13 +47,7 @@ import {
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AccountKey, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
-import {
-    getAddressForNetworkType,
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
-} from '@suite-common/wallet-utils';
+import { getAddressForNetworkType } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type Address,
     type CardanoAddress,
@@ -62,6 +56,12 @@ import TrezorConnect, {
     type Device,
     asBluetoothDeviceId,
 } from '@trezor/connect';
+import {
+    getAddressParameters,
+    getDerivationType,
+    getNetworkId,
+    getProtocolMagic,
+} from '@trezor/network-cardano-suite-common';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { isChanged } from '@trezor/utils';

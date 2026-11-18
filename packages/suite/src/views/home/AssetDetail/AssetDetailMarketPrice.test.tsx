@@ -274,6 +274,39 @@ describe('the market price on the asset screen', () => {
         expect(screen.queryByTestId('@asset-detail/market-price/skeleton')).not.toBeInTheDocument();
     });
 
+    describe('says the price is not available, as the asset list does', () => {
+        it('when the price failed to load', async () => {
+            renderMarketPrice(getInitialState({ ethRateStatus: 'failed' }));
+
+            expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(screen.getByTestId('@asset-detail/market-price')).toHaveTextContent(
+                messages.TR_FIAT_RATES_NOT_AVAILABLE.defaultMessage,
+            );
+        });
+
+        it('for a token whose price is never fetched', async () => {
+            const TOKEN = '0x1000000000000000000000000000000000000001' as TokenAddress;
+
+            renderMarketPrice(getInitialState({}), TOKEN);
+
+            expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(screen.getByTestId('@asset-detail/market-price')).toHaveTextContent(
+                messages.TR_FIAT_RATES_NOT_AVAILABLE.defaultMessage,
+            );
+        });
+
+        it.each<{ title: string; params: InitialStateParams }>([
+            { title: 'not while the price is loading', params: { ethRateStatus: 'loading' } },
+            { title: 'not when there is a price', params: { ethRate: 3000 } },
+        ])('$title', ({ params }) => {
+            renderMarketPrice(getInitialState(params));
+
+            expect(screen.getByTestId('@asset-detail/market-price')).not.toHaveTextContent(
+                messages.TR_FIAT_RATES_NOT_AVAILABLE.defaultMessage,
+            );
+        });
+    });
+
     describe('the price chart in it', () => {
         it("draws the week's price history", async () => {
             renderMarketPrice(getInitialState({ ethRate: 3000 }));

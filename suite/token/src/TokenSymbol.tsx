@@ -1,6 +1,7 @@
-import { useTokenMetadata } from '@suite-common/token';
+import { Translation } from '@suite/intl';
+import { getTokenDisplaySymbol, useTokenMetadata } from '@suite-common/token';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { TokenUrlBlur } from './TokenUrlBlur';
 
@@ -16,8 +17,9 @@ export const TokenSymbol = ({
     isTruncated = false,
 }: TokenSymbolProps) => {
     const token = useTokenMetadata(networkSymbol, tokenContract);
-    const symbol = token?.symbol ?? '';
-    const displaySymbol = isTruncated ? getDisplaySymbol(symbol, tokenContract) : symbol;
+    const displaySymbol = getTokenDisplaySymbol(token, { isTruncated });
+
+    if (displaySymbol === null) return <Translation id="TR_UNKNOWN_TOKEN" />;
 
     return (
         <TokenUrlBlur

@@ -4,6 +4,7 @@
     "include": ["."],
     "references": [
         { "path": "../app-modal" },
+        { "path": "../apps-embedding-demo" },
         { "path": "../module-onboarding" },
         { "path": "../suite-sync" },
         {
@@ -59,6 +60,9 @@
         },
         { "path": "../../suite-common/receive" },
         {
+            "path": "../../suite-common/sign-verify"
+        },
+        {
             "path": "../../suite-common/suite-rbf-labels-migrations"
         },
         {
@@ -91,13 +95,13 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../../suite/account" },
         { "path": "../../suite/analytics" },
-        {
-            "path": "../../suite/apps-embedding-demo"
-        },
         {
             "path": "../../suite/authenticity-checks"
         },
@@ -139,6 +143,9 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/icons" },
         { "path": "../../packages/logger" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         {
             "path": "../../packages/product-components"
         },

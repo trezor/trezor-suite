@@ -7,12 +7,12 @@ import {
     type SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
     type SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
-import {
-    type DeviceCancelledErrType,
-    type DeviceErrorType,
-    type DeviceNotConnectedErrorType,
-} from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect';
+import type {
+    DeviceCancelledErrType,
+    DeviceErrorType,
+    DeviceNotConnectedErrorType,
+} from '@trezor/device';
 
 import {
     type SuiteSyncRelayConnection,

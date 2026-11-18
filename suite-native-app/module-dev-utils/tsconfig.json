@@ -53,7 +53,7 @@
         { "path": "../../suite-native/storage" },
         { "path": "../../suite-native/toasts" },
         {
-            "path": "../../suite-native/trading-state"
+            "path": "../../suite-native/trading-shared"
         },
         {
             "path": "../../packages/connect-common"

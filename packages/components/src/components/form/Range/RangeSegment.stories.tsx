@@ -10,7 +10,7 @@ export default meta;
 
 export const RangeSegment: StoryObj<typeof meta> = {
     render: args => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [, updateArgs] = useArgs();
 
         return (

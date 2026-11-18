@@ -22,11 +22,20 @@ describe('stakingProductInfoSchema', () => {
             rate: null,
             entryPeriodDays: null,
             exitPeriodDays: null,
+            rewardPeriodDays: null,
             nextRewardAt: null,
             targets: [],
         });
 
         expect(stakingProductInfoSchema.parse(info)).toEqual(info);
+    });
+
+    it('requires the reward period', () => {
+        const { rewardPeriodDays: _rewardPeriodDays, ...info } = mockStakingProductInfo();
+        const result = stakingProductInfoSchema.safeParse(info);
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['rewardPeriodDays']);
     });
 
     it('accepts a zero rate', () => {

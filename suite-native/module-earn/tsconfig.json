@@ -7,11 +7,15 @@
             "path": "../../suite-common/analytics"
         },
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/earn" },
         {
             "path": "../../suite-common/earn-stablecoin"
         },
         {
             "path": "../../suite-common/earn-stablecoin-api"
+        },
+        {
+            "path": "../../suite-common/earn-staking"
         },
         {
             "path": "../../suite-common/earn-staking-api"
@@ -35,9 +39,6 @@
             "path": "../../suite-common/test-utils"
         },
         { "path": "../../suite-common/token" },
-        {
-            "path": "../../suite-common/token-definitions"
-        },
         { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"
@@ -77,10 +78,9 @@
         { "path": "../navigation" },
         { "path": "../scrollview" },
         { "path": "../settings" },
-        { "path": "../storage" },
         { "path": "../test-utils" },
         { "path": "../tokens" },
-        { "path": "../trading-state" },
+        { "path": "../trading-shared" },
         { "path": "../transaction-management" },
         { "path": "../transaction-review" },
         { "path": "../transactions" },

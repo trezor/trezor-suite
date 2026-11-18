@@ -3,11 +3,9 @@ import { shallowEqual } from 'react-redux';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AssetAccountsRootState,
     type FiatRatesRootState,
     type PhishingRootState,
     type TransactionsRootState,
-    selectDeviceAssetAccounts,
     selectIsAccountTransactionPhishing,
     selectTransactions,
     selectVisibleDeviceAccountsByNetworkSymbol,
@@ -16,6 +14,8 @@ import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isNftToken } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { isNotNullOrUndefined } from '@trezor/utils';
+
+import { type AssetAccountsRootState, selectDeviceAssetAccounts } from './assetAccountsSelectors';
 
 export type AssetDetailState = AssetAccountsRootState &
     TransactionsRootState &
@@ -77,7 +77,7 @@ export const selectWalletAssetAccountKeys = createMemoizedSelector(
             assetAccounts
                 .filter(
                     assetAccount =>
-                        assetAccount.symbol === networkSymbol &&
+                        assetAccount.networkSymbol === networkSymbol &&
                         assetAccount.contractAddress === tokenContract,
                 )
                 .map(assetAccount => assetAccount.accountKey),

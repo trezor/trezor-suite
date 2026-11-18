@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
+import { useNavigationRemoveGuard } from '@suite-native/navigation';
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { useCloseTradingFlow } from './useCloseTradingFlow';
@@ -24,7 +24,7 @@ let shouldInterceptRemove = false;
 
 const ReviewScreen = () => {
     const closeTradingFlow = useCloseTradingFlow();
-    useNavigationRemoveActionInterceptor({ isEnabled: shouldInterceptRemove });
+    useNavigationRemoveGuard({ isEnabled: shouldInterceptRemove });
 
     return (
         <Pressable onPress={closeTradingFlow}>

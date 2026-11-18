@@ -33,6 +33,8 @@ const writeStepSummary = (markdown: string) => {
 type PublishArgs = {
     measurements: readonly ReportedMeasurement[];
     budgetsPath: string;
+    /** Whether Lighthouse was attached while these numbers were measured. */
+    profiled: boolean;
     log: (message: string) => void;
 };
 
@@ -40,6 +42,7 @@ const sectionContext = (args: PublishArgs) => ({
     heading: sectionHeading(),
     runUrl: resolveRunUrl(),
     budgetsPath: args.budgetsPath,
+    profiled: args.profiled,
 });
 
 /**

@@ -83,14 +83,6 @@ import {
     SignedIdentity,
 } from './messages-crypto';
 import {
-    EosGetPublicKey,
-    EosPublicKey,
-    EosSignTx,
-    EosSignedTx,
-    EosTxActionAck,
-    EosTxActionRequest,
-} from './messages-eos';
-import {
     EthereumAddress,
     EthereumDefinitionAck,
     EthereumDefinitionRequest,
@@ -269,14 +261,6 @@ import {
 } from './messages-stellar';
 import { Telemetry, TelemetryGet } from './messages-telemetry';
 import {
-    TezosAddress,
-    TezosGetAddress,
-    TezosGetPublicKey,
-    TezosPublicKey,
-    TezosSignTx,
-    TezosSignedTx,
-} from './messages-tezos';
-import {
     ThpCodeEntryChallenge,
     ThpCodeEntryCommitment,
     ThpCodeEntryCpaceHostTag,
@@ -321,7 +305,6 @@ export * from './messages-cardano';
 export * from './messages-crypto';
 export * from './messages-management';
 export * from './messages-definitions';
-export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
 export * from './messages-evolu';
@@ -332,7 +315,6 @@ export * from './messages-ripple';
 export * from './messages-solana';
 export * from './messages-stellar';
 export * from './messages-telemetry';
-export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
 
@@ -466,12 +448,6 @@ export const MessageType = Type.Object(
         SetBrightness,
         GetSerialNumber,
         SerialNumber,
-        EosGetPublicKey,
-        EosPublicKey,
-        EosSignTx,
-        EosTxActionRequest,
-        EosTxActionAck,
-        EosSignedTx,
         EthereumGetPublicKey,
         EthereumPublicKey,
         EthereumGetAddress,
@@ -589,12 +565,6 @@ export const MessageType = Type.Object(
         StellarTxExt,
         TelemetryGet,
         Telemetry,
-        TezosGetAddress,
-        TezosAddress,
-        TezosGetPublicKey,
-        TezosPublicKey,
-        TezosSignTx,
-        TezosSignedTx,
         ThpCreateNewSession,
         ThpPairingRequest,
         ThpPairingRequestApproved,
@@ -719,9 +689,6 @@ export type WireInMessage =
     | 'UnlockBootloader'
     | 'SetBrightness'
     | 'GetSerialNumber'
-    | 'EosGetPublicKey'
-    | 'EosSignTx'
-    | 'EosTxActionAck'
     | 'EthereumGetPublicKey'
     | 'EthereumGetAddress'
     | 'EthereumSignTx'
@@ -790,9 +757,6 @@ export type WireInMessage =
     | 'StellarSignSorobanAuthorization'
     | 'StellarTxExt'
     | 'TelemetryGet'
-    | 'TezosGetAddress'
-    | 'TezosGetPublicKey'
-    | 'TezosSignTx'
     | 'ThpCreateNewSession'
     | 'ThpPairingRequest'
     | 'ThpSelectMethod'
@@ -855,9 +819,6 @@ export type WireOutMessage =
     | 'Nonce'
     | 'UnlockedPathRequest'
     | 'SerialNumber'
-    | 'EosPublicKey'
-    | 'EosTxActionRequest'
-    | 'EosSignedTx'
     | 'EthereumPublicKey'
     | 'EthereumAddress'
     | 'EthereumTxRequest'
@@ -907,9 +868,6 @@ export type WireOutMessage =
     | 'StellarSorobanAuthorizationSignature'
     | 'StellarTxExtRequest'
     | 'Telemetry'
-    | 'TezosAddress'
-    | 'TezosPublicKey'
-    | 'TezosSignedTx'
     | 'ThpPairingRequestApproved'
     | 'ThpPairingPreparationsFinished'
     | 'ThpCodeEntryCommitment'

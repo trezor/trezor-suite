@@ -1,0 +1,18 @@
+{
+    "required": true,
+    "version": [2, 12, 1],
+    "min_bootloader_version": [2, 1, 13],
+    "min_firmware_version": [2, 9, 3],
+    "bootloader_version": [2, 1, 17],
+    "firmware_revision": "64698d0d844e3322eca435beaae3df602aa08b10",
+    "url": "firmware/t3w1/trezor-t3w1-2.12.1-bitcoinonly.bin",
+    "fingerprint": "d05841b93b3d67019963c24a62fbbbe69a385c637cfe6cd45d4560e353ba921e",
+    "changelog": "* Added MCU device attestation with ML-DSA-44.\n* Added Tap to Wake setting in device menu.",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3w1/translation-T3W1-cs-CZ-2.12.1.bin",
+        "de-DE": "firmware/translations/t3w1/translation-T3W1-de-DE-2.12.1.bin",
+        "es-ES": "firmware/translations/t3w1/translation-T3W1-es-ES-2.12.1.bin",
+        "fr-FR": "firmware/translations/t3w1/translation-T3W1-fr-FR-2.12.1.bin",
+        "pt-BR": "firmware/translations/t3w1/translation-T3W1-pt-BR-2.12.1.bin"
+    }
+}

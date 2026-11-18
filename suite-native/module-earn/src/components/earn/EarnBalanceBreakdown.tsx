@@ -1,12 +1,15 @@
 import { useSelector } from 'react-redux';
 
 import {
-    type EarnListRootState,
+    type EarnRootState,
     selectEarnTotalFiatAmount,
     selectIsEarnBalanceBreakdownDisplayed,
-    selectStakingTotalFiatAmount,
-    selectYieldTotalFiatAmount,
     useEarnMissingRateTickersQuery,
+} from '@suite-common/earn';
+import { selectDeviceStakingTotalFiatAmount } from '@suite-common/earn-staking';
+import {
+    type EarnListRootState,
+    selectYieldTotalFiatAmount,
     useYieldOpportunities,
 } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -79,17 +82,17 @@ export const EarnBalanceBreakdown = () => {
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();
     const { yieldOpportunities } = useYieldOpportunities();
 
-    const isBreakdownDisplayed = useSelector((state: EarnListRootState) =>
+    const isBreakdownDisplayed = useSelector((state: EarnRootState) =>
         selectIsEarnBalanceBreakdownDisplayed(state, yieldOpportunities, isFiatRatesLoading),
     );
 
-    const totalStakingFiatAmount = useSelector(selectStakingTotalFiatAmount);
+    const totalStakingFiatAmount = useSelector(selectDeviceStakingTotalFiatAmount);
 
     const totalYieldFiatAmount = useSelector((state: EarnListRootState) =>
         selectYieldTotalFiatAmount(state, yieldOpportunities),
     );
 
-    const totalEarnFiatAmount = useSelector((state: EarnListRootState) =>
+    const totalEarnFiatAmount = useSelector((state: EarnRootState) =>
         selectEarnTotalFiatAmount(state, yieldOpportunities),
     );
 

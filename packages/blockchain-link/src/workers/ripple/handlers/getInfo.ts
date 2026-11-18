@@ -1,6 +1,6 @@
 import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import { transformServerInfo } from '@trezor/blockchain-link-utils/src/ripple';
+import { transformRippleServerInfo } from '@trezor/network-ripple/constants';
 import xrpl from '@trezor/network-ripple/runtime';
 
 import { RESERVE } from '../reserve';
@@ -25,7 +25,7 @@ export const getInfo = async (
         type: RESPONSES.GET_INFO,
         payload: {
             url: client.connection.getUrl(),
-            ...transformServerInfo(response),
+            ...transformRippleServerInfo(response),
         },
     };
 };

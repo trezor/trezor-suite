@@ -9,8 +9,11 @@ import { residenceActions } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-export const useCountryChangeEffect = <TFieldValues extends FieldValues>(
-    control: Control<TFieldValues>,
+export const useCountryChangeEffect = <
+    TFieldValues extends FieldValues,
+    TTransformedValues = TFieldValues,
+>(
+    control: Control<TFieldValues, object, TTransformedValues>,
 ) => {
     const { dispatch } = useServices(injectDispatch);
 

@@ -1,9 +1,10 @@
 import { type ReactNode, useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { isVerifySupported } from '@suite-common/sign-verify';
+import { injectSignVerify } from '@suite-common/sign-verify';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { SignVerifyForm } from './SignVerifyForm';
 import { type SignVerifyPage } from './types';
@@ -23,9 +24,10 @@ type SignVerifyProps = {
 export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
     const [page, setPage] = useState<SignVerifyPage>('sign');
     const { device } = useDevice();
+    const { signVerify } = useServices(injectSignVerify);
 
     return renderShell({
-        title: isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
+        title: signVerify.isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
         isDeviceConnected: device?.connected && device?.available,
         children: (
             // Each tab of each account is a form of its own: keying it throws away everything the

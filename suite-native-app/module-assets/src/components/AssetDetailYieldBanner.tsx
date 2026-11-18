@@ -20,8 +20,8 @@ import {
     selectIsTokenYieldBannerClosed,
     setIsTokenYieldBannerClosed,
 } from '@suite-native/banners';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
-import { useFormattedEarnRate } from '@suite-native/module-earn';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

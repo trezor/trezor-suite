@@ -138,7 +138,6 @@ export const createGenerateIcons = (deps: GenerateIconsDeps): GenerateIcons => {
         'ripple',
         'solana',
         'stellar',
-        'tezos',
         'tron',
     ];
     const createNetworkAssetTypes = (

@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 export * from './device';
+export type * from './deviceAuthenticity';
 export * from './firmware';
 export * from './connectInit';
 export type * from './guide';

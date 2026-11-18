@@ -1,8 +1,6 @@
 import { fixupConfigRules } from '@eslint/compat';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
-
-import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -45,17 +43,11 @@ export const reactConfig = [
             'react-hooks/purity': 'error',
             'react-hooks/set-state-in-render': 'error',
             'react-hooks/unsupported-syntax': 'error',
+            // The compiler-backed rules above and below share one compiler pass per file, so
+            // enabling all of them costs the same as enabling one.
+            'react-hooks/immutability': 'error',
+            'react-hooks/globals': 'error',
+            'react-hooks/error-boundaries': 'error',
         },
     },
-    ...(areExpensiveChecksEnabled
-        ? []
-        : [
-              {
-                  rules: {
-                      'react-hooks/immutability': 'off',
-                      'react-hooks/globals': 'off',
-                      'react-hooks/error-boundaries': 'off',
-                  },
-              },
-          ]),
 ];

@@ -1,10 +1,19 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { composeSolanaStakingTransactionFeeLevelsThunk } from './solanaStakingThunks';
+import {
+    type ComposeSolanaStakingTransactionFeeLevelsThunkDeps,
+    composeSolanaStakingTransactionFeeLevelsThunk,
+} from './solanaStakingThunks';
+import { fetchAndUpdateAccountThunk } from '../../accounts/accountsThunks';
+
+jest.mock('../../accounts/accountsThunks', () => ({ fetchAndUpdateAccountThunk: jest.fn() }));
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -36,6 +45,7 @@ const solanaTxMetaMock = {
 const prepareStakeSolTxMock = jest.fn();
 const prepareUnstakeSolTxMock = jest.fn();
 const prepareClaimSolTxMock = jest.fn();
+const fetchAndUpdateAccountThunkMock = fetchAndUpdateAccountThunk as unknown as jest.Mock;
 
 jest.mock('@trezor/network-solana/runtime', () => ({
     __esModule: true,
@@ -102,7 +112,7 @@ const buildStore = ({
         dsol: { url: 'http://localhost:8899' },
     },
 }: BuildStoreParams = {}) =>
-    createTestCompositionRoot<void, State>({
+    createTestCompositionRoot<ComposeSolanaStakingTransactionFeeLevelsThunkDeps, State>({
         reducer: combineReducers({
             wallet: combineReducers({
                 accounts: () => accounts,
@@ -110,13 +120,17 @@ const buildStore = ({
                 fees: () => ({ sol: solanaFeeBucket, dsol: solanaFeeBucket }),
             }),
         }),
+        services: () => ({
+            analytics: mockAnalytics<AnalyticsSharedEvents>(),
+            getTradedAccountKeys: mockGetTradedAccountKeys(),
+        }),
     }).services.store;
 
 const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
 const blockchainEstimateFeeMock = TrezorConnect.blockchainEstimateFee as jest.Mock;
 
 const dispatchCompose = async (
-    store: TestCompositionStore<State, void>,
+    store: TestCompositionStore<State, ComposeSolanaStakingTransactionFeeLevelsThunkDeps>,
     args: Parameters<typeof composeSolanaStakingTransactionFeeLevelsThunk>[0],
 ) => {
     const action = await store.dispatch(composeSolanaStakingTransactionFeeLevelsThunk(args) as any);
@@ -152,6 +166,9 @@ beforeEach(() => {
         txShim: solanaTxShim,
         solanaTxMeta: solanaTxMetaMock,
     });
+
+    fetchAndUpdateAccountThunkMock.mockReset();
+    fetchAndUpdateAccountThunkMock.mockImplementation(() => () => Promise.resolve());
 });
 
 describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
@@ -412,6 +429,7 @@ describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
     it('reports a failed preparation as such instead of as an insufficient fee', async () => {
         prepareClaimSolTxMock.mockResolvedValue({
             success: false,
+            errorCode: 'UNKNOWN',
             errorMessage: 'Solana staking: claiming failed - Nothing to claim while claiming',
         });
         const store = buildStore();
@@ -430,5 +448,48 @@ describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
             errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
         });
         expect(blockchainEstimateFeeMock).not.toHaveBeenCalled();
+    });
+
+    it('reports an unstake above the active stake as a changed staked balance and refreshes the account', async () => {
+        prepareUnstakeSolTxMock.mockResolvedValue({
+            success: false,
+            errorCode: 'INSUFFICIENT_ACTIVE_STAKE',
+            errorMessage: 'Solana staking: unstaking failed - Active stake less than requested',
+        });
+        const store = buildStore();
+
+        const result = await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        expect(result.ok).toBe(true);
+        const levels = (result as { payload: Record<string, any> }).payload;
+        expect(levels.normal).toEqual({
+            type: 'error',
+            error: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+            errorMessage: { id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED' },
+        });
+        expect(fetchAndUpdateAccountThunkMock).toHaveBeenCalledWith({
+            accountKey: SOL_ACCOUNT_KEY,
+        });
+    });
+
+    it('does not refresh the account when the preparation fails for another reason', async () => {
+        prepareUnstakeSolTxMock.mockResolvedValue({
+            success: false,
+            errorCode: 'UNKNOWN',
+            errorMessage: 'Solana staking: unstaking failed - Failed to fetch delegations',
+        });
+        const store = buildStore();
+
+        await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        expect(fetchAndUpdateAccountThunkMock).not.toHaveBeenCalled();
     });
 });

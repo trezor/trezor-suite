@@ -162,7 +162,7 @@ export const coinSymbols = [
     'tsep',
     'arc',
     'tarc',
-    // misc coins (cardano, solana, ripple, stellar, tron, monero, tezos, ...)
+    // misc coins (cardano, solana, ripple, stellar, tron, monero, ...)
     'ada',
     'dsol',
     'nostr',
@@ -175,7 +175,6 @@ export const coinSymbols = [
     'txlm',
     'xmr',
     'xrp',
-    'xtz',
 ] as const;
 
 // A supported coin symbol, e.g. `'btc'` / `'ada'`. See `coinSymbols`.

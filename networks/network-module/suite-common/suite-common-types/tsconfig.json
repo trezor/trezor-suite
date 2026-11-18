@@ -11,6 +11,9 @@
             "path": "../../../../packages/crypto-utils"
         },
         {
+            "path": "../../../../packages/device"
+        },
+        {
             "path": "../../../../packages/device-utils"
         },
         {

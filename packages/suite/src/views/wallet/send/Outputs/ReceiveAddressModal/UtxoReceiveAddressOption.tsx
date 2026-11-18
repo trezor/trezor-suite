@@ -44,7 +44,7 @@ export const UtxoReceiveAddressOption = ({
         <CardList.Item onClick={() => onAddressSelect(address.address)}>
             <Row width="100%" gap={12} justifyContent="space-between">
                 <Row gap={12}>
-                    <TokenIcon size={24} symbol={account.symbol} />
+                    <TokenIcon size={24} networkSymbol={account.symbol} />
 
                     <Column alignItems="flex-start">
                         <Address isTruncated value={address.address} />

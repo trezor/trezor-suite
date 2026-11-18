@@ -141,7 +141,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
             <CoinSection>
                 <div>
                     <CoinCell>
-                        <TokenIcon symbol={symbol} />
+                        <TokenIcon networkSymbol={symbol} />
                         <Title>{getNetwork(symbol).name}</Title>
                     </CoinCell>
                     <Button size="small" intent="neutral" priority="secondary" onClick={onSettings}>

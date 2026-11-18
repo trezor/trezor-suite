@@ -30,6 +30,7 @@ export const createCardanoExternalNativeProductDescriptor = ({
         operations: ['unstake', 'claim', 'vote'],
         exclusivity: 'account',
         rateKind: 'apy',
+        rewardsKind: 'compounded',
         limits: CARDANO_EXTERNAL_NATIVE_PRODUCT_LIMITS,
         options: [],
         consentKey: null,
@@ -38,6 +39,7 @@ export const createCardanoExternalNativeProductDescriptor = ({
             mobile: { access: 'read-only' },
         },
         messageSystemFeatures,
+        minFirmware: {},
         isCountedInAccountTotals: true,
     });
 };

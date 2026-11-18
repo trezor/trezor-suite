@@ -15,12 +15,12 @@ export function SolanaTxSimulationAssetLogo({
 }: SolanaTxSimulationAssetLogoProps) {
     // Only the native asset comes without a mint address.
     if (!('address' in asset)) {
-        return <TokenIcon symbol={network.symbol} size={size} />;
+        return <TokenIcon networkSymbol={network.symbol} size={size} />;
     }
 
     return (
         <TokenIcon
-            symbol={network.symbol}
+            networkSymbol={network.symbol}
             contractAddress={asset.address}
             size={size}
             placeholder={asset.name || asset.symbol}

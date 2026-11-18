@@ -12,6 +12,7 @@ export const mockStakingPosition = (overrides: Partial<StakingPosition> = {}): S
         withdrawable: stakingAmountSchema.parse('0'),
         rewards: stakingAmountSchema.parse('12000000000000000'),
     },
+    activations: [],
     unlocks: [
         {
             amount: stakingAmountSchema.parse('500000000000000000'),

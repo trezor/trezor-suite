@@ -50,6 +50,17 @@ export {
     type StakingEngineRejection,
 } from './engine/stakingEngineRejection';
 export { toPrecomposedLevels } from './fees/toPrecomposedLevels';
+export { useStakingPeriods, type StakingPeriods } from './hooks/useStakingPeriods';
+export {
+    useStakingProductInfo,
+    type StakingProductInfoResult,
+} from './hooks/useStakingProductInfo';
+export { useStakingProductTargets } from './hooks/useStakingProductTargets';
+export {
+    useStakingRate,
+    type StakingRateResult,
+    type UseStakingRateParams,
+} from './hooks/useStakingRate';
 export {
     createStakingProductRepository,
     injectStakingProductRepository,
@@ -64,9 +75,40 @@ export type {
     StakingServices,
 } from './stakingServices';
 export {
+    selectStakeableStakingProductDescriptorsBySymbol,
+    selectStakingOperationMessageContent,
     selectStakingProductAccess,
+    selectStakingPromoProductDescriptors,
     type ResolvedStakingProductAccess,
+    type StakingAccessRootState,
+    type StakingDisabledOperationReason,
+    type StakingDisabledOperations,
+    type StakingPromoRootState,
 } from './state/stakingAccessSelectors';
+export {
+    selectCountedStakingPositionEntriesByAccount,
+    selectIsStakingAccountActive,
+    selectIsStakingOperationPending,
+    selectStakingAccountBalanceWithStaking,
+    selectStakingAccountFiatAmount,
+    selectStakingPositionEntriesByAccount,
+    type StakingAccountFiatRootState,
+    type StakingPositionEntry,
+} from './state/stakingAccountSelectors';
+export {
+    selectDeviceStakingEntryByWarning,
+    selectDeviceStakingPositionEntries,
+    selectDeviceStakingPositionEntriesBySymbol,
+    selectDeviceStakingPositionsCount,
+    selectDeviceStakingSymbols,
+    type StakingDeviceRootState,
+} from './state/stakingDeviceSelectors';
+export {
+    selectDeviceStakingFiatPositions,
+    selectDeviceStakingFiatValuations,
+    selectDeviceStakingTotalFiatAmount,
+    type StakingFiatRootState,
+} from './state/stakingFiatSelectors';
 export { prepareStakingMiddleware, type StakingMiddlewareDeps } from './state/stakingMiddleware';
 export {
     mergeAccountPositions,
@@ -87,6 +129,7 @@ export {
     selectIsStakingSupportedSymbol,
     selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
+    selectStakingAmountsOutsideBalance,
     selectStakingPlatform,
     selectStakingPosition,
     selectStakingPositionsByAccount,
@@ -149,3 +192,9 @@ export {
     type SyncStakingPositionsThunkDeps,
     type SyncStakingPositionsThunkState,
 } from './state/stakingThunks';
+export { formatStakingAmount, type FormatStakingAmountParams } from './utils/formatStakingAmount';
+export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
+export {
+    isStakingOperationAvailable,
+    type IsStakingOperationAvailableParams,
+} from './utils/isStakingOperationAvailable';
