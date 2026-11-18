@@ -82,7 +82,8 @@ type WithLooseAmount<Voucher> = Voucher extends unknown
     : never;
 
 export type ReferralVouchersResponse = {
-    vouchers: ReferralVoucher[];
+    // The API may send the amount as a decimal string, e.g. "20.00".
+    vouchers: Array<WithLooseAmount<ReferralVoucher>>;
 };
 
 export type ReferralError = {
