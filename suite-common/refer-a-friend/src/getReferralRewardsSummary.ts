@@ -14,11 +14,14 @@ const getWaitingPeriodDays = (voucher: ReferralVoucher) =>
 const getRewardWaitingPeriodDays = (vouchers: ReferralVoucher[]) =>
     vouchers.length === 0 ? null : Math.max(...vouchers.map(getWaitingPeriodDays));
 
-// Every voucher can have a different amount, so the total is a sum, not a multiple.
+const roundToCents = (value: number) => Math.round(value * 100) / 100;
+
 export const getReferralRewardsSummary = (vouchers: ReferralVoucher[] = []) => ({
-    totalEarned: vouchers
-        .filter(voucher => earnedVoucherStatuses.includes(voucher.status))
-        .reduce((total, voucher) => total + voucher.amount, 0),
+    totalEarned: roundToCents(
+        vouchers
+            .filter(voucher => earnedVoucherStatuses.includes(voucher.status))
+            .reduce((total, voucher) => total + voucher.amount, 0),
+    ),
     availableVoucherCount: vouchers.filter(voucher => voucher.status === 'available').length,
     rewardWaitingPeriodDays: getRewardWaitingPeriodDays(vouchers),
 });

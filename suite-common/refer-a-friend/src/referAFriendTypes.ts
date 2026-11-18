@@ -34,7 +34,8 @@ export type ReferralVoucher = {
 };
 
 export type ReferralVouchersResponse = {
-    vouchers: ReferralVoucher[];
+    // The API may send the amount as a decimal string, e.g. "20.00".
+    vouchers: Array<Omit<ReferralVoucher, 'amount'> & { amount: number | string }>;
 };
 
 export type ReferralError = {
