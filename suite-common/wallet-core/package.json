@@ -72,7 +72,7 @@
         "react": "19.3.0",
         "react-hook-form": "^7.91.0",
         "react-redux": "9.3.0",
-        "viem": "^2.57.2"
+        "viem": "^2.57.16"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"
