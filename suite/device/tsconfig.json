@@ -8,6 +8,12 @@
         },
         { "path": "../locks" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/redux-utils" }
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../suite-common/test-utils"
+        }
     ]
 }

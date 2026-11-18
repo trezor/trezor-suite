@@ -40,6 +40,9 @@ const mockBtcAccount = mockWalletAccount({
 });
 let mockSendAccount = mockEthAccount;
 
+jest.mock('#src/hooks/wallet/useDeviceReadyGuardWithToast', () => ({
+    useDeviceReadyGuardWithToast: () => () => Promise.resolve(true),
+}));
 jest.mock('@suite/device', () => ({
     ...jest.requireActual('@suite/device'),
     useDevice: () => ({ device: { connected: true } }),
