@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-11-12T15:41:24+00:00",
-    "sequence": 168,
+    "timestamp": "2026-11-18T10:19:16+00:00",
+    "sequence": 169,
     "actions": [
         {
             "conditions": [
@@ -1658,6 +1658,1740 @@
                     {
                         "domain": "dashboard.promoBanner",
                         "visibleBanner": "trading-experience",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-11-19T15:00:00.000Z",
+                        "to": "2026-12-01T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "5901b1cd-5a1d-48fd-9355-d8c9b5053f86",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-accessory-pack",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-11-19T15:00:00.000Z",
+                        "to": "2026-12-01T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "f3e3d6b7-01d8-41bc-bedb-aea5228fbca4",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts3-gift",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-11-19T15:00:00.000Z",
+                        "to": "2026-12-01T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "cba1d3d0-f5bb-422f-9db4-f1bf53fbbdfa",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-11-19T15:00:00.000Z",
+                        "to": "2026-12-01T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "5ce7e0e7-b3fa-4236-9422-1a4da58015b9",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-upgrade",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-11-19T15:00:00.000Z",
+                        "to": "2026-12-01T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "279f87eb-b97d-42db-b631-8753dbe4f5f7",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts3-gift",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-11-19T15:00:00.000Z",
+                        "to": "2026-12-01T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "651f2952-f464-4f6d-8fed-e6fb58c15e10",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "eba2c82c-1cd7-484e-8921-b709b3e7acf2",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-accessory-pack",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "99e34961-c08b-4048-86f7-5ec33787f92e",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-complete-kit",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "ea45f558-27b3-47bc-93ed-51b6e57cc79f",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts3-gift",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "8dad7158-4119-47ad-ae1f-0ae1ca19a135",
+                "priority": 7,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "434b04ba-6578-4942-94df-278d89c7e78d",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-upgrade",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "bab4220d-d067-4f4c-9d7f-840f3f1ad123",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-complete-kit",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "14362ca0-229c-4365-9ef2-33caa733060a",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts3-gift",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-01T15:00:00.000Z",
+                        "to": "2026-12-20T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "303ec239-a735-4518-a644-8132e368155c",
+                "priority": 7,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-20T15:00:00.000Z",
+                        "to": "2026-12-25T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "3bace696-5caa-4182-9a9c-001653ae1912",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-accessory-pack",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-20T15:00:00.000Z",
+                        "to": "2026-12-25T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "52ac8bf3-3cc1-4e6d-8432-89a0c685123b",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-egift-card",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-20T15:00:00.000Z",
+                        "to": "2026-12-25T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "2093ff6a-f4b1-474b-a41e-87a9a2d68859",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-20T15:00:00.000Z",
+                        "to": "2026-12-25T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "6a92cceb-a068-4c39-bc13-a88a887d313f",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-upgrade",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-20T15:00:00.000Z",
+                        "to": "2026-12-25T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "d9679118-1c4a-4a90-bf11-3d6f1b089d62",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-egift-card",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-20T15:00:00.000Z",
+                        "to": "2026-12-25T14:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "251fbbc7-03b9-499e-bc6c-79fa915a6606",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-25T15:00:00.000Z",
+                        "to": "2027-01-05T22:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "56097b7a-6d5a-4a83-9379-a07fd5ff2a83",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-accessory-pack",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-25T15:00:00.000Z",
+                        "to": "2027-01-05T22:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "75b00e1a-8931-48d7-9d27-4e04a517c764",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts3-backup",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-25T15:00:00.000Z",
+                        "to": "2027-01-05T22:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T3W1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "0e178678-ad64-45c8-9f60-e9fbbd1a1a0c",
+                "priority": 8,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-25T15:00:00.000Z",
+                        "to": "2027-01-05T22:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "0589a641-71fa-4d39-ac4b-85d20e5f5457",
+                "priority": 10,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-ts7-upgrade",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "duration": {
+                        "from": "2026-12-25T15:00:00.000Z",
+                        "to": "2027-01-05T22:59:59.000Z"
+                    },
+                    "environment": {
+                        "desktop": ">=26.11.1",
+                        "mobile": ">=26.11.1",
+                        "web": ">=26.11.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "T1B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3B1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T3T1",
+                            "firmware": "*",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "6afc82ee-24b5-49a6-80c3-bb1c16d9fa07",
+                "priority": 9,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "bfh26-keep-metal",
                         "flag": true
                     }
                 ]
