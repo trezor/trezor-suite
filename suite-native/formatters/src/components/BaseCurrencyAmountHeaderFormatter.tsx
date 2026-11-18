@@ -1,5 +1,5 @@
 import { type BaseCurrencyAmount as BaseCurrencyAmountValue } from '@suite-common/wallet-types';
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { Text } from '@suite-native/atoms';
 import { type NativeTypographyStyle } from '@trezor/theme';
 
 import { type FormatterProps } from '../types';
@@ -24,10 +24,10 @@ const BaseCurrencyAmountContent = ({
     variant,
 }: BaseCurrencyAmountContentProps) => {
     const valueElement = (
-        <Box flexDirection="row" alignItems="flex-end" flexShrink={1}>
+        <>
             <AmountText value={wholeNumber} variant={variant} />
             <AmountText value={decimalNumber} variant={variant} color="contentSecondary" />
-        </Box>
+        </>
     );
     const currencyElement = (
         <Text variant={variant} color="contentSecondary">
@@ -35,16 +35,20 @@ const BaseCurrencyAmountContent = ({
         </Text>
     );
 
-    return isCryptoCurrency ? (
-        <HStack spacing="sp8" alignItems="flex-end">
-            {valueElement}
-            {currencyElement}
-        </HStack>
-    ) : (
-        <HStack spacing={0} alignItems="flex-end">
-            {currencyElement}
-            {valueElement}
-        </HStack>
+    // One text run, so a long amount shrinks as a whole to fit one line.
+    return (
+        <Text variant={variant} numberOfLines={1} adjustsFontSizeToFit>
+            {isCryptoCurrency ? (
+                <>
+                    {valueElement} {currencyElement}
+                </>
+            ) : (
+                <>
+                    {currencyElement}
+                    {valueElement}
+                </>
+            )}
+        </Text>
     );
 };
 
