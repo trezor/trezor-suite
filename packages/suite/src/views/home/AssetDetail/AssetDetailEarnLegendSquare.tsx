@@ -6,5 +6,11 @@ type AssetDetailEarnLegendSquareProps = {
 };
 
 export const AssetDetailEarnLegendSquare = ({ color }: AssetDetailEarnLegendSquareProps) => (
-    <Box width={12} height={12} borderRadius={4} backgroundColor={color} />
+    <Box
+        width={12}
+        height={12}
+        borderRadius={4}
+        backgroundColor={color}
+        data-testid="@asset-detail/earn/legend-square"
+    />
 );

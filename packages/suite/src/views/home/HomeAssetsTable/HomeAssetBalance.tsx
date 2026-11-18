@@ -40,7 +40,9 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
 
     return (
         <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
-            <BaseCurrencyValue amount={amount} symbol={symbol} tokenAddress={contractAddress} />
+            <span data-testid="@dashboard/home-asset/fiat-balance">
+                <BaseCurrencyValue amount={amount} symbol={symbol} tokenAddress={contractAddress} />
+            </span>
             <Text
                 intent="neutral"
                 priority="secondary"
@@ -50,6 +52,7 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
             >
                 <TruncatedAmount>
                     <FormattedCryptoAmount
+                        data-testid="@dashboard/home-asset/crypto-balance"
                         value={amount}
                         symbol={tokenSymbol ?? symbol}
                         contractAddress={contractAddress}

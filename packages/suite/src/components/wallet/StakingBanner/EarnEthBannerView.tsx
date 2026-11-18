@@ -24,6 +24,7 @@ export const EarnEthBannerView = ({
 
     return (
         <Banner
+            data-testid="@staking/eth/earn-banner"
             icon={PiggyBankIcon}
             intent="brand"
             title={

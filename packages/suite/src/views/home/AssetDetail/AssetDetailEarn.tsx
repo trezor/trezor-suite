@@ -91,12 +91,17 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                             </TextButton>
                         </Row>
                         <SegmentedBar
+                            data-testid="@asset-detail/earn/allocation-bar"
                             segments={[
                                 { value: 1 - stakingRatio, color: unstakedColor },
                                 { value: stakingRatio, color: STAKING_COLOR },
                             ]}
                         />
-                        <Row justifyContent="space-between" alignItems="center">
+                        <Row
+                            justifyContent="space-between"
+                            alignItems="center"
+                            data-testid="@asset-detail/earn/available"
+                        >
                             <Row gap={12} alignItems="center">
                                 <AssetDetailEarnLegendSquare color={unstakedColor} />
                                 <Text
@@ -117,7 +122,11 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                                 <BaseCurrencyValue amount={availableAmount} symbol={symbol} />
                             </Text>
                         </Row>
-                        <Row justifyContent="space-between" alignItems="center">
+                        <Row
+                            justifyContent="space-between"
+                            alignItems="center"
+                            data-testid="@asset-detail/earn/staked"
+                        >
                             <Row gap={12} alignItems="center">
                                 <AssetDetailEarnLegendSquare color={STAKING_COLOR} />
                                 <Text
@@ -130,7 +139,11 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                             </Row>
                             <Row gap={12} alignItems="center">
                                 {apy != null && apy > 0 && (
-                                    <Text typographyStyle="body-sm" intent="brand">
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="brand"
+                                        data-testid="@asset-detail/earn/staking-rate"
+                                    >
                                         {/* Tron pays its rate as an APR, as its Earn modal says. */}
                                         {getNetworkType(symbol) === 'tron' ? (
                                             <Translation

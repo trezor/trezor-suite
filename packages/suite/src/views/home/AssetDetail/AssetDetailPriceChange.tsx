@@ -20,7 +20,11 @@ export const AssetDetailPriceChange = ({
         <Text typographyStyle="body-md" color="contentTertiary">
             <Translation id="TR_HOME_ASSET_WEEK_PERIOD" />
         </Text>
-        <FiatChangeAmount change={change} isExact />
-        <TrendBadge valueInFraction={changePercent.toNumber()} />
+        <Row data-testid="@asset-detail/market-price/week-change-amount">
+            <FiatChangeAmount change={change} isExact />
+        </Row>
+        <Row data-testid="@asset-detail/market-price/week-change-percentage">
+            <TrendBadge valueInFraction={changePercent.toNumber()} />
+        </Row>
     </Row>
 );

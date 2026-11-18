@@ -65,6 +65,8 @@ export class WalletPage {
     readonly pendingTransactionHeading: Locator;
     readonly sendForm: Locator;
     readonly sendFormHeader: Locator;
+    readonly accountHeading = (name: string) =>
+        this.page.getByRole('heading', { level: 2, name, exact: true });
     readonly totalSent: Locator;
     readonly receiveButton: Locator;
     readonly verifyAddressButton: Locator;
