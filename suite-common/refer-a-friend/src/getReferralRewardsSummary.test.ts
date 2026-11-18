@@ -28,8 +28,8 @@ describe(getReferralRewardsSummary.name, () => {
 
     it('sums amounts of earned vouchers and counts available ones', () => {
         const vouchers = [
-            createVoucher('available', 20),
-            createVoucher('available', 25),
+            createVoucher('available', 20.4),
+            createVoucher('available', 25.2),
             createVoucher('used', 10),
             createVoucher('expired', 5),
             createVoucher('pending', 100),
@@ -37,7 +37,7 @@ describe(getReferralRewardsSummary.name, () => {
         ];
 
         expect(getReferralRewardsSummary(vouchers)).toEqual({
-            totalEarned: 60,
+            totalEarned: 60.6,
             availableVoucherCount: 2,
             rewardWaitingPeriodDays: 30,
         });

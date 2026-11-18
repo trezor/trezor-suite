@@ -157,7 +157,13 @@ const applyReferralAccount = async ({
     }
 
     const { vouchers } = vouchersResult.payload as ReferralVouchersResponse;
-    dispatch(referAFriendActions.accountLoaded({ walletDescriptor, account, vouchers }));
+    dispatch(
+        referAFriendActions.accountLoaded({
+            walletDescriptor,
+            account,
+            vouchers: vouchers.map(voucher => ({ ...voucher, amount: Number(voucher.amount) })),
+        }),
+    );
 
     return ok(undefined);
 };

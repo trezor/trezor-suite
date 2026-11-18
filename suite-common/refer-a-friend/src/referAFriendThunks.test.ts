@@ -62,18 +62,18 @@ const accountWithoutCode = (status: 'none' | 'left'): ReferralAccount => ({
     redemptionLimitResetsAt: null,
 });
 
-const vouchers: ReferralVoucher[] = [
-    {
-        voucher: 'TREF-8K2M-X9P4',
-        status: 'available',
-        amount: 20,
-        fiatCurrency: 'USD',
-        orderPaidAt: '2026-09-15T15:30:00Z',
-        readyAt: '2026-10-15T00:00:00Z',
-        expiresAt: '2027-10-15T00:00:00Z',
-        usedAt: null,
-    },
-];
+const availableVoucher: ReferralVoucher = {
+    code: 'TREF-8K2M-X9P4',
+    status: 'available',
+    amount: 20,
+    fiatCurrency: 'USD',
+    orderPaidAt: '2026-09-15T15:30:00Z',
+    availableAt: '2026-10-15T00:00:00Z',
+    expiresAt: '2027-10-15T00:00:00Z',
+    usedAt: null,
+};
+
+const vouchers = [availableVoucher];
 
 // A full TrezorDevice is irrelevant here, only the identity of wallet instances matters.
 const createWallet = (overrides: Partial<TrezorDevice>) =>
@@ -228,6 +228,25 @@ describe('fetchReferralAccountThunk', () => {
                 walletDescriptor: WALLET_DESCRIPTOR,
                 account: activeAccount,
                 vouchers,
+            }),
+        );
+    });
+
+    it('parses voucher amounts sent as decimal strings', async () => {
+        const { actions, dispatch, getState, extra } = setup({
+            apiResponses: {
+                'GET v1/account': ok(activeAccount),
+                'GET v1/vouchers': ok({ vouchers: [{ ...availableVoucher, amount: '20.50' }] }),
+            },
+        });
+
+        await fetchReferralAccountThunk({ deviceId: DEVICE_ID })(dispatch, getState, extra);
+
+        expect(actions).toContainEqual(
+            referAFriendActions.accountLoaded({
+                walletDescriptor: WALLET_DESCRIPTOR,
+                account: activeAccount,
+                vouchers: [{ ...availableVoucher, amount: 20.5 }],
             }),
         );
     });
