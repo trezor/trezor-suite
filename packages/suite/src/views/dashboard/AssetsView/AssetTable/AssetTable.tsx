@@ -53,12 +53,10 @@ export const AssetTable = ({
                     failed={asset.failed}
                     assetNativeCryptoBalance={asset.assetNativeCryptoBalance}
                     assetTokens={asset.assetTokens}
-                    stakingAccounts={asset.stakingAccounts}
                     assetsFiatBalances={assetsFiatBalances}
                     baseCurrencyCode={baseCurrencyCode}
                     currentFiatRates={currentFiatRates}
                     accounts={asset.accounts}
-                    isStakeNetwork={asset.isStakeNetwork}
                 />
             ))}
             {discoveryInProgress && <AssetRowSkeleton />}

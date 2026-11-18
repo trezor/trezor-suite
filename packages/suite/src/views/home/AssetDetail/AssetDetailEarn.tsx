@@ -8,8 +8,8 @@ import {
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
 } from '@suite-common/assets';
-import { useNetworkStakingRate } from '@suite-common/earn-staking';
-import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
+import { selectIsStakingSupportedSymbol, useNetworkStakingRate } from '@suite-common/earn-staking';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -29,13 +29,19 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
     const availableAmount = useSelector(state => selectWalletAssetAvailableAmount(state, assetKey));
     const stakingAmount = useSelector(state => selectWalletAssetStakingAmount(state, assetKey));
     const stakingRatio = useSelector(state => selectWalletAssetStakingRatio(state, assetKey)) ?? 0;
+
+    const isStakingSupported = useSelector(
+        state =>
+            networkSymbol !== undefined && selectIsStakingSupportedSymbol(state, networkSymbol),
+    );
+
     // The rate staking pays on the network, Tron's included, as the trade box and Earn show it.
     const stakingRate = useNetworkStakingRate({ networkSymbol: networkSymbol ?? null });
 
     if (
         networkSymbol === undefined ||
         contractAddress !== undefined ||
-        !isSupportedStakingNetworkSymbol(networkSymbol) ||
+        !isStakingSupported ||
         amount === undefined ||
         !isPositiveBalance(amount) ||
         availableAmount === undefined
