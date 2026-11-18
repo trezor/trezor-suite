@@ -14,8 +14,8 @@ import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 
-import { useTronFirmwareUpgradeModal } from './hooks/useTronFirmwareUpgradeModal';
 import { useTronStakingOperation } from './hooks/useTronStakingOperation';
 
 interface TronWithdrawReadyBannerProps {

@@ -1,10 +1,20 @@
+import { mockStakingQueryClient, mockStakingState } from '@suite-common/earn-staking/mocks';
 import { type AdaPools } from '@suite-common/earn-staking-api';
+import { type StakingProductInfo } from '@suite-common/earn-staking-common';
+import {
+    mockStakingProductDescriptor,
+    mockStakingProductInfo,
+} from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
+import {
+    CARDANO_EVERSTAKE_DREP,
+    CARDANO_EVERSTAKE_STAKING_POOL,
+} from '@suite-common/wallet-constants';
 import {
     type AccountVotingDelegation,
     type VotingDelegationOption,
     getStakeFormsDefaultValues,
+    poolBech32ToHex,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -14,12 +24,18 @@ import {
     type StakeFormState,
     type StakeType,
 } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    MOCK_CARDANO_EVERSTAKE_OTHER_POOL,
+    MOCK_CARDANO_EVERSTAKE_POOL,
+    mockWalletAccount,
+} from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type CardanoCertificate, PROTO } from '@trezor/connect';
 
 import {
     CardanoComposeError,
+    type ComposeTransactionThunkDeps,
     composeTransactionThunk,
+    getCardanoPoolsFromTargets,
     prepareTxPlan,
 } from './stakeFormCardanoActions';
 
@@ -498,6 +514,32 @@ describe('prepareTxPlan', () => {
     });
 });
 
+const ADA_EVERSTAKE_PRODUCT = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('ada'),
+    type: 'native',
+    operations: ['stake', 'unstake', 'claim', 'vote'],
+    options: [],
+});
+
+const everstakeTarget = (address: string, saturation: number) => ({
+    address,
+    providerId: ADA_EVERSTAKE_PRODUCT.providerId,
+    name: 'Everstake',
+    rate: 2.4,
+    saturation,
+});
+
+describe('getCardanoPoolsFromTargets', () => {
+    it('maps the rated targets to the pool shape and leaves an unrated one out', () => {
+        expect(
+            getCardanoPoolsFromTargets([
+                everstakeTarget(MOCK_CARDANO_EVERSTAKE_POOL, 80),
+                { ...everstakeTarget(MOCK_CARDANO_EVERSTAKE_OTHER_POOL, 40), saturation: null },
+            ]),
+        ).toEqual([{ id: MOCK_CARDANO_EVERSTAKE_POOL, apy: 2.4, saturation: 80 }]);
+    });
+});
+
 describe('composeTransactionThunk', () => {
     type ThunkState = ReturnType<Parameters<ReturnType<typeof composeTransactionThunk>>[1]>;
 
@@ -508,6 +550,7 @@ describe('composeTransactionThunk', () => {
         option: VotingDelegationOption,
         selectedFee: StakeFormState['selectedFee'] = 'normal',
         stakeType: StakeType = 'change-delegate',
+        productInfo?: StakingProductInfo,
     ) => {
         const formValues = {
             ...getStakeFormsDefaultValues({
@@ -537,13 +580,60 @@ describe('composeTransactionThunk', () => {
                 },
                 blockchain: {},
             },
+            earn: { staking: mockStakingState({ descriptors: [ADA_EVERSTAKE_PRODUCT] }) },
         } as unknown as ThunkState;
+        const extra: ComposeTransactionThunkDeps = {
+            services: {
+                queryClient: mockStakingQueryClient({
+                    productInfo:
+                        productInfo === undefined
+                            ? {}
+                            : { [ADA_EVERSTAKE_PRODUCT.id]: productInfo },
+                }),
+            },
+        };
 
-        return composeTransactionThunk(formValues, formState)(jest.fn(), () => state);
+        return composeTransactionThunk(formValues, formState)(jest.fn(), () => state, extra);
+    };
+
+    const getDelegationPool = () => {
+        const [params] = cardanoComposeTransactionMock.mock.calls.at(-1) ?? [];
+
+        return params?.certificates?.find(
+            (certificate: CardanoCertificate) =>
+                certificate.type === PROTO.CardanoCertificateType.STAKE_DELEGATION,
+        )?.pool;
     };
 
     beforeEach(() => {
         cardanoComposeTransactionMock.mockReset();
+    });
+
+    it('delegates a first stake to the least saturated Everstake pool the product info caches', async () => {
+        mockComposeSuccess();
+
+        await compose(
+            createStakeReadyAccount(),
+            { type: 'abstain' },
+            'normal',
+            'stake',
+            mockStakingProductInfo({
+                targets: [
+                    everstakeTarget(MOCK_CARDANO_EVERSTAKE_POOL, 80),
+                    everstakeTarget(MOCK_CARDANO_EVERSTAKE_OTHER_POOL, 40),
+                ],
+            }),
+        );
+
+        expect(getDelegationPool()).toBe(poolBech32ToHex(MOCK_CARDANO_EVERSTAKE_OTHER_POOL));
+    });
+
+    it('delegates a first stake to the default Everstake pool while no product info is cached', async () => {
+        mockComposeSuccess();
+
+        await compose(createStakeReadyAccount(), { type: 'abstain' }, 'normal', 'stake');
+
+        expect(getDelegationPool()).toBe(CARDANO_EVERSTAKE_STAKING_POOL.hex);
     });
 
     it.each([

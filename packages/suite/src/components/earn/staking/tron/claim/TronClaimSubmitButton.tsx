@@ -1,18 +1,14 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
-import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
-import {
-    getTronStakingRewards,
-    isTronClaimSupported,
-    selectHasRunningDiscovery,
-} from '@suite-common/wallet-core';
+import { Translation } from '@suite/intl';
+import { useStakingAccess, useStakingAccountPosition } from '@suite-common/earn-staking';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { BigNumber } from '@trezor/utils';
 
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
-import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -22,30 +18,29 @@ export const TronClaimSubmitButton = () => {
     const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
-    const { translationString } = useTranslation();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { account, actions } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
-    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
-        useFirmwareUpgradeModal();
+    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
 
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
-    const hasReward = new BigNumber(getTronStakingRewards(account)).gt(0);
+    const { productId, totals } = useStakingAccountPosition(account.key);
+    const access = useStakingAccess(productId);
+
+    const hasReward = isPositiveBalance(totals.rewards);
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
-    const isClaimFirmwareOutdated = !isTronClaimSupported(device);
+    const isClaimFirmwareOutdated = access.disabled.claim?.kind === 'firmware';
 
     const isDisabled =
         isClaimingDisabled || !hasReward || isSubmitting || isDeviceLocked || !!pendingTxid;
     const isLoading = isSubmitting || isDiscoveryRunning;
 
     const handleClick = () => {
-        if (isClaimingDisabled) {
-            return;
-        }
+        if (isClaimingDisabled) return;
 
         if (isClaimFirmwareOutdated) {
-            openFirmwareModal();
+            openFirmwareModal('TR_EARN_TRON_CLAIM_TITLE');
 
             return;
         }
@@ -65,13 +60,7 @@ export const TronClaimSubmitButton = () => {
 
     return (
         <>
-            {isFirmwareModalOpen && (
-                <FirmwareUpgradeNeededModal
-                    onClose={closeFirmwareModal}
-                    onUpdate={updateFirmware}
-                    featureName={translationString('TR_EARN_TRON_CLAIM_TITLE')}
-                />
-            )}
+            {firmwareModal}
 
             <Tooltip content={claimingMessageContent}>
                 <Button

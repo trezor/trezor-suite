@@ -1,12 +1,14 @@
 import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
-import { useFormatters } from '@suite-common/formatters';
 import {
-    getSolanaUnstakeAmountBounds,
-    getStakingDataForNetwork,
-    getStakingHelpCenterLink,
-} from '@suite-common/wallet-core';
+    formatStakingAmount,
+    getStakingOperationAvailability,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
+import { useFormatters } from '@suite-common/formatters';
+import { getSolanaUnstakeAmountBounds, getStakingHelpCenterLink } from '@suite-common/wallet-core';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -38,20 +40,26 @@ export const UnstakeForm = () => {
         methods,
         onCryptoAmountChange,
         getValues,
+        unstakableBalance,
     } = useWithdrawalFormContext();
     const { CryptoAmountFormatter } = useFormatters();
+    const { position, totals, access } = useStakingAccountPosition(account.key);
 
     const { symbol, networkType } = account;
 
     const isCardanoNetwork = networkType === 'cardano';
 
-    const {
-        autocompoundBalance = '0',
-        canClaim = false,
-        claimableAmount = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    // The claim banner follows the position's offer; a kill switch disables the claim elsewhere.
+    const canClaim =
+        getStakingOperationAvailability({ position, access, operation: 'withdraw' }) !==
+        'unavailable';
 
-    const isCardanoBalanceEmpty = isCardanoNetwork && new BigNumber(autocompoundBalance).lte(0);
+    const claimableAmount = formatStakingAmount({
+        amount: totals.withdrawable,
+        networkSymbol: symbol,
+    });
+
+    const isCardanoBalanceEmpty = isCardanoNetwork && !isPositiveBalance(unstakableBalance);
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);
@@ -114,7 +122,7 @@ export const UnstakeForm = () => {
                 {!isCardanoNetwork && (
                     <>
                         <EarnAvailableBalance
-                            formattedBalance={autocompoundBalance}
+                            formattedBalance={unstakableBalance}
                             symbol={symbol}
                         />
 

@@ -30,10 +30,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';
-import { useTronFirmwareUpgradeModal } from './hooks/useTronFirmwareUpgradeModal';
 import {
     type TronStakingOperation,
     useTronStakingOperation,

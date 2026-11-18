@@ -27,10 +27,10 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakeInfoRow } from '#src/components/earn/staking/tron/TronStakeInfoRow';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TronVoteAllocationRow } from './TronVoteAllocationRow';
-import { useTronFirmwareUpgradeModal } from '../hooks/useTronFirmwareUpgradeModal';
 import { useTronStakingOperation } from '../hooks/useTronStakingOperation';
 
 interface TronVoteAllocationModalProps {
