@@ -1,18 +1,14 @@
 import React, { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import {
-    calculateGains,
-    getNetworkAdjustedStakingBalance,
-    selectPoolStatsApy,
-} from '@suite-common/wallet-core';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
+import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
-import { useSelector } from '#src/hooks/suite/useSelector';
 import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
 
 export const EstimatedGains = () => {
@@ -41,7 +37,7 @@ export const EstimatedGains = () => {
         return '0';
     }, [hasInvalidFormState, value, account]);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
+    const { rate: apy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
     const gains = [
         {

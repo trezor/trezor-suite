@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -11,7 +12,6 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 export interface EmptyStakingCardData {
@@ -32,7 +32,12 @@ export const useEmptyStakingCardData = ({
     account,
 }: UseEmptyStakingCardDataProps): EmptyStakingCardData => {
     const { CryptoAmountFormatter } = useFormatters();
-    const { rate } = useStakingRate({ symbol: account?.symbol, accountKey: account?.key });
+
+    const { rate } = useNetworkStakingRate({
+        networkSymbol: account?.symbol ?? null,
+        accountKey: account?.key,
+    });
+
     const { isStakingDisabled } = useMessageSystemStaking(account?.symbol);
     const isStartStakingDisabled = isStakingDisabled || !account;
 

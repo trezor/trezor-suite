@@ -2,7 +2,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useTronStakingStats } from '@suite-common/earn-staking-api';
+import { useNetworkStakingPeriods, useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, supportedTronNetworkSymbols } from '@suite-common/wallet-types';
@@ -19,10 +19,7 @@ import {
     type EarnInANutshellProcess,
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
-import { EarnInfoRow } from './components/EarnInfoRow';
-
-// TODO: move to constants
-const TRON_UNSTAKING_PERIOD_DAYS = 14;
+import { EarnInfoRow, getEarnInfoRowDaysContent } from './components/EarnInfoRow';
 
 interface TronStakeInANutshellModalProps {
     onCancel: () => void;
@@ -37,7 +34,11 @@ export const TronStakeInANutshellModal = ({
 }: TronStakeInANutshellModalProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { analytics } = useServices(injectDesktopAnalytics);
-    const { maxApr } = useTronStakingStats();
+
+    const networkSymbol = supportedTronNetworkSymbols[0];
+    const { rate } = useNetworkStakingRate({ networkSymbol });
+    const { exitPeriodDays } = useNetworkStakingPeriods(networkSymbol);
+
     const formatApyValue = useFormatApy();
 
     const handleCancel = () => {
@@ -48,7 +49,7 @@ export const TronStakeInANutshellModal = ({
             payload: {
                 action: actionType,
                 step: 'stake-in-a-nutshell-modal',
-                networkSymbol: supportedTronNetworkSymbols[0],
+                networkSymbol,
             },
         });
     };
@@ -95,7 +96,7 @@ export const TronStakeInANutshellModal = ({
         });
     };
 
-    const displaySymbol = getNetworkDisplaySymbol(supportedTronNetworkSymbols[0]);
+    const displaySymbol = getNetworkDisplaySymbol(networkSymbol);
     const networkFeeBadge = { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true };
 
     const processes: EarnInANutshellProcess[] = [
@@ -122,12 +123,12 @@ export const TronStakeInANutshellModal = ({
                         subheading={<Translation id="TR_EARN_TRON_REWARDS_CLAIMED_MANUALLY" />}
                         content={{
                             text:
-                                maxApr === null ? (
+                                rate === null ? (
                                     <Translation id="TR_EARN_APY_N_A" />
                                 ) : (
                                     <Translation
                                         id="TR_EARN_APR_APPROX"
-                                        values={{ aprPercent: formatApyValue(maxApr) }}
+                                        values={{ aprPercent: formatApyValue(rate) }}
                                     />
                                 ),
                         }}
@@ -146,14 +147,7 @@ export const TronStakeInANutshellModal = ({
                     />
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_COOL_DOWN_PERIOD" />}
-                        content={{
-                            text: (
-                                <Translation
-                                    id="TR_STAKE_DAYS"
-                                    values={{ count: TRON_UNSTAKING_PERIOD_DAYS }}
-                                />
-                            ),
-                        }}
+                        content={getEarnInfoRowDaysContent(exitPeriodDays, 'TR_STAKE_DAYS')}
                     />
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_SIGN_WITHDRAWAL_TRANSACTION" />}

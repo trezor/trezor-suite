@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type YieldDtoV2, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import {
     Feature,
     type MessageSystemRootState,
@@ -12,7 +13,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isApyAvailable } from '@suite-common/wallet-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -28,8 +28,8 @@ const isVaultDepositEnabled = (state: MessageSystemRootState, vault: YieldDtoV2)
     );
 
 export const useEarnEthBanner = (account: Account) => {
-    const { rate: stakingRate } = useStakingRate({
-        symbol: account.symbol,
+    const { rate: stakingRate } = useNetworkStakingRate({
+        networkSymbol: account.symbol,
         accountKey: account.key,
     });
 
