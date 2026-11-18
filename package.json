@@ -143,8 +143,7 @@
         "### Next 15 pins vulnerable postcss 8.4.31, only Next 16 moves to 8.5.x": "1.0.0",
         "postcss@npm:8.4.31": "^8.5.29",
         "### Detox pins proper-lockfile 3.x, which crashes the run with ECOMPROMISED when the event loop stalls (wix/Detox#4210); 4.x tolerates it": "1.0.0",
-        "proper-lockfile@npm:^3.0.2": "^4.1.2",
-        "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch"
+        "proper-lockfile@npm:^3.0.2": "^4.1.2"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.5",
