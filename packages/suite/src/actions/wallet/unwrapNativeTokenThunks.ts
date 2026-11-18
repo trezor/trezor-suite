@@ -16,6 +16,7 @@ import { createThunk } from '@trezor/redux-utils';
 import {
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
+    getYieldDeviceErrorMessage,
     getYieldSubmitErrorAnalyticsMessage,
     isYieldPushError,
     sendYieldTransaction,
@@ -217,7 +218,9 @@ export const submitUnwrapNativeTokenThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: error instanceof Error ? error.message : String(error),
+                    error:
+                        getYieldDeviceErrorMessage(error) ??
+                        (error instanceof Error ? error.message : String(error)),
                 }),
             );
 
