@@ -13,7 +13,6 @@ type ReferralRewardsProps = {
     fiatCurrency: string;
     annualRewardLimit: number;
     annualReferralLimit: number;
-    rewardWaitingPeriodDays: number;
 };
 
 export const ReferralRewards = ({
@@ -22,7 +21,6 @@ export const ReferralRewards = ({
     fiatCurrency,
     annualRewardLimit,
     annualReferralLimit,
-    rewardWaitingPeriodDays,
 }: ReferralRewardsProps) => {
     const { formatNumber } = useIntl();
     const summary = getReferralRewardsSummary(vouchers);
@@ -40,20 +38,24 @@ export const ReferralRewards = ({
                     <H3 typographyStyle="body-md-strong">
                         <Translation id="TR_REFERRAL_YOUR_REWARDS" />
                     </H3>
-                    <Tooltip
-                        content={
-                            <Translation
-                                id="TR_REFERRAL_REWARDS_CONDITIONS"
-                                values={{ rewardWaitingPeriodDays }}
-                            />
-                        }
-                        placement="bottom"
-                        tooltipMaxWidth={270}
-                    >
-                        <Note>
-                            <Translation id="TR_REFERRAL_CONDITIONS" />
-                        </Note>
-                    </Tooltip>
+                    {summary.rewardWaitingPeriodDays !== null && (
+                        <Tooltip
+                            content={
+                                <Translation
+                                    id="TR_REFERRAL_REWARDS_CONDITIONS"
+                                    values={{
+                                        rewardWaitingPeriodDays: summary.rewardWaitingPeriodDays,
+                                    }}
+                                />
+                            }
+                            placement="bottom"
+                            tooltipMaxWidth={270}
+                        >
+                            <Note>
+                                <Translation id="TR_REFERRAL_CONDITIONS" />
+                            </Note>
+                        </Tooltip>
+                    )}
                 </Row>
                 <Card type="flat" paddingType="none">
                     <Row
