@@ -1,20 +1,21 @@
 import { useEffect, useMemo } from 'react';
 
-import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api/src/staking';
+import { useStakingActivationDays } from '@suite-common/earn';
+import {
+    selectIsStakingAccountActive,
+    useNetworkStakingRate,
+    useStakingAccountPosition,
+    useStakingDaysUntil,
+    useStakingPeriods,
+} from '@suite-common/earn-staking';
 import {
     fetchAllTransactionsForAccountThunk,
-    getDaysToAddToPool,
-    getDaysToUnstake,
-    getStakingDataForNetwork,
-    hasStakeInPendingDepositedState,
-    selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
-    selectEthereumNextRewardPayout,
     selectHasRunningDiscovery,
-    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -44,19 +45,22 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
-    const nextRewardPayout = useSelector(selectEthereumNextRewardPayout);
+    const { productId, position, totals } = useStakingAccountPosition(accountKey);
+    const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol, accountKey });
+    const { entryPeriodDays, exitPeriodDays } = useStakingPeriods(productId);
 
+    // A deposit is dated from the queue at its stake time and an unlock by the position; without
+    // one, the periods estimate.
+    const daysUntilActivation = useStakingActivationDays(accountKey);
+    const daysUntilUnlock = useStakingDaysUntil(position?.unlocks[0]?.availableAt ?? null);
+    const daysToAddToPool = daysUntilActivation ?? entryPeriodDays;
+    const daysToUnstake = daysUntilUnlock ?? exitPeriodDays;
+
+    // The instant-stake banner diffs the internal transfers of the staking transactions.
     const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
     const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
 
     const { dispatch } = useServices(injectDispatch);
-
-    const lastTxBlockTime = stakeTxs[0]?.blockTime;
-    const timestamp = hasStakeInPendingDepositedState(account) ? lastTxBlockTime : undefined;
-
-    const { data: validatorQueueData, isLoading: isValidatorQueueLoading } =
-        useEthereumValidatorsQueue({ account, timestamp });
 
     useEffect(() => {
         if (accountKey) {
@@ -71,12 +75,9 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
 
     const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
 
-    const daysToAddToPool = getDaysToAddToPool(stakeTxs, validatorQueueData);
-    const daysToUnstake = getDaysToUnstake(unstakeTxs, validatorQueueData);
+    const canClaim = isPositiveBalance(totals.withdrawable);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
-
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, accountKey));
 
     return (
         <StakingDashboard
@@ -94,21 +95,19 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}
                                 />
+
                                 <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
                                     <ClaimCard account={account} />
+
                                     <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
-                                        <ApyCard apy={apy} />
-                                        <PayoutCardNextRewards
-                                            account={account}
-                                            nextRewardPayout={nextRewardPayout}
-                                            daysToAddToPool={daysToAddToPool}
-                                            validatorWithdrawTime={validatorQueueData?.withdrawTime}
-                                        />
+                                        <ApyCard apy={rate} />
+
+                                        <PayoutCardNextRewards account={account} />
                                     </Flex>
                                 </Grid>
+
                                 <StakingCard
                                     account={account}
-                                    isValidatorsQueueLoading={isValidatorQueueLoading}
                                     daysToAddToPool={daysToAddToPool}
                                     daysToUnstake={daysToUnstake}
                                 />

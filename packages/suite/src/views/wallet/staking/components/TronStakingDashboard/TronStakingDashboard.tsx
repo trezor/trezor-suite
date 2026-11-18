@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 
-import { selectIsStakingAccountActive } from '@suite-common/earn-staking';
+import {
+    TRON_UNLOCKS_REFRESH_INTERVAL_MS,
+    selectIsStakingAccountActive,
+} from '@suite-common/earn-staking';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
@@ -19,8 +22,6 @@ import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 import { Transactions } from '../StakingDashboard/components/Transactions';
 
-const UNSTAKING_REFRESH_INTERVAL_MS = 60 * 1000;
-
 interface TronStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
 }
@@ -32,7 +33,8 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
 
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, accountKey));
 
-    const nowSeconds = useNow(UNSTAKING_REFRESH_INTERVAL_MS) / 1000;
+    // An unlock matures by time alone, so the cards settle the position at the current minute.
+    const nowMs = useNow(TRON_UNLOCKS_REFRESH_INTERVAL_MS);
 
     useEffect(() => {
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
@@ -51,9 +53,9 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
                             maxWidth={560}
                             margin={{ horizontal: 'auto' }}
                         >
-                            <TronWithdrawReadyBanner account={account} nowSeconds={nowSeconds} />
+                            <TronWithdrawReadyBanner account={account} nowMs={nowMs} />
                             <TronVotingRewardsCard account={account} />
-                            <TronUnstakingCard account={account} nowSeconds={nowSeconds} />
+                            <TronUnstakingCard account={account} nowMs={nowMs} />
                             <TronStakedCard account={account} />
                             <TronResourcesCard account={account} />
                         </Column>

@@ -4,18 +4,18 @@ import { type PropsWithChildren, type ReactNode } from 'react';
 
 import { screen } from '@testing-library/react';
 
-import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-
-import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AdaStakingDashboard } from './AdaStakingDashboard';
 import {
-    type MockSuiteState,
-    mockInitialAppState,
-} from '../../../../../../mocks/mockInitialAppState';
+    adaAccount,
+    adaEverstakeProduct,
+    amount,
+    createStakingDashboardState,
+    mockPosition,
+    renderStakingDashboardComponent,
+} from '../stakingDashboardTestState';
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -49,29 +49,33 @@ jest.mock('../StakingDashboard/components/ClaimCard', () => ({
     ClaimCard: () => <div data-testid="@staking/can-claim-card" />,
 }));
 
-const stakedAccountWithRewards = mockWalletAccount(
-    { symbol: asNetworkSymbol('ada') },
-    { misc: { staking: { address: 'stake1_address', isActive: true, rewards: '56398' } } },
-);
+const stakedPositionWithRewards = mockPosition(adaEverstakeProduct.id, {
+    lockup: 'liquid',
+    balances: {
+        staked: amount('100056398'),
+        pending: amount('0'),
+        unstaking: amount('0'),
+        withdrawable: amount('0'),
+        rewards: amount('56398'),
+    },
+    operations: ['unstake', 'claim', 'vote'],
+    details: { kind: 'cardano-delegation', poolId: null, drep: null },
+});
 
 const renderAdaStakingDashboard = () => {
-    const { services } = createTestCompositionRoot<void, MockSuiteState>({
-        preloadedState: {
-            ...mockInitialAppState,
-            wallet: {
-                ...mockInitialAppState.wallet,
-                accounts: [stakedAccountWithRewards],
-            },
-        },
-    });
     const selectedAccount: SelectedAccountLoaded = {
         status: 'loaded',
-        account: stakedAccountWithRewards,
-        network: getNetwork(stakedAccountWithRewards.symbol),
+        account: adaAccount,
+        network: getNetwork(adaAccount.symbol),
         params: undefined,
     };
 
-    renderWithProviders(services, <AdaStakingDashboard selectedAccount={selectedAccount} />);
+    renderStakingDashboardComponent(<AdaStakingDashboard selectedAccount={selectedAccount} />, {
+        state: createStakingDashboardState({
+            accounts: [adaAccount],
+            positions: { [adaAccount.key]: [stakedPositionWithRewards] },
+        }),
+    });
 };
 
 describe('AdaStakingDashboard', () => {
