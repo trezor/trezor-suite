@@ -17,6 +17,7 @@ import { createThunk } from '@trezor/redux-utils';
 import {
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
+    getYieldDeviceErrorMessage,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
     isYieldPushError,
@@ -250,16 +251,17 @@ export const submitWrapNativeTokenThunk = createThunk<
             }
             console.error(error);
             reportError(getYieldSubmitErrorAnalyticsMessage(error));
+            const deviceError = getYieldDeviceErrorMessage(error);
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',
-                    error: error instanceof Error ? error.message : String(error),
+                    error: deviceError ?? (error instanceof Error ? error.message : String(error)),
                 }),
             );
             // Same reasoning as the compose failure above. A push failure in particular means the
             // transaction was already signed, which is worth saying rather than leaving the step
             // looking idle.
-            if (yieldFlow) {
+            if (yieldFlow && !deviceError) {
                 setYieldError({
                     dispatch,
                     ...yieldFlow,

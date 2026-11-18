@@ -39,8 +39,8 @@ import { createThunk } from '@trezor/redux-utils';
 
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
-    getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
+    showYieldSubmitErrorThunk,
 } from './signingHelpers';
 
 type ClaimMerklReward = YieldAccountsRewards[number]['rewards'][number];
@@ -373,13 +373,7 @@ export const claimMerklRewardsThunk = createThunk<
         } catch (error) {
             console.error(error);
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
-            dispatch(
-                yieldActions.setError({
-                    flowType: 'claim',
-                    flowKey,
-                    error: getYieldErrorTranslationKey(error),
-                }),
-            );
+            dispatch(showYieldSubmitErrorThunk({ flowType: 'claim', flowKey, error }));
         } finally {
             dispatch(yieldActions.finishSubmittingAction({ flowType: 'claim', flowKey }));
         }

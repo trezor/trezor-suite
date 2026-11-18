@@ -1,10 +1,11 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type Dispatch, type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
@@ -28,6 +29,8 @@ import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
+import { getDeviceErrorMessage } from '#src/utils/wallet/getDeviceErrorMessage';
+
 // Marks failures of the final broadcast — the transaction is already signed at that point,
 // which deserves a more specific message than the generic one.
 export const PUSH_TRANSACTION_FAILED_CAUSE = 'PushTransactionFailed';
@@ -40,19 +43,40 @@ export const getYieldErrorTranslationKey = (error: unknown) => {
         return 'TR_EARN_YIELD_ERROR_GENERIC';
     }
 
-    if (
-        error.cause === 'Device_InvalidState' || // incorrect passphrase submitted
-        error.cause === 'Method_Interrupted' // passphrase modal closed
-    ) {
-        return 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT';
-    }
-
     if (isYieldPushError(error)) {
         return 'TR_EARN_YIELD_ERROR_PUSH_FAILED';
     }
 
     return 'TR_EARN_YIELD_ERROR_GENERIC';
 };
+
+// Device problems are reported by a toast, like in Send and trading; other errors stay in the form.
+export const getYieldDeviceErrorMessage = (error: unknown) =>
+    error instanceof Error
+        ? getDeviceErrorMessage({ code: error.cause, message: error.message })
+        : undefined;
+
+type ShowYieldSubmitErrorThunkParams = {
+    flowType: YieldFlowType;
+    flowKey: string;
+    error: unknown;
+};
+
+export const showYieldSubmitErrorThunk =
+    ({ flowType, flowKey, error }: ShowYieldSubmitErrorThunkParams) =>
+    (dispatch: Dispatch) => {
+        const deviceError = getYieldDeviceErrorMessage(error);
+
+        if (deviceError) {
+            dispatch(notificationsActions.addToast({ type: 'sign-tx-error', error: deviceError }));
+
+            return;
+        }
+
+        dispatch(
+            yieldActions.setError({ flowType, flowKey, error: getYieldErrorTranslationKey(error) }),
+        );
+    };
 
 export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
     isYieldPushError(error) ? 'push-failed' : 'submit-failed';
