@@ -173,6 +173,22 @@ const FEE_ERROR_LEVELS: PrecomposedLevels = {
     },
 };
 
+const getComposedLevel = (max: string): PrecomposedLevels[string] => ({
+    type: 'nonfinal',
+    max,
+    totalSpent: '100000',
+    fee: '1025',
+    feePerByte: '9.15',
+    bytes: 112,
+    inputs: [],
+});
+
+const MAX_LEVELS: PrecomposedLevels = {
+    high: getComposedLevel('0.7'),
+    normal: getComposedLevel('0.8'),
+    low: getComposedLevel('0.9'),
+};
+
 describe('useTradingComposeTransaction', () => {
     beforeEach(() => {
         mockGetComposeAddressPlaceholder.mockImplementation((account: Account) =>
@@ -194,6 +210,49 @@ describe('useTradingComposeTransaction', () => {
             expect(
                 result.current.methods.getFieldState(TRADING_FORM_OUTPUT_AMOUNT).error?.message,
             ).toBe('AMOUNT_NOT_ENOUGH_CURRENCY_FEE'),
+        );
+    });
+
+    it('computes swap max at the high fee level', async () => {
+        mockComposedLevels = MAX_LEVELS;
+
+        const { result } = renderComposeTransaction({
+            type: 'exchange',
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_FORM_OUTPUT_AMOUNT)).toBe('0.7'),
+        );
+    });
+
+    it('computes swap max at the highest fee level that composes', async () => {
+        mockComposedLevels = {
+            ...MAX_LEVELS,
+            high: {
+                type: 'error',
+                error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                errorMessage: { id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+            },
+        };
+
+        const { result } = renderComposeTransaction({
+            type: 'exchange',
+            defaultValues: { setMaxOutputId: 0 },
+        });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_FORM_OUTPUT_AMOUNT)).toBe('0.8'),
+        );
+    });
+
+    it('computes sell max at the selected fee level', async () => {
+        mockComposedLevels = MAX_LEVELS;
+
+        const { result } = renderComposeTransaction({ defaultValues: { setMaxOutputId: 0 } });
+
+        await waitFor(() =>
+            expect(result.current.methods.getValues(TRADING_FORM_OUTPUT_AMOUNT)).toBe('0.8'),
         );
     });
 
