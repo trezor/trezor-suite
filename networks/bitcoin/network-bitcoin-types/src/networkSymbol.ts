@@ -6,6 +6,7 @@ export const supportedBitcoinNetworks = [
     'regtest',
     'ltc',
     'doge',
+    'nmc',
     'zec',
     'bch',
 ] as const;

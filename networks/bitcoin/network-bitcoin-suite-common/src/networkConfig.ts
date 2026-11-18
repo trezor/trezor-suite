@@ -13,6 +13,7 @@ const syncIntervalBySymbol: Readonly<Record<BitcoinNetworkSymbol, number>> = {
     regtest: DEFAULT_ACCOUNT_SYNC_INTERVAL,
     ltc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
     doge: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    nmc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
     zec: DEFAULT_ACCOUNT_SYNC_INTERVAL,
     bch: DEFAULT_ACCOUNT_SYNC_INTERVAL,
 };
@@ -193,6 +194,30 @@ export const networkConfigBySymbol = {
         tradeCryptoId: 'dogecoin',
         nativeAssetCryptoId: 'dogecoin',
         caipId: 'bip122:1a91e3dace36e2be3bf030a65679fe82',
+        yieldXyzId: null,
+    },
+    nmc: {
+        color: '#186c9d',
+        displayOrder: asDisplayOrderKey('aI1'),
+        protocols: [asProtocol('namecoin'), asProtocol('nmc')],
+        displaySymbol: 'NMC',
+        name: 'Namecoin',
+        networkType: 'bitcoin',
+        bip43Path: "m/44'/7'/i'",
+        decimals: 8,
+        testnet: false,
+        // The previous `https://nmc1.trezor.io` blockbook backend is offline. Until
+        // a maintained blockbook is available, users must configure a custom
+        // backend under Settings -> Coins -> Namecoin -> Backends to get account
+        // discovery and balances. The block explorer falls back to a community
+        // service (https://www.namebrow.se) so links keep working out of the box.
+        explorer: getExplorerUrls('https://www.namebrow.se'),
+        features: ['sign-verify'],
+        backendOptions: [{ type: 'blockbook' }],
+        accountTypes: {},
+        coingeckoId: 'namecoin',
+        tradeCryptoId: 'namecoin',
+        nativeAssetCryptoId: 'namecoin',
         yieldXyzId: null,
     },
     zec: {
