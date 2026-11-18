@@ -2,6 +2,7 @@ import type { SubscriptionAccountInfo, TokenDetailByMint } from '@trezor/blockch
 import { RESPONSES } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import {
+    RPC_COMMITMENT,
     RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
     tokenProgramsInfo,
 } from '@trezor/network-solana/constants';
@@ -49,6 +50,7 @@ const handleNotifications = async <T>(
             // get the last transaction signature for the account, since that what triggered this callback
             const [lastSignatureResponse] = await api.rpc
                 .getSignaturesForAddress(address(changedAddress), {
+                    commitment: RPC_COMMITMENT,
                     limit: 1,
                 })
                 .send();
@@ -60,7 +62,7 @@ const handleNotifications = async <T>(
                 .getTransaction(lastSignature, {
                     encoding: 'jsonParsed',
                     maxSupportedTransactionVersion: RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
-                    commitment: 'confirmed',
+                    commitment: RPC_COMMITMENT,
                 })
                 .send();
 
@@ -113,7 +115,7 @@ export const subscribeAccounts = async (context: Context, accounts: Subscription
             state.addAccounts([account]);
 
             const accountNotifications = await api.rpcSubscriptions
-                .accountNotifications(address(a.descriptor), { commitment: 'confirmed' })
+                .accountNotifications(address(a.descriptor), { commitment: RPC_COMMITMENT })
                 .subscribe({ abortSignal: abortController.signal });
             handleNotifications(context, accountNotifications, account, () => a.descriptor);
 
@@ -125,7 +127,7 @@ export const subscribeAccounts = async (context: Context, accounts: Subscription
                 Object.values(tokenProgramsInfo).map(async ({ publicKey }) => {
                     const tokenNotifications = await api.rpcSubscriptions
                         .programNotifications(address(publicKey), {
-                            commitment: 'confirmed',
+                            commitment: RPC_COMMITMENT,
                             encoding: 'jsonParsed',
                             filters: [
                                 {
