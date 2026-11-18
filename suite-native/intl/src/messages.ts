@@ -1833,13 +1833,11 @@ export const messages = {
             },
             packaging: {
                 header: 'Packaging',
-                description:
-                    'The package was sealed and intact, with no signs of tampering before unboxing.',
+                description: 'The device package was intact and untampered with.',
             },
             securitySeal: {
                 header: 'Holographic seal',
-                description:
-                    'The <link>holographic seal</link> was intact when I unboxed my device.',
+                description: 'The <link>hologram</link> was intact before I removed it.',
                 modal: {
                     alertBox:
                         'We sold this Trezor model with two different holographic seals. Both of them are valid.',
