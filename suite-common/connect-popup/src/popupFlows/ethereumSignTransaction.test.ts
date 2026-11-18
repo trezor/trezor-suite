@@ -147,8 +147,11 @@ describe('EthereumSignTransaction.preCall', () => {
         jest.clearAllMocks();
     });
 
-    it('opens the simulation modal for a chain Blockaid can scan', async () => {
-        const { run, dispatch } = runSimulationPreCall(getNetwork('eth').chainId);
+    it.each([
+        ['Ethereum', getNetwork('eth').chainId],
+        ['Arc', getNetwork('arc').chainId],
+    ])('opens the simulation modal on %s, which Blockaid can scan', async (_name, chainId) => {
+        const { run, dispatch } = runSimulationPreCall(chainId);
         await run;
 
         expect(dispatch).toHaveBeenCalledWith(
@@ -157,7 +160,6 @@ describe('EthereumSignTransaction.preCall', () => {
     });
 
     it.each([
-        ['Arc', getNetwork('arc').chainId],
         ['Arc Testnet', getNetwork('tarc').chainId],
         ['Ethereum Classic', getNetwork('etc').chainId],
         // The flow falls back to mainnet for account selection, but the simulation reads chainId 0.
