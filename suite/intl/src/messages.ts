@@ -11453,10 +11453,6 @@ export const messages = defineMessages({
         defaultMessage:
             "The transaction was signed but couldn't be sent to the network. Try again.",
     },
-    TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT: {
-        id: 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT',
-        defaultMessage: 'Passphrase is incorrect. Try again.',
-    },
     TR_EARN_YIELD_LOAD_ERROR_TITLE: {
         id: 'TR_EARN_YIELD_LOAD_ERROR_TITLE',
         defaultMessage: 'Unable to load yield opportunities',

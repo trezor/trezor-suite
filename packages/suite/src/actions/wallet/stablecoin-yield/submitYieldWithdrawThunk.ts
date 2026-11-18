@@ -19,10 +19,10 @@ import { createThunk } from '@trezor/redux-utils';
 import {
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
-    getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
     isYieldPushError,
     sendYieldTransaction,
+    showYieldSubmitErrorThunk,
 } from './signingHelpers';
 
 type SubmitYieldWithdrawPayload = {
@@ -198,13 +198,7 @@ export const submitYieldWithdrawThunk = createThunk<
             }
             console.error(error);
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
-            dispatch(
-                yieldActions.setError({
-                    flowType,
-                    flowKey,
-                    error: getYieldErrorTranslationKey(error),
-                }),
-            );
+            dispatch(showYieldSubmitErrorThunk({ flowType, flowKey, error }));
         } finally {
             dispatch(yieldActions.finishSubmittingAction({ flowType, flowKey }));
         }
