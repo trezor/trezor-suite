@@ -11,7 +11,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     ConnectionGlobalModalManager,
-    ModalErrorBoundary,
     ThpGlobalModalManager,
     WipedBleDeviceNeedsManualOsRemovalModalManager,
     usePreferredModal,
@@ -29,11 +28,9 @@ const Inner = ({ modal }: InnerProps) => {
         case 'redux-modal':
             // ReduxModal's switches load their modals lazily; this is their only render site.
             return (
-                <ModalErrorBoundary>
-                    <Suspense fallback={<ModalSkeleton />}>
-                        <ReduxModal {...modal.payload} />
-                    </Suspense>
-                </ModalErrorBoundary>
+                <Suspense fallback={<ModalSkeleton />}>
+                    <ReduxModal {...modal.payload} />
+                </Suspense>
             );
         default:
             return null;
