@@ -1,8 +1,7 @@
 import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 
 type TradeBoxYieldBadge = {
     apy: number;
@@ -16,8 +15,9 @@ type TradeBoxEarnOptions = {
 
 export const useTradeBoxEarnOptions = (account: Account): TradeBoxEarnOptions => {
     const { hasYieldOption, bestVault } = useNativeYieldVault({ account });
-    const { rate: stakingRate } = useStakingRate({
-        symbol: account.symbol,
+
+    const { rate: stakingRate } = useNetworkStakingRate({
+        networkSymbol: account.symbol,
         accountKey: account.key,
     });
 

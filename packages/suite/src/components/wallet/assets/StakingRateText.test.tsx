@@ -2,15 +2,16 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { messages } from '@suite/intl';
+import { type StakingRateKind } from '@suite-common/earn-staking-common';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { StakingRateText } from './StakingRateText';
 import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
-const renderRate = (symbol: string) => {
+const renderRate = (rate: number | null, rateKind: StakingRateKind) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: mockInitialAppState,
     });
@@ -18,7 +19,7 @@ const renderRate = (symbol: string) => {
     renderWithProviders(
         services,
         <span data-testid="@rate">
-            <StakingRateText networkSymbol={asNetworkSymbol(symbol)} apy={3.2} />
+            <StakingRateText rate={rate} rateKind={rateKind} />
         </span>,
     );
 
@@ -26,11 +27,15 @@ const renderRate = (symbol: string) => {
 };
 
 describe(StakingRateText.name, () => {
-    it('shows the rate of a network paying an APY as an APY', () => {
-        expect(renderRate('eth')).toBe('3.2% APY');
+    it('shows the rate of a product paying an APY as an APY', () => {
+        expect(renderRate(3.2, 'apy')).toBe('3.2% APY');
     });
 
-    it('shows the rate Tron pays as an APR, as its Earn modal does', () => {
-        expect(renderRate('trx')).toBe('~3.2% APR');
+    it('shows the rate of a product paying an APR as an APR, as the Tron Earn modal does', () => {
+        expect(renderRate(3.2, 'apr')).toBe('~3.2% APR');
+    });
+
+    it('says a product without a rate, a testnet, has none', () => {
+        expect(renderRate(null, 'apy')).toBe(messages.TR_EARN_APY_NOT_AVAILABLE.defaultMessage);
     });
 });

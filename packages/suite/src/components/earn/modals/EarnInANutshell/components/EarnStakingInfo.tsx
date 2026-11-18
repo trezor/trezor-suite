@@ -1,25 +1,18 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { useNetworkStakingPeriods, useNetworkStakingRate } from '@suite-common/earn-staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
     CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
-    CARDANO_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import {
-    getDaysToAddToPoolInitial,
-    selectEthereumValidatorsQueue,
-    selectPoolStatsApy,
-} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useSelector } from '#src/hooks/suite/useSelector';
 
-import { EarnInfoRow } from './EarnInfoRow';
+import { EarnInfoRow, getEarnInfoRowDaysContent } from './EarnInfoRow';
 
 interface EarnStakingInfoProps {
     account: Account;
@@ -30,7 +23,8 @@ interface EarnStakingRowsProps {
     flow: EarnFlow;
     networkSymbol: NetworkSymbol;
     apy: number | null;
-    daysToAddToPool?: number;
+    entryPeriodDays: number | null;
+    rewardPeriodDays: number | null;
 }
 
 const StakingSignRow = ({ flow }: Pick<EarnStakingRowsProps, 'flow'>) => (
@@ -58,11 +52,18 @@ const ApproximateApy = ({ apy }: Pick<EarnStakingRowsProps, 'apy'>) => {
     );
 };
 
+const RewardsEveryHeading = ({ days }: { days: number | null }) =>
+    days === null ? (
+        <Translation id="TR_EARN_REWARDS_EVERY_WITHOUT_DAYS" />
+    ) : (
+        <Translation id="TR_EARN_REWARDS_EVERY" values={{ days }} />
+    );
+
 const EthereumStakingRows = ({
     flow,
     networkSymbol,
     apy,
-    daysToAddToPool,
+    entryPeriodDays,
 }: EarnStakingRowsProps) => (
     <>
         <StakingSignRow flow={flow} />
@@ -74,14 +75,7 @@ const EthereumStakingRows = ({
                     values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
-            content={{
-                text: (
-                    <Translation
-                        id="TR_EARN_APPROXIMATE_DAYS"
-                        values={{ count: daysToAddToPool }}
-                    />
-                ),
-            }}
+            content={getEarnInfoRowDaysContent(entryPeriodDays, 'TR_EARN_APPROXIMATE_DAYS')}
         />
         <EarnInfoRow
             heading={<Translation id="TR_EARN_REWARDS_WEEKLY" />}
@@ -91,7 +85,13 @@ const EthereumStakingRows = ({
     </>
 );
 
-const SolanaStakingRows = ({ flow, networkSymbol, apy }: EarnStakingRowsProps) => (
+const SolanaStakingRows = ({
+    flow,
+    networkSymbol,
+    apy,
+    entryPeriodDays,
+    rewardPeriodDays,
+}: EarnStakingRowsProps) => (
     <>
         <StakingSignRow flow={flow} />
         <EarnInfoRow
@@ -102,21 +102,17 @@ const SolanaStakingRows = ({ flow, networkSymbol, apy }: EarnStakingRowsProps) =
                     values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
-            content={{
-                text: <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />,
-            }}
+            content={getEarnInfoRowDaysContent(entryPeriodDays, 'TR_UP_TO_DAYS')}
         />
         <EarnInfoRow
-            heading={
-                <Translation id="TR_EARN_REWARDS_EVERY" values={{ days: SOLANA_EPOCH_DAYS }} />
-            }
+            heading={<RewardsEveryHeading days={rewardPeriodDays} />}
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
             content={{ text: <ApproximateApy apy={apy} /> }}
         />
     </>
 );
 
-const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
+const CardanoStakingRows = ({ flow, apy, rewardPeriodDays }: EarnStakingRowsProps) => (
     <>
         <StakingSignRow flow={flow} />
         <EarnInfoRow
@@ -144,14 +140,11 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
         />
         <EarnInfoRow
             heading={
-                <Translation
-                    id={
-                        flow === EarnFlow.UpdateProvider
-                            ? 'TR_EARN_START_EARNING_FROM_NEW_PROVIDER'
-                            : 'TR_EARN_REWARDS_EVERY'
-                    }
-                    values={{ days: CARDANO_EPOCH_DAYS }}
-                />
+                flow === EarnFlow.UpdateProvider ? (
+                    <Translation id="TR_EARN_START_EARNING_FROM_NEW_PROVIDER" />
+                ) : (
+                    <RewardsEveryHeading days={rewardPeriodDays} />
+                )
             }
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
             content={{ text: <ApproximateApy apy={apy} /> }}
@@ -160,27 +153,24 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
 );
 
 export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
-    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
-
-    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
-
-    const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
+    const { rate: apy } = useNetworkStakingRate({ networkSymbol: account.symbol });
+    const { entryPeriodDays, rewardPeriodDays } = useNetworkStakingPeriods(account.symbol);
+    const rowsProps: EarnStakingRowsProps = {
+        flow,
+        networkSymbol: account.symbol,
+        apy,
+        entryPeriodDays,
+        rewardPeriodDays,
+    };
 
     const content = (() => {
         switch (account.networkType) {
             case 'ethereum':
-                return (
-                    <EthereumStakingRows
-                        flow={flow}
-                        networkSymbol={account.symbol}
-                        apy={apy}
-                        daysToAddToPool={daysToAddToPoolInitial}
-                    />
-                );
+                return <EthereumStakingRows {...rowsProps} />;
             case 'solana':
-                return <SolanaStakingRows flow={flow} networkSymbol={account.symbol} apy={apy} />;
+                return <SolanaStakingRows {...rowsProps} />;
             case 'cardano':
-                return <CardanoStakingRows flow={flow} networkSymbol={account.symbol} apy={apy} />;
+                return <CardanoStakingRows {...rowsProps} />;
             default:
                 return null;
         }

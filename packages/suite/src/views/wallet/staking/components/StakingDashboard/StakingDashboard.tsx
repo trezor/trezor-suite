@@ -1,3 +1,4 @@
+import { useRefreshStakingProductInfo } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 
@@ -11,6 +12,8 @@ interface StakingDashboardProps {
 }
 
 export const StakingDashboard = ({ selectedAccount, dashboard }: StakingDashboardProps) => {
+    useRefreshStakingProductInfo();
+
     if (selectedAccount.status !== 'loaded') return null;
 
     return (

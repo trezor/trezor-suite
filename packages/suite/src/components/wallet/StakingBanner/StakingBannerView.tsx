@@ -3,14 +3,13 @@ import { useMemo } from 'react';
 import { AssetSymbol } from '@suite/assets';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkType } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 
 import { type StakingBannerAccounts } from './useStakingBanner';
 
@@ -23,12 +22,16 @@ type StakingBannerViewProps = {
 export const StakingBannerView = ({ accounts, onExplore, onClose }: StakingBannerViewProps) => {
     const [account] = accounts;
     const { CryptoAmountFormatter } = useFormatters();
+
     const formatApyValue = useFormatApy();
-    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
+
+    const { rate, rateKind } = useNetworkStakingRate({
+        networkSymbol: account.symbol,
+        accountKey: account.key,
+    });
 
     const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
-    // Tron pays its rate as an APR, as its Earn modal says.
-    const isAprRate = getNetworkType(account.symbol) === 'tron';
+    const isAprRate = rateKind === 'apr';
     const formattedRate = formatApyValue(rate);
 
     const rewards = useMemo(() => getPotentialStakingRewards(accounts, rate), [accounts, rate]);

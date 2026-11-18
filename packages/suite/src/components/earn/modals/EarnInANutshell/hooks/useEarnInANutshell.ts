@@ -1,22 +1,17 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
+import { useNetworkStakingPeriods, useNetworkStakingRate } from '@suite-common/earn-staking';
 import {
     EarnFlow,
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
-import {
-    getUnstakingPeriodInDays,
-    selectEthereumValidatorsQueue,
-    selectPoolStatsApy,
-} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { earnFlowToEventTypeMap } from '#src/constants/suite/staking';
-import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface UseEarnInANutshellProps {
     flow: EarnFlow;
@@ -35,9 +30,8 @@ export const useEarnInANutshell = ({
     actionType = 'continue',
     yieldContext,
 }: UseEarnInANutshellProps) => {
-    const validatorsQueueData = useSelector(selectEthereumValidatorsQueue);
-    const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
-    const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
+    const { rate: apy } = useNetworkStakingRate({ networkSymbol: account.symbol });
+    const { exitPeriodDays: unstakingPeriod } = useNetworkStakingPeriods(account.symbol);
 
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 

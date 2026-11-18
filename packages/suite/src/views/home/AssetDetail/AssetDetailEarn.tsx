@@ -8,13 +8,13 @@ import {
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
 } from '@suite-common/assets';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { StakingSplitCard } from '#src/components/wallet/assets/StakingSplitCard';
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetDetailEarnProps = {
@@ -30,7 +30,7 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
     const stakingAmount = useSelector(state => selectWalletAssetStakingAmount(state, assetKey));
     const stakingRatio = useSelector(state => selectWalletAssetStakingRatio(state, assetKey)) ?? 0;
     // The rate staking pays on the network, Tron's included, as the trade box and Earn show it.
-    const { rate: apy } = useStakingRate({ symbol: networkSymbol });
+    const stakingRate = useNetworkStakingRate({ networkSymbol: networkSymbol ?? null });
 
     if (
         networkSymbol === undefined ||
@@ -49,7 +49,7 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
             availableAmount={availableAmount}
             stakingAmount={stakingAmount}
             stakingRatio={stakingRatio}
-            apy={apy}
+            stakingRate={stakingRate}
             onViewAll={() => {
                 analytics.report({
                     type: events.navigateFlowEvent.name,

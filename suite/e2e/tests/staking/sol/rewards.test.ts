@@ -35,24 +35,31 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
-        solanaStakingMock.setStakeAccounts([
-            solStakingAccountFirst.payload,
-            solStakingAccountSecond.payload,
-            solStakingAccountDeactivating.payload,
-        ]);
-        await solanaStakingMock.setEpoch(activeEpoch);
-        await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                { symbol: solSymbol, backend: { type: 'solana', url: solanaStakingMock.url } },
-            ],
-        });
+    test.beforeEach(
+        async ({
+            onboardingPage,
+            settingsPage,
+            solanaStakingMock,
+            earnStakingApiMock: _earnStakingApiMock,
+        }) => {
+            solanaStakingMock.setStakeAccounts([
+                solStakingAccountFirst.payload,
+                solStakingAccountSecond.payload,
+                solStakingAccountDeactivating.payload,
+            ]);
+            await solanaStakingMock.setEpoch(activeEpoch);
+            await onboardingPage.completeOnboarding();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: solSymbol, backend: { type: 'solana', url: solanaStakingMock.url } },
+                ],
+            });
 
-        // Rewards history has to be mocked before the account opens
-        solanaStakingMock.setRewardsHistory(rewardsUntilTwoEpochsAgo);
-        await solanaStakingMock.mockRewardsHistory();
-    });
+            // Rewards history has to be mocked before the account opens
+            solanaStakingMock.setRewardsHistory(rewardsUntilTwoEpochsAgo);
+            await solanaStakingMock.mockRewardsHistory();
+        },
+    );
 
     test(
         'display stake rewards on SOL staking account',

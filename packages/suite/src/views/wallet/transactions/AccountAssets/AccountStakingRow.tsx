@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
@@ -7,7 +8,6 @@ import { Badge, Row } from '@trezor/components';
 import { AssetTableRowView } from '#src/components/wallet/assets/AssetTableRowView';
 import { StakingRateText } from '#src/components/wallet/assets/StakingRateText';
 import { useOpenAccountStaking } from '#src/components/wallet/assets/useOpenAccountStaking';
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 
 type AccountStakingRowProps = {
     accountKey: AccountKey;
@@ -26,7 +26,7 @@ export const AccountStakingRow = ({
     amount,
 }: AccountStakingRowProps) => {
     const openAccountStaking = useOpenAccountStaking({ from: 'account-overview' });
-    const { rate: apy } = useStakingRate({ symbol: networkSymbol, accountKey });
+    const { rate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
 
     return (
         <AssetTableRowView
@@ -40,9 +40,9 @@ export const AccountStakingRow = ({
                     <Badge size="small">
                         <Translation id="TR_STAKE_STAKED" />
                     </Badge>
-                    {apy != null && isApyAvailable(apy) && (
+                    {isApyAvailable(rate) && rateKind !== null && (
                         <Badge intent="brand" size="small">
-                            <StakingRateText networkSymbol={networkSymbol} apy={apy} />
+                            <StakingRateText rate={rate} rateKind={rateKind} />
                         </Badge>
                     )}
                 </Row>

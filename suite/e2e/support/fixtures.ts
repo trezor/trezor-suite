@@ -18,6 +18,7 @@ import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
+import { EarnStakingApiMock } from './mocks/earnStakingApiMock';
 import { FirmwareReleaseConfigMock } from './mocks/firmwareReleaseConfigMock';
 import { MetadataMock } from './mocks/metadataMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
@@ -87,6 +88,7 @@ type Fixtures = {
     stakingSection: StakingSection;
     tronStakingSection: TronStakingSection;
     tronEarnApiMock: TronEarnApiMock;
+    earnStakingApiMock: EarnStakingApiMock;
     earnNutshellModal: EarnNutshellModal;
     yieldSection: YieldSection;
     yieldFlowSection: YieldFlowSection;
@@ -216,7 +218,13 @@ const test = suiteBaseTest.extend<Fixtures>({
     tronStakingSection: async ({ page }, use) => {
         await use(new TronStakingSection(page));
     },
-    tronEarnApiMock: async ({ page }, use) => {
+    earnStakingApiMock: async ({ page }, use) => {
+        const earnStakingApiMock = new EarnStakingApiMock(page);
+        await earnStakingApiMock.start();
+        await use(earnStakingApiMock);
+    },
+    // Started after the shared staking mock, so its representative list answers the Tron stats.
+    tronEarnApiMock: async ({ page, earnStakingApiMock: _earnStakingApiMock }, use) => {
         const tronEarnApiMock = new TronEarnApiMock(page);
         await tronEarnApiMock.start();
         await use(tronEarnApiMock);

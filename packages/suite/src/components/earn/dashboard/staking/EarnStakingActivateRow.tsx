@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 import { EarnInactiveNetworkOpportunity } from '../common/EarnInactiveNetworkOpportunity';
@@ -14,7 +14,7 @@ interface EarnStakingActivateRowProps {
 }
 
 export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActivateRowProps) => {
-    const { rate } = useStakingRate({ symbol });
+    const { rate, rateKind } = useNetworkStakingRate({ networkSymbol: symbol });
 
     const { isStakingDisabled } = useMessageSystemStaking(symbol);
     const { CryptoAmountFormatter } = useFormatters();
@@ -29,6 +29,7 @@ export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActi
         <EarnInactiveNetworkOpportunity
             symbol={symbol}
             rate={rate}
+            rateKind={rateKind}
             isCardLayout={isCardLayout}
             note={
                 <Translation
