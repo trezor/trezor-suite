@@ -1,66 +1,42 @@
 import { useSelector } from 'react-redux';
 
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
-import { Text } from '@suite-native/atoms';
 import {
     ExactTokenAmountFormatter,
-    SignValueFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { getTransactionValueSign, selectTransactionFiatRate } from '@suite-native/transactions';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { useNativeStyles } from '@trezor/styles-native';
+
+import {
+    TransactionDetailHeadlineAmount,
+    transactionDetailAmountStyle,
+} from './TransactionDetailHeadlineAmount';
 
 type TransactionDetailTokenAmountProps = {
     transaction: WalletAccountTransaction;
     tokenTransfer: TypedTokenTransfer;
 };
 
-const amountStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
-    // A row item does not shrink by default, so adjustsFontSizeToFit would never get a narrower width.
-    flexShrink: 1,
-    extend: {
-        condition: isFailedTx,
-        style: {
-            textDecorationLine: 'line-through',
-        },
-    },
-}));
-
 export const TransactionDetailTokenAmount = ({
     transaction,
     tokenTransfer,
-}: TransactionDetailTokenAmountProps) => {
-    const { applyStyle } = useNativeStyles();
-    const isFailedTx = transaction.type === 'failed';
-    const signValue = getTransactionValueSign(tokenTransfer.type);
-
-    // One text run, so the sign shrinks along with the amount and stays aligned with it.
-    return (
-        <Text
+}: TransactionDetailTokenAmountProps) => (
+    <TransactionDetailHeadlineAmount
+        signValue={getTransactionValueSign(tokenTransfer.type)}
+        isFailedTx={transaction.type === 'failed'}
+    >
+        <ExactTokenAmountFormatter
+            value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
+            networkSymbol={transaction.symbol}
+            contractAddress={tokenTransfer.contract}
             variant="headline-md"
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            style={applyStyle(amountStyle, { isFailedTx })}
-        >
-            {!isFailedTx && (
-                <SignValueFormatter
-                    color="contentPrimary"
-                    value={signValue}
-                    variant="headline-md"
-                />
-            )}
-            <ExactTokenAmountFormatter
-                value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                networkSymbol={transaction.symbol}
-                contractAddress={tokenTransfer.contract}
-                variant="headline-md"
-                color="contentPrimary"
-            />
-        </Text>
-    );
-};
+            color="contentPrimary"
+        />
+    </TransactionDetailHeadlineAmount>
+);
 
 export const TransactionDetailTokenFiatAmount = ({
     transaction,
@@ -84,7 +60,7 @@ export const TransactionDetailTokenFiatAmount = ({
             historicRate={historicRate}
             color="contentSecondary"
             useHistoricRate
-            style={applyStyle(amountStyle, { isFailedTx })}
+            style={applyStyle(transactionDetailAmountStyle, { isFailedTx })}
         />
     );
 };
