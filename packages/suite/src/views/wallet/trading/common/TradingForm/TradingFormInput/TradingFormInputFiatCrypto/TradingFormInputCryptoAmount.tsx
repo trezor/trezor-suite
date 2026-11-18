@@ -236,8 +236,12 @@ const TradingFormInputCryptoAmountContent = ({
     }, [amountLimits, trigger]);
 
     useDidUpdate(() => {
+        if (!getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+            return;
+        }
+
         trigger([cryptoInputName]);
-    }, [cryptoInputName, trigger, validationAccount.key]);
+    }, [cryptoInputName, getValues, trigger, validationAccount.key]);
 
     const isDerivedAmountLoading =
         !amountInCrypto && !context.isAmountEmpty && context.form.state.isFormLoading;
