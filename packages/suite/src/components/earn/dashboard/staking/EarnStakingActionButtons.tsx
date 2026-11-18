@@ -68,7 +68,7 @@ export const EarnStakingActionButtons = ({
                     </Button>
                 </Tooltip>
             ) : (
-                <EarnBuyButton onClick={onBuy} />
+                <EarnBuyButton onClick={onBuy} data-testid="@earn/dashboard/buy-button" />
             ))}
 
         {stakingStatus === 'staking-active' && (
@@ -79,6 +79,7 @@ export const EarnStakingActionButtons = ({
                     isDisabled={isStakingDisabled}
                     iconLeft={isStakingDisabled ? InfoIcon : undefined}
                     onClick={onStake}
+                    data-testid="@earn/dashboard/stake-more-button"
                 >
                     <Translation id="TR_EARN_STAKING_DASHBOARD_STAKE_MORE" />
                 </Button>
@@ -93,6 +94,7 @@ export const EarnStakingActionButtons = ({
                     isDisabled={isStakingDisabled}
                     iconLeft={isStakingDisabled ? InfoIcon : undefined}
                     onClick={onStakeNow}
+                    data-testid="@earn/dashboard/stake-now-button"
                 >
                     <Translation id="TR_EARN_STAKING_DASHBOARD_STAKE_NOW" />
                 </Button>
@@ -122,6 +124,7 @@ export const EarnStakingActionButtons = ({
                     isDisabled={isVotingDisabled}
                     iconLeft={isVotingDisabled ? InfoIcon : undefined}
                     onClick={onVote}
+                    data-testid="@earn/dashboard/vote-button"
                 >
                     <Translation id="TR_EARN_TRON_VOTE" />
                 </Button>

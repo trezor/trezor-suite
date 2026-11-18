@@ -26,7 +26,12 @@ export const EarnStakingCurrentRewards = ({
         <EarnRewardsAmount symbol={symbol} rewards={isStakingActive ? rewards : '0'} apy={apy} />
 
         {isStakingActive && (
-            <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+            <Paragraph
+                typographyStyle="body-sm"
+                intent="neutral"
+                priority="secondary"
+                data-testid="@earn/dashboard/staked-amount"
+            >
                 <HiddenPlaceholder>
                     <Translation
                         id="TR_EARN_STAKING_DASHBOARD_STAKED"

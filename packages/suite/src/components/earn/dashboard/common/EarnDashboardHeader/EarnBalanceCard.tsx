@@ -82,7 +82,11 @@ export const EarnBalanceCard = () => {
 
     return (
         <EarnBalanceCardWrapper positionsCount={earnPositionsCount}>
-            <EarnTotalBalance fiatValue={fiatValue} isIncomplete={isFiatTotalIncomplete} />
+            <EarnTotalBalance
+                fiatValue={fiatValue}
+                isIncomplete={isFiatTotalIncomplete}
+                dataTestId="@earn/dashboard/total-balance"
+            />
         </EarnBalanceCardWrapper>
     );
 };
