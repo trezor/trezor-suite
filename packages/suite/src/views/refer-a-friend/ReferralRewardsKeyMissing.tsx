@@ -7,7 +7,9 @@ type ReferralRewardsKeyMissingProps = {
     onDeriveKey: () => void;
 };
 
-// The link is stored but the key is not (web, Linux without a keyring), so the rewards need Trezor.
+/**
+ * UI To show when the link is stored, but the key is not (web, Linux without a keyring), so it needs a Trezor device to show the rewards.
+ */
 export const ReferralRewardsKeyMissing = ({
     isDeviceConnected,
     isDerivingKey,

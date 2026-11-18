@@ -83,7 +83,6 @@ export const ReferAFriendPage = () => {
 
     useLayout('Refer-A-Friend', <PageHeader />);
 
-    // Read endpoints load only when the page opens or the wallet of another device is selected.
     useEffect(() => {
         if (!isReferralAvailable) return;
 
