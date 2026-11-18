@@ -17,11 +17,13 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite/locks": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "react": "19.3.0",
         "react-redux": "9.3.1"
     },
     "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
         "@types/react": "19.3.0"
     }
 }

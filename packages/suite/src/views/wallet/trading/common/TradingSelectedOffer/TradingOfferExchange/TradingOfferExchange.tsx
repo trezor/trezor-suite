@@ -2,7 +2,6 @@ import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TradeExchangeAction, events, injectDesktopAnalytics } from '@suite/analytics';
-import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
@@ -37,6 +36,7 @@ import { TxValidityCountdownBadge } from '#src/components/suite/TxValidityCountd
 import { TRADING_DEX_SOURCE_ORIGIN } from '#src/constants/wallet/trading/txSimulation';
 import { useTradingExchangeConfirmFees } from '#src/hooks/wallet/trading/useTradingExchangeConfirmFees';
 import { useTradingExchangeTradeActions } from '#src/hooks/wallet/trading/useTradingExchangeTradeActions';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 import { type TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
 import { tradingGetAmountLabels } from '#src/utils/wallet/trading/tradingUtils';
 
@@ -54,7 +54,7 @@ type TradingOfferExchangeProps = {
 export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { device } = useDevice();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const formStep = useSelector(selectTradingExchangeFormStep);
     const providers = useSelector(selectTradingExchangeProviders);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
@@ -112,7 +112,6 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
         isLoading ||
         !selectedQuote ||
         !sendAccount ||
-        !device?.connected ||
         isSimulationLoading ||
         isProviderTransactionExpired;
 
@@ -165,6 +164,13 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
 
         reportConfirmAndSendStep(result ? 'continue' : 'cancel');
     };
+
+    const onConfirmAndSendButtonClick = () =>
+        handleClick(async () => {
+            if (await ensureDeviceReady()) {
+                await onConfirmAndSendClick();
+            }
+        });
 
     const onBackToTradeFormClick = () => {
         reportConfirmAndSendStep('cancel');
@@ -253,7 +259,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
                         issue={visibleIssue}
                         isContinueDisabled={isConfirmDisabled || disabled}
                         isContinueLoading={isLoading || disabled}
-                        onContinueAnywayClick={() => handleClick(() => onConfirmAndSendClick())}
+                        onContinueAnywayClick={onConfirmAndSendButtonClick}
                     />
                 )}
 
@@ -291,7 +297,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
                         data-testid="@trading/offer/confirm-on-trezor-and-send"
                         isLoading={isLoading || disabled}
                         isDisabled={isConfirmDisabled || disabled}
-                        onClick={() => handleClick(() => onConfirmAndSendClick())}
+                        onClick={onConfirmAndSendButtonClick}
                         size="large"
                         width="100%"
                     >

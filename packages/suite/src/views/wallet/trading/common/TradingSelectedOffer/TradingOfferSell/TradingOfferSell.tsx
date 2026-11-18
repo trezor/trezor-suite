@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
     type TradingRootState,
@@ -27,6 +26,7 @@ import { useTradingSellBankAccountSelection } from '#src/hooks/wallet/trading/us
 import { useTradingSellConfirmFees } from '#src/hooks/wallet/trading/useTradingSellConfirmFees';
 import { useTradingSellTradeActions } from '#src/hooks/wallet/trading/useTradingSellTradeActions';
 import { useTradingWatchTrade } from '#src/hooks/wallet/trading/useTradingWatchTrade';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
 import { type TradingOfferSellProps } from '#src/types/trading/tradingForm';
 import { TradingFormOfferConfirmButton } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
@@ -46,7 +46,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const { handleClick: handleRequestClick, disabled: isRequesting } = useAsyncClickHandler();
     const { handleClick: handleSendClick, disabled: isSending } = useAsyncClickHandler();
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
-    const { device } = useDevice();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const { account, confirmTrade, addBankAccount, sendTransaction } = useTradingSellTradeActions();
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
@@ -83,8 +83,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const isSendStep = formStep === 'SEND_TRANSACTION';
     const isPartnerReadyToReceive = sellUtils.isReadyToSendCrypto(selectedTrade);
     const isProviderLoaded = !!selectedTrade.exchange && !!providers?.[selectedTrade.exchange];
-    const isSendDisabled =
-        isLoading || !isProviderLoaded || !device?.connected || isDiscoveryRunning || isSending;
+    const isSendDisabled = isLoading || !isProviderLoaded || isDiscoveryRunning || isSending;
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
         selectedTrade.cryptoCurrency,
@@ -134,6 +133,13 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
             await onConfirmAndSendClick();
         }
     };
+
+    const sendWithDevice = (send: () => Promise<void>) =>
+        handleSendClick(async () => {
+            if (await ensureDeviceReady()) {
+                await send();
+            }
+        });
 
     return (
         <Column width="100%" alignItems="center">
@@ -215,7 +221,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                         <TradingOfferSellSendButton
                             isLoading={isLoading || isSending}
                             isDisabled={isSendDisabled || !selectedBankAccount}
-                            onClick={() => handleSendClick(onConfirmBankAccountClick)}
+                            onClick={() => sendWithDevice(onConfirmBankAccountClick)}
                         />
                     )}
 
@@ -230,7 +236,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                         <TradingOfferSellSendButton
                             isLoading={isLoading || isSending}
                             isDisabled={isSendDisabled}
-                            onClick={() => handleSendClick(onConfirmAndSendClick)}
+                            onClick={() => sendWithDevice(onConfirmAndSendClick)}
                         />
                     )}
                 </Column>

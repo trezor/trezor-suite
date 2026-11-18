@@ -30,13 +30,13 @@ import { BigNumber } from '@trezor/utils';
 import { submitWrapNativeTokenThunk } from '#src/actions/wallet/wrapNativeTokenThunks';
 import { selectIsFeeRefetchBlockedByModal } from '#src/components/wallet/Fees/feeSelectors';
 import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
+import { useDeviceReadyGuardWithToast } from '#src/hooks/wallet/useDeviceReadyGuardWithToast';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldWrapStep } from '../common/YieldWrapStep';
-import { useWrappedNativeDeviceGuard } from '../common/useWrappedNativeDeviceGuard';
 import { useWrappedNativeFlowAnalytics } from '../common/useWrappedNativeFlowAnalytics';
 import { useYieldFiatInput } from '../hooks/useYieldFiatInput';
 
@@ -55,7 +55,7 @@ type BroadcastWrap = {
 export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
-    const ensureDeviceReady = useWrappedNativeDeviceGuard();
+    const ensureDeviceReady = useDeviceReadyGuardWithToast();
     const {
         isDisabled,
         content: disabledContent,

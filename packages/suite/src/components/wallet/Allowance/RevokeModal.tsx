@@ -1,5 +1,4 @@
 import { AssetSymbol } from '@suite/assets';
-import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { toTokenAddress } from '@suite-common/tokens';
@@ -33,6 +32,7 @@ type RevokeModalProps = {
     onSent: (txid: string) => void;
     onSendFailed?: () => void;
     onCancel?: () => void;
+    ensureDeviceReady: () => Promise<boolean>;
 };
 
 export const RevokeModal = ({
@@ -51,8 +51,8 @@ export const RevokeModal = ({
     onSent,
     onSendFailed,
     onCancel,
+    ensureDeviceReady,
 }: RevokeModalProps) => {
-    const { device } = useDevice();
     const { handleClick, disabled: isConfirmInProgress } = useAsyncClickHandler();
 
     const {
@@ -101,6 +101,13 @@ export const RevokeModal = ({
 
     const { formState } = methods;
 
+    const onContinue = () =>
+        handleClick(async () => {
+            if (await ensureDeviceReady()) {
+                await confirmAndSend();
+            }
+        });
+
     return (
         <Form form={methods} formState={formState}>
             <Modal
@@ -115,8 +122,8 @@ export const RevokeModal = ({
                     <>
                         <Modal.Button
                             isLoading={isComposing || isConfirmInProgress}
-                            isDisabled={!device?.connected || !canSubmit || isConfirmInProgress}
-                            onClick={() => handleClick(confirmAndSend)}
+                            isDisabled={!canSubmit || isConfirmInProgress}
+                            onClick={onContinue}
                         >
                             <Translation id="TR_CONTINUE" />
                         </Modal.Button>
