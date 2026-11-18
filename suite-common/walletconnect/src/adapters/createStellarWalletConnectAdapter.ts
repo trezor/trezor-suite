@@ -1,22 +1,20 @@
 import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
-import * as trezorConnectPopupActions from '@suite-common/connect-popup';
-import { selectSelectedDevice } from '@suite-common/device';
+import { type CallConnectPopupDep } from '@suite-common/connect-popup';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
+import { type CallMethodResponse } from '@trezor/connect';
+import { type GetTrezorConnectDep, asCoinSymbol } from '@trezor/connect-common';
+import { type Getter } from '@trezor/dependency-injection';
 import loadStellar from '@trezor/network-stellar/runtime';
-import { createThunk } from '@trezor/redux-utils';
 
-import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
-import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
 import {
     type PendingConnectionProposalNetwork,
     type WalletConnectAdapter,
     type WalletConnectNamespace,
+    type WalletConnectRequestParams,
     type WalletConnectSession,
 } from '../walletConnectTypes';
 
@@ -38,99 +36,80 @@ const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
     };
 };
 
-type StellarSignXDRThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
-    AccountsRootState;
+export type StellarWalletConnectAdapterDeps = CallConnectPopupDep &
+    GetTrezorConnectDep<'pushTransaction'> & {
+        getAccounts: Getter<[], Account[]>;
+        getSelectedDevice: Getter<[], TrezorDevice | undefined>;
+    };
 
-type StellarSignXDRThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+type SignStellarXDRParams = {
+    session: WalletConnectSession;
+    xdrBase64: string;
+    origin: string;
+    event: WalletKitTypes.SessionRequest;
+};
 
-const stellarSignXDRThunk = createThunk<
-    { signedXDR: string },
-    {
-        session: WalletConnectSession;
-        xdrBase64: string;
-        origin: string;
-        event: WalletKitTypes.SessionRequest;
-    },
-    { state: StellarSignXDRThunkState; extra: StellarSignXDRThunkDeps }
->(
-    `${WALLETCONNECT_MODULE}/stellarSignXDR`,
-    async ({ session, xdrBase64, origin, event }, { dispatch, getState }) => {
-        const { testnet } = resolveStellarRequestContext(event);
+const signStellarXDR = async (
+    deps: StellarWalletConnectAdapterDeps,
+    { session, xdrBase64, origin, event }: SignStellarXDRParams,
+) => {
+    const { testnet } = resolveStellarRequestContext(event);
 
-        const { parseTransactionFromXDR } = await loadStellar();
+    const { parseTransactionFromXDR } = await loadStellar();
 
-        const transaction = parseTransactionFromXDR(xdrBase64, testnet);
+    const transaction = parseTransactionFromXDR(xdrBase64, testnet);
 
-        const device = selectSelectedDevice(getState());
-        const accounts = selectAccounts(getState());
-        const account = accounts.find(
-            a => a.networkType === 'stellar' && a.visible && a.descriptor === transaction.source,
-        );
-        if (!account) {
-            throw new Error('Account not found');
-        }
-
-        dispatch(
-            trezorConnectPopupActions.connectPopupCallThunk({
-                method: 'stellarSignTransaction',
-                payload: {
-                    xdrBase64,
-                    testnet,
-                    path: account.path,
-                    device,
-                },
-                source: {
-                    type: 'walletconnect' as const,
-                    origin,
-                    manifest: {
-                        appName: session.peer.metadata.name,
-                        appIcon: session.peer.metadata.icons?.[0],
-                    },
-                },
-            }),
-        );
-
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-        if (!response.success) {
-            console.error('stellar_signXDR error', response);
-            throw new Error('Stellar signing error');
-        }
-        const typedPayload = response.payload as CallMethodResponse<'stellarSignTransaction'>;
-
-        const signature = Buffer.from(typedPayload.signature, 'hex').toString('base64');
-        transaction.addSignature(account.descriptor, signature);
-
-        return {
-            signedXDR: transaction.toEnvelope().toXdr('base64'),
-        };
-    },
-);
-
-export type StellarRequestThunkState = StellarSignXDRThunkState & WalletConnectStateRootState;
-
-export type StellarRequestThunkDeps = StellarSignXDRThunkDeps;
-
-const stellarRequestThunk = createThunk<
-    { signedXDR: string } | { status: string } | undefined,
-    {
-        event: WalletKitTypes.SessionRequest;
-    },
-    { state: StellarRequestThunkState; extra: StellarRequestThunkDeps }
->(`${WALLETCONNECT_MODULE}/stellarRequest`, async ({ event }, { dispatch, getState }) => {
-    const session = selectSessionByTopic(getState(), event.topic);
-    if (!session) {
-        throw new Error('WalletConnect Session not found');
+    const device = deps.getSelectedDevice();
+    const accounts = deps.getAccounts();
+    const account = accounts.find(
+        a => a.networkType === 'stellar' && a.visible && a.descriptor === transaction.source,
+    );
+    if (!account) {
+        throw new Error('Account not found');
     }
 
+    const response = await deps.callConnectPopup({
+        method: 'stellarSignTransaction',
+        payload: {
+            xdrBase64,
+            testnet,
+            path: account.path,
+            device,
+        },
+        source: {
+            type: 'walletconnect' as const,
+            origin,
+            manifest: {
+                appName: session.peer.metadata.name,
+                appIcon: session.peer.metadata.icons?.[0],
+            },
+        },
+    });
+    if (!response.success) {
+        console.error('stellar_signXDR error', response);
+        throw new Error('Stellar signing error');
+    }
+    const typedPayload = response.payload as CallMethodResponse<'stellarSignTransaction'>;
+
+    const signature = Buffer.from(typedPayload.signature, 'hex').toString('base64');
+    transaction.addSignature(account.descriptor, signature);
+
+    return {
+        signedXDR: transaction.toEnvelope().toXdr('base64'),
+    };
+};
+
+const handleStellarRequest = async (
+    deps: StellarWalletConnectAdapterDeps,
+    { event, session }: WalletConnectRequestParams,
+) => {
     // See https://docs.reown.com/advanced/multichain/rpc-reference/stellar-rpc
     switch (event.params.request.method) {
         case 'stellar_signXDR': {
             const { xdr } = event.params.request.params;
             const { origin } = event.verifyContext.verified;
 
-            const result = await dispatch(
-                stellarSignXDRThunk({ session, xdrBase64: xdr, origin, event }),
-            ).unwrap();
+            const result = await signStellarXDR(deps, { session, xdrBase64: xdr, origin, event });
 
             return { signedXDR: result.signedXDR };
         }
@@ -139,11 +118,9 @@ const stellarRequestThunk = createThunk<
             const { origin } = event.verifyContext.verified;
             const context = resolveStellarRequestContext(event);
 
-            const result = await dispatch(
-                stellarSignXDRThunk({ session, xdrBase64: xdr, origin, event }),
-            ).unwrap();
+            const result = await signStellarXDR(deps, { session, xdrBase64: xdr, origin, event });
 
-            const pushResponse = await TrezorConnect.pushTransaction({
+            const pushResponse = await deps.getTrezorConnect().pushTransaction({
                 coin: asCoinSymbol(context.symbol),
                 tx: Buffer.from(result.signedXDR, 'base64').toString('hex'),
             });
@@ -154,7 +131,7 @@ const stellarRequestThunk = createThunk<
             return { status: 'success' };
         }
     }
-});
+};
 
 export const getChainId = (network: Network) => (network.caipId ? [network.caipId] : []);
 
@@ -222,11 +199,13 @@ const processNamespaces = (
         },
     );
 
-export const stellarAdapter = {
+export const createStellarWalletConnectAdapter = (
+    deps: StellarWalletConnectAdapterDeps,
+): WalletConnectAdapter => ({
     methods,
     networkType: 'stellar',
     namespaceId: 'stellar',
-    requestThunk: stellarRequestThunk,
+    handleRequest: params => handleStellarRequest(deps, params),
     getNamespace,
     processNamespaces,
-} satisfies WalletConnectAdapter;
+});
