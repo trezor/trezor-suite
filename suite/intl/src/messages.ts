@@ -12798,10 +12798,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_APPROXIMATE_DAYS_RANGE',
         defaultMessage: '~{minDays}–{maxDays} days',
     },
-    TR_STAKE_MAX_REWARD_DAYS: {
-        id: 'TR_STAKE_MAX_REWARD_DAYS',
-        defaultMessage: 'Max {count, plural, one {# day} other {# days}}',
-    },
     TR_STAKE_NEXT_PAYOUT: {
         id: 'TR_STAKE_NEXT_PAYOUT',
         defaultMessage: 'Next reward payout',

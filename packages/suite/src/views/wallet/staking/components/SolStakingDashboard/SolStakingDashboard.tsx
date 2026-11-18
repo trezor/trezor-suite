@@ -1,20 +1,22 @@
 import { useEffect } from 'react';
 
 import {
+    selectIsStakingAccountActive,
+    selectStakingPositionEntriesByAccount,
+    useNetworkStakingRate,
+    useStakingAccountPosition,
+    useStakingDaysUntil,
+    useStakingPeriods,
+} from '@suite-common/earn-staking';
+import {
     useSolStakingRewardsWarning,
     useSolanaRewardsHistory,
 } from '@suite-common/earn-staking-api/src/staking';
-import {
-    getStakingDataForNetwork,
-    selectAccountIsStakingActive,
-    selectHasRunningDiscovery,
-    selectHasSolExternalStakingAccounts,
-    selectPoolStatsApy,
-    selectSolExternalStakingAccountsTotalStaked,
-} from '@suite-common/wallet-core';
+import { getStakingPositionAmount } from '@suite-common/earn-staking-common';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
@@ -39,15 +41,23 @@ interface SolStakingDashboardProps {
 
 export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProps) => {
     const { account } = selectedAccount;
+    const accountKey = account.key;
 
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const { productId, position, totals } = useStakingAccountPosition(accountKey);
+    const { rate } = useNetworkStakingRate({ networkSymbol: account.symbol, accountKey });
+    const { entryPeriodDays, exitPeriodDays, rewardPeriodDays } = useStakingPeriods(productId);
 
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const daysUntilActivation = useStakingDaysUntil(position?.activations[0]?.availableAt ?? null);
+    const daysUntilUnlock = useStakingDaysUntil(position?.unlocks[0]?.availableAt ?? null);
+    const daysToAddToPool = daysUntilActivation ?? entryPeriodDays;
+    const daysToUnstake = daysUntilUnlock ?? exitPeriodDays;
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    const canClaim = isPositiveBalance(totals.withdrawable);
+
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, accountKey));
 
     const initialPage = 1;
     const pagination = usePagination({ pageSize: 10, initialPage });
@@ -76,19 +86,21 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
         pagintionRef.current.changePage(initialPage);
     }, [account.descriptor, account.symbol, initialPage, pagintionRef]);
 
-    const hasExternalStakingAccounts = useSelector(state =>
-        selectHasSolExternalStakingAccounts(state, account.key),
-    );
-    const externalStakingTotalStaked = useSelector(state =>
-        selectSolExternalStakingAccountsTotalStaked(state, account.key),
+    // Stake with other validators is the account's position that counts in no total.
+    const externalPositionEntry = useSelector(
+        state =>
+            selectStakingPositionEntriesByAccount(state, accountKey).find(
+                ({ descriptor }) => !descriptor.isCountedInAccountTotals,
+            ) ?? null,
     );
 
-    const externalStakingProviderCard = hasExternalStakingAccounts ? (
-        <ExternalStakingProviderCard
-            symbol={account.symbol}
-            totalStaked={externalStakingTotalStaked}
-        />
-    ) : null;
+    const externalStakingProviderCard =
+        externalPositionEntry === null ? null : (
+            <ExternalStakingProviderCard
+                symbol={account.symbol}
+                totalStaked={getStakingPositionAmount(externalPositionEntry.position)}
+            />
+        );
 
     return (
         <StakingDashboard
@@ -105,21 +117,24 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
 
                                     <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
                                         <ClaimCard account={account} />
+
                                         <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
-                                            <ApyCard apy={apy} />
+                                            <ApyCard apy={rate} />
+
                                             <PayoutCardFrequencyRewards
-                                                rewardFrequency={SOLANA_EPOCH_DAYS}
+                                                rewardFrequency={rewardPeriodDays}
                                             />
                                         </Flex>
                                     </Grid>
+
                                     <StakingCard
                                         account={account}
-                                        isValidatorsQueueLoading={undefined}
-                                        daysToAddToPool={SOLANA_EPOCH_DAYS}
-                                        daysToUnstake={SOLANA_EPOCH_DAYS}
+                                        daysToAddToPool={daysToAddToPool}
+                                        daysToUnstake={daysToUnstake}
                                     />
                                 </Column>
                             </DashboardSection>
+
                             <RewardsList
                                 account={account}
                                 rewardsQueryResult={rewardsQueryResult}

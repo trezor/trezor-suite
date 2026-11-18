@@ -28,8 +28,8 @@ const getHeadingTranslationId = (stakeType: StakeType) => {
 interface InstantStakeBannerProps {
     account: Account;
     txs: WalletAccountTransaction[];
-    daysToAddToPool?: number;
-    daysToUnstake?: number;
+    daysToAddToPool: number | null;
+    daysToUnstake: number | null;
 }
 
 export const InstantStakeBanner = ({

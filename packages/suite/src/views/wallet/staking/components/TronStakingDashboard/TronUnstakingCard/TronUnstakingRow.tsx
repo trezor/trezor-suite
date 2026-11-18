@@ -10,32 +10,34 @@ const CELL_PADDING = { vertical: 12, horizontal: 20 } satisfies Padding;
 type TronUnstakingRowProps = {
     index: number;
     amount: string;
-    expireTime: number;
+    availableAt: number | null;
     symbol: NetworkSymbol;
 };
 
-export const TronUnstakingRow = ({ index, amount, expireTime, symbol }: TronUnstakingRowProps) => {
+export const TronUnstakingRow = ({ index, amount, availableAt, symbol }: TronUnstakingRowProps) => {
     const testIdPrefix = `@staking/tron-unstaking-card/row-${index}`;
 
     return (
         <Table.Row data-testid={testIdPrefix}>
             <Table.Cell padding={CELL_PADDING}>
-                <Text
-                    typographyStyle="body-sm"
-                    intent="neutral"
-                    priority="secondary"
-                    textWrap="nowrap"
-                    data-testid={`${testIdPrefix}/time-left`}
-                >
-                    <CountdownTimer
-                        deadline={expireTime * 1000}
-                        message="TR_EARN_TRON_UNSTAKING_READY_IN"
-                        minUnit="hour"
-                        minUnitValue={1}
-                        unitDisplay="long"
-                        isApproximate
-                    />
-                </Text>
+                {availableAt !== null && (
+                    <Text
+                        typographyStyle="body-sm"
+                        intent="neutral"
+                        priority="secondary"
+                        textWrap="nowrap"
+                        data-testid={`${testIdPrefix}/time-left`}
+                    >
+                        <CountdownTimer
+                            deadline={availableAt}
+                            message="TR_EARN_TRON_UNSTAKING_READY_IN"
+                            minUnit="hour"
+                            minUnitValue={1}
+                            unitDisplay="long"
+                            isApproximate
+                        />
+                    </Text>
+                )}
             </Table.Cell>
 
             <Table.Cell align="end" padding={CELL_PADDING}>
@@ -43,6 +45,7 @@ export const TronUnstakingRow = ({ index, amount, expireTime, symbol }: TronUnst
                     <Text typographyStyle="body-md-strong" data-testid={`${testIdPrefix}/amount`}>
                         <FormattedCryptoAmount value={amount} networkSymbol={symbol} />
                     </Text>
+
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         <BaseCurrencyValue
                             amount={amount}
