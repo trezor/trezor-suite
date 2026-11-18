@@ -81,6 +81,11 @@ const MetaValue = styled.div`
     overflow: hidden;
 `;
 
+const BalanceValue = styled.div`
+    flex-shrink: 0;
+    white-space: nowrap;
+`;
+
 const Actions = styled.div`
     grid-column: 4;
     grid-row: 1 / span 2;
@@ -201,6 +206,7 @@ export const YieldPageHeader = ({
 
                 <IdentityTitle>
                     <Text
+                        as="div"
                         typographyStyle="body-md-strong"
                         ellipsisLineCount={isBelowMobile ? 2 : 1}
                     >
@@ -226,20 +232,20 @@ export const YieldPageHeader = ({
                                     •
                                 </Text>
                             )}
-                            <MetaValue>
+                            <BalanceValue>
                                 <Text
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
-                                    ellipsisLineCount={1}
                                 >
                                     <FormattedCryptoAmount
                                         value={account.formattedBalance}
                                         networkSymbol={account.symbol}
+                                        isCompact
                                         data-testid="@yield/page-header/balance"
                                     />
                                 </Text>
-                            </MetaValue>
+                            </BalanceValue>
                         </Row>
                     </IdentityMeta>
                 )}
