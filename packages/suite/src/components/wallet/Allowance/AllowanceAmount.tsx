@@ -33,14 +33,12 @@ export const AllowanceAmount = ({
         return <Spinner size={16} isDisabled />;
     }
 
-    if (hasError) {
+    // Without decimals the amount cannot be scaled, so show nothing rather than a wrong number.
+    if (hasError || token?.decimals === undefined) {
         return <Text typographyStyle={typographyStyle}>-</Text>;
     }
 
-    if (
-        token?.decimals !== undefined &&
-        isAllowanceUnlimited({ amount, decimals: token.decimals })
-    ) {
+    if (isAllowanceUnlimited({ amount, decimals: token.decimals })) {
         return (
             <Text typographyStyle={typographyStyle}>
                 <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
