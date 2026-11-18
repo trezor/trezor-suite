@@ -28,7 +28,7 @@ test.describe.skip('Bitcoin link', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.UriLinkHandler,
                 priority: TestPriority.Medium,
-                stream: TestStream.Wallet,
+                stream: TestStream.Network,
             }),
         },
         async () => {},
