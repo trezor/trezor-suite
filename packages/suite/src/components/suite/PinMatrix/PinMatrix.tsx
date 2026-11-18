@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { PIN_MAX_LENGTH } from '@suite-common/device';
 import {
     Banner,
@@ -23,21 +23,56 @@ type PinMatrixProps = {
     pin: string;
     setPin: (pin: string) => void;
     onSubmit: () => void;
-    showExplanation?: boolean;
+    explanation?: TranslationKey;
     showLabel?: boolean;
     isDisabled?: boolean;
 };
 
+const ExplanationBanner = ({ explanation }: { explanation?: TranslationKey }) => {
+    const learnMoreUrl = useExternalLink(HELP_CENTER_PIN_URL);
+
+    if (!explanation) return null;
+
+    if (explanation === 'TR_PIN_MISMATCH_HEADING') {
+        return (
+            <Banner
+                intent="warning"
+                icon={PasswordIcon}
+                description={
+                    <Paragraph typographyStyle="body-sm">
+                        <Translation id={explanation} />
+                    </Paragraph>
+                }
+            />
+        );
+    }
+
+    return (
+        <Banner
+            intent="info"
+            icon={PasswordIcon}
+            rightContent={
+                <Banner.Button href={learnMoreUrl} size="small">
+                    <Translation id="TR_LEARN_MORE" />
+                </Banner.Button>
+            }
+            description={
+                <Paragraph typographyStyle="body-sm">
+                    <Translation id={explanation} />
+                </Paragraph>
+            }
+        />
+    );
+};
+
 export const PinMatrix = ({
-    showExplanation,
+    explanation,
     showLabel,
     pin,
     setPin,
     onSubmit,
     isDisabled,
 }: PinMatrixProps) => {
-    const learnMoreUrl = useExternalLink(HELP_CENTER_PIN_URL);
-
     const onPinBackspace = useCallback(() => {
         setPin(pin.substring(0, pin.length - 1));
     }, [pin, setPin]);
@@ -113,22 +148,7 @@ export const PinMatrix = ({
 
     return (
         <Column gap={16} maxWidth={380}>
-            {showExplanation && (
-                <Banner
-                    intent="info"
-                    icon={PasswordIcon}
-                    rightContent={
-                        <Banner.Button href={learnMoreUrl} size="small">
-                            <Translation id="TR_LEARN_MORE" />
-                        </Banner.Button>
-                    }
-                    description={
-                        <Paragraph typographyStyle="body-sm">
-                            <Translation id="TR_MAXIMUM_PIN_LENGTH" />
-                        </Paragraph>
-                    }
-                />
-            )}
+            <ExplanationBanner explanation={explanation} />
             <Card
                 header={
                     showLabel ? (
