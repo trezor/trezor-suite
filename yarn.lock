@@ -11806,14 +11806,11 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/icons": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     react: "npm:19.3.0"
-    react-redux: "npm:9.3.1"
-    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 

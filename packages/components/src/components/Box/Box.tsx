@@ -36,6 +36,9 @@ export const allowedBoxFrameProps = [
     'userSelect',
     'pointerEvents',
     'display',
+    'transition',
+    'transform',
+    'transformOrigin',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 
@@ -101,7 +104,13 @@ const Container = styled.div<
 
 export type BoxProps = Pick<
     HTMLProps<HTMLElement>,
-    'onClick' | 'onMouseEnter' | 'onMouseLeave' | 'tabIndex' | 'type' | 'aria-label'
+    | 'onClick'
+    | 'onMouseEnter'
+    | 'onMouseLeave'
+    | 'tabIndex'
+    | 'type'
+    | 'aria-label'
+    | 'aria-current'
 > &
     AllowedFrameProps & {
         children?: React.ReactNode;
@@ -130,6 +139,7 @@ export const Box = ({
     'data-component': dataComponent = 'Box',
     'aria-hidden': ariaHidden,
     'aria-label': ariaLabel,
+    'aria-current': ariaCurrent,
     as = 'div',
     onClick,
     onMouseEnter,
@@ -148,6 +158,7 @@ export const Box = ({
             data-component={dataComponent}
             aria-hidden={ariaHidden}
             aria-label={ariaLabel}
+            aria-current={ariaCurrent}
             $borderWidth={borderWidth}
             $borderOffset={borderOffset}
             $backgroundColor={backgroundColor}

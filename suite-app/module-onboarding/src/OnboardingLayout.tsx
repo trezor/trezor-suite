@@ -1,7 +1,4 @@
 import { type ReactNode, useRef } from 'react';
-import { useSelector } from 'react-redux';
-
-import styled from 'styled-components';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
@@ -12,69 +9,16 @@ import { ReduxModal } from '@suite-app/app-modal';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
-import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     ConnectionGlobalModalManager,
     GuideRouter,
-    MAX_ONBOARDING_WIDTH,
-    OnboardingCancelButtonContext,
+    MAX_CONTENT_WIDTH_NUMERIC,
     SuiteBanners,
     useFilteredModal,
-    useOnboardingCancelButtonContext,
     useResponsiveContextOnChange,
+    useSelector,
 } from '@trezor/suite';
-
-const OnboardingSpacer = styled.div`
-    height: ${TRAFFIC_LIGHT_DEFAULT_OFFSET}px;
-    width: 100%;
-`;
-
-type OnboardingContentProps = {
-    children: ReactNode;
-};
-
-const OnboardingContent = ({ children }: OnboardingContentProps) => {
-    const { onCancelHandler } = useOnboardingCancelButtonContext();
-    const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const { dispatch } = useServices(injectDispatch);
-
-    const goToSettings = () => dispatch(gotoThunk({ routeName: 'settings-index' }));
-
-    return (
-        <Column gap={24}>
-            <Row justifyContent="flex-end">
-                <Row gap={12}>
-                    {isDebugModeActive ? (
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            size="small"
-                            onClick={goToSettings}
-                            data-testid="@suite/menu/settings"
-                        >
-                            <DebugOnlyBadge>
-                                <Translation id="TR_SETTINGS" />
-                            </DebugOnlyBadge>
-                        </Button>
-                    ) : null}
-                    {onCancelHandler !== null ? (
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            iconRight={XIcon}
-                            size="small"
-                            onClick={onCancelHandler}
-                        >
-                            <Translation id="TR_CANCEL" />
-                        </Button>
-                    ) : null}
-                </Row>
-            </Row>
-            <Box>{children}</Box>
-        </Column>
-    );
-};
 
 type OnboardingLayoutProps = {
     children: ReactNode;
@@ -83,6 +27,8 @@ type OnboardingLayoutProps = {
 
 export const OnboardingLayout = ({ children, sidebar }: OnboardingLayoutProps) => {
     const contentRef = useRef<HTMLDivElement>(null);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const { dispatch } = useServices(injectDispatch);
     const isMac = isMacOs();
     const isDesktopApp = isDesktop();
     useResponsiveContextOnChange(contentRef);
@@ -91,6 +37,7 @@ export const OnboardingLayout = ({ children, sidebar }: OnboardingLayoutProps) =
         [MODAL_CONTEXT_USER],
         ['advanced-coin-settings', 'disable-tor'],
     );
+    const goToSettings = () => dispatch(gotoThunk({ routeName: 'settings-index' }));
 
     return (
         <>
@@ -106,18 +53,37 @@ export const OnboardingLayout = ({ children, sidebar }: OnboardingLayoutProps) =
                     overflow="auto"
                     alignItems="center"
                 >
-                    {isMac && isDesktopApp && <OnboardingSpacer />}
+                    {isMac && isDesktopApp && (
+                        <Box height={TRAFFIC_LIGHT_DEFAULT_OFFSET} width="100%" />
+                    )}
                     <Column
                         data-testid="@onboarding-layout/body"
                         gap={20}
-                        maxWidth={MAX_ONBOARDING_WIDTH}
                         width="100%"
-                        padding={{ horizontal: 20, top: 32, bottom: 48 }}
+                        maxWidth={MAX_CONTENT_WIDTH_NUMERIC}
+                        alignItems="center"
+                        height="100%"
+                        padding={{ horizontal: 20, vertical: 32 }}
                     >
                         <SuiteBanners isOnboarding />
-                        <OnboardingCancelButtonContext>
-                            <OnboardingContent>{children}</OnboardingContent>
-                        </OnboardingCancelButtonContext>
+                        {isDebugModeActive && (
+                            <Row width="100%" justifyContent="flex-end">
+                                <Button
+                                    intent="neutral"
+                                    priority="secondary"
+                                    size="small"
+                                    onClick={goToSettings}
+                                    data-testid="@suite/menu/settings"
+                                >
+                                    <DebugOnlyBadge>
+                                        <Translation id="TR_SETTINGS" />
+                                    </DebugOnlyBadge>
+                                </Button>
+                            </Row>
+                        )}
+                        <Box width="100%" margin={{ vertical: 'auto' }}>
+                            {children}
+                        </Box>
                     </Column>
                 </Column>
                 <GuideRouter />

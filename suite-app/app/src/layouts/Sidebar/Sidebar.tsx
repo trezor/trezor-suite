@@ -6,14 +6,14 @@ import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks
 import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
 import { selectIsAnyDeviceSelected, selectSelectedDevice } from '@suite-common/device';
-import { Box, Icon, ResizableBox } from '@trezor/components';
+import { Icon, ResizableBox, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
 import { TrezorLogo } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     AccountsMenu,
+    DEVICE_SELECTOR_HEIGHT,
     DeviceSelector,
     MIN_CONTENT_WIDTH,
     QuickActions,
@@ -72,13 +72,13 @@ const WalletSwitcher = ({ isCollapsed, isInteractive }: WalletSwitcherProps) => 
     }
 
     return isCollapsed ? (
-        <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
+        <Row height={DEVICE_SELECTOR_HEIGHT} justifyContent="center">
             <Icon as={TrezorLogoIcon} size={24} pointerEvents="none" />
-        </Box>
+        </Row>
     ) : (
-        <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>
+        <Row height={DEVICE_SELECTOR_HEIGHT} padding={{ horizontal: 20 }}>
             <TrezorLogo width="107px" type="horizontal" />
-        </Box>
+        </Row>
     );
 };
 
