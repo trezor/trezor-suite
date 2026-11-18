@@ -330,6 +330,70 @@ describe('composeExchangeTradeFeeLevelsThunk', () => {
         );
     });
 
+    it('reports that another level composes when the selected level cannot pay the fee', async () => {
+        const store = getStore(getExchangeState(getDexQuote()));
+        mockComposedLevels({
+            high: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+            normal: {
+                type: 'error',
+                error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                errorMessage: { id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+            },
+            low: { type: 'final', fee: '42000', feeLimit: '21000' },
+        });
+
+        const result = await store.dispatch(
+            exchangeThunks.composeTradeFeeLevelsThunk({
+                account,
+                decimals: 18,
+                shouldSendInSats: undefined,
+            }),
+        );
+
+        expect(result.payload).toEqual(['low']);
+        expect(store.getState().wallet.trading.composedTransactionInfo).toEqual(
+            composedTransactionInfo,
+        );
+    });
+
+    it('reports that no level composes when none can pay the fee', async () => {
+        const store = getStore(getExchangeState(getDexQuote()));
+        mockComposedLevels({
+            high: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+            normal: {
+                type: 'error',
+                error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                errorMessage: { id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+            },
+            low: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+        });
+
+        const result = await store.dispatch(
+            exchangeThunks.composeTradeFeeLevelsThunk({
+                account,
+                decimals: 18,
+                shouldSendInSats: undefined,
+            }),
+        );
+
+        expect(result.payload).toEqual([]);
+    });
+
+    it('does not report a failure when the selected level composes', async () => {
+        const store = getStore(getExchangeState(getCexQuote()));
+        mockComposedLevels({ normal: { type: 'final', fee: '42000', feeLimit: '21000' } });
+
+        const result = await store.dispatch(
+            exchangeThunks.composeTradeFeeLevelsThunk({
+                account,
+                decimals: 18,
+                shouldSendInSats: undefined,
+            }),
+        );
+
+        expect(result.payload).toBeUndefined();
+    });
+
     it('does not compose a quote that is signed as EIP-712 typed data', async () => {
         const quote: ExchangeTrade = {
             ...getDexQuote(),

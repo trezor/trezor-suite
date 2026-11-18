@@ -28,7 +28,7 @@ export type ComposeExchangeTradeFeeLevelsThunkProps = {
 export type ComposeExchangeTradeFeeLevelsThunkState = ComposeTradingTransactionThunkState;
 
 export const composeExchangeTradeFeeLevelsThunk = createThunk<
-    undefined,
+    string[] | undefined,
     ComposeExchangeTradeFeeLevelsThunkProps,
     { state: ComposeExchangeTradeFeeLevelsThunkState }
 >(
@@ -72,7 +72,7 @@ export const composeExchangeTradeFeeLevelsThunk = createThunk<
         );
 
         if (isRejected(composeTradingTransactionThunk)(composeResult)) {
-            return;
+            return composeResult.payload?.composableFeeLevels;
         }
 
         if (signal.aborted) {
