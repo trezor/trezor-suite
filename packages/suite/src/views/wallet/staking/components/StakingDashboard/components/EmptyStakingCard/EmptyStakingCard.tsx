@@ -8,7 +8,6 @@ import { InfoIcon } from '@trezor/icons';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { DiscoveryWarning } from '../DiscoveryWarning';
@@ -23,7 +22,6 @@ type EmptyStakingCardProps = {
 export const EmptyStakingCard = ({ account }: EmptyStakingCardProps) => {
     const { isBelowLaptop } = useLayoutSize();
 
-    const { stakingMessageContent } = useMessageSystemStaking(account.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const variant = getNetworkVariant(account);
@@ -51,7 +49,7 @@ export const EmptyStakingCard = ({ account }: EmptyStakingCardProps) => {
                             ))}
                         </Grid>
 
-                        <Tooltip content={stakingMessageContent}>
+                        <Tooltip content={data.stakingMessageContent}>
                             <Button
                                 onClick={content.onStartStakingClick}
                                 isDisabled={data.isStartStakingDisabled}

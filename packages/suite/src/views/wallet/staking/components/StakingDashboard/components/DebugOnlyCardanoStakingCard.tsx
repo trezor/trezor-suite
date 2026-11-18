@@ -1,13 +1,11 @@
 import styled from 'styled-components';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { EVERSTAKE_POOL_NAMES } from '@suite-common/wallet-config';
 import {
-    getCardanoAccountPoolId,
-    isCardanoStakedWithEverstake,
-    isCardanoStakedWithFiveBinaries,
-    selectCardanoPoolsInfo,
-} from '@suite-common/wallet-core';
+    selectStakingAccountPositionDetails,
+    selectStakingAccountPositionEntry,
+} from '@suite-common/earn-staking';
+import { EVERSTAKE_POOL_NAMES } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
@@ -25,11 +23,16 @@ interface DebugOnlyCardanoStakingCardProps {
 
 export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStakingCardProps) => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const isStakedWithEverstake = isCardanoStakedWithEverstake(account, cardanoStakingPools);
-    const isStakedWithFiveBinaries = isCardanoStakedWithFiveBinaries(account);
-    const poolId = getCardanoAccountPoolId(account);
-    const poolName = poolId ? EVERSTAKE_POOL_NAMES[poolId] : undefined;
+
+    const positionEntry = useSelector(state =>
+        selectStakingAccountPositionEntry(state, account.key),
+    );
+    const delegation = useSelector(state =>
+        selectStakingAccountPositionDetails(state, account.key, 'cardano-delegation'),
+    );
+
+    const poolId = delegation?.poolId ?? null;
+    const poolName = poolId === null ? undefined : EVERSTAKE_POOL_NAMES[poolId];
 
     if (!isDebugModeActive || account.networkType !== 'cardano') return null;
 
@@ -51,11 +54,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                     >
                         <ParagraphWrapper>
                             <Paragraph typographyStyle="body-xs">
-                                {isStakedWithEverstake ? 'Everstake' : ''}
-                                {isStakedWithFiveBinaries ? 'FiveBinaries' : ''}
-                                {!isStakedWithEverstake && !isStakedWithFiveBinaries
-                                    ? 'Unknown'
-                                    : ''}
+                                {positionEntry?.descriptor.providerId ?? 'Unknown'}
                             </Paragraph>
                         </ParagraphWrapper>
                     </InfoItem>
@@ -67,9 +66,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                         verticalAlignment="start"
                     >
                         <ParagraphWrapper>
-                            <Paragraph typographyStyle="body-xs">
-                                {account?.misc?.staking.poolId}
-                            </Paragraph>
+                            <Paragraph typographyStyle="body-xs">{poolId}</Paragraph>
                         </ParagraphWrapper>
                     </InfoItem>
 
@@ -94,7 +91,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                     >
                         <ParagraphWrapper>
                             <Paragraph typographyStyle="body-xs">
-                                {account?.misc?.staking.address}
+                                {account.misc?.staking.address}
                             </Paragraph>
                         </ParagraphWrapper>
                     </InfoItem>
@@ -106,9 +103,7 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                         verticalAlignment="start"
                     >
                         <ParagraphWrapper>
-                            <Paragraph typographyStyle="body-xs">
-                                {account?.misc?.staking.drep?.drep_id}
-                            </Paragraph>
+                            <Paragraph typographyStyle="body-xs">{delegation?.drep?.id}</Paragraph>
                         </ParagraphWrapper>
                     </InfoItem>
                 </Column>

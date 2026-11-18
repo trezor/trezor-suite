@@ -1,31 +1,32 @@
-import { type ReactNode, useMemo } from 'react';
+import { type ReactNode } from 'react';
 
 import { AssetSymbol } from '@suite/assets';
-import { useNetworkStakingRate } from '@suite-common/earn-staking';
-import { useFormatters } from '@suite-common/formatters';
 import {
-    calculateRewards,
-    getNetworkAdjustedStakingBalance,
-    getStakingDataForNetwork,
-    getStakingLimitsByNetworkSymbol,
-} from '@suite-common/wallet-core';
+    formatStakingAmount,
+    getPotentialStakingRewards,
+    selectStakeableStakingProductDescriptorBySymbol,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
+import { useFormatters } from '@suite-common/formatters';
 import { type Account } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export interface EmptyStakingCardData {
     rate: number | null;
-    account: Account | undefined;
+    account: Account;
     potentialRewards: string;
     hasPotentialRewards: boolean;
     hasEnoughBalanceForStaking: boolean;
     displaySymbol: ReactNode;
     isStartStakingDisabled: boolean;
+    stakingMessageContent: string | null;
 }
 
 interface UseEmptyStakingCardDataProps {
-    account: Account | undefined;
+    account: Account;
 }
 
 export const useEmptyStakingCardData = ({
@@ -34,42 +35,42 @@ export const useEmptyStakingCardData = ({
     const { CryptoAmountFormatter } = useFormatters();
 
     const { rate } = useNetworkStakingRate({
-        networkSymbol: account?.symbol ?? null,
-        accountKey: account?.key,
+        networkSymbol: account.symbol,
+        accountKey: account.key,
     });
 
-    const { isStakingDisabled } = useMessageSystemStaking(account?.symbol);
-    const isStartStakingDisabled = isStakingDisabled || !account;
-
-    const stakingData = getStakingDataForNetwork(account);
-
-    const accountBalance = account?.formattedBalance ?? '0';
-    const stakingBalance = stakingData?.depositedBalance ?? '0';
-    const stakingLimits = getStakingLimitsByNetworkSymbol(account?.symbol);
-
-    const hasEnoughBalanceForStaking = Boolean(
-        stakingLimits && new BigNumber(accountBalance).gte(stakingLimits.MIN_AMOUNT_FOR_STAKING),
+    const stakeableDescriptor = useSelector(state =>
+        selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
     );
 
-    const potentialRewards = useMemo(() => {
-        const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
-        const amount = calculateRewards(
-            getNetworkAdjustedStakingBalance(totalBalance, account),
-            rate,
-        );
+    const { isDisabled: isStartStakingDisabled, message: stakingMessageContent } =
+        useStakingOperationSwitch(stakeableDescriptor?.id ?? null, 'stake');
 
-        return CryptoAmountFormatter.format(amount.toString(), {
-            symbol: account?.symbol,
+    const hasEnoughBalanceForStaking =
+        stakeableDescriptor !== null &&
+        new BigNumber(account.availableBalance).gte(stakeableDescriptor.limits.minStakeAmount);
+
+    const potentialRewards = CryptoAmountFormatter.format(
+        formatStakingAmount({
+            amount: getPotentialStakingRewards({
+                accounts: [{ availableBalance: account.availableBalance }],
+                limits: stakeableDescriptor?.limits ?? null,
+                rate,
+            }),
+            networkSymbol: account.symbol,
+        }),
+        {
+            symbol: account.symbol,
             isBalance: true,
             withSymbol: false,
             isEllipsisAppended: false,
             maxDisplayedDecimals: 8,
-        });
-    }, [accountBalance, stakingBalance, rate, account, CryptoAmountFormatter]);
+        },
+    );
 
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
 
-    const displaySymbol = account ? <AssetSymbol networkSymbol={account.symbol} /> : '';
+    const displaySymbol = <AssetSymbol networkSymbol={account.symbol} />;
 
     return {
         rate,
@@ -79,5 +80,6 @@ export const useEmptyStakingCardData = ({
         hasEnoughBalanceForStaking,
         displaySymbol,
         isStartStakingDisabled,
+        stakingMessageContent,
     };
 };
