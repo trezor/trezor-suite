@@ -14,6 +14,8 @@ import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { mockAddressValidator, mockGetNamedAddressSupport } from '@suite-common/address/mocks';
+import { type StakingDep } from '@suite-common/earn-staking';
+import { mockStakingServices } from '@suite-common/earn-staking/mocks';
 import {
     type AddressValidatorDep,
     type GetNamedAddressSupportDep,
@@ -121,6 +123,7 @@ type SendFormTestServices = SuiteRouterHistoryDep &
     GetIsWindowVisibleDep &
     GetTradedAccountKeysDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
+    StakingDep &
     SuiteSyncDep & {
         networks: AddressValidatorDep & GetNamedAddressSupportDep & NetworkModuleRepositoryDep;
     };
@@ -138,6 +141,7 @@ const extraServices: SendFormTestServices = {
         getNamedAddressSupport: mockGetNamedAddressSupport(),
         networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),
     },
+    staking: mockStakingServices(),
     suiteSync: mockSuiteSync(),
 };
 const extraActions: OnModalCancelDep = { onModalCancel: closeModal };

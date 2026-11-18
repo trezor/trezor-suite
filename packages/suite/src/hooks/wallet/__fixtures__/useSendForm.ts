@@ -6,6 +6,7 @@ import { modalReducer } from '@suite/modal';
 import { routerLocationChange, routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
+import { stakingInitialState } from '@suite-common/earn-staking';
 import { networksReducer } from '@suite-common/networks';
 import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -303,6 +304,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
         ),
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
         tokenDefinitions: createReducer({}, () => ({})),
+        earn: combineReducers({ staking: createReducer(stakingInitialState, () => ({})) }),
         wallet: combineReducers({
             send: sendFormReducer,
             stablecoinYield: yieldReducer,
