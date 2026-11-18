@@ -74,6 +74,18 @@ export const XpubQRCodeBottomSheet = ({
     const [isViewOnlyWarningShown, setIsViewOnlyWarningShown] = useState(false);
     const [isXpubUnverified, setIsXpubUnverified] = useState(false);
     const [isConfirmationPending, setIsConfirmationPending] = useState(false);
+    const [devicePublicKey, setDevicePublicKey] = useState<string>();
+
+    useEffect(
+        () => () => {
+            showRequestIdRef.current += 1;
+            if (isConfirmationPendingRef.current) {
+                isConfirmationPendingRef.current = false;
+                TrezorConnect.cancel();
+            }
+        },
+        [],
+    );
 
     const isDeviceAuthorizationActive =
         deviceAuthorizationStep !== DeviceAuthorizationStep.Idle && isConfirmationPending;
@@ -95,6 +107,8 @@ export const XpubQRCodeBottomSheet = ({
 
     if (!qrCodeData) return null;
 
+    const displayedPublicKey = devicePublicKey ?? qrCodeData;
+
     const handleShowXpub = async () => {
         if (!device || !account || isConfirmationPendingRef.current) return;
 
@@ -112,7 +126,15 @@ export const XpubQRCodeBottomSheet = ({
 
         let xpubResponse;
         try {
-            xpubResponse = await showXpubOnDevice(device, account);
+            // Read the firmware's display value before confirmation so it can be compared while
+            // the device is showing it, even if the stored account has lost its checksum.
+            xpubResponse = await showXpubOnDevice(device, account, { showOnTrezor: false });
+            if (showRequestIdRef.current !== requestId) return;
+
+            if (xpubResponse.success) {
+                setDevicePublicKey(xpubResponse.payload.displayablePublicKey);
+                xpubResponse = await showXpubOnDevice(device, account);
+            }
         } catch (error) {
             xpubResponse = {
                 success: false as const,
@@ -134,11 +156,13 @@ export const XpubQRCodeBottomSheet = ({
         isTakenOverByDeviceAuthorizationRef.current = false;
 
         if (xpubResponse.success) {
+            setDevicePublicKey(xpubResponse.payload.displayablePublicKey);
             setIsXpubShown(true);
             if (wasTakenOverByDeviceAuthorization && ref && 'current' in ref) {
                 ref.current?.present();
             }
         } else {
+            setDevicePublicKey(undefined);
             if (!USER_CANCELLED_ERROR_CODES.includes(xpubResponse.error.code ?? '')) {
                 showToast({
                     intent: 'critical',
@@ -160,7 +184,7 @@ export const XpubQRCodeBottomSheet = ({
         const copyMessage = translate(
             'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.copyMessage',
         );
-        await copyToClipboard(qrCodeData, copyMessage);
+        await copyToClipboard(displayedPublicKey, copyMessage);
         onClose();
     };
 
@@ -177,6 +201,7 @@ export const XpubQRCodeBottomSheet = ({
             TrezorConnect.cancel();
         }
         setIsConfirmationPending(false);
+        setDevicePublicKey(undefined);
         setIsXpubShown(isImported);
         setIsViewOnlyWarningShown(false);
         setIsXpubUnverified(false);
@@ -200,8 +225,8 @@ export const XpubQRCodeBottomSheet = ({
                 <VStack spacing="sp24">
                     {isXpubUnverified && <XpubUnverifiedWarning />}
                     <XpubQRCodeCard
-                        isXpubShown={isXpubShown || isConfirmationPending}
-                        qrCodeData={qrCodeData}
+                        isXpubShown={isXpubShown || devicePublicKey !== undefined}
+                        qrCodeData={displayedPublicKey}
                     />
 
                     <Box style={applyStyle(buttonStyle)}>

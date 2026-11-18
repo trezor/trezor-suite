@@ -16491,6 +16491,8 @@ __metadata:
   resolution: "@suite-native/qr-code@workspace:suite-native/qr-code"
   dependencies:
     "@suite-common/device": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -16498,6 +16500,7 @@ __metadata:
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles-native": "workspace:*"

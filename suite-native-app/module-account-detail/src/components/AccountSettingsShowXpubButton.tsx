@@ -92,6 +92,7 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
                 <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton" />
             </Button>
             <XpubQRCodeBottomSheet
+                key={accountKey}
                 ref={xpubQRSheetRef}
                 onClose={closeXpubQRSheet}
                 qrCodeData={accountXpub}

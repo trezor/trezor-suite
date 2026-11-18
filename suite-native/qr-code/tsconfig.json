@@ -19,6 +19,13 @@
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        { "path": "../test-utils-store" }
     ]
 }

@@ -7,6 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "test:unit": "yarn g:jest:native",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -29,5 +30,10 @@
         "react-native": "0.88.1",
         "react-qr-code": "2.2.0",
         "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-native/test-utils-store": "workspace:*"
     }
 }
