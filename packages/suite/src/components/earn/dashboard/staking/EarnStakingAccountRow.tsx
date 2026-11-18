@@ -3,6 +3,7 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -14,7 +15,6 @@ import {
     isCardanoWithdrawalBlockedByMissingDrep,
     selectAccountClaimTransactions,
     selectAccountIsStakingActive,
-    selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance, isPending } from '@suite-common/wallet-utils';
@@ -24,7 +24,6 @@ import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -48,12 +47,13 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
-    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
+    const { rate, rateKind } = useNetworkStakingRate({
+        networkSymbol: account.symbol,
+        accountKey: account.key,
+    });
 
     // Promoted (best) pool APY, shown when suggesting a switch to a new provider.
-    const newProviderApy = useSelector(state =>
-        selectPoolStatsApy(state, { networkSymbol: account.symbol }),
-    );
+    const { rate: newProviderApy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
@@ -308,7 +308,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         <EarnAccountCell account={account} />
 
                         {apyAvailable ? (
-                            <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
+                            <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
                         ) : (
                             <Text typographyStyle="body-sm">
                                 <Translation id="TR_EARN_NOT_AVAILABLE" />
@@ -407,7 +407,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
             <Table.Cell>
                 {apyAvailable ? (
-                    <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
+                    <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
                 ) : (
                     <Text typographyStyle="body-sm">
                         <Translation id="TR_EARN_NOT_AVAILABLE" />

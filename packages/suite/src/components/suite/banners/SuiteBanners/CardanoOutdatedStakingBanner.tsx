@@ -1,8 +1,8 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -13,9 +13,7 @@ import { useSelector } from '#src/hooks/suite/useSelector';
 export const CardanoOutdatedStakingBanner = () => {
     const { dispatch } = useServices(injectDispatch);
     const formatApyValue = useFormatApy();
-    const apy = useSelector(state =>
-        selectPoolStatsApy(state, { networkSymbol: asNetworkSymbol('ada') }),
-    );
+    const { rate: apy } = useNetworkStakingRate({ networkSymbol: asNetworkSymbol('ada') });
 
     const isNewProviderBannerEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.banners.staking.ada.newProvider, true),

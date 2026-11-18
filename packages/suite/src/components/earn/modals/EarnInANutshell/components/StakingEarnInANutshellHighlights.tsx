@@ -19,7 +19,7 @@ import {
 interface StakingEarnInANutshellHighlightsProps {
     networkType: NetworkType;
     networkSymbol: NetworkSymbol;
-    unstakingPeriod?: number;
+    unstakingPeriod: number | null;
 }
 
 export const StakingEarnInANutshellHighlights = ({
@@ -55,12 +55,15 @@ export const StakingEarnInANutshellHighlights = ({
                     },
                     {
                         icon: ArrowBendDoubleUpLeftIcon,
-                        content: (
-                            <Translation
-                                id="TR_EARN_ETH_UNSTAKING_TAKES"
-                                values={{ count: unstakingPeriod }}
-                            />
-                        ),
+                        content:
+                            unstakingPeriod === null ? (
+                                <Translation id="TR_EARN_ETH_UNSTAKING_TAKES_WITHOUT_DAYS" />
+                            ) : (
+                                <Translation
+                                    id="TR_EARN_ETH_UNSTAKING_TAKES"
+                                    values={{ count: unstakingPeriod }}
+                                />
+                            ),
                     },
                 ];
             case 'solana':
@@ -85,12 +88,15 @@ export const StakingEarnInANutshellHighlights = ({
                     },
                     {
                         icon: ArrowBendDoubleUpLeftIcon,
-                        content: (
-                            <Translation
-                                id="TR_EARN_SOL_UNSTAKING_TAKES"
-                                values={{ count: unstakingPeriod }}
-                            />
-                        ),
+                        content:
+                            unstakingPeriod === null ? (
+                                <Translation id="TR_EARN_SOL_UNSTAKING_TAKES_WITHOUT_DAYS" />
+                            ) : (
+                                <Translation
+                                    id="TR_EARN_SOL_UNSTAKING_TAKES"
+                                    values={{ count: unstakingPeriod }}
+                                />
+                            ),
                     },
                 ];
             case 'cardano':

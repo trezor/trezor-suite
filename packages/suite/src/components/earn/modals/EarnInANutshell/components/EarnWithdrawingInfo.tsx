@@ -2,16 +2,13 @@ import React from 'react';
 
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { useNetworkStakingPeriods } from '@suite-common/earn-staking';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { getUnstakingPeriodInDays, selectEthereumValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { useSelector } from '#src/hooks/suite/useSelector';
-
-import { EarnInfoRow } from './EarnInfoRow';
+import { EarnInfoRow, getEarnInfoRowDaysContent } from './EarnInfoRow';
 
 interface EarnWithdrawingInfoProps {
     account: Account;
@@ -21,7 +18,7 @@ interface EarnWithdrawingInfoProps {
 interface EarnWithdrawingRowsProps {
     flow: EarnFlow;
     networkSymbol: NetworkSymbol;
-    daysToUnstake?: number;
+    exitPeriodDays: number | null;
 }
 
 const WithdrawingSignRow = ({ flow }: Pick<EarnWithdrawingRowsProps, 'flow'>) => (
@@ -42,7 +39,7 @@ const WithdrawingSignRow = ({ flow }: Pick<EarnWithdrawingRowsProps, 'flow'>) =>
 const EthereumWithdrawingRows = ({
     flow,
     networkSymbol,
-    daysToUnstake,
+    exitPeriodDays,
 }: EarnWithdrawingRowsProps) => (
     <>
         <WithdrawingSignRow flow={flow} />
@@ -54,11 +51,7 @@ const EthereumWithdrawingRows = ({
                     values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
-            content={{
-                text: (
-                    <Translation id="TR_EARN_APPROXIMATE_DAYS" values={{ count: daysToUnstake }} />
-                ),
-            }}
+            content={getEarnInfoRowDaysContent(exitPeriodDays, 'TR_EARN_APPROXIMATE_DAYS')}
         />
         <EarnInfoRow
             heading={
@@ -86,7 +79,11 @@ const EthereumWithdrawingRows = ({
     </>
 );
 
-const SolanaWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProps) => (
+const SolanaWithdrawingRows = ({
+    flow,
+    networkSymbol,
+    exitPeriodDays,
+}: EarnWithdrawingRowsProps) => (
     <>
         <WithdrawingSignRow flow={flow} />
         <EarnInfoRow
@@ -97,9 +94,7 @@ const SolanaWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProps
                     values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
-            content={{
-                text: <Translation id="TR_UP_TO_DAYS" values={{ count: SOLANA_EPOCH_DAYS }} />,
-            }}
+            content={getEarnInfoRowDaysContent(exitPeriodDays, 'TR_UP_TO_DAYS')}
         />
         <EarnInfoRow
             heading={
@@ -144,23 +139,22 @@ const CardanoWithdrawingRows = ({ flow, networkSymbol }: EarnWithdrawingRowsProp
 );
 
 export const EarnWithdrawingInfo = ({ account, flow }: EarnWithdrawingInfoProps) => {
-    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
-    const daysToUnstake = getUnstakingPeriodInDays(account.networkType, validatorsQueue);
+    const { exitPeriodDays } = useNetworkStakingPeriods(account.symbol);
+
+    const rowsProps: EarnWithdrawingRowsProps = {
+        flow,
+        networkSymbol: account.symbol,
+        exitPeriodDays,
+    };
 
     const content = (() => {
         switch (account.networkType) {
             case 'ethereum':
-                return (
-                    <EthereumWithdrawingRows
-                        flow={flow}
-                        networkSymbol={account.symbol}
-                        daysToUnstake={daysToUnstake}
-                    />
-                );
+                return <EthereumWithdrawingRows {...rowsProps} />;
             case 'solana':
-                return <SolanaWithdrawingRows flow={flow} networkSymbol={account.symbol} />;
+                return <SolanaWithdrawingRows {...rowsProps} />;
             case 'cardano':
-                return <CardanoWithdrawingRows flow={flow} networkSymbol={account.symbol} />;
+                return <CardanoWithdrawingRows {...rowsProps} />;
             default:
                 return null;
         }

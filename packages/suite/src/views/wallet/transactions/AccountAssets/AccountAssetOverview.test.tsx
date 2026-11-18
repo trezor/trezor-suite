@@ -8,9 +8,18 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { messages } from '@suite/intl';
 import { type SuiteRouterHistoryDep, getRoute } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
-import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { type StakingDep } from '@suite-common/earn-staking';
+import {
+    mockStakingQueryClient,
+    mockStakingServices,
+    mockStakingState,
+} from '@suite-common/earn-staking/mocks';
 import { stakingAmountSchema } from '@suite-common/earn-staking-common';
-import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+    mockStakingProductInfo,
+} from '@suite-common/earn-staking-common/mocks';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -106,13 +115,11 @@ const PRICED_RATES = {
 type GetStateOptions = {
     rates: Record<string, CurrentRate>;
     areSmallBalancesShown?: boolean;
-    /** What the Earn API says Ethereum staking pays, as a percentage; nothing by default. */
-    ethStakingApy?: number;
 };
 
 const getState = (
     accounts: Account[],
-    { rates, areSmallBalancesShown = true, ethStakingApy }: GetStateOptions,
+    { rates, areSmallBalancesShown = true }: GetStateOptions,
 ): MockSuiteState => ({
     ...mockInitialAppState,
     earn: {
@@ -147,37 +154,34 @@ const getState = (
             ...mockInitialAppState.wallet.fiat,
             current: rates,
         },
-        stake: {
-            ...mockInitialAppState.wallet.stake,
-            data: {
-                ...mockInitialAppState.wallet.stake.data,
-                data: {
-                    ...mockInitialAppState.wallet.stake.data.data,
-                    eth:
-                        ethStakingApy === undefined
-                            ? undefined
-                            : {
-                                  stats: { apy: ethStakingApy, nextRewardPayout: 0 },
-                                  validators: {},
-                              },
-                },
-            },
-        },
     },
 });
 
+type RenderOverviewOptions = Partial<GetStateOptions> & {
+    /** What the staking API says Ethereum staking pays, as a percentage; nothing by default. */
+    ethStakingApy?: number;
+};
+
+const ETH_PRODUCT = mockStakingProductDescriptor();
+
 const renderOverview = (
     accounts: [Account, ...Account[]],
-    { rates = PRICED_RATES, ...options }: Partial<GetStateOptions> = {},
+    { rates = PRICED_RATES, ethStakingApy, ...options }: RenderOverviewOptions = {},
 ) => {
     const analytics = mockDesktopAnalytics();
     const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
     const { services } = createTestCompositionRoot<
-        { services: DesktopAnalyticsDep & SuiteRouterHistoryDep },
+        { services: DesktopAnalyticsDep & SuiteRouterHistoryDep & StakingDep },
         MockSuiteState
     >({
         preloadedState: getState(accounts, { rates, ...options }),
-        services: () => ({ analytics, suiteRouterHistory }),
+        services: () => ({ analytics, suiteRouterHistory, staking: mockStakingServices() }),
+    });
+    const queryClient = mockStakingQueryClient({
+        productInfo:
+            ethStakingApy === undefined
+                ? {}
+                : { [ETH_PRODUCT.id]: mockStakingProductInfo({ rate: ethStakingApy }) },
     });
 
     renderWithProviders(
@@ -185,6 +189,7 @@ const renderOverview = (
         <AccountHeaderProvider>
             <AccountAssetOverview accountKey={accounts[0].key} />
         </AccountHeaderProvider>,
+        { queryClient },
     );
 
     return { analytics, suiteRouterHistory };

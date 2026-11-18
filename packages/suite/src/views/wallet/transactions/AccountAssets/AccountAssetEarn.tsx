@@ -1,11 +1,11 @@
 import { selectAccountStakingSplit } from '@suite-common/assets';
+import { useNetworkStakingRate } from '@suite-common/earn-staking';
 import { isSupportedStakingNetworkSymbol, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 
 import { StakingSplitCard } from '#src/components/wallet/assets/StakingSplitCard';
 import { useOpenAccountStaking } from '#src/components/wallet/assets/useOpenAccountStaking';
-import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AccountAssetEarnProps = {
@@ -19,7 +19,7 @@ export const AccountAssetEarn = ({ accountKey }: AccountAssetEarnProps) => {
     const { totalAmount, availableAmount, stakingAmount, stakingRatio } = useSelector(state =>
         selectAccountStakingSplit(state, accountKey),
     );
-    const { rate: apy } = useStakingRate({ symbol: networkSymbol, accountKey });
+    const stakingRate = useNetworkStakingRate({ networkSymbol: networkSymbol ?? null, accountKey });
 
     if (
         networkSymbol === undefined ||
@@ -35,7 +35,7 @@ export const AccountAssetEarn = ({ accountKey }: AccountAssetEarnProps) => {
             availableAmount={availableAmount}
             stakingAmount={stakingAmount}
             stakingRatio={stakingRatio}
-            apy={apy}
+            stakingRate={stakingRate}
             onViewAll={() => openAccountStaking(networkSymbol)}
             data-testid="@wallet/account-assets/earn"
         />

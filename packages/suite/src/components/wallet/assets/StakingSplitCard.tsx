@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { isStakeInsideAccountBalance } from '@suite-common/earn-staking';
+import { type StakingRateResult, isStakeInsideAccountBalance } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, Row, SegmentedBar, Text, TextButton } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
@@ -20,7 +20,7 @@ type StakingSplitCardProps = {
     stakingAmount: string;
     /** The share of the coin that is staked, from 0 to 1. */
     stakingRatio: number;
-    apy: number | null | undefined;
+    stakingRate: StakingRateResult;
     onViewAll: () => void;
     'data-testid': string;
 };
@@ -31,7 +31,7 @@ export const StakingSplitCard = ({
     availableAmount,
     stakingAmount,
     stakingRatio,
-    apy,
+    stakingRate,
     onViewAll,
     'data-testid': dataTestId,
 }: StakingSplitCardProps) => {
@@ -39,6 +39,9 @@ export const StakingSplitCard = ({
     // the only part available.
     const isStakeInsideBalance = isStakeInsideAccountBalance(networkSymbol);
     const unstakedColor = isStakeInsideBalance ? UNSTAKED_COLOR : AVAILABLE_COLOR;
+
+    // A product without a rate, a testnet, says so once its info is cached.
+    const { rate, rateKind, isPending: isRatePending } = stakingRate;
 
     return (
         <Box flex="1" minWidth={280}>
@@ -100,9 +103,9 @@ export const StakingSplitCard = ({
                                 </Text>
                             </Row>
                             <Row gap={12} alignItems="center">
-                                {apy != null && apy > 0 && (
+                                {!isRatePending && rateKind !== null && (
                                     <Text typographyStyle="body-sm" intent="brand">
-                                        <StakingRateText networkSymbol={networkSymbol} apy={apy} />
+                                        <StakingRateText rate={rate} rateKind={rateKind} />
                                     </Text>
                                 )}
                                 <Text typographyStyle="body-md-strong">

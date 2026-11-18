@@ -1,21 +1,30 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type StakingRateKind } from '@suite-common/earn-staking-common';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 
 import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 type StakingRateTextProps = {
-    networkSymbol: NetworkSymbol;
-    apy: number;
+    rate: number | null;
+    rateKind: StakingRateKind;
 };
 
-/** The rate a stake earns: an APR where the network pays one, as Tron does, else an APY. */
-export const StakingRateText = ({ networkSymbol, apy }: StakingRateTextProps) => {
+/** The rate a stake earns as its product pays it, an APR or an APY, or that it has none. */
+export const StakingRateText = ({ rate, rateKind }: StakingRateTextProps) => {
     const formatApy = useFormatApy();
+    const isApr = rateKind === 'apr';
+
+    // A product without a rate, a testnet, says so.
+    if (rate === null || !isApyAvailable(rate)) {
+        return (
+            <Translation id={isApr ? 'TR_EARN_APR_NOT_AVAILABLE' : 'TR_EARN_APY_NOT_AVAILABLE'} />
+        );
+    }
 
     // Tron pays its rate as an APR, as its Earn modal says.
-    return getNetworkType(networkSymbol) === 'tron' ? (
-        <Translation id="TR_EARN_APR_APPROX" values={{ aprPercent: formatApy(apy) }} />
+    return isApr ? (
+        <Translation id="TR_EARN_APR_APPROX" values={{ aprPercent: formatApy(rate) }} />
     ) : (
-        <Translation id="TR_EARN_YIELD_BADGE_RATE" values={{ apy: formatApy(apy) }} />
+        <Translation id="TR_EARN_YIELD_BADGE_RATE" values={{ apy: formatApy(rate) }} />
     );
 };

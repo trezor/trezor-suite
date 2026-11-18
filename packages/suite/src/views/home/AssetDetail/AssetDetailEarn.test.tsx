@@ -5,9 +5,22 @@ import { createIntl } from 'react-intl';
 import { screen } from '@testing-library/react';
 
 import { messages } from '@suite/intl';
-import { mockStakingState } from '@suite-common/earn-staking/mocks';
-import { stakingAmountSchema } from '@suite-common/earn-staking-common';
-import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
+import { type StakingDep } from '@suite-common/earn-staking';
+import {
+    mockStakingQueryClient,
+    mockStakingServices,
+    mockStakingState,
+} from '@suite-common/earn-staking/mocks';
+import {
+    type StakingProductId,
+    type StakingProductInfo,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
+import {
+    mockStakingPosition,
+    mockStakingProductDescriptor,
+    mockStakingProductInfo,
+} from '@suite-common/earn-staking-common/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -49,28 +62,31 @@ const getInitialState = (account: Account, stakedWei: string): MockSuiteState =>
                 positions: stakedWei === '0' ? {} : { [account.key]: [mockStake(stakedWei)] },
             }),
         },
-        wallet: {
-            ...state.wallet,
-            stake: {
-                ...state.wallet.stake,
-                data: {
-                    ...state.wallet.stake.data,
-                    data: {
-                        ...state.wallet.stake.data.data,
-                        eth: { stats: { apy: 3.2, nextRewardPayout: 0 }, validators: {} },
-                    },
-                },
-            },
-        },
     };
 };
 
-const renderEarn = (account: Account, stakedWei: string) => {
-    const { services } = createTestCompositionRoot<void, MockSuiteState>({
+const ETH_PRODUCT = mockStakingProductDescriptor();
+
+const ETH_INFO = mockStakingProductInfo({ rate: 3.2 });
+
+type RenderParams = {
+    productInfo?: Partial<Record<StakingProductId, StakingProductInfo>>;
+};
+
+const renderEarn = (
+    account: Account,
+    stakedWei: string,
+    { productInfo = { [ETH_PRODUCT.id]: ETH_INFO } }: RenderParams = {},
+) => {
+    const { services } = createTestCompositionRoot<{ services: StakingDep }, MockSuiteState>({
         preloadedState: getInitialState(account, stakedWei),
+        services: () => ({ staking: mockStakingServices() }),
     });
 
-    renderWithProviders(services, <AssetDetailEarn assetKey={ETH_ASSET_KEY} />);
+    // What the staking API says the network pays, as the Earn badges show it.
+    renderWithProviders(services, <AssetDetailEarn assetKey={ETH_ASSET_KEY} />, {
+        queryClient: mockStakingQueryClient({ productInfo }),
+    });
 };
 
 const intl = createIntl({ locale: 'en' });
@@ -87,6 +103,22 @@ describe('the earn card on the asset screen', () => {
         expect(card).toHaveTextContent(/3\.2\S*\s?APY/);
         // A staked ether and one to spend, each worth $3,000.
         expect(card.textContent?.match(/\$3,000/g)).toHaveLength(2);
+    });
+
+    it('says the rate is not available for a product without one, a testnet, once cached', () => {
+        renderEarn(mockEthereumAccount(), ONE_ETH_IN_WEI, {
+            productInfo: { [ETH_PRODUCT.id]: mockStakingProductInfo({ rate: null }) },
+        });
+
+        expect(screen.getByTestId('@asset-detail/earn')).toHaveTextContent(
+            intl.formatMessage(messages.TR_EARN_APY_NOT_AVAILABLE),
+        );
+    });
+
+    it('shows no rate while the product info is not cached', () => {
+        renderEarn(mockEthereumAccount(), ONE_ETH_IN_WEI, { productInfo: {} });
+
+        expect(screen.getByTestId('@asset-detail/earn')).not.toHaveTextContent(/APY/);
     });
 
     it('shows the whole balance as available while nothing is staked', () => {

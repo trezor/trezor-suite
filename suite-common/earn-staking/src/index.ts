@@ -55,6 +55,10 @@ export {
     useNetworkStakingRate,
     type UseNetworkStakingRateParams,
 } from './hooks/useNetworkStakingRate';
+export {
+    useRefreshStakingProductInfo,
+    type RefreshStakingProductInfo,
+} from './hooks/useRefreshStakingProductInfo';
 export { useStakingAccess } from './hooks/useStakingAccess';
 export {
     useStakingAccountPosition,
@@ -213,6 +217,7 @@ export {
     refreshStakingProductInfoThunk,
     syncAllStakingPositionsThunk,
     syncStakingPositionsThunk,
+    type RefreshStakingProductInfoParams,
     type RefreshStakingProductInfoThunkDeps,
     type RefreshStakingProductInfoThunkState,
     type SyncAllStakingPositionsThunkDeps,
