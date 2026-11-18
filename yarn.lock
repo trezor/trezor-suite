@@ -1960,12 +1960,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/client@npm:1.8.0":
-  version: 1.8.0
-  resolution: "@blockaid/client@npm:1.8.0"
+"@blockaid/client@npm:1.9.0":
+  version: 1.9.0
+  resolution: "@blockaid/client@npm:1.9.0"
   bin:
     blockaid-client: bin/cli
-  checksum: 10/73c2834cd9abca8c73ea53f0b1e5caa4c11067c79b6ce699e7cb2a3d3e4a5d030acd76ff07393b050c3503ff9b25cb04c51157d999dff9990c849ab1621cf3e1
+  checksum: 10/4b7660d7ec2d3558f3c875a49aa8fcc59d2958d83a517dda6d66e617fc0285c4ddfe669d662f16a787c4ab553e6ddfcdc16ee9a40ade97442d5513585adb8b3b
   languageName: node
   linkType: hard
 
@@ -13436,7 +13436,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/tx-simulation@workspace:suite-common/tx-simulation"
   dependencies:
-    "@blockaid/client": "npm:1.8.0"
+    "@blockaid/client": "npm:1.9.0"
     "@scure/base": "npm:^2.0.0"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
