@@ -1,7 +1,5 @@
 import type { CryptoId } from 'invity-api';
 
-import { exhaustive } from '@trezor/type-utils';
-
 import type { TradingTradeType } from '../types';
 import { isBuyTrade, isExchangeTrade, isSellFiatTrade } from '../utils';
 
@@ -47,16 +45,18 @@ export type TradeOperationData =
     | CryptoToFiatOperation
     | CryptoToCryptoOperation;
 
+const undefinedTradeOperation: UndefinedTradeOperation = {
+    fromValue: undefined,
+    fromCurrency: undefined,
+    toValue: undefined,
+    toCurrency: undefined,
+    isFromCrypto: undefined,
+    isToCrypto: undefined,
+};
+
 export const getTradeOperationData = (trade: TradingTradeType | undefined): TradeOperationData => {
     if (!trade) {
-        return {
-            fromValue: undefined,
-            fromCurrency: undefined,
-            toValue: undefined,
-            toCurrency: undefined,
-            isFromCrypto: undefined,
-            isToCrypto: undefined,
-        };
+        return undefinedTradeOperation;
     }
 
     if (isBuyTrade(trade)) {
@@ -92,5 +92,5 @@ export const getTradeOperationData = (trade: TradingTradeType | undefined): Trad
         };
     }
 
-    return exhaustive(trade);
+    return undefinedTradeOperation;
 };
