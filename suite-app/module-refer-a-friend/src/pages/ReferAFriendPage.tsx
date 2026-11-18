@@ -9,9 +9,9 @@ import {
     fetchReferralAccountThunk,
     fetchReferralProgramThunk,
     selectReferralAccountState,
-    selectReferralDeviceRecord,
-    selectReferralKeyDerivationDevice,
     selectReferralProgram,
+    selectReferralStandardWallet,
+    selectReferralWalletRecord,
 } from '@suite-common/refer-a-friend';
 import {
     Box,
@@ -61,14 +61,14 @@ export const ReferAFriendPage = () => {
     const deviceId = device?.id ?? undefined;
     const isReferralAvailable = useSelector(selectIsReferralAvailable);
     const program = useSelector(selectReferralProgram);
-    const deviceRecord = useSelector((state: ReferAFriendRootState) =>
-        selectReferralDeviceRecord(state, deviceId),
+    const walletDescriptor = useSelector(
+        (state: DeviceRootState) => selectReferralStandardWallet(state, deviceId)?.walletDescriptor,
+    );
+    const walletRecord = useSelector((state: ReferAFriendRootState) =>
+        selectReferralWalletRecord(state, walletDescriptor),
     );
     const accountState = useSelector((state: ReferAFriendRootState) =>
-        selectReferralAccountState(state, deviceId),
-    );
-    const canDeriveKey = useSelector(
-        (state: DeviceRootState) => selectReferralKeyDerivationDevice(state, deviceId) !== null,
+        selectReferralAccountState(state, walletDescriptor),
     );
 
     const leaveModal = useModal();
@@ -77,7 +77,7 @@ export const ReferAFriendPage = () => {
     const { join, leave } = useReferralActions(deviceId);
 
     const isDeviceConnected = !!device?.connected;
-    const shareUrl = deviceRecord?.shareUrl ?? null;
+    const shareUrl = walletRecord?.shareUrl ?? null;
     const isJoined = shareUrl !== null;
     const closeLeaveModal = leaveModal.closeModal;
 
@@ -91,10 +91,12 @@ export const ReferAFriendPage = () => {
     }, [isReferralAvailable, dispatch]);
 
     useEffect(() => {
-        if (!isReferralAvailable || deviceId === undefined) return;
+        if (!isReferralAvailable || deviceId === undefined || walletDescriptor === undefined) {
+            return;
+        }
 
         dispatch(fetchReferralAccountThunk({ deviceId }));
-    }, [isReferralAvailable, deviceId, dispatch]);
+    }, [isReferralAvailable, deviceId, walletDescriptor, dispatch]);
 
     useEffect(() => {
         if (!isReferralAvailable || !isJoined) {
@@ -104,6 +106,11 @@ export const ReferAFriendPage = () => {
 
     if (!isReferralAvailable) {
         return <ReferralUnavailable description="TR_REFERRAL_UNAVAILABLE" />;
+    }
+
+    // All referral data belong to the standard wallet, without it there is nothing to show.
+    if (walletDescriptor === undefined) {
+        return <ReferralUnavailable description="TR_REFERRAL_OPEN_STANDARD_WALLET" />;
     }
 
     if (program.status === 'error') {
@@ -127,11 +134,6 @@ export const ReferAFriendPage = () => {
                 <ReferralDisconnected />
             </Column>
         );
-    }
-
-    // Joining derives the key on the standard wallet, a hidden wallet alone cannot do it.
-    if (!isJoined && !canDeriveKey) {
-        return <ReferralUnavailable description="TR_REFERRAL_SWITCH_TO_STANDARD_WALLET" />;
     }
 
     const { fiatCurrency, rewardAmount, minimumOrderAmount, friendDiscountPercentage, termsUrl } =
@@ -268,6 +270,7 @@ export const ReferAFriendPage = () => {
             {isJoined && deviceId !== undefined ? (
                 <ReferralJoinedContent
                     deviceId={deviceId}
+                    walletDescriptor={walletDescriptor}
                     shareUrl={shareUrl}
                     isDeviceConnected={isDeviceConnected}
                     program={program.data}

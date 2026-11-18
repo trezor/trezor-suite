@@ -1,16 +1,15 @@
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 
-import { type DeviceRootState } from '@suite-common/device';
 import {
     type ReferAFriendRootState,
     type ReferralProgram,
     fetchReferralAccountThunk,
     getReferralRewardsSummary,
     selectReferralAccountState,
-    selectReferralKeyDerivationDevice,
 } from '@suite-common/refer-a-friend';
 import { useServices } from '@trezor/dependency-injection';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { ReferralError } from './ReferralError';
@@ -23,6 +22,7 @@ import { useReferralActions } from './useReferralActions';
 
 type ReferralJoinedContentProps = {
     deviceId: string;
+    walletDescriptor: WalletDescriptor;
     shareUrl: string;
     isDeviceConnected: boolean;
     program: ReferralProgram;
@@ -30,15 +30,13 @@ type ReferralJoinedContentProps = {
 
 export const ReferralJoinedContent = ({
     deviceId,
+    walletDescriptor,
     shareUrl,
     isDeviceConnected,
     program,
 }: ReferralJoinedContentProps) => {
     const accountState = useSelector((state: ReferAFriendRootState) =>
-        selectReferralAccountState(state, deviceId),
-    );
-    const canDeriveKey = useSelector(
-        (state: DeviceRootState) => selectReferralKeyDerivationDevice(state, deviceId) !== null,
+        selectReferralAccountState(state, walletDescriptor),
     );
 
     const { dispatch } = useServices(injectDispatch);
@@ -89,7 +87,6 @@ export const ReferralJoinedContent = ({
             {accountState.status === 'keyMissing' && (
                 <ReferralRewardsKeyMissing
                     isDeviceConnected={isDeviceConnected}
-                    canDeriveKey={canDeriveKey}
                     isDerivingKey={accountState.pendingAction === 'deriveKey'}
                     onDeriveKey={deriveKey}
                 />
