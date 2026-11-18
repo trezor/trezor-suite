@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
 import { type WalletParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
+import { selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -26,6 +27,11 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
+
+    const isStakingSupported = useSelector(
+        state => account !== undefined && selectIsStakingSupportedSymbol(state, account.symbol),
+    );
+
     const network = getNetworkOptional(routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);
 
@@ -79,7 +85,7 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
                 });
             },
             title: <Translation id="TR_EARN_STAKING" />,
-            isHidden: !hasNetworkFeatures(account, 'staking'),
+            isHidden: !isStakingSupported,
             'data-testid': '@wallet/menu/staking',
         },
         {

@@ -9,9 +9,9 @@ import {
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
 } from '@suite-common/assets';
-import { useNetworkStakingRate } from '@suite-common/earn-staking';
+import { selectIsStakingSupportedSymbol, useNetworkStakingRate } from '@suite-common/earn-staking';
 import { getNetworkType } from '@suite-common/wallet-config';
-import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { isApyAvailable, isPositiveBalance } from '@suite-common/wallet-utils';
 import { Box, Card, Column, Row, SegmentedBar, Text, TextButton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -41,6 +41,12 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
     const availableAmount = useSelector(state => selectWalletAssetAvailableAmount(state, assetKey));
     const stakingAmount = useSelector(state => selectWalletAssetStakingAmount(state, assetKey));
     const stakingRatio = useSelector(state => selectWalletAssetStakingRatio(state, assetKey)) ?? 0;
+
+    const isStakingSupported = useSelector(
+        state =>
+            networkSymbol !== undefined && selectIsStakingSupportedSymbol(state, networkSymbol),
+    );
+
     const {
         rate,
         rateKind,
@@ -71,7 +77,7 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
     if (
         networkSymbol === undefined ||
         contractAddress !== undefined ||
-        !isSupportedStakingNetworkSymbol(networkSymbol) ||
+        !isStakingSupported ||
         amount === undefined ||
         !isPositiveBalance(amount) ||
         availableAmount === undefined

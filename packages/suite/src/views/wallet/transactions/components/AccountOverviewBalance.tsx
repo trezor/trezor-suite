@@ -1,7 +1,11 @@
 import { type SelectedAccountState } from '@suite/account';
 import { Translation } from '@suite/intl';
+import {
+    selectIsStakingAccountActive,
+    selectStakingAccountPositionEntry,
+} from '@suite-common/earn-staking';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
@@ -49,11 +53,20 @@ type AccountOverviewBalanceProps = {
 
 export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalanceProps) => {
     const baseCurrency = useSelector(selectBaseCurrency);
-    const hasStaking = useSelector(state =>
-        selectedAccount.account
-            ? selectAccountIsStakingActive(state, selectedAccount.account.key)
-            : false,
-    );
+
+    // A liquid delegation, as on Cardano, is the balance itself, so only a locked stake is excluded.
+    const hasStakingExcludedFromBalance = useSelector(state => {
+        if (!selectedAccount.account) return false;
+
+        const positionEntry = selectStakingAccountPositionEntry(state, selectedAccount.account.key);
+
+        return (
+            positionEntry !== null &&
+            positionEntry.position.lockup === 'locked' &&
+            selectIsStakingAccountActive(state, selectedAccount.account.key)
+        );
+    });
+
     const { balanceSectionRef } = useAccountHeaderContext();
 
     const { account, loader, status } = selectedAccount;
@@ -75,7 +88,6 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
     const shouldDisplayBaseCurrency = baseCurrency !== symbol;
     const isMainnet = !isTestnet(symbol);
     const hasTokens = !!account.tokens?.length;
-    const hasStakingExcludedFromBalance = hasStaking && account.networkType !== 'cardano';
     const balanceExcludesTranslationId = getBalanceExcludesTranslationId(
         hasTokens,
         hasStakingExcludedFromBalance,
