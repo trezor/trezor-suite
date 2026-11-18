@@ -66,7 +66,6 @@ export const PinModal = ({ device }: PinModalProps) => {
             />
             <Modal.ModalBase
                 heading={<Translation id={getHeading()} />}
-                onCancel={onCancel}
                 data-testid="@modal/pin"
                 width={400}
                 bottomContent={
