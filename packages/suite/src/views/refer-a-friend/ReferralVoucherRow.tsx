@@ -32,7 +32,7 @@ type VoucherState = {
 };
 
 const voucherStates = {
-    ready: { icon: GiftIcon, intent: 'brand', label: 'TR_REFERRAL_VOUCHER_READY' },
+    available: { icon: GiftIcon, intent: 'brand', label: 'TR_REFERRAL_VOUCHER_READY' },
     pending: {
         icon: GiftIcon,
         intent: 'neutral',
@@ -65,7 +65,7 @@ const getVoucherTooltip = (voucher: ReferralVoucher, formatExpiry: (date: string
                     values={{ days: getDaysUntil(voucher.readyAt) }}
                 />
             );
-        case 'ready':
+        case 'available':
             return voucher.expiresAt === null ? undefined : (
                 <Translation
                     id="TR_REFERRAL_VOUCHER_EXPIRATION"
@@ -159,7 +159,7 @@ export const ReferralVoucherRow = ({ voucher, voucherNumber, amount }: ReferralV
                         priority="secondary"
                         size="small"
                         iconRight={CopyIcon}
-                        isDisabled={voucher.status !== 'ready'}
+                        isDisabled={voucher.status !== 'available'}
                         onClick={() => copyCode(voucherCode)}
                         data-testid={`@referral/voucher/${voucherNumber}/copy`}
                     >

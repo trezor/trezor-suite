@@ -85,7 +85,7 @@ export const ReferralRewards = ({
                                 typographyStyle="headline-sm"
                                 data-testid="@referral/voucher-count"
                             >
-                                {summary.readyVoucherCount}
+                                {summary.availableVoucherCount}
                             </Text>
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <Translation id="TR_REFERRAL_VOUCHERS" />
