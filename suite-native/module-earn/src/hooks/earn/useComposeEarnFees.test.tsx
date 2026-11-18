@@ -356,6 +356,7 @@ describe('useComposeEarnFees recovery', () => {
     it.each([
         ['unstake', 'TR_GENERIC_ERROR_TITLE'],
         ['claim', 'TR_STAKE_TX_PREPARATION_FAILED'],
+        ['claim', 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID'],
     ] as const)('offers retry for Solana %s after %s and recovers', async (stakeType, error) => {
         const account = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
         const analytics = mockNativeAnalytics();

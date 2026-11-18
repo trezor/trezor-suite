@@ -1,4 +1,4 @@
-import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
@@ -13,8 +13,9 @@ import {
     composeSolanaStakingTransaction,
     fetchAndUpdateAccountThunk,
     getSolanaStakingUserAgent,
-    hasStakedBalanceChangedError,
+    hasSolanaStakingBalanceChangedError,
     isEarnSigningCancelled,
+    isSolanaStakingBalanceChangedErrorCode,
     isSupportedSolStakingNetworkSymbol,
     prepareSolanaStakeTxData,
     selectAddressDisplayType,
@@ -28,7 +29,7 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import { type WithServices } from '@trezor/redux-utils';
+import { type Dispatch as AppDispatch, type WithServices } from '@trezor/redux-utils';
 
 export type ComposeTransactionThunkState = BlockchainRootState & FetchAndUpdateAccountThunkState;
 
@@ -57,16 +58,21 @@ export const composeTransactionThunk =
             userAgent: getSolanaStakingUserAgent(),
         });
 
-        if (hasStakedBalanceChangedError(composedLevels)) {
-            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+        if (hasSolanaStakingBalanceChangedError(composedLevels)) {
+            await dispatch(
+                fetchAndUpdateAccountThunk({ accountKey: account.key, forceFullRefresh: true }),
+            );
         }
 
         return composedLevels;
     };
 
-type SignTransactionThunkState = BlockchainRootState & DeviceRootState & WalletSettingsRootState;
+type SignTransactionThunkState = BlockchainRootState &
+    DeviceRootState &
+    WalletSettingsRootState &
+    FetchAndUpdateAccountThunkState;
 
-type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
+type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep> & FetchAndUpdateAccountThunkDeps;
 
 type SignTransactionThunkParams = {
     account: Account;
@@ -77,7 +83,7 @@ type SignTransactionThunkParams = {
 export const signTransactionThunk =
     ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
-        dispatch: Dispatch<UnknownAction>,
+        dispatch: AppDispatch,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
@@ -133,6 +139,12 @@ export const signTransactionThunk =
         }
 
         if (!txData.success) {
+            if (isSolanaStakingBalanceChangedErrorCode(txData.errorCode)) {
+                await dispatch(
+                    fetchAndUpdateAccountThunk({ accountKey: account.key, forceFullRefresh: true }),
+                );
+            }
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

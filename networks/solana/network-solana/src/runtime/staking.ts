@@ -74,6 +74,24 @@ const INVALID_FEE_RESULT: PrepareStakeSolTxResponse = {
     errorMessage: 'Invalid Solana staking fee estimate.',
 };
 
+class NoClaimableStakeError extends Error {
+    constructor() {
+        super('No stake is currently available to claim.');
+    }
+}
+
+const getStakeAccountAvailability = (
+    account: StakeStateAccount,
+    epoch: bigint,
+    unixTimestamp: bigint,
+) => {
+    const status = stakeAccountState(account, epoch);
+
+    return status === StakeState.Deactivated
+        ? { status, isClaimable: !isLockupInForce(account, epoch, unixTimestamp) }
+        : { status };
+};
+
 export const getSolanaStakingData = async (
     rpc: RpcMainnet<SolanaRpcApiMainnet> | Rpc<SolanaRpcApiMainnet>,
     descriptor: string,
@@ -81,15 +99,15 @@ export const getSolanaStakingData = async (
     stakingProvider: 'all' | 'everstake' | 'non-everstake' = 'all',
 ): Promise<SolanaStakingAccount[]> => {
     const stakingAccounts = await getDelegations(rpc, descriptor);
+    const currentEpoch = BigInt(epoch);
+    const unixTimestamp = BigInt(timestampInSec());
 
     return stakingAccounts
         .map(account => {
             const stakeAccount = account?.data;
             if (!stakeAccount) return;
 
-            const stakeState = stakeAccountState(stakeAccount, BigInt(epoch));
-
-            const { state } = account?.data ?? {};
+            const { state } = stakeAccount;
             if (!isStake(state)) return;
 
             if (state && 'fields' in state) {
@@ -105,7 +123,7 @@ export const getSolanaStakingData = async (
                 return {
                     rentExemptReserve: fields[0]?.rentExemptReserve.toString(),
                     stake: fields[1]?.delegation?.stake.toString(),
-                    status: stakeState,
+                    ...getStakeAccountAvailability(stakeAccount, currentEpoch, unixTimestamp),
                     isEverStake,
                     voterPubkey,
                     activationEpoch:
@@ -372,16 +390,13 @@ export const claim = async ({
         const delegations = await getDelegations(connection, sender);
 
         const epoch = params?.epoch || (await connection.getEpochInfo().send()).epoch;
-        const tm = timestampInSec();
+        const unixTimestamp = BigInt(timestampInSec());
 
         const deactivatedStakeAccounts = delegations.filter(
-            acc =>
-                !isLockupInForce(acc.data, epoch, BigInt(tm)) &&
-                stakeAccountState(acc.data, epoch) === StakeState.Deactivated,
+            ({ data }) => getStakeAccountAvailability(data, epoch, unixTimestamp).isClaimable,
         );
 
-        if (deactivatedStakeAccounts.length === 0)
-            throw new Error('Nothing to claim while claiming');
+        if (deactivatedStakeAccounts.length === 0) throw new NoClaimableStakeError();
 
         let transactionMessage = await baseTx(connection, sender, params);
 
@@ -549,6 +564,13 @@ export const prepareClaimSolTx = async ({
             solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
+        if (e instanceof Error && e.cause instanceof NoClaimableStakeError) {
+            return {
+                success: false,
+                errorCode: 'NO_CLAIMABLE_STAKE',
+                errorMessage: e.cause.message,
+            };
+        }
         console.error(e);
 
         return {

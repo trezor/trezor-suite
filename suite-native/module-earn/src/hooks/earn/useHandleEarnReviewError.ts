@@ -30,6 +30,7 @@ export const useHandleEarnReviewError = (
                 case 'pendingConflict':
                 case 'pushFailed':
                 case 'signFailed':
+                case 'preparationFailed':
                     showReviewAlert(reaction);
 
                     return;

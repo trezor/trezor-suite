@@ -3,7 +3,11 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
-import { type SendState, prepareSendFormReducer } from '@suite-common/wallet-core';
+import {
+    type SendState,
+    fetchAndUpdateAccountThunk,
+    prepareSendFormReducer,
+} from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
@@ -37,6 +41,11 @@ jest.mock('@trezor/blockchain-core', () => ({
             payload: { txid: 'solanaTxId' },
         }),
     },
+}));
+
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    fetchAndUpdateAccountThunk: jest.fn(() => ({ type: 'test/refresh-account' })),
 }));
 
 const solanaTxShim = {
@@ -187,6 +196,7 @@ const dispatchSign = async (
 };
 
 beforeEach(() => {
+    jest.mocked(fetchAndUpdateAccountThunk).mockClear();
     solanaSignTransactionMock.mockReset();
     solanaSignTransactionMock.mockResolvedValue({
         success: true,
@@ -221,6 +231,44 @@ beforeEach(() => {
 });
 
 describe('signSolanaStakingTransactionThunk', () => {
+    it.each([
+        ['claim', 'NO_CLAIMABLE_STAKE', 'No stake is currently available to claim.', true],
+        ['unstake', 'INSUFFICIENT_ACTIVE_STAKE', 'Active stake less than requested', true],
+        ['claim', 'INVALID_FEE', 'Invalid Solana staking fee estimate.', false],
+    ] as const)(
+        'returns a review error for %s (%s) before requesting the device',
+        async (stakeType, errorCode, message, refreshes) => {
+            const prepare =
+                stakeType === 'unstake' ? prepareUnstakeSolTxMock : prepareClaimSolTxMock;
+            prepare.mockResolvedValueOnce({
+                success: false,
+                errorCode,
+                errorMessage: message,
+            });
+            const result = await dispatchSign(buildStore(), {
+                accountKey: SOL_ACCOUNT_KEY,
+                stakeType,
+                precomposedTransaction: buildSolanaPrecomposedTransaction(),
+            });
+
+            expect(result).toEqual({
+                ok: false,
+                error: refreshes
+                    ? { error: 'stake-live-state-invalid', message }
+                    : { error: 'stake-preparation-failed' },
+            });
+            if (refreshes) {
+                expect(fetchAndUpdateAccountThunk).toHaveBeenCalledWith({
+                    accountKey: SOL_ACCOUNT_KEY,
+                    forceFullRefresh: true,
+                });
+            } else {
+                expect(fetchAndUpdateAccountThunk).not.toHaveBeenCalled();
+            }
+            expect(solanaSignTransactionMock).not.toHaveBeenCalled();
+        },
+    );
+
     it('rejects when the account is not found', async () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         const store = buildStore({ accounts: [] });
@@ -233,7 +281,7 @@ describe('signSolanaStakingTransactionThunk', () => {
 
         expect(result).toEqual({
             ok: false,
-            error: { error: 'sign-transaction-failed', message: 'Solana account not found.' },
+            error: { error: 'stake-preparation-failed' },
         });
         errorSpy.mockRestore();
     });
@@ -270,10 +318,7 @@ describe('signSolanaStakingTransactionThunk', () => {
 
         expect(result).toEqual({
             ok: false,
-            error: {
-                error: 'sign-transaction-failed',
-                message: 'Blockchain backend URL not found for sol.',
-            },
+            error: { error: 'stake-preparation-failed' },
         });
         expect(blockchainGetInfoMock).toHaveBeenCalledWith({ coin: 'sol' });
         expect(solanaSignTransactionMock).not.toHaveBeenCalled();
@@ -377,10 +422,7 @@ describe('signSolanaStakingTransactionThunk', () => {
 
         expect(result).toEqual({
             ok: false,
-            error: {
-                error: 'sign-transaction-failed',
-                message: 'Compose result for stake is missing the amount.',
-            },
+            error: { error: 'stake-preparation-failed' },
         });
         expect(prepareStakeSolTxMock).not.toHaveBeenCalled();
         errorSpy.mockRestore();

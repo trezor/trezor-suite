@@ -48,7 +48,9 @@ export const resolveSolanaStakingLimit = (
 };
 
 export const getSolanaDeactivatedAccountCount = (account: Account): number =>
-    getSolanaStakingAccountsByStatus(account, StakeState.Deactivated).length;
+    getSolanaStakingAccountsByStatus(account, StakeState.Deactivated).filter(
+        ({ isClaimable }) => isClaimable !== false,
+    ).length;
 
 type EstimateSolanaStakingLimitParams = {
     descriptor: string;

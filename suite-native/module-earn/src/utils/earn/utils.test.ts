@@ -50,6 +50,12 @@ describe('getEarnReviewErrorReaction', () => {
             }),
         ).toBe('signFailed');
     });
+
+    it('shows a preparation alert when staking fails before requesting the device', () => {
+        expect(getEarnReviewErrorReaction({ error: 'stake-preparation-failed' })).toBe(
+            'preparationFailed',
+        );
+    });
 });
 
 describe('isUserCancelledSignError', () => {

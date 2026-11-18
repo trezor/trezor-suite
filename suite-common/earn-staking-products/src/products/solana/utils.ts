@@ -59,7 +59,7 @@ export const parseSolanaStakeAccounts = (
     [
         ...(account.misc?.solStakingAccounts ?? []),
         ...(account.misc?.solExternalStakingAccounts ?? []),
-    ].flatMap(({ status, stake, rentExemptReserve, voterPubkey, activationEpoch }) => {
+    ].flatMap(({ status, stake, rentExemptReserve, voterPubkey, activationEpoch, isClaimable }) => {
         const parsedStatus = solanaStakeAccountStatusSchema.safeParse(status);
         const parsedStake = stakingAmountSchema.safeParse(stake ?? '0');
         const parsedRentExemptReserve = stakingAmountSchema.safeParse(rentExemptReserve ?? '0');
@@ -75,6 +75,7 @@ export const parseSolanaStakeAccounts = (
                 rentExemptReserve: parsedRentExemptReserve.data,
                 voteAccount: voterPubkey ?? null,
                 activationEpoch: activationEpoch ?? null,
+                isClaimable,
             },
         ];
     });
@@ -87,7 +88,7 @@ type GetStakeBalanceParams = {
 };
 
 const getStakeBalance = ({ stakeAccount, epoch }: GetStakeBalanceParams): SolanaStakeBalance => {
-    const { status, activationEpoch } = stakeAccount;
+    const { status, activationEpoch, isClaimable } = stakeAccount;
 
     switch (status) {
         case 'active':
@@ -97,7 +98,7 @@ const getStakeBalance = ({ stakeAccount, epoch }: GetStakeBalanceParams): Solana
         case 'deactivating':
             return 'unstaking';
         case 'deactivated':
-            return 'withdrawable';
+            return isClaimable === false ? 'unstaking' : 'withdrawable';
         case 'inactive':
             // The runtime reports a fresh delegation as inactive while its activation epoch is
             // ahead of the epoch it read, which blockchain-link caches for an hour. Any other

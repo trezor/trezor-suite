@@ -11,7 +11,11 @@ import {
     asTimestamp,
     createAccountKey,
 } from '@suite-common/wallet-types';
-import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    mockAccountToken,
+    mockSolanaStakingAccount,
+    mockWalletAccount,
+} from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from './__fixtures__/accountUtils';
 import {
@@ -715,6 +719,40 @@ describe(getDirectRpcHistoryState.name, () => {
 });
 
 describe(isAccountOutdated.name, () => {
+    it('ignores reordered Solana stake accounts while still detecting changed balances', () => {
+        const account = mockSolanaStakingAccount('mixed');
+        const stakes = account.misc?.solStakingAccounts ?? [];
+        expect(stakes.length).toBeGreaterThan(1);
+        const reordered = [...stakes].reverse();
+        const changed = reordered.map((stake, index) =>
+            index === 0 ? { ...stake, stake: '1' } : stake,
+        );
+
+        expect(
+            isAccountOutdated(account, {
+                ...account,
+                misc: { ...account.misc, solStakingAccounts: reordered },
+            }),
+        ).toBe(false);
+        expect(
+            isAccountOutdated(account, {
+                ...account,
+                misc: { ...account.misc, solStakingAccounts: changed },
+            }),
+        ).toBe(true);
+    });
+
+    it('refreshes withdrawn Solana stake even when epoch and wallet history are unchanged', () => {
+        const account = mockSolanaStakingAccount('deactivated');
+        const freshInfo = { ...account, misc: { ...account.misc, solStakingAccounts: [] } };
+
+        expect(isAccountOutdated(account, account)).toBe(false);
+        expect(isAccountOutdated(account, freshInfo)).toBe(true);
+        expect(
+            isAccountOutdated(account, { ...account, misc: { solEpoch: account.misc?.solEpoch } }),
+        ).toBe(false);
+    });
+
     fixtures.isAccountOutdated.forEach(f => {
         it(f.description, () => {
             expect(isAccountOutdated(f.account, f.freshInfo)).toBe(f.result);

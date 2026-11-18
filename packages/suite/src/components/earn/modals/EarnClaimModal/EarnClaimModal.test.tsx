@@ -2,14 +2,17 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { type PropsWithChildren } from 'react';
 
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 
+import { messages } from '@suite/intl';
+import { stakingActions } from '@suite-common/earn-staking';
 import { type StakingPosition } from '@suite-common/earn-staking-common';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useCardanoStaking } from '#src/hooks/earn/useCardanoStaking';
-import { useClaimForm } from '#src/hooks/earn/useClaimForm';
+import { useStakeCompose } from '#src/hooks/wallet/form/useStakeCompose';
 import {
+    ZERO_BALANCES,
     adaAccount,
     adaEverstakeProduct,
     amount,
@@ -24,10 +27,7 @@ import {
 
 import { EarnClaimModal } from './EarnClaimModal';
 
-const onClaimChange = jest.fn();
-
-// The form, the fees and the Cardano compose reach the backend; the amounts shown do not.
-jest.mock('#src/hooks/earn/useClaimForm', () => ({ useClaimForm: jest.fn() }));
+jest.mock('#src/hooks/wallet/form/useStakeCompose', () => ({ useStakeCompose: jest.fn() }));
 jest.mock('#src/hooks/earn/useCardanoStaking', () => ({ useCardanoStaking: jest.fn() }));
 jest.mock('#src/components/wallet/Fees/Fees', () => ({ Fees: () => null }));
 jest.mock(
@@ -40,14 +40,6 @@ jest.mock('@suite/form', () => ({
     Form: ({ children }: PropsWithChildren) => <form>{children}</form>,
 }));
 
-const zeroBalances = {
-    staked: amount('0'),
-    pending: amount('0'),
-    unstaking: amount('0'),
-    withdrawable: amount('0'),
-    rewards: amount('0'),
-};
-
 const renderModal = (account: Account, position: StakingPosition) =>
     renderStakingDashboardComponent(<EarnClaimModal account={account} />, {
         state: createStakingDashboardState({
@@ -58,21 +50,12 @@ const renderModal = (account: Account, position: StakingPosition) =>
 
 describe('EarnClaimModal', () => {
     beforeEach(() => {
-        onClaimChange.mockClear();
-
-        jest.mocked(useClaimForm).mockReturnValue({
-            formState: { errors: {}, isSubmitting: false },
-            changeFeeLevel: jest.fn(),
-            feeInfo: undefined,
+        jest.mocked(useStakeCompose).mockReturnValue({
+            composeRequest: jest.fn().mockResolvedValue(undefined),
             composedLevels: undefined,
-            watch: () => '1',
-            isComposing: false,
-            handleSubmit: (callback: () => void) => callback,
-            onClaimChange,
-            signTx: jest.fn(),
-            methods: { formState: {} },
-            isClaimingDisabled: false,
-        } as unknown as ReturnType<typeof useClaimForm>);
+            isLoading: false,
+            onFeeLevelChange: jest.fn(),
+        });
 
         jest.mocked(useCardanoStaking).mockReturnValue({
             calculateFeeAndDeposit: jest.fn(),
@@ -86,12 +69,12 @@ describe('EarnClaimModal', () => {
         });
     });
 
-    it('claims the unstaked principal of an Ethereum position', () => {
+    it('claims the unstaked principal of an Ethereum position', async () => {
         renderModal(
             ethAccount,
             mockPosition(ethProduct.id, {
                 balances: {
-                    ...zeroBalances,
+                    ...ZERO_BALANCES,
                     staked: amount('1000000000000000000'),
                     withdrawable: amount('500000000000000000'),
                 },
@@ -99,18 +82,17 @@ describe('EarnClaimModal', () => {
             }),
         );
 
-        expect(screen.getByTestId('@staking/claim-modal/amount-with-symbol')).toHaveTextContent(
-            '0.5 ETH',
-        );
-        expect(onClaimChange).toHaveBeenCalledWith('0.5');
+        expect(
+            await screen.findByTestId('@staking/claim-modal/amount-with-symbol'),
+        ).toHaveTextContent('0.5 ETH');
     });
 
-    it('claims the deactivated stake of a Solana position', () => {
-        renderModal(
+    it('updates an open Solana claim after the claimable stake disappears', async () => {
+        const { store } = renderModal(
             solAccount,
             mockPosition(solProduct.id, {
                 balances: {
-                    ...zeroBalances,
+                    ...ZERO_BALANCES,
                     staked: amount('1000000000'),
                     withdrawable: amount('1500000000'),
                 },
@@ -118,19 +100,33 @@ describe('EarnClaimModal', () => {
             }),
         );
 
+        expect(
+            await screen.findByTestId('@staking/claim-modal/amount-with-symbol'),
+        ).toHaveTextContent('1.5 SOL');
+        expect(screen.getByTestId('@staking/claim-modal/continue-button')).toBeEnabled();
+
+        await act(async () => {
+            store.dispatch(
+                stakingActions.positionsSynced({ accountKey: solAccount.key, positions: [] }),
+            );
+        });
+
         expect(screen.getByTestId('@staking/claim-modal/amount-with-symbol')).toHaveTextContent(
-            '1.5 SOL',
+            '0 SOL',
         );
-        expect(onClaimChange).toHaveBeenCalledWith('1.5');
+        expect(screen.getByTestId('@staking/claim-modal/continue-button')).toBeDisabled();
+        expect(
+            screen.getByText(messages.TR_STAKE_SOL_NOTHING_TO_CLAIM.defaultMessage),
+        ).toBeVisible();
     });
 
-    it('claims the reward balance of a Cardano delegation', () => {
+    it('claims the reward balance of a Cardano delegation', async () => {
         renderModal(
             adaAccount,
             mockPosition(adaEverstakeProduct.id, {
                 lockup: 'liquid',
                 balances: {
-                    ...zeroBalances,
+                    ...ZERO_BALANCES,
                     staked: amount('100056398'),
                     rewards: amount('56398'),
                 },
@@ -139,9 +135,8 @@ describe('EarnClaimModal', () => {
             }),
         );
 
-        expect(screen.getByTestId('@modal/claim/rewards-amount-with-symbol')).toHaveTextContent(
-            '0.056398 ADA',
-        );
-        expect(onClaimChange).toHaveBeenCalledWith('0.056398');
+        expect(
+            await screen.findByTestId('@modal/claim/rewards-amount-with-symbol'),
+        ).toHaveTextContent('0.056398 ADA');
     });
 });

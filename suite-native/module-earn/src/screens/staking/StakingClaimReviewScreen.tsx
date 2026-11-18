@@ -56,7 +56,6 @@ export const StakingClaimReviewScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
     const { position, totals, access } = useStakingAccountPosition(accountKey);
 
     const canClaimInstantly = isStakingOperationAvailable({
@@ -68,6 +67,8 @@ export const StakingClaimReviewScreen = () => {
         amount: totals.withdrawable,
         networkSymbol: symbol,
     });
+    const hasNoClaimableSolanaStake =
+        account?.networkType === 'solana' && !isPositiveBalance(claimableAmount);
 
     const claimFormState = useMemo(() => {
         if (!account) return undefined;
@@ -181,18 +182,28 @@ export const StakingClaimReviewScreen = () => {
                         label={<Translation id="earn.claimReviewScreen.amountLabel" />}
                         cryptoAmount={claimableAmount}
                     />
-                    <EarnFeeSection
-                        accountKey={accountKey}
-                        fees={{
-                            hasFeeEstimationError,
-                            isComposingFeeLevels,
-                            retryFeeEstimation,
-                            updateFeeLevelThunk,
-                            selectedFee: formDraft?.selectedFee ?? 'normal',
-                            formDraft,
-                            formDraftKey,
-                        }}
-                    />
+                    {hasNoClaimableSolanaStake && (
+                        <BannerInline
+                            intent="info"
+                            title={
+                                <Translation id="transactionManagement.precomposedTransaction.errors.solanaStakingNothingToClaim" />
+                            }
+                        />
+                    )}
+                    {!hasNoClaimableSolanaStake && (
+                        <EarnFeeSection
+                            accountKey={accountKey}
+                            fees={{
+                                hasFeeEstimationError,
+                                isComposingFeeLevels,
+                                retryFeeEstimation,
+                                updateFeeLevelThunk,
+                                selectedFee: formDraft?.selectedFee ?? 'normal',
+                                formDraft,
+                                formDraftKey,
+                            }}
+                        />
+                    )}
                     {canClaimInstantly && isFeeReady && (
                         <BannerInline
                             intent="brand"

@@ -141,6 +141,28 @@ describe('getSolanaProductPosition', () => {
         ]);
     });
 
+    it('keeps locked deactivated stake in the position without enabling withdrawal', () => {
+        const account = mockStakingAccount({
+            symbol: asNetworkSymbol('sol'),
+            misc: {
+                solStakingAccounts: [
+                    {
+                        status: 'deactivated',
+                        stake: `1${SOL}`,
+                        rentExemptReserve: '2282880',
+                        voterPubkey: MOCK_SOLANA_EVERSTAKE_VALIDATOR,
+                        isClaimable: false,
+                    },
+                ],
+            },
+        });
+
+        expect(getEverstakePosition({ account })).toMatchObject({
+            balances: balances({ unstaking: `1${SOL}` }),
+            operations: ['stake'],
+        });
+    });
+
     it.each([
         {
             name: 'activates after the epoch the account was read in',
