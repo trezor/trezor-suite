@@ -10,18 +10,18 @@ export {
     type ReferAFriendState,
     type ReferralAccountLoadStatus,
     type ReferralAccountState,
-    type ReferralDeviceRecord,
+    type ReferralWalletRecord,
     type ReferralPendingAction,
     type ReferralProgramState,
     referAFriendActions,
     referAFriendInitialState,
     referAFriendPersistedKeys,
     referAFriendReducer,
-    selectReferAFriendDevices,
     selectReferAFriendSettings,
+    selectReferAFriendWallets,
     selectReferralAccountState,
-    selectReferralDeviceRecord,
     selectReferralProgram,
+    selectReferralWalletRecord,
 } from './referAFriendSlice';
 export {
     deriveReferralKeyThunk,
@@ -46,4 +46,7 @@ export {
     selectReferAFriendApiUrl,
 } from './referAFriendUrl';
 export { type ReferralKey, isReferralKey } from './referralKey';
-export { selectReferralKeyDerivationDevice } from './selectReferralKeyDerivationDevice';
+export {
+    type ReferralStandardWallet,
+    selectReferralStandardWallet,
+} from './selectReferralStandardWallet';

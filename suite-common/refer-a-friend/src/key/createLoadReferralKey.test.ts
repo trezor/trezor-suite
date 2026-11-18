@@ -7,6 +7,7 @@ import {
     type EncryptableBranded,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
+import { asWalletDescriptor } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import { type LoadReferralKeyDeps, createLoadReferralKey } from './createLoadReferralKey';
@@ -14,7 +15,7 @@ import { createReferralKeySessionCache } from './createReferralKeySessionCache';
 import { referAFriendActions } from '../referAFriendSlice';
 import { type ReferralKey, getReferralKeyFromCipheredValue } from '../referralKey';
 
-const DEVICE_ID = 'device-1';
+const WALLET_DESCRIPTOR = asWalletDescriptor('standard');
 const referralKey = getReferralKeyFromCipheredValue(
     '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff',
 );
@@ -59,16 +60,20 @@ const createDeps = ({ storedKey, decryptResult }: CreateDepsParams) => {
 describe(createLoadReferralKey.name, () => {
     it('returns the key from the session cache without decrypting', async () => {
         const { deps, decryptedValues } = createDeps({ storedKey: encryptedReferralKey });
-        deps.referralKeySessionCache.set(DEVICE_ID, referralKey);
+        deps.referralKeySessionCache.set(WALLET_DESCRIPTOR, referralKey);
 
-        expect(await createLoadReferralKey(deps)({ deviceId: DEVICE_ID })).toBe(referralKey);
+        expect(await createLoadReferralKey(deps)({ walletDescriptor: WALLET_DESCRIPTOR })).toBe(
+            referralKey,
+        );
         expect(decryptedValues).toEqual([]);
     });
 
     it('returns null when no key is stored', async () => {
         const { deps } = createDeps({ storedKey: null });
 
-        expect(await createLoadReferralKey(deps)({ deviceId: DEVICE_ID })).toBeNull();
+        expect(
+            await createLoadReferralKey(deps)({ walletDescriptor: WALLET_DESCRIPTOR }),
+        ).toBeNull();
     });
 
     it('decrypts the stored key on demand', async () => {
@@ -77,7 +82,9 @@ describe(createLoadReferralKey.name, () => {
             decryptResult: ok(referralKey),
         });
 
-        expect(await createLoadReferralKey(deps)({ deviceId: DEVICE_ID })).toBe(referralKey);
+        expect(await createLoadReferralKey(deps)({ walletDescriptor: WALLET_DESCRIPTOR })).toBe(
+            referralKey,
+        );
         expect(decryptedValues).toEqual([encryptedReferralKey]);
     });
 
@@ -87,10 +94,12 @@ describe(createLoadReferralKey.name, () => {
             decryptResult: err(DecryptionFailed()),
         });
 
-        expect(await createLoadReferralKey(deps)({ deviceId: DEVICE_ID })).toBeNull();
+        expect(
+            await createLoadReferralKey(deps)({ walletDescriptor: WALLET_DESCRIPTOR }),
+        ).toBeNull();
         expect(actions).toEqual([
             referAFriendActions.setEncryptedReferralKey({
-                deviceId: DEVICE_ID,
+                walletDescriptor: WALLET_DESCRIPTOR,
                 encryptedKey: null,
             }),
         ]);

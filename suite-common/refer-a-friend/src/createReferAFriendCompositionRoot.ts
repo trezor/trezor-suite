@@ -2,6 +2,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { type FetchDep } from '@trezor/type-utils';
 
 import { type ReferralApiFetch, createReferralApiFetch } from './api/createReferralApiFetch';
@@ -20,7 +21,7 @@ export type ReferAFriend = {
     retrieveReferralKeyFromDevice: RetrieveReferralKeyFromDevice;
     loadReferralKey: LoadReferralKey;
     saveReferralKey: SaveReferralKey;
-    removeReferralKeyFromSession: (deviceId: string) => void;
+    removeReferralKeyFromSession: (walletDescriptor: WalletDescriptor) => void;
 };
 
 export type ReferAFriendDep = {
@@ -51,8 +52,8 @@ export const createReferAFriendCompositionRoot = (
         }),
         loadReferralKey: createLoadReferralKey({
             dispatch: deps.dispatch,
-            getEncryptedReferralKey: deviceId =>
-                selectEncryptedReferralKey(deps.getState(), deviceId),
+            getEncryptedReferralKey: walletDescriptor =>
+                selectEncryptedReferralKey(deps.getState(), walletDescriptor),
             platformEncryption: deps.platformEncryption,
             referralKeySessionCache,
         }),

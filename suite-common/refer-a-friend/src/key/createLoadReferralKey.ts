@@ -1,6 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type EncryptedHex, type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type ReferralKeySessionCacheDep } from './createReferralKeySessionCache';
@@ -8,13 +9,15 @@ import { referAFriendActions } from '../referAFriendSlice';
 import { type ReferralKey } from '../referralKey';
 
 export type LoadReferralKeyDeps = {
-    getEncryptedReferralKey: (deviceId: string) => EncryptedHex<ReferralKey> | null;
+    getEncryptedReferralKey: (
+        walletDescriptor: WalletDescriptor,
+    ) => EncryptedHex<ReferralKey> | null;
     dispatch: Dispatch;
 } & PlatformEncryptionDep &
     ReferralKeySessionCacheDep;
 
 export type LoadReferralKeyParams = {
-    deviceId: string;
+    walletDescriptor: WalletDescriptor;
 };
 
 export type LoadReferralKey = (params: LoadReferralKeyParams) => Promise<ReferralKey | null>;
@@ -25,14 +28,14 @@ export type LoadReferralKeyDep = {
 
 export const createLoadReferralKey =
     (deps: LoadReferralKeyDeps): LoadReferralKey =>
-    async ({ deviceId }) => {
-        const cachedReferralKey = deps.referralKeySessionCache.get(deviceId);
+    async ({ walletDescriptor }) => {
+        const cachedReferralKey = deps.referralKeySessionCache.get(walletDescriptor);
 
         if (cachedReferralKey !== null) {
             return cachedReferralKey;
         }
 
-        const encryptedReferralKey = deps.getEncryptedReferralKey(deviceId);
+        const encryptedReferralKey = deps.getEncryptedReferralKey(walletDescriptor);
 
         if (encryptedReferralKey === null) {
             return null;
@@ -48,7 +51,7 @@ export const createLoadReferralKey =
                 case 'DecryptionFailed':
                     deps.dispatch(
                         referAFriendActions.setEncryptedReferralKey({
-                            deviceId,
+                            walletDescriptor,
                             encryptedKey: null,
                         }),
                     );

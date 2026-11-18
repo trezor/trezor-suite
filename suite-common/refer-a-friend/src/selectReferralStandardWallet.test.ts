@@ -1,7 +1,7 @@
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 
-import { selectReferralKeyDerivationDevice } from './selectReferralKeyDerivationDevice';
+import { selectReferralStandardWallet } from './selectReferralStandardWallet';
 
 // A full TrezorDevice is irrelevant here, only the identity of wallet instances matters.
 const createWallet = (overrides: Partial<TrezorDevice>) =>
@@ -25,25 +25,28 @@ const hiddenWallet = createWallet({
     state: { staticSessionId: 'hidden@device-1:2' },
 });
 
-describe(selectReferralKeyDerivationDevice.name, () => {
-    it('selects the standard wallet of the device', () => {
+describe(selectReferralStandardWallet.name, () => {
+    it('selects the standard wallet with its descriptor', () => {
+        expect(selectReferralStandardWallet(createState([standardWallet]), 'device-1')).toEqual({
+            device: standardWallet,
+            walletDescriptor: 'standard',
+        });
+    });
+
+    it('selects the standard wallet when a hidden wallet of the device is selected', () => {
         expect(
-            selectReferralKeyDerivationDevice(
-                createState([hiddenWallet, standardWallet]),
-                'device-1',
-            ),
-        ).toBe(standardWallet);
+            selectReferralStandardWallet(createState([hiddenWallet, standardWallet]), 'device-1')
+                ?.walletDescriptor,
+        ).toBe('standard');
     });
 
     it('never selects a hidden wallet', () => {
-        expect(
-            selectReferralKeyDerivationDevice(createState([hiddenWallet]), 'device-1'),
-        ).toBeNull();
+        expect(selectReferralStandardWallet(createState([hiddenWallet]), 'device-1')).toBeNull();
     });
 
     it('ignores a standard wallet without state', () => {
         expect(
-            selectReferralKeyDerivationDevice(
+            selectReferralStandardWallet(
                 createState([createWallet({ state: undefined })]),
                 'device-1',
             ),
@@ -52,7 +55,7 @@ describe(selectReferralKeyDerivationDevice.name, () => {
 
     it('ignores standard wallets of other devices', () => {
         expect(
-            selectReferralKeyDerivationDevice(
+            selectReferralStandardWallet(
                 createState([createWallet({ id: 'device-2' })]),
                 'device-1',
             ),

@@ -1,3 +1,5 @@
+import { type WalletDescriptor } from '@trezor/device-utils';
+
 import { type ReferralKey } from '../referralKey';
 
 /**
@@ -5,9 +7,9 @@ import { type ReferralKey } from '../referralKey';
  * The key is then derived once per session instead of on every page visit.
  */
 export type ReferralKeySessionCache = {
-    get: (deviceId: string) => ReferralKey | null;
-    set: (deviceId: string, referralKey: ReferralKey) => void;
-    remove: (deviceId: string) => void;
+    get: (walletDescriptor: WalletDescriptor) => ReferralKey | null;
+    set: (walletDescriptor: WalletDescriptor, referralKey: ReferralKey) => void;
+    remove: (walletDescriptor: WalletDescriptor) => void;
 };
 
 export type ReferralKeySessionCacheDep = {
@@ -15,15 +17,15 @@ export type ReferralKeySessionCacheDep = {
 };
 
 export const createReferralKeySessionCache = (): ReferralKeySessionCache => {
-    const referralKeys = new Map<string, ReferralKey>();
+    const referralKeys = new Map<WalletDescriptor, ReferralKey>();
 
     return {
-        get: deviceId => referralKeys.get(deviceId) ?? null,
-        set: (deviceId, referralKey) => {
-            referralKeys.set(deviceId, referralKey);
+        get: walletDescriptor => referralKeys.get(walletDescriptor) ?? null,
+        set: (walletDescriptor, referralKey) => {
+            referralKeys.set(walletDescriptor, referralKey);
         },
-        remove: deviceId => {
-            referralKeys.delete(deviceId);
+        remove: walletDescriptor => {
+            referralKeys.delete(walletDescriptor);
         },
     };
 };

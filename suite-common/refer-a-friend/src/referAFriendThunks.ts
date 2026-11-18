@@ -2,6 +2,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 import { hasProp } from '@trezor/utils';
@@ -10,7 +11,7 @@ import { type ReferAFriendDep } from './createReferAFriendCompositionRoot';
 import {
     type ReferAFriendRootState,
     referAFriendActions,
-    selectReferralDeviceRecord,
+    selectReferralWalletRecord,
 } from './referAFriendSlice';
 import {
     type ReferralAccount,
@@ -19,53 +20,56 @@ import {
     type ReferralVouchersResponse,
 } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
-import { selectReferralKeyDerivationDevice } from './selectReferralKeyDerivationDevice';
+import {
+    type ReferralStandardWallet,
+    selectReferralStandardWallet,
+} from './selectReferralStandardWallet';
 
 const REFER_A_FRIEND_MODULE = '@suite-common/refer-a-friend';
 
 type ReferAFriendThunkDeps = WithServices<ReferAFriendDep>;
 
-type ReferralActionThunkState = ReferAFriendRootState & DeviceRootState;
+type ReferralActionThunkState = DeviceRootState;
 
 type DeviceIdParams = {
     deviceId: string;
 };
 
+type WalletDescriptorParams = {
+    walletDescriptor: WalletDescriptor;
+};
+
 type ReferralActionResult = Result<void, ReferralError>;
 
-type ObtainReferralKeyParams = DeviceIdParams & {
-    getState: () => DeviceRootState;
+// The page is blocked without a standard wallet, so the actions should never get here without it.
+const standardWalletUnavailableError: ReferralError = { message: 'Standard wallet unavailable' };
+
+type ObtainReferralKeyParams = {
+    standardWallet: ReferralStandardWallet;
     referAFriend: ReferAFriendDep['referAFriend'];
 };
 
 // Uses the stored key when available, otherwise derives it on the standard wallet.
 const obtainReferralKey = async ({
-    deviceId,
-    getState,
+    standardWallet: { device, walletDescriptor },
     referAFriend,
 }: ObtainReferralKeyParams): Promise<Result<ReferralKey, ReferralError>> => {
-    const storedReferralKey = await referAFriend.loadReferralKey({ deviceId });
+    const storedReferralKey = await referAFriend.loadReferralKey({ walletDescriptor });
 
     if (storedReferralKey !== null) {
         return ok(storedReferralKey);
     }
 
-    const derivationDevice = selectReferralKeyDerivationDevice(getState(), deviceId);
-
-    if (derivationDevice === null) {
-        return err({ message: 'Standard wallet unavailable' });
-    }
-
-    const result = await referAFriend.retrieveReferralKeyFromDevice({ device: derivationDevice });
+    const result = await referAFriend.retrieveReferralKeyFromDevice({ device });
 
     if (result.success) {
-        await referAFriend.saveReferralKey({ deviceId, referralKey: result.payload });
+        await referAFriend.saveReferralKey({ walletDescriptor, referralKey: result.payload });
     }
 
     return result;
 };
 
-type ReferralAccountRequestParams = DeviceIdParams & {
+type ReferralAccountRequestParams = WalletDescriptorParams & {
     referralKey: ReferralKey;
     dispatch: Dispatch;
     referAFriend: ReferAFriendDep['referAFriend'];
@@ -80,7 +84,7 @@ type ApplyReferralAccountParams = ReferralAccountRequestParams & {
  * Helpers are plain functions rather than thunks so the key never appears in a Redux action.
  */
 const applyReferralAccount = async ({
-    deviceId,
+    walletDescriptor,
     account,
     referralKey,
     dispatch,
@@ -89,15 +93,25 @@ const applyReferralAccount = async ({
     switch (account.status) {
         case 'none':
             // The backend does not know the account, offer joining again with the same key.
-            dispatch(referAFriendActions.setReferralLink({ deviceId, code: null, shareUrl: null }));
-            dispatch(referAFriendActions.accountLoaded({ deviceId, account, vouchers: null }));
+            dispatch(
+                referAFriendActions.setReferralLink({
+                    walletDescriptor,
+                    code: null,
+                    shareUrl: null,
+                }),
+            );
+            dispatch(
+                referAFriendActions.accountLoaded({ walletDescriptor, account, vouchers: null }),
+            );
 
             return ok(undefined);
         case 'left':
             // Left on another device, forget everything including the key.
-            referAFriend.removeReferralKeyFromSession(deviceId);
-            dispatch(referAFriendActions.removeReferralDevice({ deviceId }));
-            dispatch(referAFriendActions.accountLoaded({ deviceId, account, vouchers: null }));
+            referAFriend.removeReferralKeyFromSession(walletDescriptor);
+            dispatch(referAFriendActions.removeReferralWallet({ walletDescriptor }));
+            dispatch(
+                referAFriendActions.accountLoaded({ walletDescriptor, account, vouchers: null }),
+            );
 
             return ok(undefined);
         case 'active':
@@ -106,7 +120,7 @@ const applyReferralAccount = async ({
 
     dispatch(
         referAFriendActions.setReferralLink({
-            deviceId,
+            walletDescriptor,
             code: account.code,
             shareUrl: account.shareUrl,
         }),
@@ -119,13 +133,15 @@ const applyReferralAccount = async ({
     });
 
     if (!vouchersResult.success) {
-        dispatch(referAFriendActions.accountFailed({ deviceId, error: vouchersResult.error }));
+        dispatch(
+            referAFriendActions.accountFailed({ walletDescriptor, error: vouchersResult.error }),
+        );
 
         return vouchersResult;
     }
 
     const { vouchers } = vouchersResult.payload as ReferralVouchersResponse;
-    dispatch(referAFriendActions.accountLoaded({ deviceId, account, vouchers }));
+    dispatch(referAFriendActions.accountLoaded({ walletDescriptor, account, vouchers }));
 
     return ok(undefined);
 };
@@ -142,7 +158,7 @@ const syncReferralAccount = async (
     if (!accountResult.success) {
         params.dispatch(
             referAFriendActions.accountFailed({
-                deviceId: params.deviceId,
+                walletDescriptor: params.walletDescriptor,
                 error: accountResult.error,
             }),
         );
@@ -220,13 +236,14 @@ export const fetchReferralProgramThunk = createThunk<
     dispatch(referAFriendActions.programLoaded(result.payload as ReferralProgram));
 });
 
-export type FetchReferralAccountThunkState = ReferAFriendRootState;
+export type FetchReferralAccountThunkState = ReferAFriendRootState & DeviceRootState;
 
 export type FetchReferralAccountThunkDeps = ReferAFriendThunkDeps;
 
 /**
- * Loads the account of a device with a stored link, without any device interaction. Without
- * a usable key, it only marks the key as missing, the user then derives it explicitly.
+ * Loads the account of the device's standard wallet with a stored link, without any device
+ * interaction. Without a usable key, it only marks the key as missing, the user then derives it
+ * explicitly.
  */
 export const fetchReferralAccountThunk = createThunk<
     void,
@@ -236,23 +253,30 @@ export const fetchReferralAccountThunk = createThunk<
     `${REFER_A_FRIEND_MODULE}/fetchReferralAccountThunk`,
     async ({ deviceId }, { dispatch, getState, extra }) => {
         const { referAFriend } = extra.services;
+        const walletDescriptor = selectReferralStandardWallet(
+            getState(),
+            deviceId,
+        )?.walletDescriptor;
 
-        // Without a link, the page offers joining, there is no account to load.
-        if (!selectReferralDeviceRecord(getState(), deviceId)?.shareUrl) {
+        // Without a standard wallet the page is blocked, without a link it offers joining.
+        if (
+            walletDescriptor === undefined ||
+            !selectReferralWalletRecord(getState(), walletDescriptor)?.shareUrl
+        ) {
             return;
         }
 
-        dispatch(referAFriendActions.accountRequested({ deviceId }));
+        dispatch(referAFriendActions.accountRequested({ walletDescriptor }));
 
-        const referralKey = await referAFriend.loadReferralKey({ deviceId });
+        const referralKey = await referAFriend.loadReferralKey({ walletDescriptor });
 
         if (referralKey === null) {
-            dispatch(referAFriendActions.accountKeyMissing({ deviceId }));
+            dispatch(referAFriendActions.accountKeyMissing({ walletDescriptor }));
 
             return;
         }
 
-        await syncReferralAccount({ deviceId, referralKey, dispatch, referAFriend });
+        await syncReferralAccount({ walletDescriptor, referralKey, dispatch, referAFriend });
     },
 );
 
@@ -272,20 +296,29 @@ export const joinReferralProgramThunk = createThunk<
     `${REFER_A_FRIEND_MODULE}/joinReferralProgramThunk`,
     async ({ deviceId }, { dispatch, getState, extra }) => {
         const { referAFriend } = extra.services;
+        const standardWallet = selectReferralStandardWallet(getState(), deviceId);
 
-        dispatch(referAFriendActions.pendingActionStarted({ deviceId, pendingAction: 'join' }));
+        if (standardWallet === null) {
+            return err(standardWalletUnavailableError);
+        }
 
-        const keyResult = await obtainReferralKey({ deviceId, getState, referAFriend });
+        const { walletDescriptor } = standardWallet;
+
+        dispatch(
+            referAFriendActions.pendingActionStarted({ walletDescriptor, pendingAction: 'join' }),
+        );
+
+        const keyResult = await obtainReferralKey({ standardWallet, referAFriend });
         const result = keyResult.success
             ? await joinWithReferralKey({
-                  deviceId,
+                  walletDescriptor,
                   referralKey: keyResult.payload,
                   dispatch,
                   referAFriend,
               })
             : keyResult;
 
-        dispatch(referAFriendActions.pendingActionFinished({ deviceId }));
+        dispatch(referAFriendActions.pendingActionFinished({ walletDescriptor }));
 
         return result;
     },
@@ -307,22 +340,32 @@ export const deriveReferralKeyThunk = createThunk<
     `${REFER_A_FRIEND_MODULE}/deriveReferralKeyThunk`,
     async ({ deviceId }, { dispatch, getState, extra }) => {
         const { referAFriend } = extra.services;
+        const standardWallet = selectReferralStandardWallet(getState(), deviceId);
+
+        if (standardWallet === null) {
+            return err(standardWalletUnavailableError);
+        }
+
+        const { walletDescriptor } = standardWallet;
 
         dispatch(
-            referAFriendActions.pendingActionStarted({ deviceId, pendingAction: 'deriveKey' }),
+            referAFriendActions.pendingActionStarted({
+                walletDescriptor,
+                pendingAction: 'deriveKey',
+            }),
         );
 
-        const keyResult = await obtainReferralKey({ deviceId, getState, referAFriend });
+        const keyResult = await obtainReferralKey({ standardWallet, referAFriend });
         const result = keyResult.success
             ? await syncReferralAccount({
-                  deviceId,
+                  walletDescriptor,
                   referralKey: keyResult.payload,
                   dispatch,
                   referAFriend,
               })
             : keyResult;
 
-        dispatch(referAFriendActions.pendingActionFinished({ deviceId }));
+        dispatch(referAFriendActions.pendingActionFinished({ walletDescriptor }));
 
         return result;
     },
@@ -344,10 +387,19 @@ export const leaveReferralProgramThunk = createThunk<
     `${REFER_A_FRIEND_MODULE}/leaveReferralProgramThunk`,
     async ({ deviceId }, { dispatch, getState, extra }) => {
         const { referAFriend } = extra.services;
+        const standardWallet = selectReferralStandardWallet(getState(), deviceId);
 
-        dispatch(referAFriendActions.pendingActionStarted({ deviceId, pendingAction: 'leave' }));
+        if (standardWallet === null) {
+            return err(standardWalletUnavailableError);
+        }
 
-        const keyResult = await obtainReferralKey({ deviceId, getState, referAFriend });
+        const { walletDescriptor } = standardWallet;
+
+        dispatch(
+            referAFriendActions.pendingActionStarted({ walletDescriptor, pendingAction: 'leave' }),
+        );
+
+        const keyResult = await obtainReferralKey({ standardWallet, referAFriend });
         const leaveResult = keyResult.success
             ? await referAFriend.referralApiFetch({
                   method: 'POST',
@@ -356,14 +408,14 @@ export const leaveReferralProgramThunk = createThunk<
               })
             : keyResult;
 
-        dispatch(referAFriendActions.pendingActionFinished({ deviceId }));
+        dispatch(referAFriendActions.pendingActionFinished({ walletDescriptor }));
 
         if (!leaveResult.success) {
             return leaveResult;
         }
 
-        referAFriend.removeReferralKeyFromSession(deviceId);
-        dispatch(referAFriendActions.removeReferralDevice({ deviceId }));
+        referAFriend.removeReferralKeyFromSession(walletDescriptor);
+        dispatch(referAFriendActions.removeReferralWallet({ walletDescriptor }));
 
         return ok(undefined);
     },

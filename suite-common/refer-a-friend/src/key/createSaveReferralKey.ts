@@ -1,6 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type ReferralKeySessionCacheDep } from './createReferralKeySessionCache';
@@ -13,7 +14,7 @@ export type SaveReferralKeyDeps = {
     ReferralKeySessionCacheDep;
 
 export type SaveReferralKeyParams = {
-    deviceId: string;
+    walletDescriptor: WalletDescriptor;
     referralKey: ReferralKey;
 };
 
@@ -25,7 +26,7 @@ export type SaveReferralKeyDep = {
 
 export const createSaveReferralKey =
     (deps: SaveReferralKeyDeps): SaveReferralKey =>
-    async ({ deviceId, referralKey }) => {
+    async ({ walletDescriptor, referralKey }) => {
         const result = await deps.platformEncryption.encrypt({ value: referralKey });
 
         if (!result.success) {
@@ -33,10 +34,10 @@ export const createSaveReferralKey =
             switch (errorType) {
                 // Without secure persistence, keep the key only for this session.
                 case 'EncryptionUnavailable':
-                    deps.referralKeySessionCache.set(deviceId, referralKey);
+                    deps.referralKeySessionCache.set(walletDescriptor, referralKey);
                     deps.dispatch(
                         referAFriendActions.setEncryptedReferralKey({
-                            deviceId,
+                            walletDescriptor,
                             encryptedKey: null,
                         }),
                     );
@@ -49,7 +50,7 @@ export const createSaveReferralKey =
 
         deps.dispatch(
             referAFriendActions.setEncryptedReferralKey({
-                deviceId,
+                walletDescriptor,
                 encryptedKey: result.payload,
             }),
         );

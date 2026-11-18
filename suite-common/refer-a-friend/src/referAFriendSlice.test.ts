@@ -1,4 +1,5 @@
 import { asEncryptedHex } from '@suite-common/platform-encryption';
+import { asWalletDescriptor } from '@trezor/device-utils';
 
 import {
     type ReferAFriendState,
@@ -6,12 +7,12 @@ import {
     referAFriendInitialState,
     referAFriendReducer,
     selectReferralAccountState,
-    selectReferralDeviceRecord,
+    selectReferralWalletRecord,
 } from './referAFriendSlice';
 import { type ReferralAccount } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
 
-const DEVICE_ID = 'device-1';
+const WALLET_DESCRIPTOR = asWalletDescriptor('standard');
 const encryptedKey = asEncryptedHex<ReferralKey>('encrypted');
 
 const activeAccount: ReferralAccount = {
@@ -30,46 +31,52 @@ const reduce = (
 ) => actions.reduce(referAFriendReducer, state);
 
 describe('referAFriendSlice', () => {
-    it('keeps the key and the link in one device record', () => {
+    it('keeps the key and the link in one wallet record', () => {
         const state = reduce([
-            referAFriendActions.setEncryptedReferralKey({ deviceId: DEVICE_ID, encryptedKey }),
+            referAFriendActions.setEncryptedReferralKey({
+                walletDescriptor: WALLET_DESCRIPTOR,
+                encryptedKey,
+            }),
             referAFriendActions.setReferralLink({
-                deviceId: DEVICE_ID,
+                walletDescriptor: WALLET_DESCRIPTOR,
                 code: 'K7M2Q9WX',
                 shareUrl: 'https://trezor.io/ref/K7M2Q9WX',
             }),
         ]);
 
-        expect(selectReferralDeviceRecord({ referAFriend: state }, DEVICE_ID)).toEqual({
+        expect(selectReferralWalletRecord({ referAFriend: state }, WALLET_DESCRIPTOR)).toEqual({
             encryptedKey,
             code: 'K7M2Q9WX',
             shareUrl: 'https://trezor.io/ref/K7M2Q9WX',
         });
     });
 
-    it('removes the device record together with its account data', () => {
+    it('removes the wallet record together with its account data', () => {
         const state = reduce([
-            referAFriendActions.setEncryptedReferralKey({ deviceId: DEVICE_ID, encryptedKey }),
+            referAFriendActions.setEncryptedReferralKey({
+                walletDescriptor: WALLET_DESCRIPTOR,
+                encryptedKey,
+            }),
             referAFriendActions.accountLoaded({
-                deviceId: DEVICE_ID,
+                walletDescriptor: WALLET_DESCRIPTOR,
                 account: activeAccount,
                 vouchers: [],
             }),
-            referAFriendActions.removeReferralDevice({ deviceId: DEVICE_ID }),
+            referAFriendActions.removeReferralWallet({ walletDescriptor: WALLET_DESCRIPTOR }),
         ]);
 
-        expect(state.devices).toEqual({});
+        expect(state.wallets).toEqual({});
         expect(state.accounts).toEqual({});
     });
 
     it('tracks the account loading lifecycle', () => {
         const loadingState = reduce([
-            referAFriendActions.accountRequested({ deviceId: DEVICE_ID }),
+            referAFriendActions.accountRequested({ walletDescriptor: WALLET_DESCRIPTOR }),
         ]);
         const loadedState = reduce(
             [
                 referAFriendActions.accountLoaded({
-                    deviceId: DEVICE_ID,
+                    walletDescriptor: WALLET_DESCRIPTOR,
                     account: activeAccount,
                     vouchers: [],
                 }),
@@ -77,10 +84,12 @@ describe('referAFriendSlice', () => {
             loadingState,
         );
 
-        expect(selectReferralAccountState({ referAFriend: loadingState }, DEVICE_ID).status).toBe(
-            'loading',
-        );
-        expect(selectReferralAccountState({ referAFriend: loadedState }, DEVICE_ID)).toEqual({
+        expect(
+            selectReferralAccountState({ referAFriend: loadingState }, WALLET_DESCRIPTOR).status,
+        ).toBe('loading');
+        expect(
+            selectReferralAccountState({ referAFriend: loadedState }, WALLET_DESCRIPTOR),
+        ).toEqual({
             status: 'loaded',
             account: activeAccount,
             vouchers: [],
@@ -89,21 +98,24 @@ describe('referAFriendSlice', () => {
         });
     });
 
-    it('clears backend data when the API URL changes, keeping the device records', () => {
+    it('clears backend data when the API URL changes, keeping the wallet records', () => {
         const state = reduce([
-            referAFriendActions.setEncryptedReferralKey({ deviceId: DEVICE_ID, encryptedKey }),
+            referAFriendActions.setEncryptedReferralKey({
+                walletDescriptor: WALLET_DESCRIPTOR,
+                encryptedKey,
+            }),
             referAFriendActions.programFailed({ message: 'offline' }),
-            referAFriendActions.accountKeyMissing({ deviceId: DEVICE_ID }),
+            referAFriendActions.accountKeyMissing({ walletDescriptor: WALLET_DESCRIPTOR }),
             referAFriendActions.setReferAFriendApiBaseUrl({ baseUrl: 'http://localhost:4010/' }),
         ]);
 
         expect(state.settings.baseUrl).toBe('http://localhost:4010/');
         expect(state.program).toEqual(referAFriendInitialState.program);
         expect(state.accounts).toEqual({});
-        expect(state.devices[DEVICE_ID]?.encryptedKey).toBe(encryptedKey);
+        expect(state.wallets[WALLET_DESCRIPTOR]?.encryptedKey).toBe(encryptedKey);
     });
 
-    it('returns an idle account state for an unknown device', () => {
+    it('returns an idle account state for an unknown wallet', () => {
         expect(
             selectReferralAccountState({ referAFriend: referAFriendInitialState }, undefined)
                 .status,

@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type EncryptedHex } from '@suite-common/platform-encryption';
+import { type WalletDescriptor } from '@trezor/device-utils';
 
 import {
     type ReferralAccount,
@@ -11,10 +12,11 @@ import {
 import { type ReferralKey } from './referralKey';
 
 /**
- * Persisted per device (`device.id`): the seed is the referral identity and all wallets of one
- * device share it. A wiped device gets a new id, so the record can never leak to another seed.
+ * Persisted per standard wallet descriptor: the seed is the referral identity, so the record
+ * follows it across devices, and hidden wallets reach it through the standard wallet instance.
+ * Without a standard wallet in Suite, the record is not accessible.
  */
-export type ReferralDeviceRecord = {
+export type ReferralWalletRecord = {
     // Null when the platform encryption is unavailable, the key then lives only in memory.
     encryptedKey: EncryptedHex<ReferralKey> | null;
     // Account identifiers kept for offline display. The share link is the flag that the account exists.
@@ -49,16 +51,16 @@ export type ReferAFriendState = {
     settings: {
         baseUrl: string | null;
     };
-    devices: Record<string, ReferralDeviceRecord>;
+    wallets: Record<WalletDescriptor, ReferralWalletRecord>;
     program: ReferralProgramState;
-    accounts: Record<string, ReferralAccountState>;
+    accounts: Record<WalletDescriptor, ReferralAccountState>;
 };
 
 export type ReferAFriendRootState = {
     referAFriend: ReferAFriendState;
 };
 
-export const referAFriendPersistedKeys = ['settings', 'devices'] as const satisfies Array<
+export const referAFriendPersistedKeys = ['settings', 'wallets'] as const satisfies Array<
     keyof ReferAFriendState
 >;
 
@@ -66,7 +68,7 @@ export const referAFriendInitialState: ReferAFriendState = {
     settings: {
         baseUrl: null,
     },
-    devices: {},
+    wallets: {},
     program: {
         status: 'idle',
         data: null,
@@ -83,42 +85,42 @@ const initialAccountState: ReferralAccountState = {
     pendingAction: null,
 };
 
-const emptyDeviceRecord: ReferralDeviceRecord = {
+const emptyWalletRecord: ReferralWalletRecord = {
     encryptedKey: null,
     code: null,
     shareUrl: null,
 };
 
-type DeviceIdPayload = {
-    deviceId: string;
+type WalletDescriptorPayload = {
+    walletDescriptor: WalletDescriptor;
 };
 
-type SetEncryptedKeyPayload = DeviceIdPayload & {
+type SetEncryptedKeyPayload = WalletDescriptorPayload & {
     encryptedKey: EncryptedHex<ReferralKey> | null;
 };
 
-type SetReferralLinkPayload = DeviceIdPayload & {
+type SetReferralLinkPayload = WalletDescriptorPayload & {
     code: string | null;
     shareUrl: string | null;
 };
 
-type AccountLoadedPayload = DeviceIdPayload & {
+type AccountLoadedPayload = WalletDescriptorPayload & {
     account: ReferralAccount;
     vouchers: ReferralVoucher[] | null;
 };
 
-type AccountFailedPayload = DeviceIdPayload & {
+type AccountFailedPayload = WalletDescriptorPayload & {
     error: ReferralError;
 };
 
-type PendingActionStartedPayload = DeviceIdPayload & {
+type PendingActionStartedPayload = WalletDescriptorPayload & {
     pendingAction: ReferralPendingAction;
 };
 
-const getAccountState = (state: ReferAFriendState, deviceId: string) => {
-    state.accounts[deviceId] ??= { ...initialAccountState };
+const getAccountState = (state: ReferAFriendState, walletDescriptor: WalletDescriptor) => {
+    state.accounts[walletDescriptor] ??= { ...initialAccountState };
 
-    return state.accounts[deviceId];
+    return state.accounts[walletDescriptor];
 };
 
 const referAFriendSlice = createSlice({
@@ -138,25 +140,28 @@ const referAFriendSlice = createSlice({
             state: ReferAFriendState,
             action: PayloadAction<SetEncryptedKeyPayload>,
         ) {
-            const { deviceId, encryptedKey } = action.payload;
-            state.devices[deviceId] = {
-                ...emptyDeviceRecord,
-                ...state.devices[deviceId],
+            const { walletDescriptor, encryptedKey } = action.payload;
+            state.wallets[walletDescriptor] = {
+                ...emptyWalletRecord,
+                ...state.wallets[walletDescriptor],
                 encryptedKey,
             };
         },
         setReferralLink(state: ReferAFriendState, action: PayloadAction<SetReferralLinkPayload>) {
-            const { deviceId, code, shareUrl } = action.payload;
-            state.devices[deviceId] = {
-                ...emptyDeviceRecord,
-                ...state.devices[deviceId],
+            const { walletDescriptor, code, shareUrl } = action.payload;
+            state.wallets[walletDescriptor] = {
+                ...emptyWalletRecord,
+                ...state.wallets[walletDescriptor],
                 code,
                 shareUrl,
             };
         },
-        removeReferralDevice(state: ReferAFriendState, action: PayloadAction<DeviceIdPayload>) {
-            delete state.devices[action.payload.deviceId];
-            delete state.accounts[action.payload.deviceId];
+        removeReferralWallet(
+            state: ReferAFriendState,
+            action: PayloadAction<WalletDescriptorPayload>,
+        ) {
+            delete state.wallets[action.payload.walletDescriptor];
+            delete state.accounts[action.payload.walletDescriptor];
         },
         programRequested(state: ReferAFriendState) {
             state.program.status = 'loading';
@@ -169,25 +174,28 @@ const referAFriendSlice = createSlice({
             state.program.status = 'error';
             state.program.error = action.payload;
         },
-        accountRequested(state: ReferAFriendState, action: PayloadAction<DeviceIdPayload>) {
-            const accountState = getAccountState(state, action.payload.deviceId);
+        accountRequested(state: ReferAFriendState, action: PayloadAction<WalletDescriptorPayload>) {
+            const accountState = getAccountState(state, action.payload.walletDescriptor);
             accountState.status = 'loading';
             accountState.error = null;
         },
         accountLoaded(state: ReferAFriendState, action: PayloadAction<AccountLoadedPayload>) {
-            const accountState = getAccountState(state, action.payload.deviceId);
+            const accountState = getAccountState(state, action.payload.walletDescriptor);
             accountState.status = 'loaded';
             accountState.account = action.payload.account;
             accountState.vouchers = action.payload.vouchers;
             accountState.error = null;
         },
-        accountKeyMissing(state: ReferAFriendState, action: PayloadAction<DeviceIdPayload>) {
-            const accountState = getAccountState(state, action.payload.deviceId);
+        accountKeyMissing(
+            state: ReferAFriendState,
+            action: PayloadAction<WalletDescriptorPayload>,
+        ) {
+            const accountState = getAccountState(state, action.payload.walletDescriptor);
             accountState.status = 'keyMissing';
             accountState.error = null;
         },
         accountFailed(state: ReferAFriendState, action: PayloadAction<AccountFailedPayload>) {
-            const accountState = getAccountState(state, action.payload.deviceId);
+            const accountState = getAccountState(state, action.payload.walletDescriptor);
             accountState.status = 'error';
             accountState.error = action.payload.error;
         },
@@ -195,12 +203,15 @@ const referAFriendSlice = createSlice({
             state: ReferAFriendState,
             action: PayloadAction<PendingActionStartedPayload>,
         ) {
-            const accountState = getAccountState(state, action.payload.deviceId);
+            const accountState = getAccountState(state, action.payload.walletDescriptor);
             accountState.pendingAction = action.payload.pendingAction;
             accountState.error = null;
         },
-        pendingActionFinished(state: ReferAFriendState, action: PayloadAction<DeviceIdPayload>) {
-            getAccountState(state, action.payload.deviceId).pendingAction = null;
+        pendingActionFinished(
+            state: ReferAFriendState,
+            action: PayloadAction<WalletDescriptorPayload>,
+        ) {
+            getAccountState(state, action.payload.walletDescriptor).pendingAction = null;
         },
     },
 });
@@ -211,23 +222,25 @@ export const referAFriendReducer = referAFriendSlice.reducer;
 export const selectReferAFriendSettings = (state: ReferAFriendRootState) =>
     state.referAFriend.settings;
 
-export const selectReferAFriendDevices = (state: ReferAFriendRootState) =>
-    state.referAFriend.devices;
+export const selectReferAFriendWallets = (state: ReferAFriendRootState) =>
+    state.referAFriend.wallets;
 
-export const selectReferralDeviceRecord = (
+export const selectReferralWalletRecord = (
     state: ReferAFriendRootState,
-    deviceId: string | undefined,
-): ReferralDeviceRecord | null =>
-    deviceId === undefined ? null : (state.referAFriend.devices[deviceId] ?? null);
+    walletDescriptor: WalletDescriptor | undefined,
+): ReferralWalletRecord | null =>
+    walletDescriptor === undefined ? null : (state.referAFriend.wallets[walletDescriptor] ?? null);
 
-export const selectEncryptedReferralKey = (state: ReferAFriendRootState, deviceId: string) =>
-    state.referAFriend.devices[deviceId]?.encryptedKey ?? null;
+export const selectEncryptedReferralKey = (
+    state: ReferAFriendRootState,
+    walletDescriptor: WalletDescriptor,
+) => state.referAFriend.wallets[walletDescriptor]?.encryptedKey ?? null;
 
 export const selectReferralProgram = (state: ReferAFriendRootState) => state.referAFriend.program;
 
 export const selectReferralAccountState = (
     state: ReferAFriendRootState,
-    deviceId: string | undefined,
+    walletDescriptor: WalletDescriptor | undefined,
 ): ReferralAccountState =>
-    (deviceId === undefined ? undefined : state.referAFriend.accounts[deviceId]) ??
+    (walletDescriptor === undefined ? undefined : state.referAFriend.accounts[walletDescriptor]) ??
     initialAccountState;
