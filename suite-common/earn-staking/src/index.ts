@@ -222,6 +222,10 @@ export {
 } from './state/stakingThunks';
 export { formatStakingAmount, type FormatStakingAmountParams } from './utils/formatStakingAmount';
 export {
+    getSolanaStakeAccountsStatus,
+    type SolanaStakeAccountsStatus,
+} from './utils/getSolanaStakeAccountsStatus';
+export {
     getPotentialStakingRewards,
     type GetPotentialStakingRewardsParams,
     type PotentialStakingRewardsAccount,
@@ -238,3 +242,8 @@ export {
     isStakingOperationAvailable,
     type IsStakingOperationAvailableParams,
 } from './utils/isStakingOperationAvailable';
+export {
+    settleTronUnlocks,
+    TRON_UNLOCKS_REFRESH_INTERVAL_MS,
+    type SettledTronUnlocks,
+} from './utils/settleTronUnlocks';
