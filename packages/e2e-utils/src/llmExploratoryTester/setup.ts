@@ -7,7 +7,6 @@ import { readJson } from '@trezor/node-utils';
 
 import { error, log } from '../logger';
 import {
-    ensureWebCdpPortAvailable,
     registerHarnessBrowserCleanup,
     stopHarnessBrowser,
     writeBrowserState,
@@ -80,9 +79,6 @@ async function main(): Promise<void> {
     log(`Model:  ${context.deviceModel}`);
 
     await stopHarnessBrowser();
-    if (context.platform === 'web') {
-        await ensureWebCdpPortAvailable();
-    }
     await runOnboardingSpec(context);
 
     log('Setup done. Browser stays running for the agent session.');
