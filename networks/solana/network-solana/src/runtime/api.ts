@@ -1,12 +1,16 @@
 import {
+    DEFAULT_RPC_CONFIG,
     createDefaultRpcTransport,
-    createSolanaRpcFromTransport,
+    createRpc,
+    createSolanaRpcApi,
     createSolanaRpcSubscriptions,
     mainnet,
 } from '@solana/kit';
+import type { RpcFromTransport, RpcTransport, SolanaRpcApiFromTransport } from '@solana/kit';
 
 import type { TimerId } from '@trezor/type-utils';
 
+import { RPC_COMMITMENT } from '../constants';
 import type { ClusterUrl, RpcTransportFromClusterUrl, RpcTransportMainnet } from '../types';
 
 const DEFAULT_MAX_RPS = 4; // Default maximum requests per second
@@ -144,6 +148,16 @@ const getThrottledTransport = <TClusterUrl extends ClusterUrl>(
     return throttledTransport as RpcTransportFromClusterUrl<TClusterUrl>;
 };
 
+// kit's createSolanaRpcFromTransport defaults every call without an explicit commitment to `confirmed`
+export const createRpcFromTransport = <TTransport extends RpcTransport>(transport: TTransport) =>
+    createRpc({
+        api: createSolanaRpcApi<SolanaRpcApiFromTransport<TTransport>>({
+            ...DEFAULT_RPC_CONFIG,
+            defaultCommitment: RPC_COMMITMENT,
+        }),
+        transport,
+    }) as RpcFromTransport<SolanaRpcApiFromTransport<TTransport>, TTransport>;
+
 export const getApi = (url: string, userAgent: string, timeout = DEFAULT_REQUEST_TIMEOUT) => {
     const clusterUrl = mainnet(url);
     const transport = createDefaultRpcTransport({
@@ -155,7 +169,7 @@ export const getApi = (url: string, userAgent: string, timeout = DEFAULT_REQUEST
         ...THROTTLE_OPTIONS,
         timeout,
     }) as RpcTransportMainnet;
-    const throttledRpc = createSolanaRpcFromTransport(throttledTransport);
+    const throttledRpc = createRpcFromTransport(throttledTransport);
 
     const api = {
         clusterUrl,
@@ -177,7 +191,7 @@ export const selectSolanaConnection = (url?: string, userAgent?: string) => {
             headers: { 'User-Agent': userAgent || '' },
         });
 
-        return createSolanaRpcFromTransport(transport);
+        return createRpcFromTransport(transport);
     } catch {
         throw new Error('Connection failed. Check your RPC URL and try again.');
     }

@@ -22,7 +22,12 @@ import { getTokenSize as _getToken2022Size } from '@solana-program/token-2022';
 
 import { BigNumber, safeBigIntStringify } from '@trezor/utils';
 
-import { COMPUTE_BUDGET_PROGRAM_ID, SOL_BASE_FEE, STAKE_ACCOUNT_V2_SIZE } from '../constants';
+import {
+    COMPUTE_BUDGET_PROGRAM_ID,
+    RPC_COMMITMENT,
+    SOL_BASE_FEE,
+    STAKE_ACCOUNT_V2_SIZE,
+} from '../constants';
 import type {
     Address,
     Base64EncodedWireTransaction,
@@ -129,7 +134,7 @@ const getPriorityFee = async (
 
     const simulated = await api
         .simulateTransaction(rawTx, {
-            commitment: 'confirmed',
+            commitment: RPC_COMMITMENT,
             encoding: 'base64',
             sigVerify: false,
             replaceRecentBlockhash: true,
