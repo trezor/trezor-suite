@@ -54,7 +54,7 @@ export interface PrepareStakeSolTxParams {
 
 export type PrepareClaimSolTxParams = Omit<PrepareStakeSolTxParams, 'amount' | 'validator'>;
 
-export type PrepareStakeSolTxErrorCode = 'INSUFFICIENT_ACTIVE_STAKE' | 'UNKNOWN';
+export type PrepareStakeSolTxErrorCode = 'INSUFFICIENT_ACTIVE_STAKE' | 'INVALID_FEE' | 'UNKNOWN';
 
 export type PrepareStakeSolTxResponse =
     | {

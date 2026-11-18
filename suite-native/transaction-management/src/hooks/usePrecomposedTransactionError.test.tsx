@@ -89,6 +89,12 @@ describe('usePrecomposedTransactionError', () => {
                 'transactionManagement.precomposedTransaction.errors.stakeNotEnoughFunds',
             ),
         },
+        {
+            error: 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID',
+            expectedErrorMsg: getTranslation(
+                'transactionManagement.precomposedTransaction.errors.solanaStakingFeeEstimateInvalid',
+            ),
+        },
     ])('should return correct translation data for $error', async ({ error, expectedErrorMsg }) => {
         const { getByText } = await renderWithBasicProvider(
             <ErrorText error={error} networkSymbol={networkSymbol} />,

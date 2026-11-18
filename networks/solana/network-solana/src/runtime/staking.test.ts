@@ -190,4 +190,29 @@ describe('stake account layout', () => {
 
         expect(getSerializedMessage(response)).toBe(message);
     });
+
+    it('returns a recoverable invalid-fee result for every staking operation', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const estimatedFee = { feePerUnit: 'NaN', feeLimit: '200000' };
+        const params = { from: mockSender, connection: mockConnection({}), estimatedFee };
+
+        try {
+            const responses = await Promise.all([
+                prepareStakeSolTx({ ...params, amount: '1', validator }),
+                prepareUnstakeSolTx({ ...params, amount: '1', validator }),
+                prepareClaimSolTx(params),
+            ]);
+
+            for (const response of responses) {
+                expect(response).toEqual({
+                    success: false,
+                    errorCode: 'INVALID_FEE',
+                    errorMessage: 'Invalid Solana staking fee estimate.',
+                });
+            }
+            expect(consoleErrorSpy).not.toHaveBeenCalled();
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
+    });
 });

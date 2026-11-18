@@ -490,4 +490,35 @@ describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
 
         expect(fetchAndUpdateAccountThunkMock).not.toHaveBeenCalled();
     });
+
+    it('reports an invalid fee estimate instead of continuing with the initial transaction', async () => {
+        prepareClaimSolTxMock.mockResolvedValueOnce({
+            success: true,
+            txShim: solanaTxShim,
+            solanaTxMeta: { ...solanaTxMetaMock, rentLamports: '0' },
+        });
+        prepareClaimSolTxMock.mockResolvedValueOnce({
+            success: false,
+            errorCode: 'INVALID_FEE',
+            errorMessage: 'Invalid Solana staking fee estimate.',
+        });
+        const store = buildStore();
+
+        const result = await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'claim',
+            amount: '1',
+        });
+
+        expect(result).toEqual({
+            ok: true,
+            payload: {
+                normal: {
+                    type: 'error',
+                    error: 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID',
+                    errorMessage: { id: 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID' },
+                },
+            },
+        });
+    });
 });
