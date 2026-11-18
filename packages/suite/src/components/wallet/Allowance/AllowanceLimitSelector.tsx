@@ -81,7 +81,11 @@ export const AllowanceLimitSelector = ({
     const providerKind: ProviderKind = provider.kind ?? 'provider';
 
     const translationValues = {
-        value: subunitsToUnits({ value: displayAmount, decimals: token?.decimals ?? 0 }).toString(),
+        // Without decimals the limit cannot be scaled, so show nothing rather than a wrong number.
+        value:
+            token?.decimals === undefined
+                ? '-'
+                : subunitsToUnits({ value: displayAmount, decimals: token.decimals }).toString(),
         send: symbolLabel,
         provider: provider.name,
     };
