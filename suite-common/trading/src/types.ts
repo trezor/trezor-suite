@@ -321,6 +321,7 @@ export type TradingError = {
         type: TType;
         code: TradingErrorCode;
         cause?: TradingErrorCause;
+        composableFeeLevels?: string[];
     };
 }[TradingErrorType];
 

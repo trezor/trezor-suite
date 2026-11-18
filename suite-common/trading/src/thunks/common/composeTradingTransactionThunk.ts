@@ -13,6 +13,7 @@ import {
     type Account,
     type FormState,
     type FormStateTrading,
+    type GeneralPrecomposedLevels,
     type GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
@@ -23,6 +24,11 @@ import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import { selectTradingComposedTransactionInfo } from '../../selectors/tradingSelectors';
 import type { TradingError, TradingErrorCause } from '../../types';
+
+const getComposableFeeLevels = (levels: GeneralPrecomposedLevels | undefined) =>
+    Object.entries(levels ?? {})
+        .filter(([, level]) => level.type === 'final' || level.type === 'nonfinal')
+        .map(([label]) => label);
 
 export type ComposeTradingTransactionThunkProps = {
     account: Account;
@@ -132,6 +138,7 @@ export const composeTradingTransactionThunk = createThunk<
                     cause: getPrecomposeCause(
                         normalLevel?.type === 'error' ? normalLevel.errorMessage : undefined,
                     ),
+                    composableFeeLevels: getComposableFeeLevels(normalLevels.payload),
                 });
             }
 
@@ -170,6 +177,7 @@ export const composeTradingTransactionThunk = createThunk<
                         ? precomposedToSign.errorMessage
                         : undefined,
                 ),
+                composableFeeLevels: getComposableFeeLevels(composedLevels.payload),
             });
         }
 
