@@ -471,7 +471,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             referAFriendActions.setReferAFriendApiBaseUrl,
             referAFriendActions.setEncryptedReferralKey,
             referAFriendActions.setReferralLink,
-            referAFriendActions.removeReferralDevice,
+            referAFriendActions.removeReferralWallet,
         )(action)
     ) {
         api.dispatch(storageActions.saveReferAFriendThunk());

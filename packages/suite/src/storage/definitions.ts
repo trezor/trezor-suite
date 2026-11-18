@@ -200,7 +200,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     referAFriend: {
         key: 'referAFriend';
-        value: Pick<ReferAFriendState, 'settings' | 'devices'>;
+        value: Pick<ReferAFriendState, 'settings' | 'wallets'>;
     };
     messageSystem: {
         key: 'suite';

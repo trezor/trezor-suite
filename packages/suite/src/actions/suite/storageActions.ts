@@ -33,8 +33,8 @@ import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type ReceiveRootState, selectReceiveAccountState } from '@suite-common/receive';
 import {
     type ReferAFriendRootState,
-    selectReferAFriendDevices,
     selectReferAFriendSettings,
+    selectReferAFriendWallets,
 } from '@suite-common/refer-a-friend';
 import {
     type WithSuiteSyncQuotaManagerState,
@@ -947,7 +947,7 @@ export const saveReferAFriendThunk =
             'referAFriend',
             {
                 settings: selectReferAFriendSettings(getState()),
-                devices: selectReferAFriendDevices(getState()),
+                wallets: selectReferAFriendWallets(getState()),
             },
             'referAFriend',
             true,
