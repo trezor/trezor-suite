@@ -1,7 +1,10 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { type TradingComposedTransactionInfo } from '@suite-common/trading';
+import {
+    TRADING_FEE_LEVEL_PRIORITY,
+    type TradingComposedTransactionInfo,
+} from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -61,19 +64,44 @@ export const TradingExchangeNetworkFeeModal = ({
         composedLevels,
     });
 
+    const affordableFeeInfo = useMemo(() => {
+        if (!composedLevels) {
+            return feeInfo;
+        }
+
+        const levels = feeInfo.levels.filter(({ label }) =>
+            isComposedFeeLevel(composedLevels[label]),
+        );
+
+        return { ...feeInfo, levels };
+    }, [feeInfo, composedLevels]);
+
     const fees = useFeesContextValue({
         account,
         control: form.control,
-        feeInfo,
+        feeInfo: affordableFeeInfo,
         composedLevels,
         changeFeeLevel,
         isComposing: isLoading,
     });
 
+    const fallbackFee =
+        fees.selectedFeeLevel || fees.selectedFee === 'custom'
+            ? undefined
+            : TRADING_FEE_LEVEL_PRIORITY.find(label =>
+                  affordableFeeInfo.levels.some(level => level.label === label),
+              );
+
     useEffect(() => {
         composeRequest('selectedFee');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [feeInfo]);
+
+    useLayoutEffect(() => {
+        if (fallbackFee) {
+            changeFeeLevel(fallbackFee);
+        }
+    }, [fallbackFee, changeFeeLevel]);
 
     const composedLevel = composedLevels?.[fees.selectedFee];
     const isConfirmDisabled = isLoading || !isComposedFeeLevel(composedLevel);
