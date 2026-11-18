@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { useStakingAccountPosition, useStakingDaysUntil } from '@suite-common/earn-staking';
+import {
+    type StakingRootState,
+    selectStakingAccountPositionEntry,
+    useStakingDaysUntil,
+} from '@suite-common/earn-staking';
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
@@ -14,16 +18,17 @@ export const useStakingActivationDays = (accountKey: AccountKey): number | null 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const positionEntry = useSelector((state: StakingRootState) =>
+        selectStakingAccountPositionEntry(state, accountKey),
+    );
 
-    const { descriptor, position } = useStakingAccountPosition(accountKey);
-
-    const activation = position?.activations[0] ?? null;
+    const activation = positionEntry?.position.activations[0] ?? null;
     const startedAt = activation?.startedAt ?? null;
 
     const isQueued =
         startedAt !== null &&
-        descriptor !== null &&
-        getNetworkType(descriptor.networkSymbol) === 'ethereum';
+        positionEntry !== null &&
+        getNetworkType(positionEntry.descriptor.networkSymbol) === 'ethereum';
 
     const { data: queue } = useEthereumValidatorsQueue(
         {

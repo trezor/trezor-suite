@@ -1,9 +1,9 @@
+import { TRON_UNLOCKS_REFRESH_INTERVAL_MS } from '@suite-common/earn-staking';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useNow } from '@trezor/react-utils';
 
 import { TronStakingUnstakeCard } from './TronStakingUnstakeCard/TronStakingUnstakeCard';
 import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
-import { TRON_UNLOCKS_REFRESH_INTERVAL_MS } from '../../utils/staking/settleTronUnlocks';
 
 type TronStakingPendingSectionProps = {
     accountKey: AccountKey;
