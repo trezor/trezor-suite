@@ -84,6 +84,10 @@ export const signEthereumStakingTransactionThunk = createThunk<
                         fetchConfirmedNonce: true,
                     }),
                 ).unwrap();
+                // The push records the tx as pending with this nonce, as the send form does. Without
+                // it the push re-derives the nonce from the account, which is one too high once the
+                // backend counts the just-broadcast tx.
+                dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
 
                 return TrezorConnect.ethereumSignTransaction({
                     device: device

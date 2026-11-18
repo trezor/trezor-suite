@@ -150,12 +150,17 @@ type State = PushSendFormTransactionThunkState & {
 
 const buildStore = ({
     accounts = [ethAccount],
+    getAccounts = () => accounts,
     formDrafts = {},
     blockchain = {},
+    fees = feesInitialState,
 }: {
     accounts?: Account[];
+    // For a test that changes the accounts between dispatches.
+    getAccounts?: () => Account[];
     formDrafts?: Record<string, FormState>;
     blockchain?: Record<string, unknown>;
+    fees?: State['wallet']['fees'];
 } = {}) =>
     createTestCompositionRoot<PushStakeTransactionThunkDeps, State>({
         extra: { actions: { onModalCancel: mockOnModalCancel() } },
@@ -173,9 +178,9 @@ const buildStore = ({
             notifications: (): State['notifications'] => [],
             tokenDefinitions: (): State['tokenDefinitions'] => ({}),
             wallet: combineReducers({
-                accounts: () => accounts,
+                accounts: getAccounts,
                 earnTransactions: earnTransactionsReducer,
-                fees: () => feesInitialState,
+                fees: () => fees,
                 stellarContractTokens: () => stellarContractTokensInitialState,
                 transactions: () => ({
                     transactions: {},
@@ -557,6 +562,59 @@ describe('pushStakeTransactionThunk', () => {
         ]);
         expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
         expect(pushTransactionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('records the pushed transaction with the nonce it was signed with', async () => {
+        let accounts = [ethAccount];
+        const store = buildStore({
+            getAccounts: () => accounts,
+            formDrafts: {
+                [getFormDraftKey('stake', ETH_ACCOUNT_KEY)]: buildEthStakeFormDraft(),
+            },
+            fees: {
+                eth: {
+                    status: 'loaded',
+                    data: {
+                        blockHeight: 1,
+                        blockTime: 12,
+                        minFee: 1,
+                        maxFee: 100,
+                        minPriorityFee: 1,
+                        levels: [],
+                    },
+                },
+            },
+        });
+
+        await dispatchDispatcher(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: {
+                ...buildPrecomposedTransaction(),
+                outputs: [{ address: POOL_ADDRESS, amount: '1500000000000000000' }],
+            } as PrecomposedTransactionFinal,
+        });
+        expect(ethereumSignTransactionMock.mock.calls[0][0].transaction.nonce).toBe('0x7');
+
+        // The backend's nonce counts the just-signed tx while it is pending, so it is one higher.
+        accounts = [{ ...ethAccount, misc: { nonce: '8' } } as Account];
+
+        await dispatchPush(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            isMevProtectionFeatureEnabled: true,
+            stakeType: 'stake',
+        });
+
+        const addedTransactions = store
+            .getActions()
+            .filter(transactionsActions.addTransaction.match)
+            .flatMap(action => action.payload.transactions);
+        expect(addedTransactions).toEqual([
+            expect.objectContaining({
+                txid: '0xpushedtxid',
+                ethereumSpecific: expect.objectContaining({ nonce: 7 }),
+            }),
+        ]);
     });
 
     it('broadcasts a solana transaction signed during a deferred sign', async () => {

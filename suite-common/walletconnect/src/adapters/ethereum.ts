@@ -9,8 +9,10 @@ import {
 } from '@suite-common/mev';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import {
+    type AddFakePendingEvmSignedTxThunkState,
     type TransactionsRootState,
     type WalletSettingsRootState,
+    addFakePendingEvmSignedTxThunk,
     ethereumGetCurrentNonceThunk,
     selectAccounts,
     selectIsMevProtectionEnabled,
@@ -60,7 +62,8 @@ export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCa
     WalletConnectStateRootState &
     MevProtectionRootState &
     WalletSettingsRootState &
-    TransactionsRootState;
+    TransactionsRootState &
+    AddFakePendingEvmSignedTxThunkState;
 
 export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
@@ -267,7 +270,12 @@ const ethereumRequestThunk = createThunk<
                 throw new Error('eth_sendTransaction push error');
             }
 
-            return pushResponse.payload.txid;
+            const { txid } = pushResponse.payload;
+            dispatch(
+                addFakePendingEvmSignedTxThunk({ transaction: payload.transaction, txid, account }),
+            );
+
+            return txid;
         }
         case 'wallet_switchEthereumChain': {
             // Dummy method, since Suite has no concept of switching chains
