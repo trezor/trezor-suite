@@ -3,29 +3,31 @@ import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useNetworkStakingRate } from '@suite-common/earn-staking';
+import {
+    formatStakingAmount,
+    getPotentialStakingRewards,
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountActive,
+    selectIsStakingOperationPending,
+    selectStakeableStakingProductDescriptorBySymbol,
+    selectStakingAccountAmount,
+    useNetworkStakingRate,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
+import { type StakingOperation } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import {
-    calculateRewards,
-    getNetworkAdjustedStakingBalance,
-    getStakingDataForNetwork,
-    getStakingLimitsByNetworkSymbol,
-    isCardanoWithdrawalBlockedByMissingDrep,
-    selectAccountClaimTransactions,
-    selectAccountIsStakingActive,
-} from '@suite-common/wallet-core';
+import { calculateRewards } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountTotalStakingBalance, isPending } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
-import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnStakingActionButtons } from './EarnStakingActionButtons';
@@ -56,34 +58,59 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const { rate: newProviderApy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
     const isCardanoNetworkType = account.networkType === 'cardano';
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
-    const isClaimPending = useSelector(state =>
-        selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
-    );
-    const {
-        isStakingDisabled,
-        stakingMessageContent,
-        isClaimingDisabled,
-        claimingMessageContent,
-        isVotingDisabled,
-        votingMessageContent,
-    } = useMessageSystemStaking(account.symbol);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
-    const isDrepDelegationRequired = isCardanoWithdrawalBlockedByMissingDrep(account);
+    const { productId, descriptor, totals } = useStakingAccountPosition(account.key);
+
+    const stakeableDescriptor = useSelector(state =>
+        selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
+    );
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
+    const stakingAmount = useSelector(state => selectStakingAccountAmount(state, account.key));
+
+    const isDrepDelegationRequired = useSelector(state =>
+        selectHasStakingAccountWarning(state, account.key, 'missing-drep'),
+    );
+
+    // Ethereum and Solana pay out the unstaked principal here, Cardano its rewards.
+    const claimOperation: StakingOperation = descriptor?.operations.includes('claim')
+        ? 'claim'
+        : 'withdraw';
+    const isClaimPending = useSelector(state =>
+        selectIsStakingOperationPending(state, account.key, claimOperation),
+    );
+
+    const { isDisabled: isStakingDisabled, message: stakingMessageContent } =
+        useStakingOperationSwitch(stakeableDescriptor?.id ?? null, 'stake');
+    const { isDisabled: isClaimingDisabled, message: claimingMessageContent } =
+        useStakingOperationSwitch(productId, claimOperation);
+    const { isDisabled: isVotingDisabled, message: votingMessageContent } =
+        useStakingOperationSwitch(productId, 'vote');
+
+    // The claim modal serves Ethereum, Solana and Cardano; Tron claims on its own page.
+    const claimableAmount = claimOperation === 'claim' ? totals.rewards : totals.withdrawable;
+    const canClaim = account.networkType !== 'tron' && new BigNumber(claimableAmount).gt(0);
     const isClaimButtonDisabled = isClaimingDisabled || isClaimPending || isDrepDelegationRequired;
+
     const claimTooltipContent =
         claimingMessageContent ??
         (isDrepDelegationRequired ? (
             <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
         ) : undefined);
 
-    const minStakingAmount = getStakingLimitsByNetworkSymbol(
-        account.symbol,
-    )?.MIN_AMOUNT_FOR_STAKING_DASHBOARD;
+    const minStakingAmount =
+        stakeableDescriptor === null
+            ? undefined
+            : formatStakingAmount({
+                  amount: stakeableDescriptor.limits.minStakeAmountForDashboard,
+                  networkSymbol: account.symbol,
+              });
 
     const accountBalance = account.formattedBalance;
-    const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
+
+    const stakingBalance = formatStakingAmount({
+        amount: stakingAmount,
+        networkSymbol: account.symbol,
+    });
 
     const stakingStatus = useStakingAccountStatus(account);
 
@@ -178,11 +205,15 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         });
 
     const currentRewards = calculateRewards(stakingBalance, rate);
-    const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
-    const potentialRewards = calculateRewards(
-        getNetworkAdjustedStakingBalance(totalBalance, account),
-        rate,
-    );
+
+    const potentialRewards = formatStakingAmount({
+        amount: getPotentialStakingRewards({
+            accounts: [{ availableBalance: account.availableBalance }],
+            limits: stakeableDescriptor?.limits ?? null,
+            rate,
+        }),
+        networkSymbol: account.symbol,
+    });
     const formattedStakingBalance = formatCryptoAmount(stakingBalance);
     const formattedAccountBalance = formatCryptoAmount(accountBalance);
 
@@ -202,14 +233,19 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         formattedAccountBalance,
     } as const;
 
+    const rowTestId = `@earn/dashboard/staking-account/${account.symbol}-${account.index}`;
+
     const minStakeParagraph = (
-        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
+        <Paragraph
+            typographyStyle="body-sm"
+            intent="neutral"
+            priority="secondary"
+            data-testid="@earn/dashboard/minimum-stake"
+        >
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                 values={{
-                    amount: minStakingAmount
-                        ? formatCryptoAmount(minStakingAmount.toString())
-                        : undefined,
+                    amount: minStakingAmount ? formatCryptoAmount(minStakingAmount) : undefined,
                     displaySymbol: <AssetSymbol networkSymbol={account.symbol} />,
                 }}
             />
@@ -302,7 +338,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
     if (isCardLayout) {
         return (
-            <Card paddingType="small" onClick={navigateToStaking}>
+            <Card paddingType="small" onClick={navigateToStaking} data-testid={rowTestId}>
                 <Column gap={12} width="100%">
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell account={account} />
@@ -400,7 +436,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     }
 
     return (
-        <Table.Row onClick={navigateToStaking}>
+        <Table.Row onClick={navigateToStaking} data-testid={rowTestId}>
             <Table.Cell>
                 <EarnAccountCell account={account} />
             </Table.Cell>

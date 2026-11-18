@@ -1,171 +1,60 @@
-import { useCallback, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    compareEarnByAmountDesc,
-    getAccountTotalStakingBalance,
-    isStakingSymbol,
-    sortByCoin,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
-import { BigNumber, arrayPartition } from '@trezor/utils';
+import { compareEarnByAmountDesc, sortByCoin } from '@suite-common/wallet-utils';
 
-interface UseAccountVisibilityProps {
-    stakingAccounts: Account[];
-    currentRates: Record<StakingNetworkSymbol, number | undefined>;
-    ethNotActivated: boolean;
-    solNotActivated: boolean;
-    adaNotActivated: boolean;
-    trxNotActivated: boolean;
-}
+import { useSelector } from '#src/hooks/suite/useSelector';
+
+import { selectEarnStakingFiatAmountsByAccountKey } from '../earnStakingTableSelectors';
+
+type UseStakingAccountsVisibilityParams = {
+    stakedAccounts: readonly Account[];
+    stakeableAccounts: readonly Account[];
+    underfundedAccounts: readonly Account[];
+};
 
 export const useStakingAccountsVisibility = ({
-    stakingAccounts,
-    currentRates,
-    ethNotActivated,
-    solNotActivated,
-    adaNotActivated,
-    trxNotActivated,
-}: UseAccountVisibilityProps) => {
-    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
+    stakedAccounts,
+    stakeableAccounts,
+    underfundedAccounts,
+}: UseStakingAccountsVisibilityParams) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const toggleExpanded = useCallback(() => {
-        setIsExpanded(prev => !prev);
-    }, []);
+    const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
+    const fiatAmounts = useSelector(selectEarnStakingFiatAmountsByAccountKey);
 
-    const getAccountStakedAmountInFiat = useCallback(
-        (account: Account) =>
-            toFiatCurrency({
-                amount: getAccountTotalStakingBalance(account) ?? '0',
-                rate: isStakingSymbol(account.symbol)
-                    ? currentRates[account.symbol as StakingNetworkSymbol]
-                    : undefined,
-            }) ?? '0',
-        [currentRates],
+    const toggleExpanded = () => {
+        setIsExpanded(previous => !previous);
+    };
+
+    const byFiatAmountDesc = compareEarnByAmountDesc(
+        (account: Account) => fiatAmounts[account.key] ?? '0',
     );
 
-    const getAccountBalanceInFiat = useCallback(
-        (account: Account) =>
-            toFiatCurrency({
-                amount: account.formattedBalance,
-                rate: isStakingSymbol(account.symbol)
-                    ? currentRates[account.symbol as StakingNetworkSymbol]
-                    : undefined,
-            }) ?? '0',
-        [currentRates],
-    );
-
-    const [accountsStakingActive, accountsStakingNotActive] = arrayPartition(
-        stakingAccounts,
-        (account: Account) => {
-            const stakedAmount = getAccountTotalStakingBalance(account);
-
-            return stakedAmount !== null && stakedAmount !== '0';
-        },
-    );
-
-    const [accountsSufficientFunds, accountsInsufficientFunds] = arrayPartition(
-        accountsStakingNotActive,
-        (account: Account) => {
-            const minStakingAmount = getStakingLimitsByNetworkSymbol(
-                account.symbol,
-            )?.MIN_AMOUNT_FOR_STAKING_DASHBOARD;
-
-            return (
-                minStakingAmount !== undefined &&
-                new BigNumber(account.formattedBalance).gte(minStakingAmount)
-            );
-        },
-    );
-
-    const alwaysVisibleAccounts = useMemo(
-        () => [
-            ...accountsStakingActive.toSorted(
-                compareEarnByAmountDesc(getAccountStakedAmountInFiat),
-            ),
-            ...accountsSufficientFunds.toSorted(compareEarnByAmountDesc(getAccountBalanceInFiat)),
-        ],
-        [
-            accountsStakingActive,
-            accountsSufficientFunds,
-            getAccountStakedAmountInFiat,
-            getAccountBalanceInFiat,
-        ],
-    );
-
-    const collapsedInsufficientFundsAccounts = useMemo(() => {
-        const hasEthBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'eth');
-        const hasSolBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'sol');
-        const hasAdaBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'ada');
-        const hasTrxBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'trx');
-
-        const sortedInsufficientFundsAccounts = sortByCoin(
-            [...accountsInsufficientFunds],
-            supportedNetworks,
-        );
-
-        const additionalAccounts: Account[] = [];
-
-        if (!hasEthBaseAccount && !ethNotActivated) {
-            const account = sortedInsufficientFundsAccounts.find(
-                insufficientAccount => insufficientAccount.symbol === 'eth',
-            );
-
-            if (account) additionalAccounts.push(account);
-        }
-
-        if (!hasSolBaseAccount && !solNotActivated) {
-            const account = sortedInsufficientFundsAccounts.find(
-                insufficientAccount => insufficientAccount.symbol === 'sol',
-            );
-
-            if (account) additionalAccounts.push(account);
-        }
-
-        if (!hasAdaBaseAccount && !adaNotActivated) {
-            const account = sortedInsufficientFundsAccounts.find(
-                insufficientAccount => insufficientAccount.symbol === 'ada',
-            );
-
-            if (account) additionalAccounts.push(account);
-        }
-
-        if (!hasTrxBaseAccount && !trxNotActivated) {
-            const account = sortedInsufficientFundsAccounts.find(
-                account => account.symbol === 'trx',
-            );
-
-            if (account) additionalAccounts.push(account);
-        }
-
-        return sortByCoin([...additionalAccounts], supportedNetworks);
-    }, [
-        alwaysVisibleAccounts,
-        accountsInsufficientFunds,
-        supportedNetworks,
-        ethNotActivated,
-        solNotActivated,
-        adaNotActivated,
-        trxNotActivated,
-    ]);
-
-    const collapsedAccounts = [...alwaysVisibleAccounts, ...collapsedInsufficientFundsAccounts];
-
-    const expandedAccounts = [
-        ...alwaysVisibleAccounts,
-        ...sortByCoin([...accountsInsufficientFunds], supportedNetworks),
+    const alwaysVisibleAccounts = [
+        ...stakedAccounts.toSorted(byFiatAmountDesc),
+        ...stakeableAccounts.toSorted(byFiatAmountDesc),
     ];
 
-    const displayedAccounts = isExpanded ? expandedAccounts : collapsedAccounts;
-    const isExpandable = collapsedAccounts.length !== expandedAccounts.length;
+    const underfundedInNetworkOrder = sortByCoin([...underfundedAccounts], supportedNetworks);
 
-    const hasAnyRewardsData =
-        accountsStakingActive.length > 0 || accountsSufficientFunds.length > 0;
+    // One underfunded account stands for a network that has no other row, so every network with
+    // an account shows up while the table is collapsed.
+    const collapsedUnderfundedAccounts = underfundedInNetworkOrder.filter(
+        (account, index, accounts) =>
+            !alwaysVisibleAccounts.some(visible => visible.symbol === account.symbol) &&
+            accounts.findIndex(other => other.symbol === account.symbol) === index,
+    );
 
-    return { displayedAccounts, isExpanded, toggleExpanded, isExpandable, hasAnyRewardsData };
+    const collapsedAccounts = [...alwaysVisibleAccounts, ...collapsedUnderfundedAccounts];
+    const expandedAccounts = [...alwaysVisibleAccounts, ...underfundedInNetworkOrder];
+
+    return {
+        displayedAccounts: isExpanded ? expandedAccounts : collapsedAccounts,
+        isExpanded,
+        toggleExpanded,
+        isExpandable: collapsedAccounts.length !== expandedAccounts.length,
+        hasAnyRewardsData: stakedAccounts.length > 0 || stakeableAccounts.length > 0,
+    };
 };

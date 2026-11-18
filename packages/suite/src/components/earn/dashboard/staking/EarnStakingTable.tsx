@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { EarnAnchor, useAnchor } from '@suite/router';
 import { Context } from '@suite-common/message-system';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
@@ -29,10 +28,7 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
 
     const {
         displayedAccounts,
-        ethNotActivated,
-        adaNotActivated,
-        solNotActivated,
-        trxNotActivated,
+        activateSymbols,
         isExpandable,
         isExpanded,
         toggleExpanded,
@@ -72,30 +68,13 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
                                     />
                                 ))}
 
-                                {ethNotActivated && (
+                                {activateSymbols.map(symbol => (
                                     <EarnStakingActivateRow
-                                        symbol={asNetworkSymbol('eth')}
+                                        symbol={symbol}
+                                        key={symbol}
                                         isCardLayout
                                     />
-                                )}
-                                {solNotActivated && (
-                                    <EarnStakingActivateRow
-                                        symbol={asNetworkSymbol('sol')}
-                                        isCardLayout
-                                    />
-                                )}
-                                {trxNotActivated && (
-                                    <EarnStakingActivateRow
-                                        symbol={asNetworkSymbol('trx')}
-                                        isCardLayout
-                                    />
-                                )}
-                                {adaNotActivated && (
-                                    <EarnStakingActivateRow
-                                        symbol={asNetworkSymbol('ada')}
-                                        isCardLayout
-                                    />
-                                )}
+                                ))}
                             </Column>
                         ) : (
                             <Card paddingType="none">
@@ -113,30 +92,13 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
                                             />
                                         ))}
 
-                                        {ethNotActivated && (
+                                        {activateSymbols.map(symbol => (
                                             <EarnStakingActivateRow
-                                                symbol={asNetworkSymbol('eth')}
+                                                symbol={symbol}
+                                                key={symbol}
                                                 isCardLayout={false}
                                             />
-                                        )}
-                                        {solNotActivated && (
-                                            <EarnStakingActivateRow
-                                                symbol={asNetworkSymbol('sol')}
-                                                isCardLayout={false}
-                                            />
-                                        )}
-                                        {trxNotActivated && (
-                                            <EarnStakingActivateRow
-                                                symbol={asNetworkSymbol('trx')}
-                                                isCardLayout={false}
-                                            />
-                                        )}
-                                        {adaNotActivated && (
-                                            <EarnStakingActivateRow
-                                                symbol={asNetworkSymbol('ada')}
-                                                isCardLayout={false}
-                                            />
-                                        )}
+                                        ))}
                                     </Table.Body>
                                 </Table>
                             </Card>

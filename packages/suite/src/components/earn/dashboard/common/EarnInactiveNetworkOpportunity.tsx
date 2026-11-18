@@ -29,9 +29,11 @@ export const EarnInactiveNetworkOpportunity = ({
         </Paragraph>
     );
 
+    const rowTestId = `@earn/dashboard/activate-row/${symbol}`;
+
     if (isCardLayout) {
         return (
-            <Card paddingType="small">
+            <Card paddingType="small" data-testid={rowTestId}>
                 <Column gap={12} width="100%">
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell symbol={symbol} />
@@ -50,7 +52,7 @@ export const EarnInactiveNetworkOpportunity = ({
     }
 
     return (
-        <Table.Row>
+        <Table.Row data-testid={rowTestId}>
             <Table.Cell>
                 <EarnAccountCell symbol={symbol} />
             </Table.Cell>

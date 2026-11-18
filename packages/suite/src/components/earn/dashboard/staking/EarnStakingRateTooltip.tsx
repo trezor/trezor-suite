@@ -41,7 +41,12 @@ export const EarnStakingRateTooltip = ({ rateKind, rate }: EarnStakingRateToolti
             tooltipMaxWidth={280}
             placement="top"
         >
-            <Text typographyStyle="body-sm-strong" intent="neutral" priority="primary">
+            <Text
+                typographyStyle="body-sm-strong"
+                intent="neutral"
+                priority="primary"
+                data-testid="@earn/dashboard/staking-rate"
+            >
                 <Abbr>
                     <ApyValue apy={rate} />
                 </Abbr>
