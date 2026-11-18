@@ -30,6 +30,7 @@ import { type Account, type AccountKey, type CurrentRate } from '@suite-common/w
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { mock } from '@trezor/dependency-injection';
+import { type StaticSessionId } from '@trezor/device-utils';
 import { type VersionArray } from '@trezor/utils';
 
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
@@ -37,8 +38,12 @@ import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 export const ETH = asNetworkSymbol('eth');
+export const SOL = asNetworkSymbol('sol');
 export const ADA = asNetworkSymbol('ada');
 export const TRX = asNetworkSymbol('trx');
+export const THOD = asNetworkSymbol('thod');
+
+export const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
 export const amount = (value: string) => stakingAmountSchema.parse(value);
 
@@ -57,6 +62,21 @@ const cardanoFeatures = {
 };
 
 export const ethProduct = mockStakingProductDescriptor();
+export const thodProduct = mockStakingProductDescriptor({
+    networkSymbol: THOD,
+    messageSystemFeatures: {},
+});
+export const solProduct = mockStakingProductDescriptor({
+    networkSymbol: SOL,
+    type: 'native',
+    rewardsKind: 'expected',
+    options: [],
+    messageSystemFeatures: {
+        stake: 'sol.staking.stake',
+        unstake: 'sol.staking.unstake',
+        withdraw: 'sol.staking.claim',
+    },
+});
 export const adaEverstakeProduct = mockStakingProductDescriptor({
     networkSymbol: ADA,
     type: 'native',
@@ -110,6 +130,8 @@ export const trxProduct = mockStakingProductDescriptor({
 
 export const products = [
     ethProduct,
+    thodProduct,
+    solProduct,
     adaEverstakeProduct,
     adaFiveBinariesProduct,
     adaExternalProduct,
@@ -120,6 +142,7 @@ export const ethAccount = mockWalletAccount({
     symbol: ETH,
     availableBalance: '3000000000000000000',
 });
+export const solAccount = mockWalletAccount({ symbol: SOL, availableBalance: '2500000000' });
 export const adaAccount = mockWalletAccount({ symbol: ADA, availableBalance: '100000000' });
 export const trxAccount = mockWalletAccount({ symbol: TRX, availableBalance: '100000000' });
 
@@ -152,7 +175,7 @@ export const TRON_DETAILS: Extract<
 const mockRate = (rate: number) => ({ rate, usdRate: rate }) as CurrentRate;
 
 const createDevice = (firmware: VersionArray): TrezorDevice => {
-    const device = mockSuiteDevice({ connected: true });
+    const device = mockSuiteDevice({ connected: true, state: { staticSessionId: DEVICE_STATE } });
 
     if (device.type !== 'acquired') {
         throw new Error('Expected an acquired device');
@@ -189,7 +212,7 @@ export const createStakingDashboardState = ({
             : mockMessageSystemStateWithFeatureFlags(
                   Object.fromEntries(disabledFeatures.map(domain => [domain, false])),
               ),
-    networks: mockNetworksState([ETH, ADA, TRX]),
+    networks: mockNetworksState([ETH, THOD, SOL, ADA, TRX]),
     earn: { staking: mockStakingState({ descriptors, positions }) },
     device: { ...mockInitialAppState.device, selectedDevice: createDevice(firmware) },
     wallet: {
@@ -200,6 +223,7 @@ export const createStakingDashboardState = ({
             ...mockInitialAppState.wallet.fiat,
             current: {
                 [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
+                [getFiatRateKey(SOL, 'usd')]: mockRate(150),
                 [getFiatRateKey(ADA, 'usd')]: mockRate(0.5),
                 [getFiatRateKey(TRX, 'usd')]: mockRate(0.25),
             },

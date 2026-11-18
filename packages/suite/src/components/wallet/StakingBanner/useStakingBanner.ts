@@ -1,9 +1,9 @@
 import { type BooleanFlagKey, selectFlags, setFlag } from '@suite/flags';
 import {
-    getStakingLimitsByNetworkSymbol,
-    isSupportedStakingNetworkSymbol,
-    selectAccountIsStakingActive,
-} from '@suite-common/wallet-core';
+    selectIsStakingAccountActive,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
+import { isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -47,9 +47,15 @@ export const useStakingBanner = (accounts: StakingBannerAccounts) => {
     const [account] = accounts;
     const { dispatch } = useServices(injectDispatch);
     const flags = useSelector(selectFlags);
+
     const isStakingActive = useSelector(state =>
-        accounts.every(({ key }) => selectAccountIsStakingActive(state, key)),
+        accounts.every(({ key }) => selectIsStakingAccountActive(state, key)),
     );
+    // Testnets have a product of their own, so Hoodi and devnet keep their promo as before.
+    const hasStakeableProduct = useSelector(
+        state => selectStakeableStakingProductDescriptorBySymbol(state, account.symbol) !== null,
+    );
+
     const earnEthBanner = useEarnEthBanner(account);
 
     const stakingClosedFlag = getStakingBannerClosedFlag(account);
@@ -69,7 +75,7 @@ export const useStakingBanner = (accounts: StakingBannerAccounts) => {
             stakingClosedFlag === undefined ||
             flags[stakingClosedFlag] ||
             isStakingActive ||
-            !getStakingLimitsByNetworkSymbol(account.symbol)
+            !hasStakeableProduct
         ) {
             return undefined;
         }

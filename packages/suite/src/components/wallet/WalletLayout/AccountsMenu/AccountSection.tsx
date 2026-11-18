@@ -1,9 +1,8 @@
-import { selectStakingAccountAmountOutsideBalance } from '@suite-common/earn-staking';
 import {
-    selectAccountHasStaking,
-    selectBaseCurrency,
-    selectCurrentFiatRates,
-} from '@suite-common/wallet-core';
+    selectIsStakingAccountActive,
+    selectStakingAccountAmountOutsideBalance,
+} from '@suite-common/earn-staking';
+import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { areTokenFiatRatesLoading, getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -23,7 +22,8 @@ export const AccountSection = ({ account, tokens, selected }: AccountSectionProp
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const rates = useSelector(selectCurrentFiatRates);
 
-    const hasStaking = useSelector(state => selectAccountHasStaking(state, account.key));
+    const hasStaking = useSelector(state => selectIsStakingAccountActive(state, account.key));
+
     const stakingBalance = useSelector(state =>
         selectStakingAccountAmountOutsideBalance(state, account.key),
     );

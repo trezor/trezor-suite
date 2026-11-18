@@ -14,13 +14,9 @@ import {
     selectIsDeviceBackupUnfinished,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { selectDeviceStakingEntryByWarning } from '@suite-common/earn-staking';
 import { selectBannerMessage } from '@suite-common/message-system';
-import {
-    isCardanoStakedWithFiveBinaries,
-    selectVisibleDeviceAccounts,
-} from '@suite-common/wallet-core';
 import { isWeb } from '@trezor/env-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { MAX_CONTENT_WIDTH } from '#src/constants/suite/layout';
 import { useLocalNetworkAccessPermission } from '#src/hooks/suite/useLocalNetworkAccessPermission';
@@ -61,7 +57,10 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const transport = useSelector(selectSuiteTransport);
-    const accounts = useSelector(selectVisibleDeviceAccounts);
+    // The first funded entry with an outdated provider, as the mobile banner reads it.
+    const outdatedProviderEntry = useSelector(state =>
+        selectDeviceStakingEntryByWarning(state, 'outdated-provider'),
+    );
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
     const isSuiteSyncBannerVisible = useSelector(state =>
@@ -120,13 +119,7 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     } else if (legacyBridgeDetected) {
         banner = <BridgeDeprecated />;
         priority = 30;
-    } else if (
-        accounts.some(
-            account =>
-                isCardanoStakedWithFiveBinaries(account) &&
-                new BigNumber(account.availableBalance).gt(0),
-        )
-    ) {
+    } else if (outdatedProviderEntry !== null) {
         banner = <CardanoOutdatedStakingBanner />;
         priority = 20;
     } else if (deviceStaticSessionId !== null && isSuiteSyncBannerVisible) {

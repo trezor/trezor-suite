@@ -7,6 +7,10 @@ import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import {
+    type StakingDeviceRootState,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
+import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureDisabled,
@@ -21,14 +25,9 @@ import {
     selectIsTradingBuyAvailableForNetworkSymbol,
 } from '@suite-common/trading';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAnyAccountIsStakingActive,
-    useDisplayBaseCurrency,
-} from '@suite-common/wallet-core';
+import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
-import { type AmountUnit } from '@suite-common/wallet-utils';
+import { type AmountUnit, isPositiveBalance } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Card, Column, Icon, InfoItem, Note, Row, Skeleton, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
@@ -43,7 +42,8 @@ import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { FiatHeader } from '#src/components/wallet/FiatHeader';
 
 import { AssetActionButton } from '../AssetActionButton';
-import { handleTokensAndStakingData } from '../assetsViewUtils';
+import { selectDashboardAssetStakingAmount } from '../assetsViewSelectors';
+import { getAssetTokensData } from '../assetsViewUtils';
 import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
 import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 
@@ -83,13 +83,11 @@ type AssetCardProps = {
     failed: boolean;
     cryptoValue: AmountUnit;
     assetsFiatBalances: AssetFiatBalance[];
-    stakingAccounts: Account[];
     assetTokens: TokenInfo[];
     index?: number;
     localCurrency: BaseCurrencyCode;
     currentFiatRates?: RatesByKey;
     accounts: Account[];
-    isStakeNetwork?: boolean;
 };
 
 export const AssetCard = ({
@@ -97,13 +95,11 @@ export const AssetCard = ({
     failed,
     cryptoValue,
     assetsFiatBalances,
-    stakingAccounts,
     assetTokens,
     index,
     localCurrency,
     currentFiatRates,
     accounts,
-    isStakeNetwork,
 }: AssetCardProps) => {
     const { symbol } = network;
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -122,7 +118,6 @@ export const AssetCard = ({
         );
     };
 
-    const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
     const coinDefinitions = useSelector((state: TokenDefinitionsRootState) =>
         selectCoinDefinitions(state, symbol),
     );
@@ -134,20 +129,22 @@ export const AssetCard = ({
         selectIsTradingBuyAvailableForNetworkSymbol(state, symbol),
     );
 
-    const isStakingActive = useSelector((state: TransactionsRootState & AccountsRootState) =>
-        selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
+    const isStakeNetwork = useSelector(
+        (state: StakingDeviceRootState) =>
+            selectStakeableStakingProductDescriptorBySymbol(state, symbol) !== null,
     );
+    const assetStakingBalance = useSelector((state: StakingDeviceRootState) =>
+        selectDashboardAssetStakingAmount(state, symbol),
+    );
+    const shouldRenderStakingRow = isPositiveBalance(assetStakingBalance);
 
-    const { tokensFiatBalance, assetStakingBalance, shouldRenderStakingRow, shouldRenderTokenRow } =
-        handleTokensAndStakingData(
-            assetTokens,
-            stakingAccountsForAsset,
-            isStakingActive,
-            symbol,
-            localCurrency,
-            coinDefinitions,
-            currentFiatRates,
-        );
+    const { tokensFiatBalance, shouldRenderTokenRow } = getAssetTokensData(
+        assetTokens,
+        symbol,
+        localCurrency,
+        coinDefinitions,
+        currentFiatRates,
+    );
 
     const onStakeButtonClick = () => {
         analytics.report({
@@ -205,7 +202,7 @@ export const AssetCard = ({
                     <AssetCardTokensAndStakingInfo
                         symbol={symbol}
                         tokensFiatBalance={tokensFiatBalance.toString()}
-                        assetStakingBalance={assetStakingBalance.toString()}
+                        assetStakingBalance={assetStakingBalance}
                         shouldRenderStaking={shouldRenderStakingRow}
                         shouldRenderTokens={shouldRenderTokenRow}
                         accounts={accounts}
