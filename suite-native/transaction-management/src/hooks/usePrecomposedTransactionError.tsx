@@ -20,6 +20,7 @@ const VALID_PRECOMPOSED_ERRORS: PrecomposedTransactionError['error'][] = [
     'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
     'TR_STAKE_TX_PREPARATION_FAILED',
     'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+    'TR_STAKE_SOL_FEE_ESTIMATE_INVALID',
     'NOT-ENOUGH-FUNDS',
 ];
 
@@ -95,6 +96,11 @@ export const usePrecomposedTransactionError = ({
             case 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED':
                 return (
                     <Translation id="transactionManagement.precomposedTransaction.errors.stakedBalanceChanged" />
+                );
+
+            case 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID':
+                return (
+                    <Translation id="transactionManagement.precomposedTransaction.errors.solanaStakingFeeEstimateInvalid" />
                 );
 
             default:

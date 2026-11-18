@@ -61,6 +61,7 @@ import type {
     Instruction,
     LegacyCompiledTransactionMessage,
     Params,
+    PriorityFees,
     Rpc,
     RpcMainnet,
     SolanaRpcApiMainnet,
@@ -411,16 +412,34 @@ export function isCompilableTransactionMessage(
     return (tx as TransactionMessageWithFeePayer).feePayer !== undefined;
 }
 
-export const getStakingParams = (estimatedFee?: Fee) =>
-    !estimatedFee?.feePerUnit || !estimatedFee.feeLimit
-        ? {
-              computeUnitPrice: BigInt(SOL_COMPUTE_UNIT_PRICE),
-              computeUnitLimit: SOL_COMPUTE_UNIT_LIMIT,
-          }
-        : {
-              computeUnitPrice: BigInt(estimatedFee.feePerUnit),
-              computeUnitLimit: Number(estimatedFee.feeLimit), // solana package expects number
-          };
+export const getStakingParams = (estimatedFee?: Fee): PriorityFees | undefined => {
+    if (!estimatedFee?.feePerUnit || !estimatedFee.feeLimit) {
+        return {
+            computeUnitPrice: BigInt(SOL_COMPUTE_UNIT_PRICE),
+            computeUnitLimit: SOL_COMPUTE_UNIT_LIMIT,
+        };
+    }
+
+    const computeUnitPrice = new BigNumber(estimatedFee.feePerUnit);
+    const computeUnitLimit = new BigNumber(estimatedFee.feeLimit);
+
+    if (
+        !computeUnitPrice.isFinite() ||
+        computeUnitPrice.isNegative() ||
+        computeUnitPrice.gt('18446744073709551615') ||
+        !computeUnitLimit.isInteger() ||
+        computeUnitLimit.lte(0) ||
+        computeUnitLimit.gt(0xffff_ffff)
+    ) {
+        return undefined;
+    }
+
+    return {
+        // The wire price is an unsigned integer in micro-lamports; round up without losing precision.
+        computeUnitPrice: BigInt(computeUnitPrice.toFixed(0, BigNumber.ROUND_CEIL)),
+        computeUnitLimit: computeUnitLimit.toNumber(),
+    };
+};
 
 export const toLamports = (amount: string) => {
     const bAmount = new BigNumber(amount || '0');
