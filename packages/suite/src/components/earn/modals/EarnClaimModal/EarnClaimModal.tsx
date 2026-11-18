@@ -4,13 +4,11 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
+import { formatStakingAmount, useStakingAccountPosition } from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    getStakingDataForNetwork,
-    selectAreFeesLoading,
-    selectHasRunningDiscovery,
-} from '@suite-common/wallet-core';
+import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon, WarningIcon } from '@trezor/icons';
@@ -65,7 +63,17 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
 
-    const { claimableAmount = '0', restakedReward = '0' } = getStakingDataForNetwork(account) ?? {};
+    // Ethereum and Solana claim the unstaked principal, Cardano its rewards.
+    const { totals } = useStakingAccountPosition(account.key);
+    const claimableAmount = formatStakingAmount({
+        amount: totals.withdrawable,
+        networkSymbol: account.symbol,
+    });
+    const rewardsAmount = formatStakingAmount({
+        amount: totals.rewards,
+        networkSymbol: account.symbol,
+    });
+    const claimAmount = isCardanoNetworkType ? rewardsAmount : claimableAmount;
 
     const isFormInputsValid = !isCardanoNetworkType
         ? formIsValid && hasValues
@@ -94,7 +102,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
         isCardanoNetworkType &&
         (isCardanoWithdrawalBalanceInsufficient || isCardanoFeeGreaterThanRewards);
     const shouldShowCardanoClaimRewardsCard =
-        isCardanoNetworkType && !!restakedReward && restakedReward !== '0';
+        isCardanoNetworkType && isPositiveBalance(rewardsAmount);
 
     useEffect(() => {
         if (!isCardanoNetworkType) return;
@@ -103,8 +111,8 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
 
     // other logic
     useEffect(() => {
-        onClaimChange(claimableAmount);
-    }, [onClaimChange, claimableAmount]);
+        onClaimChange(claimAmount);
+    }, [onClaimChange, claimAmount]);
 
     const onClaimClick = () => {
         analytics.report({
@@ -232,7 +240,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                                     <Paragraph typographyStyle="body-md-strong">
                                                         <FormattedCryptoAmount
                                                             data-testid="@modal/claim/rewards-amount"
-                                                            value={restakedReward}
+                                                            value={rewardsAmount}
                                                             networkSymbol={account.symbol}
                                                         />
                                                     </Paragraph>
@@ -244,7 +252,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                                         typographyStyle="body-sm"
                                                     >
                                                         <BaseCurrencyValue
-                                                            amount={restakedReward}
+                                                            amount={rewardsAmount}
                                                             symbol={account.symbol}
                                                             showApproximationIndicator
                                                         />

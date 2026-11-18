@@ -14,13 +14,13 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import {
     TronResourceBreakdownRow,
     type TronResourceBreakdownRowProps,
 } from './TronResourceBreakdownRow';
-import { useTronFirmwareUpgradeModal } from './hooks/useTronFirmwareUpgradeModal';
 import { useTronStakingOperation } from './hooks/useTronStakingOperation';
 
 interface TronResourceModalProps {

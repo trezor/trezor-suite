@@ -1,8 +1,11 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import {
+    selectIsStakingAccountActive,
+    useRefreshStakingProductInfo,
+} from '@suite-common/earn-staking';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -27,7 +30,10 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
     const stakeContextValues = useStakeForm({ account });
     const { isBelowTablet } = useLayoutSize();
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
+    // The Cardano delegation composes with the cached pool list, so it is at most five minutes old.
+    useRefreshStakingProductInfo();
+
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
 
     const onCancelClick = () => {

@@ -3,6 +3,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { openModal } from '@suite/modal';
 import { deviceInitialState } from '@suite-common/device';
+import { mockStakingQueryClient } from '@suite-common/earn-staking/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -114,6 +115,7 @@ const createStakeFlow = () => {
     const extra: SignTransactionThunkDeps = {
         services: {
             analytics: mockDesktopAnalytics(),
+            queryClient: mockStakingQueryClient(),
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),

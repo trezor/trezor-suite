@@ -9,10 +9,12 @@ import {
 import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
 import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type StakingRootState } from '@suite-common/earn-staking';
 import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import { type QueryClientDep } from '@suite-common/react-query';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -64,9 +66,11 @@ import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
 type ComposeTransactionThunkState = BlockchainRootState &
     StakeRootState &
+    StakingRootState &
     stakeFormSolanaActions.ComposeTransactionThunkState;
 
-type ComposeTransactionThunkDeps = stakeFormSolanaActions.ComposeTransactionThunkDeps;
+type ComposeTransactionThunkDeps = stakeFormSolanaActions.ComposeTransactionThunkDeps &
+    WithServices<QueryClientDep>;
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
@@ -285,10 +289,11 @@ export type SignTransactionThunkState = DeviceRootState &
     MevProtectionRootState &
     ReplaceTransactionThunkState &
     StakeRootState &
+    StakingRootState &
     SyncAccountsWithBlockchainThunkState &
     WalletSettingsRootState;
 
-export type SignTransactionThunkDeps = PushTransactionThunkDeps;
+export type SignTransactionThunkDeps = PushTransactionThunkDeps & WithServices<QueryClientDep>;
 
 export type SignTransactionThunkParams = {
     accountKey: AccountKey;

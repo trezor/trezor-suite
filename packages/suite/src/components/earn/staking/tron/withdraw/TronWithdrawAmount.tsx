@@ -1,17 +1,17 @@
 import { Translation } from '@suite/intl';
-import { getTronWithdrawableBalance } from '@suite-common/wallet-core';
 import { Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useTronWithdrawableAmount } from '#src/hooks/earn/useTronWithdrawableAmount';
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
 
 export const TronWithdrawAmount = () => {
     const { account } = useTronStakeContext();
-    const amount = getTronWithdrawableBalance(account);
+    const amount = useTronWithdrawableAmount(account);
 
     return (
         <Card paddingType="none">
