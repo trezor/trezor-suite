@@ -74,6 +74,12 @@ const INVALID_FEE_RESULT: PrepareStakeSolTxResponse = {
     errorMessage: 'Invalid Solana staking fee estimate.',
 };
 
+class NoClaimableStakeError extends Error {
+    constructor() {
+        super('No stake is currently available to claim.');
+    }
+}
+
 export const getSolanaStakingData = async (
     rpc: RpcMainnet<SolanaRpcApiMainnet> | Rpc<SolanaRpcApiMainnet>,
     descriptor: string,
@@ -381,8 +387,7 @@ export const claim = async ({
                 stakeAccountState(acc.data, epoch) === StakeState.Deactivated,
         );
 
-        if (deactivatedStakeAccounts.length === 0)
-            throw new Error('Nothing to claim while claiming');
+        if (deactivatedStakeAccounts.length === 0) throw new NoClaimableStakeError();
 
         let transactionMessage = await baseTx(connection, sender, params);
 
@@ -550,6 +555,13 @@ export const prepareClaimSolTx = async ({
             solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
+        if (e instanceof Error && e.cause instanceof NoClaimableStakeError) {
+            return {
+                success: false,
+                errorCode: 'NO_CLAIMABLE_STAKE',
+                errorMessage: e.cause.message,
+            };
+        }
         console.error(e);
 
         return {

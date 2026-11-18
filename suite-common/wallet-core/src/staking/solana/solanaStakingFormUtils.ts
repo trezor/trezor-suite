@@ -204,6 +204,7 @@ export const prepareSolanaStakeTxData = async ({
 const PREPARATION_ERROR_MESSAGES = {
     INSUFFICIENT_ACTIVE_STAKE: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
     INVALID_FEE: 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID',
+    NO_CLAIMABLE_STAKE: 'TR_STAKE_SOL_NOTHING_TO_CLAIM',
     UNKNOWN: 'TR_STAKE_TX_PREPARATION_FAILED',
 } as const;
 
@@ -224,6 +225,11 @@ const buildPreparationFailedLevels = (
 export const hasStakedBalanceChangedError = (levels?: PrecomposedLevels) =>
     Object.values(levels ?? {}).some(
         level => level.type === 'error' && level.error === 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+    );
+
+export const hasNoClaimableStakeError = (levels?: PrecomposedLevels) =>
+    Object.values(levels ?? {}).some(
+        level => level.type === 'error' && level.error === 'TR_STAKE_SOL_NOTHING_TO_CLAIM',
     );
 
 type ComposeSolanaStakingTransactionParams = {
@@ -296,7 +302,10 @@ export const composeSolanaStakingTransaction = async ({
             return applySolanaTxMeta(composed, txDataWithFee.solanaTxMeta);
         }
 
-        if (txDataWithFee?.errorCode === 'INVALID_FEE') {
+        if (
+            txDataWithFee?.errorCode === 'INVALID_FEE' ||
+            txDataWithFee?.errorCode === 'NO_CLAIMABLE_STAKE'
+        ) {
             return buildPreparationFailedLevels(predefinedLevels, txDataWithFee.errorCode);
         }
     }

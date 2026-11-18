@@ -11,6 +11,7 @@ import {
     signEthereumStakingTransactionThunk,
 } from './ethereumStakingThunks';
 import {
+    type SignSolanaStakingTransactionThunkDeps,
     type SignSolanaStakingTransactionThunkState,
     signSolanaStakingTransactionThunk,
 } from './solanaStakingThunks';
@@ -23,6 +24,8 @@ export type SignStakeTransactionThunkState = AccountsRootState &
     SignEthereumStakingTransactionThunkState &
     SignSolanaStakingTransactionThunkState;
 
+export type SignStakeTransactionThunkDeps = SignSolanaStakingTransactionThunkDeps;
+
 export const signStakeTransactionThunk = createThunk<
     void,
     {
@@ -33,6 +36,7 @@ export const signStakeTransactionThunk = createThunk<
     {
         rejectValue: SignStakeTransactionRejectValue;
         state: SignStakeTransactionThunkState;
+        extra: SignStakeTransactionThunkDeps;
     }
 >(`${EARN_MODULE_PREFIX}/${LOG_PREFIX}`, async (args, thunkApi) => {
     const { accountKey } = args;

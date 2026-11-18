@@ -34,6 +34,7 @@ import {
     type WalletSettingsRootState,
     blockchainActions,
     feesReducer,
+    fetchAndUpdateAccountThunk,
     initBlockchainThunk,
     initialWalletSettingsState,
     onBlockMinedThunk,
@@ -48,6 +49,7 @@ import {
     stellarContractTokensInitialState,
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
+import { mockSolanaStakingAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
@@ -167,6 +169,28 @@ const mockStore = (preloadedState: State) =>
 describe('Blockchain Actions', () => {
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    it('refreshes Solana staking accounts even when the epoch and wallet history have not changed', async () => {
+        const account = mockSolanaStakingAccount('deactivated');
+        const store = mockStore(getInitialState({ accounts: [account] }));
+        testMocks.setTrezorConnectFixtures({
+            success: true,
+            payload: { ...account, misc: { ...account.misc, solStakingAccounts: [] } },
+        });
+
+        await store.dispatch(
+            fetchAndUpdateAccountThunk({ accountKey: account.key, forceFullRefresh: true }),
+        );
+
+        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(1);
+        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ details: 'txs' }),
+        );
+        expect(store.getState().wallet.accounts[0]).toMatchObject({
+            networkType: 'solana',
+            misc: { solStakingAccounts: [] },
+        });
     });
 
     fixtures.init.forEach(f => {

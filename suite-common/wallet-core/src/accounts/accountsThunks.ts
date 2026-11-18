@@ -165,6 +165,7 @@ export const reportAccountInfoThunk = createThunk<
 // as we usually want to update all accounts for a single coin at once
 type FetchAndUpdateAccountThunkParams = {
     accountKey: AccountKey;
+    forceFullRefresh?: boolean;
 };
 
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
@@ -184,7 +185,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
     { state: FetchAndUpdateAccountThunkState; extra: FetchAndUpdateAccountThunkDeps }
 >(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }, { dispatch, getState }) => {
+    async ({ accountKey, forceFullRefresh }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -211,27 +212,34 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 ? selectGapLimit(getState(), account.symbol)
                 : undefined;
 
-        const basic = await TrezorConnect.getAccountInfo({
-            coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
-            descriptor: account.descriptor,
-            details: getRefreshDetails(account),
-            tokenAccountsPubKeys,
-            stellarContractTokens,
-            protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
-            privatePending,
-            gap,
-        });
+        // When staking preparation detects a balance change, the Solana txids probe cannot confirm
+        // it because it omits staking accounts.
+        const basic = forceFullRefresh
+            ? undefined
+            : await TrezorConnect.getAccountInfo({
+                  coin: asCoinSymbol(account.symbol),
+                  identity: tryGetAccountIdentity(account),
+                  descriptor: account.descriptor,
+                  details: getRefreshDetails(account),
+                  tokenAccountsPubKeys,
+                  stellarContractTokens,
+                  protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+                  privatePending,
+                  gap,
+              });
 
-        if (!basic.success) return;
+        if (basic && !basic.success) return;
 
-        const accountOutdated = isAccountOutdated(account, basic.payload);
         const accountTransactions = selectTransactions(getState());
         const accountTxs = getAccountTransactions(account.key, accountTransactions);
 
         // stop here if account is not outdated and there are no pending transactions
 
-        if (!accountOutdated && !accountTxs.some(isPending)) {
+        if (
+            basic?.success &&
+            !isAccountOutdated(account, basic.payload) &&
+            !accountTxs.some(isPending)
+        ) {
             // refreshed, nothing changed - restart the throttle window (old code bumped account.ts)
             dispatch(accountRefreshed(accountKey));
 

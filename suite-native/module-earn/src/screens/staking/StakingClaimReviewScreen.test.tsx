@@ -1,5 +1,8 @@
 import { type PropsWithChildren, type ReactNode } from 'react';
 
+import { combineReducers } from '@reduxjs/toolkit';
+
+import { stakingActions, stakingReducer } from '@suite-common/earn-staking';
 import { mockStakingState } from '@suite-common/earn-staking/mocks';
 import {
     type StakingOperation,
@@ -17,7 +20,14 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    act,
+    createLightStore,
+    createStaticReducer,
+    createStoreFromPreloadedState,
+    fireEvent,
+    renderWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { StakingClaimReviewScreen } from './StakingClaimReviewScreen';
 import {
@@ -95,11 +105,17 @@ const renderClaim = (operations: StakingOperation[] = ['stake', 'unstake', 'with
         deviceState: selectedDevice.state?.staticSessionId,
     });
 
-    return renderWithStoreProvider(<StakingClaimReviewScreen />, {
-        services,
+    const baseState = createStoreFromPreloadedState().getState();
+    const store = createLightStore({
+        reducer: {
+            discreetMode: createStaticReducer(baseState.discreetMode),
+            locale: createStaticReducer(baseState.locale),
+            device: createStaticReducer({ devices: [selectedDevice], selectedDevice }),
+            messageSystem: createStaticReducer(messageSystemInitialState),
+            earn: combineReducers({ staking: stakingReducer }),
+            wallet: createStaticReducer({ ...baseState.wallet, accounts: [mockAccount] }),
+        },
         preloadedState: {
-            device: { devices: [selectedDevice], selectedDevice },
-            messageSystem: messageSystemInitialState,
             earn: {
                 staking: mockStakingState({
                     platform: 'mobile',
@@ -125,11 +141,14 @@ const renderClaim = (operations: StakingOperation[] = ['stake', 'unstake', 'with
                     },
                 }),
             },
-            wallet: {
-                accounts: [mockAccount],
-            },
         },
     });
+
+    const view = renderWithStoreProvider(<StakingClaimReviewScreen />, {
+        services: { ...services, store },
+    });
+
+    return { store, view };
 };
 
 const createFeeState = (): ReturnType<typeof useComposeEarnFees> => ({
@@ -153,7 +172,7 @@ describe('StakingClaimReviewScreen fee readiness', () => {
         'allows a %s claim below the staking reserve when the transaction fee is ready',
         async symbol => {
             mockSymbol = symbol;
-            const view = await renderClaim();
+            const view = await renderClaim().view;
             const button = view.getByText(
                 getTranslation('earn.claimReviewScreen.reviewAndSignButton'),
             );
@@ -174,7 +193,7 @@ describe('StakingClaimReviewScreen fee readiness', () => {
                 ...createFeeState(),
                 ...feeState,
             });
-            const view = await renderClaim();
+            const view = await renderClaim().view;
 
             expect(
                 view.getByText(getTranslation('earn.claimReviewScreen.reviewAndSignButton')),
@@ -183,8 +202,34 @@ describe('StakingClaimReviewScreen fee readiness', () => {
     );
 
     it('blocks a claim while the position does not offer the withdrawal', async () => {
-        const view = await renderClaim(['stake', 'unstake']);
+        const view = await renderClaim(['stake', 'unstake']).view;
 
+        expect(
+            view.getByText(getTranslation('earn.claimReviewScreen.reviewAndSignButton')),
+        ).toBeDisabled();
+    });
+
+    it('explains why a Solana claim cannot continue after the balance is refreshed to zero', async () => {
+        mockSymbol = 'sol';
+        const { store, view: rendered } = renderClaim();
+        const view = await rendered;
+        expect(
+            view.getByText(getTranslation('earn.claimReviewScreen.reviewAndSignButton')),
+        ).toBeEnabled();
+
+        await act(() => {
+            store.dispatch(
+                stakingActions.positionsSynced({ accountKey: mockAccount.key, positions: [] }),
+            );
+        });
+
+        expect(
+            view.getByText(
+                getTranslation(
+                    'transactionManagement.precomposedTransaction.errors.solanaStakingNothingToClaim',
+                ),
+            ),
+        ).toBeVisible();
         expect(
             view.getByText(getTranslation('earn.claimReviewScreen.reviewAndSignButton')),
         ).toBeDisabled();

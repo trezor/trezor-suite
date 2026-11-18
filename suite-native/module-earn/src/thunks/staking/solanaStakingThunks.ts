@@ -1,10 +1,13 @@
 import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
+    type FetchAndUpdateAccountThunkDeps,
+    type FetchAndUpdateAccountThunkState,
     type ResolveSolanaStakingContextState,
     WALLET_SDK_SOURCE_MOBILE,
     type WalletSettingsRootState,
     applySolanaStakingSignature,
+    fetchAndUpdateAccountThunk,
     isEarnSigningCancelled,
     prepareSolanaStakingSignContext,
     selectAddressDisplayType,
@@ -28,9 +31,11 @@ const SIGN_LOG_PREFIX = 'signSolanaStakingTransactionThunk';
 
 export type SignSolanaStakingTransactionThunkState = ResolveSolanaStakingContextState &
     DeviceRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    FetchAndUpdateAccountThunkState;
 
-type SignSolanaStakingTransactionThunkDeps = WithServices<NativeAnalyticsDep>;
+export type SignSolanaStakingTransactionThunkDeps = WithServices<NativeAnalyticsDep> &
+    FetchAndUpdateAccountThunkDeps;
 
 export const signSolanaStakingTransactionThunk = createThunk<
     void,
@@ -57,7 +62,18 @@ export const signSolanaStakingTransactionThunk = createThunk<
                 precomposedTransaction,
                 source: WALLET_SDK_SOURCE_MOBILE,
             });
-            if (!prepared.ok) return rejectWithValue(prepared.error);
+            if (!prepared.ok) {
+                if (prepared.preparationErrorCode === 'NO_CLAIMABLE_STAKE') {
+                    await dispatch(
+                        fetchAndUpdateAccountThunk({ accountKey, forceFullRefresh: true }),
+                    );
+                }
+
+                return rejectWithValue({
+                    error: 'stake-live-state-invalid',
+                    message: prepared.error.message ?? '',
+                });
+            }
 
             const { account, txData, formState } = prepared.context;
 

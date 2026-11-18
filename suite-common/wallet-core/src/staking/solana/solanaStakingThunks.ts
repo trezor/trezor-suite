@@ -12,7 +12,11 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getSuiteVersion } from '@trezor/env-utils';
 import solana from '@trezor/network-solana/runtime';
-import type { Fee, PrepareStakeSolTxResponse } from '@trezor/network-solana/types';
+import type {
+    Fee,
+    PrepareStakeSolTxErrorCode,
+    PrepareStakeSolTxResponse,
+} from '@trezor/network-solana/types';
 import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
@@ -34,6 +38,7 @@ import { type SignTransactionError } from '../../send/sendFormTypes';
 import { STAKE_MODULE_PREFIX } from '../stakingActions';
 import {
     composeSolanaStakingTransaction,
+    hasNoClaimableStakeError,
     hasStakedBalanceChangedError,
     prepareSolanaStakeTxData,
 } from './solanaStakingFormUtils';
@@ -172,7 +177,13 @@ export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
         });
 
         if (hasStakedBalanceChangedError(composedLevels)) {
-            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+            dispatch(
+                fetchAndUpdateAccountThunk({ accountKey: account.key, forceFullRefresh: true }),
+            );
+        }
+
+        if (hasNoClaimableStakeError(composedLevels)) {
+            await dispatch(fetchAndUpdateAccountThunk({ accountKey, forceFullRefresh: true }));
         }
 
         return composedLevels;
@@ -185,7 +196,11 @@ export type PreparedSolanaStakingSignContext = {
     formState: StakeFormState;
 };
 
-type PrepareSignFailure = { ok: false; error: SignTransactionError };
+type PrepareSignFailure = {
+    ok: false;
+    error: SignTransactionError;
+    preparationErrorCode?: Exclude<PrepareStakeSolTxErrorCode, 'UNKNOWN'>;
+};
 
 const signPrepareFailed = (message?: string): PrepareSignFailure => {
     console.error(`prepareSolanaStakingSignContext: ${message}`);
@@ -252,6 +267,14 @@ export const prepareSolanaStakingSignContext = async (
     });
 
     if (!txData?.success) {
+        if (txData && txData.errorCode !== 'UNKNOWN') {
+            return {
+                ok: false,
+                error: { error: 'sign-transaction-failed', message: txData.errorMessage },
+                preparationErrorCode: txData.errorCode,
+            };
+        }
+
         return signPrepareFailed(txData?.errorMessage);
     }
 
