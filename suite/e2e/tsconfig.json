@@ -78,10 +78,31 @@
         { "path": "../../packages/e2e-utils" },
         { "path": "../../packages/eslint" },
         {
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+        },
+        {
+            "path": "../../networks/cardano/network-cardano-suite-common"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         {
+            "path": "../../networks/ripple/network-ripple-suite-common"
+        },
+        {
             "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/solana/network-solana-suite-common"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar-suite-common"
+        },
+        {
+            "path": "../../networks/tron/network-tron-suite-common"
         },
         { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },

@@ -1,8 +1,7 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
-import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-common-types';
-
 import { createNetworkModuleRepository } from './NetworkModuleRepository';
+import type { StaticNetworkModulesDep } from './NetworkModules';
 import type { NetworksServices } from './NetworksServices';
 import { createAddressValidator } from './createAddressValidator';
 import { createGetAccountSyncInterval } from './createGetAccountSyncInterval';
@@ -14,15 +13,15 @@ import { createGetNetworkConfigs } from './createGetNetworkConfigs';
 import { createIsWrappedNativeToken } from './createIsWrappedNativeToken';
 import { createLoadNetworkModules } from './createLoadNetworkModules';
 import { createNetworkIcon } from './createNetworkIcon';
-import { createNetworkModulesCompositionRoot } from './createNetworkModulesCompositionRoot';
 
-export type NetworksCompositionRootDeps = NetworkSuiteCommonModuleApi & { dispatch: Dispatch };
+export type NetworksCompositionRootDeps = StaticNetworkModulesDep & { dispatch: Dispatch };
 
 export const createNetworksCompositionRoot = (
     deps: NetworksCompositionRootDeps,
 ): NetworksServices => {
-    const networkModules = createNetworkModulesCompositionRoot(deps);
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const networkModuleRepository = createNetworkModuleRepository({
+        networkModules: deps.networkModules,
+    });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const getNetworkConfigs = createGetNetworkConfigs({
         getNetworkConfig,

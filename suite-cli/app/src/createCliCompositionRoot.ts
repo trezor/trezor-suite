@@ -15,10 +15,16 @@ import {
     createGetNetworkConfig,
     createIsWrappedNativeToken,
     createNetworkModuleRepository,
-    createNetworkModulesCompositionRoot,
 } from '@suite-common/networks';
 import type { LoggerDep } from '@trezor/logger';
+import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-common-types';
+import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
+import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
+import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
+import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
 
 import { type CliAppDep, createCliApp } from './createCliApp';
 
@@ -27,8 +33,17 @@ export type CliCompositionRootDeps = NetworkSuiteCommonModuleApi & LoggerDep;
 export type CliCompositionRoot = CliAppDep;
 
 export const createCliCompositionRoot = (deps: CliCompositionRootDeps): CliCompositionRoot => {
-    const networkModules = createNetworkModulesCompositionRoot(deps);
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const networkModuleRepository = createNetworkModuleRepository({
+        networkModules: [
+            createBitcoinSuiteCommonNetworkModule(deps),
+            createEthereumSuiteCommonNetworkModule(deps),
+            createRippleSuiteCommonNetworkModule(),
+            createCardanoSuiteCommonNetworkModule(deps),
+            createSolanaSuiteCommonNetworkModule(),
+            createStellarSuiteCommonNetworkModule(),
+            createTronSuiteCommonNetworkModule(),
+        ],
+    });
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const getNetworkByCoingeckoId = createGetNetworkByCoingeckoId({
         networkModuleRepository,

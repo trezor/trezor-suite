@@ -94,7 +94,6 @@ export {
     type SymbolNamedAddressResolver,
 } from './createGetNamedAddressSupport';
 
-export { createNetworkModulesCompositionRoot } from './createNetworkModulesCompositionRoot';
 export type { NetworksServices, NetworksDep } from './NetworksServices';
 
 export type { Network, Networks } from './Network';

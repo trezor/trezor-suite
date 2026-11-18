@@ -1,23 +1,34 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
+        { "path": "../../suite-common/networks" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/logger" },
         {
-            "path": "../../suite-common/icons"
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },
         {
-            "path": "../../suite-common/networks"
+            "path": "../../networks/cardano/network-cardano-suite-common"
         },
         {
-            "path": "../../packages/connect"
-        },
-        {
-            "path": "../../packages/logger"
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
+        {
+            "path": "../../networks/ripple/network-ripple-suite-common"
+        },
+        {
+            "path": "../../networks/solana/network-solana-suite-common"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar-suite-common"
+        },
+        {
+            "path": "../../networks/tron/network-tron-suite-common"
         }
     ]
 }

@@ -29,7 +29,7 @@ const lintRestrictedImports = async ({ code, filename = nativeFilename, instance
 test('allows shared Suite services in the CLI app composition root', async () => {
     assert.deepEqual(
         await lintRestrictedImports({
-            code: "import { createNetworkModulesCompositionRoot } from '@suite-common/networks';",
+            code: "import { createNetworksCompositionRoot } from '@suite-common/networks';",
             filename: `${repositoryRoot}suite-cli/app/src/createCliCompositionRoot.ts`,
         }),
         [],
@@ -38,7 +38,7 @@ test('allows shared Suite services in the CLI app composition root', async () =>
 
 test('keeps shared Suite services private outside application packages', async () => {
     const errors = await lintRestrictedImports({
-        code: "import { createNetworkModulesCompositionRoot } from '@suite-common/networks';",
+        code: "import { createNetworksCompositionRoot } from '@suite-common/networks';",
         filename: `${repositoryRoot}packages/example/src/index.ts`,
     });
 

@@ -4,7 +4,6 @@ import {
     createIsWrappedNativeToken,
     createNetworkIcon,
     createNetworkModuleRepository,
-    createNetworkModulesCompositionRoot,
 } from '@suite-common/networks';
 import { mockNetworkMetadata } from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -13,13 +12,19 @@ import { act, fireEvent, renderWithStoreProvider, waitFor } from '@suite-native/
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { mock } from '@trezor/dependency-injection';
 import type { GetTokenLogoIdentifiers } from '@trezor/network-assets-types';
+import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 import { createDeferred } from '@trezor/utils';
 
 import { TokenIcon } from './TokenIcon';
 
 const ethSymbol = asNetworkSymbol('eth');
-const networkModules = createNetworkModulesCompositionRoot({ getTrezorConnect: mock() });
-const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const networkModuleRepository = createNetworkModuleRepository({
+    networkModules: [
+        createBitcoinSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
+        createEthereumSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
+    ],
+});
 const ethereumModule = networkModuleRepository.get(ethSymbol);
 const getTokenLogoIdentifiers = mock<GetTokenLogoIdentifiers>();
 ethereumModule.icon = { ...ethereumModule.icon, getTokenLogoIdentifiers };

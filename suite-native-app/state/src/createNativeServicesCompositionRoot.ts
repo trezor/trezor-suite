@@ -28,6 +28,13 @@ import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sy
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
+import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
+import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
+import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
+import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
+import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
@@ -86,7 +93,15 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
     const networks = createNetworksCompositionRoot({
-        getTrezorConnect: deps.getTrezorConnect,
+        networkModules: [
+            createBitcoinSuiteCommonNetworkModule(deps),
+            createEthereumSuiteCommonNetworkModule(deps),
+            createRippleSuiteCommonNetworkModule(),
+            createCardanoSuiteCommonNetworkModule(deps),
+            createSolanaSuiteCommonNetworkModule(),
+            createStellarSuiteCommonNetworkModule(),
+            createTronSuiteCommonNetworkModule(),
+        ],
         dispatch: deps.dispatch,
     });
 
