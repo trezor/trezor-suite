@@ -11,9 +11,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { LightningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
+
 import { TronResourceModal } from '../TronResourceModal';
 import { TronResourceRow } from './TronResourceRow';
-import { useTronFirmwareUpgradeModal } from '../hooks/useTronFirmwareUpgradeModal';
 import { useTronStakingOperation } from '../hooks/useTronStakingOperation';
 
 interface TronResourcesCardProps {

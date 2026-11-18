@@ -1,7 +1,7 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
+import { selectIsStakingAccountActive } from '@suite-common/earn-staking';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
@@ -16,7 +16,7 @@ type StakeRegistrationDepositCardProps = {
 export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepositCardProps) => {
     const { symbol, key } = account;
 
-    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, key ?? ''));
+    const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, key));
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
 
     return (
