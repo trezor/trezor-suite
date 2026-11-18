@@ -17,7 +17,7 @@ import { ReferralLinkCard } from './ReferralLinkCard';
 import { ReferralLoading } from './ReferralLoading';
 import { ReferralRewards } from './ReferralRewards';
 import { ReferralRewardsKeyMissing } from './ReferralRewardsKeyMissing';
-import { ANNUAL_REWARD_LIMIT, REWARD_WAITING_PERIOD_DAYS } from './referralConstants';
+import { ANNUAL_REWARD_LIMIT } from './referralConstants';
 import { useReferralActions } from './useReferralActions';
 
 type ReferralJoinedContentProps = {
@@ -78,7 +78,6 @@ export const ReferralJoinedContent = ({
                     fiatCurrency={program.fiatCurrency}
                     annualRewardLimit={ANNUAL_REWARD_LIMIT}
                     annualReferralLimit={redemptionLimit}
-                    rewardWaitingPeriodDays={REWARD_WAITING_PERIOD_DAYS}
                 />
             )}
             {(accountState.status === 'idle' || accountState.status === 'loading') && (

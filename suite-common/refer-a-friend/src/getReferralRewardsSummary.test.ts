@@ -14,8 +14,14 @@ const createVoucher = (status: ReferralVoucherStatus, amount: number): ReferralV
 
 describe(getReferralRewardsSummary.name, () => {
     it('returns zeros for no vouchers', () => {
-        expect(getReferralRewardsSummary([])).toEqual({ totalEarned: 0, availableVoucherCount: 0 });
-        expect(getReferralRewardsSummary()).toEqual({ totalEarned: 0, availableVoucherCount: 0 });
+        const emptySummary = {
+            totalEarned: 0,
+            availableVoucherCount: 0,
+            rewardWaitingPeriodDays: null,
+        };
+
+        expect(getReferralRewardsSummary([])).toEqual(emptySummary);
+        expect(getReferralRewardsSummary()).toEqual(emptySummary);
     });
 
     it('sums amounts of earned vouchers and counts available ones', () => {
@@ -31,6 +37,16 @@ describe(getReferralRewardsSummary.name, () => {
         expect(getReferralRewardsSummary(vouchers)).toEqual({
             totalEarned: 60,
             availableVoucherCount: 2,
+            rewardWaitingPeriodDays: 30,
         });
+    });
+
+    it('takes the longest waiting period of all vouchers, rounded up to days', () => {
+        const vouchers = [
+            createVoucher('available', 20),
+            { ...createVoucher('pending', 20), readyAt: '2026-10-25T16:00:00Z' },
+        ];
+
+        expect(getReferralRewardsSummary(vouchers).rewardWaitingPeriodDays).toBe(41);
     });
 });
