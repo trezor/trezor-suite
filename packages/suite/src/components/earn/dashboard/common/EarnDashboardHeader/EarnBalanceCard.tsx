@@ -47,6 +47,7 @@ export const EarnBalanceCard = () => {
                 fiatValue={fiatValue}
                 isApproximate={isFiatTotalIncomplete}
                 fallback={<Translation id="TR_EARN_N_A" />}
+                data-testid="@earn/dashboard/total-balance"
             />
             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                 <Translation

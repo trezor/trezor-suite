@@ -1,4 +1,3 @@
-packages/suite/src/components/earn/dashboard/staking/hooks/useStakingAccountsVisibility.tsx	bail	Unexpected terminal kind `ternary` for logical test block
 packages/suite/src/components/earn/modals/EarnClaimModal/EarnClaimModal.tsx	opt-out	'use no memo'
 packages/suite/src/components/earn/modals/StakeModal/StakeForm/StakeButton.tsx	opt-out	'use no memo'
 packages/suite/src/components/earn/modals/StakeModal/StakeForm/StakeInputs.tsx	opt-out	'use no memo'
