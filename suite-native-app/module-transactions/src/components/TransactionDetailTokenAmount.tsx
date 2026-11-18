@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import { Text } from '@suite-native/atoms';
 import {
     ExactTokenAmountFormatter,
     SignValueFormatter,
@@ -16,7 +17,9 @@ type TransactionDetailTokenAmountProps = {
     tokenTransfer: TypedTokenTransfer;
 };
 
-const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
+const amountStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
+    // A row item does not shrink by default, so adjustsFontSizeToFit would never get a narrower width.
+    flexShrink: 1,
     extend: {
         condition: isFailedTx,
         style: {
@@ -33,8 +36,14 @@ export const TransactionDetailTokenAmount = ({
     const isFailedTx = transaction.type === 'failed';
     const signValue = getTransactionValueSign(tokenTransfer.type);
 
+    // One text run, so the sign shrinks along with the amount and stays aligned with it.
     return (
-        <>
+        <Text
+            variant="headline-md"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            style={applyStyle(amountStyle, { isFailedTx })}
+        >
             {!isFailedTx && (
                 <SignValueFormatter
                     color="contentPrimary"
@@ -42,18 +51,14 @@ export const TransactionDetailTokenAmount = ({
                     variant="headline-md"
                 />
             )}
-
             <ExactTokenAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 networkSymbol={transaction.symbol}
                 contractAddress={tokenTransfer.contract}
                 variant="headline-md"
                 color="contentPrimary"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                style={applyStyle(failedTxStyle, { isFailedTx })}
             />
-        </>
+        </Text>
     );
 };
 
@@ -79,7 +84,7 @@ export const TransactionDetailTokenFiatAmount = ({
             historicRate={historicRate}
             color="contentSecondary"
             useHistoricRate
-            style={applyStyle(failedTxStyle, { isFailedTx })}
+            style={applyStyle(amountStyle, { isFailedTx })}
         />
     );
 };
