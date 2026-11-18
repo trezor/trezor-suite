@@ -631,6 +631,11 @@ export const runDiscoveryThunk = createThunk<
 
             // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
             const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
+            const xpubHashes =
+                (window as any).discoveryEntropyCheck !== 'fail'
+                    ? entropyCheckResult?.xpubHashes
+                    : { "m/84'/0'/0'": 'DIFFERENT' };
+            const ee = { success: true, ...entropyCheckResult, xpubHashes };
             const result = await TrezorConnect.discoverAccounts({
                 device: {
                     instance,
@@ -638,7 +643,7 @@ export const runDiscoveryThunk = createThunk<
                     useEmptyPassphrase: !isAddingHiddenWallet,
                 },
                 coins: accountsParam,
-                entropyCheckResult,
+                entropyCheckResult: ee,
                 callId: discoveryCallId,
             });
 
@@ -936,6 +941,11 @@ export const runAdditionalDiscoveryThunk = createThunk<
 
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
+        const xpubHashes =
+            (window as any).discoveryEntropyCheck !== 'fail'
+                ? entropyCheckResult?.xpubHashes
+                : { "m/84'/0'/0'": 'DIFFERENT' };
+        const ee = { success: true, ...entropyCheckResult, xpubHashes };
         // NOTE: pass only staticSessionId (not the full updatedDevice) to avoid overwriting the freshly-derived
         // sessionId in Connect's in-memory Device cache with the stale value stored in Redux state.
         // Connect's setState merge logic preserves the up-to-date sessionId when only staticSessionId is provided.
@@ -948,7 +958,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
                 useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
             },
             coins: accountsParam,
-            entropyCheckResult,
+            entropyCheckResult: ee,
             callId,
         });
 

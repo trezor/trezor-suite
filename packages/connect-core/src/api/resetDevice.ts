@@ -122,6 +122,12 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         // and the device couldn't know which round is the last one.
         const finalXPubs = await getXPubs();
 
+        // DEBUG CODE
+        const windowOrGlobal: any = typeof window !== 'undefined' ? window : global;
+        if (windowOrGlobal.entropyCheck === 'fail') {
+            throw ERRORS.TypedError('Failure_EntropyCheck', 'this is SIMULATED ERROR');
+        }
+
         // Report the hashes before step 7, so that they reach Suite even if the call fails afterwards.
         sendCoreMessage(
             createUiEventMessage(UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK, {

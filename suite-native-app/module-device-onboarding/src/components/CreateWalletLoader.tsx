@@ -8,7 +8,7 @@ import { isDetoxTestBuild } from '@suite-native/config';
 import { useNativeStyles } from '@trezor/styles-native';
 
 const LOADER_HEIGHT = 4;
-export const LOADER_DURATION = 4000;
+export const LOADER_DURATION = 100;
 
 export const CreateWalletLoader = () => {
     const { utils } = useNativeStyles();
