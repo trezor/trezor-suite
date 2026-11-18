@@ -5,6 +5,7 @@ import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_EXCHANGE_FROM_ADDRESS,
+    TRADING_FEE_LEVEL_PRIORITY,
     TRADING_FORM_FEE_PER_UNIT,
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -322,13 +323,22 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                 account?.networkType === 'bitcoin' &&
                 !!btcSwapComposeTemplate;
 
-            if (typeof setMaxOutputId === 'number' && composed.max && !isBtcExchangeSwap) {
+            const maxAmount =
+                type === 'exchange'
+                    ? TRADING_FEE_LEVEL_PRIORITY.map(label => {
+                          const level = composedLevels[label];
+
+                          return level?.type === 'error' ? undefined : level?.max;
+                      }).find(Boolean)
+                    : composed.max;
+
+            if (typeof setMaxOutputId === 'number' && maxAmount && !isBtcExchangeSwap) {
                 const currentBN = new BigNumber(currentOutputAmount || '0');
-                const composedMaxBN = new BigNumber(composed.max);
+                const composedMaxBN = new BigNumber(maxAmount);
 
                 if (!currentBN.isEqualTo(composedMaxBN)) {
                     setShowReserveBanner(true);
-                    setValue(TRADING_FORM_OUTPUT_AMOUNT, composed.max, {
+                    setValue(TRADING_FORM_OUTPUT_AMOUNT, maxAmount, {
                         shouldValidate: true,
                         shouldDirty: true,
                     });
