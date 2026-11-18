@@ -13,9 +13,13 @@ import { type SuiteSyncDataRootState, initialSuiteSyncDataState } from '@suite-c
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type AccountsRootState,
+    type ExplorerState,
     type FiatRatesRootState,
     type SendRootState,
+    type TransactionsRootState,
     type WalletSettingsRootState,
+    explorerInitialState,
+    transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { type FeatureFlagsRootState, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { type LocaleSliceRootState, localeInitialState } from '@suite-native/intl';
@@ -42,6 +46,8 @@ const createBaseTradingPreloadedState = (): TradingTestPreloadedState => ({
     suiteSyncData: initialSuiteSyncDataState,
     wallet: {
         ...getWalletState({ tradeType: 'buy' }),
+        transactions: transactionsInitialState,
+        explorer: explorerInitialState,
     },
 });
 
@@ -57,7 +63,9 @@ export type TradingTestPreloadedState = NetworksRootState &
     AccountsRootState &
     WalletSettingsRootState &
     FiatRatesRootState &
-    SendRootState;
+    SendRootState &
+    TransactionsRootState &
+    ExplorerState;
 
 export const createTradingPreloadedState = ({
     overrides = {},

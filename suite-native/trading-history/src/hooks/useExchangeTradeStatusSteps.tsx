@@ -5,7 +5,6 @@ import {
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import {
     TradeStatusProviderLink,
     type TradeStatusStep,
@@ -13,6 +12,7 @@ import {
 } from '@suite-native/trading-atoms';
 import { type TradingRootState } from '@suite-native/trading-state';
 
+import { useOpenTradeTransaction } from './useOpenTradeTransaction';
 import {
     getExchangeTradeProgress,
     getStepState,
@@ -20,7 +20,6 @@ import {
 } from '../utils/tradeStatusUtils';
 
 export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) => {
-    const navigateToTransactionDetail = useNavigateToTransactionDetail();
     const progressId = getExchangeTradeProgress(trade.data.status);
     const provider = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, trade.data.exchange ?? '', trade.tradeType),
@@ -29,18 +28,15 @@ export const useExchangeTradeStatusSteps = (trade: TradingTransactionExchange) =
     const statusUrl = getTradeStatusUrl(trade) ?? '';
     const isDex = trade.data?.isDex ?? false;
 
+    const handleTxIdPress = useOpenTradeTransaction({
+        txid: trade.data.receiveTxHash,
+        sendAccountKey: trade.sendAccountKey,
+        receiveAccountKey: trade.receiveAccountKey,
+    });
+
     if (!progressId) {
         return undefined;
     }
-
-    const handleTxIdPress = () => {
-        if (trade.data.receiveTxHash && trade.sendAccountKey) {
-            navigateToTransactionDetail({
-                txid: trade.data.receiveTxHash,
-                accountKey: trade.sendAccountKey,
-            });
-        }
-    };
 
     const providerStatusLink = (
         <TradeStatusProviderLink
