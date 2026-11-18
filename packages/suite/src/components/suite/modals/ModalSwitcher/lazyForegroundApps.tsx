@@ -30,33 +30,37 @@ const loadFirmwareUpdate = () =>
 const FirmwareUpdate = lazy(() => loadFirmwareUpdate().then(m => ({ default: m.FirmwareUpdate })));
 
 const loadRecovery = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/recovery');
+    import(/* webpackChunkName: "modals-foreground" */ '#src/views/recovery/Recovery');
 const Recovery = lazy(() => loadRecovery().then(m => ({ default: m.Recovery })));
 
 const loadBridgeUnavailable = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge');
+    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge/BridgeUnavailable');
 const BridgeUnavailable = lazy(() =>
     loadBridgeUnavailable().then(m => ({ default: m.BridgeUnavailable })),
 );
 
 const loadBridgeDeprecated = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge-deprecated');
+    import(
+        /* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge-deprecated/BridgeDeprecated'
+    );
 const BridgeDeprecated = lazy(() =>
     loadBridgeDeprecated().then(m => ({ default: m.BridgeDeprecated })),
 );
 
 const loadBridgeRequested = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge-requested');
+    import(
+        /* webpackChunkName: "modals-foreground" */ '#src/views/suite/bridge-requested/BridgeRequested'
+    );
 const BridgeRequested = lazy(() =>
     loadBridgeRequested().then(m => ({ default: m.BridgeRequested })),
 );
 
 const loadUdevRules = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/udev');
+    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/udev/UdevRules');
 const UdevRules = lazy(() => loadUdevRules().then(m => ({ default: m.UdevRules })));
 
 const loadVersion = () =>
-    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/version');
+    import(/* webpackChunkName: "modals-foreground" */ '#src/views/suite/version/Version');
 const Version = lazy(() => loadVersion().then(m => ({ default: m.Version })));
 
 const loadMultiShareBackupModal = () =>
