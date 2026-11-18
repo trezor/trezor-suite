@@ -98,7 +98,7 @@
         "puppeteer-core": "^25.3.0",
         "tsx": "^4.21.0",
         "type-fest": "5.5.0",
-        "viem": "^2.57.2",
+        "viem": "^2.57.16",
         "xvfb-maybe": "^0.2.1",
         "zxing-wasm": "3.0.0"
     }
