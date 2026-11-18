@@ -25,10 +25,11 @@ import {
     useDexExchangeTxSimulation,
     useExchangeIssue,
 } from '@suite-common/trading';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Button, Card, Column, H2, Row, Text } from '@trezor/components';
+import { Banner, Button, Card, Column, H2, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { ArrowsClockwiseIcon } from '@trezor/icons';
+import { ArrowsClockwiseIcon, WarningCircleIcon } from '@trezor/icons';
 import { useAsyncClickHandler, useIsPastDeadline } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -68,7 +69,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
         signDataAndConfirm,
     } = useTradingExchangeTradeActions();
 
-    const { feeInfo, composeFormState, applySelectedFee } =
+    const { feeInfo, composeFormState, applySelectedFee, composableFeeLevels } =
         useTradingExchangeConfirmFees(sendAccount);
     const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
 
@@ -93,7 +94,10 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
     } = useDexExchangeTxSimulation(txSimulationParams);
     const { issue, isSimulationEnabled, isSimulation } = useExchangeIssue(txSimulationParams);
 
-    useExchangeIssueAnalytics({ issue, isSimulationLoading, isSimulation });
+    const isSelectedFeeUnaffordable = !!composableFeeLevels;
+    const visibleIssue = isSelectedFeeUnaffordable ? null : issue;
+
+    useExchangeIssueAnalytics({ issue: visibleIssue, isSimulationLoading, isSimulation });
 
     const selectedTrade = trade?.data ?? selectedQuote;
 
@@ -120,16 +124,19 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
     const { exchange, signData } = selectedTrade;
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
-    const networkFeeEdit = sendAccount
-        ? getTradingNetworkFeeEdit({
-              account: sendAccount,
-              feeInfo,
-              composeFormState,
-              onConfirm: applySelectedFee,
-              isTokenTransfer: !!composed?.token,
-              hasFixedFee: hasFixedPsbtFee(selectedTrade, sendAccount.networkType),
-          })
-        : undefined;
+    const shouldGoBackToTradeForm = !!visibleIssue || isSelectedFeeUnaffordable;
+
+    const networkFeeEdit =
+        sendAccount && composableFeeLevels?.length !== 0
+            ? getTradingNetworkFeeEdit({
+                  account: sendAccount,
+                  feeInfo,
+                  composeFormState,
+                  onConfirm: applySelectedFee,
+                  isTokenTransfer: !!composed?.token,
+                  hasFixedFee: hasFixedPsbtFee(selectedTrade, sendAccount.networkType),
+              })
+            : undefined;
 
     const simulatedReceiveAmount = getSimulatedReceiveAmount(
         simulationResult,
@@ -223,9 +230,30 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
                     />
                 )}
 
-                {issue && (
+                {isSelectedFeeUnaffordable && sendAccount && (
+                    <Banner
+                        icon={WarningCircleIcon}
+                        intent="critical"
+                        title={
+                            <Translation
+                                id="TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS"
+                                values={{
+                                    networkDisplaySymbol: getNetworkDisplaySymbol(
+                                        sendAccount.symbol,
+                                    ),
+                                }}
+                            />
+                        }
+                        description={
+                            <Translation id="TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC" />
+                        }
+                        data-testid="@trading/offer/not-enough-fee-banner"
+                    />
+                )}
+
+                {visibleIssue && (
                     <TradingOfferExchangeIssueBanner
-                        issue={issue}
+                        issue={visibleIssue}
                         isContinueDisabled={isConfirmDisabled || disabled}
                         isContinueLoading={isLoading || disabled}
                         onContinueAnywayClick={() => handleClick(() => onConfirmAndSendClick())}
@@ -248,7 +276,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
                     </Button>
                 )}
 
-                {!isProviderTransactionExpired && issue && (
+                {!isProviderTransactionExpired && shouldGoBackToTradeForm && (
                     <Button
                         data-testid="@trading/offer/back-to-trade-form"
                         intent="neutral"
@@ -261,7 +289,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
                     </Button>
                 )}
 
-                {!isProviderTransactionExpired && !issue && (
+                {!isProviderTransactionExpired && !shouldGoBackToTradeForm && (
                     <Button
                         data-testid="@trading/offer/confirm-on-trezor-and-send"
                         isLoading={isLoading || disabled}
