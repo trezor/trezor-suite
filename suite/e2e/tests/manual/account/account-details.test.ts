@@ -41,7 +41,7 @@ test.describe.skip('Account details', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Medium,
-                stream: TestStream.Wallet,
+                stream: TestStream.Network,
             }),
         },
         async () => {},

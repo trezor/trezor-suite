@@ -19,7 +19,7 @@ describe.skip('Manual', () => {
             ],
             category: TestCategory.Accounts,
             priority: TestPriority.Medium,
-            stream: TestStream.Wallet,
+            stream: TestStream.Network,
         },
         async () => {},
     );
