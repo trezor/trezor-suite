@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="990" viewBox="0 0 1600 990" role="img" aria-labelledby="title description">
+  <title id="title">How a network feature reaches the UI</title>
+  <desc id="description">A network family creates a network instance for a runtime configuration. The instance carries typed capabilities. A headless feature hook joins a capability with app state, and a default UI per platform renders from the hook. The app module renders the default UI, or an override for the family when the feature has one. The override is platform UI as well, never network code. The wallet menu, shared thunks, tests and WalletConnect use the same capability without any UI. Arrows point from a dependency to the code that uses it.</desc>
+  <style>
+ text { font-family: Inter, "Segoe UI", Arial, sans-serif; }
+ .pkg { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size:16px; font-weight:500; fill:#283443; }
+ .detail { font-size:16px; fill:#5e6977; }
+ .layer { font-size:19px; font-weight:650; letter-spacing:.3px; }
+ .layer-detail { font-size:16px; fill:#647080; }
+ .edge { font-size:14px; fill:#647080; }
+</style>
+  <defs>
+    <marker id="arrow-network" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#b89446" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+    <marker id="arrow-lego" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#649664" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+  </defs>
+  <rect width="1600" height="990" fill="#ffffff" />
+
+  <!-- Layer panels (left column) -->
+  <rect x="80" y="80" width="720" height="290" rx="20" fill="#fff7e6" stroke="#b89446" />
+  <rect x="80" y="440" width="720" height="290" rx="20" fill="#eef8ee" stroke="#649664" />
+  <rect x="80" y="800" width="720" height="130" rx="20" fill="#edf3ff" stroke="#6484b4" />
+
+  <!-- Layer labels -->
+  <rect x="80" y="39" width="34" height="25" rx="7" fill="#b89446" fill-opacity=".12" stroke="#b89446" stroke-opacity=".35" />
+  <text x="97" y="57" text-anchor="middle" fill="#b89446" font-size="12" font-weight="700">01</text>
+  <text x="130" y="60" class="layer" fill="#b89446">NETWORK</text>
+  <text x="250" y="59" class="layer-detail">Pure TypeScript · no React, no Redux, no @suite* imports</text>
+
+  <rect x="80" y="399" width="34" height="25" rx="7" fill="#649664" fill-opacity=".12" stroke="#649664" stroke-opacity=".35" />
+  <text x="97" y="417" text-anchor="middle" fill="#649664" font-size="12" font-weight="700">02</text>
+  <text x="130" y="420" class="layer" fill="#649664">LEGO</text>
+  <text x="205" y="419" class="layer-detail">One per feature</text>
+
+  <rect x="80" y="759" width="34" height="25" rx="7" fill="#6484b4" fill-opacity=".12" stroke="#6484b4" stroke-opacity=".35" />
+  <text x="97" y="777" text-anchor="middle" fill="#6484b4" font-size="12" font-weight="700">03</text>
+  <text x="130" y="780" class="layer" fill="#6484b4">APP</text>
+  <text x="190" y="779" class="layer-detail">Chooses what to render</text>
+
+  <!-- Vertical chain arrows -->
+  <path d="M 440 196 V 244" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-network)" />
+  <text x="456" y="226" class="edge">createNetwork(configuration)</text>
+  <path d="M 440 340 V 464" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-network)" />
+  <path d="M 440 556 V 604" fill="none" stroke="#649664" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-lego)" />
+  <path d="M 440 700 V 824" fill="none" stroke="#649664" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-lego)" />
+
+  <!-- Horizontal arrows to the right column -->
+  <path d="M 760 292 H 874" fill="none" stroke="#b89446" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-network)" />
+  <path d="M 760 512 H 874" fill="none" stroke="#649664" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-lego)" />
+  <path d="M 760 652 H 874" fill="none" stroke="#649664" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-lego)" />
+  <!-- Override to page -->
+  <path d="M 1200 700 V 860 Q 1200 872 1188 872 H 766" fill="none" stroke="#b89446" stroke-width="2" stroke-dasharray="7 6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-network)" />
+  <text x="1216" y="800" class="edge">only when the feature has one for the family</text>
+
+  <!-- 01 Network -->
+  <rect x="120" y="104" width="640" height="92" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <rect x="120" y="122" width="3" height="56" rx="1.5" fill="#b89446" />
+  <text x="146" y="143" class="pkg">@trezor/network-&lt;family&gt;-suite-common</text>
+  <text x="146" y="171" class="detail">Network family: one implementation per backend where they differ</text>
+
+  <rect x="120" y="248" width="640" height="92" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <rect x="120" y="266" width="3" height="56" rx="1.5" fill="#b89446" />
+  <text x="146" y="287" class="pkg">network.capabilities.{ messageSigning?, … }</text>
+  <text x="146" y="315" class="detail">Network instance: a capability exists only when it is supported</text>
+
+  <!-- 02 Lego -->
+  <rect x="120" y="464" width="640" height="92" rx="14" fill="#ffffff" stroke="#649664" stroke-opacity=".65" />
+  <rect x="120" y="482" width="3" height="56" rx="1.5" fill="#649664" />
+  <text x="146" y="503" class="pkg">@suite-common/&lt;feature&gt; · useMessageSigning</text>
+  <text x="146" y="531" class="detail">Headless hook: the capability plus device, settings, toasts, analytics</text>
+
+  <rect x="120" y="608" width="640" height="92" rx="14" fill="#ffffff" stroke="#649664" stroke-opacity=".65" />
+  <rect x="120" y="626" width="3" height="56" rx="1.5" fill="#649664" />
+  <text x="146" y="647" class="pkg">@suite/&lt;feature&gt; · @suite-native/&lt;feature&gt;</text>
+  <text x="146" y="675" class="detail">Default UI per platform: renders from the hook, never branches on network</text>
+
+  <!-- 03 App -->
+  <rect x="120" y="828" width="640" height="84" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="120" y="846" width="3" height="48" rx="1.5" fill="#6484b4" />
+  <text x="146" y="863" class="pkg">@suite-app/module-&lt;section&gt;</text>
+  <text x="146" y="891" class="detail">Page: renders the default UI, or the override for the family</text>
+
+  <!-- Right column -->
+  <text x="880" y="230" class="layer" fill="#6484b4">USES WITHOUT ANY UI</text>
+  <rect x="880" y="248" width="640" height="92" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="880" y="266" width="3" height="56" rx="1.5" fill="#6484b4" />
+  <text x="906" y="287" class="pkg">shared thunks · tests · WalletConnect</text>
+  <text x="906" y="315" class="detail">Call the same operation the page calls</text>
+
+  <rect x="880" y="464" width="640" height="92" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="880" y="482" width="3" height="56" rx="1.5" fill="#6484b4" />
+  <text x="906" y="503" class="pkg">wallet menu</text>
+  <text x="906" y="531" class="detail">Shows the entry when the capability exists, without rendering it</text>
+
+  <text x="880" y="590" class="layer" fill="#b89446">OVERRIDE, OPTIONAL</text>
+  <rect x="880" y="608" width="640" height="92" rx="14" fill="#fffdf7" stroke="#b89446" stroke-dasharray="7 6" />
+  <rect x="880" y="626" width="3" height="56" rx="1.5" fill="#b89446" />
+  <text x="906" y="647" class="pkg">overrides = { cardano: CardanoSignVerify }</text>
+  <text x="906" y="675" class="detail">Platform UI for one family: gets the hook result and the default UI</text>
+
+  <path d="M 82 964 H 113 M 107 959 L 114 964 L 107 969" stroke="#657182" stroke-width="1.7" fill="none" />
+  <text x="128" y="969" fill="#657182" font-size="13">Arrows point from a dependency to the code that uses it.</text>
+</svg>
