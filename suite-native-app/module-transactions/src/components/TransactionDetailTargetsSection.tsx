@@ -23,11 +23,7 @@ export const TransactionDetailTargetsSection = ({
             <VStack spacing="sp16" alignItems="center" justifyContent="center">
                 {icon}
 
-                {topTarget && (
-                    <Discreet textVariant="headline-md">
-                        <Box flexDirection="row">{topTarget}</Box>
-                    </Discreet>
-                )}
+                {topTarget && <Discreet textVariant="headline-md">{topTarget}</Discreet>}
             </VStack>
 
             {bottomTarget && (
