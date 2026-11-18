@@ -7,6 +7,7 @@ import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
+    selectPendingProposalNetworks,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
@@ -49,15 +50,14 @@ export const WalletConnectSessionPopupScreen = () => {
 
     const { dispatch } = useServices(injectDispatch);
     const pendingProposal = useSelector(selectPendingProposal);
+    const proposalNetworks = useSelector(selectPendingProposalNetworks);
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
         () =>
-            pendingProposal?.networks
+            proposalNetworks
                 .filter(network => network.status === 'active')
-                .flatMap(network =>
-                    accounts.filter(account => account.symbol === network.symbol),
-                ) ?? [],
-        [accounts, pendingProposal?.networks],
+                .flatMap(network => accounts.filter(account => account.symbol === network.symbol)),
+        [accounts, proposalNetworks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         selectableAccounts[0] || null,
@@ -86,12 +86,10 @@ export const WalletConnectSessionPopupScreen = () => {
         }
     };
 
-    const requiredNetworksNotActivated = pendingProposal?.networks.some(
+    const requiredNetworksNotActivated = proposalNetworks.some(
         network => network.required && network.status !== 'active',
     );
-    const noNetworksActivated = !pendingProposal?.networks.some(
-        network => network.status === 'active',
-    );
+    const noNetworksActivated = !proposalNetworks.some(network => network.status === 'active');
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstAccount: (typeof accounts)[number] = accounts[0];
     const accountToShow = selectedDefaultAccount ?? firstAccount;
@@ -169,7 +167,7 @@ export const WalletConnectSessionPopupScreen = () => {
                     </Text>
                     <Card>
                         <HStack flexWrap="wrap" spacing="sp16">
-                            {pendingProposal?.networks
+                            {proposalNetworks
                                 .filter(network => network.status !== 'unsupported')
                                 .map(network => (
                                     <HStack

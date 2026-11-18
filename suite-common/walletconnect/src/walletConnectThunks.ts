@@ -154,7 +154,6 @@ const sessionProposalThunk = createThunk<
             eventId: event.id,
             params: event.params,
             expired: false,
-            networks,
             ...event.verifyContext.verified,
         }),
     );

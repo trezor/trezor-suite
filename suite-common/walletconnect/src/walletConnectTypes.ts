@@ -54,5 +54,4 @@ export interface PendingConnectionProposal {
     validation: 'UNKNOWN' | 'VALID' | 'INVALID';
     isScam?: boolean;
     expired: boolean;
-    networks: PendingConnectionProposalNetwork[];
 }
