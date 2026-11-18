@@ -11,7 +11,7 @@ export type MockReferralProgram = {
 
 export type MockReferralVoucher = {
     voucher: string | null;
-    status: 'pending' | 'ready' | 'used' | 'expired' | 'canceled';
+    status: 'pending' | 'available' | 'used' | 'expired' | 'canceled';
     amount: number;
     fiatCurrency: string;
     orderPaidAt: string;
@@ -50,14 +50,22 @@ const createVoucher = (
 });
 
 const getAllStatesVouchers = () => [
-    createVoucher({ voucher: 'TREF-8K2M-X9P4', status: 'ready', expiresAt: VOUCHER_EXPIRES_AT }),
+    createVoucher({
+        voucher: 'TREF-8K2M-X9P4',
+        status: 'available',
+        expiresAt: VOUCHER_EXPIRES_AT,
+    }),
     createVoucher({
         voucher: 'TREF-2P8R-N6Y3',
-        status: 'ready',
+        status: 'available',
         amount: 25,
         expiresAt: VOUCHER_EXPIRES_AT,
     }),
-    createVoucher({ voucher: 'TREF-6H5J-K2W9', status: 'ready', expiresAt: VOUCHER_EXPIRES_AT }),
+    createVoucher({
+        voucher: 'TREF-6H5J-K2W9',
+        status: 'available',
+        expiresAt: VOUCHER_EXPIRES_AT,
+    }),
     createVoucher({
         voucher: null,
         status: 'pending',
@@ -82,7 +90,7 @@ const getLimitReachedVouchers = () =>
     Array.from({ length: mockReferralProgram.redemptionLimit }, (_, index) =>
         createVoucher({
             voucher: `TREF-MOCK-${String(index + 1).padStart(4, '0')}`,
-            status: 'ready',
+            status: 'available',
             expiresAt: VOUCHER_EXPIRES_AT,
         }),
     );
