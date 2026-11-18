@@ -51,7 +51,6 @@ export const createReferralApiFetch =
         const body = params.method === 'POST' ? '{}' : '';
 
         try {
-            // Can throw for an invalid custom URL, so it needs to be in the try block.
             const url = new URL(
                 params.endpoint,
                 getNormalizedBaseUrl(deps.getReferAFriendApiUrl()),

@@ -3,7 +3,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 
 import { selectReferralStandardWallet } from './selectReferralStandardWallet';
 
-// A full TrezorDevice is irrelevant here, only the identity of wallet instances matters.
 const createWallet = (overrides: Partial<TrezorDevice>) =>
     ({
         id: 'device-1',

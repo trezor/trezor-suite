@@ -19,7 +19,7 @@ import { type ReferralKey } from './referralKey';
 export type ReferralWalletRecord = {
     // Null when the platform encryption is unavailable, the key then lives only in memory.
     encryptedKey: EncryptedHex<ReferralKey> | null;
-    // Account identifiers kept for offline display. The share link is the flag that the account exists.
+    // Account identifiers kept for offline display. If the share link exists, it indicates that the account exists.
     code: string | null;
     shareUrl: string | null;
 };
