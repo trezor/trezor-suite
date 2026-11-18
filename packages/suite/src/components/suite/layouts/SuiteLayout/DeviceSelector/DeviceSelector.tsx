@@ -20,6 +20,12 @@ import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 
+const DEVICE_SELECTOR_PADDING = 16;
+const DEVICE_SELECTOR_CONTENT_MIN_HEIGHT = 42;
+
+export const DEVICE_SELECTOR_HEIGHT =
+    DEVICE_SELECTOR_PADDING * 2 + DEVICE_SELECTOR_CONTENT_MIN_HEIGHT;
+
 const CaretContainer = styled.div`
     background: transparent;
     padding: 10px;
@@ -30,7 +36,7 @@ const CaretContainer = styled.div`
 
 const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
     width: 100%;
-    padding: 16px;
+    padding: ${DEVICE_SELECTOR_PADDING}px;
     align-items: center;
     border-radius: 12px;
     transition: ${focusStyleTransition};
@@ -59,7 +65,7 @@ const InnerContainer = styled.div<{ $isInteractive: boolean }>`
     display: flex;
     align-items: center;
     gap: 16px;
-    min-height: 42px;
+    min-height: ${DEVICE_SELECTOR_CONTENT_MIN_HEIGHT}px;
     -webkit-app-region: no-drag;
 
     cursor: ${({ $isInteractive }) => ($isInteractive ? 'pointer' : 'default')};

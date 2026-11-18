@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Box, Center, Icon, Row, TOOLTIP_DELAY_SHORT, Text, Tooltip } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
@@ -8,47 +6,6 @@ import { STEPPER_FILL_MS, STEPPER_RESIZE_MS } from './animationTimings';
 import { type OnboardingProgress } from './getOnboardingProgress';
 
 const INDICATOR_SIZE = 24;
-
-const Item = styled.li`
-    list-style: none;
-
-    * {
-        transition-property: transform, outline-color, background-color, opacity, color;
-        transition-duration: ${STEPPER_FILL_MS}ms;
-        transition-timing-function: ease-out;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        * {
-            transition: none !important;
-        }
-    }
-`;
-
-const Track = styled.div<{ $isActive: boolean }>`
-    width: 2px;
-    height: ${({ $isActive }) => ($isActive ? 40 : 10)}px;
-    background: ${({ theme }) => theme.elementBorderField};
-    overflow: hidden;
-    transition-property: height;
-    transition-duration: ${STEPPER_RESIZE_MS}ms;
-    transition-timing-function: ease-in-out;
-`;
-
-const Fill = styled.div<{
-    $progress: number;
-    $isCompleted: boolean;
-    $fillDelayMs: number;
-}>`
-    width: 100%;
-    height: 100%;
-    background: ${({ theme }) => theme.contentBrand};
-    opacity: ${({ $isCompleted }) => ($isCompleted ? 0 : 1)};
-    transform: scaleY(${({ $progress }) => $progress});
-    transform-origin: top;
-    transition-delay: ${({ $fillDelayMs }) => $fillDelayMs}ms, 0ms;
-    will-change: transform;
-`;
 
 type OnboardingStepperItemProps = {
     id: keyof OnboardingProgress;
@@ -75,10 +32,11 @@ export const OnboardingStepperItem = ({
     const labelText = translationString(label);
 
     return (
-        <Item
+        <Box
             aria-label={`${labelText} ${Math.round(progress * 100)}%`}
             aria-current={isActive ? 'step' : undefined}
             data-testid={`@onboarding/stepper/${id}`}
+            as="li"
         >
             <Tooltip
                 content={labelText}
@@ -101,6 +59,7 @@ export const OnboardingStepperItem = ({
                             isActive ? 'elementBorderOnDarkBrandSofter' : inactiveBorderColor
                         }
                         backgroundColor={isCompleted ? 'contentBrand' : 'elementFillField'}
+                        transition={`background-color ${STEPPER_FILL_MS}ms ease-out, outline-color ${STEPPER_FILL_MS}ms ease-out`}
                     >
                         <Center>
                             <Box
@@ -110,8 +69,12 @@ export const OnboardingStepperItem = ({
                                 borderRadius="full"
                                 backgroundColor="contentBrand"
                                 opacity={isActive ? 1 : 0}
+                                transition={`opacity ${STEPPER_FILL_MS}ms ease-out`}
                             />
-                            <Box opacity={isCompleted ? 1 : 0}>
+                            <Box
+                                opacity={isCompleted ? 1 : 0}
+                                transition={`opacity ${STEPPER_FILL_MS}ms ease-out`}
+                            >
                                 <Icon as={CheckIcon} size={12} color="contentPrimaryInverse" />
                             </Box>
                         </Center>
@@ -121,6 +84,7 @@ export const OnboardingStepperItem = ({
                             typographyStyle="body-md"
                             color={isActive ? 'contentBrand' : 'contentSecondary'}
                             overflowWrap="anywhere"
+                            transition={`color ${STEPPER_FILL_MS}ms ease-out`}
                         >
                             <Translation id={label} />
                         </Text>
@@ -134,15 +98,26 @@ export const OnboardingStepperItem = ({
                     justifyContent="center"
                     padding={{ vertical: 6 }}
                 >
-                    <Track $isActive={isActive}>
-                        <Fill
-                            $progress={progress}
-                            $isCompleted={isCompleted}
-                            $fillDelayMs={fillDelayMs}
+                    <Box
+                        width={2}
+                        height={isActive ? 40 : 10}
+                        overflow="hidden"
+                        borderRadius="full"
+                        transition={`height ${STEPPER_RESIZE_MS}ms ease-in-out`}
+                        backgroundColor="elementBorderField"
+                    >
+                        <Box
+                            width="100%"
+                            height="100%"
+                            backgroundColor="contentBrand"
+                            transform={`scaleY(${progress})`}
+                            transformOrigin="top"
+                            transition={`transform ${STEPPER_FILL_MS}ms ease-out ${fillDelayMs}ms, opacity ${STEPPER_FILL_MS}ms ease-out ${fillDelayMs}ms`}
+                            opacity={isCompleted ? 0 : 1}
                         />
-                    </Track>
+                    </Box>
                 </Row>
             )}
-        </Item>
+        </Box>
     );
 };

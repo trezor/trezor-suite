@@ -20,7 +20,6 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/icons" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/suite" },
         { "path": "../../packages/type-utils" },

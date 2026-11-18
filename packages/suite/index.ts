@@ -349,8 +349,11 @@ export {
 } from './src/components/suite/layouts/SuiteLayout/LayoutStructure';
 export { type ForegroundAppRoute } from './src/types/suite';
 export { AccountsMenu } from './src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
-export { MIN_CONTENT_WIDTH } from './src/constants/suite/layout';
-export { DeviceSelector } from './src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceSelector';
+export { MAX_CONTENT_WIDTH_NUMERIC, MIN_CONTENT_WIDTH } from './src/constants/suite/layout';
+export {
+    DEVICE_SELECTOR_HEIGHT,
+    DeviceSelector,
+} from './src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceSelector';
 export { QuickActions } from './src/components/suite/layouts/SuiteLayout/Sidebar/QuickActions/QuickActions';
 export { SidebarBanners } from './src/components/suite/layouts/SuiteLayout/Sidebar/SidebarBanners';
 export {
@@ -416,10 +419,6 @@ export {
 export { useResponsiveContextOnChange } from './src/components/suite/layouts/SuiteLayout/useResponsiveContextOnChange';
 export { MAX_ONBOARDING_WIDTH } from './src/constants/suite/layout';
 export { useFilteredModal } from './src/hooks/suite/useFilteredModal';
-export {
-    OnboardingCancelButtonContext,
-    useOnboardingCancelButtonContext,
-} from './src/components/onboarding/OnboardingCancelButtonContext';
 export { getOnboardingStepIndex } from './src/config/onboarding/steps';
 export { useOnboarding } from './src/hooks/suite/useOnboarding';
 export { UnexpectedState } from './src/views/onboarding/UnexpectedState/UnexpectedState';
