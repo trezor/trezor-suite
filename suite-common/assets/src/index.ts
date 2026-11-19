@@ -10,4 +10,5 @@ export {
 } from './utils';
 export * from './homeAssetTableFeedbackThunks';
 export * from './homeAssetTableSelectors';
+export * from './accountAssetSelectors';
 export * from './homeAssetTableUtils';

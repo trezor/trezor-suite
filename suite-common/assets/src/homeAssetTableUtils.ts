@@ -1,3 +1,7 @@
+import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type AssetAccount } from './assetAccountsSelectors';
@@ -9,6 +13,55 @@ export const sumAssetAccounts = (assetAccounts: readonly AssetAccount[]) => ({
     ),
     tokenInfo: assetAccounts.find(assetAccount => assetAccount.tokenInfo !== undefined)?.tokenInfo,
 });
+
+export type WalletAsset = {
+    assetKey: WalletAssetKey;
+    networkSymbol: NetworkSymbol;
+    contractAddress: TokenAddress | undefined;
+    cryptoBalance: BigNumber;
+    amount: string;
+    tokenSymbol: TokenSymbol | null;
+    tokenDecimals: number | undefined;
+    accountCount: number;
+};
+
+/** One row per asset the accounts hold between them, as the Home table and an account's list show it. */
+export const groupWalletAssets = (
+    assetAccounts: readonly AssetAccount[],
+): ReadonlyMap<WalletAssetKey, WalletAsset> => {
+    const byKey = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
+
+    assetAccounts.forEach(assetAccount => {
+        const held = byKey.get(assetAccount.assetKey);
+
+        if (held === undefined) {
+            byKey.set(assetAccount.assetKey, [assetAccount]);
+        } else {
+            held.push(assetAccount);
+        }
+    });
+
+    const assets = new Map<WalletAssetKey, WalletAsset>();
+
+    byKey.forEach((held, assetKey) => {
+        const [{ networkSymbol, contractAddress }] = held;
+        const { cryptoBalance, tokenInfo } = sumAssetAccounts(held);
+
+        assets.set(assetKey, {
+            assetKey,
+            networkSymbol,
+            contractAddress,
+            cryptoBalance,
+            amount: cryptoBalance.toFixed(),
+            tokenSymbol: tokenInfo?.symbol === undefined ? null : toTokenSymbol(tokenInfo.symbol),
+            tokenDecimals: tokenInfo?.decimals,
+            accountCount: held.filter(assetAccount => isPositiveBalance(assetAccount.cryptoBalance))
+                .length,
+        });
+    });
+
+    return assets;
+};
 
 /** How many rows the Home asset table shows before it folds, on desktop and mobile alike. */
 export const HOME_ASSET_ROW_LIMIT = 8;

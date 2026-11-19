@@ -6,13 +6,10 @@ import {
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Column, Text } from '@trezor/components';
 
-import { TruncatedAmount } from '#src/components/earn/yield/common/TruncatedAmount';
-import { BaseCurrencyValue, FormattedCryptoAmount } from '#src/components/suite';
 import { useSelector } from '#src/hooks/suite';
 
-import { HOME_ASSET_BALANCE_MAX_WIDTH, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
+import { HomeAssetAmount } from './HomeAssetAmount';
 
 type HomeAssetBalanceProps = {
     assetKey: WalletAssetKey;
@@ -33,28 +30,6 @@ export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalancePr
     }
 
     return (
-        <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
-            <BaseCurrencyValue
-                amount={amount}
-                symbol={networkSymbol}
-                tokenAddress={contractAddress}
-            />
-            <Text
-                intent="neutral"
-                priority="secondary"
-                typographyStyle="body-sm"
-                ellipsisLineCount={1}
-                maxWidth={HOME_ASSET_BALANCE_MAX_WIDTH}
-            >
-                <TruncatedAmount>
-                    <FormattedCryptoAmount
-                        value={amount}
-                        networkSymbol={networkSymbol}
-                        contractAddress={contractAddress}
-                        isCompact
-                    />
-                </TruncatedAmount>
-            </Text>
-        </Column>
+        <HomeAssetAmount symbol={networkSymbol} contractAddress={contractAddress} amount={amount} />
     );
 });
