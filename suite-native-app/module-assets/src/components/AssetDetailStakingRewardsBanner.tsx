@@ -8,7 +8,6 @@ import {
     selectStakeableStakingProductDescriptorBySymbol,
     useNetworkStakingRate,
 } from '@suite-common/earn-staking';
-import { stakingAmountSchema } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -16,8 +15,6 @@ import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { EarnPromoBanner } from '@suite-native/banners';
 import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
-
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
 
 type AssetDetailStakingRewardsBannerProps = {
     networkSymbol: NetworkSymbol;
@@ -43,18 +40,7 @@ export const AssetDetailStakingRewardsBanner = ({
     const { isDiscreetMode } = useDiscreetMode();
 
     const symbol = getNetworkDisplaySymbol(networkSymbol);
-    // The banner lists accounts that are not staking, so nothing is at stake yet.
-    const rewards =
-        limits === null
-            ? ZERO_STAKING_AMOUNT
-            : getPotentialStakingRewards({
-                  accounts: accounts.map(({ availableBalance }) => ({
-                      availableBalance,
-                      principal: ZERO_STAKING_AMOUNT,
-                  })),
-                  limits,
-                  rate,
-              });
+    const rewards = getPotentialStakingRewards({ accounts, limits, rate });
 
     const formattedRewards = CryptoAmountFormatter.format(
         formatStakingAmount({ amount: rewards, networkSymbol }),
