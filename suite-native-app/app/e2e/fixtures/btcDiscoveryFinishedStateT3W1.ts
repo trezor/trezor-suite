@@ -234,6 +234,7 @@ export const btcDiscoveryFinishedStateT3W1: PreloadedState = {
                 },
                 connected: true,
                 metadata: {},
+                key: 'e2e-device-key',
                 passwords: {},
                 firstConnectedTimestamp: 1760443407224,
                 ts: 1760446306237,

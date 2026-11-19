@@ -1,4 +1,9 @@
-import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
+import {
+    type AcquiredDevice,
+    type DeviceKey,
+    type TrezorDevice,
+    asDeviceKey,
+} from '@suite-common/suite-types';
 import {
     DEVICE,
     type Device,
@@ -12,7 +17,7 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
-import { hasProp, isArrayMember, unique } from '@trezor/utils';
+import { getWeakRandomUUID, hasProp, isArrayMember, unique } from '@trezor/utils';
 
 export type DeviceStatus =
     | 'acquired'
@@ -152,6 +157,9 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: DeviceStatus | nul
 };
 
 export const getIsDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
+
+// Weak randomness is enough: the key only identifies a local entry.
+export const generateDeviceKey = (): DeviceKey => asDeviceKey(getWeakRandomUUID());
 
 // Is a Suite extended device acquired (corresponds to Connect "known")
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>

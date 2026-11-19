@@ -1,9 +1,11 @@
 import type { Device, DeviceUniquePath, Features } from '@trezor/connect';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import { TrezorDevice } from '../src/device';
+import { TrezorDevice, asDeviceKey } from '../src/device';
 
 type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path: string };
+
+const MOCK_DEVICE_KEY = asDeviceKey('mock-device-key');
 
 /**
  * device.firmwareReleaseConfigInfo property
@@ -179,6 +181,7 @@ export const mockSuiteDevice = (
     const device = mockConnectDevice(dev, { bootloader_mode, ...feat });
     if (device.type === 'acquired') {
         return {
+            key: MOCK_DEVICE_KEY,
             useEmptyPassphrase: dev?.state ? true : undefined,
             remember: false,
             connected: false,
@@ -193,6 +196,7 @@ export const mockSuiteDevice = (
     }
 
     return {
+        key: MOCK_DEVICE_KEY,
         ...device,
         ...dev,
     } as TrezorDevice;

@@ -1,7 +1,10 @@
 import { createMigration } from '@suite/idb-migration-utils';
 import { type PersistentDeviceData } from '@suite-common/suite-types';
+import { generateDeviceKey } from '@suite-common/suite-utils';
 
 import { type SuiteDBSchema } from '#src/storage/definitions';
+
+import { updateAll } from '../utils';
 
 type Descriptor = PersistentDeviceData['descriptors'][number];
 
@@ -12,7 +15,7 @@ type LegacyPersistentDeviceData = Omit<PersistentDeviceData, 'descriptors'> & {
 
 /*
  Replace the optional `descriptor` (persisted for Bluetooth devices only) of each `persistentDeviceData` entry
- with the `descriptors` array.
+ with the `descriptors` array, and add a unique `key` to every remembered device.
 */
 export default createMigration<SuiteDBSchema>('26.12.0', async (_, tx) => {
     const store = tx.objectStore('persistentDeviceData');
@@ -27,4 +30,12 @@ export default createMigration<SuiteDBSchema>('26.12.0', async (_, tx) => {
 
         await store.put(updated, 'persistentDeviceData');
     }
+
+    await updateAll(tx, 'devices', device => {
+        if (!device.key) {
+            device.key = generateDeviceKey();
+        }
+
+        return device;
+    });
 });
