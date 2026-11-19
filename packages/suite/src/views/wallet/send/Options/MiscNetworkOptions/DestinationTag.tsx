@@ -11,7 +11,7 @@ import { STELLAR_TEXT_MEMO_MAX_BYTES } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 export const DESTINATION_TAG_GUIDE_PATH =
     '/3_send-and-receive/transactions-in-depth/destination-tags.md';

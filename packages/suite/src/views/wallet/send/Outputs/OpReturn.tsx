@@ -8,7 +8,7 @@ import { XIcon } from '@trezor/icons';
 
 import { OpenGuideFromTooltip } from '#src/components/guide';
 import { useLayoutSize } from '#src/hooks/suite';
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 type OpReturnProps = { outputId: number };
 

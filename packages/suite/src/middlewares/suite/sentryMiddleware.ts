@@ -22,7 +22,7 @@ import {
 import { DEVICE, TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 import { getBootloaderVersion, getFirmwareVersion } from '@trezor/device-utils';
 
-import { PROTOCOL } from '#src/actions/suite/constants';
+import * as PROTOCOL from '#src/actions/suite/constants/protocolConstants';
 import { type GetSuiteReadyPayloadState, getSuiteReadyPayload } from '#src/utils/suite/analytics';
 import {
     addSentryBreadcrumb,

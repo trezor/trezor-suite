@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Card, Column, motionEasing, useHeightAnimationOnChange } from '@trezor/components';
 
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 import { Address } from './Address';
 import { Amount } from './Amount/Amount';
