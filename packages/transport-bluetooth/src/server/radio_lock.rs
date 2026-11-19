@@ -4,10 +4,7 @@ use std::{
 };
 
 use log::info;
-use tokio::{
-    sync::{Mutex, MutexGuard, Notify},
-    time::{timeout, Duration},
-};
+use tokio::sync::{Mutex, MutexGuard, Notify};
 
 /// Connections run one at a time per device. Only BlueZ requires discovery calls
 /// to exclude connections; queued discovery calls never hold back new connections.
@@ -141,12 +138,27 @@ impl RadioLock {
         }
     }
 
-    pub async fn lock_discovery_within(
-        &self,
-        owner: &str,
-        limit: Duration,
-    ) -> Option<DiscoveryGuard<'_>> {
-        timeout(limit, self.lock_discovery(owner)).await.ok()
+    /// Does not wait. Returns `None` when the queue or the radio is busy.
+    pub fn try_lock_discovery(&self) -> Option<DiscoveryGuard<'_>> {
+        let queue = self.inner.discovery_queue.try_lock().ok()?;
+        if self.exclusive_discovery && !self.state().try_enter_discovery() {
+            return None;
+        }
+
+        Some(DiscoveryGuard {
+            lock: self,
+            _queue: queue,
+        })
+    }
+
+    /// Waits for running connections without the queue, so other discovery
+    /// calls continue meanwhile. Use it for work that no client request waits for.
+    pub async fn lock_discovery_when_idle(&self, owner: &str) -> DiscoveryGuard<'_> {
+        if self.exclusive_discovery {
+            self.wait_until(owner, "discovery", |state| state.connecting.is_empty())
+                .await;
+        }
+        self.lock_discovery(owner).await
     }
 
     fn state(&self) -> StdMutexGuard<'_, State> {
@@ -264,18 +276,19 @@ mod tests {
             .is_some());
     }
 
-    #[tokio::test(start_paused = true)]
-    async fn discovery_wait_gives_up_while_a_connection_runs() {
+    #[tokio::test]
+    async fn deferred_discovery_leaves_the_queue_free_while_a_connection_runs() {
         let lock = RadioLock::new(true);
         let connection = lock.lock_connection("connect", "dev1").await;
+        assert!(lock.try_lock_discovery().is_none());
 
-        let limit = Duration::from_secs(15);
-        let gave_up = lock.lock_discovery_within("stop_scan", limit).await;
-        assert!(gave_up.is_none());
+        let mut deferred = Box::pin(lock.lock_discovery_when_idle("deferred stop"));
+        assert!(poll!(&mut deferred).is_pending());
+        let queue = lock.lock_discovery_if_needed("start_scan", std::future::ready(false));
+        assert!(queue.now_or_never().is_some());
 
         drop(connection);
-        let acquired = lock.lock_discovery_within("stop_scan", limit).await;
-        assert!(acquired.is_some());
+        assert!(poll!(deferred).is_ready());
     }
 
     #[tokio::test]
