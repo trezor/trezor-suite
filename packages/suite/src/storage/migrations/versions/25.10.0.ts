@@ -36,6 +36,7 @@ export default createMigration<SuiteDBSchema>('25.10.0', async (db, tx) => {
                     firmwareVersion: null,
                     lastConnectedVia: null,
                     delegatedIdentityKey: null,
+                    descriptors: [],
                 }),
             );
 

@@ -116,7 +116,7 @@ export type PersistentDeviceData = Pick<AcquiredDevice, PersistedDeviceKey> &
         lastConnectedVia: 'bluetooth' | 'usb' | null;
         lastEntropyCheckResult?: StoredEntropyCheckResult;
         delegatedIdentityKey: EncryptedHex<DelegatedIdentityKey> | null;
-        descriptor?: AcquiredDevice['descriptor'];
+        descriptors: AcquiredDevice['descriptor'][];
         manualCheckResult?: ManualCheckResult;
         authenticityResult?: StoredAuthenticateDeviceResult;
     };
