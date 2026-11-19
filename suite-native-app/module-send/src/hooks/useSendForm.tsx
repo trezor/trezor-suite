@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
@@ -53,7 +53,7 @@ import {
     SendStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { signTransactionNativeThunk } from '@suite-native/send';
+import { injectSignSendFormTransaction } from '@suite-native/send';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
     type FeeLevelsMaxAmount,
@@ -123,11 +123,18 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         variant: 'B',
     });
     const { translate } = useTranslate();
-    const { addressValidator, getNamedAddressSupport, dispatch, getState } = useServices(
+    const {
+        addressValidator,
+        getNamedAddressSupport,
+        dispatch,
+        getState,
+        signSendFormTransaction,
+    } = useServices(
         injectAddressValidator,
         injectGetNamedAddressSupport,
         injectDispatch,
         injectGetState,
+        injectSignSendFormTransaction,
     );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
@@ -461,18 +468,15 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             // We need to wait for device button requests before navigating to the review screen.
             requestDelayedNavigationToOutputsReview();
 
-            const signingResponse = await dispatch(
-                signTransactionNativeThunk({
-                    accountKey,
-                    tokenContract,
-                    feeLevel: transaction,
-                }),
-            );
+            const signingResult = await signSendFormTransaction({
+                accountKey,
+                tokenContract,
+                feeLevel: transaction,
+            });
 
-            if (!isRejected(signingResponse)) return;
+            if (signingResult.success) return;
 
-            const errorCode = signingResponse.payload?.errorCode;
-            const message = signingResponse.payload?.message;
+            const { errorCode, message } = signingResult.error;
 
             if (
                 errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
@@ -538,6 +542,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         },
         [
             dispatch,
+            signSendFormTransaction,
             account,
             accountKey,
             tokenContract,

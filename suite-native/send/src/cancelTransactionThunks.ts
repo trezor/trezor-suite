@@ -21,16 +21,12 @@ import {
     type FormState,
     type PrecomposedTransactionFinalCancelRbf,
 } from '@suite-common/wallet-types';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
-import {
-    type CleanupSendFormThunkState,
-    type SignTransactionNativeThunkState,
-    cleanupSendFormThunk,
-    signTransactionNativeThunk,
-} from './sendFormThunks';
+import { type SignSendFormTransactionDep } from './createSignSendFormTransaction';
+import { type CleanupSendFormThunkState, cleanupSendFormThunk } from './sendFormThunks';
 
 type SignAndPushEvmCancelTransactionThunkParams = {
     accountKey: AccountKey;
@@ -44,11 +40,11 @@ export type SignAndPushEvmCancelTransactionError =
 export type SignAndPushEvmCancelTransactionThunkState = AccountsRootState &
     WalletSettingsRootState &
     MevProtectionRootState &
-    SignTransactionNativeThunkState &
     PushSendFormTransactionThunkState &
     CleanupSendFormThunkState;
 
-type SignAndPushEvmCancelTransactionThunkDeps = PushSendFormTransactionThunkDeps;
+export type SignAndPushEvmCancelTransactionThunkDeps = PushSendFormTransactionThunkDeps &
+    WithServices<SignSendFormTransactionDep>;
 
 /**
  * Signs and broadcasts a composed EVM cancel transaction (see
@@ -67,7 +63,7 @@ export const signAndPushEvmCancelTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/signAndPushEvmCancelTransactionThunk`,
     async (
         { accountKey, composedCancelTx, cancelFormState },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
@@ -78,15 +74,13 @@ export const signAndPushEvmCancelTransactionThunk = createThunk<
         }
 
         try {
-            const signResponse = await dispatch(
-                signTransactionNativeThunk({
-                    accountKey,
-                    feeLevel: composedCancelTx,
-                    formState: cancelFormState,
-                }),
-            );
-            if (isRejected(signResponse)) {
-                return rejectWithValue(signResponse.payload);
+            const signResult = await extra.services.signSendFormTransaction({
+                accountKey,
+                feeLevel: composedCancelTx,
+                formState: cancelFormState,
+            });
+            if (!signResult.success) {
+                return rejectWithValue(signResult.error);
             }
 
             const isMevProtectionEnabled =

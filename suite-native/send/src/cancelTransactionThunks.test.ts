@@ -5,6 +5,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PushSendFormTransactionThunkDeps,
+    type SignTransactionError,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
@@ -15,13 +16,16 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { asGetter, createMockDeps } from '@trezor/dependency-injection';
+import { asGetter, createMockDeps, mock } from '@trezor/dependency-injection';
+import { err, ok } from '@trezor/type-utils';
 
 import {
+    type SignAndPushEvmCancelTransactionThunkDeps,
     type SignAndPushEvmCancelTransactionThunkState,
     signAndPushEvmCancelTransactionThunk,
 } from './cancelTransactionThunks';
-import { cleanupSendFormThunk, signTransactionNativeThunk } from './sendFormThunks';
+import { type SignSendFormTransaction } from './createSignSendFormTransaction';
+import { cleanupSendFormThunk } from './sendFormThunks';
 
 jest.mock('@suite-common/mev', () => ({
     __esModule: true,
@@ -38,7 +42,6 @@ jest.mock('@suite-common/wallet-core', () => ({
 
 jest.mock('./sendFormThunks', () => ({
     __esModule: true,
-    signTransactionNativeThunk: jest.fn(),
     cleanupSendFormThunk: jest.fn(() => ({ type: 'mock/cleanupSendForm' })),
 }));
 
@@ -56,8 +59,8 @@ const cancelFormState = { outputs: [] } as unknown as FormState;
 
 const pushResultPayload = { success: true, payload: { txid: '0xcancelledtxid' } };
 
-// signTransactionNativeThunk / pushSendFormTransactionThunk are mocked to return already-settled
-// RTK-style action objects; isRejected/isFulfilled require both meta.requestId and requestStatus.
+// pushSendFormTransactionThunk is mocked to return already-settled RTK-style action objects;
+// isRejected/isFulfilled require both meta.requestId and requestStatus.
 const fulfilledAction = (payload?: unknown) => ({
     type: 'mock/fulfilled',
     payload,
@@ -69,7 +72,7 @@ const rejectedAction = (payload?: unknown) => ({
     meta: { requestId: 'mock-request-id', requestStatus: 'rejected' as const },
 });
 
-const signMock = signTransactionNativeThunk as unknown as jest.Mock;
+const signMock = mock<SignSendFormTransaction>();
 const pushMock = pushSendFormTransactionThunk as unknown as jest.Mock;
 const cleanupMock = cleanupSendFormThunk as unknown as jest.Mock;
 const selectAccountByKeyMock = selectAccountByKey as unknown as jest.Mock;
@@ -77,7 +80,7 @@ const mevEnabledMock = selectIsMevProtectionEnabled as unknown as jest.Mock;
 const mevFeatureMock = selectIsMevProtectionFeatureEnabled as unknown as jest.Mock;
 const dispatchCancel = () => {
     const { store } = createTestCompositionRoot<
-        PushSendFormTransactionThunkDeps,
+        SignAndPushEvmCancelTransactionThunkDeps,
         SignAndPushEvmCancelTransactionThunkState
     >({
         extra: {
@@ -90,6 +93,7 @@ const dispatchCancel = () => {
             }),
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
+            signSendFormTransaction: signMock,
         }),
     }).services;
 
@@ -102,7 +106,7 @@ describe('signAndPushEvmCancelTransactionThunk', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         selectAccountByKeyMock.mockReturnValue(account);
-        signMock.mockReturnValue(fulfilledAction());
+        signMock.mockResolvedValue(ok(undefined));
         pushMock.mockReturnValue(fulfilledAction(pushResultPayload));
         mevEnabledMock.mockReturnValue(false);
         mevFeatureMock.mockReturnValue(false);
@@ -142,8 +146,11 @@ describe('signAndPushEvmCancelTransactionThunk', () => {
     });
 
     it('propagates a signing failure, skips the push and still cleans up', async () => {
-        const signError = { error: 'sign-transaction-failed', message: 'device disconnected' };
-        signMock.mockReturnValue(rejectedAction(signError));
+        const signError: SignTransactionError = {
+            error: 'sign-transaction-failed',
+            message: 'device disconnected',
+        };
+        signMock.mockResolvedValue(err(signError));
 
         const result = await dispatchCancel();
 
