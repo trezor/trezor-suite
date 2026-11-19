@@ -1,11 +1,11 @@
 import { useNetworkStakingRate } from '@suite-common/earn-staking';
-import { useFormatters } from '@suite-common/formatters';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { type TokenYieldRateToken } from '../hooks/useAssetYieldRate';
+import { useFormattedEarnRate } from '../hooks/useFormattedEarnRate';
 
 type StakingApyBadgeProps = {
     account: Account;
@@ -13,13 +13,14 @@ type StakingApyBadgeProps = {
 };
 
 export const StakingApyBadge = ({ account }: StakingApyBadgeProps) => {
-    const { PercentageFormatter } = useFormatters();
-    const { rate, rateKind } = useNetworkStakingRate({
+    const { rate, rateKind, isPending } = useNetworkStakingRate({
         networkSymbol: account.symbol,
         accountKey: account.key,
     });
+    const formattedRate = useFormattedEarnRate(rate);
 
-    if (!rate) return null;
+    // A product without a rate, a testnet, says so once its info is cached.
+    if (isPending || rateKind === null || rate === null) return null;
 
     return (
         <HStack spacing="sp8" alignItems="center" testID="@accountList/item/yieldRateBadge">
@@ -27,7 +28,7 @@ export const StakingApyBadge = ({ account }: StakingApyBadgeProps) => {
             <Text variant="body-sm" color="borderOnDarkBrand">
                 <Translation
                     id={rateKind === 'apr' ? 'earn.yieldRateBadge.apr' : 'earn.yieldRateBadge.apy'}
-                    values={{ value: PercentageFormatter.format(rate) }}
+                    values={{ value: formattedRate }}
                 />
             </Text>
         </HStack>

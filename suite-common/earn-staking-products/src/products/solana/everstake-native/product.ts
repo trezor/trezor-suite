@@ -42,7 +42,7 @@ export const createSolanaEverstakeNativeProduct = ({
     });
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchSolanaProductInfo(deps, params);
+        fetchSolanaProductInfo(deps, { ...params, networkSymbol });
 
     const getPosition = (params: GetPositionParams) =>
         getSolanaProductPosition({

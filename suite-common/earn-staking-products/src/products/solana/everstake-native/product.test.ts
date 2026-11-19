@@ -68,6 +68,14 @@ describe('createSolanaEverstakeNativeProduct', () => {
         expect(deps.getStakingStats).toHaveBeenCalledTimes(1);
     });
 
+    it('fetches the devnet product info with the epoch periods and no rate', async () => {
+        await expect(createEverstakeProduct('dsol').fetchProductInfo({})).resolves.toMatchObject({
+            rate: null,
+            entryPeriodDays: 1,
+            exitPeriodDays: 1,
+        });
+    });
+
     it('derives the position of the stake delegated to the provider', () => {
         const product = createEverstakeProduct();
 

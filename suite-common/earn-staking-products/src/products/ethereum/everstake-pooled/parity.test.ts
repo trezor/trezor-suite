@@ -296,12 +296,17 @@ describe('everstake pooled product parity with the P0.1 snapshots', () => {
     });
 
     // The legacy selectors leave the Hoodi APY null through a missing switch case; the product
-    // reads the mainnet stats for both symbols (P2.1 decision 4), so this is the one deliberate
-    // difference from the P0.1 snapshot.
-    it('Hoodi testnet', () => {
+    // reads the mainnet periods and takes no rate, so the reading matches the snapshot.
+    it('Hoodi testnet', async () => {
+        const thod = createProduct('thod');
+        const thodInfo = await thod.fetchProductInfo({});
         const account = mockEthereumStakingAccount('active', { symbol: asNetworkSymbol('thod') });
+        const position = thod.getPosition({ account, productInfo: thodInfo, transactions: [] });
 
-        expect(read(account, [], createProduct('thod'))).toEqual(ETHEREUM_ACTIVE_READING);
+        expect(toLegacyReading({ account, position, productInfo: thodInfo })).toEqual({
+            ...ETHEREUM_ACTIVE_READING,
+            apy: null,
+        });
     });
 
     it.each<EthereumStakingScenario>([

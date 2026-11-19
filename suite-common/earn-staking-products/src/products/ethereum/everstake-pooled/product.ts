@@ -36,7 +36,7 @@ export const createEthereumEverstakePooledProduct = ({
     const { poolAddress } = deployment;
 
     const fetchProductInfo = (params: FetchProductInfoParams) =>
-        fetchEthereumEverstakePooledProductInfo(deps, params);
+        fetchEthereumEverstakePooledProductInfo(deps, { ...params, networkSymbol });
 
     const getPosition = (params: GetPositionParams) =>
         getEthereumEverstakePooledProductPosition({

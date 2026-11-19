@@ -6,7 +6,7 @@ import {
     selectStakingAccountTotals,
 } from '@suite-common/earn-staking';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type AccountKey } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -38,6 +38,12 @@ export const useStakingTotalRewards = (accountKey: AccountKey) => {
         }).toString();
 
         return { totalRewards, isTotalRewardsLoading: solanaRewardsTotalQuery.isLoading };
+    }
+
+    // A Solana position's rewards estimate the next epoch, which is no total: a Solana network
+    // the rewards API does not serve shows none.
+    if (account && getNetworkType(account.symbol) === 'solana') {
+        return { totalRewards: '0', isTotalRewardsLoading: false };
     }
 
     const totalRewards = account
