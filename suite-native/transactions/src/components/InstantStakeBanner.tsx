@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import {
     type AccountsRootState,
     getInstantStakeType,
@@ -35,6 +35,10 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
 
     const address = account?.descriptor;
     const symbol = account?.symbol;
+    // `@suite-native/assets` depends on this package, so `AssetSymbol` is not available here.
+    const displaySymbol = useSelector((state: NetworksRootState) =>
+        symbol ? selectNetworkDisplaySymbol(state, symbol) : undefined,
+    );
 
     if (!address || !symbol) return null;
 
@@ -46,8 +50,6 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
     const stakeType = stakeResult?.type ?? null;
 
     if (!internalTransfer || !stakeType || stakeType === 'change-delegate') return null;
-
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
 
     const labelMap: Record<Exclude<typeof stakeType, 'change-delegate'>, TxKeyPath> = {
         stake: 'earn.instantStakeBanner.stakedTitle',

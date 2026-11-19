@@ -10,7 +10,6 @@ import { useTokenMetadata } from '@suite-common/token';
 import { toTokenAddress } from '@suite-common/tokens';
 import {
     type NetworkSymbolExtended,
-    getDisplaySymbol,
     getNetworkOptional,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
@@ -90,13 +89,7 @@ export const FormattedCryptoAmount = ({
 
     const areSatsSupported = !!network?.features.includes('amount-unit');
 
-    let formattedSymbol = networkSymbol && getDisplaySymbol(networkSymbol, contractAddress);
-
     const isSatoshis = areSatsSupported && areSatsDisplayed;
-
-    if (isSatoshis && network) {
-        formattedSymbol = network.testnet ? `sat ${formattedSymbol}` : 'sat';
-    }
 
     const formatterContext = {
         symbol: network?.symbol,
@@ -130,7 +123,15 @@ export const FormattedCryptoAmount = ({
     );
 
     const getSymbolContent = () => {
-        if (isSatoshis) return formattedSymbol;
+        if (isSatoshis && network) {
+            return network.testnet ? (
+                <>
+                    sat <AssetSymbol networkSymbol={network.symbol} />
+                </>
+            ) : (
+                'sat'
+            );
+        }
 
         if (network) return <AssetSymbol networkSymbol={network.symbol} />;
 
@@ -144,13 +145,10 @@ export const FormattedCryptoAmount = ({
             );
         }
 
-        if (!formattedSymbol) return null;
+        if (!networkSymbol) return null;
 
         return (
-            <BlurUrls
-                tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
-                text={formattedSymbol}
-            />
+            <BlurUrls tooltipContent={<Translation id="TR_URL_IN_TOKEN" />} text={networkSymbol} />
         );
     };
     const symbolContent = getSymbolContent();
