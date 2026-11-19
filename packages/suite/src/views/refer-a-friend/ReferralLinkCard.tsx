@@ -79,7 +79,7 @@ export const ReferralLinkCard = ({
                     <H2 typographyStyle="headline-md" color="contentOnDarkPrimaryInverse">
                         <Translation id="TR_REFERRAL_INVITATION_TITLE" />
                     </H2>
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    <Text typographyStyle="body-sm" color="contentOnDarkSecondaryInverse">
                         <Translation id="TR_REFERRAL_SHARE_DESCRIPTION" values={values} />
                     </Text>
                 </Column>
