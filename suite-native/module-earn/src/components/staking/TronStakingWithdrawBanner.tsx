@@ -10,22 +10,21 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useNow } from '@trezor/react-utils';
 
-import {
-    TRON_UNLOCKS_REFRESH_INTERVAL_MS,
-    settleTronUnlocks,
-} from '../../utils/staking/settleTronUnlocks';
+import { settleTronUnlocks } from '../../utils/staking/settleTronUnlocks';
 
 type TronStakingWithdrawBannerProps = {
     accountKey: AccountKey;
+    nowMs: number;
 };
 
-export const TronStakingWithdrawBanner = ({ accountKey }: TronStakingWithdrawBannerProps) => {
+export const TronStakingWithdrawBanner = ({
+    accountKey,
+    nowMs,
+}: TronStakingWithdrawBannerProps) => {
     const positionEntry = useSelector((state: StakingRootState) =>
         selectStakingAccountPositionEntry(state, accountKey),
     );
-    const nowMs = useNow(TRON_UNLOCKS_REFRESH_INTERVAL_MS);
 
     if (positionEntry === null) return null;
 

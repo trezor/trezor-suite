@@ -41,11 +41,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
 
     const { symbol } = account;
 
-    const { yieldBadge, yieldBadgeVariant } = useYourPositionCardYieldBadge({
-        account,
-        token,
-        symbol,
-    });
+    const { yieldBadge, yieldBadgeVariant } = useYourPositionCardYieldBadge({ account, token });
 
     if (!symbol) return null;
 

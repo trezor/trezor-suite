@@ -18,23 +18,18 @@ import {
 } from '@suite-native/atoms';
 import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { useNow } from '@trezor/react-utils';
 
 import { TronStakingUnstakeRow } from './TronStakingUnstakeRow';
-import {
-    TRON_UNLOCKS_REFRESH_INTERVAL_MS,
-    settleTronUnlocks,
-} from '../../../utils/staking/settleTronUnlocks';
+import { settleTronUnlocks } from '../../../utils/staking/settleTronUnlocks';
 import { EarnApproximateFiatAmount } from '../../earn/EarnApproximateFiatAmount';
 
 type TronStakingUnstakeCardProps = {
     accountKey: AccountKey;
+    nowMs: number;
 };
 
-export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardProps) => {
+export const TronStakingUnstakeCard = ({ accountKey, nowMs }: TronStakingUnstakeCardProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
-
-    const nowMs = useNow(TRON_UNLOCKS_REFRESH_INTERVAL_MS);
 
     const positionEntry = useSelector((state: StakingRootState) =>
         selectStakingAccountPositionEntry(state, accountKey),

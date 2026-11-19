@@ -8,32 +8,29 @@ import {
     useNetworkStakingRate,
 } from '@suite-common/earn-staking';
 import { type TokenInfoBranded } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import { getBestPromotedRate, useYieldBadge } from '@suite-native/earn';
 
 interface UseYourPositionCardYieldBadgeProps {
-    account?: Account | null;
-    token?: TokenInfoBranded | null;
-    symbol?: NetworkSymbol | null;
+    account: Account;
+    token: TokenInfoBranded | null;
 }
 
 export const useYourPositionCardYieldBadge = ({
     account,
     token,
-    symbol,
 }: UseYourPositionCardYieldBadgeProps) => {
     const { data: yieldOpportunities } = useAllYieldOpportunities();
 
-    const nativeYieldVault = useNativeYieldVault({ account: account ?? undefined });
+    const nativeYieldVault = useNativeYieldVault({ account });
 
     const { rate: stakingRate } = useNetworkStakingRate({
-        networkSymbol: account?.symbol ?? null,
-        accountKey: account?.key,
+        networkSymbol: account.symbol,
+        accountKey: account.key,
     });
     const isStakingPromoted = useSelector((state: StakingAccessRootState) =>
-        account ? selectIsStakingPromotedSymbol(state, account.symbol, 'manageable') : false,
+        selectIsStakingPromotedSymbol(state, account.symbol, 'manageable'),
     );
 
     const bestPromotedRate = token
@@ -48,9 +45,9 @@ export const useYourPositionCardYieldBadge = ({
         : null;
 
     const yieldBadge = useYieldBadge({
-        networkSymbol: symbol ?? undefined,
+        networkSymbol: account.symbol,
         token: token ?? undefined,
-        accountTokens: account?.tokens,
+        accountTokens: account.tokens,
         type: token && isErc4626(token) ? 'defi' : 'default',
         yieldOpportunities,
     });
