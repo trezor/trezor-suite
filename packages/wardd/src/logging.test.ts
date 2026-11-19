@@ -4,8 +4,8 @@ describe('wardd activity logs', () => {
     it('timestamps console output and correlates requests with timed responses', () => {
         const lines: unknown[][] = [];
         const log = createConsoleLog((...messages) => lines.push(messages));
-        const activity = startActivity(log, 'evolu.lookup', { table: 'wardEntry' });
-        activity.success({ found: false });
+        const activity = startActivity(log, 'evolu.getTransitions', { table: 'wardTransition' });
+        activity.success({ rows: 0 });
 
         expect(lines).toHaveLength(2);
         expect(lines[0]?.[0]).toMatch(/^\d{4}-\d\d-\d\dT.*Z$/);
@@ -16,9 +16,9 @@ describe('wardd activity logs', () => {
         const response = lines[1]?.[3] as Record<string, unknown>;
         expect(response).toMatchObject({
             id: request.id,
-            operation: 'evolu.lookup',
+            operation: 'evolu.getTransitions',
             outcome: 'ok',
-            found: false,
+            rows: 0,
         });
         expect(response.durationMs).toEqual(expect.any(Number));
     });

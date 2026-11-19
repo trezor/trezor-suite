@@ -86,7 +86,7 @@ describe('wardd over the WebSocket', () => {
 
         expect(result).toMatchObject({ wardId: WARD_ID, counter: 0, root: '' });
         expect(pulls).toEqual([{ proof: [] }]);
-        expect(storage.getTreeState(WARD_ID)).toMatchObject({ counter: 0, root: '' });
+        expect(storage.getTransitions(WARD_ID)).toEqual([]);
         await expect(endpoint.call('status')).resolves.toEqual({
             wardId: WARD_ID,
             counter: 0,

@@ -33,7 +33,6 @@ const manager = () => {
 
 const replica = () => {
     const storage = new InMemoryWardDb();
-    storage.setTreeState(wardId, { counter: 1, root });
     storage.appendTransition(wardId, {
         counter: 1,
         prevRoot: '',
@@ -51,11 +50,11 @@ const replica = () => {
     return storage;
 };
 
-it('rebuilds from history even when the current-entry cache is empty and logs every stage', async () => {
+it('rebuilds from the transition log alone and logs every stage', async () => {
     const storage = replica();
     const logs: unknown[][] = [];
     expect(
-        await rebuildTrie(storage, wardId, storage.getTreeState(wardId), (...messages) =>
+        await rebuildTrie(storage, wardId, { counter: 1, root }, (...messages) =>
             logs.push(messages),
         ),
     ).toEqual([blob]);
@@ -114,7 +113,6 @@ it('logs the exact proof acknowledgement returned to the HWI', async () => {
 
 it('rejects incomplete history before sending its checkpoint to the device', async () => {
     const storage = new InMemoryWardDb();
-    storage.setTreeState(wardId, { counter: 1, root });
     const endpoint = await new Wardd({ storage, wm: manager() }).connect();
     const sent: string[] = [];
     const device: RelayDevice = async request => {

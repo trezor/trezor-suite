@@ -1,9 +1,9 @@
 import { InMemoryWardDb } from '@trezor/ward';
 
-import { fakeDevice, WARD_ID } from '../mocks/mockDevice';
-import { mockTransition } from '../mocks/mockTransition';
 import { Wardd } from './service';
 import { MockWm } from './wm';
+import { WARD_ID, fakeDevice } from '../mocks/mockDevice';
+import { mockTransition } from '../mocks/mockTransition';
 
 it('never publishes or finalizes a candidate whose durable transition write failed', async () => {
     const storage = new InMemoryWardDb();
@@ -47,8 +47,9 @@ it('does not rewrite stored transitions or expose mutable stored objects', () =>
     expect(storage.getTransitions(WARD_ID)[0]!.prevRoot).toBe('');
 });
 
-it('reads the authoritative head instead of asking the manager to sign a stale local head', async () => {
+it('reads the authoritative head, not a stale cached one', async () => {
     const storage = new InMemoryWardDb();
+    // A cached checkpoint is never consulted: wardd persists only the transition log.
     storage.setTreeState(WARD_ID, { counter: 9, root: 'ff'.repeat(32) });
     const wm = new MockWm();
     const endpoint = await new Wardd({ storage, wm }).connect();
@@ -58,5 +59,9 @@ it('reads the authoritative head instead of asking the manager to sign a stale l
         counter: 0,
         root: '',
     });
-    expect(storage.getTreeState(WARD_ID)).toEqual({ counter: 0, root: '' });
+    await expect(endpoint.call('status', {}, device.device)).resolves.toMatchObject({
+        counter: 0,
+        root: '',
+    });
+    expect(storage.getTreeState(WARD_ID)).toEqual({ counter: 9, root: 'ff'.repeat(32) });
 });

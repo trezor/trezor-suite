@@ -13,7 +13,9 @@ import { mockTransition } from '../mocks/mockTransition';
 it('sends only compact leaf changes when WM recovery is enabled', async () => {
     const fetchMock = jest
         .spyOn(globalThis, 'fetch')
-        .mockImplementation(() => Promise.resolve(Response.json({ signature: 'final-signature' })));
+        .mockImplementation(() =>
+            Promise.resolve(Response.json({ signature: 'final-signature', timestamp: 1700000500 })),
+        );
     try {
         const transition = mockTransition();
         const leaves: WardLeafBlob[] = [
@@ -31,7 +33,10 @@ it('sends only compact leaf changes when WM recovery is enabled', async () => {
             },
         ];
         const client = new HttpWm('http://wm.example', undefined, false, true);
-        expect(await client.commit(transition, leaves)).toBe('final-signature');
+        expect(await client.commit(transition, leaves)).toEqual({
+            signature: 'final-signature',
+            timestamp: 1700000500,
+        });
         const requestBody = fetchMock.mock.calls[0]?.[1]?.body;
         if (typeof requestBody !== 'string') throw new Error('Expected a JSON request');
         expect(JSON.parse(requestBody)).toEqual({
@@ -195,13 +200,29 @@ describe('WM HTTP API', () => {
         ).rejects.toThrow('invalid wallet transition signature');
     });
 
-    it('nests the transition in a commit and returns the finalization signature', async () => {
+    it('nests the transition in a commit and returns the finalization and its time', async () => {
         const transition = mockTransition();
         const fetchMock = serve(
-            Response.json({ wardId: transition.wardId, transition, signature: 'final' }),
+            Response.json({
+                wardId: transition.wardId,
+                transition,
+                timestamp: 1700000500,
+                signature: 'final',
+            }),
         );
-        expect(await new HttpWm('http://wm.example').commit(transition)).toBe('final');
+        expect(await new HttpWm('http://wm.example').commit(transition)).toEqual({
+            signature: 'final',
+            timestamp: 1700000500,
+        });
         expect(sentBody(fetchMock)).toEqual({ transition });
+    });
+
+    it('refuses a finalization without its acceptance time', async () => {
+        const transition = mockTransition();
+        serve(Response.json({ wardId: transition.wardId, transition, signature: 'final' }));
+        await expect(new HttpWm('http://wm.example').commit(transition)).rejects.toThrow(
+            'timestamp',
+        );
     });
 
     it.each([
@@ -247,15 +268,15 @@ describe('MockWm', () => {
         expect(genesis.transition).toBeUndefined();
 
         const final = await wm.commit(one);
-        // The finalization signs the accepted transition, not just its counter and mac.
+        // The finalization signs the accepted transition and when it was accepted.
         expect(
             ed25519.verify(
-                hexToBytes(final),
-                finalizationMessage(one),
+                hexToBytes(final.signature),
+                finalizationMessage(one, final.timestamp),
                 ed25519.getPublicKey(DEBUG_QM_SEED),
             ),
         ).toBe(true);
-        expect(await wm.commit(one)).toBe(final);
+        expect(await wm.commit(one)).toEqual(final);
         await expect(wm.commit(mockTransition({ mac: '22'.repeat(32) }))).rejects.toMatchObject({
             counter: 1,
             mac: one.mac,

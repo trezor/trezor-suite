@@ -100,12 +100,21 @@ describe('wardd flows', () => {
         expect(dev.pulls[1]).toHaveProperty('witness_entry_key');
         expect(dev.pulls[1]).toHaveProperty('witness_commit');
 
-        const tree = storage.getTreeState(WARD_ID)!;
-        expect(tree.counter).toBe(2);
+        // only the transition log is persisted: no entry rows, no cached checkpoint
         expect(storage.getAllEntries(WARD_ID)).toHaveLength(0);
+        expect(storage.getTreeState(WARD_ID)).toBeNull();
         expect(storage.getTransitions(WARD_ID).map(t => t.counter)).toEqual([1, 2]);
-        // the stored leaves rebuild to the root the device installed
-        expect(second.root).toBe(tree.root);
+        // each WM acceptance is kept beside its transition and its time reaches the device
+        const acceptances = storage.getAcceptances(WARD_ID);
+        expect(acceptances.map(a => [a.counter, a.targetRoot])).toEqual(
+            storage.getTransitions(WARD_ID).map(t => [t.counter, t.targetRoot]),
+        );
+        const confirmations = dev.sent.filter(m => m.name === 'WARDConfirmBatchByWM');
+        expect(confirmations.map(m => [m.message.timestamp, m.message.wm_signature])).toEqual(
+            acceptances.map(a => [a.timestamp, a.wmSignature]),
+        );
+        // the logged transition ends at the root the device installed
+        expect(second.root).toBe(storage.getTransitions(WARD_ID).at(-1)!.targetRoot);
     });
 
     it('returns the verified verdict without trusting host-cached metadata', async () => {
@@ -147,7 +156,10 @@ describe('wardd flows', () => {
         const queued = dev.sent.filter(m => m.name === 'WARDQueueUpdate').at(-1)!;
         expect(queued.message.new_value).toBe('');
         expect(storage.getAllEntries(WARD_ID)).toHaveLength(0);
-        expect(storage.getTreeState(WARD_ID)).toMatchObject({ counter: 2, root: '' });
+        expect(storage.getTransitions(WARD_ID).at(-1)).toMatchObject({
+            counter: 2,
+            targetRoot: '',
+        });
     });
 
     it('proves absence and leaves the counter unchanged for idempotent deletion', async () => {

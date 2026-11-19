@@ -7,7 +7,7 @@
  * reaches a flow -- the host library answers it through `answerProofRequest`, which serves the wallet this
  * endpoint last synced.
  *
- * The endpoint's only state is that wallet (`wardId`); the data lives in the `WardProvider`.
+ * The endpoint's only state is that wallet (`wardId`); the data lives in the transition log.
  */
 import { bytesToHex } from '@noble/hashes/utils.js';
 
@@ -26,7 +26,6 @@ import {
     type RelayValidateResult,
     type TreeState,
     type WardLabel,
-    type WardProvider,
     type WardTransition,
     prepareChange,
     traceLineage,
@@ -38,7 +37,8 @@ import { buildNodeAck, buildProofAck, readLeafContent, readLeafIdentity } from '
 import { rebuildTrie } from './reconstruction';
 import { recoverWard } from './recovery';
 import { type SignedTransition, normalizeRoot } from './transition';
-import { type WmClient, WmConflict, WmUnavailable } from './wm';
+import { type WardTransitionStore, storeAcceptance } from './transitionStore';
+import { type WmAcceptance, type WmClient, WmConflict, WmUnavailable } from './wm';
 
 export type { Log } from './logging';
 
@@ -56,7 +56,7 @@ const str = (params: Body, key: string): string => {
 
 /** What a flow needs from the outside: storage and the WM. */
 export type WardHostDeps = {
-    storage: WardProvider;
+    storage: WardTransitionStore;
     wm: WmClient;
     log: Log;
     delays?: boolean;
@@ -107,6 +107,14 @@ export class WardHost {
         }
 
         return reply.message;
+    }
+
+    /**
+     * The head to serve from: the one this session synced or committed, else the device's own
+     * anchor when the WM could not be reached. Nothing is cached in storage; the log alone persists.
+     */
+    private currentHead(): TreeState | null {
+        return this.syncedHead ?? this.deviceHead ?? null;
     }
 
     private requireWardId(): string {
@@ -195,8 +203,6 @@ export class WardHost {
         let request: RelayMessage;
         let response: string;
         if (deviceCounter < counter) {
-            if (!this.deps.storage.getTransitions)
-                throw new RelayFailure('no_store', 'authenticated history is required');
             const records = this.syncedHistory;
             const history = records.some(record => record.kind === 'revert')
                 ? records.toReversed().map(record => ({
@@ -237,7 +243,6 @@ export class WardHost {
             response = 'WARDReconcileAck';
         }
         const reconciled = await this.ask(device, request, response);
-        await this.deps.storage.setTreeState(wardId, tree);
 
         return { wardId, counter: reconciled.counter, root: reconciled.new_root ?? '' };
     }
@@ -396,11 +401,6 @@ export class WardHost {
             );
         }
 
-        if (!storage.appendTransition || !storage.getTransitions)
-            throw new RelayFailure(
-                'no_store',
-                'durable transition storage is required before publication',
-            );
         if (!Array.isArray(candidate.leaves) && kind === 'commit')
             throw new RelayFailure('device_failure', 'expected one device-produced leaf');
         const leaves = (kind === 'revert' ? [] : candidate.leaves).map((output: Body) => {
@@ -450,9 +450,9 @@ export class WardHost {
             log,
             previewHistory,
         );
-        let finalSig: string;
+        let accepted: WmAcceptance;
         try {
-            finalSig = await wm.commit(publication, transition.leaves);
+            accepted = await wm.commit(publication, transition.leaves);
         } catch (err) {
             if (err instanceof WmUnavailable) {
                 return {
@@ -475,11 +475,17 @@ export class WardHost {
                 pendingId,
             };
         }
+        await storeAcceptance(storage, wardId, transition, accepted, log);
         const installed = await this.ask(
             device,
             {
                 name: kind === 'revert' ? 'WARDConfirmRevertByWM' : 'WARDConfirmBatchByWM',
-                message: { counter: candidate.counter, mac: candidate.mac, wm_signature: finalSig },
+                message: {
+                    counter: candidate.counter,
+                    mac: candidate.mac,
+                    wm_signature: accepted.signature,
+                    timestamp: accepted.timestamp,
+                },
             },
             kind === 'revert' ? 'WARDConfirmRevertByWMAck' : 'WARDConfirmBatchByWMAck',
         );
@@ -490,23 +496,7 @@ export class WardHost {
             mac: installed.root_mac,
         };
 
-        let localCacheError: string | undefined;
-        try {
-            await storage.setTreeState(wardId, this.syncedHead);
-        } catch (err) {
-            localCacheError = err instanceof Error ? err.message : String(err);
-            log(
-                `STORE FAILED after the device committed counter ${installed.counter} for ` +
-                    `${localCacheError}. Resync required.`,
-            );
-        }
-
-        return {
-            wardId,
-            counter: installed.counter,
-            root: installed.new_root ?? '',
-            ...(localCacheError !== undefined && { localCacheError }),
-        };
+        return { wardId, counter: installed.counter, root: installed.new_root ?? '' };
     }
 
     serviceSync(device: RelayDevice, params: Body): Promise<RelaySyncResult> {
@@ -559,7 +549,7 @@ export class WardHost {
             throw new RelayFailure('bad_request', 'request.entry_key is required');
         }
         const entryKey: string = request.entry_key;
-        const tree = this.syncedHead ?? (await this.deps.storage.getTreeState(wardId));
+        const tree = this.currentHead();
         const rows = await rebuildTrie(
             this.deps.storage,
             wardId,
@@ -816,7 +806,7 @@ export class WardHost {
             throw new RelayFailure('bad_request', 'request.after must be 32 bytes of hex');
         }
         const after: string | null = request.after == null ? null : request.after.toLowerCase();
-        const tree = this.syncedHead ?? (await this.deps.storage.getTreeState(wardId));
+        const tree = this.currentHead();
         const key = `${wardId}:${tree?.counter ?? 0}:${tree?.root ?? ''}`;
         // rebuildTrie replays from genesis and checks the result against this exact head, so the
         // rows for one (counter, root) never change: rebuild once per walk, not once per pull.
@@ -839,12 +829,10 @@ export class WardHost {
         return ack;
     }
 
-    async status(): Promise<RelaySyncResult> {
+    status(): Promise<RelaySyncResult> {
         const wardId = this.requireWardId();
-        const tree = this.usesService
-            ? this.syncedHead
-            : await this.deps.storage.getTreeState(wardId);
+        const tree = this.currentHead();
 
-        return { wardId, counter: tree?.counter ?? 0, root: tree?.root ?? '' };
+        return Promise.resolve({ wardId, counter: tree?.counter ?? 0, root: tree?.root ?? '' });
     }
 }

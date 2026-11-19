@@ -1,6 +1,5 @@
-import type { WardProvider } from '@trezor/ward';
-
 import type { Log } from './logging';
+import type { WardTransitionStore } from './transitionStore';
 
 export const forwardingDelay = async (log: Log, hop: string, enabled = false) => {
     if (!enabled) return;
@@ -8,7 +7,11 @@ export const forwardingDelay = async (log: Log, hop: string, enabled = false) =>
     await new Promise<void>(resolve => setTimeout(resolve, 1000));
 };
 
-export const pacedStorage = (storage: WardProvider, log: Log, enabled: boolean): WardProvider =>
+export const pacedStorage = (
+    storage: WardTransitionStore,
+    log: Log,
+    enabled: boolean,
+): WardTransitionStore =>
     enabled
         ? new Proxy(storage, {
               get(target, name) {

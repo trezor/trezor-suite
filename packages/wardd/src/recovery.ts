@@ -1,18 +1,14 @@
-import {
-    RelayFailure,
-    type RelayMessage,
-    type WardProvider,
-    type WardTransition,
-} from '@trezor/ward';
+import { RelayFailure, type RelayMessage, type WardTransition } from '@trezor/ward';
 
 import { type Log } from './logging';
 import { reconstructAvailable } from './recoveryReconstruction';
 import { normalizeRoot } from './transition';
+import { type WardTransitionStore, storeAcceptance } from './transitionStore';
 import { type WmClient } from './wm';
 
 type Body = Record<string, unknown>;
 type RecoverParams = {
-    storage: WardProvider;
+    storage: WardTransitionStore;
     wm: WmClient;
     log: Log;
     params: Body;
@@ -103,6 +99,11 @@ export const recoverWard = async ({
         { name: 'WARDReconcile', message: head.root ? { root: head.root } : {} },
         'WARDReconcileAck',
     );
+    // The WM's stored acceptance of the stuck head: the device verifies it and shows when the WM
+    // accepted the change it is asked to revert. Without one the screen shows no time.
+    const accepted = (await storage.getAcceptances(wardId)).find(
+        record => record.counter === head.counter && record.targetRoot === head.root,
+    );
     const candidate = await ask(
         {
             name: 'WARDPerformRevert',
@@ -111,6 +112,10 @@ export const recoverWard = async ({
                 stuck_root: head.root,
                 prev_root: rebuilt.root,
                 forward_auth_commit: last.authCommit,
+                ...(accepted && {
+                    accepted_timestamp: accepted.timestamp,
+                    accepted_signature: accepted.wmSignature,
+                }),
             },
         },
         'WARDPerformRevertAck',
@@ -136,10 +141,8 @@ export const recoverWard = async ({
         sigCommit: stringField(candidate, 'sig_commit'),
         leaves: [],
     };
-    if (!storage.appendTransition)
-        throw new RelayFailure('no_store', 'rollback needs durable history');
     await storage.appendTransition(wardId, record);
-    const signature = await wm.commit({
+    const acceptance = await wm.commit({
         wardId,
         kind: 'revert',
         fromCounter: head.counter,
@@ -150,13 +153,18 @@ export const recoverWard = async ({
         authCommit: record.authCommit!,
         signature: record.sigCommit!,
     });
+    await storeAcceptance(storage, wardId, record, acceptance, log);
     await ask(
         {
             name: 'WARDConfirmRevertByWM',
-            message: { counter, mac: record.targetRootMac, wm_signature: signature },
+            message: {
+                counter,
+                mac: record.targetRootMac,
+                wm_signature: acceptance.signature,
+                timestamp: acceptance.timestamp,
+            },
         },
         'WARDConfirmRevertByWMAck',
     );
-    await storage.setTreeState(wardId, { counter, root, mac: record.targetRootMac });
     log('recovery.complete', { counter, root, restoredCounter: rebuilt.counter });
 };

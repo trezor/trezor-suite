@@ -1,12 +1,8 @@
-import {
-    type BlobRow,
-    type TreeState,
-    type WardProvider,
-    computeRootFromBlobs,
-} from '@trezor/ward';
+import { type BlobRow, type TreeState, computeRootFromBlobs } from '@trezor/ward';
 
 import { type Log } from './logging';
 import { type SignedTransition, normalizeRoot, verifyTransition } from './transition';
+import type { WardTransitionStore } from './transitionStore';
 
 export type Reconstruction = {
     blobs: BlobRow[];
@@ -17,7 +13,7 @@ export type Reconstruction = {
 };
 
 type ReconstructParams = {
-    storage: WardProvider;
+    storage: WardTransitionStore;
     wardId: string;
     head: TreeState;
     history: SignedTransition[];
@@ -61,7 +57,7 @@ export const reconstructAvailable = async ({
     }
     if (counter !== head.counter || root !== head.root)
         throw new Error('recovery history does not terminate at the authoritative head');
-    const stored = (await storage.getTransitions?.(wardId)) ?? [];
+    const stored = await storage.getTransitions(wardId);
     log('trie.head', { source: 'WM', counter, root });
     log('trie.lineage', {
         order: 'head-to-genesis',

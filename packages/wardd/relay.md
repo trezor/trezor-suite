@@ -57,16 +57,16 @@ wardd  → client  { "id": 1, "result": { "valid": true, "isMember": true, … }
 
 ## Methods
 
-| method               | params                                                           | result                                                   | conversation                    |
-| -------------------- | ---------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------- |
-| `hello`              | `{ version, token }`                                             | `{ version, wardd }`                                     | no; WebSocket only, first frame |
-| `sync`               | `{ wardId? }`                                                    | `{ wardId, counter, root }`                              | yes                             |
-| `lookup`             | `{ appId, address, networkSymbol, wardId? }`                     | `{ wardId, valid, isMember, counter, metadata? }`        | yes                             |
-| `update`             | `{ appId, address, networkSymbol, metadata?, delete?, wardId? }` | `{ wardId, counter, root, conflict?, localCacheError? }` | yes                             |
-| `answerProofRequest` | `{ request }` (a `WARDProofRequest` body)                        | a `WARDProofAck` body                                    | no                              |
-| `status`             | `{}`                                                             | `{ wardId, counter, root }`                              | no                              |
+| method               | params                                                           | result                                            | conversation                    |
+| -------------------- | ---------------------------------------------------------------- | ------------------------------------------------- | ------------------------------- |
+| `hello`              | `{ version, token }`                                             | `{ version, wardd }`                              | no; WebSocket only, first frame |
+| `sync`               | `{ wardId? }`                                                    | `{ wardId, counter, root }`                       | yes                             |
+| `lookup`             | `{ appId, address, networkSymbol, wardId? }`                     | `{ wardId, valid, isMember, counter, metadata? }` | yes                             |
+| `update`             | `{ appId, address, networkSymbol, metadata?, delete?, wardId? }` | `{ wardId, counter, root, conflict? }`            | yes                             |
+| `answerProofRequest` | `{ request }` (a `WARDProofRequest` body)                        | a `WARDProofAck` body                             | no                              |
+| `status`             | `{}`                                                             | `{ wardId, counter, root }`                       | no                              |
 
-- **`sync`** runs `WARDSync` → the WM attests wardd's stored head → `WARDIngestAttestation` →
+- **`sync`** runs `WARDSync` → the WM attests its head → `WARDIngestAttestation` →
   `WARDReconcile`. Every other conversation starts with it.
 - **`lookup`** sends `WARDLookup` with no proof; the device pulls it and gives its verdict.
   `metadata` (the stored label) is returned only for a membership the device proved.

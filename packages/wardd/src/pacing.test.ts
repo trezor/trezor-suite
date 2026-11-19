@@ -8,16 +8,16 @@ it('holds a storage call and its reply for one second at each forwarding boundar
     jest.useFakeTimers();
     const calls: string[] = [];
     class Storage extends InMemoryWardDb {
-        getTreeState(wardId: string) {
+        getTransitions(wardId: string) {
             calls.push('read');
 
-            return super.getTreeState(wardId);
+            return super.getTransitions(wardId);
         }
     }
     const log: unknown[][] = [];
     const storage = pacedStorage(new Storage(), (...messages) => log.push(messages), true);
     let finished = false;
-    const pending = Promise.resolve(storage.getTreeState('wallet')).then(() => {
+    const pending = Promise.resolve(storage.getTransitions('wallet')).then(() => {
         finished = true;
     });
     await jest.advanceTimersByTimeAsync(999);

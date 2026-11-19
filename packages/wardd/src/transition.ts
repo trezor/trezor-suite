@@ -64,9 +64,15 @@ const transitionBody = (record: SignedTransition): Uint8Array => {
 export const transitionMessage = (record: SignedTransition): Uint8Array =>
     concatBytes(new TextEncoder().encode('WARD WM TRANSITION v1'), transitionBody(record));
 
-/** "WARD FINAL v1" || body: the WM's signature over the transition it accepted. */
-export const finalizationMessage = (record: SignedTransition): Uint8Array =>
-    concatBytes(new TextEncoder().encode('WARD FINAL v1'), transitionBody(record));
+/** "WARD FINAL v1" || body || timestamp:u64: the WM's signature over what it accepted, and when. */
+export const finalizationMessage = (record: SignedTransition, timestamp: number): Uint8Array => {
+    if (!Number.isSafeInteger(timestamp) || timestamp <= 0)
+        throw new Error('invalid acceptance timestamp');
+    const time = new Uint8Array(8);
+    new DataView(time.buffer).setBigUint64(0, BigInt(timestamp));
+
+    return concatBytes(new TextEncoder().encode('WARD FINAL v1'), transitionBody(record), time);
+};
 
 export const verifyTransition = (record: SignedTransition): void => {
     if (

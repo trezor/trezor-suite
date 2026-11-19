@@ -148,6 +148,7 @@ export const WARDConfirmBatchByWM = Type.Object(
         counter: Type.Number(),
         mac: Type.Optional(Type.String()),
         wm_signature: Type.String(),
+        timestamp: Type.Number(),
     },
     { $id: 'WARDConfirmBatchByWM' },
 );
@@ -190,6 +191,7 @@ export const WARDConfirmRevertByWM = Type.Object(
         counter: Type.Number(),
         mac: Type.Optional(Type.String()),
         wm_signature: Type.String(),
+        timestamp: Type.Number(),
     },
     { $id: 'WARDConfirmRevertByWM' },
 );
@@ -403,6 +405,8 @@ export const WARDPerformRevert = Type.Object(
         stuck_root: Type.Optional(Type.String()),
         prev_root: Type.Optional(Type.String()),
         forward_auth_commit: Type.String(),
+        accepted_timestamp: Type.Optional(Type.Number()),
+        accepted_signature: Type.Optional(Type.String()),
     },
     { $id: 'WARDPerformRevert' },
 );

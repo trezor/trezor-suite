@@ -5,8 +5,9 @@
  * ./sqlite subpath). The only production implementation today is the sqlite WardDb;
  * an Evolu-backed implementation for suite-desktop is planned.
  */
-import type { TreeState, WardEntry, WardRow, WardTransition } from '../types';
+import type { TreeState, WardAcceptance, WardEntry, WardRow, WardTransition } from '../types';
 import { transitionFingerprint } from './transition';
+
 export { transitionFingerprint } from './transition';
 
 /**
@@ -82,6 +83,7 @@ export class InMemoryWardDb implements WardProvider {
     private order: string[] = [];
     private treeState = new Map<string, TreeState>();
     private transitions = new Map<string, WardTransition[]>();
+    private acceptances = new Map<string, WardAcceptance[]>();
 
     lookup(
         wardId: string,
@@ -154,6 +156,7 @@ export class InMemoryWardDb implements WardProvider {
         if (previous) {
             if (transitionFingerprint(previous) !== transitionFingerprint(transition))
                 throw new Error('cannot rewrite an existing WARD transition');
+
             return;
         }
         list.push(structuredClone(transition));
@@ -164,5 +167,29 @@ export class InMemoryWardDb implements WardProvider {
         return structuredClone(this.transitions.get(wardId) ?? []).toSorted(
             (a, b) => a.counter - b.counter,
         );
+    }
+
+    appendAcceptance(wardId: string, acceptance: WardAcceptance): void {
+        const list = this.acceptances.get(wardId) ?? [];
+        const previous = list.find(
+            record =>
+                record.counter === acceptance.counter &&
+                record.targetRoot === acceptance.targetRoot,
+        );
+        if (previous) {
+            if (
+                previous.timestamp !== acceptance.timestamp ||
+                previous.wmSignature !== acceptance.wmSignature
+            )
+                throw new Error('cannot rewrite an existing WARD acceptance');
+
+            return;
+        }
+        list.push({ ...acceptance });
+        this.acceptances.set(wardId, list);
+    }
+
+    getAcceptances(wardId: string): WardAcceptance[] {
+        return (this.acceptances.get(wardId) ?? []).map(record => ({ ...record }));
     }
 }

@@ -1,12 +1,15 @@
 /**
- * `WardProvider` over Evolu: wardd's OWN instance (`trezor-ward-*`), so WARD rows share neither
- * Suite's schema nor its owner. Node only (the better-sqlite3 driver).
+ * The WARD transition log over Evolu: wardd's OWN instance (`trezor-ward-*`), so WARD rows share
+ * neither Suite's schema nor its owner. Node only (the better-sqlite3 driver).
  *
- * Three tables, each row self-contained (no row depends on another having replicated first):
+ * Two append-only tables, both keyed by (wardId, counter, targetRoot):
  *
- *   wardEntry       one row per (wardId, appId, address, networkSymbol): the `WardRow`
- *   wardTree        one row per wardId: the `TreeState` checkpoint
- *   wardTransition  one row per committed transition, append-only: the `WardTransition`
+ *   wardTransition  one self-contained row per transition, written before the WM sees it
+ *   wardAcceptance  the WM's finalization (timestamp, signature) of a transition it accepted,
+ *                   shown on the device when that transition has to be reverted
+ *
+ * The head is never stored; it comes from the WM attestation or the device's anchor, and
+ * entries are replayed from the log.
  *
  * THE OWNER is the SLIP-21 child `WARD` of the wallet's Evolu node when one is given (so every
  * replica of the wallet shares it), else a random secret kept in the data directory: a local-only
@@ -66,10 +69,11 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { WebSocket } from 'ws';
 
-import type { TreeState, WardEntry, WardProvider, WardRow, WardTransition } from '@trezor/ward';
+import type { WardAcceptance, WardTransition } from '@trezor/ward';
 import { transitionFingerprint } from '@trezor/ward';
 
 import { type Log, silentLog, startActivity } from './logging';
+import type { WardTransitionStore } from './transitionStore';
 
 /**
  * The WARD owner secret: the SLIP-21 child `WARD` of the node the device returns for
@@ -104,27 +108,31 @@ export const wardOwner = (secretBytes: Uint8Array): AppOwner => {
     return { type: 'AppOwner', mnemonic: ownerSecretToMnemonic(secret), ...owner };
 };
 
-const WardEntryId = id('WardEntryId');
-const WardTreeId = id('WardTreeId');
 const WardTransitionId = id('WardTransitionId');
+const WardAcceptanceId = id('WardAcceptanceId');
 
 export const WardSchema = {
-    wardEntry: { id: WardEntryId, wardId: EvoluString, body: EvoluString },
-    wardTree: { id: WardTreeId, wardId: EvoluString, body: EvoluString },
     wardTransition: {
         id: WardTransitionId,
         wardId: EvoluString,
         counter: NonNegativeInt,
         body: EvoluString,
     },
+    wardAcceptance: {
+        id: WardAcceptanceId,
+        wardId: EvoluString,
+        counter: NonNegativeInt,
+        targetRoot: EvoluString,
+        timestamp: NonNegativeInt,
+        wmSignature: EvoluString,
+    },
 };
 
 const createQuery = createQueryBuilder(WardSchema);
 
 const createQueries = () => ({
-    entries: createQuery(db => db.selectFrom('wardEntry').selectAll()),
-    trees: createQuery(db => db.selectFrom('wardTree').selectAll()),
     transitions: createQuery(db => db.selectFrom('wardTransition').selectAll()),
+    acceptances: createQuery(db => db.selectFrom('wardAcceptance').selectAll()),
 });
 
 type StoredRow = { wardId: string | null; body: string | null; isDeleted: 0 | 1 | null };
@@ -246,9 +254,6 @@ export type EvoluStorageOptions = {
 
 const DEFAULT_WRITE_TIMEOUT_MS = 30_000;
 
-const entryKey = (wardId: string, appId: string, address: string, networkSymbol: string) =>
-    `${wardId} ${appId} ${address} ${networkSymbol}`;
-
 const readOrCreateSecret = async (dataDir: string | null): Promise<Uint8Array> => {
     if (dataDir === null) return randomBytes(32);
     const file = path.join(dataDir, 'owner-secret');
@@ -262,7 +267,7 @@ const readOrCreateSecret = async (dataDir: string | null): Promise<Uint8Array> =
     }
 };
 
-export class EvoluWardStorage implements WardProvider {
+export class EvoluWardStorage implements WardTransitionStore {
     private transitionWrites: Promise<void> = Promise.resolve();
     private constructor(
         private readonly evolu: Evolu<typeof WardSchema>,
@@ -297,14 +302,12 @@ export class EvoluWardStorage implements WardProvider {
         // SUBSCRIBED, so rows another replica sends are in `getQueryRows` without a reload, and a
         // local write's rows are there by the time its `onComplete` fires.
         const unsubscribes = [
-            evolu.subscribeQuery(queries.entries)(() => {}),
-            evolu.subscribeQuery(queries.trees)(() => {}),
             evolu.subscribeQuery(queries.transitions)(() => {}),
+            evolu.subscribeQuery(queries.acceptances)(() => {}),
         ];
         await Promise.all([
-            evolu.loadQuery(queries.entries),
-            evolu.loadQuery(queries.trees),
             evolu.loadQuery(queries.transitions),
+            evolu.loadQuery(queries.acceptances),
         ]);
 
         return new EvoluWardStorage(
@@ -345,114 +348,6 @@ export class EvoluWardStorage implements WardProvider {
             activity.failure(error);
             throw error;
         }
-    }
-
-    private entries(wardId: string): WardRow[] {
-        return EvoluWardStorage.bodies(this.evolu.getQueryRows(this.queries.entries), wardId).map(
-            body => JSON.parse(body) as WardRow,
-        );
-    }
-
-    lookup(wardId: string, appId: string, address: string, networkSymbol: string) {
-        const key = entryKey(wardId, appId, address, networkSymbol);
-
-        return this.read(
-            'lookup',
-            'wardEntry',
-            () => {
-                const row = this.entries(wardId).find(
-                    r => entryKey(wardId, r.appId, r.address, r.networkSymbol) === key,
-                );
-
-                return row?.entry ?? null;
-            },
-            value => ({ found: value !== null }),
-        );
-    }
-
-    upsert(
-        wardId: string,
-        appId: string,
-        address: string,
-        networkSymbol: string,
-        entry: WardEntry,
-    ) {
-        const row: WardRow = {
-            appId,
-            address,
-            networkSymbol,
-            entryKey: entry.blob?.entryKey,
-            entry,
-        };
-
-        return this.write(onComplete =>
-            this.evolu.upsert(
-                'wardEntry',
-                {
-                    id: createIdFromString(entryKey(wardId, appId, address, networkSymbol)),
-                    wardId,
-                    body: JSON.stringify(row),
-                },
-                { onComplete },
-            ),
-        );
-    }
-
-    remove(wardId: string, appId: string, address: string, networkSymbol: string) {
-        return this.write(onComplete =>
-            this.evolu.update(
-                'wardEntry',
-                {
-                    id: createIdFromString(entryKey(wardId, appId, address, networkSymbol)),
-                    isDeleted: sqliteTrue,
-                },
-                { onComplete },
-            ),
-        );
-    }
-
-    getAllEntries(wardId: string): WardRow[] {
-        return this.read(
-            'getAllEntries',
-            'wardEntry',
-            () => this.entries(wardId),
-            value => ({ rows: value.length }),
-        );
-    }
-
-    getByEntryKey(wardId: string, key: string): WardRow | null {
-        return this.read(
-            'getByEntryKey',
-            'wardEntry',
-            () => this.entries(wardId).find(r => r.entryKey === key) ?? null,
-            value => ({ found: value !== null }),
-        );
-    }
-
-    getTreeState(wardId: string): TreeState | null {
-        return this.read(
-            'getTreeState',
-            'wardTree',
-            () => {
-                const [body] = EvoluWardStorage.bodies(
-                    this.evolu.getQueryRows(this.queries.trees),
-                    wardId,
-                );
-
-                return body === undefined ? null : (JSON.parse(body) as TreeState);
-            },
-            value => ({ found: value !== null, counter: value?.counter }),
-        );
-    }
-
-    setTreeState(wardId: string, state: TreeState) {
-        return this.write(onComplete =>
-            this.evolu.upsert(
-                'wardTree',
-                { id: createIdFromString(wardId), wardId, body: JSON.stringify(state) },
-                { onComplete },
-            ),
-        );
     }
 
     appendTransition(wardId: string, transition: WardTransition) {
@@ -497,6 +392,72 @@ export class EvoluWardStorage implements WardProvider {
                 EvoluWardStorage.bodies(this.evolu.getQueryRows(this.queries.transitions), wardId)
                     .map(body => JSON.parse(body) as WardTransition)
                     .sort((a, b) => a.counter - b.counter),
+            value => ({ rows: value.length }),
+        );
+    }
+
+    appendAcceptance(wardId: string, acceptance: WardAcceptance) {
+        const append = async () => {
+            const previous = this.getAcceptances(wardId).find(
+                record =>
+                    record.counter === acceptance.counter &&
+                    record.targetRoot === acceptance.targetRoot,
+            );
+            if (previous) {
+                if (
+                    previous.timestamp !== acceptance.timestamp ||
+                    previous.wmSignature !== acceptance.wmSignature
+                )
+                    throw new Error('cannot rewrite an existing WARD acceptance');
+
+                return;
+            }
+            await this.write(onComplete =>
+                this.evolu.upsert(
+                    'wardAcceptance',
+                    {
+                        id: createIdFromString(
+                            `${wardId} ${acceptance.counter} ${acceptance.targetRoot}`,
+                        ),
+                        wardId,
+                        counter: getOrThrow(NonNegativeInt.from(acceptance.counter)),
+                        targetRoot: acceptance.targetRoot,
+                        timestamp: getOrThrow(NonNegativeInt.from(acceptance.timestamp)),
+                        wmSignature: acceptance.wmSignature,
+                    },
+                    { onComplete },
+                ),
+            );
+        };
+        const run = this.transitionWrites.then(append, append);
+        this.transitionWrites = run.catch(() => {});
+
+        return run;
+    }
+
+    getAcceptances(wardId: string): WardAcceptance[] {
+        return this.read(
+            'getAcceptances',
+            'wardAcceptance',
+            () =>
+                this.evolu
+                    .getQueryRows(this.queries.acceptances)
+                    .filter(row => !row.isDeleted && row.wardId === wardId)
+                    .flatMap(row =>
+                        row.counter === null ||
+                        row.targetRoot === null ||
+                        row.timestamp === null ||
+                        row.wmSignature === null
+                            ? []
+                            : [
+                                  {
+                                      counter: row.counter,
+                                      targetRoot: row.targetRoot,
+                                      timestamp: row.timestamp,
+                                      wmSignature: row.wmSignature,
+                                  },
+                              ],
+                    ),
             value => ({ rows: value.length }),
         );
     }

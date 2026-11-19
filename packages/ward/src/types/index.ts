@@ -109,6 +109,19 @@ export type WardTransition = {
     sigCommit?: string; // Ed25519(K_sig, AuthCommit-preimage); present only when WARD_KSIG
 };
 
+/**
+ * The WARD Manager's acceptance of one transition, kept beside the append-only transition log
+ * and keyed like it by (counter, targetRoot). `wmSignature` is the WM's finalization over the
+ * transition and `timestamp` (UTC seconds), so it can be re-verified against the logged
+ * transition. Presented to the device when that transition has to be reverted.
+ */
+export type WardAcceptance = {
+    counter: number;
+    targetRoot: string;
+    timestamp: number;
+    wmSignature: string;
+};
+
 export type WardRow = {
     appId: string;
     address: string;

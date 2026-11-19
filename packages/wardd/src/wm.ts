@@ -4,7 +4,7 @@
  *
  *   attest   "WARD ATTEST v1" || 0x01 || nonce || ward_id || counter || mac || timestamp
  *                                                                        (WARDIngestAttestation)
- *   commit   "WARD FINAL v1"  || accepted transition body (see `finalizationMessage`)
+ *   commit   "WARD FINAL v1"  || accepted transition body || timestamp (see `finalizationMessage`)
  *                                       (WARDConfirmBatchByWM / WARDConfirmRevertByWM)
  *
  * The WM stores each ward's latest accepted wallet-signed transition (`SignedTransition`); that
@@ -37,11 +37,13 @@ export type WmHead = {
     mac?: string;
     timestamp: number;
 };
+/** The WM's finalization of an accepted transition: its signature and the acceptance time. */
+export type WmAcceptance = { signature: string; timestamp: number };
 /** The WM's head plus its nonce-bound attestation, and the transition that produced the head. */
 export type WmAttestation = WmHead & { signature: string; transition?: SignedTransition };
 
 export interface WmClient {
-    commit(request: WmCommitRequest, leaves?: WardLeafBlob[]): Promise<string>;
+    commit(request: WmCommitRequest, leaves?: WardLeafBlob[]): Promise<WmAcceptance>;
     current(wardId: string, nonce: string): Promise<WmAttestation>;
     history(wardId: string): Promise<SignedTransition[]>;
 }
@@ -82,6 +84,8 @@ const normalizeTransition = (transition: SignedTransition): SignedTransition => 
 /** DEV/TEST: signs with the well-known debug key, in-process. */
 export class MockWm implements WmClient {
     private readonly records = new Map<string, SignedTransition[]>();
+    /** When each transition was accepted, by `wardId counter root`. */
+    private readonly acceptedAt = new Map<string, number>();
     private readonly timestamps = new Map<string, number>();
     constructor(
         private readonly log: Log = silentLog,
@@ -115,13 +119,14 @@ export class MockWm implements WmClient {
         return Promise.resolve((this.records.get(wardId) ?? []).map(record => ({ ...record })));
     }
 
-    async commit(request: WmCommitRequest) {
+    async commit(request: WmCommitRequest): Promise<WmAcceptance> {
         verifyTransition(request);
         const { wardId, counter } = request;
         const records = this.records.get(wardId) ?? [];
         const latest = records.at(-1);
         const head = headOf(latest);
         const record = normalizeTransition(request);
+        const key = `${wardId} ${record.counter} ${record.root}`;
         // An exact retry of the accepted head transition gets the same finalization again.
         const retry = latest !== undefined && JSON.stringify(latest) === JSON.stringify(record);
         if (!retry && (record.fromCounter !== head.counter || record.fromRoot !== head.root))
@@ -129,17 +134,17 @@ export class MockWm implements WmClient {
         if (!retry) {
             records.push(record);
             this.records.set(wardId, records);
-            this.timestamps.set(
-                wardId,
-                Math.max(Math.floor(Date.now() / 1000), this.timestamps.get(wardId) ?? 0),
-            );
+            const now = Math.max(Math.floor(Date.now() / 1000), this.timestamps.get(wardId) ?? 0);
+            this.timestamps.set(wardId, now);
+            this.acceptedAt.set(key, now);
         }
+        const timestamp = this.acceptedAt.get(key) ?? 0;
 
         const signature = await this.sign('commit', counter, () =>
-            bytesToHex(ed25519.sign(finalizationMessage(record), DEBUG_QM_SEED)),
+            bytesToHex(ed25519.sign(finalizationMessage(record, timestamp), DEBUG_QM_SEED)),
         );
 
-        return signature;
+        return { signature, timestamp };
     }
 
     private async sign(method: string, counter: number, sign: () => string) {
@@ -201,10 +206,10 @@ export class HttpWm implements WmClient {
             transition: request,
             ...(recoveryLeaves !== undefined && { recoveryLeaves }),
         });
-        if (typeof body.signature !== 'string')
-            throw new Error('WM omitted the finalization signature');
+        if (typeof body.signature !== 'string' || typeof body.timestamp !== 'number')
+            throw new Error('WM omitted the finalization signature or its timestamp');
 
-        return body.signature;
+        return { signature: body.signature, timestamp: body.timestamp };
     }
 
     async current(wardId: string, nonce: string): Promise<WmAttestation> {

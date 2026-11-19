@@ -197,6 +197,66 @@ it.each(['cancel', 'storage'])('does not publish a rollback after a %s failure',
     expect(ask.mock.calls.map(call => call[0].name)).not.toContain('WARDConfirmRevertByWM');
 });
 
+it("shows the stuck head its WM acceptance and keeps the revert's own", async () => {
+    const { storage } = setup();
+    const stuckAcceptance = {
+        counter: two.counter,
+        targetRoot: two.root,
+        timestamp: 1700000100,
+        wmSignature: 'aa'.repeat(64),
+    };
+    storage.appendAcceptance(one.wardId, stuckAcceptance);
+    const wm: WmClient = {
+        current: jest.fn().mockResolvedValue({
+            counter: 2,
+            root: two.root,
+            mac: two.mac,
+            timestamp: 1700000000,
+            signature: 'signed',
+            transition: two,
+        }),
+        history: jest.fn().mockResolvedValue([one, two]),
+        commit: jest.fn().mockResolvedValue({ signature: 'cc'.repeat(64), timestamp: 1700000200 }),
+    };
+    const ask = jest.fn().mockImplementation(request => {
+        if (request.name === 'WARDSync')
+            return Promise.resolve({
+                ward_id: one.wardId,
+                root_known: true,
+                counter: 2,
+                root: two.root,
+                nonce: 'ab'.repeat(32),
+            });
+        if (request.name === 'WARDPerformRevert')
+            return Promise.resolve({
+                counter: 3,
+                ward_id: one.wardId,
+                from_root: two.root,
+                new_root: one.root,
+                mac: undo.mac,
+                auth_revert: undo.authCommit,
+                sig_commit: undo.signature,
+            });
+
+        return Promise.resolve({});
+    });
+    await recoverWard({ storage, wm, log: jest.fn(), params: {}, ask });
+
+    const sent = (name: string) => ask.mock.calls.find(call => call[0].name === name)?.[0].message;
+    expect(sent('WARDPerformRevert')).toMatchObject({
+        accepted_timestamp: stuckAcceptance.timestamp,
+        accepted_signature: stuckAcceptance.wmSignature,
+    });
+    expect(sent('WARDConfirmRevertByWM')).toMatchObject({
+        wm_signature: 'cc'.repeat(64),
+        timestamp: 1700000200,
+    });
+    expect(storage.getAcceptances(one.wardId)).toEqual([
+        stuckAcceptance,
+        { counter: 3, targetRoot: one.root, timestamp: 1700000200, wmSignature: 'cc'.repeat(64) },
+    ]);
+});
+
 it('refuses recovery from an incomplete durable device anchor', async () => {
     const { storage } = setup();
     const current = jest.fn();

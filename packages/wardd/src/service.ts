@@ -15,7 +15,6 @@ import {
     type RelayDevice,
     RelayFailure,
     type RelayMethod,
-    type WardProvider,
     type WardRelay,
     type WardRelayEndpoint,
 } from '@trezor/ward';
@@ -23,10 +22,11 @@ import {
 import { type Log, WardHost } from './host';
 import { forwardingDelay, pacedStorage } from './pacing';
 import { reconstructAvailable } from './recoveryReconstruction';
+import type { WardTransitionStore } from './transitionStore';
 import { type WmClient, WmUnavailable } from './wm';
 
 export type WarddOptions = {
-    storage: WardProvider;
+    storage: WardTransitionStore;
     wm: WmClient;
     log?: Log;
     delays?: boolean;
@@ -38,7 +38,7 @@ export type WarddOptions = {
 export class Wardd implements WardRelay {
     private queue: Promise<unknown> = Promise.resolve();
     private serviceQueue: Promise<unknown> = Promise.resolve();
-    private readonly storage: WardProvider;
+    private readonly storage: WardTransitionStore;
     private readonly wm: WmClient;
     private readonly log: Log;
     private readonly delays: boolean;

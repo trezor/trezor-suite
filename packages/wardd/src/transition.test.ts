@@ -38,7 +38,7 @@ it('matches the cross-language transition vector', () => {
 
 it('matches the cross-language finalization vector', () => {
     const record = vectors.transition as SignedTransition;
-    const message = finalizationMessage(record);
+    const message = finalizationMessage(record, vectors.finalizationTimestamp);
     expect(bytesToHex(message)).toBe(vectors.finalizationMessage);
     expect(
         ed25519.verify(
