@@ -1,0 +1,31 @@
+{
+    "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+    "suite_version": "26.12.0",
+    "electron": "44.9.3",
+    "node": "24.17.0",
+    "yarn": "4.18.0",
+    "platform": "Linux",
+    "renderer": "Production bundle loaded from file://",
+    "ui_build": {
+        "result": "passed-with-2-warnings",
+        "duration_ms": 44200
+    },
+    "main_build": {
+        "result": "passed-with-1-warning",
+        "duration_ms": 28187
+    },
+    "runtime_verified": true,
+    "screenshots": 13,
+    "profile": "Isolated task-only QA profile; no wallet/device connected",
+    "network_mode": "Existing --offline-mode; no public account or provider operation",
+    "runtime_libraries": "Existing Nix library paths; no system package installation",
+    "updater_ui": "Existing --enable-updater QA flag for last two captures only; network checks/downloads blocked",
+    "unchanged_os_settings": ["Startup entry", "System tray behavior"],
+    "limits": [
+        "No Tor connection was established.",
+        "MCP server stayed disabled; no token was displayed.",
+        "Electrum URL form was not saved or contacted.",
+        "No Early Access enrollment or update was performed.",
+        "Linux UI does not establish macOS biometric behavior."
+    ]
+}

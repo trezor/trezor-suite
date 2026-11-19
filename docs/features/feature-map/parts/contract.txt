@@ -1,0 +1,22 @@
+Feature inventory contributor contract
+
+Output one JSON object: {"area":"...", "features":[...], "notes":[...], "reviewed_sources":["repo/path", ...]}.
+Write only your assigned file in this directory. All prose English.
+Each feature:
+  id: globally unique lowercase dotted slug; use your assigned prefix
+  parent_id: another feature id in your own file, or null for area roots
+  name: concise user-facing English name
+  description: one sentence describing user capability/outcome
+  level: "area" | "feature" | "option"
+  platforms: {desktop: "yes"|"conditional"|"no"|"unknown", web: same, mobile: same}
+  platform_notes: string explaining conditions and uncertainty (do not infer mobile absence from desktop-only search)
+  navigation: {desktop: string|null, web: string|null, mobile: string|null}; actual user navigation, not component directories
+  roots: [{platform:"desktop-web"|"mobile"|"shared", path:"repo/file.tsx", symbol:"ComponentName"|null}]
+  evidence: [{kind:"implementation"|"automated-test"|"manual-test"|"documentation"|"route", path:"repo/file", detail:"specific relevant behavior or scenario"}]
+  ownership: {team:string|null, confidence:"codeowners"|"inferred"|"unknown", basis:string, source_paths:["CODEOWNERS", ...]}
+  conditions: ["device model / asset / feature flag / OS / account prerequisite", ...]
+  screenshot: {status:"not-captured"|"existing-historical"|"captured", path:string|null, notes:string}
+  related_ids: []
+
+Requirements: Read implementation files, route composition, manifests, and relevant automated AND manual tests. Path existence alone does not prove feature availability. Every leaf needs specific implementation evidence, and test evidence where found. Do not claim tests passed; tests are evidence of intended scenarios only. Prefer 3-4 levels of meaningful user capabilities, not UI atoms. Include small controls when independently meaningful (fee choice, coin control, brightness, language, etc). Stable single canonical parent per feature. Cross-cutting links can be added later. Identify unavailable/legacy/experimental paths explicitly. Do not map SDK internals or developer-only controls as ordinary user features. Do not record private fixture values, only source paths and capabilities.
+No application changes or external writes. No subagents. No installations, long builds, tests, or servers needed for this read-only inventory. Inspect CODEOWNERS; distinguish code review owners from inferred product teams. A generic page root is acceptable if clearly identified as a containing root; never invent component paths. Unknowns are allowed and preferable to false precision. List source gaps in notes.

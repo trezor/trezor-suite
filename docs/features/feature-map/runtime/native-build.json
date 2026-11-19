@@ -1,0 +1,35 @@
+{
+    "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+    "product_version": "26.12.1",
+    "toolchain": {
+        "node": "24.17.0",
+        "yarn": "4.18.0",
+        "xcode": "27.2",
+        "ios_runtime": "27.2"
+    },
+    "app_bundle_id": "io.trezor.suite.debug",
+    "configuration": "Release",
+    "delivery": "embedded JavaScript",
+    "dependency_install": "immutable passed with peer warnings",
+    "prebuild": "passed",
+    "cocoapods": "passed after documented repo refresh",
+    "native_build": "passed",
+    "runtime_verified": true,
+    "signing": "Standard simulator ad-hoc signing with entitlements",
+    "limitations": [
+        "No real or fixture account descriptor/address was imported.",
+        "No hardware model, pairing, receive address, transaction, provider checkout or financial action was tested on iOS.",
+        "No public account discovery was initiated.",
+        "Model evidence is iOS user-facing Safe7 connection guidance, not a physical compatibility test.",
+        "The initial unsigned-simulator storage error resolved after standard simulator signing; its recovery UI capture is retained with caveat."
+    ],
+    "observations_manifest": "../parts/runtime-mobile-observations.json",
+    "observations": 58,
+    "screenshots": 58,
+    "new_feature_ids": [
+        "mobile.accounts.import.help",
+        "mobile.accounts.import.qr.gallery",
+        "mobile.accounts.import.qr.permission",
+        "network-settings.backends.discard"
+    ]
+}

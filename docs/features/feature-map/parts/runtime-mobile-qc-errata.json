@@ -1,0 +1,36 @@
+{
+    "errata": [
+        {
+            "observation_id": "runtime-mobile-empty-home",
+            "screenshot_id": "mobile-empty-home",
+            "description": "The no-wallet Home shows the Connect your Trezor Safe 7 card and Connect action, the beginning of a hardware promotion and the bottom navigation. Sync & Track is outside this image; the later mobile-home-tracker-entry capture separately shows it.",
+            "feature_ids": ["wallet.portfolio"],
+            "reason": "Mobile visual QC: Sync & Track is below the viewport. Preserve original records; this additive correction narrows visible screenshot evidence without denying separately recorded navigation or interaction."
+        },
+        {
+            "observation_id": "runtime-mobile-settings-preferences",
+            "screenshot_id": "mobile-settings-preferences",
+            "description": "Preferences shows full Language, Currency and Bitcoin units cards. The Theme heading and tops of theme preview cards appear at the lower edge, but their complete labels/options are outside this screenshot; separate theme captures show those choices.",
+            "feature_ids": ["app-settings.localization", "app-settings.appearance"],
+            "reason": "Mobile visual QC: Theme choices continue below the capture. Preserve original records; this additive correction narrows visible screenshot evidence without denying separately recorded navigation or interaction."
+        },
+        {
+            "observation_id": "runtime-mobile-settings-bitcoin-backend",
+            "screenshot_id": "mobile-settings-bitcoin-backend",
+            "description": "Bitcoin backend shows Disconnected, Trezor default server type and Connect. Explorer shows the default Root URL and full Transaction path field; the Address path field starts at the lower edge and is incomplete. No connection or configuration change is demonstrated.",
+            "feature_ids": [
+                "network-settings.backends",
+                "network-settings.backends.connection-status",
+                "network-settings.explorer"
+            ],
+            "reason": "Mobile visual QC: Explorer address-path field is clipped. Preserve original records; this additive correction narrows visible screenshot evidence without denying separately recorded navigation or interaction."
+        },
+        {
+            "observation_id": "runtime-mobile-empty-yield",
+            "screenshot_id": "mobile-empty-yield",
+            "description": "The lower portion of the no-wallet Yield list shows USDC, USDT and ETH vault rows, including Ethereum and Base variants, with Morpho attribution. The top row is clipped; this is not a capture of the entire available Yield catalog. No deposit or approval is shown.",
+            "feature_ids": ["earn.yield", "earn.opportunities"],
+            "reason": "Mobile visual QC: Yield list begins mid-table. Preserve original records; this additive correction narrows visible screenshot evidence without denying separately recorded navigation or interaction."
+        }
+    ]
+}

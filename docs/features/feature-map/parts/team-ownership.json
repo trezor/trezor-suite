@@ -1,0 +1,51 @@
+{
+    "description": "Canonical product-team ownership. Every feature has exactly one team for all platforms. build.ts applies this file to the inventory ownership records.",
+    "teams": ["Connect", "Earn", "Growth", "Network", "Trade", "Wallet"],
+    "team_aliases": {
+        "Suite Wallet": "Wallet",
+        "@trezor/suite-wallet": "Wallet",
+        "Suite Sync / Wallet": "Wallet",
+        "Suite Earn": "Earn",
+        "Suite Trading": "Trade",
+        "Suite Networks": "Network",
+        "Suite Mobile / Growth": "Growth",
+        "Suite Experience": "Growth"
+    },
+    "agreed_team_changes": {
+        "Firmware": {
+            "team": "Growth",
+            "basis": "Team agreement (2026-11-18): Firmware is not a Suite team; its Suite features belong to Growth."
+        }
+    },
+    "feature_teams": {
+        "onboarding.mobile-unsupported-setup": {
+            "team": "Growth",
+            "basis": "Team agreement (2026-11-18)."
+        },
+        "labeling.password-manager": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.provider": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.entries": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.filter": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.decrypt": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        },
+        "labeling.password-manager.remove": {
+            "team": "Connect",
+            "basis": "Team agreement (2026-11-18): the experimental password manager belongs to Connect."
+        }
+    },
+    "conflict_rule": "When the desktop/web and mobile inventories recorded different teams, the primary (desktop/web) record wins unless feature_teams says otherwise."
+}

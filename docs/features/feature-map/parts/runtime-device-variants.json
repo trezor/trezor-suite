@@ -1,0 +1,594 @@
+{
+    "description": "Explorer-only device labels and re-captures of existing screens on other simulators. The runtime manifest is frozen by the test-coverage baseline, so variants do not change observations, coverage or verification counts.",
+    "preferred_device": "iPhone 18 Pro",
+    "base_devices": [
+        {
+            "platform": "mobile",
+            "device": "iPhone Duo",
+            "screenshot_ids": [
+                "mobile-storage-recovery",
+                "mobile-onboarding-welcome",
+                "mobile-onboarding-analytics",
+                "mobile-onboarding-analytics-disabled",
+                "mobile-onboarding-biometrics",
+                "mobile-onboarding-residence",
+                "mobile-empty-home",
+                "mobile-settings-home",
+                "mobile-settings-general",
+                "mobile-settings-preferences",
+                "mobile-settings-language",
+                "mobile-settings-currency",
+                "mobile-settings-bitcoin-unit",
+                "mobile-settings-theme",
+                "mobile-settings-theme-dark",
+                "mobile-settings-privacy",
+                "mobile-settings-support",
+                "mobile-support-model-faq",
+                "mobile-support-about-legal",
+                "mobile-support-about",
+                "mobile-settings-trading-residence",
+                "mobile-settings-features-lower",
+                "mobile-settings-security",
+                "mobile-settings-dust",
+                "mobile-settings-advanced",
+                "mobile-settings-advanced-lower",
+                "mobile-settings-experimental",
+                "mobile-settings-suite-sync",
+                "mobile-settings-suite-sync-server",
+                "mobile-settings-auto-eject",
+                "mobile-settings-networks",
+                "mobile-settings-bitcoin-backend",
+                "mobile-settings-backend-type",
+                "mobile-settings-electrum-form",
+                "mobile-settings-backend-discard",
+                "mobile-settings-network-search",
+                "mobile-settings-network-filtered",
+                "mobile-home-tracker-entry",
+                "mobile-tracker-network-selection",
+                "mobile-tracker-bitcoin-import",
+                "mobile-tracker-xpub-help",
+                "mobile-tracker-manual-xpub",
+                "mobile-tracker-xpub-input",
+                "mobile-tracker-address-import",
+                "mobile-tracker-manual-address",
+                "mobile-tracker-invalid-address",
+                "mobile-tracker-qr-scanner",
+                "mobile-tracker-qr-permission-fallback",
+                "mobile-empty-accounts",
+                "mobile-accounts-add-menu",
+                "mobile-empty-earn",
+                "mobile-earn-staking-gate",
+                "mobile-empty-yield",
+                "mobile-earn-yield-gate",
+                "mobile-empty-activity",
+                "mobile-activity-release-notes",
+                "mobile-empty-device-manager",
+                "mobile-connect-safe7-instructions"
+            ]
+        }
+    ],
+    "variants": [
+        {
+            "id": "mobile-storage-recovery-iphone-18-pro",
+            "variant_of": "mobile-storage-recovery",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-storage-recovery.png",
+            "caption": "Native startup storage-recovery alert (Unable to load app data) with Clear app storage and Restart app, reproduced with keychain access unavailable.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf) with its embedded simulator entitlements removed and re-signed ad hoc (runtime/flows/prepare-start-state.sh keychain-unavailable), freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-19T09:45:16+00:00"
+        },
+        {
+            "id": "mobile-onboarding-welcome-iphone-18-pro",
+            "variant_of": "mobile-onboarding-welcome",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-onboarding-welcome.png",
+            "caption": "The signed current-source QA app displayed Trezor Suite / Take control and Let's get started; the start action opened analytics consent.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:18:07+00:00"
+        },
+        {
+            "id": "mobile-onboarding-analytics-iphone-18-pro",
+            "variant_of": "mobile-onboarding-analytics",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-onboarding-analytics.png",
+            "caption": "The mobile consent screen explained private data and collected data, with anonymous-help toggle, Confirm and More about privacy.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:18:21+00:00"
+        },
+        {
+            "id": "mobile-onboarding-analytics-disabled-iphone-18-pro",
+            "variant_of": "mobile-onboarding-analytics-disabled",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-onboarding-analytics-disabled.png",
+            "caption": "The optional analytics switch was disabled and the choice confirmed before continuing onboarding.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:18:25+00:00"
+        },
+        {
+            "id": "mobile-onboarding-biometrics-iphone-18-pro",
+            "variant_of": "mobile-onboarding-biometrics",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-onboarding-biometrics.png",
+            "caption": "The app offered Enable and Not now for biometric app lock; Not now was used. Actual biometric enrollment was not exercised.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:18:44+00:00"
+        },
+        {
+            "id": "mobile-onboarding-residence-iphone-18-pro",
+            "variant_of": "mobile-onboarding-residence",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-onboarding-residence.png",
+            "caption": "Trading residence onboarding showed a country picker, availability status, Confirm location and Not now. The simulator preselected CZE; Not now was used without confirming personal information.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:18:48+00:00"
+        },
+        {
+            "id": "mobile-empty-home-iphone-18-pro",
+            "variant_of": "mobile-empty-home",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-empty-home.png",
+            "caption": "The empty Home offered Connect your Trezor Safe7 and Sync & Track. No device pairing or account import was completed.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:19:00+00:00"
+        },
+        {
+            "id": "mobile-settings-home-iphone-18-pro",
+            "variant_of": "mobile-settings-home",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-home.png",
+            "caption": "The mobile Settings tab opened with a Trezor promotion and the shared wallet/device manager header.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:23:56+00:00"
+        },
+        {
+            "id": "mobile-settings-general-iphone-18-pro",
+            "variant_of": "mobile-settings-general",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-general.png",
+            "caption": "General settings visibly offered Preferences and Privacy & security; Preferences was opened.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:24:06+00:00"
+        },
+        {
+            "id": "mobile-settings-preferences-iphone-18-pro",
+            "variant_of": "mobile-settings-preferences",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-preferences.png",
+            "caption": "The Preferences screen grouped Language, Currency, Bitcoin units and Theme controls.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:24:16+00:00"
+        },
+        {
+            "id": "mobile-settings-language-iphone-18-pro",
+            "variant_of": "mobile-settings-language",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-language.png",
+            "caption": "The language bottom sheet showed System selected and language choices including English, German, Czech and others. It was closed without changing language.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:24:26+00:00"
+        },
+        {
+            "id": "mobile-settings-currency-iphone-18-pro",
+            "variant_of": "mobile-settings-currency",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-currency.png",
+            "caption": "The fiat-currency sheet showed USD selected and a list including EUR and GBP; no preference was changed.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-19T09:22:53+00:00"
+        },
+        {
+            "id": "mobile-settings-bitcoin-unit-iphone-18-pro",
+            "variant_of": "mobile-settings-bitcoin-unit",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-bitcoin-unit.png",
+            "caption": "The unit sheet offered Bitcoin and Satoshis, with Bitcoin selected.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:24:49+00:00"
+        },
+        {
+            "id": "mobile-settings-theme-iphone-18-pro",
+            "variant_of": "mobile-settings-theme",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-theme.png",
+            "caption": "Theme cards offered Standard, Dark and System; System was initially selected. On this screen size the Theme section fits on the Preferences screen without scrolling, so this capture matches the Preferences capture.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-19T09:23:16+00:00"
+        },
+        {
+            "id": "mobile-settings-theme-dark-iphone-18-pro",
+            "variant_of": "mobile-settings-theme-dark",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-theme-dark.png",
+            "caption": "Selecting Dark changed the actual app appearance. System was restored afterwards.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:24:55+00:00"
+        },
+        {
+            "id": "mobile-settings-privacy-iphone-18-pro",
+            "variant_of": "mobile-settings-privacy",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-privacy.png",
+            "caption": "The mobile screen offered biometric authentication, discreet mode and usage-data toggles; usage data remained off after onboarding. The displayed dollar amount is a fixed UI illustration, not an account balance.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:25:15+00:00"
+        },
+        {
+            "id": "mobile-settings-support-iphone-18-pro",
+            "variant_of": "mobile-settings-support",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-support.png",
+            "caption": "The support page presented expandable FAQs about connected devices, portfolio tracking, public keys, supported firmware, assets, charts and auto-ejection.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:25:27+00:00"
+        },
+        {
+            "id": "mobile-support-model-faq-iphone-18-pro",
+            "variant_of": "mobile-support-model-faq",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-support-model-faq.png",
+            "caption": "The expanded iOS FAQ explicitly says Trezor Safe7 can connect. This verifies user-facing iOS model guidance; no physical model compatibility was tested.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:25:30+00:00"
+        },
+        {
+            "id": "mobile-support-about-legal-iphone-18-pro",
+            "variant_of": "mobile-support-about-legal",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-support-about-legal.png",
+            "caption": "The page showed Terms & conditions, Privacy policy, social links and the exact source commit8d6be9edbf990465176d57b4abc007bac17ca5e6. External links were not opened.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:26:21+00:00"
+        },
+        {
+            "id": "mobile-support-about-iphone-18-pro",
+            "variant_of": "mobile-support-about",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-support-about.png",
+            "caption": "Trezor Support and Application log entry points and About Trezor Suite content were visibly present. Raw logs and external support submission were not opened.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:25:49+00:00"
+        },
+        {
+            "id": "mobile-settings-trading-residence-iphone-18-pro",
+            "variant_of": "mobile-settings-trading-residence",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-trading-residence.png",
+            "caption": "The trading-residence setting was reached from Settings after skipping onboarding residence. The country was not confirmed and no provider flow was opened.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:26:39+00:00"
+        },
+        {
+            "id": "mobile-settings-features-lower-iphone-18-pro",
+            "variant_of": "mobile-settings-features-lower",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-features-lower.png",
+            "caption": "Suite Sync, Security, Advanced and Experimental entry points and product version26.12.1 were visible.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:27:09+00:00"
+        },
+        {
+            "id": "mobile-settings-security-iphone-18-pro",
+            "variant_of": "mobile-settings-security",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-security.png",
+            "caption": "The screen offered enabled MEV protection with eligible-network guidance, plus Dust phishing protection.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:27:19+00:00"
+        },
+        {
+            "id": "mobile-settings-dust-iphone-18-pro",
+            "variant_of": "mobile-settings-dust",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-dust.png",
+            "caption": "Dust protection had an enabled switch and an editable USD threshold. No preference or account data was modified.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:27:22+00:00"
+        },
+        {
+            "id": "mobile-settings-advanced-iphone-18-pro",
+            "variant_of": "mobile-settings-advanced",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-advanced.png",
+            "caption": "The app showed enabled Device authenticity check, Firmware authenticity check and Spaced address formatting preferences. Checks were not disabled; no actual hardware authentication was run.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:27:42+00:00"
+        },
+        {
+            "id": "mobile-settings-advanced-lower-iphone-18-pro",
+            "variant_of": "mobile-settings-advanced-lower",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-advanced-lower.png",
+            "caption": "The lower page showed spaced address formatting, Testnet networks off, and Network reserve on with network-availability guidance.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:27:47+00:00"
+        },
+        {
+            "id": "mobile-settings-experimental-iphone-18-pro",
+            "variant_of": "mobile-settings-experimental",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-experimental.png",
+            "caption": "The mobile experimental page showed SLIP-24 clear-signing toggle and experienced-user guidance. The toggle remained off.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:28:03+00:00"
+        },
+        {
+            "id": "mobile-settings-suite-sync-iphone-18-pro",
+            "variant_of": "mobile-settings-suite-sync",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-suite-sync.png",
+            "caption": "Suite Sync was disabled; the screen offered a server selector and Confirm. Sync was not enabled or authorized.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:28:16+00:00"
+        },
+        {
+            "id": "mobile-settings-suite-sync-server-iphone-18-pro",
+            "variant_of": "mobile-settings-suite-sync-server",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-suite-sync-server.png",
+            "caption": "The server sheet offered Trezor default and Custom. No server was changed or contacted for wallet data.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:28:19+00:00"
+        },
+        {
+            "id": "mobile-settings-auto-eject-iphone-18-pro",
+            "variant_of": "mobile-settings-auto-eject",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-auto-eject.png",
+            "caption": "The no-wallet page explained remembered visibility and offered Auto-eject wallets, currently off.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:28:44+00:00"
+        },
+        {
+            "id": "mobile-settings-networks-iphone-18-pro",
+            "variant_of": "mobile-settings-networks",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-networks.png",
+            "caption": "The network preference list offered network switches and per-network backend controls. Networks were off, and no switch was enabled or discovery triggered.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:29:03+00:00"
+        },
+        {
+            "id": "mobile-settings-bitcoin-backend-iphone-18-pro",
+            "variant_of": "mobile-settings-bitcoin-backend",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-bitcoin-backend.png",
+            "caption": "The Bitcoin backend screen showed Disconnected, default Trezor server type, a Connect action and default explorer URL/path fields. Connect was not pressed.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:29:07+00:00"
+        },
+        {
+            "id": "mobile-settings-backend-type-iphone-18-pro",
+            "variant_of": "mobile-settings-backend-type",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-backend-type.png",
+            "caption": "The selector offered Trezor default, Blockbook and Electrum. Electrum was selected only as an uncommitted form draft.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:29:23+00:00"
+        },
+        {
+            "id": "mobile-settings-electrum-form-iphone-18-pro",
+            "variant_of": "mobile-settings-electrum-form",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-electrum-form.png",
+            "caption": "The empty Electrum Server address input showed host:port:protocol format guidance and a Connect action. No address was entered and Connect was not pressed.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:29:32+00:00"
+        },
+        {
+            "id": "mobile-settings-backend-discard-iphone-18-pro",
+            "variant_of": "mobile-settings-backend-discard",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-backend-discard.png",
+            "caption": "Back navigation on the dirty backend form displayed Discard changes with Discard and Keep editing. Discard was used, leaving backend configuration unchanged.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:29:42+00:00"
+        },
+        {
+            "id": "mobile-settings-network-search-iphone-18-pro",
+            "variant_of": "mobile-settings-network-search",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-network-search.png",
+            "caption": "The network-search input opened with the keyboard and the full network list below it; the search field stays clear of the system status area on this simulator.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:30:02+00:00"
+        },
+        {
+            "id": "mobile-settings-network-filtered-iphone-18-pro",
+            "variant_of": "mobile-settings-network-filtered",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-settings-network-filtered.png",
+            "caption": "Typing the public network name Bitcoin locally filtered the list to Bitcoin and Bitcoin Cash. No network was enabled.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:30:06+00:00"
+        },
+        {
+            "id": "mobile-home-tracker-entry-iphone-18-pro",
+            "variant_of": "mobile-home-tracker-entry",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-home-tracker-entry.png",
+            "caption": "The no-wallet Home presented Sync & Track; it opened the portfolio-tracker import flow.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:19:15+00:00"
+        },
+        {
+            "id": "mobile-tracker-network-selection-iphone-18-pro",
+            "variant_of": "mobile-tracker-network-selection",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-network-selection.png",
+            "caption": "The import flow offered supported network choices, including Bitcoin and address-based token networks. No account was imported.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:19:26+00:00"
+        },
+        {
+            "id": "mobile-tracker-bitcoin-import-iphone-18-pro",
+            "variant_of": "mobile-tracker-bitcoin-import",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-bitcoin-import.png",
+            "caption": "Bitcoin import offered Scan public key XPUB and instructional Where is my public key help. The QR illustration is a bundled decorative asset, not an account code.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:19:39+00:00"
+        },
+        {
+            "id": "mobile-tracker-xpub-help-iphone-18-pro",
+            "variant_of": "mobile-tracker-xpub-help",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-xpub-help.png",
+            "caption": "The instructional sheet showed a bundled walkthrough video and explained desktop Suite > account Details > Show public key. No active wallet data was accessed.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:19:53+00:00"
+        },
+        {
+            "id": "mobile-tracker-manual-xpub-iphone-18-pro",
+            "variant_of": "mobile-tracker-manual-xpub",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-manual-xpub.png",
+            "caption": "The empty manual XPUB field was visible. Debug-environment fixture shortcuts were visible but never activated.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:20:11+00:00"
+        },
+        {
+            "id": "mobile-tracker-xpub-input-iphone-18-pro",
+            "variant_of": "mobile-tracker-xpub-input",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-xpub-input.png",
+            "caption": "The manual field accepted a non-account draft and exposed Confirm. Confirm was not pressed: inspected Bitcoin schema accepts nonempty text into the subsequent discovery path, so validation is not claimed here.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:20:23+00:00"
+        },
+        {
+            "id": "mobile-tracker-address-import-iphone-18-pro",
+            "variant_of": "mobile-tracker-address-import",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-address-import.png",
+            "caption": "Ethereum import offered Scan receive address and address-specific guidance, without exposing any wallet address.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:20:59+00:00"
+        },
+        {
+            "id": "mobile-tracker-manual-address-iphone-18-pro",
+            "variant_of": "mobile-tracker-manual-address",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-manual-address.png",
+            "caption": "The empty manual address field and debug-only fixture shortcuts were visible. No fixture shortcut was activated.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:21:06+00:00"
+        },
+        {
+            "id": "mobile-tracker-invalid-address-iphone-18-pro",
+            "variant_of": "mobile-tracker-invalid-address",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-invalid-address.png",
+            "caption": "The form displayed Address is not valid and remained on the same screen. Source schema rejects this string locally before navigation to account discovery. No valid address or public discovery was used.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:21:35+00:00"
+        },
+        {
+            "id": "mobile-tracker-qr-scanner-iphone-18-pro",
+            "variant_of": "mobile-tracker-qr-scanner",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-qr-scanner.png",
+            "caption": "Opening the QR scanner requested camera permission; permission was declined on the disposable simulator. No QR code was scanned.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:20:34+00:00"
+        },
+        {
+            "id": "mobile-tracker-qr-permission-fallback-iphone-18-pro",
+            "variant_of": "mobile-tracker-qr-permission-fallback",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-tracker-qr-permission-fallback.png",
+            "caption": "The scanner displayed Camera access denied, Grant permission and Upload from gallery. Neither system settings nor photo library was opened; gallery import completion is not claimed.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:20:45+00:00"
+        },
+        {
+            "id": "mobile-empty-accounts-iphone-18-pro",
+            "variant_of": "mobile-empty-accounts",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-empty-accounts.png",
+            "caption": "The Accounts empty state showed No accounts and search/add controls. No wallet account details or balance were present.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:21:54+00:00"
+        },
+        {
+            "id": "mobile-accounts-add-menu-iphone-18-pro",
+            "variant_of": "mobile-accounts-add-menu",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-accounts-add-menu.png",
+            "caption": "The plus action from empty Accounts opened Sync my assets network selection. No account was added.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:21:58+00:00"
+        },
+        {
+            "id": "mobile-empty-earn-iphone-18-pro",
+            "variant_of": "mobile-empty-earn",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-empty-earn.png",
+            "caption": "The public Earn page listed staking opportunities with indicative rates; no rates are recorded as current recommendations and no wallet data was used.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:22:14+00:00"
+        },
+        {
+            "id": "mobile-earn-staking-gate-iphone-18-pro",
+            "variant_of": "mobile-earn-staking-gate",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-earn-staking-gate.png",
+            "caption": "The app showed Staking is disabled in the portfolio tracker and directed the user to connect a device or use desktop. No staking flow or provider authorization was performed.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:22:23+00:00"
+        },
+        {
+            "id": "mobile-empty-yield-iphone-18-pro",
+            "variant_of": "mobile-empty-yield",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-empty-yield.png",
+            "caption": "The public no-wallet page listed Trezor Steakhouse yield opportunities and Morpho attribution. No vault position, deposit or provider approval was opened.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:22:36+00:00"
+        },
+        {
+            "id": "mobile-earn-yield-gate-iphone-18-pro",
+            "variant_of": "mobile-earn-yield-gate",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-earn-yield-gate.png",
+            "caption": "The yield opportunity tap showed the same portfolio-tracker restriction sheet, whose actual text says Staking is disabled. No yield transaction was possible in this state.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:22:39+00:00"
+        },
+        {
+            "id": "mobile-empty-activity-iphone-18-pro",
+            "variant_of": "mobile-empty-activity",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-empty-activity.png",
+            "caption": "The Activity page showed Notifications and Release notes tabs and No notifications in the clean QA state.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:22:56+00:00"
+        },
+        {
+            "id": "mobile-activity-release-notes-iphone-18-pro",
+            "variant_of": "mobile-activity-release-notes",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-activity-release-notes.png",
+            "caption": "The app rendered public release notes for version26.12.1. Listed release features were not treated as runtime verification of those individual flows.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:23:01+00:00"
+        },
+        {
+            "id": "mobile-empty-device-manager-iphone-18-pro",
+            "variant_of": "mobile-empty-device-manager",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-empty-device-manager.png",
+            "caption": "The empty wallet/device manager showed a generic greeting and Connect Trezor action. No device identifiers or saved wallets were present.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:23:33+00:00"
+        },
+        {
+            "id": "mobile-connect-safe7-instructions-iphone-18-pro",
+            "variant_of": "mobile-connect-safe7-instructions",
+            "device": "iPhone 18 Pro",
+            "path": "docs/features/feature-map/runtime/screenshots/iphone-18-pro/mobile-connect-safe7-instructions.png",
+            "caption": "The iOS connection flow displayed Turn on and unlock your Trezor Safe7 with a bundled power-button instructional animation. It was closed without discovery, pairing or hardware interaction.",
+            "fixture_context": "Same current-source 26.12.1 QA build (8d6be9edbf, Release, embedded JavaScript, ad-hoc simulator signing) freshly installed on the iPhone 18 Pro iOS 27.2 simulator; disposable state with no wallet, device, credentials or account data.",
+            "captured_at": "2026-11-16T22:23:44+00:00"
+        }
+    ]
+}

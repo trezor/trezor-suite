@@ -1,0 +1,11 @@
+{
+    "errata": [
+        {
+            "observation_id": "runtime-web-t3t1-cardano-delegated-position",
+            "screenshot_id": "web-t3t1-cardano-delegated-position",
+            "description": "Existing Cardano delegation shows APY, reward cycle, full-balance staking, restaked-reward fixture state and Claim rewards, Unstake and Change delegate entries. Change delegate opens the separate Change voting preference dialog; this is a voting-delegation entry, not evidence of changing the staking-pool provider.",
+            "feature_ids": ["earn.staking.ada", "earn.staking.ada.voting"],
+            "reason": "Cardano visual/source QC: StakingCard opens the change-delegate modal, UserContextModal resolves it to StakeChangeDelegateModal, and that modal is headed Change voting preference. The separate UpdateProvider flow belongs to NewProviderCard and is not demonstrated here. Preserve original records and the provider feature; correct only effective visual associations."
+        }
+    ]
+}

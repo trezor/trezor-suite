@@ -1,0 +1,445 @@
+{
+    "id": "runtime-final-web-screenshot-quality",
+    "created_at": "2026-11-15T09:18:08.505723+00:00",
+    "manifest_snapshot_sha256": "a3401a352721ef9eb5d9dc3047d16cd7e94e22cd4c02bf9f7c08ec878ca790db",
+    "scope": {
+        "ordinals": [207, 228],
+        "images_reviewed": 22,
+        "supplemental_earlier_capture": 1,
+        "platform": "web",
+        "model": "T3T1",
+        "firmware": "2.12.5",
+        "fixture_state": "Shared ETH/SOL/TRX QA fixture; Solana staked then unstaking modes; Tron rewarded then withdrawable modes. Subsequent academic Cardano context is outside this snapshot."
+    },
+    "method": "All22 actual PNGs viewed using four local contact sheets; portfolio grid, SOL unstake, custom ETH gas and transaction list also viewed at original size. An earlier Bitcoin custom-fee original was additionally rechecked for the same suggested-value/reset association. No UI/device/service changes or main-manifest/image edits.",
+    "temporary_contact_sheets": "/tmp/feature-map-qc-final-web/sheet-{1,7,13,19}.png",
+    "full_resolution_reviewed": [
+        "web-t3t1-portfolio-assets-table",
+        "web-t3t1-solana-unstake-form",
+        "web-t3t1-ethereum-custom-gas",
+        "web-t3t1-transaction-list-visible"
+    ],
+    "privacy_review": "All visible holdings/history derive from isolated QA fixtures. Public provider identities and deliberately non-user recipient examples are not active-user data. Signing/verification fields contain no supplied secret/message/signature. No seed, PIN, passphrase or authentication token identified.",
+    "summary": {
+        "images_reviewed": 23,
+        "new_batch_images": 22,
+        "earlier_image_rechecked": 1,
+        "proposed_errata": 6,
+        "medium": 2,
+        "low": 4
+    },
+    "reviews": [
+        {
+            "ordinal": 207,
+            "screenshot_id": "web-t3t1-portfolio-assets-table",
+            "observation_id": "runtime-web-t3t1-portfolio-assets-table",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-portfolio-assets-table.png",
+            "sha256": "5ad4c6e767bce8da8d901f95fa6d430fd665db41ad21eec42f3033e8a957c69c",
+            "width": 1440,
+            "height": 1000,
+            "result": "correction-proposed",
+            "visible_feature_ids": ["wallet.portfolio.assets", "wallet.portfolio.assets.layout"],
+            "limits": "My assets is displayed as a grid of network cards with balance and staking/token breakdowns, Add networks and table/grid controls. This capture visibly covers the asset cards that were below the fold in earlier dashboard captures."
+        },
+        {
+            "ordinal": 208,
+            "screenshot_id": "web-t3t1-tron-staked-position",
+            "observation_id": "runtime-web-t3t1-tron-staked-position",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-staked-position.png",
+            "sha256": "24de94331783ea90c556e14bc9a6b6a047adbfbc551491ed2adb6891bf81a64f",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "earn.staking.trx",
+                "earn.staking.trx.vote",
+                "earn.staking.trx.reassign",
+                "earn.staking.trx.unfreeze"
+            ],
+            "limits": "Existing rewarded E2E fixture state; assigned-vote summary and Vote/Unstake entries do not establish a performed vote, reallocation or unfreeze."
+        },
+        {
+            "ordinal": 209,
+            "screenshot_id": "web-t3t1-tron-network-resources",
+            "observation_id": "runtime-web-t3t1-tron-network-resources",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-network-resources.png",
+            "sha256": "846725f15daf27619a9017d86c75d8361a131e5d4ed9db8a31a6bc1dd19e6ea2",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "earn.staking.trx.resources",
+                "wallet.accounts.overview.tron-resources"
+            ],
+            "limits": "Resource capacities and Get more entry only. Resource acquisition or consumption was not performed."
+        },
+        {
+            "ordinal": 210,
+            "screenshot_id": "web-t3t1-tron-claim-rewards-form",
+            "observation_id": "runtime-web-t3t1-tron-claim-rewards-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-claim-rewards-form.png",
+            "sha256": "d7f77d5cd4a76b7113c0c51324dc9474eacebe5b63bedd28c72f1bd0bd149fcb",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.trx.claim"],
+            "limits": "Claimable QA reward and local bandwidth-fee estimate; Continue entry only, no signature/claim/broadcast."
+        },
+        {
+            "ordinal": 211,
+            "screenshot_id": "web-t3t1-tron-vote-allocation",
+            "observation_id": "runtime-web-t3t1-tron-vote-allocation",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-vote-allocation.png",
+            "sha256": "78124a7ade8967ed7e8a3266860e61ea143bb4cbfd3c4cfb8d0f1dcb7fe58839",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "earn.staking.trx.vote",
+                "earn.staking.trx.allocation",
+                "earn.staking.trx.reassign"
+            ],
+            "limits": "Current representative allocation and calculated bandwidth fee visible. Remaining voting power and allocation are fixture state, not an executed vote."
+        },
+        {
+            "ordinal": 212,
+            "screenshot_id": "web-t3t1-tron-representative-picker",
+            "observation_id": "runtime-web-t3t1-tron-representative-picker",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-representative-picker.png",
+            "sha256": "731e77464796adb858d564574723eb8fbac8a03895fcfba876c685b794da123e",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.trx.representative"],
+            "limits": "One selected provider and another choice, public registered provider identities and APRs visible. These are representative registry entries, not user wallet identifiers. No selection was submitted."
+        },
+        {
+            "ordinal": 213,
+            "screenshot_id": "web-t3t1-tron-reassign-votes",
+            "observation_id": "runtime-web-t3t1-tron-reassign-votes",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-reassign-votes.png",
+            "sha256": "80985c4d473e3aad34d6d3a65d5b600375d80c2b192b63f8c2ac60379e5a9dd9",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.trx.allocation", "earn.staking.trx.reassign"],
+            "limits": "Editable allocation field, remaining votes and Confirm/Close visible; no actual vote reallocation was performed."
+        },
+        {
+            "ordinal": 214,
+            "screenshot_id": "web-t3t1-tron-unstake-form",
+            "observation_id": "runtime-web-t3t1-tron-unstake-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-unstake-form.png",
+            "sha256": "161b62a01428c9f52d4b9c16f5c539f74741c9eba3ac613f47e34f5f870f5abb",
+            "width": 1440,
+            "height": 1000,
+            "result": "correction-proposed",
+            "visible_feature_ids": ["earn.staking.trx.unfreeze"],
+            "limits": "Tron unstake shows Bandwidth/Energy choices, empty crypto amount with fiat-entry toggle and Max, a Network fee row reading To be calculated, and the withdrawal-delay explanation; Continue is disabled and no unstake was submitted."
+        },
+        {
+            "ordinal": 215,
+            "screenshot_id": "web-t3t1-tron-matured-withdrawal",
+            "observation_id": "runtime-web-t3t1-tron-matured-withdrawal",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-matured-withdrawal.png",
+            "sha256": "efacb24916cb3e10bc8ed9dc35d602bdb737219adc6540516193aea95c9f795a",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.trx.withdraw"],
+            "limits": "Expired unfreeze fixture exposes ready-to-withdraw banner. Maturity is injected E2E state, not time elapsed after a real unstake."
+        },
+        {
+            "ordinal": 216,
+            "screenshot_id": "web-t3t1-tron-withdraw-form",
+            "observation_id": "runtime-web-t3t1-tron-withdraw-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-tron-withdraw-form.png",
+            "sha256": "39b1f718bc09436e3b12cf522b84f09d3967a581ceced27046dac4714acc71f2",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.trx.withdraw"],
+            "limits": "Matured fixture withdrawal form and local bandwidth-fee estimate only; no signature or withdrawal."
+        },
+        {
+            "ordinal": 217,
+            "screenshot_id": "web-t3t1-solana-staked-position",
+            "observation_id": "runtime-web-t3t1-solana-staked-position",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-solana-staked-position.png",
+            "sha256": "f21f236adb29c8ca2a3aa1e23aa06616949f98cfbf8eaeda4b40b682171cfd21",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.sol", "earn.opportunities.apy"],
+            "limits": "Solana stake/APY/reward-cycle state visible, with reward-history loading placeholders below. No populated reward history or newly executed stake is established."
+        },
+        {
+            "ordinal": 218,
+            "screenshot_id": "web-t3t1-solana-unstake-form",
+            "observation_id": "runtime-web-t3t1-solana-unstake-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-solana-unstake-form.png",
+            "sha256": "b18603436462acfd5523d4098c13327022610835a046d6085effe5b16270aef6",
+            "width": 1440,
+            "height": 1000,
+            "result": "correction-proposed",
+            "visible_feature_ids": ["earn.staking.sol.unstake"],
+            "limits": "Unstake SOL shows a populated amount, fractions/Max, a calculated rent-inclusive network-fee value and deactivation/claim timeline; Continue is enabled, but no unstake was submitted."
+        },
+        {
+            "ordinal": 219,
+            "screenshot_id": "web-t3t1-solana-deactivation-pending",
+            "observation_id": "runtime-web-t3t1-solana-deactivation-pending",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-solana-deactivation-pending.png",
+            "sha256": "87af8cb88abb7f02cd02a0d6c149d69f5968e26146289662ecb1da586217267a",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["earn.staking.sol.unstake"],
+            "limits": "Unstaking countdown comes from the explicit deactivation fixture-mode change. It does not prove an unstaking transaction was completed in this session."
+        },
+        {
+            "ordinal": 220,
+            "screenshot_id": "web-t3t1-ethereum-fee-selection",
+            "observation_id": "runtime-web-t3t1-ethereum-fee-selection",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-ethereum-fee-selection.png",
+            "sha256": "86a6aa6a06cb6a4791b10d5dcdc03497ed5d2b72d58b57eba72e2aa0a1d48406",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["wallet.send.fees", "wallet.send.fees.preset"],
+            "limits": "One Normal Ethereum rate/card, fee total and Customize fee visible; QA fiat/crypto prices are synthetic and may disagree."
+        },
+        {
+            "ordinal": 221,
+            "screenshot_id": "web-t3t1-ethereum-custom-gas",
+            "observation_id": "runtime-web-t3t1-ethereum-custom-gas",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-ethereum-custom-gas.png",
+            "sha256": "f38ef5dd40bd8a94ea9d3e914ab08b470be7c374877c8fa2582456180892d1ef",
+            "width": 1440,
+            "height": 1000,
+            "result": "correction-proposed",
+            "visible_feature_ids": [
+                "wallet.send.fees.custom",
+                "wallet.send.fees.gas-limit",
+                "wallet.send.fees.gas-price"
+            ],
+            "limits": "Custom Ethereum fee mode shows Gas limit, legacy Gas price in Gwei, Current fee, Maximum fee and Select standard fee. No invalid-value warning or suggested-value correction is visible; the icon beside Current fee is a gas-pump symbol, not a reset action."
+        },
+        {
+            "ordinal": 222,
+            "screenshot_id": "web-t3t1-ethereum-data-and-nonce",
+            "observation_id": "runtime-web-t3t1-ethereum-data-and-nonce",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-ethereum-data-and-nonce.png",
+            "sha256": "ac4b292e182c9f008f50ede0723af39a85726c1acdb5fa7153cc3bc2481c3654",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "wallet.send.advanced.evm-data",
+                "wallet.send.advanced.evm-nonce"
+            ],
+            "limits": "Blank Data and editable Nonce fields plus custom legacy gas controls visible. No calldata or nonce-bearing transaction submitted."
+        },
+        {
+            "ordinal": 223,
+            "screenshot_id": "web-t3t1-bitcoin-sign-message",
+            "observation_id": "runtime-web-t3t1-bitcoin-sign-message",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-sign-message.png",
+            "sha256": "1d2cbed8d132f145ee6bfa3c085a1971d644d920bb70b8304601d86d272cc980",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "wallet.sign-verify",
+                "wallet.sign-verify.sign",
+                "wallet.sign-verify.address",
+                "wallet.sign-verify.hex",
+                "wallet.sign-verify.format"
+            ],
+            "limits": "Empty Bitcoin signing form and Trezor/Electrum signature-format selector visible; no address selected, signature created or hardware prompt confirmed."
+        },
+        {
+            "ordinal": 224,
+            "screenshot_id": "web-t3t1-verify-message-form",
+            "observation_id": "runtime-web-t3t1-verify-message-form",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-verify-message-form.png",
+            "sha256": "4161db2fe848ef494c81f5f30a8fc246398ebaa9f64c352ab88248db14c77afb",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["wallet.sign-verify.verify"],
+            "limits": "Empty verification fields and Verify action only; no valid/invalid signature verification result."
+        },
+        {
+            "ordinal": 225,
+            "screenshot_id": "web-t3t1-bitcoin-fee-cards-visible",
+            "observation_id": "runtime-web-t3t1-bitcoin-fee-cards-visible",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-fee-cards-visible.png",
+            "sha256": "c7d33b3387c4368e03bab7559d958cbc5806569714ac83429a84b1e2d8982a52",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["wallet.send.fees.preset", "wallet.send.fees.custom"],
+            "limits": "All Low/Normal/High Bitcoin cards and Customize fee are now visible; no actual send or fee-market correctness is established."
+        },
+        {
+            "ordinal": 226,
+            "screenshot_id": "web-t3t1-transaction-list-visible",
+            "observation_id": "runtime-web-t3t1-transaction-list-visible",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-transaction-list-visible.png",
+            "sha256": "51bd33bd08b60020d368541af31184b8565c07d5a4c214d234b63eb60d67d0bc",
+            "width": 1440,
+            "height": 1000,
+            "result": "correction-proposed",
+            "visible_feature_ids": [
+                "wallet.transactions.list",
+                "wallet.transactions.search",
+                "wallet.transactions.suspicious",
+                "wallet.transactions.export"
+            ],
+            "limits": "The Transactions section shows a synthetic fixture transaction, search field, suspicious-transaction filter icon with an explanatory tooltip, and export entry icon. No export-format menu or downloaded file is visible."
+        },
+        {
+            "ordinal": 227,
+            "screenshot_id": "web-t3t1-nft-empty-collections",
+            "observation_id": "runtime-web-t3t1-nft-empty-collections",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-nft-empty-collections.png",
+            "sha256": "7ad289121f4eab3da2f9cafa62558288b86d18253ef3a84e6529d75fe8e10ecd",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "wallet.nfts.collections",
+                "wallet.nfts.hidden",
+                "wallet.nfts.search"
+            ],
+            "limits": "Collections/Hidden tabs, search field and empty collection state visible. No collection contents, successful search or NFT transaction."
+        },
+        {
+            "ordinal": 228,
+            "screenshot_id": "web-t3t1-nft-hidden-empty",
+            "observation_id": "runtime-web-t3t1-nft-hidden-empty",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-nft-hidden-empty.png",
+            "sha256": "4fe1b82e3bcf6a1216850b1474297528d7a23f9f7f58805c9139772b09bd2783",
+            "width": 1440,
+            "height": 1000,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["wallet.nfts.hidden"],
+            "limits": "Hidden collections empty state only; no hide/unhide action or collection details."
+        }
+    ],
+    "supplemental_reviews": [
+        {
+            "screenshot_id": "web-t3t1-bitcoin-custom-fee",
+            "path": "docs/features/feature-map/runtime/screenshots/web-t3t1-bitcoin-custom-fee.png",
+            "sha256": "04b67c04247d5371b027eb0e09622277a0921b5ef0058c336816624cef40b3af",
+            "method": "Viewed original PNG at native size on parent request to audit earlier recommended-reset association.",
+            "result": "correction-proposed"
+        }
+    ],
+    "findings": [
+        {
+            "screenshot_id": "web-t3t1-portfolio-assets-table",
+            "observation_id": "runtime-web-t3t1-portfolio-assets-table",
+            "title": "The visible portfolio layout is a card grid",
+            "severity": "low",
+            "visible_description": "My assets is displayed as a grid of network cards with balance and staking/token breakdowns, Add networks and table/grid controls. This capture visibly covers the asset cards that were below the fold in earlier dashboard captures.",
+            "visible_feature_ids": ["wallet.portfolio.assets", "wallet.portfolio.assets.layout"],
+            "source_references": [],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "web-t3t1-tron-unstake-form",
+            "observation_id": "runtime-web-t3t1-tron-unstake-form",
+            "title": "The Tron unstake fee is not calculated",
+            "severity": "low",
+            "visible_description": "Tron unstake shows Bandwidth/Energy choices, empty crypto amount with fiat-entry toggle and Max, a Network fee row reading To be calculated, and the withdrawal-delay explanation; Continue is disabled and no unstake was submitted.",
+            "visible_feature_ids": ["earn.staking.trx.unfreeze"],
+            "source_references": [],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "web-t3t1-solana-unstake-form",
+            "observation_id": "runtime-web-t3t1-solana-unstake-form",
+            "title": "A calculated SOL fee is visible",
+            "severity": "low",
+            "visible_description": "Unstake SOL shows a populated amount, fractions/Max, a calculated rent-inclusive network-fee value and deactivation/claim timeline; Continue is enabled, but no unstake was submitted.",
+            "visible_feature_ids": ["earn.staking.sol.unstake"],
+            "source_references": [],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "web-t3t1-ethereum-custom-gas",
+            "observation_id": "runtime-web-t3t1-ethereum-custom-gas",
+            "title": "Recommended-bound correction is not shown",
+            "severity": "medium",
+            "visible_description": "Custom Ethereum fee mode shows Gas limit, legacy Gas price in Gwei, Current fee, Maximum fee and Select standard fee. No invalid-value warning or suggested-value correction is visible; the icon beside Current fee is a gas-pump symbol, not a reset action.",
+            "visible_feature_ids": [
+                "wallet.send.fees.custom",
+                "wallet.send.fees.gas-limit",
+                "wallet.send.fees.gas-price"
+            ],
+            "source_references": [
+                {
+                    "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CurrentFee.tsx",
+                    "line": 5
+                },
+                {
+                    "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx",
+                    "line": 178
+                },
+                {
+                    "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/FeeLevels/CustomFeePicker.tsx",
+                    "line": 30
+                }
+            ],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "web-t3t1-transaction-list-visible",
+            "observation_id": "runtime-web-t3t1-transaction-list-visible",
+            "title": "Export entry is visible without its menu",
+            "severity": "low",
+            "visible_description": "The Transactions section shows a synthetic fixture transaction, search field, suspicious-transaction filter icon with an explanatory tooltip, and export entry icon. No export-format menu or downloaded file is visible.",
+            "visible_feature_ids": [
+                "wallet.transactions.list",
+                "wallet.transactions.search",
+                "wallet.transactions.suspicious",
+                "wallet.transactions.export"
+            ],
+            "source_references": [],
+            "status": "proposed-additive-correction"
+        },
+        {
+            "screenshot_id": "web-t3t1-bitcoin-custom-fee",
+            "observation_id": "runtime-web-t3t1-bitcoin-custom-fee",
+            "title": "Select standard fee is not suggested-value correction",
+            "severity": "medium",
+            "visible_description": "Bitcoin custom fee mode shows a sat/vB input, Current fee, transaction size, computed total and Select standard fee, alongside Coin control selection total. No invalid-fee warning or suggested-value correction is visible.",
+            "visible_feature_ids": [
+                "wallet.send.fees.custom",
+                "wallet.send.fees.bitcoin-rate",
+                "wallet.send.coin-control.selection-total"
+            ],
+            "source_references": [
+                {
+                    "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/FeeLevels/CustomFeePicker.tsx",
+                    "line": 30
+                }
+            ],
+            "status": "proposed-additive-correction"
+        }
+    ],
+    "recapture_recommendations": [
+        {
+            "feature_id": "wallet.send.fees.recommended-reset",
+            "locator": "Custom Ethereum Gas limit field (data-testid derived from FEE_LIMIT)",
+            "source": {
+                "path": "packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx",
+                "line": 73
+            },
+            "action": "With local QA form only, enter a value that triggers its recommended-bound validation; capture the resulting suggestion action without submitting. For EIP-1559-specific max-fee correction, use an explicitly EIP-1559-shaped fixture and capture that separate branch. Current fixture shows the legacy gas-price branch."
+        }
+    ],
+    "interpretation": "Snapshots prove visible controls and fixture states, not successful staking, claiming, withdrawal, message signing/verification or transaction broadcast. Populated reward history remains unimplemented locally."
+}

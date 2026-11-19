@@ -1,0 +1,243 @@
+{
+    "audit_date": "2026-11-15",
+    "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+    "checks": {
+        "structural_and_references": {
+            "command": "node docs/features/feature-map/verify.ts",
+            "result": "pass",
+            "details": "Unique raw/canonical IDs, complete source identity reconciliation, parent reachability, acyclic containment, platform navigation, component/evidence file existence and line bounds, CSV/GraphML consistency, all test-source dispositions and README local links."
+        },
+        "json_schema": {
+            "engine": "Locally installed ajv/dist/2020",
+            "schema": "schema.json",
+            "result": "pass"
+        },
+        "explorer_behavior": {
+            "engine": "Locally installed jsdom",
+            "result": "pass",
+            "details": "Initial rendering, feature search, detail selection, present/absent/unknown platform filters, retained branch expansion and internal-reference toggle; zero DOM script errors. This is not a visual-browser or app-runtime test."
+        },
+        "docs_summary": {
+            "rule": "packages/requirements/src/requirements/docs-summary/requireDocsSummary.ts",
+            "result": "pass",
+            "execution": "Invoked the repository rule directly using node --import tsx; the regular CLI wrapper could not complete in this sandbox."
+        },
+        "formatting": {
+            "engine": "Locally installed Prettier 3.9.6 via pinned Yarn 4.18.0 exec",
+            "result": "pass",
+            "scope": "New Markdown, JSON and HTML files plus docs/SUMMARY.md.",
+            "command": "node .yarn/releases/yarn-4.18.0.cjs exec ./node_modules/.bin/prettier --check docs/features/feature-map/*.json docs/features/feature-map/*.html docs/features/feature-map/*.md docs/features/feature-map/parts/*.json docs/SUMMARY.md"
+        }
+    },
+    "limitations": [
+        "The installed Prettier version is 3.9.6; package.json requests ^3.9.9. Dependencies were not reinstalled.",
+        "The ordinary yarn prettier alias was unavailable in this prepared install; the existing local binary was invoked through the pinned Yarn exec command.",
+        "The tsx CLI initially failed to create its sandbox IPC socket; node --import tsx provided an in-process loader.",
+        "The requirements CLI assumes its workspace cwd; the root invocation reached the wrong Nx cwd. The docs-summary repository rule was then invoked directly, avoiding unrelated affected-workspace discovery.",
+        "T3 HTML screenshot preview could not run because host browser system libraries are missing. No screenshot-rendering pass is claimed.",
+        "No application builds, application E2E/unit tests, native simulator sessions, device operations, provider checkouts or blockchain transactions were performed.",
+        "All three application screenshots are historical repository assets, not newly captured UI.",
+        "Source presence and intended scenarios do not establish production rollout or current third-party provider availability."
+    ],
+    "subscription_guard": {
+        "weekly_used_percent_at_last_observation": 12,
+        "weekly_remaining_percent_at_last_observation": 88,
+        "requested_stop_below_remaining_percent": 20,
+        "threshold_reached": false
+    },
+    "runtime_checkpoints": [
+        {
+            "at": "2026-11-15T08:07:41.661947+00:00",
+            "phase": "Web runtime audit in progress",
+            "canonical_nodes": 573,
+            "original_nodes_preserved": 569,
+            "captures": 66,
+            "structural_verifier": "pass",
+            "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+            "environment_notes": [
+                "Current web app compiled and ran under local Chromium with Nix runtime libraries.",
+                "Pinned immutable dependency installation linked current workspace but failed USB legacy and bcrypto native builds; web compilation succeeded.",
+                "Task-only Trezor User Env Safe 5 emulator exercised onboarding, wallet forms, settings, help and activity.",
+                "Mobile current-source build succeeded; ordinary mobile onboarding remains unverified while simulator startup storage error is investigated.",
+                "Original checks and limitations above remain the historical source-only audit record."
+            ],
+            "subscription_guard": {
+                "weekly_used_percent": 15,
+                "weekly_remaining_percent": 85,
+                "stop_below_remaining_percent": 20,
+                "threshold_reached": false
+            }
+        },
+        {
+            "phase": "Desktop build preparation",
+            "web_runtime_captures": 110,
+            "new_feature_proposals_integrated": 5,
+            "desktop_ui_build": {
+                "result": "pass-with-warnings",
+                "command": "yarn workspace @suite-app/desktop-app build:ui",
+                "warnings": 2,
+                "duration_ms": 73914
+            },
+            "desktop_main_build": {
+                "result": "pass-with-warning",
+                "command": "yarn workspace @suite-app/desktop-app build:app",
+                "warnings": 1,
+                "duration_ms": 21754
+            },
+            "electron_binary": {
+                "version": "44.9.3",
+                "launch_version_check": "pass with existing Nix runtime libraries"
+            },
+            "desktop_application_launched": false,
+            "notes": [
+                "Builds use repository commands with local tsx loader, no app source or dependency manifest changes.",
+                "Sentry upload token disabled for QA builds.",
+                "Desktop renderer uses production bundle; a successful build does not yet establish runtime behavior."
+            ]
+        },
+        {
+            "phase": "Screenshot-association accuracy",
+            "all_web_captures": 110,
+            "visual_reviews": [
+                {
+                    "range": "1\u201366",
+                    "report": "runtime/screenshot-quality.json"
+                },
+                {
+                    "range": "66\u2013110",
+                    "report": "runtime/screenshot-quality-second-pass.json"
+                }
+            ],
+            "additive_errata": 17,
+            "original_feature_hashes": "569/569 preserved",
+            "artifact_verifier": "pass at 574 features",
+            "explorer_badge_check": {
+                "result": "pass",
+                "engine": "jsdom with matchMedia stub",
+                "checks": [
+                    "Tree counts use effective screenshot associations.",
+                    "Superseded associations remain accessible with correction notices.",
+                    "Feature selection renders actual/corrected evidence without DOM script errors."
+                ]
+            },
+            "test_harness_adjustments": [
+                "Initial DOM probes used incorrect detail/tree selectors and omitted jsdom matchMedia; corrected harness passed. These were harness issues, not app failures."
+            ]
+        },
+        {
+            "phase": "Native integration and pinned desktop builds",
+            "canonical_nodes": 578,
+            "captures": 168,
+            "native_build_report": "runtime/native-build.json",
+            "native_observations": 58,
+            "native_new_features": 4,
+            "original_feature_hashes": "569/569 preserved",
+            "artifact_verifier": "pass",
+            "desktop_pinned_toolchain": {
+                "node": "24.17.0",
+                "yarn": "4.18.0",
+                "ui_build": "pass with 2 warnings; 44200ms",
+                "main_build": "pass with 1 warning; 28187ms",
+                "reason_for_repeat": "Initial shell Node was 24.21.0; repeated with the exact .nvmrc Node for instruction compliance."
+            }
+        }
+    ],
+    "runtime_final": {
+        "date": "2026-11-15T09:24:32.126834+00:00",
+        "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+        "canonical_feature_nodes": 578,
+        "baseline_features_preserved": 569,
+        "new_feature_nodes": 9,
+        "active_observed_feature_nodes": 271,
+        "features_with_effective_screenshot_associations": 306,
+        "screenshots": 238,
+        "screenshots_by_platform": {
+            "web": 167,
+            "mobile": 58,
+            "desktop": 13
+        },
+        "additive_evidence_errata": 32,
+        "all_screenshots_visually_reviewed": true,
+        "model_comparison": "runtime/model-runtime-comparison.json",
+        "source_model_matrix": "runtime/model-capabilities.json",
+        "mobile_provenance": "runtime/native-build.json",
+        "desktop_provenance": "runtime/desktop-build.json",
+        "web_pinned_node_build": {
+            "node": "24.17.0",
+            "yarn": "4.18.0",
+            "result": "compiled with 2 warnings",
+            "duration_ms": 20444
+        },
+        "checks_pending_final_run": [],
+        "not_run": ["Application unit suites", "Full application E2E suites"],
+        "limits": [
+            "238 captures demonstrate stated UI under their recorded conditions, not every feature execution.",
+            "T2B1 has no distinct available emulator; its differences remain source-derived.",
+            "No Android runtime, physical radio/NFC/battery/authenticity or real-chain/provider operation was tested.",
+            "Original checks and limitations above describe the earlier source-only phase; runtime records are supplemental."
+        ],
+        "subscription_guard": {
+            "weekly_used_percent": 19,
+            "weekly_remaining_percent": 81,
+            "stop_below_remaining_percent": 20,
+            "threshold_reached": false
+        },
+        "planned_final_checks": [
+            "Artifact integrity and references",
+            "AJV JSON Schema",
+            "Offline explorer DOM",
+            "Prettier 3.9.9",
+            "Exhaustive docs summary",
+            "Final scoped diff review"
+        ],
+        "final_checks": {
+            "artifact_integrity_and_references": "pass",
+            "json_schema_ajv_2020": "pass",
+            "offline_explorer_dom": "pass with jsdom matchMedia stub",
+            "effective_capture_badges": "pass",
+            "prettier_3_9_9": "pass",
+            "exhaustive_docs_summary": "pass",
+            "scoped_diff_and_whitespace": "pass",
+            "screenshot_manifest_vs_files": "238 listed / 238 PNG files / no missing or orphan PNGs",
+            "checked_at": "2026-11-15T09:26:34.819227+00:00"
+        },
+        "cleanup": {
+            "task_browser": "closed",
+            "desktop_qa_app": "closed",
+            "web_and_fixture_servers": "stopped",
+            "trezor_user_env": "already stopped when cleanup commands were attempted; no controller listener remained",
+            "remaining_task_listener_ports": [],
+            "native_qa_app": "left open on the assigned simulator; advisory claim released",
+            "original_profiles_and_other_sessions": "untouched"
+        }
+    },
+    "test_quality_review": {
+        "source_commit": "8d6be9edbf990465176d57b4abc007bac17ca5e6",
+        "date": "2026-11-15T15:48:07.134238+00:00",
+        "features_assessed": 578,
+        "assessment_count": 2312,
+        "axes": ["desktop_automated", "android_automated", "desktop_manual", "android_manual"],
+        "reviewed_test_helper_config_files": 383,
+        "scope": "Desktop computer web/Electron; Android automated and applicable native manual procedures; iOS-only automated excluded. Reviewed sources include relevant implementation proof for interpreting test outcomes.",
+        "methodology": "test-coverage/README.md",
+        "assessment_manifest": "test-coverage/audit.json",
+        "prior_feature_and_image_preservation": {
+            "status": "pass",
+            "feature_records": 578,
+            "screenshots": 238
+        },
+        "source_based_not_execution": true,
+        "application_tests_run": false,
+        "checks": {
+            "artifact_integrity_source_links_and_exports": "pass",
+            "all_four_integer_scores_per_feature": "pass",
+            "reviewed_source_fingerprints": "pass",
+            "full_schema_and_viewer_checks": "pass",
+            "formatting": "pass"
+        },
+        "calibration_notes": [
+            "Android Send basic successful-broadcast walkthrough is 5; absent final transaction value/status assertions remain explicit gaps.",
+            "Skipped automation, iOS-only cases and placeholder manual steps do not establish Android active coverage."
+        ]
+    }
+}

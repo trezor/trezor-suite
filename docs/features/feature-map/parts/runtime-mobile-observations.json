@@ -1,0 +1,1835 @@
+{
+    "observations": [
+        {
+            "id": "runtime-mobile-storage-recovery",
+            "feature_ids": ["app-settings.database-recovery"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Launch current-source QA iOS app > Unable to load app data > Clear app storage",
+            "description": "The native emergency storage alert offers Clear app storage and Restart app. Clear app storage was pressed in a fresh disposable QA app; the same error returned. This capture verifies the recovery controls, not successful recovery.",
+            "screenshot_ids": ["mobile-storage-recovery"],
+            "conditions": [
+                "Current source 8d6be9edbf990465176d57b4abc007bac17ca5e6, product26.12.1, iOS27.2 simulator.",
+                "Initial Release QA build used CODE_SIGNING_ALLOWED=NO; startup failure may be a signing/keychain test-environment artifact. No normal-production startup failure is asserted.",
+                "No wallet or hardware device imported or connected.",
+                "A subsequent standard ad-hoc signed simulator rebuild successfully completed onboarding; the initial load error was specific to the task build configuration."
+            ],
+            "date": "2026-11-15T08:05:04.933257+00:00"
+        },
+        {
+            "id": "runtime-mobile-onboarding-welcome",
+            "feature_ids": ["app-onboarding", "mobile.onboarding.welcome"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Fresh launch > Welcome",
+            "description": "The signed current-source QA app displayed Trezor Suite / Take control and Let's get started; the start action opened analytics consent.",
+            "screenshot_ids": ["mobile-onboarding-welcome"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:07:52.980415+00:00"
+        },
+        {
+            "id": "runtime-mobile-onboarding-analytics",
+            "feature_ids": ["app-onboarding", "app-settings.analytics"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "First launch > Let's get started > Analytics consent",
+            "description": "The mobile consent screen explained private data and collected data, with anonymous-help toggle, Confirm and More about privacy.",
+            "screenshot_ids": ["mobile-onboarding-analytics"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:08:13.755594+00:00"
+        },
+        {
+            "id": "runtime-mobile-onboarding-analytics-disabled",
+            "feature_ids": ["app-settings.analytics"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Analytics consent > Help us anonymously off > Confirm",
+            "description": "The optional analytics switch was disabled and the choice confirmed before continuing onboarding.",
+            "screenshot_ids": ["mobile-onboarding-analytics-disabled"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:08:28.442720+00:00"
+        },
+        {
+            "id": "runtime-mobile-onboarding-biometrics",
+            "feature_ids": ["mobile.onboarding.biometrics"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Analytics consent > Confirm > Biometric authentication",
+            "description": "The app offered Enable and Not now for biometric app lock; Not now was used. Actual biometric enrollment was not exercised.",
+            "screenshot_ids": ["mobile-onboarding-biometrics"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:08:45.714868+00:00"
+        },
+        {
+            "id": "runtime-mobile-onboarding-residence",
+            "feature_ids": ["mobile.onboarding.residence"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Biometric setup > Not now > Trading country",
+            "description": "Trading residence onboarding showed a country picker, availability status, Confirm location and Not now. The simulator preselected CZE; Not now was used without confirming personal information.",
+            "screenshot_ids": ["mobile-onboarding-residence"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:09:11.283087+00:00"
+        },
+        {
+            "id": "runtime-mobile-empty-home",
+            "feature_ids": ["wallet.portfolio", "mobile.accounts.import"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Complete onboarding > Home",
+            "description": "The empty Home offered Connect your Trezor Safe7 and Sync & Track. No device pairing or account import was completed.",
+            "screenshot_ids": ["mobile-empty-home"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:09:35.910298+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-home",
+            "feature_ids": ["app-settings"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Home > Settings",
+            "description": "The mobile Settings tab opened with a Trezor promotion and the shared wallet/device manager header.",
+            "screenshot_ids": ["mobile-settings-home"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:10:07.535568+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-general",
+            "feature_ids": ["app-settings", "app-settings.privacy"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > scroll to General",
+            "description": "General settings visibly offered Preferences and Privacy & security; Preferences was opened.",
+            "screenshot_ids": ["mobile-settings-general"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:10:29.857759+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-preferences",
+            "feature_ids": ["app-settings.localization", "app-settings.appearance"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Preferences",
+            "description": "The Preferences screen grouped Language, Currency, Bitcoin units and Theme controls.",
+            "screenshot_ids": ["mobile-settings-preferences"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:10:58.306001+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-language",
+            "feature_ids": ["app-settings.language", "app-settings.language-system"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Preferences > Language",
+            "description": "The language bottom sheet showed System selected and language choices including English, German, Czech and others. It was closed without changing language.",
+            "screenshot_ids": ["mobile-settings-language"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:11:18.361171+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-currency",
+            "feature_ids": ["app-settings.fiat-currency"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Preferences > Currency",
+            "description": "The fiat-currency sheet showed USD selected and a list including EUR and GBP; no preference was changed.",
+            "screenshot_ids": ["mobile-settings-currency"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:11:38.422342+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-bitcoin-unit",
+            "feature_ids": ["app-settings.bitcoin-unit"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Preferences > Bitcoin units",
+            "description": "The unit sheet offered Bitcoin and Satoshis, with Bitcoin selected.",
+            "screenshot_ids": ["mobile-settings-bitcoin-unit"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:12:01.613538+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-theme",
+            "feature_ids": ["app-settings.theme"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Preferences > scroll to Theme",
+            "description": "Theme cards offered Standard, Dark and System; System was initially selected.",
+            "screenshot_ids": ["mobile-settings-theme"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:12:21.101703+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-theme-dark",
+            "feature_ids": ["app-settings.theme"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Preferences > Theme > Dark",
+            "description": "Selecting Dark changed the actual app appearance. System was restored afterwards.",
+            "screenshot_ids": ["mobile-settings-theme-dark"],
+            "conditions": [
+                "Current-source 26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Fresh isolated iOS27.2 simulator app, no wallet/device/account imported."
+            ],
+            "date": "2026-11-15T08:12:36.913837+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-privacy",
+            "feature_ids": [
+                "app-settings.privacy",
+                "app-settings.biometrics",
+                "wallet.portfolio.discreet",
+                "app-settings.analytics"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Privacy & security",
+            "description": "The mobile screen offered biometric authentication, discreet mode and usage-data toggles; usage data remained off after onboarding. The displayed dollar amount is a fixed UI illustration, not an account balance.",
+            "screenshot_ids": ["mobile-settings-privacy"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:13:31.670300+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-support",
+            "feature_ids": ["help.support", "mobile.settings.support.faq"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Support",
+            "description": "The support page presented expandable FAQs about connected devices, portfolio tracking, public keys, supported firmware, assets, charts and auto-ejection.",
+            "screenshot_ids": ["mobile-settings-support"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:14:09.300617+00:00"
+        },
+        {
+            "id": "runtime-mobile-support-model-faq",
+            "feature_ids": ["mobile.settings.support.faq"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Support > Can I connect my Trezor?",
+            "description": "The expanded iOS FAQ explicitly says Trezor Safe7 can connect. This verifies user-facing iOS model guidance; no physical model compatibility was tested.",
+            "screenshot_ids": ["mobile-support-model-faq"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:14:21.968724+00:00"
+        },
+        {
+            "id": "runtime-mobile-support-about-legal",
+            "feature_ids": ["mobile.settings.support.legal", "mobile.settings.support.about"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Support > scroll to Legal",
+            "description": "The page showed Terms & conditions, Privacy policy, social links and the exact source commit8d6be9edbf990465176d57b4abc007bac17ca5e6. External links were not opened.",
+            "screenshot_ids": ["mobile-support-about-legal"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:14:54.438997+00:00"
+        },
+        {
+            "id": "runtime-mobile-support-about",
+            "feature_ids": [
+                "help.support.contact",
+                "app-settings.log",
+                "mobile.settings.support.about"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Support > Get more help / About",
+            "description": "Trezor Support and Application log entry points and About Trezor Suite content were visibly present. Raw logs and external support submission were not opened.",
+            "screenshot_ids": ["mobile-support-about"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:15:09.822126+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-trading-residence",
+            "feature_ids": ["mobile.settings.trading-residence"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Enable trading",
+            "description": "The trading-residence setting was reached from Settings after skipping onboarding residence. The country was not confirmed and no provider flow was opened.",
+            "screenshot_ids": ["mobile-settings-trading-residence"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:15:37.159356+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-features-lower",
+            "feature_ids": ["app-settings"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > scroll to lower feature settings",
+            "description": "Suite Sync, Security, Advanced and Experimental entry points and product version26.12.1 were visible.",
+            "screenshot_ids": ["mobile-settings-features-lower"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:16:05.733596+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-security",
+            "feature_ids": ["app-settings.security", "app-settings.mev", "app-settings.dust"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Security",
+            "description": "The screen offered enabled MEV protection with eligible-network guidance, plus Dust phishing protection.",
+            "screenshot_ids": ["mobile-settings-security"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:16:27.619779+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-dust",
+            "feature_ids": ["app-settings.dust", "app-settings.dust-threshold"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Security > Dust phishing protection",
+            "description": "Dust protection had an enabled switch and an editable USD threshold. No preference or account data was modified.",
+            "screenshot_ids": ["mobile-settings-dust"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:16:46.904941+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-advanced",
+            "feature_ids": [
+                "app-settings.advanced",
+                "device-settings.authenticity-opt-out",
+                "device-settings.firmware-authenticity",
+                "app-settings.address-display"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Advanced",
+            "description": "The app showed enabled Device authenticity check, Firmware authenticity check and Spaced address formatting preferences. Checks were not disabled; no actual hardware authentication was run.",
+            "screenshot_ids": ["mobile-settings-advanced"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:17:12.721157+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-advanced-lower",
+            "feature_ids": [
+                "app-settings.address-display",
+                "app-settings.testnets",
+                "app-settings.network-reserve"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Advanced > scroll lower",
+            "description": "The lower page showed spaced address formatting, Testnet networks off, and Network reserve on with network-availability guidance.",
+            "screenshot_ids": ["mobile-settings-advanced-lower"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:17:29.441297+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-experimental",
+            "feature_ids": ["app-settings.experimental", "app-settings.slip24"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Experimental",
+            "description": "The mobile experimental page showed SLIP-24 clear-signing toggle and experienced-user guidance. The toggle remained off.",
+            "screenshot_ids": ["mobile-settings-experimental"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:17:55.884518+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-suite-sync",
+            "feature_ids": ["labeling.suite-sync"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Suite Sync",
+            "description": "Suite Sync was disabled; the screen offered a server selector and Confirm. Sync was not enabled or authorized.",
+            "screenshot_ids": ["mobile-settings-suite-sync"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:18:21.524733+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-suite-sync-server",
+            "feature_ids": ["labeling.suite-sync.server"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Suite Sync > Server",
+            "description": "The server sheet offered Trezor default and Custom. No server was changed or contacted for wallet data.",
+            "screenshot_ids": ["mobile-settings-suite-sync-server"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:18:37.276864+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-auto-eject",
+            "feature_ids": ["app-settings.auto-eject"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Eject wallets",
+            "description": "The no-wallet page explained remembered visibility and offered Auto-eject wallets, currently off.",
+            "screenshot_ids": ["mobile-settings-auto-eject"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:19:30.881312+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-networks",
+            "feature_ids": ["network-settings", "network-settings.enable"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Networks",
+            "description": "The network preference list offered network switches and per-network backend controls. Networks were off, and no switch was enabled or discovery triggered.",
+            "screenshot_ids": ["mobile-settings-networks"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:20:23.386750+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-bitcoin-backend",
+            "feature_ids": [
+                "network-settings.backends",
+                "network-settings.backends.connection-status",
+                "network-settings.explorer"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Networks > Bitcoin backend control",
+            "description": "The Bitcoin backend screen showed Disconnected, default Trezor server type, a Connect action and default explorer URL/path fields. Connect was not pressed.",
+            "screenshot_ids": ["mobile-settings-bitcoin-backend"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:20:44.908929+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-backend-type",
+            "feature_ids": ["network-settings.backends.type", "network-settings.backends.electrum"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Networks > Bitcoin backend > Server type",
+            "description": "The selector offered Trezor default, Blockbook and Electrum. Electrum was selected only as an uncommitted form draft.",
+            "screenshot_ids": ["mobile-settings-backend-type"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:21:03.430083+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-electrum-form",
+            "feature_ids": ["network-settings.backends.urls", "network-settings.backends.electrum"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Bitcoin backend > Server type > Electrum",
+            "description": "The empty Electrum Server address input showed host:port:protocol format guidance and a Connect action. No address was entered and Connect was not pressed.",
+            "screenshot_ids": ["mobile-settings-electrum-form"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:21:31.298315+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-backend-discard",
+            "feature_ids": ["network-settings.backends.discard"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Bitcoin backend > change type without connecting > Back",
+            "description": "Back navigation on the dirty backend form displayed Discard changes with Discard and Keep editing. Discard was used, leaving backend configuration unchanged.",
+            "screenshot_ids": ["mobile-settings-backend-discard"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:22:12.173139+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-network-search",
+            "feature_ids": ["network-settings.search"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Networks > Search",
+            "description": "The network-search input opened. Search on this simulator extends under the system status area; later navigation was restored by relaunching the QA app.",
+            "screenshot_ids": ["mobile-settings-network-search"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:22:30.694809+00:00"
+        },
+        {
+            "id": "runtime-mobile-settings-network-filtered",
+            "feature_ids": ["network-settings.search"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Settings > Networks > Search > Bitcoin",
+            "description": "Typing the public network name Bitcoin locally filtered the list to Bitcoin and Bitcoin Cash. No network was enabled.",
+            "screenshot_ids": ["mobile-settings-network-filtered"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:22:55.065012+00:00"
+        },
+        {
+            "id": "runtime-mobile-home-tracker-entry",
+            "feature_ids": ["mobile.accounts.import"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Home > scroll to Track your assets",
+            "description": "The no-wallet Home presented Sync & Track; it opened the portfolio-tracker import flow.",
+            "screenshot_ids": ["mobile-home-tracker-entry"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:24:12.027651+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-network-selection",
+            "feature_ids": ["mobile.accounts.import", "mobile.accounts.import.network"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Home > Sync & Track",
+            "description": "The import flow offered supported network choices, including Bitcoin and address-based token networks. No account was imported.",
+            "screenshot_ids": ["mobile-tracker-network-selection"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:24:31.964817+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-bitcoin-import",
+            "feature_ids": ["mobile.accounts.import.qr"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Sync & Track > Bitcoin",
+            "description": "Bitcoin import offered Scan public key XPUB and instructional Where is my public key help. The QR illustration is a bundled decorative asset, not an account code.",
+            "screenshot_ids": ["mobile-tracker-bitcoin-import"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:24:54.448006+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-xpub-help",
+            "feature_ids": ["mobile.accounts.import.help"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Sync & Track > Bitcoin > Where is my public key?",
+            "description": "The instructional sheet showed a bundled walkthrough video and explained desktop Suite > account Details > Show public key. No active wallet data was accessed.",
+            "screenshot_ids": ["mobile-tracker-xpub-help"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:25:15.077188+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-manual-xpub",
+            "feature_ids": ["mobile.accounts.import.manual-xpub"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Sync & Track > Bitcoin > scroll to manual entry",
+            "description": "The empty manual XPUB field was visible. Debug-environment fixture shortcuts were visible but never activated.",
+            "screenshot_ids": ["mobile-tracker-manual-xpub"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:25:34.650362+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-xpub-input",
+            "feature_ids": ["mobile.accounts.import.manual-xpub"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Bitcoin manual import > type deliberately invalid non-account text",
+            "description": "The manual field accepted a non-account draft and exposed Confirm. Confirm was not pressed: inspected Bitcoin schema accepts nonempty text into the subsequent discovery path, so validation is not claimed here.",
+            "screenshot_ids": ["mobile-tracker-xpub-input"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:26:17.197318+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-address-import",
+            "feature_ids": ["mobile.accounts.import.address", "mobile.accounts.import.qr"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Sync & Track > Ethereum",
+            "description": "Ethereum import offered Scan receive address and address-specific guidance, without exposing any wallet address.",
+            "screenshot_ids": ["mobile-tracker-address-import"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:26:24.785804+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-manual-address",
+            "feature_ids": ["mobile.accounts.import.address"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Sync & Track > Ethereum > scroll to manual input",
+            "description": "The empty manual address field and debug-only fixture shortcuts were visible. No fixture shortcut was activated.",
+            "screenshot_ids": ["mobile-tracker-manual-address"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:26:38.973929+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-invalid-address",
+            "feature_ids": ["mobile.accounts.import.wrong-key"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Ethereum manual import > deliberately invalid non-address text > Confirm",
+            "description": "The form displayed Address is not valid and remained on the same screen. Source schema rejects this string locally before navigation to account discovery. No valid address or public discovery was used.",
+            "screenshot_ids": ["mobile-tracker-invalid-address"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:27:21.747304+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-qr-scanner",
+            "feature_ids": ["mobile.accounts.import.qr"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Bitcoin import > Scan public key",
+            "description": "Opening the QR scanner requested camera permission; permission was declined on the disposable simulator. No QR code was scanned.",
+            "screenshot_ids": ["mobile-tracker-qr-scanner"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:28:05.749688+00:00"
+        },
+        {
+            "id": "runtime-mobile-tracker-qr-permission-fallback",
+            "feature_ids": [
+                "mobile.accounts.import.qr.permission",
+                "mobile.accounts.import.qr.gallery"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "QR scanner > decline camera permission",
+            "description": "The scanner displayed Camera access denied, Grant permission and Upload from gallery. Neither system settings nor photo library was opened; gallery import completion is not claimed.",
+            "screenshot_ids": ["mobile-tracker-qr-permission-fallback"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:28:30.360902+00:00"
+        },
+        {
+            "id": "runtime-mobile-empty-accounts",
+            "feature_ids": ["wallet.accounts"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Accounts tab with no imported account",
+            "description": "The Accounts empty state showed No accounts and search/add controls. No wallet account details or balance were present.",
+            "screenshot_ids": ["mobile-empty-accounts"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:29:09.016238+00:00"
+        },
+        {
+            "id": "runtime-mobile-accounts-add-menu",
+            "feature_ids": ["mobile.accounts.import.network"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Accounts > plus",
+            "description": "The plus action from empty Accounts opened Sync my assets network selection. No account was added.",
+            "screenshot_ids": ["mobile-accounts-add-menu"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:29:28.884410+00:00"
+        },
+        {
+            "id": "runtime-mobile-empty-earn",
+            "feature_ids": ["earn", "earn.opportunities"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Earn tab with empty portfolio",
+            "description": "The public Earn page listed staking opportunities with indicative rates; no rates are recorded as current recommendations and no wallet data was used.",
+            "screenshot_ids": ["mobile-empty-earn"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:29:51.820609+00:00"
+        },
+        {
+            "id": "runtime-mobile-earn-staking-gate",
+            "feature_ids": ["earn.staking"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Earn > Ethereum staking opportunity",
+            "description": "The app showed Staking is disabled in the portfolio tracker and directed the user to connect a device or use desktop. No staking flow or provider authorization was performed.",
+            "screenshot_ids": ["mobile-earn-staking-gate"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:30:12.666789+00:00"
+        },
+        {
+            "id": "runtime-mobile-empty-yield",
+            "feature_ids": ["earn.yield", "earn.opportunities"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Earn > scroll to DeFi Yield",
+            "description": "The public no-wallet page listed Trezor Steakhouse yield opportunities and Morpho attribution. No vault position, deposit or provider approval was opened.",
+            "screenshot_ids": ["mobile-empty-yield"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:30:35.349984+00:00"
+        },
+        {
+            "id": "runtime-mobile-earn-yield-gate",
+            "feature_ids": ["earn.yield"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Earn > DeFi Yield opportunity",
+            "description": "The yield opportunity tap showed the same portfolio-tracker restriction sheet, whose actual text says Staking is disabled. No yield transaction was possible in this state.",
+            "screenshot_ids": ["mobile-earn-yield-gate"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:31:06.715255+00:00"
+        },
+        {
+            "id": "runtime-mobile-empty-activity",
+            "feature_ids": ["help.activity"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Header bell > Activity > Notifications",
+            "description": "The Activity page showed Notifications and Release notes tabs and No notifications in the clean QA state.",
+            "screenshot_ids": ["mobile-empty-activity"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:31:32.646478+00:00"
+        },
+        {
+            "id": "runtime-mobile-activity-release-notes",
+            "feature_ids": ["help.activity.release-notes", "app-settings.changelog"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Activity > Release notes",
+            "description": "The app rendered public release notes for version26.12.1. Listed release features were not treated as runtime verification of those individual flows.",
+            "screenshot_ids": ["mobile-activity-release-notes"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:31:53.006653+00:00"
+        },
+        {
+            "id": "runtime-mobile-empty-device-manager",
+            "feature_ids": ["wallet-access"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Header wallet/device selector",
+            "description": "The empty wallet/device manager showed a generic greeting and Connect Trezor action. No device identifiers or saved wallets were present.",
+            "screenshot_ids": ["mobile-empty-device-manager"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:32:28.465957+00:00"
+        },
+        {
+            "id": "runtime-mobile-connect-safe7-instructions",
+            "feature_ids": ["connection.bluetooth", "connection.bluetooth.manual"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "status": "observed",
+            "navigation": "Header device selector > Connect Trezor",
+            "description": "The iOS connection flow displayed Turn on and unlock your Trezor Safe7 with a bundled power-button instructional animation. It was closed without discovery, pairing or hardware interaction.",
+            "screenshot_ids": ["mobile-connect-safe7-instructions"],
+            "conditions": [
+                "Current-source26.12.1 QA build, source8d6be9edbf990465176d57b4abc007bac17ca5e6; Release with embedded JavaScript and simulator ad-hoc signing.",
+                "Isolated iOS27.2 simulator app; no wallet/device/account imported, no valid descriptor or address supplied."
+            ],
+            "date": "2026-11-15T08:33:08.841302+00:00"
+        }
+    ],
+    "screenshots": [
+        {
+            "id": "mobile-storage-recovery",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-storage-recovery.png",
+            "feature_ids": ["app-settings.database-recovery"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Native startup storage-recovery alert in a fresh current-source QA build.",
+            "fixture_context": "Disposable current-source QA iOS simulator app; no wallet loaded and no secret data. Initial simulator signing configuration is under investigation.",
+            "captured_at": "2026-11-15T08:05:04.933257+00:00"
+        },
+        {
+            "id": "mobile-onboarding-welcome",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-welcome.png",
+            "feature_ids": ["app-onboarding", "mobile.onboarding.welcome"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The signed current-source QA app displayed Trezor Suite / Take control and Let's get started; the start action opened analytics consent.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:07:52.980415+00:00"
+        },
+        {
+            "id": "mobile-onboarding-analytics",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-analytics.png",
+            "feature_ids": ["app-onboarding", "app-settings.analytics"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The mobile consent screen explained private data and collected data, with anonymous-help toggle, Confirm and More about privacy.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:08:13.755594+00:00"
+        },
+        {
+            "id": "mobile-onboarding-analytics-disabled",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-analytics-disabled.png",
+            "feature_ids": ["app-settings.analytics"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The optional analytics switch was disabled and the choice confirmed before continuing onboarding.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:08:28.442720+00:00"
+        },
+        {
+            "id": "mobile-onboarding-biometrics",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-biometrics.png",
+            "feature_ids": ["mobile.onboarding.biometrics"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The app offered Enable and Not now for biometric app lock; Not now was used. Actual biometric enrollment was not exercised.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:08:45.714868+00:00"
+        },
+        {
+            "id": "mobile-onboarding-residence",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-onboarding-residence.png",
+            "feature_ids": ["mobile.onboarding.residence"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Trading residence onboarding showed a country picker, availability status, Confirm location and Not now. The simulator preselected CZE; Not now was used without confirming personal information.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:09:11.283087+00:00"
+        },
+        {
+            "id": "mobile-empty-home",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-home.png",
+            "feature_ids": ["wallet.portfolio", "mobile.accounts.import"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The empty Home offered Connect your Trezor Safe7 and Sync & Track. No device pairing or account import was completed.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:09:35.910298+00:00"
+        },
+        {
+            "id": "mobile-settings-home",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-home.png",
+            "feature_ids": ["app-settings"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The mobile Settings tab opened with a Trezor promotion and the shared wallet/device manager header.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:10:07.535568+00:00"
+        },
+        {
+            "id": "mobile-settings-general",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-general.png",
+            "feature_ids": ["app-settings", "app-settings.privacy"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "General settings visibly offered Preferences and Privacy & security; Preferences was opened.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:10:29.857759+00:00"
+        },
+        {
+            "id": "mobile-settings-preferences",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-preferences.png",
+            "feature_ids": ["app-settings.localization", "app-settings.appearance"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The Preferences screen grouped Language, Currency, Bitcoin units and Theme controls.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:10:58.306001+00:00"
+        },
+        {
+            "id": "mobile-settings-language",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-language.png",
+            "feature_ids": ["app-settings.language", "app-settings.language-system"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The language bottom sheet showed System selected and language choices including English, German, Czech and others. It was closed without changing language.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:11:18.361171+00:00"
+        },
+        {
+            "id": "mobile-settings-currency",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-currency.png",
+            "feature_ids": ["app-settings.fiat-currency"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The fiat-currency sheet showed USD selected and a list including EUR and GBP; no preference was changed.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:11:38.422342+00:00"
+        },
+        {
+            "id": "mobile-settings-bitcoin-unit",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-bitcoin-unit.png",
+            "feature_ids": ["app-settings.bitcoin-unit"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The unit sheet offered Bitcoin and Satoshis, with Bitcoin selected.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:12:01.613538+00:00"
+        },
+        {
+            "id": "mobile-settings-theme",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-theme.png",
+            "feature_ids": ["app-settings.theme"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Theme cards offered Standard, Dark and System; System was initially selected.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:12:21.101703+00:00"
+        },
+        {
+            "id": "mobile-settings-theme-dark",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-theme-dark.png",
+            "feature_ids": ["app-settings.theme"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Selecting Dark changed the actual app appearance. System was restored afterwards.",
+            "fixture_context": "Disposable current-source QA app on assigned iOS27.2 simulator; no wallet, credentials or account data.",
+            "captured_at": "2026-11-15T08:12:36.913837+00:00"
+        },
+        {
+            "id": "mobile-settings-privacy",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-privacy.png",
+            "feature_ids": [
+                "app-settings.privacy",
+                "app-settings.biometrics",
+                "wallet.portfolio.discreet",
+                "app-settings.analytics"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The mobile screen offered biometric authentication, discreet mode and usage-data toggles; usage data remained off after onboarding. The displayed dollar amount is a fixed UI illustration, not an account balance.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:13:31.670300+00:00"
+        },
+        {
+            "id": "mobile-settings-support",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-support.png",
+            "feature_ids": ["help.support", "mobile.settings.support.faq"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The support page presented expandable FAQs about connected devices, portfolio tracking, public keys, supported firmware, assets, charts and auto-ejection.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:14:09.300617+00:00"
+        },
+        {
+            "id": "mobile-support-model-faq",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-support-model-faq.png",
+            "feature_ids": ["mobile.settings.support.faq"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The expanded iOS FAQ explicitly says Trezor Safe7 can connect. This verifies user-facing iOS model guidance; no physical model compatibility was tested.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:14:21.968724+00:00"
+        },
+        {
+            "id": "mobile-support-about-legal",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-support-about-legal.png",
+            "feature_ids": ["mobile.settings.support.legal", "mobile.settings.support.about"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The page showed Terms & conditions, Privacy policy, social links and the exact source commit8d6be9edbf990465176d57b4abc007bac17ca5e6. External links were not opened.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:14:54.438997+00:00"
+        },
+        {
+            "id": "mobile-support-about",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-support-about.png",
+            "feature_ids": [
+                "help.support.contact",
+                "app-settings.log",
+                "mobile.settings.support.about"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Trezor Support and Application log entry points and About Trezor Suite content were visibly present. Raw logs and external support submission were not opened.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:15:09.822126+00:00"
+        },
+        {
+            "id": "mobile-settings-trading-residence",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-trading-residence.png",
+            "feature_ids": ["mobile.settings.trading-residence"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The trading-residence setting was reached from Settings after skipping onboarding residence. The country was not confirmed and no provider flow was opened.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:15:37.159356+00:00"
+        },
+        {
+            "id": "mobile-settings-features-lower",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-features-lower.png",
+            "feature_ids": ["app-settings"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Suite Sync, Security, Advanced and Experimental entry points and product version26.12.1 were visible.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:16:05.733596+00:00"
+        },
+        {
+            "id": "mobile-settings-security",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-security.png",
+            "feature_ids": ["app-settings.security", "app-settings.mev", "app-settings.dust"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The screen offered enabled MEV protection with eligible-network guidance, plus Dust phishing protection.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:16:27.619779+00:00"
+        },
+        {
+            "id": "mobile-settings-dust",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-dust.png",
+            "feature_ids": ["app-settings.dust", "app-settings.dust-threshold"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Dust protection had an enabled switch and an editable USD threshold. No preference or account data was modified.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:16:46.904941+00:00"
+        },
+        {
+            "id": "mobile-settings-advanced",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-advanced.png",
+            "feature_ids": [
+                "app-settings.advanced",
+                "device-settings.authenticity-opt-out",
+                "device-settings.firmware-authenticity",
+                "app-settings.address-display"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The app showed enabled Device authenticity check, Firmware authenticity check and Spaced address formatting preferences. Checks were not disabled; no actual hardware authentication was run.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:17:12.721157+00:00"
+        },
+        {
+            "id": "mobile-settings-advanced-lower",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-advanced-lower.png",
+            "feature_ids": [
+                "app-settings.address-display",
+                "app-settings.testnets",
+                "app-settings.network-reserve"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The lower page showed spaced address formatting, Testnet networks off, and Network reserve on with network-availability guidance.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:17:29.441297+00:00"
+        },
+        {
+            "id": "mobile-settings-experimental",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-experimental.png",
+            "feature_ids": ["app-settings.experimental", "app-settings.slip24"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The mobile experimental page showed SLIP-24 clear-signing toggle and experienced-user guidance. The toggle remained off.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:17:55.884518+00:00"
+        },
+        {
+            "id": "mobile-settings-suite-sync",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-suite-sync.png",
+            "feature_ids": ["labeling.suite-sync"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Suite Sync was disabled; the screen offered a server selector and Confirm. Sync was not enabled or authorized.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:18:21.524733+00:00"
+        },
+        {
+            "id": "mobile-settings-suite-sync-server",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-suite-sync-server.png",
+            "feature_ids": ["labeling.suite-sync.server"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The server sheet offered Trezor default and Custom. No server was changed or contacted for wallet data.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:18:37.276864+00:00"
+        },
+        {
+            "id": "mobile-settings-auto-eject",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-auto-eject.png",
+            "feature_ids": ["app-settings.auto-eject"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The no-wallet page explained remembered visibility and offered Auto-eject wallets, currently off.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:19:30.881312+00:00"
+        },
+        {
+            "id": "mobile-settings-networks",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-networks.png",
+            "feature_ids": ["network-settings", "network-settings.enable"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The network preference list offered network switches and per-network backend controls. Networks were off, and no switch was enabled or discovery triggered.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:20:23.386750+00:00"
+        },
+        {
+            "id": "mobile-settings-bitcoin-backend",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-bitcoin-backend.png",
+            "feature_ids": [
+                "network-settings.backends",
+                "network-settings.backends.connection-status",
+                "network-settings.explorer"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The Bitcoin backend screen showed Disconnected, default Trezor server type, a Connect action and default explorer URL/path fields. Connect was not pressed.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:20:44.908929+00:00"
+        },
+        {
+            "id": "mobile-settings-backend-type",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-backend-type.png",
+            "feature_ids": ["network-settings.backends.type", "network-settings.backends.electrum"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The selector offered Trezor default, Blockbook and Electrum. Electrum was selected only as an uncommitted form draft.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:21:03.430083+00:00"
+        },
+        {
+            "id": "mobile-settings-electrum-form",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-electrum-form.png",
+            "feature_ids": ["network-settings.backends.urls", "network-settings.backends.electrum"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The empty Electrum Server address input showed host:port:protocol format guidance and a Connect action. No address was entered and Connect was not pressed.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:21:31.298315+00:00"
+        },
+        {
+            "id": "mobile-settings-backend-discard",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-backend-discard.png",
+            "feature_ids": ["network-settings.backends.discard"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Back navigation on the dirty backend form displayed Discard changes with Discard and Keep editing. Discard was used, leaving backend configuration unchanged.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:22:12.173139+00:00"
+        },
+        {
+            "id": "mobile-settings-network-search",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-network-search.png",
+            "feature_ids": ["network-settings.search"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The network-search input opened. Search on this simulator extends under the system status area; later navigation was restored by relaunching the QA app.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:22:30.694809+00:00"
+        },
+        {
+            "id": "mobile-settings-network-filtered",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-settings-network-filtered.png",
+            "feature_ids": ["network-settings.search"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Typing the public network name Bitcoin locally filtered the list to Bitcoin and Bitcoin Cash. No network was enabled.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:22:55.065012+00:00"
+        },
+        {
+            "id": "mobile-home-tracker-entry",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-home-tracker-entry.png",
+            "feature_ids": ["mobile.accounts.import"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The no-wallet Home presented Sync & Track; it opened the portfolio-tracker import flow.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:24:12.027651+00:00"
+        },
+        {
+            "id": "mobile-tracker-network-selection",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-network-selection.png",
+            "feature_ids": ["mobile.accounts.import", "mobile.accounts.import.network"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The import flow offered supported network choices, including Bitcoin and address-based token networks. No account was imported.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:24:31.964817+00:00"
+        },
+        {
+            "id": "mobile-tracker-bitcoin-import",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-bitcoin-import.png",
+            "feature_ids": ["mobile.accounts.import.qr"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Bitcoin import offered Scan public key XPUB and instructional Where is my public key help. The QR illustration is a bundled decorative asset, not an account code.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:24:54.448006+00:00"
+        },
+        {
+            "id": "mobile-tracker-xpub-help",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-xpub-help.png",
+            "feature_ids": ["mobile.accounts.import.help"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The instructional sheet showed a bundled walkthrough video and explained desktop Suite > account Details > Show public key. No active wallet data was accessed.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:25:15.077188+00:00"
+        },
+        {
+            "id": "mobile-tracker-manual-xpub",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-manual-xpub.png",
+            "feature_ids": ["mobile.accounts.import.manual-xpub"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The empty manual XPUB field was visible. Debug-environment fixture shortcuts were visible but never activated.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:25:34.650362+00:00"
+        },
+        {
+            "id": "mobile-tracker-xpub-input",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-xpub-input.png",
+            "feature_ids": ["mobile.accounts.import.manual-xpub"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The manual field accepted a non-account draft and exposed Confirm. Confirm was not pressed: inspected Bitcoin schema accepts nonempty text into the subsequent discovery path, so validation is not claimed here.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:26:17.197318+00:00"
+        },
+        {
+            "id": "mobile-tracker-address-import",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-address-import.png",
+            "feature_ids": ["mobile.accounts.import.address", "mobile.accounts.import.qr"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Ethereum import offered Scan receive address and address-specific guidance, without exposing any wallet address.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:26:24.785804+00:00"
+        },
+        {
+            "id": "mobile-tracker-manual-address",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-manual-address.png",
+            "feature_ids": ["mobile.accounts.import.address"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The empty manual address field and debug-only fixture shortcuts were visible. No fixture shortcut was activated.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:26:38.973929+00:00"
+        },
+        {
+            "id": "mobile-tracker-invalid-address",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-invalid-address.png",
+            "feature_ids": ["mobile.accounts.import.wrong-key"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The form displayed Address is not valid and remained on the same screen. Source schema rejects this string locally before navigation to account discovery. No valid address or public discovery was used.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:27:21.747304+00:00"
+        },
+        {
+            "id": "mobile-tracker-qr-scanner",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-qr-scanner.png",
+            "feature_ids": ["mobile.accounts.import.qr"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "Opening the QR scanner requested camera permission; permission was declined on the disposable simulator. No QR code was scanned.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:28:05.749688+00:00"
+        },
+        {
+            "id": "mobile-tracker-qr-permission-fallback",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-tracker-qr-permission-fallback.png",
+            "feature_ids": [
+                "mobile.accounts.import.qr.permission",
+                "mobile.accounts.import.qr.gallery"
+            ],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The scanner displayed Camera access denied, Grant permission and Upload from gallery. Neither system settings nor photo library was opened; gallery import completion is not claimed.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:28:30.360902+00:00"
+        },
+        {
+            "id": "mobile-empty-accounts",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-accounts.png",
+            "feature_ids": ["wallet.accounts"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The Accounts empty state showed No accounts and search/add controls. No wallet account details or balance were present.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:29:09.016238+00:00"
+        },
+        {
+            "id": "mobile-accounts-add-menu",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-accounts-add-menu.png",
+            "feature_ids": ["mobile.accounts.import.network"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The plus action from empty Accounts opened Sync my assets network selection. No account was added.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:29:28.884410+00:00"
+        },
+        {
+            "id": "mobile-empty-earn",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-earn.png",
+            "feature_ids": ["earn", "earn.opportunities"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The public Earn page listed staking opportunities with indicative rates; no rates are recorded as current recommendations and no wallet data was used.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:29:51.820609+00:00"
+        },
+        {
+            "id": "mobile-earn-staking-gate",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-earn-staking-gate.png",
+            "feature_ids": ["earn.staking"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The app showed Staking is disabled in the portfolio tracker and directed the user to connect a device or use desktop. No staking flow or provider authorization was performed.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:30:12.666789+00:00"
+        },
+        {
+            "id": "mobile-empty-yield",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-yield.png",
+            "feature_ids": ["earn.yield", "earn.opportunities"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The public no-wallet page listed Trezor Steakhouse yield opportunities and Morpho attribution. No vault position, deposit or provider approval was opened.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:30:35.349984+00:00"
+        },
+        {
+            "id": "mobile-earn-yield-gate",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-earn-yield-gate.png",
+            "feature_ids": ["earn.yield"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The yield opportunity tap showed the same portfolio-tracker restriction sheet, whose actual text says Staking is disabled. No yield transaction was possible in this state.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:31:06.715255+00:00"
+        },
+        {
+            "id": "mobile-empty-activity",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-activity.png",
+            "feature_ids": ["help.activity"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The Activity page showed Notifications and Release notes tabs and No notifications in the clean QA state.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:31:32.646478+00:00"
+        },
+        {
+            "id": "mobile-activity-release-notes",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-activity-release-notes.png",
+            "feature_ids": ["help.activity.release-notes", "app-settings.changelog"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The app rendered public release notes for version26.12.1. Listed release features were not treated as runtime verification of those individual flows.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:31:53.006653+00:00"
+        },
+        {
+            "id": "mobile-empty-device-manager",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-empty-device-manager.png",
+            "feature_ids": ["wallet-access"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The empty wallet/device manager showed a generic greeting and Connect Trezor action. No device identifiers or saved wallets were present.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:32:28.465957+00:00"
+        },
+        {
+            "id": "mobile-connect-safe7-instructions",
+            "path": "docs/features/feature-map/runtime/screenshots/mobile-connect-safe7-instructions.png",
+            "feature_ids": ["connection.bluetooth", "connection.bluetooth.manual"],
+            "platform": "mobile",
+            "model": null,
+            "firmware": null,
+            "caption": "The iOS connection flow displayed Turn on and unlock your Trezor Safe7 with a bundled power-button instructional animation. It was closed without discovery, pairing or hardware interaction.",
+            "fixture_context": "Disposable current-source QA iOS27.2 simulator app; no actual wallet, credentials, addresses or balances. Any sample graphics are bundled instructional assets.",
+            "captured_at": "2026-11-15T08:33:08.841302+00:00"
+        }
+    ],
+    "new_features": [
+        {
+            "id": "mobile.accounts.import.help",
+            "parent_id": "mobile.accounts.import",
+            "name": "Find an account key or receive address",
+            "description": "Open illustrated guidance for locating an account public key or receive address in desktop Suite.",
+            "level": "option",
+            "platforms": {
+                "desktop": "no",
+                "web": "no",
+                "mobile": "yes"
+            },
+            "platform_notes": "Native control observed in current-source iOS QA app; scoped to mobile portfolio-tracker import.",
+            "navigation": {
+                "desktop": null,
+                "web": null,
+                "mobile": "Sync my assets > network > Where is my public key / receive address?"
+            },
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-accounts-import/src/components/XpubHintBottomSheet.tsx",
+                    "symbol": "XpubHintBottomSheet",
+                    "line": 20
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts-import/src/components/XpubHintBottomSheet.tsx",
+                    "line": 20,
+                    "repository_link": "../../../../suite-native-app/module-accounts-import/src/components/XpubHintBottomSheet.tsx#L20",
+                    "detail": "Open illustrated guidance for locating an account public key or receive address in desktop Suite."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Mobile / Growth",
+                "confidence": "inferred",
+                "basis": "Inherited domain-team estimate from parent feature; no confirmed product DRI was found for this control.",
+                "source_paths": [
+                    "suite-native-app/module-accounts-import/src/components/XpubHintBottomSheet.tsx"
+                ]
+            },
+            "conditions": [
+                "Observed in current-source26.12.1 iOS QA app with no imported account.",
+                "Network type selects XPUB or single-address instructional text and bundled video. Runtime opened Bitcoin guidance."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "Current QA capture is linked separately through runtime screenshot mobile-tracker-xpub-help."
+            },
+            "related_ids": []
+        },
+        {
+            "id": "mobile.accounts.import.qr.gallery",
+            "parent_id": "mobile.accounts.import.qr",
+            "name": "Import a QR code from gallery",
+            "description": "Choose a photo-library image and decode its QR code as an account import value.",
+            "level": "option",
+            "platforms": {
+                "desktop": "no",
+                "web": "no",
+                "mobile": "yes"
+            },
+            "platform_notes": "Native control observed in current-source iOS QA app; scoped to mobile portfolio-tracker import.",
+            "navigation": {
+                "desktop": null,
+                "web": null,
+                "mobile": "Sync my assets > network > Scan > Upload from gallery"
+            },
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/qr-code/src/components/PickQRFromGalleryButton.tsx",
+                    "symbol": "PickQRFromGalleryButton",
+                    "line": 13
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/qr-code/src/components/PickQRFromGalleryButton.tsx",
+                    "line": 13,
+                    "repository_link": "../../../../suite-native/qr-code/src/components/PickQRFromGalleryButton.tsx#L13",
+                    "detail": "Choose a photo-library image and decode its QR code as an account import value."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Mobile / Growth",
+                "confidence": "inferred",
+                "basis": "Inherited domain-team estimate from parent feature; no confirmed product DRI was found for this control.",
+                "source_paths": ["suite-native/qr-code/src/components/PickQRFromGalleryButton.tsx"]
+            },
+            "conditions": [
+                "Observed in current-source26.12.1 iOS QA app with no imported account.",
+                "Upload from gallery entry was observed; photo-library picker, image decoding and successful import were not executed."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "Current QA capture is linked separately through runtime screenshot mobile-tracker-qr-permission-fallback."
+            },
+            "related_ids": []
+        },
+        {
+            "id": "mobile.accounts.import.qr.permission",
+            "parent_id": "mobile.accounts.import.qr",
+            "name": "Restore camera permission",
+            "description": "Review the camera-denied explanation and open phone settings to grant camera permission for QR scanning.",
+            "level": "option",
+            "platforms": {
+                "desktop": "no",
+                "web": "no",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Native control observed in current-source iOS QA app; scoped to mobile portfolio-tracker import.",
+            "navigation": {
+                "desktop": null,
+                "web": null,
+                "mobile": "Sync my assets > network > Scan > decline camera access > Grant permission"
+            },
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/qr-code/src/components/CameraPermissionError.tsx",
+                    "symbol": "CameraPermissionError",
+                    "line": 15
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/qr-code/src/components/CameraPermissionError.tsx",
+                    "line": 15,
+                    "repository_link": "../../../../suite-native/qr-code/src/components/CameraPermissionError.tsx#L15",
+                    "detail": "Review the camera-denied explanation and open phone settings to grant camera permission for QR scanning."
+                }
+            ],
+            "ownership": {
+                "team": "Suite Mobile / Growth",
+                "confidence": "inferred",
+                "basis": "Inherited domain-team estimate from parent feature; no confirmed product DRI was found for this control.",
+                "source_paths": ["suite-native/qr-code/src/components/CameraPermissionError.tsx"]
+            },
+            "conditions": [
+                "Observed in current-source26.12.1 iOS QA app with no imported account.",
+                "Camera permission is denied or unavailable. Runtime declined the system prompt and observed fallback; Grant permission and system settings were not opened."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "Current QA capture is linked separately through runtime screenshot mobile-tracker-qr-permission-fallback."
+            },
+            "related_ids": []
+        },
+        {
+            "id": "network-settings.backends.discard",
+            "parent_id": "network-settings.backends",
+            "name": "Discard unsaved backend changes",
+            "description": "Choose whether to discard draft backend or explorer edits when leaving native configuration.",
+            "level": "option",
+            "platforms": {
+                "desktop": "unknown",
+                "web": "unknown",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Native control observed in current-source iOS QA app; desktop/web parity for this prompt is unverified.",
+            "navigation": {
+                "desktop": null,
+                "web": null,
+                "mobile": "Settings > Networks > backend > edit without connecting > Back > Discard changes"
+            },
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/NetworkBackendsScreen.tsx",
+                    "symbol": "NetworkBackendsScreen",
+                    "line": 21
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/NetworkBackendsScreen.tsx",
+                    "line": 21,
+                    "repository_link": "../../../../suite-native-app/module-settings/src/screens/NetworkBackendsScreen.tsx#L21",
+                    "detail": "Choose whether to discard draft backend or explorer edits when leaving native configuration."
+                }
+            ],
+            "ownership": {
+                "team": "Network",
+                "confidence": "inferred",
+                "basis": "Inherited domain-team estimate from parent feature; no confirmed product DRI was found for this control.",
+                "source_paths": [
+                    "suite-native-app/module-settings/src/screens/NetworkBackendsScreen.tsx"
+                ]
+            },
+            "conditions": [
+                "Observed in current-source26.12.1 iOS QA app with no imported account.",
+                "Backend or explorer form has unsaved changes. Runtime selected Electrum without connecting, then chose Discard. Desktop/web parity for this particular prompt was not audited."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "Current QA capture is linked separately through runtime screenshot mobile-settings-backend-discard."
+            },
+            "related_ids": []
+        }
+    ],
+    "errata": []
+}

@@ -1,0 +1,269 @@
+{
+    "id": "runtime-desktop-screenshot-quality",
+    "created_at": "2026-11-15T08:59:34.042534+00:00",
+    "manifest_snapshot_sha256": "04ac2055d544e8f0e1695bfbd408664219cf3a98da68d9d12bd9cbf014c74d6a",
+    "scope": {
+        "images_reviewed": 13,
+        "platform": "desktop",
+        "environment": "Linux Electron 44.9.3 production bundle; current-source isolated QA profile; offline; no wallet/device connected.",
+        "device_model": null,
+        "firmware": null,
+        "updater_condition": "Final two captures use existing --enable-updater QA launch flag. No update/version traffic, download or enrollment was performed."
+    },
+    "method": "All thirteen actual PNGs viewed through three local 2x3 contact sheets; MCP, Electrum URL, updater preferences and Early Access originals also inspected at native size. No UI/browser/TUE/app actions or source screenshot/manifest edits.",
+    "temporary_contact_sheets": "/tmp/feature-map-qc-desktop/sheet-{1,7,13}.png",
+    "full_resolution_reviewed": [
+        "desktop-mcp-server-preference",
+        "desktop-electrum-url-form",
+        "desktop-update-preferences",
+        "desktop-early-access-confirmation"
+    ],
+    "summary": {
+        "images_reviewed": 13,
+        "association_corrections_required": 0,
+        "sensitive_images_identified": 0
+    },
+    "privacy_review": "No seed/PIN/passphrase, account/device identities, account balances or authentication tokens are visible. MCP is disabled and its configuration/token panel is not displayed. Electrum shows a public example-format placeholder, not an entered endpoint.",
+    "reviews": [
+        {
+            "ordinal": 1,
+            "screenshot_id": "desktop-analytics-consent",
+            "observation_id": "runtime-desktop-analytics-consent",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-analytics-consent.png",
+            "sha256": "118dc1506b2fedd1d21fedf577206dcddc3996aa6a722c5c9abc6c22795a97b9",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["onboarding.analytics", "app-onboarding"],
+            "limits": "Consent explanation, enabled anonymous-data toggle and Confirm visible. This is an onboarding preference screen, not proof of any telemetry transmission.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 2,
+            "screenshot_id": "desktop-disconnected-home",
+            "observation_id": "runtime-desktop-disconnected-home",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-disconnected-home.png",
+            "sha256": "b989bcb5908cf9d481ab9ec9d04320410f9d3454774c4f3160a0a3dbb04737b1",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["connection.usb"],
+            "limits": "Connection prompt and Connect action visible; no USB enumeration, unlock or device session was completed.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 3,
+            "screenshot_id": "desktop-privacy-settings",
+            "observation_id": "runtime-desktop-privacy-settings",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-privacy-settings.png",
+            "sha256": "0a16cacd312a9412591776184be634f3ca4f637f5f51dad17add809beee63329",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.auto-eject", "app-settings.tor"],
+            "limits": "Auto-eject and Tor toggles/explanation visible and off. No wallet eject or Tor routing was exercised.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 4,
+            "screenshot_id": "desktop-analytics-setting",
+            "observation_id": "runtime-desktop-analytics-setting",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-analytics-setting.png",
+            "sha256": "6582fe3b7548e11890996d744a0b2460d38b693715488fdaae6b37cab443e1d5",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.analytics"],
+            "limits": "Analytics preference and explanation visible and off. Does not establish telemetry policy implementation or actual outbound traffic.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 5,
+            "screenshot_id": "desktop-maintenance-controls",
+            "observation_id": "runtime-desktop-maintenance-controls",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-maintenance-controls.png",
+            "sha256": "86d043f43653394732d1e0bd1205892bfa9f87f0a16be07d66520514f72b21f4",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.log", "app-settings.reset"],
+            "limits": "Show log, Reset app and current-version display are visible. Neither log content nor reset execution is shown.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 6,
+            "screenshot_id": "desktop-security-controls",
+            "observation_id": "runtime-desktop-security-controls",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-security-controls.png",
+            "sha256": "e84bafdb9737d248a41ab5aa2f75b549255063c076c94ca004c38cadb943c696",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "app-settings.mev",
+                "app-settings.dust",
+                "app-settings.dust-threshold"
+            ],
+            "limits": "MEV and dust switches, threshold input and disabled Save visible. Threshold is a preference, not an account amount. No protected transaction or threshold persistence was exercised.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 7,
+            "screenshot_id": "desktop-background-integration",
+            "observation_id": "runtime-desktop-background-integration",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-background-integration.png",
+            "sha256": "525e92c5d1f3f986927d598027c75cf6647a33f327c1a4b6c5a6ab2521eaec8a",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.auto-start", "app-settings.tray"],
+            "limits": "Auto-start and tray-icon switches visible and off. No OS startup registration or tray behavior was tested.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 8,
+            "screenshot_id": "desktop-experimental-tor-external",
+            "observation_id": "runtime-desktop-experimental-tor-external",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-experimental-tor-external.png",
+            "sha256": "19099890fee7cdb1f86601d78d564f6f07256c98b64e67ccb36fe41537f81c5b",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "app-settings.tor-external",
+                "app-settings.enable-experimental"
+            ],
+            "limits": "External Tor preference is unchecked, with daemon-port explanation; Experimental is enabled above, although its title is clipped at the sticky header. No Tor daemon or network routing was tested.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 9,
+            "screenshot_id": "desktop-mcp-server-preference",
+            "observation_id": "runtime-desktop-mcp-server-preference",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-mcp-server-preference.png",
+            "sha256": "19099890fee7cdb1f86601d78d564f6f07256c98b64e67ccb36fe41537f81c5b",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.mcp"],
+            "limits": "MCP preference is unchecked and explanatory text is visible. No server config, authentication token, URL with credentials or secret appears in this capture. No MCP request was performed.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 10,
+            "screenshot_id": "desktop-bitcoin-backend-types",
+            "observation_id": "runtime-desktop-bitcoin-backend-types",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-bitcoin-backend-types.png",
+            "sha256": "abe17c65fe08ba61e21d6a8f1b83b1b7271bd5d687b10811c913353818a65a87",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "network-settings.backends.type",
+                "network-settings.backends.electrum"
+            ],
+            "limits": "Default, Blockbook and Electrum backend-type choices visible. No URL entry, saved configuration or backend connectivity is established.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 11,
+            "screenshot_id": "desktop-electrum-url-form",
+            "observation_id": "runtime-desktop-electrum-url-form",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-electrum-url-form.png",
+            "sha256": "7a4b5fa114886e66bf5b8675f7b0cb8046251aa4b08b72062b4bc59d053a89eb",
+            "width": 1511,
+            "height": 1051,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": [
+                "network-settings.backends.electrum",
+                "network-settings.backends.urls"
+            ],
+            "limits": "Empty editable Electrum URL field and example-format placeholder are clearly visible; Add new is disabled for the empty value. Explorer and Connection Info are collapsed entries. Confirm/Cancel visible. No endpoint was entered, committed or contacted.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected."
+            ]
+        },
+        {
+            "ordinal": 12,
+            "screenshot_id": "desktop-update-preferences",
+            "observation_id": "runtime-desktop-update-preferences",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-update-preferences.png",
+            "sha256": "10a5f4345543ac7a72db231cef27954644fb744476d49ec0faa6869844a55fa7",
+            "width": 1514,
+            "height": 1054,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.automatic-updates", "app-settings.check-update"],
+            "limits": "Automatic-update switch, version and Check for updates visible. The existing --enable-updater QA flag exposes the non-codesigned bundle controls. Offline conditions mean no version check, availability result, download or install is established.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected.",
+                "Existing --enable-updater QA launch flag exposes non-codesigned build controls; offline mode prevents downloads and version checks."
+            ]
+        },
+        {
+            "ordinal": 13,
+            "screenshot_id": "desktop-early-access-confirmation",
+            "observation_id": "runtime-desktop-early-access-confirmation",
+            "path": "docs/features/feature-map/runtime/screenshots/desktop-early-access-confirmation.png",
+            "sha256": "46a8765e8be30a8f38f8441b7d6bef333ef5256f5a39f27de43461a7b4024643",
+            "width": 1514,
+            "height": 1054,
+            "result": "usable-with-scope-limits",
+            "visible_feature_ids": ["app-settings.early-access"],
+            "limits": "Early Access explanation, unchecked acknowledgement, disabled Opt in and Cancel visible. Reached with the updater QA flag while offline; no enrollment, feed switch or download is established.",
+            "recorded_conditions": [
+                "Current-source Linux Electron 44.9.3 production bundle; isolated QA profile; offline mode; no wallet or device connected.",
+                "Updater UI exposed with the existing QA launch flag; no update was downloaded."
+            ]
+        }
+    ],
+    "findings": [],
+    "source_cross_checks": [
+        {
+            "path": "packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AdvancedCoinSettingsModal/BackendUrls/BackendUrls.tsx",
+            "line": 86
+        },
+        {
+            "path": "suite-app/desktop-app-main/src/modules/auto-updater.ts",
+            "line": 32
+        },
+        {
+            "path": "packages/suite/src/views/settings/SettingsGeneral/McpServer.tsx",
+            "line": 49
+        },
+        {
+            "path": "packages/suite/src/views/settings/SettingsGeneral/AutomaticUpdate.tsx",
+            "line": 47
+        },
+        {
+            "path": "packages/suite/src/views/settings/SettingsGeneral/EarlyAccess.tsx",
+            "line": 48
+        }
+    ],
+    "interpretation": [
+        "Every assigned feature entry is visible in its corresponding PNG; no additive association erratum is required.",
+        "Preferences/entry points do not establish completed actions, hardware connection, OS integration or network operation.",
+        "The empty Electrum URL field is present; disabled Add new reflects the source empty/invalid-input condition, not missing functionality.",
+        "Offline updater UI with an explicit QA launch override is not evidence of live update availability or a production download.",
+        "Unmapped surrounding controls remain visible context; this QC does not invent new observation links for them."
+    ]
+}

@@ -1,0 +1,331 @@
+{
+    "title": "Runtime QA fixture provenance and interpretation",
+    "created_at": "2026-11-15T08:31:30.691781+00:00",
+    "classification": "Sanitized local support metadata; no seed, PIN, passphrase, wipe code, account descriptor, address, transaction identifier, exact balance or user label values included.",
+    "scripts": [
+        {
+            "path": "/tmp/feature-map-runtime/mock-backends.cjs",
+            "sha256": "bc87b742e423c914e53452fe3e1a790c8da54a3984337ce4ca4986a233fa9ed4",
+            "role": "Loopback blockchain fixture servers; no upstream passthrough.",
+            "retention": "Ephemeral local audit support; not application code and not required to view saved captures."
+        },
+        {
+            "path": "/tmp/feature-map-runtime/trade-routes.cjs",
+            "sha256": "3e10fcba15adf54187c39c18f0c9e817cd01a3176ec695f9284b1a965fae0e6a",
+            "role": "Playwright BrowserContext routes for trading, Yield and staking statistics.",
+            "retention": "Ephemeral local audit support; not application code and not required to view saved captures."
+        },
+        {
+            "path": "/tmp/feature-map-runtime/qa-fixture-input.cjs",
+            "sha256": "42c9fc8e95104e3a7e2261e547e2944dd61d97dd95e5159a2c481200cfc4916d",
+            "role": "Read established ETH/SOL QA mnemonic from local test source into memory; never print or persist the phrase.",
+            "retention": "Ephemeral local audit support; not application code and not required to view saved captures."
+        },
+        {
+            "path": "/tmp/feature-map-runtime/setup-qa-device.cjs",
+            "sha256": "65f153892b8151baeb7a47997ac6e1a7603a7ccee1072aa98573587873c1882f",
+            "role": "Explicit fixture setup over loopback controller; no PIN/passphrase; boolean-only output.",
+            "retention": "Ephemeral local audit support; not application code and not required to view saved captures."
+        },
+        {
+            "path": "/tmp/feature-map-runtime/switch-qa-model.cjs",
+            "sha256": "1ac7155e09eb16dc5ed458aaed4e452951f76daec8026096848ea4d3b92b8afa",
+            "role": "Explicit sequential model transition: stop bridge/emulator, start wiped task emulator, load QA fixture, restore bridge.",
+            "retention": "Ephemeral local audit support; not application code and not required to view saved captures."
+        },
+        {
+            "path": "/tmp/feature-map-runtime/launch-user-env.py",
+            "sha256": "397482f7d0729852da0e70dea45ad058b52c3ac331fbcd8a2b94f2fba3c35744",
+            "role": "Launch task-only copied TUE with local bindings; preserve original profiles.",
+            "retention": "Ephemeral local audit support; not application code and not required to view saved captures."
+        },
+        {
+            "path": "/tmp/feature-map-runtime/recover-task-tue.py",
+            "sha256": "7049ec479ff5017ea1ced7556285afa9027f0a344e972cf4cc5584f7416aed99",
+            "role": "Guarded recovery of the task-only controller subtree after a session acquisition deadlock.",
+            "retention": "Ephemeral local audit support; not application code and not required to view saved captures."
+        }
+    ],
+    "networks": [
+        {
+            "symbol": "btc",
+            "url": "ws://127.0.0.1:22001",
+            "backend": "blockbook",
+            "kind": "synthetic-local-chain-state",
+            "sources": [
+                "packages/e2e-utils/src/mocks/backendServer.ts",
+                "packages/utxo-lib/src/index.ts"
+            ],
+            "behavior": "Locally received public descriptors drive address derivation. Account zero per supported account type gets three synthetic UTXOs and one serialized synthetic history transaction; higher accounts are empty to terminate discovery.",
+            "limits": [
+                "No real-chain funding, confirmation or transaction validation.",
+                "Multiple Bitcoin account types independently receive synthetic fixture funding; portfolio totals are illustrative and must not be interpreted as one real wallet.",
+                "BTC balance-history and rate responses are sparse/static; chart axes can render without a populated series.",
+                "BTC broadcast requests are rejected locally."
+            ]
+        },
+        {
+            "symbol": "eth",
+            "url": "ws://127.0.0.1:22002",
+            "backend": "blockbook",
+            "kind": "existing-e2e-fixtures",
+            "sources": ["suite/e2e/support/mocks/eth-endpoints.ts"],
+            "behavior": "Matching first QA account exposes existing native/token balances, staking position and history fixtures; other accounts use empty defaults.",
+            "limits": [
+                "Static historical and staking states; no actual activation, claiming or transfer is established.",
+                "Token/fiat rates and synthetic quote ratios may disagree by design."
+            ]
+        },
+        {
+            "symbol": "ada",
+            "url": "ws://127.0.0.1:22003",
+            "backend": "blockfrost",
+            "kind": "existing-e2e-fixtures",
+            "sources": [
+                "suite/e2e/support/mocks/ada-endpoints.ts",
+                "suite/e2e/fixtures/staking/ada-address.json",
+                "suite/e2e/fixtures/staking/ada-utxos.json"
+            ],
+            "behavior": "Existing descriptor-specific Cardano test responses with empty account fallbacks.",
+            "limits": [
+                "The common ETH/SOL QA seed used in this runtime session does not match the separate Cardano funded mnemonic fixture; the observed Cardano account remains unfunded.",
+                "Cardano Buy/minimum-stake guidance is visible; funded stake, voting, rewards and withdrawals are not established by this runtime state."
+            ]
+        },
+        {
+            "symbol": "sol",
+            "url": "http://127.0.0.1:22004",
+            "backend": "solana",
+            "kind": "adapted-e2e-rpc-fixture",
+            "sources": [
+                "suite/e2e/support/mocks/solanaStakingMock.ts",
+                "packages/e2e-utils/src/mocks/solanaRpcServerMock.ts",
+                "suite/e2e/fixtures/staking/sol-staking-accounts.ts"
+            ],
+            "behavior": "First QA account balance plus local discovery metadata, epoch/stake fixtures, fee/simulation and subscription responses. Unknown upstream passthrough is replaced by local errors or explicit empty fallbacks.",
+            "limits": [
+                "Default stake-account state is empty; optional control modes are available but not evidence of a captured journey unless recorded separately.",
+                "No populated Solana signature-history or Earn reward-history/total endpoints are implemented for this audit; empty fallbacks or local failures do not establish production absence.",
+                "The inherited sendTransaction handler can return a fixed synthetic signature locally; it never sends to a remote chain. It is not an executed transaction."
+            ]
+        },
+        {
+            "symbol": "trx",
+            "url": "ws://127.0.0.1:22005",
+            "backend": "blockbook",
+            "kind": "existing-e2e-fixtures",
+            "sources": ["suite/e2e/support/mocks/trx-endpoints.ts"],
+            "behavior": "Matching QA account and resource state from existing Tron E2E responses; empty defaults for unmatched accounts.",
+            "limits": [
+                "Freeze/resource entry and provider consent are inspectable; this does not establish executed freezing, representative votes or reward collection."
+            ]
+        }
+    ],
+    "trading": {
+        "source_paths": [
+            "suite-common/trading/src/__fixtures__/tradeApi.ts",
+            "suite-common/trading/src/__fixtures__/coins.json",
+            "suite-common/trading/src/__fixtures__/platforms.json",
+            "suite-common/trading/src/tradeApi.ts",
+            "suite/e2e/support/mocks/trading/tradingResponses.ts"
+        ],
+        "route_hosts": [
+            "exchange.trezor.io",
+            "staging-exchange.trezor.io",
+            "dev-exchange.trezor.io"
+        ],
+        "route_paths": [
+            "/api/info",
+            "/api/v3/buy/list",
+            "/api/v3/buy/quotes",
+            "/api/v3/sell/list",
+            "/api/v3/sell/fiat/quotes",
+            "/api/v3/exchange/list",
+            "/api/v3/exchange/quotes",
+            "/api/v2/otc",
+            "/images/*"
+        ],
+        "adaptation": "Trading E2E now observes live positive responses; positive offline offers therefore adapt the established unit fixture schema. One explicitly named Local QA Provider, catalog assets, illustrative currency conversion ratios, card/bank options and a single centralized floating-rate swap offer.",
+        "limits": [
+            "Eight checked-in catalog assets and two platform definitions; not a complete live asset catalog.",
+            "Quotes are synthetic UI data, not current market offers; backend fiat prices and trading conversions are intentionally not economically consistent.",
+            "Fixed-rate and DEX results are absent; showing their section/filter is not evidence of available offers.",
+            "No order creation, provider redirect, KYC, payment, payout, trade signing, confirmation or provider execution. Unknown/trade API operations fail locally."
+        ]
+    },
+    "yield": {
+        "source_paths": [
+            "suite/e2e/support/mocks/yieldMock.ts",
+            "suite-common/earn-stablecoin-api/src/context/index.ts",
+            "suite-common/earn-stablecoin-api/src/services/yieldxyz.ts"
+        ],
+        "route_hosts": ["earn.trezor.io", "dev-earn.suite.sldev.cz"],
+        "route_paths": [
+            "/yield/yieldxyz/v2/yields",
+            "/yield/yieldxyz/v2/yields/:vaultId",
+            "/yield/merkl/v1/users/rewards",
+            "/yield/vaults/v1/:network/:vaultId"
+        ],
+        "adaptation": "Reuse the complete three-vault E2E catalog for ETH/WETH, USDC and USDT, including reward-rate breakdown and receipt-token metadata. Honor output-token list filters and vault-detail lookups. Merkl rewards are empty.",
+        "limits": [
+            "Captured initial wrap and approval forms do not establish a wrap, allowance, deposit, withdrawal, redemption or reward claim.",
+            "Static rates, contract metadata and availability are QA fixtures, not live commercial or liquidity information.",
+            "No Blockaid simulation-success response was installed for execution flows in the route adapter."
+        ]
+    },
+    "staking": {
+        "source_paths": [
+            "suite-common/earn-staking-api/src/staking/services/resilientStakingBatchResponse.test.ts",
+            "suite-common/earn-staking-api/src/staking/services/index.ts",
+            "suite-common/wallet-config/src/stakingProviderConstants.ts",
+            "suite-common/wallet-core/src/staking/cardano/cardanoStakingUtils.ts"
+        ],
+        "adaptation": "Reuse unit batch APYs/timing data for ETH/SOL/ADA/TRX, replacing abbreviated schema-test identifiers with the application registry public Cardano pool and Tron representative identities. Validate every pool checksum/payload before route installation.",
+        "limits": [
+            "Original abbreviated Cardano pool identifier caused a QA-only bech32 error; it was corrected locally and the error boundary retained as explicit environment evidence.",
+            "Provider identity validity and API shape do not prove live provider availability, current yield or any transaction."
+        ]
+    },
+    "environment": {
+        "task_root": "/tmp/feature-map-runtime",
+        "controller": "ws://127.0.0.1:9001",
+        "health": "http://127.0.0.1:22090/health",
+        "model_setup": "Load the shared ETH/SOL fixture only with Suite at about:blank and the task bridge stopped. The bridge is restored after successful setup. Existing user profiles remain untouched.",
+        "qa_fixture_source_paths": [
+            "suite/e2e/tests/staking/eth/initial-stake.test.ts",
+            "suite/e2e/tests/staking/sol/initial-stake.test.ts"
+        ],
+        "qa_fixture_reference": "deviceSetup.mnemonic property in the two source tests; read only by qa-fixture-input.cjs. No phrase is copied into this report.",
+        "remote_policy": "Mock servers/route handlers never forward requests upstream. Browser-level blocking of external account traffic and telemetry is maintained separately by the root audit controller. Public static/firmware asset handling is outside these backend mocks."
+    },
+    "verification": {
+        "mock_backends": "Local contract checks passed BTC metadata/funding shape/three UTXO rows/history and ETH response, Solana discovery blockhash, five-network health. No real-chain checks.",
+        "route_helper": "Local fake-route contract checks passed provider lists, quotes, Yield list/detail/filter, staking batch, valid Cardano pool decoding and blocked trade creation with zero route.fetch/continue calls. Actual screen evidence is separate.",
+        "device_setup": "After task-controller recovery, T3T1 2.12.5 fixture setup returned true with bridge stopped, followed by successful bridge restart. Other models require their own observations.",
+        "scope": "No live transaction, trade, stake or yield execution is claimed."
+    },
+    "activation_checkpoints": [
+        {
+            "id": "deeper-staking-candidate-activation",
+            "recorded_at": "2026-11-15T09:18:08.531089+00:00",
+            "status": "root-reported-active; saved UI reviewed separately",
+            "attribution": "Root audit agent reports activation and owns live browser/TUE/backend state. This checkpoint records that report plus file fingerprints; the QC agent did not control services.",
+            "runtime": {
+                "candidate_backend_session": "23177",
+                "prior_backend_session": "90873 (stopped task-only by root)",
+                "browser_controller_session": "64553",
+                "browser_controller_node": "24.17 (root reported)",
+                "backend_script": "/tmp/feature-map-runtime/mock-backends-with-staking-modes.cjs",
+                "endpoints": "Same loopback ports and no-upstream behavior as original backend manifest."
+            },
+            "mode_history": [
+                {
+                    "network": "sol",
+                    "states": ["staked", "unstaking"],
+                    "evidence": "Saved captures web-t3t1-solana-staked-position, web-t3t1-solana-unstake-form, web-t3t1-solana-deactivation-pending. Explicit fixture modes, not actual stake/unstake transactions."
+                },
+                {
+                    "network": "trx",
+                    "states": ["rewarded", "withdrawable"],
+                    "evidence": "Saved Tron dashboard, claim/vote/allocation/representative/unstake forms and matured-withdrawal capture states. No vote, claim, unstake or withdrawal submitted."
+                },
+                {
+                    "network": "ada",
+                    "states": ["funded"],
+                    "evidence": "Root reports separate academic QA emulator fixture initialized and funded account loaded. Corresponding UI captures were not yet part of the reviewed 207\u2013228 snapshot; a later Cardano QC batch will establish visible states separately."
+                }
+            ],
+            "scripts": [
+                {
+                    "path": "/tmp/feature-map-runtime/mock-backends-with-staking-modes.cjs",
+                    "sha256": "ae230bcd08104f127083a3f063df065f4b5983270e18039edbab259b60bddb77"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/staking-fixture-modes.cjs",
+                    "sha256": "c7bb10ff2d3a7c8a03937f4cc586c50cb1add1b34a46af2b5d8c23242bd1f231"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/prepare-staking-backend-modes.cjs",
+                    "sha256": "715da5b3e0fe841343a8af55117effc44bbd8835052139cc0bc2fa131fbe2bfd"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/ada-fixture-input.cjs",
+                    "sha256": "10c23be73cfeeb3c745da42eb80e3d237ce26f15abbb05b0bb4c0d6b82c6e76e"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/setup-ada-qa-device.cjs",
+                    "sha256": "dcdf249f8767a2aa0737163a76eaa76f3f6f37d8817b0bc1c5dcfa60e2c019e8"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/switch-ada-qa-model.cjs",
+                    "sha256": "4f1d2c032cbeab8fe8c015658128f7adc79522301850f3d8c026f6aaab90b47b"
+                }
+            ],
+            "source_paths": [
+                "suite/e2e/support/mocks/ada-endpoints.ts",
+                "suite/e2e/tests/staking/ada/unstake.test.ts",
+                "suite/e2e/tests/staking/ada/claim.test.ts",
+                "suite/e2e/support/mocks/trx-endpoints.ts",
+                "suite/e2e/fixtures/staking/trx-staking-accounts.ts",
+                "suite/e2e/tests/staking/trx/claim.test.ts",
+                "suite/e2e/tests/staking/trx/withdraw.test.ts",
+                "suite/e2e/fixtures/staking/sol-staking-accounts.ts",
+                "packages/trezor-user-env-link/src/api.ts"
+            ],
+            "source_guard": "Cardano responses retain strict equality to the original academic-fixture account descriptor; Tron responses retain strict equality to the established shared-fixture first-account address. No descriptor/address rebinding. Cardano active stake states retain checksum-validated public pool/stake identities from exact E2E updates. Fixtures are read from source expressions without logging values.",
+            "qa_seed_reference": "Separate Cardano wrapper reads MNEMONICS.mnemonic_academic internally. Shared ETH/SOL/TRX fixture remains unchanged in its original wrapper. No mnemonic/descriptor/address/amount values are recorded here.",
+            "historical_interpretation": "Earlier Cardano-unfunded and default-empty-Solana statements describe the initial shared-seed/default-mode phase. They remain preserved as historical provenance, superseded only for the explicit later modes recorded here.",
+            "remaining_limits": [
+                "Solana populated reward history and Earn rewards-history/total endpoints remain unavailable; loading placeholders are not successful history retrieval.",
+                "Tron and Cardano modes are static E2E state snapshots. Valid identities do not establish real chain funding, rewards, eligibility or transaction validity.",
+                "Synthetic prices/rates/fees remain illustrative; no real-chain or provider execution is claimed."
+            ]
+        },
+        {
+            "id": "cardano-funded-rewarded-observed",
+            "recorded_at": "2026-11-15T09:22:59.705385+00:00",
+            "status": "root-reported activation plus direct saved-PNG review",
+            "context": "Fresh disposable Cardano app profile with matching academic E2E fixture. Earlier shared ETH/SOL profile remains a separate historical context.",
+            "mode_history": ["funded", "rewarded"],
+            "captured_screenshot_ids": [
+                "web-t3t1-cardano-staking-introduction",
+                "web-t3t1-cardano-provider-consent",
+                "web-t3t1-cardano-delegation-form",
+                "web-t3t1-cardano-voting-preference",
+                "web-t3t1-cardano-custom-drep",
+                "web-t3t1-cardano-delegated-position",
+                "web-t3t1-cardano-claim-rewards",
+                "web-t3t1-cardano-unstake-form",
+                "web-t3t1-cardano-change-voting-preference",
+                "web-t3t1-cardano-signature-key-format"
+            ],
+            "observation_scope": "Funded staking introduction/consent/delegation and voting forms; rewarded dashboard/claim/unstake/voting-preference forms; empty Raw-key/COSE signing form. No transactions or signature generation.",
+            "source_guard": "Candidate ADA mode continues to match only the established academic account descriptor. No UTXO/stake-credential rebinding. Source-read fixture mnemonic is never logged or persisted by these helpers.",
+            "scripts": [
+                {
+                    "path": "/tmp/feature-map-runtime/staking-fixture-modes.cjs",
+                    "sha256": "c7bb10ff2d3a7c8a03937f4cc586c50cb1add1b34a46af2b5d8c23242bd1f231"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/switch-ada-qa-model.cjs",
+                    "sha256": "4f1d2c032cbeab8fe8c015658128f7adc79522301850f3d8c026f6aaab90b47b"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/setup-ada-qa-device.cjs",
+                    "sha256": "dcdf249f8767a2aa0737163a76eaa76f3f6f37d8817b0bc1c5dcfa60e2c019e8"
+                },
+                {
+                    "path": "/tmp/feature-map-runtime/ada-fixture-input.cjs",
+                    "sha256": "10c23be73cfeeb3c745da42eb80e3d237ce26f15abbb05b0bb4c0d6b82c6e76e"
+                }
+            ],
+            "source_paths": [
+                "suite/e2e/support/mocks/ada-endpoints.ts",
+                "suite/e2e/tests/staking/ada/claim.test.ts",
+                "packages/trezor-user-env-link/src/api.ts"
+            ],
+            "semantic_limit": "Dashboard Change delegate opens governance voting preference, not pool-provider migration. The provider-update feature is not verified by this batch.",
+            "privacy": "No amounts, descriptors, mnemonic words, account addresses or transaction identifiers copied into this checkpoint."
+        }
+    ]
+}

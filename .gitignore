@@ -44,6 +44,8 @@ __pycache__/
 
 # test outputs
 screenshots
+# feature-map runtime captures are documentation, not test output
+!docs/features/feature-map/runtime/screenshots/
 test-results
 playwright-report
 packages/e2e-utils/src/llmTestFixer/reports/

@@ -1,0 +1,2435 @@
+{
+    "updates": [
+        {
+            "id": "wallet.portfolio.history.visibility",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioGraph.tsx",
+                    "detail": "The native legacy PortfolioGraph always composes its header, line graph and range switch; it has no user-controlled graph collapse/expand control."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The native legacy PortfolioGraph always composes its header, line graph and range switch; it has no user-controlled graph collapse/expand control."
+        },
+        {
+            "id": "wallet.portfolio.assets.layout",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Native asset-first Home renders a FlashList with grouping and small-balance options; the legacy Assets component renders its fixed card list. Neither offers table/grid layout selection."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/assets/src/components/Assets.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native asset-first Home renders a FlashList with grouping and small-balance options; the legacy Assets component renders its fixed card list. Neither offers table/grid layout selection."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.market-price",
+            "mobile_status": "conditional",
+            "navigation": "Home > Asset > Market price",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailPrice.tsx",
+                    "symbol": "AssetDetailPrice"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailPrice.tsx",
+                    "detail": "Native AssetDetailPrice displays the unit price plus sevenDayValueChange and sevenDayPercentageChange. Rates must be available; asset-first Home entry is experiment-dependent."
+                }
+            ],
+            "reason": "Native AssetDetailPrice displays the unit price plus sevenDayValueChange and sevenDayPercentageChange. Rates must be available; asset-first Home entry is experiment-dependent."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.price-range",
+            "mobile_status": "conditional",
+            "navigation": "Home > Asset > Price chart > Time range",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/price-chart/src/AssetPriceChartRangeSelector.tsx",
+                    "symbol": "AssetPriceChartRangeSelector"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/price-chart/src/AssetPriceChartRangeSelector.tsx",
+                    "detail": "Native AssetPriceChart renders a SegmentedControl range selector when asset price history is supported."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native AssetPriceChart renders a SegmentedControl range selector when asset price history is supported."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.balance",
+            "mobile_status": "conditional",
+            "navigation": "Home > Asset > Balance",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailBalanceSection.tsx",
+                    "symbol": "AssetDetailBalanceSection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailBalanceSection.tsx",
+                    "detail": "The native asset detail selects wallet-wide asset amount and fiat value across accounts. Earn balances are rendered by the adjacent earn section; asset and rate availability apply."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The native asset detail selects wallet-wide asset amount and fiat value across accounts. Earn balances are rendered by the adjacent earn section; asset and rate availability apply."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.accounts",
+            "mobile_status": "conditional",
+            "navigation": "Home > Asset > Balance > All accounts; or Asset settings > Accounts",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailAccountsBottomSheet.tsx",
+                    "symbol": "AssetDetailAccountsBottomSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailAccountsBottomSheet.tsx",
+                    "detail": "The native account sheet lists asset holdings and opens the selected holding account. Asset-first entry and existing holdings are required."
+                }
+            ],
+            "reason": "The native account sheet lists asset holdings and opens the selected holding account. Asset-first entry and existing holdings are required."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.history",
+            "mobile_status": "conditional",
+            "navigation": "Home > Asset > Transactions",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/assets/src/components/AssetTransactionList.tsx",
+                    "symbol": "AssetTransactionList"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/assets/src/components/AssetTransactionList.tsx",
+                    "detail": "The native AssetDetailScreen composes AssetTransactionList for the selected network/token, aggregating its account transactions."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The native AssetDetailScreen composes AssetTransactionList for the selected network/token, aggregating its account transactions."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.identifiers",
+            "mobile_status": "conditional",
+            "navigation": "Home > Token asset > Settings > Token identifiers",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsTokenDetailsSection.tsx",
+                    "symbol": "AssetSettingsTokenDetailsSection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsTokenDetailsSection.tsx",
+                    "detail": "Native asset settings shows token contract or Cardano policy ID and fingerprint through copyable address fields; only tokens with applicable identifiers expose these rows."
+                }
+            ],
+            "reason": "Native asset settings shows token contract or Cardano policy ID and fingerprint through copyable address fields; only tokens with applicable identifiers expose these rows."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.explorer",
+            "mobile_status": "conditional",
+            "navigation": "Home > Asset > Settings > Explore in blockchain",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsExplorerAction.tsx",
+                    "symbol": "AssetSettingsExplorerAction"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsExplorerAction.tsx",
+                    "detail": "Native asset settings opens the configured asset explorer URL and omits the action when no URL is available."
+                }
+            ],
+            "reason": "Native asset settings opens the configured asset explorer URL and omits the action when no URL is available."
+        },
+        {
+            "id": "wallet.portfolio.asset-first",
+            "mobile_status": "conditional",
+            "navigation": "Home",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/HomeScreen.tsx",
+                    "symbol": "HomeScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/HomeScreen.tsx",
+                    "detail": "Native Home selects PortfolioAssetsContent only for assetFirstHomeTableMobile variant B; this is a separate mobile experiment from the desktop asset-first Home."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native Home selects PortfolioAssetsContent only for assetFirstHomeTableMobile variant B; this is a separate mobile experiment from the desktop asset-first Home."
+        },
+        {
+            "id": "wallet.portfolio.asset-first.nfts",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native asset-first Home renders network and fungible-asset rows, options and loading/footer states; it does not compose an NFT collection section."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Inspected native asset-first Home renders network and fungible-asset rows, options and loading/footer states; it does not compose an NFT collection section."
+        },
+        {
+            "id": "wallet.portfolio.asset-first.value-change",
+            "mobile_status": "conditional",
+            "navigation": "Home > Portfolio graph header (legacy Home layout)",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioHeader.tsx",
+                    "symbol": "PortfolioHeader"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioHeader.tsx",
+                    "detail": "Native legacy Home shows GraphBaseCurrencyBalance with reference-point and percentage-change atoms when history is enabled. The mobile asset-first Home header currently shows total balance without this change row, so parity exists in a different Home variant."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsTotalBalance.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native legacy Home shows GraphBaseCurrencyBalance with reference-point and percentage-change atoms when history is enabled. The mobile asset-first Home header currently shows total balance without this change row, so parity exists in a different Home variant."
+        },
+        {
+            "id": "wallet.portfolio.hidden-assets.unhide",
+            "mobile_status": "conditional",
+            "navigation": "Home > Hidden tokens > Token > Settings > Show token",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsHideTokenAction.tsx",
+                    "symbol": "AssetSettingsHideTokenAction"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsHideTokenAction.tsx",
+                    "detail": "Native token settings switches hidden tokens to SHOW, with an additional confirmation for an unrecognized token. Token definitions must be loaded."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/HiddenTokensScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native token settings switches hidden tokens to SHOW, with an additional confirmation for an unrecognized token. Token definitions must be loaded."
+        },
+        {
+            "id": "wallet.portfolio.discovery-retry",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Failed account > Discovery failed > Retry",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/accounts/src/components/AccountDiscoveryFailedBanner.tsx",
+                    "symbol": "AccountDiscoveryFailedBanner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/accounts/src/components/AccountDiscoveryFailedBanner.tsx",
+                    "detail": "A native failed-account banner dispatches startOrRestartDiscoveryThunk with trigger retry. The entry is on account views rather than the desktop portfolio error card."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/components/TransactionListHeader.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "A native failed-account banner dispatches startOrRestartDiscoveryThunk with trigger retry. The entry is on account views rather than the desktop portfolio error card."
+        },
+        {
+            "id": "wallet.accounts.network-filter",
+            "mobile_status": "yes",
+            "navigation": "Accounts > Network filter",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/accounts/src/components/AccountsListWithFilter.tsx",
+                    "symbol": "AccountsListWithFilter"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/accounts/src/components/AccountsListWithFilter.tsx",
+                    "detail": "The native account list stores one or more filtered network symbols, passes them into AccountsList, and exposes filter controls and clearing."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/screens/AccountsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The native account list stores one or more filtered network symbols, passes them into AccountsList, and exposes filter controls and clearing."
+        },
+        {
+            "id": "wallet.accounts.select",
+            "mobile_status": "yes",
+            "navigation": "Accounts > Select account",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-accounts/src/screens/AccountsScreen.tsx",
+                    "symbol": "AccountsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/screens/AccountsScreen.tsx",
+                    "detail": "Selecting a native account opens its account overview or account detail according to network and Home experiment."
+                }
+            ],
+            "reason": "Selecting a native account opens its account overview or account detail according to network and Home experiment."
+        },
+        {
+            "id": "wallet.accounts.add.taproot",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Add account > Network > Select account type > Taproot",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "symbol": "SelectAccountTypeScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "detail": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/add-coin-account/src/utils/getAvailableAccountTypesForNetworkSymbol.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+        },
+        {
+            "id": "wallet.accounts.add.native-segwit",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Add account > Network > Select account type > Native SegWit",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "symbol": "SelectAccountTypeScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "detail": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/add-coin-account/src/utils/getAvailableAccountTypesForNetworkSymbol.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+        },
+        {
+            "id": "wallet.accounts.add.segwit",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Add account > Network > Select account type > Segwit",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "symbol": "SelectAccountTypeScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "detail": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/add-coin-account/src/utils/getAvailableAccountTypesForNetworkSymbol.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+        },
+        {
+            "id": "wallet.accounts.add.legacy",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Add account > Network > Select account type > Legacy",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "symbol": "SelectAccountTypeScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-add-accounts/src/screens/SelectAccountTypeScreen.tsx",
+                    "detail": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/add-coin-account/src/utils/getAvailableAccountTypesForNetworkSymbol.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native SelectAccountTypeScreen renders supported account types; its selector keeps normal, taproot, segwit and legacy types from network configuration and excludes coinjoin/imported/ledger. Availability depends on network and device support."
+        },
+        {
+            "id": "wallet.accounts.add.activation",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Add account > Select inactive network",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-add-accounts/src/screens/AddCoinAccountScreen.tsx",
+                    "symbol": "AddCoinAccountScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-add-accounts/src/screens/AddCoinAccountScreen.tsx",
+                    "detail": "Native network selection uses useAddCoinAccount; selecting a network not in enabledDiscoveryNetworkSymbols navigates to AddCoinDiscoveryRunning. Requires supported network and authorization."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/add-coin-account/src/hooks/useAddCoinAccount.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native network selection uses useAddCoinAccount; selecting a network not in enabledDiscoveryNetworkSymbols navigates to AddCoinDiscoveryRunning. Requires supported network and authorization."
+        },
+        {
+            "id": "wallet.accounts.overview.balance",
+            "mobile_status": "yes",
+            "navigation": "Accounts > Account > Balance",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-account-detail/src/components/YourPositionCard.tsx",
+                    "symbol": "YourPositionCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/components/YourPositionCard.tsx",
+                    "detail": "The native position card renders crypto/token and base-currency balances; fiat amount may be unavailable when rates are missing."
+                }
+            ],
+            "reason": "The native position card renders crypto/token and base-currency balances; fiat amount may be unavailable when rates are missing."
+        },
+        {
+            "id": "wallet.accounts.overview.history-graph",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Account > Balance graph",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-account-detail/src/components/AccountDetailGraph.tsx",
+                    "symbol": "AccountDetailGraph"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/components/AccountDetailGraph.tsx",
+                    "detail": "Native account detail renders historical balance and range controls only for history-enabled accounts; the containing header additionally gates testnet, missing history and unrecognized-token cases."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/components/TransactionListHeader.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native account detail renders historical balance and range controls only for history-enabled accounts; the containing header additionally gates testnet, missing history and unrecognized-token cases."
+        },
+        {
+            "id": "wallet.accounts.overview.summary",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/components/TransactionListHeader.tsx",
+                    "detail": "Native account composition has a position card, account graph, actions, price card and network resources; it does not offer the desktop All/Incoming/Outgoing summary tiles."
+                }
+            ],
+            "reason": "Native account composition has a position card, account graph, actions, price card and network resources; it does not offer the desktop All/Incoming/Outgoing summary tiles."
+        },
+        {
+            "id": "wallet.accounts.overview.tron-resources",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Tron account > Energy and bandwidth",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-account-detail/src/components/TronResources/TronResources.tsx",
+                    "symbol": "TronResources"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/components/TronResources/TronResources.tsx",
+                    "detail": "Native TronResources shows available and total bandwidth and energy for a Tron account with resource data; the containing header requires native-coin context and transaction history."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/components/TransactionListHeader.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native TronResources shows available and total bandwidth and energy for a Tron account with resource data; the containing header requires native-coin context and transaction history."
+        },
+        {
+            "id": "wallet.accounts.details.type",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Account > Settings > Account type / Derivation path",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
+                    "symbol": "AccountSettingsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
+                    "detail": "Native account settings displays formatted account type when available and derivation path when present."
+                }
+            ],
+            "reason": "Native account settings displays formatted account type when available and derivation path when present."
+        },
+        {
+            "id": "wallet.accounts.details.nonce",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
+                    "detail": "Native AccountSettingsScreen shows coin, account type, derivation path, BIP329 labels and account actions, without a live EVM account nonce row. A transaction nonce in transaction details is a separate capability."
+                }
+            ],
+            "reason": "Native AccountSettingsScreen shows coin, account type, derivation path, BIP329 labels and account actions, without a live EVM account nonce row. A transaction nonce in transaction details is a separate capability."
+        },
+        {
+            "id": "wallet.send.form",
+            "mobile_status": "conditional",
+            "navigation": "Home > Send > Select account and asset > Recipient and amount",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "symbol": "SendOutputsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Native SendOutputsScreen composes recipient/amount fields, UTXO selection where supported, fees and transaction review; requires a send-capable account."
+                }
+            ],
+            "reason": "Native SendOutputsScreen composes recipient/amount fields, UTXO selection where supported, fees and transaction review; requires a send-capable account."
+        },
+        {
+            "id": "wallet.send.form.own-account",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/AddressInput.tsx",
+                    "detail": "The native recipient field offers text entry, QR scan, labels and address/name warnings. The only self-address fill button is isDebugEnv-only; there is no ordinary own-account/address picker."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The native recipient field offers text entry, QR scan, labels and address/name warnings. The only self-address fill button is isDebugEnv-only; there is no ordinary own-account/address picker."
+        },
+        {
+            "id": "wallet.send.form.asset",
+            "mobile_status": "conditional",
+            "navigation": "Home > Send > Select account > Select coin or token",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/screens/SendAccountsScreen.tsx",
+                    "symbol": "SendAccountsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendAccountsScreen.tsx",
+                    "detail": "Native SendAccountsScreen routes accounts with known tokens to AccountOverview flowType send before opening SendOutputs with the chosen tokenContract. Selection occurs before the form rather than in a form token dropdown."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/screens/AccountOverviewScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native SendAccountsScreen routes accounts with known tokens to AccountOverview flowType send before opening SendOutputs with the chosen tokenContract. Selection occurs before the form rather than in a form token dropdown."
+        },
+        {
+            "id": "wallet.send.form.bitcoin-unit",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Preferences > Bitcoin units; then Bitcoin account > Send",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/BitcoinUnitsSelector.tsx",
+                    "symbol": "BitcoinUnitsSelector"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/BitcoinUnitsSelector.tsx",
+                    "detail": "Native Preferences selects Bitcoin or Satoshis globally, and useSendForm reads selectIsAmountInSats for entry. There is no unit switch inside the send input; parity is through the shared setting."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/hooks/useSendForm.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native Preferences selects Bitcoin or Satoshis globally, and useSendForm reads selectIsAmountInSats for entry. There is no unit switch inside the send input; parity is through the shared setting."
+        },
+        {
+            "id": "wallet.send.form.multi-recipient",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Although native fields iterate the outputs array, adding outputs is explicitly a TODO and no Add recipient control is rendered; implementation scaffolding is not a visible multi-recipient feature."
+                }
+            ],
+            "reason": "Although native fields iterate the outputs array, adding outputs is explicitly a TODO and no Add recipient control is rendered; implementation scaffolding is not a visible multi-recipient feature."
+        },
+        {
+            "id": "wallet.send.form.csv",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "The inspected native Send screen, output fields and Send navigator have no CSV recipient-import action or route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native Send screen, output fields and Send navigator have no CSV recipient-import action or route."
+        },
+        {
+            "id": "wallet.send.form.recipient-history",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/AddressInput.tsx",
+                    "detail": "Native AddressInput renders checksum/autocorrect/Solana-account/name-resolution notes but no previous-recipient-history indicator. Own-address detection in review is a separate check."
+                }
+            ],
+            "reason": "Native AddressInput renders checksum/autocorrect/Solana-account/name-resolution notes but no previous-recipient-history indicator. Own-address detection in review is a separate check."
+        },
+        {
+            "id": "wallet.send.form.clear",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Native send screen/header/footer expose navigation and review but no Clear all/reset form action. useSendForm reset is used to hydrate an existing draft, not a user-facing reset button."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/hooks/useSendForm.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send screen/header/footer expose navigation and review but no Clear all/reset form action. useSendForm reset is used to hydrate an existing draft, not a user-facing reset button."
+        },
+        {
+            "id": "wallet.send.fees.preset",
+            "mobile_status": "conditional",
+            "navigation": "Send > Network fee > Fee level",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transaction-management/src/components/fees/FeesContent.tsx",
+                    "symbol": "FeesContent"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/FeesContent.tsx",
+                    "detail": "Native fees show a list of available recommended fee levels; actual adjustable levels depend on network/backend fee data."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/FeeOptionList/FeeOptionsList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native fees show a list of available recommended fee levels; actual adjustable levels depend on network/backend fee data."
+        },
+        {
+            "id": "wallet.send.fees.bitcoin-rate",
+            "mobile_status": "conditional",
+            "navigation": "Send > Network fee > Custom fee > Custom Bitcoin fee rate",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFeeInputs.tsx",
+                    "symbol": "CustomFeeInputs"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFeeInputs.tsx",
+                    "detail": "Native custom fee inputs expose feePerUnit with decimal input for Bitcoin-like networks."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native custom fee inputs expose feePerUnit with decimal input for Bitcoin-like networks."
+        },
+        {
+            "id": "wallet.send.fees.gas-limit",
+            "mobile_status": "conditional",
+            "navigation": "Send > Network fee > Custom fee > EVM gas limit",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFeeInputs.tsx",
+                    "symbol": "CustomFeeInputs"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFeeInputs.tsx",
+                    "detail": "Native custom fee inputs render gas limit only for EVM network type ethereum."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native custom fee inputs render gas limit only for EVM network type ethereum."
+        },
+        {
+            "id": "wallet.send.fees.gas-price",
+            "mobile_status": "conditional",
+            "navigation": "Send > Network fee > Custom fee > EVM gas price",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFeeInputs.tsx",
+                    "symbol": "CustomFeeInputs"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFeeInputs.tsx",
+                    "detail": "Native custom fee inputs render gas price for EVM networks when fee levels are not EIP-1559."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native custom fee inputs render gas price for EVM networks when fee levels are not EIP-1559."
+        },
+        {
+            "id": "wallet.send.fees.max-fee",
+            "mobile_status": "conditional",
+            "navigation": "Send > Network fee > Custom fee > Maximum EVM fee per gas",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/EIP1559CustomInputs.tsx",
+                    "symbol": "EIP1559CustomInputs"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/EIP1559CustomInputs.tsx",
+                    "detail": "Native EIP1559CustomInputs exposes maxFeePerGas for an EIP-1559-capable EVM network."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native EIP1559CustomInputs exposes maxFeePerGas for an EIP-1559-capable EVM network."
+        },
+        {
+            "id": "wallet.send.fees.priority-fee",
+            "mobile_status": "conditional",
+            "navigation": "Send > Network fee > Custom fee > EVM priority fee",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/EIP1559CustomInputs.tsx",
+                    "symbol": "EIP1559CustomInputs"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/EIP1559CustomInputs.tsx",
+                    "detail": "Native EIP1559CustomInputs exposes maxPriorityFeePerGas for an EIP-1559-capable EVM network."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native EIP1559CustomInputs exposes maxPriorityFeePerGas for an EIP-1559-capable EVM network."
+        },
+        {
+            "id": "wallet.send.fees.tron-limit",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
+                    "detail": "Native CustomFee explicitly returns null for network types solana and tron. A Tron fee summary exists, but no editable custom Tron fee-limit control is exposed."
+                }
+            ],
+            "reason": "Native CustomFee explicitly returns null for network types solana and tron. A Tron fee summary exists, but no editable custom Tron fee-limit control is exposed."
+        },
+        {
+            "id": "wallet.send.fees.recommended-reset",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFeeInputs.tsx",
+                    "detail": "Native custom inputs show editable fee fields and validation but no Use recommended field-reset button. Cancelling a custom fee can restore its prior fee choice, which is not the desktop validation action."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/components/fees/CustomFee/CustomFee.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native custom inputs show editable fee fields and validation but no Use recommended field-reset button. Cancelling a custom fee can restore its prior fee choice, which is not the desktop validation action."
+        },
+        {
+            "id": "wallet.send.coin-control.enable",
+            "mobile_status": "conditional",
+            "navigation": "Bitcoin account > Send > Coin control; selected inputs > Delete to disable",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/SendUtxoScreenHeader.tsx",
+                    "symbol": "SendUtxoScreenHeader"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/SendUtxoScreenHeader.tsx",
+                    "detail": "Native coin-control entry opens manual selection; deleting the selection confirms and clears selectedUtxos, returning to automatic selection. There is no matching inline switch."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/SwitchCoinControlButton.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native coin-control entry opens manual selection; deleting the selection confirms and clears selectedUtxos, returning to automatic selection. There is no matching inline switch."
+        },
+        {
+            "id": "wallet.send.coin-control.select-all",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendUtxoScreen.tsx",
+                    "detail": "Native UTXO screen supports per-item selection, search and confirmation; header can clear an existing selection but there is no Select all action."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/SendUtxoScreenHeader.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native UTXO screen supports per-item selection, search and confirmation; header can clear an existing selection but there is no Select all action."
+        },
+        {
+            "id": "wallet.send.coin-control.search",
+            "mobile_status": "conditional",
+            "navigation": "Bitcoin account > Send > Coin control > Search",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/screens/SendUtxoScreen.tsx",
+                    "symbol": "SendUtxoScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendUtxoScreen.tsx",
+                    "detail": "Native UTXO screen exposes SearchInputWithCancel and useFilteredUtxos. Available matching data depends on loaded UTXOs/transactions."
+                }
+            ],
+            "reason": "Native UTXO screen exposes SearchInputWithCancel and useFilteredUtxos. Available matching data depends on loaded UTXOs/transactions."
+        },
+        {
+            "id": "wallet.send.coin-control.sort",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendUtxoScreen.tsx",
+                    "detail": "Native UTXO screen forwards filteredUtxos into a list without a user sorting selector; its visible controls are search, item selection, clear and confirm."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/UtxoList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native UTXO screen forwards filteredUtxos into a list without a user sorting selector; its visible controls are search, item selection, clear and confirm."
+        },
+        {
+            "id": "wallet.send.coin-control.selection-total",
+            "mobile_status": "conditional",
+            "navigation": "Bitcoin account > Send > Coin control > Selected total",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/SendUtxoScreenFooter.tsx",
+                    "symbol": "SendUtxoScreenFooter"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/SendUtxoScreenFooter.tsx",
+                    "detail": "Native footer shows selected input total and the amount still missing to cover the requested payment; confirmation requires sufficient selected inputs."
+                }
+            ],
+            "reason": "Native footer shows selected input total and the amount still missing to cover the requested payment; confirmation requires sufficient selected inputs."
+        },
+        {
+            "id": "wallet.send.coin-control.privacy",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendUtxoScreen.tsx",
+                    "detail": "Native coin control renders one filtered UTXO list without the desktop private/non-private/dust grouping or anonymity-target controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/UtxoList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CoinControl/UtxoCard.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native coin control renders one filtered UTXO list without the desktop private/non-private/dust grouping or anonymity-target controls."
+        },
+        {
+            "id": "wallet.send.advanced",
+            "mobile_status": "conditional",
+            "navigation": "Send > XRP/Stellar tag or memo; Solana memo; Tron note",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "symbol": "SendOutputFields"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "A subset of advanced network options is visible natively: XRP destination tag, Stellar memo, Solana memo and Tron note. This does not imply support for desktop raw/data/nonce/locktime controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/RecipientInputs.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "A subset of advanced network options is visible natively: XRP destination tag, Stellar memo, Solana memo and Tron note. This does not imply support for desktop raw/data/nonce/locktime controls."
+        },
+        {
+            "id": "wallet.send.advanced.broadcast",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Sign without broadcasting input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Sign without broadcasting input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.raw",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Broadcast a raw transaction input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Broadcast a raw transaction input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.locktime",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Transaction locktime input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Transaction locktime input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.locktime-height",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Locktime by block height input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Locktime by block height input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.locktime-date",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Locktime by date input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Locktime by date input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.op-return",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no OP_RETURN data input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no OP_RETURN data input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.evm-data",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no EVM transaction data input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no EVM transaction data input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.evm-nonce",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Custom EVM nonce input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Custom EVM nonce input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.advanced.xrp-tag",
+            "mobile_status": "conditional",
+            "navigation": "XRP account > Send > Destination tag",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/components/DestinationTagInput.tsx",
+                    "symbol": "DestinationTagInput"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/DestinationTagInput.tsx",
+                    "detail": "RecipientInputs mounts DestinationTagInput for ripple/stellar; XRP applies integerTransformer to a numeric tag and allows the field to be disabled."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/RecipientInputs.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "RecipientInputs mounts DestinationTagInput for ripple/stellar; XRP applies integerTransformer to a numeric tag and allows the field to be disabled."
+        },
+        {
+            "id": "wallet.send.advanced.stellar-memo",
+            "mobile_status": "conditional",
+            "navigation": "Stellar account > Send > Memo / destination tag",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/components/DestinationTagInput.tsx",
+                    "symbol": "DestinationTagInput"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/DestinationTagInput.tsx",
+                    "detail": "RecipientInputs mounts a text-capable destinationTag field for Stellar, validated with Stellar memo limits by the send form. Protocol/token-specific restrictions still apply."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/RecipientInputs.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/sendOutputsFormSchema.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "RecipientInputs mounts a text-capable destinationTag field for Stellar, validated with Stellar memo limits by the send form. Protocol/token-specific restrictions still apply."
+        },
+        {
+            "id": "wallet.send.advanced.tron-data",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/SendOutputFields.tsx",
+                    "detail": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Tron transaction data input/action. SendStackNavigator also contains no raw-transaction route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native send composition exposes recipient/amount, XRP/Stellar tag/memo, Solana memo, Tron note, fees and coin control, but no Tron transaction data input/action. SendStackNavigator also contains no raw-transaction route."
+        },
+        {
+            "id": "wallet.send.review.outputs",
+            "mobile_status": "conditional",
+            "navigation": "Send > Review transaction",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsReviewScreen.tsx",
+                    "symbol": "SendOutputsReviewScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsReviewScreen.tsx",
+                    "detail": "Native review derives reviewOutputs and summaryOutput from the selected send draft and passes them to TransactionReviewScreen for device signing and final send."
+                }
+            ],
+            "reason": "Native review derives reviewOutputs and summaryOutput from the selected send draft and passes them to TransactionReviewScreen for device signing and final send."
+        },
+        {
+            "id": "wallet.send.review.solana-expiry",
+            "mobile_status": "conditional",
+            "navigation": "Solana account > Send > Review transaction > Validity timer",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsReviewScreen.tsx",
+                    "symbol": "SendOutputsReviewScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsReviewScreen.tsx",
+                    "detail": "Native review wires useTxValidityFlow to TransactionReviewScreen; the shared timer only shows for Solana, expires by creation time and offers retry/cancel."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/hooks/useTxValidityFlow.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transaction-management/src/hooks/useTxValidityTimer.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native review wires useTxValidityFlow to TransactionReviewScreen; the shared timer only shows for Solana, expires by creation time and offers retry/cancel."
+        },
+        {
+            "id": "wallet.send.review.signed-raw",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsReviewScreen.tsx",
+                    "detail": "Native review signs and broadcasts through sendTransactionThunk and navigates to the sent transaction; it does not expose raw signed-transaction copy/download controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native review signs and broadcasts through sendTransactionThunk and navigates to the sent transaction; it does not expose raw signed-transaction copy/download controls."
+        },
+        {
+            "id": "wallet.send.network-safety.cardano",
+            "mobile_status": "conditional",
+            "navigation": "Cardano account > Send token > Minimum ADA information",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/components/CardanoTokenSendMinAdaAmountInfo.tsx",
+                    "symbol": "CardanoTokenSendMinAdaAmountInfo"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/CardanoTokenSendMinAdaAmountInfo.tsx",
+                    "detail": "Native minimum-ADA component returns null unless the account is Cardano and a tokenContract is selected; it displays the required ADA and insufficient-ADA guidance."
+                }
+            ],
+            "reason": "Native minimum-ADA component returns null unless the account is Cardano and a tokenContract is selected; it displays the required ADA and insufficient-ADA guidance."
+        },
+        {
+            "id": "wallet.receive.global",
+            "mobile_status": "yes",
+            "navigation": "Home > Receive",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
+                    "symbol": "ReceiveCrossroadsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
+                    "detail": "Native global Receive offers asset and account entry tabs, search, network filtering and account addition, with Bitcoin-only firmware using account-first selection."
+                }
+            ],
+            "reason": "Native global Receive offers asset and account entry tabs, search, network filtering and account addition, with Bitcoin-only firmware using account-first selection."
+        },
+        {
+            "id": "wallet.receive.global.assets",
+            "mobile_status": "conditional",
+            "navigation": "Home > Receive > Assets > Search",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
+                    "symbol": "ReceiveCrossroadsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
+                    "detail": "Native Receive renders an asset list, search and network filters. Bitcoin-only firmware starts on Accounts and suppresses the asset/account subtabs."
+                }
+            ],
+            "reason": "Native Receive renders an asset list, search and network filters. Bitcoin-only firmware starts on Accounts and suppresses the asset/account subtabs."
+        },
+        {
+            "id": "wallet.receive.global.network-setup",
+            "mobile_status": "conditional",
+            "navigation": "Home > Receive > Select asset on inactive network > Discovery",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveDiscoveryScreen.tsx",
+                    "symbol": "ReceiveDiscoveryScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveDiscoveryScreen.tsx",
+                    "detail": "Native useReceiveNavigation enables coin visibility and opens ReceiveDiscovery when no receive account exists; view-only mode instead shows the add-account restriction alert."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/hooks/useReceiveNavigation.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native useReceiveNavigation enables coin visibility and opens ReceiveDiscovery when no receive account exists; view-only mode instead shows the add-account restriction alert."
+        },
+        {
+            "id": "wallet.receive.global.add-account",
+            "mobile_status": "conditional",
+            "navigation": "Home > Receive > Accounts > Add account",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
+                    "symbol": "ReceiveCrossroadsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveCrossroadsScreen.tsx",
+                    "detail": "The native Receive header mounts AddAccountButton with flowType receive on its Accounts tab, allowing the add-account flow to return into receive."
+                }
+            ],
+            "reason": "The native Receive header mounts AddAccountButton with flowType receive on its Accounts tab, allowing the add-account flow to return into receive."
+        },
+        {
+            "id": "wallet.receive.address",
+            "mobile_status": "yes",
+            "navigation": "Account > Receive > Receive address",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-receive/src/components/ReceiveAddressDetails.tsx",
+                    "symbol": "ReceiveAddressDetails"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/components/ReceiveAddressDetails.tsx",
+                    "detail": "Native receive details displays the full address with AddressFormatter plus QR code and copy interaction."
+                }
+            ],
+            "reason": "Native receive details displays the full address with AddressFormatter plus QR code and copy interaction."
+        },
+        {
+            "id": "wallet.receive.copy-verification",
+            "mobile_status": "conditional",
+            "navigation": "Receive > Copy address > Verify on Trezor",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-receive/src/components/ReceiveAddressVerificationBottomSheet.tsx",
+                    "symbol": "ReceiveAddressVerificationBottomSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/components/ReceiveAddressVerificationBottomSheet.tsx",
+                    "detail": "Copy opens a copied-address verification sheet only when isDeviceVerificationEnabled; it offers Verify on Trezor or Skip verification. Tracker-only accounts do not require device verification."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/hooks/useReceiveAddressCopy.ts",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Copy opens a copied-address verification sheet only when isDeviceVerificationEnabled; it offers Verify on Trezor or Skip verification. Tracker-only accounts do not require device verification."
+        },
+        {
+            "id": "wallet.receive.history-detail",
+            "mobile_status": "conditional",
+            "navigation": "Receive > Address history > Select address",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveAddressDetailScreen.tsx",
+                    "symbol": "ReceiveAddressDetailScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-receive/src/screens/ReceiveAddressDetailScreen.tsx",
+                    "detail": "Native historical-address detail resolves accountKey/addressPath and exposes address details, QR, copy/share/verify actions and a used-address warning."
+                }
+            ],
+            "reason": "Native historical-address detail resolves accountKey/addressPath and exposes address details, QR, copy/share/verify actions and a used-address warning."
+        },
+        {
+            "id": "wallet.transactions.pending",
+            "mobile_status": "conditional",
+            "navigation": "Account > Transactions > Pending section",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "symbol": "TransactionList"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Native history partitions pending transactions and sorts the pending group before dated history; requires unconfirmed transactions."
+                }
+            ],
+            "reason": "Native history partitions pending transactions and sorts the pending group before dated history; requires unconfirmed transactions."
+        },
+        {
+            "id": "wallet.transactions.search",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "The complete native transaction list composes dated/pending rows, paging, refresh and history status, with no user transaction-search input or query. Account search is a separate screen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountDetailContentScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The complete native transaction list composes dated/pending rows, paging, refresh and history status, with no user transaction-search input or query. Account search is a separate screen."
+        },
+        {
+            "id": "wallet.transactions.pagination",
+            "mobile_status": "conditional",
+            "navigation": "Account > Transactions > More",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transactions/src/components/TransactionsListFooter.tsx",
+                    "symbol": "TransactionsListFooter"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionsListFooter.tsx",
+                    "detail": "Native history fetches pages and exposes a More button when further transactions are available; it does not use desktop numbered-page controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native history fetches pages and exposes a More button when further transactions are available; it does not use desktop numbered-page controls."
+        },
+        {
+            "id": "wallet.transactions.older-history",
+            "mobile_status": "conditional",
+            "navigation": "Account > Transactions > Load older",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/transactions/src/components/TransactionsListFooter.tsx",
+                    "symbol": "TransactionsListFooter"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionsListFooter.tsx",
+                    "detail": "Native TransactionList widens direct-RPC history via getOlderHistoryFrom and labels its footer Load older, with covered-since/failure status."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/OlderHistoryStatus.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native TransactionList widens direct-RPC history via getOlderHistoryFrom and labels its footer Load older, with covered-since/failure status."
+        },
+        {
+            "id": "wallet.transactions.suspicious",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Native history has no desktop Show all/Show unblurred/Hide suspicious mode selector. Individual transaction recognition overrides exist in details and are mapped separately."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailData.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native history has no desktop Show all/Show unblurred/Hide suspicious mode selector. Individual transaction recognition overrides exist in details and are mapped separately."
+        },
+        {
+            "id": "wallet.transactions.export",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountDetailContentScreen.tsx",
+                    "detail": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+        },
+        {
+            "id": "wallet.transactions.export.csv",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountDetailContentScreen.tsx",
+                    "detail": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+        },
+        {
+            "id": "wallet.transactions.export.pdf",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountDetailContentScreen.tsx",
+                    "detail": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+        },
+        {
+            "id": "wallet.transactions.export.json",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountDetailContentScreen.tsx",
+                    "detail": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/transactions/src/components/TransactionList.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountSettingsScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native account history and its complete transaction list do not expose transaction-history file export. Account settings BIP329 import/export is label portability, not CSV/PDF/JSON transaction export."
+        },
+        {
+            "id": "wallet.transactions.details.amount",
+            "mobile_status": "conditional",
+            "navigation": "Account > Transaction > Amount / Values",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailValuesSheet.tsx",
+                    "symbol": "TransactionDetailValuesSheet"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailValuesSheet.tsx",
+                    "detail": "Native transaction detail supports crypto and historical fiat amounts; the expanded Values sheet is omitted on testnets and token-transfer details, while summary components show applicable amounts."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailSheets.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native transaction detail supports crypto and historical fiat amounts; the expanded Values sheet is omitted on testnets and token-transfer details, while summary components show applicable amounts."
+        },
+        {
+            "id": "wallet.transactions.details.data",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailSheets.tsx",
+                    "detail": "Native detail sheets expose Parameters, Values and Inputs; parameters show gas/nonce and network memos but no raw EVM calldata/decoded-function or Stellar contract-call inspection section."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailParametersSheet.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailData.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native detail sheets expose Parameters, Values and Inputs; parameters show gas/nonce and network memos but no raw EVM calldata/decoded-function or Stellar contract-call inspection section."
+        },
+        {
+            "id": "wallet.transactions.details.chained",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/components/TransactionDetailSheets.tsx",
+                    "detail": "Native transaction-detail sheets expose Parameters, Values and Inputs only; there is no chained/dependent-transaction tab or sheet."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/screens/TransactionDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native transaction-detail sheets expose Parameters, Values and Inputs only; there is no chained/dependent-transaction tab or sheet."
+        },
+        {
+            "id": "wallet.transactions.speed-up",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-transactions/src/screens/TransactionDetailScreen.tsx",
+                    "detail": "The native transaction screen offers CancelEvmTransactionButton and explorer action, with no Speed up or general bump-fee replacement flow. EVM cancellation uses a higher fee internally but is a distinct feature."
+                }
+            ],
+            "reason": "The native transaction screen offers CancelEvmTransactionButton and explorer action, with no Speed up or general bump-fee replacement flow. EVM cancellation uses a higher fee internally but is a distinct feature."
+        },
+        {
+            "id": "wallet.tokens.search",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/screens/AccountOverviewScreen.tsx",
+                    "detail": "Native account token overview composes Tokens/DeFi/Hidden/Inactive tabs and token lists without a token-list search input. Global account/receive searches remain separate capabilities."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/ActiveTokensTab.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native account token overview composes Tokens/DeFi/Hidden/Inactive tabs and token lists without a token-list search input. Global account/receive searches remain separate capabilities."
+        },
+        {
+            "id": "wallet.tokens.hide",
+            "mobile_status": "conditional",
+            "navigation": "Home > Token asset > Settings > Hide token",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsHideTokenAction.tsx",
+                    "symbol": "AssetSettingsHideTokenAction"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsHideTokenAction.tsx",
+                    "detail": "Hide toggles native token status to HIDE. The control requires a tokenContract and applies wallet-wide token visibility."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsBottomSheet.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Hide toggles native token status to HIDE. The control requires a tokenContract and applies wallet-wide token visibility."
+        },
+        {
+            "id": "wallet.tokens.unhide",
+            "mobile_status": "conditional",
+            "navigation": "Home > Token asset > Settings > Show token",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsHideTokenAction.tsx",
+                    "symbol": "AssetSettingsHideTokenAction"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsHideTokenAction.tsx",
+                    "detail": "Show toggles native token status to SHOW; unrecognized tokens require confirmation and loaded definitions. The control requires a tokenContract and applies wallet-wide token visibility."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsBottomSheet.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Show toggles native token status to SHOW; unrecognized tokens require confirmation and loaded definitions. The control requires a tokenContract and applies wallet-wide token visibility."
+        },
+        {
+            "id": "wallet.tokens.history",
+            "mobile_status": "conditional",
+            "navigation": "Accounts > Token-supporting account > Tokens > Select token",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountDetailContentScreen.tsx",
+                    "symbol": "AccountDetailContentScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-account-detail/src/screens/AccountDetailContentScreen.tsx",
+                    "detail": "Native account token selection passes tokenContract into TransactionList, yielding token-filtered history; asset-first token details also aggregate that token across accounts."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/ActiveTokensTab.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native account token selection passes tokenContract into TransactionList, yielding token-filtered history; asset-first token details also aggregate that token across accounts."
+        },
+        {
+            "id": "wallet.tokens.identifiers",
+            "mobile_status": "conditional",
+            "navigation": "Home > Token asset > Settings > Token identifier",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsTokenDetailsSection.tsx",
+                    "symbol": "AssetSettingsTokenDetailsSection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsTokenDetailsSection.tsx",
+                    "detail": "Native asset settings renders the token contract or Cardano policy ID/fingerprint through copyable address fields; only relevant token metadata yields those rows."
+                }
+            ],
+            "reason": "Native asset settings renders the token contract or Cardano policy ID/fingerprint through copyable address fields; only relevant token metadata yields those rows."
+        },
+        {
+            "id": "wallet.tokens.explorer",
+            "mobile_status": "conditional",
+            "navigation": "Home > Token asset > Settings > Explore in blockchain",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsExplorerAction.tsx",
+                    "symbol": "AssetSettingsExplorerAction"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetSettingsExplorerAction.tsx",
+                    "detail": "Native asset settings opens the token explorer URL when selectWalletAssetExplorerUrl supplies one."
+                }
+            ],
+            "reason": "Native asset settings opens the token explorer URL when selectWalletAssetExplorerUrl supplies one."
+        },
+        {
+            "id": "wallet.nfts",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.nfts.collections",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.nfts.search",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.nfts.hidden",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.nfts.visibility",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.nfts.explorer",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.sign-verify.address",
+            "mobile_status": "conditional",
+            "navigation": "Account > Settings > Sign and verify > Signing address selection",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "symbol": "SignMessageCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "detail": "Native signing form supplies selectable account addresses/paths, including fresh/used/change addresses and a Cardano stake address when relevant; one-address accounts are read-only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/hooks/useSignMessageForm.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native signing form supplies selectable account addresses/paths, including fresh/used/change addresses and a Cardano stake address when relevant; one-address accounts are read-only."
+        },
+        {
+            "id": "wallet.sign-verify.hex",
+            "mobile_status": "conditional",
+            "navigation": "Account > Settings > Sign and verify > Hexadecimal message mode",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "symbol": "SignMessageCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "detail": "Native SignMessageCard has a hexadecimal message switch with validation. VerifyMessageCard does not expose the same hex switch, so this parity is signing-only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/hooks/useSignMessageForm.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/VerifyMessageCard.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native SignMessageCard has a hexadecimal message switch with validation. VerifyMessageCard does not expose the same hex switch, so this parity is signing-only."
+        },
+        {
+            "id": "wallet.sign-verify.format",
+            "mobile_status": "conditional",
+            "navigation": "Account > Settings > Sign and verify > Bitcoin signature format",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "symbol": "SignMessageCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "detail": "Native useSignMessageForm offers default and Electrum compatibility formats when getHasSelectableSignatureFormat(account) allows them."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/hooks/useSignMessageForm.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native useSignMessageForm offers default and Electrum compatibility formats when getHasSelectableSignatureFormat(account) allows them."
+        },
+        {
+            "id": "wallet.sign-verify.cose",
+            "mobile_status": "conditional",
+            "navigation": "Account > Settings > Sign and verify > Cardano public key format",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "symbol": "SignMessageCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "detail": "Native useSignMessageForm offers raw-key/default and COSE choices for Cardano and forwards the selected format to signThunk."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/hooks/useSignMessageForm.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native useSignMessageForm offers raw-key/default and COSE choices for Cardano and forwards the selected format to signThunk."
+        },
+        {
+            "id": "wallet.sign-verify.copy",
+            "mobile_status": "conditional",
+            "navigation": "Account > Settings > Sign and verify > Copy signature and public key",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "symbol": "SignMessageCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/components/SignMessageCard.tsx",
+                    "detail": "Native SignMessageCard exposes a copyable generated signature and message/address. Unlike desktop, the current native form does not store or render a separate returned Cardano public key, so that part is not equivalent."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-sign-verify/src/hooks/useSignMessageForm.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native SignMessageCard exposes a copyable generated signature and message/address. Unlike desktop, the current native form does not store or render a separate returned Cardano public key, so that part is not equivalent."
+        },
+        {
+            "id": "wallet.send.review.download-raw",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/screens/SendOutputsReviewScreen.tsx",
+                    "detail": "Native review signs and broadcasts through sendTransactionThunk and navigates to the sent transaction; it does not expose raw signed-transaction copy/download controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/navigation/SendStackNavigator.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native review signs and broadcasts through sendTransactionThunk and navigates to the sent transaction; it does not expose raw signed-transaction copy/download controls."
+        },
+        {
+            "id": "wallet.nfts.history",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.nfts.identifier",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/screens/AssetDetailScreen.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioAssetsContent.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "The inspected native account UI offers fungible Tokens, EVM DeFi, Hidden tokens and Stellar Inactive tokens; native asset/Home composition has no NFT collection/detail/search/visibility/history UI. External-app NFT interactions do not establish a Suite-native NFT feature."
+        },
+        {
+            "id": "wallet.send.form.ens-reverse",
+            "mobile_status": "conditional",
+            "navigation": "Ethereum account > Send > Paste recipient address",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-send/src/components/EnsResolutionMessage.tsx",
+                    "symbol": "EnsResolutionMessage"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/EnsResolutionMessage.tsx",
+                    "detail": "Native AddressInput resolves names and passes reverseResolvedName into EnsResolutionMessage, which displays the primary name for a pasted address when the network supports named-address lookup."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/AddressInput.tsx",
+                    "detail": "Inspected native composition or gating supporting the parity assessment."
+                }
+            ],
+            "reason": "Native AddressInput resolves names and passes reverseResolvedName into EnsResolutionMessage, which displays the primary name for a pasted address when the network supports named-address lookup."
+        },
+        {
+            "id": "wallet.portfolio.assets.details.price-history",
+            "mobile_status": "conditional",
+            "navigation": "Home > Assets > Select asset > Price chart",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailPriceSection.tsx",
+                    "symbol": "AssetDetailPriceSection"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-assets/src/components/AssetDetailPriceSection.tsx",
+                    "detail": "Composes AssetPriceChart when fiat rates are permitted for the selected asset."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/price-chart/src/AssetPriceChart.tsx",
+                    "detail": "Loads historical public market prices and renders a chart with range selection; null data hides the chart."
+                }
+            ],
+            "reason": "Actual historical price chart is on native asset detail, separately from the account current-price card; fiat-rate permissions and data availability apply."
+        }
+    ],
+    "notes": [
+        "Static native UI audit at the repository snapshot, not verification of released availability or a runtime test.",
+        "No means the inspected native composition omits the control or an explicit gate excludes it; it is not an assertion that the underlying SDK/protocol cannot perform the operation.",
+        "Conditional reasons include network, asset data, device authorization and experiment gating. A different native entry location is recorded where the user outcome exists.",
+        "The native send form has field-array scaffolding but its Add output control is explicitly TODO; do not infer multi-recipient support from the array.",
+        "The native custom fee component explicitly excludes Solana and Tron. Native EIP-1559 and legacy EVM custom-fee controls are present.",
+        "No Suite-native NFT viewing/sending, general transaction-history export, raw transaction broadcasting, general fee speed-up or desktop anonymity grouping was inferred from shared services.",
+        "Native signing can select Cardano COSE format but its visible result is the signature; a separate copyable public-key field was not found in the complete SignMessageCard/useSignMessageForm composition.",
+        "Native asset-first Home is gated by assetFirstHomeTableMobile. Portfolio value-change remains in the legacy graph header; it is absent from the current asset-first total-balance header."
+    ]
+}

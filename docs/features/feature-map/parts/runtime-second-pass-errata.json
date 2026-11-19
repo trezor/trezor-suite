@@ -1,0 +1,92 @@
+{
+    "errata": [
+        {
+            "observation_id": "runtime-web-t3t1-portfolio-assets-visible",
+            "screenshot_id": "web-t3t1-portfolio-assets-visible",
+            "description": "Dashboard total, empty history axes/range controls and a promotion are visible. The My assets heading, Add networks and layout controls appear at the lower edge; no asset rows/cards are visible.",
+            "feature_ids": ["wallet.portfolio.assets.layout"],
+            "reason": "Second-pass visual QC: Asset rows remain below the viewport. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-ethereum-stake-form",
+            "screenshot_id": "web-t3t1-ethereum-stake-form",
+            "description": "Stake ETH shows an empty amount field, crypto/fiat input toggle, fractions/Max, a Maximum fee row reading To be calculated, activation timeline and a collapsed Estimated rewards section.",
+            "feature_ids": ["earn.staking.eth.deposit", "earn.staking.amount", "earn.staking.fees"],
+            "reason": "Second-pass visual QC: Fee and rewards are uncalculated or collapsed. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-ethereum-unstake-form",
+            "screenshot_id": "web-t3t1-ethereum-unstake-form",
+            "description": "Unstake ETH shows a populated amount, fractions/Max and Rewards quick-select, a calculated maximum fee, deactivation timing and a later claim step. No separate estimated reward result is visible.",
+            "feature_ids": ["earn.staking.eth.unstake"],
+            "reason": "Second-pass visual QC: Reward estimate is not displayed. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-solana-stake-form",
+            "screenshot_id": "web-t3t1-solana-stake-form",
+            "description": "Stake SOL shows an empty amount, fractions/Max, Network fee (including rent) reading To be calculated, activation/reward timeline and a collapsed Estimated rewards section; Continue is disabled.",
+            "feature_ids": ["earn.staking.sol.stake", "earn.staking.amount", "earn.staking.fees"],
+            "reason": "Second-pass visual QC: Solana fee value is not calculated. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-tron-provider-consent",
+            "screenshot_id": "web-t3t1-tron-provider-consent",
+            "description": "Tron provider consent explains representative voting, retained ownership, provider terms and transaction-ID processing, followed by an unchecked acknowledgement and disabled Confirm. This image does not show allocation or a completed vote.",
+            "feature_ids": ["earn.staking.consent"],
+            "reason": "Second-pass visual QC: Voting is explained but no vote form is shown. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-yield-vault-opportunities",
+            "screenshot_id": "web-t3t1-yield-vault-opportunities",
+            "description": "Earn shows staking opportunities and the beginning of DeFi Yield: the ETH vault row is complete, the USDC row is clipped, and the USDT vault row is not visible. The three-vault catalog is established separately by the initial opportunity capture and fixture source.",
+            "feature_ids": ["earn.yield", "earn.opportunities.apy", "earn.opportunities.account"],
+            "reason": "Second-pass visual QC: USDT vault row is outside the viewport. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-trade-country-picker",
+            "screenshot_id": "web-t3t1-trade-country-picker",
+            "description": "Buy opens a Country of residence modal with a search field and a scrollable country subset. This capture is from Buy and does not directly demonstrate the same control in Sell.",
+            "feature_ids": ["trade.buy.country"],
+            "reason": "Second-pass visual QC: Buy country picker does not directly verify Sell residence. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-sell-form",
+            "screenshot_id": "web-t3t1-sell-form",
+            "description": "Sell shows source asset/account, crypto/fiat amount inputs, source balance, payout currency and residence. The fraction/Max controls are not visible in this idle screenshot.",
+            "feature_ids": [
+                "trade.sell",
+                "trade.sell.asset",
+                "trade.sell.amount",
+                "trade.sell.payout-currency",
+                "trade.sell.residence"
+            ],
+            "reason": "Second-pass visual QC: Sell fraction controls are not visible. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-swap-form",
+            "screenshot_id": "web-t3t1-swap-form",
+            "description": "Swap shows source/destination selectors, reverse-direction control, amounts and fiat references, source balance and receive account. Fraction/Max controls are not visible in this idle screenshot.",
+            "feature_ids": [
+                "trade.swap",
+                "trade.swap.pair",
+                "trade.swap.reverse-pair",
+                "trade.swap.amount"
+            ],
+            "reason": "Second-pass visual QC: Swap fraction controls are not visible. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-application-maintenance-visible",
+            "screenshot_id": "web-t3t1-application-maintenance-visible",
+            "description": "Application settings show auto-eject, localization and labeling. The Color scheme row appears at the bottom; analytics, Show log, Reset app and app version are outside this viewport.",
+            "feature_ids": ["app-settings.theme"],
+            "reason": "Second-pass visual QC: Analytics, log and reset are below the image. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        },
+        {
+            "observation_id": "runtime-web-t3t1-device-security-visible",
+            "screenshot_id": "web-t3t1-device-security-visible",
+            "description": "Device settings show backup checking, passphrase-wallet toggle, firmware version/type/language and the complete PIN toggle. Only the Safety checks label and upper edge of its Change button are visible; Check device is below the viewport.",
+            "feature_ids": ["device-settings.pin"],
+            "reason": "Second-pass visual QC: Safety action is clipped and Check device is absent. Preserve the original record; use this additive correction for the scope of visible screenshot associations."
+        }
+    ]
+}

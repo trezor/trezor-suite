@@ -1,0 +1,437 @@
+{
+    "area": "Source-reviewed additions: message system (service messages); legacy Bridge deprecation notice",
+    "new_features": [
+        {
+            "id": "app-settings.application.service-messages",
+            "parent_id": "app-settings.application",
+            "name": "Service messages",
+            "description": "Receive remotely configured service messages (the message system) targeted by date range, app version, platform, device, firmware, settings and country.",
+            "level": "feature",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "All platforms fetch the signed message-system configuration and show only messages whose conditions match. The same configuration also drives feature availability gates and experiments used by other features.",
+            "navigation": {
+                "desktop": "Automatically shown when an applicable remote service message is active",
+                "web": "Automatically shown when an applicable remote service message is active",
+                "mobile": "Automatically shown when an applicable remote service message is active"
+            },
+            "roots": [
+                {
+                    "platform": "shared",
+                    "path": "suite-common/message-system/src/messageSystemThunks.ts",
+                    "symbol": "initMessageSystemThunk"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/message-system/src/index.ts",
+                    "symbol": null
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/message-system/src/index.ts",
+                    "symbol": null
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/message-system/src/messageSystemThunks.ts",
+                    "line": 76,
+                    "detail": "Fetches the JWS-signed remote configuration (or the bundled one when the local source is selected), verifies its signature and keeps the newest sequence."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/message-system/src/messageSystemSelectors.ts",
+                    "line": 60,
+                    "detail": "Selects active banner, context, feature and modal messages after condition validation and dismissal state."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/message-system/src/messageSystemUtils.ts",
+                    "detail": "Evaluates message conditions: date range, environment and app version, OS, browser, transport, settings, device/firmware and country."
+                }
+            ],
+            "ownership": {
+                "team": "Trade",
+                "confidence": "agreed",
+                "basis": "Team agreement: the Trade team currently owns the message system (remote service messages, killswitch and message-system configuration).",
+                "source_paths": [
+                    "suite-common/message-system/package.json",
+                    "suite/message-system/package.json",
+                    "suite-native/message-system/package.json"
+                ]
+            },
+            "conditions": [
+                "A remote or bundled message-system configuration contains a message whose conditions match the current app, device and settings."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No production service message was active during the walkthrough; messages need a remote or debug configuration."
+            },
+            "related_ids": [
+                "app-settings.application.blocking-message",
+                "wallet.portfolio.promotions",
+                "earn"
+            ]
+        },
+        {
+            "id": "app-settings.application.service-messages.banner",
+            "parent_id": "app-settings.application.service-messages",
+            "name": "Global service banner",
+            "description": "Read an app-wide service banner, open its call to action and dismiss it when allowed.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Desktop/web shows the highest-priority banner message above the app content (also during onboarding) and it can outrank device and backup banners; mobile stacks all active banner messages at the top of the app.",
+            "navigation": {
+                "desktop": "Top of the application window",
+                "web": "Top of the application window",
+                "mobile": "Top of the app, above the current screen"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/message-system/src/MessageSystemBanner.tsx",
+                    "symbol": "MessageSystemBanner"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/message-system/src/components/MessageSystemBannerRenderer.tsx",
+                    "symbol": "MessageSystemBannerRenderer"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/message-system/src/MessageSystemBanner.tsx",
+                    "line": 21,
+                    "detail": "Banner with localized content, optional CTA (internal route or external link) and dismissal for dismissible messages."
+                },
+                {
+                    "kind": "route",
+                    "path": "packages/suite/src/components/suite/banners/SuiteBanners/SuiteBanners.tsx",
+                    "line": 54,
+                    "detail": "Message-system banner wins over device/backup banners when its priority is at least theirs; also rendered during onboarding."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/message-system/src/components/MessageBanner.tsx",
+                    "line": 89,
+                    "detail": "Native banner with CTA link and dismissal."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-native-app/app/src/BannersRenderer.tsx",
+                    "line": 42,
+                    "detail": "App-level renderer places message-system banners under the top safe area."
+                }
+            ],
+            "ownership": {
+                "team": "Trade",
+                "confidence": "agreed",
+                "basis": "Team agreement: the Trade team currently owns the message system (remote service messages, killswitch and message-system configuration).",
+                "source_paths": [
+                    "suite-common/message-system/package.json",
+                    "suite/message-system/package.json",
+                    "suite-native/message-system/package.json"
+                ]
+            },
+            "conditions": [
+                "An active banner-category message matches the current conditions.",
+                "CTA needs a configured label and link; dismissal needs a dismissible message."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No banner message was active during the walkthrough."
+            },
+            "related_ids": []
+        },
+        {
+            "id": "app-settings.application.service-messages.context",
+            "parent_id": "app-settings.application.service-messages",
+            "name": "In-context service messages",
+            "description": "See an inline service notice on a specific screen, such as trading, Earn, staking, dashboard or settings, with an optional link.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Desktop/web contexts: dashboard, general/network/debug settings, trading forms and legal gateway, Earn dashboard, yield deposit/withdraw/claim, and ETH/SOL/TRX/ADA staking account banners; desktop/web context messages can be dismissible. Mobile contexts: Earn dashboard, staking management, yield flows, wrapped-native forms and trading screens.",
+            "navigation": {
+                "desktop": "Inline on the screen the message targets",
+                "web": "Inline on the screen the message targets",
+                "mobile": "Inline on the screen the message targets"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/message-system/src/ContextMessage.tsx",
+                    "symbol": "ContextMessage"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/message-system/src/components/ContextMessage.tsx",
+                    "symbol": "ContextMessage"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite/message-system/src/ContextMessage.tsx",
+                    "line": 25,
+                    "detail": "Inline banner for the message targeting a context domain, with CTA and dismissal."
+                },
+                {
+                    "kind": "route",
+                    "path": "packages/suite/src/components/wallet/WalletLayout/AccountBanners/AccountBanners.tsx",
+                    "line": 39,
+                    "detail": "Staking context messages per network on account pages."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-app/app/src/pages/DashboardPage.tsx",
+                    "line": 28,
+                    "detail": "Dashboard context message."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/message-system/src/components/ContextMessage.tsx",
+                    "detail": "Native inline banner with optional link."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-native/module-earn/src/screens/earn/EarnScreen.tsx",
+                    "line": 14,
+                    "detail": "Earn dashboard staking and yield context messages."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-native-app/module-trading/src/components/general/TradingTypeAwareContextMessage.tsx",
+                    "detail": "Trading context messages per trade type."
+                }
+            ],
+            "ownership": {
+                "team": "Trade",
+                "confidence": "agreed",
+                "basis": "Team agreement: the Trade team currently owns the message system (remote service messages, killswitch and message-system configuration).",
+                "source_paths": [
+                    "suite-common/message-system/package.json",
+                    "suite/message-system/package.json",
+                    "suite-native/message-system/package.json"
+                ]
+            },
+            "conditions": [
+                "An active context-category message targets the current screen's context domain."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "No context message was active during the walkthrough."
+            },
+            "related_ids": ["earn", "wallet.portfolio.promotions"]
+        },
+        {
+            "id": "app-settings.application.service-messages.debug",
+            "parent_id": "app-settings.application.service-messages",
+            "name": "Service message debugging",
+            "description": "Inspect, add and preview message-system messages and experiments, and switch the configuration source.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "conditional"
+            },
+            "platform_notes": "Developer tooling: desktop/web Settings → Debug (debug mode) has the message manager, JSON editor, config source and experiment controls; mobile Dev utilities has the message-system manager and experiments screens.",
+            "navigation": {
+                "desktop": "Settings → Debug → Message system",
+                "web": "Settings → Debug → Message system",
+                "mobile": "Dev utilities → Message system"
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "suite/message-system/src/debugSettings/MessageSystemDebug.tsx",
+                    "symbol": "MessageSystemDebug"
+                },
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-dev-utils/src/screens/MessageSystemManagerScreen.tsx",
+                    "symbol": "MessageSystemManagerScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "route",
+                    "path": "suite-app/app/src/pages/SettingsDebugPage.tsx",
+                    "line": 150,
+                    "detail": "Debug settings page renders the message-system debug section."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite/e2e/support/pageObjects/settings/debugTab.ts",
+                    "line": 50,
+                    "detail": "E2E helper adds promo-banner messages through the message manager JSON editor (setup for promo banner tests)."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+                    "line": 187,
+                    "detail": "Native message-system manager screen registered in the root stack."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-dev-utils/src/screens/MessageSystemExperimentsScreen.tsx",
+                    "detail": "Native experiments inspection and inclusion overrides."
+                }
+            ],
+            "ownership": {
+                "team": "Trade",
+                "confidence": "agreed",
+                "basis": "Team agreement: the Trade team currently owns the message system (remote service messages, killswitch and message-system configuration).",
+                "source_paths": [
+                    "suite-common/message-system/package.json",
+                    "suite/message-system/package.json",
+                    "suite-native/message-system/package.json"
+                ]
+            },
+            "conditions": ["Desktop/web debug mode or the mobile dev utilities build."],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "Developer tooling; not captured."
+            },
+            "related_ids": [],
+            "scope": "internal-reference"
+        },
+        {
+            "id": "connection.legacy-bridge-deprecated",
+            "parent_id": "connection",
+            "name": "Legacy Bridge deprecation notice",
+            "description": "Detect a running legacy standalone Trezor Bridge and explain how to uninstall it.",
+            "level": "option",
+            "platforms": {
+                "desktop": "conditional",
+                "web": "conditional",
+                "mobile": "no"
+            },
+            "platform_notes": "Desktop probes the legacy trezord-go endpoint (127.0.0.1:21325) each time SuiteBanners mounts. Web probes only while the Local Network Access permission is granted, so it never triggers the permission prompt, and the probe re-runs when the permission becomes granted. Only a 2.x version response counts as legacy. Mobile has no standalone Bridge transport.",
+            "navigation": {
+                "desktop": "Suite banner 'Trezor Bridge has been deprecated' (app, onboarding or welcome layout) > Learn more",
+                "web": "Suite banner 'Trezor Bridge has been deprecated' (app, onboarding or welcome layout) > Learn more",
+                "mobile": null
+            },
+            "roots": [
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.tsx",
+                    "symbol": "BridgeDeprecated"
+                },
+                {
+                    "platform": "desktop-web",
+                    "path": "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+                    "symbol": "BridgeDeprecated"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+                    "line": 16,
+                    "detail": "Warning modal 'Trezor Bridge has been deprecated' with a link to the uninstall guide (UNINSTALL_BRIDGE_URL) and a Take me back to wallet button; backdrop or cancel also returns to the wallet."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.tsx",
+                    "line": 34,
+                    "detail": "useLegacyBridgeDetection POSTs to http://127.0.0.1:21325/ with a 5 s timeout and flags only a 2.x version string. On web it probes only while Local Network Access is granted."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.tsx",
+                    "line": 67,
+                    "detail": "Info banner with a Learn more button that opens the suite-bridge-deprecated foreground app."
+                },
+                {
+                    "kind": "route",
+                    "path": "packages/suite/src/components/suite/banners/SuiteBanners/SuiteBanners.tsx",
+                    "line": 120,
+                    "detail": "Shown at banner priority 30 when legacy Bridge is detected and no higher-priority banner applies (for example Local Network Access at 40)."
+                },
+                {
+                    "kind": "route",
+                    "path": "suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx",
+                    "line": 32,
+                    "detail": "Foreground app 'bridge-deprecated' (route /bridge-deprecated, routeConfig.ts:164-170) renders the BridgeDeprecated modal."
+                },
+                {
+                    "kind": "automated-test",
+                    "path": "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.test.tsx",
+                    "line": 29,
+                    "detail": "Co-located unit tests for the detection hook (2.x detected; non-ok, missing, non-string, 3.x or unrelated versions and network errors ignored; fetch aborted on unmount); not executed, hook-level only, not the user journey."
+                }
+            ],
+            "ownership": {
+                "team": "Connect",
+                "confidence": "inferred",
+                "basis": "Transport and Bridge guidance; matches the Connect ownership of sibling features connection.bridge and connection.local-network. Not a CODEOWNERS assignment.",
+                "source_paths": [
+                    "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.tsx",
+                    "packages/suite/src/views/suite/bridge-deprecated/index.tsx"
+                ]
+            },
+            "conditions": [
+                "desktop-web: A legacy standalone trezord-go (2.x) answers on 127.0.0.1:21325 when SuiteBanners mounts; on web only while Local Network Access permission is granted. There is no retry interval, so a legacy Bridge started later is detected only on a later mount or reload.",
+                "mobile: No standalone Bridge transport exists on mobile."
+            ],
+            "screenshot": {
+                "status": "not-captured",
+                "path": null,
+                "notes": "Needs a legacy trezord-go 2.x running on port 21325; not captured."
+            },
+            "related_ids": ["connection.bridge", "connection.local-network"]
+        }
+    ],
+    "notes": [
+        "Source-reviewed additions made after the runtime pass; they are appended after runtime additions so existing feature order and baseline hashes stay unchanged.",
+        "The blocking killswitch screen stays mapped as app-settings.application.blocking-message; it is part of the same message system and is linked from Service messages.",
+        "Ownership: the Trade team currently owns the message system by team agreement.",
+        "Legacy Bridge deprecation notice (connection.legacy-bridge-deprecated) was added when the desktop/web route completeness check found /bridge-deprecated without a feature; no existing feature covered detection of a legacy standalone trezord-go. Ownership is inferred (Connect, like its connection siblings)."
+    ],
+    "reviewed_sources": [
+        "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.test.tsx",
+        "packages/suite/src/components/suite/banners/SuiteBanners/BridgeDeprecatedBanner.tsx",
+        "packages/suite/src/components/suite/banners/SuiteBanners/SuiteBanners.tsx",
+        "packages/suite/src/components/wallet/WalletLayout/AccountBanners/AccountBanners.tsx",
+        "packages/suite/src/views/suite/bridge-deprecated/index.tsx",
+        "suite-app/app/src/ModalSwitcher/ForegroundAppModal.tsx",
+        "suite-app/app/src/pages/DashboardPage.tsx",
+        "suite-app/app/src/pages/SettingsDebugPage.tsx",
+        "suite-common/message-system/src/messageSystemSelectors.ts",
+        "suite-common/message-system/src/messageSystemThunks.ts",
+        "suite-common/message-system/src/messageSystemUtils.ts",
+        "suite-native-app/app/src/BannersRenderer.tsx",
+        "suite-native-app/app/src/navigation/RootStackNavigator.tsx",
+        "suite-native-app/module-dev-utils/src/screens/MessageSystemExperimentsScreen.tsx",
+        "suite-native-app/module-dev-utils/src/screens/MessageSystemManagerScreen.tsx",
+        "suite-native-app/module-trading/src/components/general/TradingTypeAwareContextMessage.tsx",
+        "suite-native/message-system/src/components/ContextMessage.tsx",
+        "suite-native/message-system/src/components/MessageBanner.tsx",
+        "suite-native/message-system/src/components/MessageSystemBannerRenderer.tsx",
+        "suite-native/message-system/src/index.ts",
+        "suite-native/module-earn/src/screens/earn/EarnScreen.tsx",
+        "suite/e2e/support/pageObjects/settings/debugTab.ts",
+        "suite/message-system/src/ContextMessage.tsx",
+        "suite/message-system/src/MessageSystemBanner.tsx",
+        "suite/message-system/src/debugSettings/MessageSystemDebug.tsx",
+        "suite/message-system/src/index.ts"
+    ]
+}

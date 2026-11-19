@@ -1,0 +1,1982 @@
+{
+    "updates": [
+        {
+            "id": "onboarding.new-wallet.12-words",
+            "mobile_status": "conditional",
+            "navigation": "Device setup > Create new wallet > Backup tutorial > More options > Legacy options > 12-word BIP39 (128-bit strength)",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "symbol": "WalletBackupTutorialScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/components/WalletBackupSheet/WalletBackupSheet.tsx",
+                    "detail": "The native WalletBackupSheet lists 12-words and the native thunk maps it to 12-word BIP39 (128-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native WalletBackupSheet lists 12-words and the native thunk maps it to 12-word BIP39 (128-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+        },
+        {
+            "id": "onboarding.new-wallet.24-words",
+            "mobile_status": "conditional",
+            "navigation": "Device setup > Create new wallet > Backup tutorial > More options > Legacy options > 24-word BIP39 (256-bit strength)",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "symbol": "WalletBackupTutorialScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/components/WalletBackupSheet/WalletBackupSheet.tsx",
+                    "detail": "The native WalletBackupSheet lists 24-words and the native thunk maps it to 24-word BIP39 (256-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native WalletBackupSheet lists 24-words and the native thunk maps it to 24-word BIP39 (256-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+        },
+        {
+            "id": "onboarding.new-wallet.single-share",
+            "mobile_status": "conditional",
+            "navigation": "Device setup > Create new wallet > Backup tutorial > More options > single-share extendable SLIP39 (128-bit strength)",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "symbol": "WalletBackupTutorialScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/components/WalletBackupSheet/WalletBackupSheet.tsx",
+                    "detail": "The native WalletBackupSheet lists shamir-single and the native thunk maps it to single-share extendable SLIP39 (128-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native WalletBackupSheet lists shamir-single and the native thunk maps it to single-share extendable SLIP39 (128-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+        },
+        {
+            "id": "onboarding.new-wallet.multi-share",
+            "mobile_status": "conditional",
+            "navigation": "Device setup > Create new wallet > Backup tutorial > More options > basic extendable SLIP39 with multiple shares (128-bit strength)",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "symbol": "WalletBackupTutorialScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/components/WalletBackupSheet/WalletBackupSheet.tsx",
+                    "detail": "The native WalletBackupSheet lists shamir-advanced and the native thunk maps it to basic extendable SLIP39 with multiple shares (128-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native WalletBackupSheet lists shamir-advanced and the native thunk maps it to basic extendable SLIP39 with multiple shares (128-bit strength). Native setup is supported for T2B1/T3B1/T3T1/T2T1/T3W1, excludes T1B1/UNKNOWN, and acceptance still depends on device firmware support; no release-rollout assertion is made."
+        },
+        {
+            "id": "onboarding.new-wallet.defer-backup",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Native createAndBackupWalletThunk explicitly submits skip_backup:false, and the mandatory tutorial proceeds into creation and backup; the desktop skip-backup option has no native counterpart in this flow."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native createAndBackupWalletThunk explicitly submits skip_backup:false, and the mandatory tutorial proceeds into creation and backup; the desktop skip-backup option has no native counterpart in this flow."
+        },
+        {
+            "id": "onboarding.new-wallet.nfc",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/components/WalletBackupSheet/WalletBackupSheet.tsx",
+                    "detail": "The complete native backup-medium selector enumerates only shamir-single, shamir-advanced, 12-words and 24-words. The native onboarding navigator has no NFC medium/backup route; shared NFC capability does not establish native UI availability."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native backup-medium selector enumerates only shamir-single, shamir-advanced, 12-words and 24-words. The native onboarding navigator has no NFC medium/backup route; shared NFC capability does not establish native UI availability."
+        },
+        {
+            "id": "onboarding.recovery.word-count",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "These are Model One host-input recovery controls. getIsDeviceSetupSupported explicitly excludes T1B1 and unsupported setup is redirected to Suite web; supported native recovery calls recoveryDevice with the device path and provides only on-device continuation, with no host word-count/standard/advanced selector."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "These are Model One host-input recovery controls. getIsDeviceSetupSupported explicitly excludes T1B1 and unsupported setup is redirected to Suite web; supported native recovery calls recoveryDevice with the device path and provides only on-device continuation, with no host word-count/standard/advanced selector."
+        },
+        {
+            "id": "onboarding.recovery.standard",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "These are Model One host-input recovery controls. getIsDeviceSetupSupported explicitly excludes T1B1 and unsupported setup is redirected to Suite web; supported native recovery calls recoveryDevice with the device path and provides only on-device continuation, with no host word-count/standard/advanced selector."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "These are Model One host-input recovery controls. getIsDeviceSetupSupported explicitly excludes T1B1 and unsupported setup is redirected to Suite web; supported native recovery calls recoveryDevice with the device path and provides only on-device continuation, with no host word-count/standard/advanced selector."
+        },
+        {
+            "id": "onboarding.recovery.advanced",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "These are Model One host-input recovery controls. getIsDeviceSetupSupported explicitly excludes T1B1 and unsupported setup is redirected to Suite web; supported native recovery calls recoveryDevice with the device path and provides only on-device continuation, with no host word-count/standard/advanced selector."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "These are Model One host-input recovery controls. getIsDeviceSetupSupported explicitly excludes T1B1 and unsupported setup is redirected to Suite web; supported native recovery calls recoveryDevice with the device path and provides only on-device continuation, with no host word-count/standard/advanced selector."
+        },
+        {
+            "id": "onboarding.recovery.on-device",
+            "mobile_status": "conditional",
+            "navigation": "Device setup > Recover wallet > Continue on Trezor",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
+                    "symbol": "WalletRecoveryScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
+                    "detail": "Supported native setup models restore through recoverWalletThunk and show Continue on Trezor; the device determines supported backup input. Model One setup is excluded and device/firmware constraints apply."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/utils.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Supported native setup models restore through recoverWalletThunk and show Continue on Trezor; the device determines supported backup input. Model One setup is excluded and device/firmware constraints apply."
+        },
+        {
+            "id": "onboarding.recovery.retry",
+            "mobile_status": "conditional",
+            "navigation": "Device setup > Recover wallet > recovery failure / retry",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
+                    "symbol": "WalletRecoveryScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletRecoveryScreen.tsx",
+                    "detail": "WalletRecoveryScreen retries a failed recovery call except Failure_ActionCancelled and Method_Interrupted, which exit to the initial screen. An explicit resume-interrupted-recovery choice equivalent to every desktop branch is not established."
+                }
+            ],
+            "reason": "WalletRecoveryScreen retries a failed recovery call except Failure_ActionCancelled and Method_Interrupted, which exit to the initial screen. An explicit resume-interrupted-recovery choice equivalent to every desktop branch is not established."
+        },
+        {
+            "id": "onboarding.pin.skip",
+            "mobile_status": "conditional",
+            "navigation": "Device setup > Create PIN > Cancel > confirm continuation",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/CreatePinScreen.tsx",
+                    "symbol": "CreatePinScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/CreatePinScreen.tsx",
+                    "detail": "CreatePinScreen cancels the Connect request from its close action; the cancellation/error warning offers retry or a primary action that calls handlePinCreated and completes onboarding without insisting on a PIN."
+                }
+            ],
+            "reason": "CreatePinScreen cancels the Connect request from its close action; the cancellation/error warning offers retry or a primary action that calls handlePinCreated and completes onboarding without insisting on a PIN."
+        },
+        {
+            "id": "onboarding.complete",
+            "mobile_status": "yes",
+            "navigation": "Device setup > Congratulations > Continue",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/CongratulationsScreen.tsx",
+                    "symbol": "CongratulationsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/CongratulationsScreen.tsx",
+                    "detail": "CongratulationsScreen continues to AppTabs > HomeStack > Home after device setup is complete."
+                }
+            ],
+            "reason": "CongratulationsScreen continues to AppTabs > HomeStack > Home after device setup is complete."
+        },
+        {
+            "id": "connection.bluetooth.manual",
+            "mobile_status": "conditional",
+            "navigation": "Connect Trezor > Bluetooth > connection-help alert > Bluetooth settings",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-authorize-device/src/screens/connect/TurnOnAndUnlockDeviceScreen.tsx",
+                    "symbol": "TurnOnAndUnlockDeviceScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authorize-device/src/screens/connect/TurnOnAndUnlockDeviceScreen.tsx",
+                    "detail": "The Bluetooth pairing troubleshooting alert provides OS-specific pairing hints, an image of Android/iOS settings, a link to Bluetooth settings and a remove-and-pair-again path. Requires a Bluetooth-capable device and the relevant connection-help state."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authorize-device/src/components/connect/BluetoothPairingSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authorize-device/src/screens/connect/RemoveBluetoothDeviceScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The Bluetooth pairing troubleshooting alert provides OS-specific pairing hints, an image of Android/iOS settings, a link to Bluetooth settings and a remove-and-pair-again path. Requires a Bluetooth-capable device and the relevant connection-help state."
+        },
+        {
+            "id": "connection.troubleshooting",
+            "mobile_status": "conditional",
+            "navigation": "Connect Trezor > connection-help alert or device error > Reconnect / Help",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-authorize-device/src/screens/connect/TurnOnAndUnlockDeviceScreen.tsx",
+                    "symbol": "TurnOnAndUnlockDeviceScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authorize-device/src/screens/connect/TurnOnAndUnlockDeviceScreen.tsx",
+                    "detail": "Native Bluetooth connection exposes pairing hints and settings; generic device errors offer reconnect and support. The exact desktop/browser model-specific guide layout is not reused."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native Bluetooth connection exposes pairing hints and settings; generic device errors offer reconnect and support. The exact desktop/browser model-specific guide layout is not reused."
+        },
+        {
+            "id": "connection.bridge",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authorize-device/src/navigation/AuthorizeDeviceStackNavigator.tsx",
+                    "detail": "Bridge installation is a browser/desktop transport setup task; the native authorization navigator enumerates cable/Bluetooth, PIN and pairing flows without a Bridge installer."
+                }
+            ],
+            "reason": "Bridge installation is a browser/desktop transport setup task; the native authorization navigator enumerates cable/Bluetooth, PIN and pairing flows without a Bridge installer."
+        },
+        {
+            "id": "connection.udev",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authorize-device/src/navigation/AuthorizeDeviceStackNavigator.tsx",
+                    "detail": "Linux desktop udev-rule installation is outside Android/iOS. The native connection navigator exposes supported phone cable/Bluetooth flows, not Linux host permission setup."
+                }
+            ],
+            "reason": "Linux desktop udev-rule installation is outside Android/iOS. The native connection navigator exposes supported phone cable/Bluetooth flows, not Linux host permission setup."
+        },
+        {
+            "id": "connection.browser",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authorize-device/src/navigation/AuthorizeDeviceStackNavigator.tsx",
+                    "detail": "The native app does not expose a browser compatibility or browser-transport setup screen; its complete authorization navigator uses native cable/Bluetooth flows."
+                }
+            ],
+            "reason": "The native app does not expose a browser compatibility or browser-transport setup screen; its complete authorization navigator uses native cable/Bluetooth flows."
+        },
+        {
+            "id": "connection.used-elsewhere",
+            "mobile_status": "conditional",
+            "navigation": "Device session error > reconnect / reacquire prompt",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "symbol": "useDetectDeviceError"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "detail": "useDetectDeviceError explicitly handles an unacquired device, including another app fetching its session, and the alert action runs acquireDeviceThunk then discovery. Requires onboarding finished, an unacquired device, no PIN/THP lock and no firmware installation."
+                }
+            ],
+            "reason": "useDetectDeviceError explicitly handles an unacquired device, including another app fetching its session, and the alert action runs acquireDeviceThunk then discovery. Requires onboarding finished, an unacquired device, no PIN/THP lock and no firmware installation."
+        },
+        {
+            "id": "connection.bootloader",
+            "mobile_status": "conditional",
+            "navigation": "Connect device in qualifying bootloader state > reconnect guidance",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/device-bootloader-mode/src/screens/BootloaderModeScreen.tsx",
+                    "symbol": "BootloaderModeScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device-bootloader-mode/src/screens/BootloaderModeScreen.tsx",
+                    "detail": "BootloaderModeScreen provides reconnect guidance and, when selectShouldFactoryResetBeVisible permits it, an optional factory-reset path. The device-error hook navigates here for qualifying bootloader state outside an ongoing firmware update."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "BootloaderModeScreen provides reconnect guidance and, when selectShouldFactoryResetBeVisible permits it, an optional factory-reset path. The device-error hook navigates here for qualifying bootloader state outside an ongoing firmware update."
+        },
+        {
+            "id": "wallet-access.standard",
+            "mobile_status": "conditional",
+            "navigation": "Header > wallet selector > Standard wallet",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/device-manager/src/components/WalletList.tsx",
+                    "symbol": "WalletList"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device-manager/src/components/WalletList.tsx",
+                    "detail": "WalletList shows standard-wallet instances and can discover an empty-passphrase standard wallet through its placeholder when only hidden wallets exist. Requires a connected eligible device or an already remembered wallet."
+                }
+            ],
+            "reason": "WalletList shows standard-wallet instances and can discover an empty-passphrase standard wallet through its placeholder when only hidden wallets exist. Requires a connected eligible device or an already remembered wallet."
+        },
+        {
+            "id": "wallet-access.hidden.new",
+            "mobile_status": "conditional",
+            "navigation": "Header > wallet selector > Open passphrase wallet",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseFormScreen.tsx",
+                    "symbol": "PassphraseFormScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseFormScreen.tsx",
+                    "detail": "The native passphrase form opens a hidden wallet using the entered passphrase and hardware confirmation; the same form handles a previously used or a new passphrase. Empty wallets receive additional confirmation and verification. Requires passphrase support and an authorized device."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseEmptyWalletScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseVerifyEmptyWalletScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native passphrase form opens a hidden wallet using the entered passphrase and hardware confirmation; the same form handles a previously used or a new passphrase. Empty wallets receive additional confirmation and verification. Requires passphrase support and an authorized device."
+        },
+        {
+            "id": "wallet-access.hidden.existing",
+            "mobile_status": "conditional",
+            "navigation": "Header > wallet selector > Open passphrase wallet",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseFormScreen.tsx",
+                    "symbol": "PassphraseFormScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseFormScreen.tsx",
+                    "detail": "The native passphrase form opens a hidden wallet using the entered passphrase and hardware confirmation; the same form handles a previously used or a new passphrase. Empty wallets receive additional confirmation and verification. Requires passphrase support and an authorized device."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseEmptyWalletScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-passphrase/src/screens/PassphraseVerifyEmptyWalletScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native passphrase form opens a hidden wallet using the entered passphrase and hardware confirmation; the same form handles a previously used or a new passphrase. Empty wallets receive additional confirmation and verification. Requires passphrase support and an authorized device."
+        },
+        {
+            "id": "wallet-access.eject",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Eject wallets > wallet eject control",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/EjectWallets/WalletRememberModeIconButton.tsx",
+                    "symbol": "WalletRememberModeIconButton"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/EjectWallets/WalletRememberModeIconButton.tsx",
+                    "detail": "The per-wallet eject control forgets disconnected wallets immediately; for connected wallets it toggles remember behavior for disconnection. It is hidden when automatic ejection is enabled, so it is narrower than an unconditional immediate desktop session-eject action."
+                }
+            ],
+            "reason": "The per-wallet eject control forgets disconnected wallets immediately; for connected wallets it toggles remember behavior for disconnection. It is hidden when automatic ejection is enabled, so it is narrower than an unconditional immediate desktop session-eject action."
+        },
+        {
+            "id": "app-settings.appearance",
+            "mobile_status": "yes",
+            "navigation": "Settings > Preferences > Color scheme",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsPreferencesScreen.tsx",
+                    "symbol": "SettingsPreferencesScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsPreferencesScreen.tsx",
+                    "detail": "SettingsPreferencesScreen includes a ColorSchemePicker for supported light, dark and system appearance choices."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ColorSchemePicker.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "SettingsPreferencesScreen includes a ColorSchemePicker for supported light, dark and system appearance choices."
+        },
+        {
+            "id": "app-settings.application",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Privacy or Settings > Support",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsPrivacyScreen.tsx",
+                    "symbol": "SettingsPrivacyScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsPrivacyScreen.tsx",
+                    "detail": "Native settings expose analytics consent, application logs and support information, but do not provide the desktop updater or a normal user-facing application reset control. Platform-specific child parity must be consulted rather than assuming the entire group is identical."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsAppLogScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native settings expose analytics consent, application logs and support information, but do not provide the desktop updater or a normal user-facing application reset control. Platform-specific child parity must be consulted rather than assuming the entire group is identical."
+        },
+        {
+            "id": "app-settings.connect",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/ConnectionSettings.tsx",
+                    "detail": "The desktop node specifically controls background desktop integration behavior. Native ConnectionSettings instead manages WalletConnect sessions and remembered Trezor Connect permissions; its complete composition contains no background-desktop lifecycle toggles."
+                }
+            ],
+            "reason": "The desktop node specifically controls background desktop integration behavior. Native ConnectionSettings instead manages WalletConnect sessions and remembered Trezor Connect permissions; its complete composition contains no background-desktop lifecycle toggles."
+        },
+        {
+            "id": "app-settings.tor",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Native settings routes contain no bundled Tor daemon control; the custom backend form is not a Tor service manager."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native settings routes contain no bundled Tor daemon control; the custom backend form is not a Tor service manager."
+        },
+        {
+            "id": "app-settings.tor-external",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Native settings have no selector for external Tor ports 9050/9150. Entering a custom backend URL is a different control and does not configure a Tor proxy."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native settings have no selector for external Tor ports 9050/9150. Entering a custom backend URL is a different control and does not configure a Tor proxy."
+        },
+        {
+            "id": "app-settings.onion-links",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "The complete native General/Features/Connection settings and settings navigator contain no prefer-onion-links toggle."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native General/Features/Connection settings and settings navigator contain no prefer-onion-links toggle."
+        },
+        {
+            "id": "app-settings.reset",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "The ordinary native settings navigator and support screen contain no reset-local-app-data action. An emergency storage-initialization alert exists separately; it is mapped as database recovery rather than a normal Settings reset."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The ordinary native settings navigator and support screen contain no reset-local-app-data action. An emergency storage-initialization alert exists separately; it is mapped as database recovery rather than a normal Settings reset."
+        },
+        {
+            "id": "app-settings.automatic-updates",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "The mobile app settings navigator exposes no automatic-download/install updater option; phone OS/store update behavior is outside the desktop updater feature."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The mobile app settings navigator exposes no automatic-download/install updater option; phone OS/store update behavior is outside the desktop updater feature."
+        },
+        {
+            "id": "app-settings.check-update",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "The native settings/support composition has version and release-note information but no manual desktop-updater check action."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native settings/support composition has version and release-note information but no manual desktop-updater check action."
+        },
+        {
+            "id": "app-settings.changelog",
+            "mobile_status": "yes",
+            "navigation": "Header > Activity center > Release notes",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-activity-center/src/screens/ActivityCenterScreen.tsx",
+                    "symbol": "ActivityCenterScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-activity-center/src/screens/ActivityCenterScreen.tsx",
+                    "detail": "The native Activity Center includes a Release notes tab and a release-note content renderer."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-activity-center/src/components/releaseNotes/ReleaseNotesTabContent.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native Activity Center includes a Release notes tab and a release-note content renderer."
+        },
+        {
+            "id": "app-settings.early-access",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "The native settings navigator and experimental-feature catalog have no user-facing desktop Early Access update-channel opt-in."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native settings navigator and experimental-feature catalog have no user-facing desktop Early Access update-channel opt-in."
+        },
+        {
+            "id": "app-settings.nfts",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Native settings have no NFT-section visibility toggle. The complete account overview tab configuration enumerates tokens, DeFi, hidden and inactive Stellar assets, without an NFT tab."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-accounts/src/components/AccountOverview/AccountOverviewTabBar.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native settings have no NFT-section visibility toggle. The complete account overview tab configuration enumerates tokens, DeFi, hidden and inactive Stellar assets, without an NFT tab."
+        },
+        {
+            "id": "app-settings.auto-start",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Starting an Electron app at OS login has no Android/iOS in-app counterpart in the native settings navigator."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Starting an Electron app at OS login has no Android/iOS in-app counterpart in the native settings navigator."
+        },
+        {
+            "id": "app-settings.tray",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "The native application settings have no system-tray lifecycle control."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native application settings have no system-tray lifecycle control."
+        },
+        {
+            "id": "app-settings.enable-experimental",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Experimental features",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "symbol": "SettingsExperimentalScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsExperimentalScreen.tsx",
+                    "detail": "Settings > Experimental features is directly navigable and lists configured user experiments; current catalog includes SLIP-24. Native has no separate global enable-the-experimental-section switch equivalent to desktop."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Settings > Experimental features is directly navigable and lists configured user experiments; current catalog includes SLIP-24. Native has no separate global enable-the-experimental-section switch equivalent to desktop."
+        },
+        {
+            "id": "app-settings.experimental-networks",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "The native user experimental catalog contains SLIP-24 only, while Advanced settings has a Testnets switch. Neither complete composition exposes the distinct desktop experimental-networks opt-in."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsAdvancedScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native user experimental catalog contains SLIP-24 only, while Advanced settings has a Testnets switch. Neither complete composition exposes the distinct desktop experimental-networks opt-in."
+        },
+        {
+            "id": "app-settings.mcp",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Native Settings and its experimental-feature list contain no local desktop MCP server switch or configuration screen."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native Settings and its experimental-feature list contain no local desktop MCP server switch or configuration screen."
+        },
+        {
+            "id": "app-settings.mcp-token",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "The complete native settings routes contain no MCP client configuration or token-regeneration action; this belongs to the desktop local MCP server."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsSupportScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/FeaturesSettings.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native settings routes contain no MCP client configuration or token-regeneration action; this belongs to the desktop local MCP server."
+        },
+        {
+            "id": "app-settings.language-system",
+            "mobile_status": "yes",
+            "navigation": "Settings > Preferences > Language > System",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/LanguageSelector.tsx",
+                    "symbol": "LanguageSelector"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/LanguageSelector.tsx",
+                    "detail": "LanguageSelector explicitly prepends a System option with value system and persists the selected app locale."
+                }
+            ],
+            "reason": "LanguageSelector explicitly prepends a System option with value system and persists the selected app locale."
+        },
+        {
+            "id": "network-settings.enable",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Coins > network toggle",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsNetworksScreen.tsx",
+                    "symbol": "SettingsNetworksScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsNetworksScreen.tsx",
+                    "detail": "Native Coins settings uses CoinEnablingForm to enable/disable supported networks, retains at least one enabled network, and disables changes while discovery is running. Device/network/testnet eligibility still applies."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/coin-enabling/src/components/CoinEnablingForm.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/coin-enabling/src/components/DiscoveryCoinsFilter.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native Coins settings uses CoinEnablingForm to enable/disable supported networks, retains at least one enabled network, and disables changes while discovery is running. Device/network/testnet eligibility still applies."
+        },
+        {
+            "id": "network-settings.search",
+            "mobile_status": "yes",
+            "navigation": "Settings > Coins > Search",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsNetworksScreen.tsx",
+                    "symbol": "SettingsNetworksScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsNetworksScreen.tsx",
+                    "detail": "SettingsNetworksScreen supplies the user search query to CoinEnablingForm, whose network grouping filters are rendered by DiscoveryCoinsFilter."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/coin-enabling/src/components/DiscoveryCoinsFilter.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "SettingsNetworksScreen supplies the user search query to CoinEnablingForm, whose network grouping filters are rendered by DiscoveryCoinsFilter."
+        },
+        {
+            "id": "network-settings.discover",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Coins > enable network > return to wallet",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsNetworksScreen.tsx",
+                    "symbol": "SettingsNetworksScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/coin-enabling/src/components/CoinEnablingForm.tsx",
+                    "detail": "CoinEnablingForm dispatches changeCoinVisibilityThunk; the native discovery middleware starts/restarts required discovery only for an acquired connected device with supported firmware, enabled networks and no compromised-device warning."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/discovery/src/discoveryMiddleware.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "CoinEnablingForm dispatches changeCoinVisibilityThunk; the native discovery middleware starts/restarts required discovery only for an acquired connected device with supported firmware, enabled networks and no compromised-device warning."
+        },
+        {
+            "id": "network-settings.backends.type",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Coins > network settings > Server type",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/NetworkBackendCard.tsx",
+                    "symbol": "NetworkBackendCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/NetworkBackendCard.tsx",
+                    "detail": "The native backend form lists default, Blockbook, Electrum, Ripple, Blockfrost, Solana, Stellar and EVM RPC options filtered by the selected network backendOptions."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/hooks/useNetworkBackendForm.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native backend form lists default, Blockbook, Electrum, Ripple, Blockfrost, Solana, Stellar and EVM RPC options filtered by the selected network backendOptions."
+        },
+        {
+            "id": "network-settings.backends.urls",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Coins > network settings > Server address",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/NetworkBackendCard.tsx",
+                    "symbol": "NetworkBackendCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/NetworkBackendCard.tsx",
+                    "detail": "Native backend settings validate and connect one serverAddress and write it as a one-element URLs array for the selected backend. The desktop multi-endpoint add/remove UI is not present; parity covers configuring a single custom endpoint only."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/hooks/useNetworkBackendForm.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native backend settings validate and connect one serverAddress and write it as a one-element URLs array for the selected backend. The desktop multi-endpoint add/remove UI is not present; parity covers configuring a single custom endpoint only."
+        },
+        {
+            "id": "network-settings.backends.electrum",
+            "mobile_status": "conditional",
+            "navigation": "Settings > Coins > supported Bitcoin-family network > Server type > Electrum",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-settings/src/components/NetworkBackendCard.tsx",
+                    "symbol": "NetworkBackendCard"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/components/NetworkBackendCard.tsx",
+                    "detail": "The native supportedItems list explicitly includes Electrum and filters only by network.backendOptions; there is no native desktop-only guard around that entry. Availability still requires an Electrum-capable network and a reachable compatible endpoint."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/hooks/useNetworkBackendForm.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native supportedItems list explicitly includes Electrum and filters only by network.backendOptions; there is no native desktop-only guard around that entry. Availability still requires an Electrum-capable network and a reachable compatible endpoint."
+        },
+        {
+            "id": "network-settings.gap-limit",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/NetworkBackendsScreen.tsx",
+                    "detail": "The complete native NetworkBackendsScreen offers only server configuration and explorer URL forms. Neither Advanced nor the user experimental catalog exposes an adjustable address gap-limit control."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/screens/SettingsAdvancedScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/experimental-features/src/experimentalFeatures.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native NetworkBackendsScreen offers only server configuration and explorer URL forms. Neither Advanced nor the user experimental catalog exposes an adjustable address gap-limit control."
+        },
+        {
+            "id": "device-settings.backup",
+            "mobile_status": "conditional",
+            "navigation": "Device settings > Backup and passphrase; or Home > Create wallet backup",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/screens/BackupAndPassphraseScreen.tsx",
+                    "symbol": "BackupAndPassphraseScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/BackupAndPassphraseScreen.tsx",
+                    "detail": "Native backup/passphrase settings expose backup checking, and a required-backup danger banner can start creating a missing backup. Additional-share extension and NFC backup are not present in these native user flows."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/components/DeviceDangerBannerExtension.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native backup/passphrase settings expose backup checking, and a required-backup danger banner can start creating a missing backup. Additional-share extension and NFC backup are not present in these native user flows."
+        },
+        {
+            "id": "device-settings.security",
+            "mobile_status": "conditional",
+            "navigation": "Header > device selector > Device settings > Security",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "symbol": "DeviceSettingsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "Native device security settings provide PIN and passphrase protection plus authenticity/backup checks. The composed screen and navigator do not expose desktop safety-check or wipe-code controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native device security settings provide PIN and passphrase protection plus authenticity/backup checks. The composed screen and navigator do not expose desktop safety-check or wipe-code controls."
+        },
+        {
+            "id": "device-settings.personalization",
+            "mobile_status": "conditional",
+            "navigation": "Header > device selector > Device settings > edit device name",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/components/DeviceInfo.tsx",
+                    "symbol": "DeviceInfo"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/components/DeviceInfo.tsx",
+                    "detail": "The native DeviceInfo header offers device renaming; the complete native settings screen contains no homescreen, rotation, brightness or hardware-haptics controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native DeviceInfo header offers device renaming; the complete native settings screen contains no homescreen, rotation, brightness or hardware-haptics controls."
+        },
+        {
+            "id": "device-settings.connection",
+            "mobile_status": "conditional",
+            "navigation": "Device settings > Connection",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceConnectionScreen.tsx",
+                    "symbol": "DeviceConnectionScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceConnectionScreen.tsx",
+                    "detail": "Native DeviceConnectionScreen exposes forget-device and, for THP devices, automatic connection settings."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/components/AutoConnectCard.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native DeviceConnectionScreen exposes forget-device and, for THP devices, automatic connection settings."
+        },
+        {
+            "id": "device-settings.advanced",
+            "mobile_status": "conditional",
+            "navigation": "Device settings > Security or Danger zone",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "symbol": "DeviceSettingsScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "Native device settings contain authenticity checking and a Wipe device danger-zone action, with factory-reset handling in the bootloader flow. It has no separate desktop Advanced tab or identical collection of controls."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device-bootloader-mode/src/screens/BootloaderModeScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native device settings contain authenticity checking and a Wipe device danger-zone action, with factory-reset handling in the bootloader flow. It has no separate desktop Advanced tab or identical collection of controls."
+        },
+        {
+            "id": "device-settings.homescreen",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no homescreen image control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no homescreen image control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.rotation",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device display rotation control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device display rotation control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.brightness",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device screen brightness control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device screen brightness control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.haptics",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no hardware haptic feedback control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no hardware haptic feedback control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.auto-lock",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no hardware auto-lock delay control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no hardware auto-lock delay control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.safety-checks",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device safety-check enforcement control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device safety-check enforcement control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.wipe-code",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device wipe code control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no device wipe code control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.firmware-version",
+            "mobile_status": "conditional",
+            "navigation": "Device settings > Firmware",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceFirmwareScreen.tsx",
+                    "symbol": "DeviceFirmwareScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceFirmwareScreen.tsx",
+                    "detail": "DeviceFirmwareScreen displays the installed version and offers an official firmware update when upgradable. Entry/update is gated by selectIsFirmwareUpdateFeatureEnabled, supported device/transport and discovery completion."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/components/DeviceFirmwareCard.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/hooks/useIsFirmwareUpdateFeatureEnabled/selectIsFirmwareUpdateFeatureEnabled.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "DeviceFirmwareScreen displays the installed version and offers an official firmware update when upgradable. Entry/update is gated by selectIsFirmwareUpdateFeatureEnabled, supported device/transport and discovery completion."
+        },
+        {
+            "id": "device-settings.firmware-type",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceFirmwareScreen.tsx",
+                    "detail": "The complete native Firmware screen and update navigator contain no Bitcoin-only/universal selector. Native useFirmware calls the common updater without a requested firmwareType, so the shared thunk preserves the current variant (or respects a Bitcoin-only device)."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/FirmwareUpdateStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/hooks/useFirmware.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/firmware/src/firmwareThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native Firmware screen and update navigator contain no Bitcoin-only/universal selector. Native useFirmware calls the common updater without a requested firmwareType, so the shared thunk preserves the current variant (or respects a Bitcoin-only device)."
+        },
+        {
+            "id": "device-settings.custom-firmware",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceFirmwareScreen.tsx",
+                    "detail": "The complete native firmware screen/update navigator contains no file-picker or local-binary upload route. Native useFirmware invokes the common updater with ignoreBaseUrl:true and no binary; shared binary support is not exposed as native user UI."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/FirmwareUpdateStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/hooks/useFirmware.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native firmware screen/update navigator contains no file-picker or local-binary upload route. Native useFirmware invokes the common updater with ignoreBaseUrl:true and no binary; shared binary support is not exposed as native user UI."
+        },
+        {
+            "id": "device-settings.backup.create-backup",
+            "mobile_status": "conditional",
+            "navigation": "Home > wallet backup required banner > Create wallet backup",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "symbol": "WalletBackupTutorialScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/components/DeviceDangerBannerExtension.tsx",
+                    "detail": "The backup-needed danger banner starts WalletBackupTutorial; its initialized-device branch calls TrezorConnect.backupDevice rather than resetting the wallet. Available when the device reports that a backup is still required; unsupported or unfinished backup states use different handling."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The backup-needed danger banner starts WalletBackupTutorial; its initialized-device branch calls TrezorConnect.backupDevice rather than resetting the wallet. Available when the device reports that a backup is still required; unsupported or unfinished backup states use different handling."
+        },
+        {
+            "id": "device-settings.backup.multi-share",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/BackupAndPassphraseScreen.tsx",
+                    "detail": "The native BackupAndPassphraseScreen only exposes CheckBackupCard and PassphraseCard. The existing-backup branch in createAndBackupWalletThunk creates an outstanding backup, while the onboarding type selector is shown only before device initialization; there is no additional-share/extend-completed-backup entry."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/screens/WalletBackupTutorialScreen.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/deviceThunks.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native BackupAndPassphraseScreen only exposes CheckBackupCard and PassphraseCard. The existing-backup branch in createAndBackupWalletThunk creates an outstanding backup, while the onboarding type selector is shown only before device initialization; there is no additional-share/extend-completed-backup entry."
+        },
+        {
+            "id": "device-settings.backup.additional-nfc",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/BackupAndPassphraseScreen.tsx",
+                    "detail": "The complete native backup settings and onboarding selector have no additional-NFC-backup entry; the native selector enumerates only word/share backup formats."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/components/WalletBackupSheet/WalletBackupSheet.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-onboarding/src/navigation/DeviceOnboardingStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native backup settings and onboarding selector have no additional-NFC-backup entry; the native selector enumerates only word/share backup formats."
+        },
+        {
+            "id": "device-settings.homescreen.upload",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no local homescreen image upload control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no local homescreen image upload control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.homescreen.gallery",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceSettingsScreen.tsx",
+                    "detail": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no homescreen image gallery control or route. Shared device API support does not establish native UI parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/DeviceSettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The inspected complete native DeviceSettingsScreen composition and DeviceSettingsStackNavigator expose firmware, connection, PIN, backup/passphrase, authenticity, naming and wipe flows, but no homescreen image gallery control or route. Shared device API support does not establish native UI parity."
+        },
+        {
+            "id": "device-settings.firmware.custom-file",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/screens/DeviceFirmwareScreen.tsx",
+                    "detail": "The complete native firmware screen/update navigator contains no file-picker or local-binary upload route. Native useFirmware invokes the common updater with ignoreBaseUrl:true and no binary; shared binary support is not exposed as native user UI."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-device-settings/src/navigation/FirmwareUpdateStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/hooks/useFirmware.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The complete native firmware screen/update navigator contains no file-picker or local-binary upload route. Native useFirmware invokes the common updater with ignoreBaseUrl:true and no binary; shared binary support is not exposed as native user UI."
+        },
+        {
+            "id": "device-settings.firmware.progress-check",
+            "mobile_status": "conditional",
+            "navigation": "Firmware installation > stalled-progress help",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx",
+                    "symbol": "FirmwareInstallationScreenContent"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx",
+                    "detail": "Native useFirmware marks mayBeStuck after one minute without progress while installation is started and progress is below 100. FirmwareInstallationScreenContent then exposes a help button opening the two-part MayBeStuckBottomSheet."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/hooks/useFirmware.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/components/MayBeStuckBottomSheet.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "Native useFirmware marks mayBeStuck after one minute without progress while installation is started and progress is below 100. FirmwareInstallationScreenContent then exposes a help button opening the two-part MayBeStuckBottomSheet."
+        },
+        {
+            "id": "device-settings.firmware.bootloader-update",
+            "mobile_status": "unknown",
+            "navigation": "Device settings > Firmware > official update (specific bootloader-upgrade behavior unverified)",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx",
+                    "symbol": "FirmwareInstallationScreenContent"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/components/FirmwareInstallationScreenContent.tsx",
+                    "detail": "The native official update delegates to shared useFirmwareInstallation and Connect firmwareUpdate and handles restart/progress states, but a distinct native bootloader-upgrade sequence or prompt equivalent to this desktop leaf was not established. Keep this unknown rather than infer parity solely from shared updater support."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/firmware/src/hooks/useFirmware.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-common/firmware/src/hooks/useFirmwareInstallation.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native official update delegates to shared useFirmwareInstallation and Connect firmwareUpdate and handles restart/progress states, but a distinct native bootloader-upgrade sequence or prompt equivalent to this desktop leaf was not established. Keep this unknown rather than infer parity solely from shared updater support."
+        },
+        {
+            "id": "connection.compromised",
+            "mobile_status": "conditional",
+            "navigation": "Device security check failure > warning and recovery/support actions",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-authenticity-checks/src/screens/DeviceCompromisedModalScreen.tsx",
+                    "symbol": "DeviceCompromisedModalScreen"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-authenticity-checks/src/screens/DeviceCompromisedModalScreen.tsx",
+                    "detail": "DeviceCompromisedModalScreen selects failure content for device identity, invariability, device authenticity, entropy and firmware authenticity. The native warning flow depends on the failed check and device capabilities."
+                }
+            ],
+            "reason": "DeviceCompromisedModalScreen selects failure content for device identity, invariability, device authenticity, entropy and firmware authenticity. The native warning flow depends on the failed check and device capabilities."
+        },
+        {
+            "id": "app-settings.database-recovery",
+            "mobile_status": "conditional",
+            "navigation": "Startup storage error > Restart app or Clear app storage",
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/storage/src/mmkvStorage.ts",
+                    "detail": "The native MMKV initializer shows Unable to load app data if storage creation or encryption-key access fails. The alert provides Restart app and Clear app storage; clearStorage clears MMKV and unencrypted local state and restarts. This is a native emergency equivalent, not an IndexedDB implementation."
+                }
+            ],
+            "reason": "The native MMKV initializer shows Unable to load app data if storage creation or encryption-key access fails. The alert provides Restart app and Clear app storage; clearStorage clears MMKV and unencrypted local state and restarts. This is a native emergency equivalent, not an IndexedDB implementation."
+        },
+        {
+            "id": "app-settings.database-blocking",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/storage/src/mmkvStorage.ts",
+                    "detail": "The native storage implementation uses MMKV rather than IndexedDB and exposes a startup-failure alert, not an IndexedDB concurrent-tab database-upgrade-blocking screen. The ordinary native navigator also has no equivalent blocking-database route."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-settings/src/navigation/SettingsStackNavigator.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native storage implementation uses MMKV rather than IndexedDB and exposes a startup-failure alert, not an IndexedDB concurrent-tab database-upgrade-blocking screen. The ordinary native navigator also has no equivalent blocking-database route."
+        },
+        {
+            "id": "wallet-access.session-conflict",
+            "mobile_status": "conditional",
+            "navigation": "Device session error > reacquire device",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "symbol": "useDetectDeviceError"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/device/src/hooks/useDetectDeviceError.tsx",
+                    "detail": "Native useDetectDeviceError can re-acquire an unacquired device and restart discovery after another application takes its session. Native has no browser-tab conflict UI; parity is at the reauthorization goal level and requires the unacquired-device error state."
+                }
+            ],
+            "reason": "Native useDetectDeviceError can re-acquire an unacquired device and restart discovery after another application takes its session. Native has no browser-tab conflict UI; parity is at the reauthorization goal level and requires the unacquired-device error state."
+        },
+        {
+            "id": "connection.payment-uri",
+            "mobile_status": "no",
+            "navigation": null,
+            "roots": [],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-connect-popup/src/hooks/useConnectPopupNavigation.ts",
+                    "detail": "The native app configuration registers trezorsuite and approved HTTPS Connect/setup routes, and its incoming URL hook handles only Trezor Connect/WalletConnect links. It does not register/handle external bitcoin: or ethereum: payment links in this composition. Scanning payment URIs inside Send is supported separately and is not external-link parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/app/app.config.ts",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-send/src/components/AddressInput.tsx",
+                    "detail": "Additional inspected composition, gate or native controller supporting this parity decision."
+                }
+            ],
+            "reason": "The native app configuration registers trezorsuite and approved HTTPS Connect/setup routes, and its incoming URL hook handles only Trezor Connect/WalletConnect links. It does not register/handle external bitcoin: or ethereum: payment links in this composition. Scanning payment URIs inside Send is supported separately and is not external-link parity."
+        },
+        {
+            "id": "wallet.portfolio.promotions",
+            "mobile_status": "conditional",
+            "navigation": "Home > Promotional banners",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioPromoBanners.tsx",
+                    "symbol": "PortfolioPromoBanners"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/PortfolioAssets/PortfolioPromoBanners.tsx",
+                    "detail": "Native portfolio composes PromoBanners only when selectHasVisiblePromoBanners is true; remote availability and eligibility apply."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite-native-app/app/e2e/tests/manual/wallet/earnPromoBanners.test.ts",
+                    "detail": "Manual banner navigation and persistence checklist; not executed."
+                }
+            ],
+            "reason": "Native portfolio composes PromoBanners only when selectHasVisiblePromoBanners is true; remote availability and eligibility apply."
+        },
+        {
+            "id": "wallet.portfolio.promotions.carousel",
+            "mobile_status": "conditional",
+            "navigation": "Home > Promotional banners > Swipe carousel",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/banners/src/components/PromoBannerCarousel.tsx",
+                    "symbol": "PromoBannerCarousel"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/banners/src/components/PromoBannerCarousel.tsx",
+                    "detail": "Native PromoBanners composes a carousel of the eligible promotional items; gesture and indicator interaction differs from desktop."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite-native-app/app/e2e/tests/manual/wallet/earnPromoBanners.test.ts",
+                    "detail": "Manual banner navigation and persistence checklist; not executed."
+                }
+            ],
+            "reason": "Native PromoBanners composes a carousel of the eligible promotional items; gesture and indicator interaction differs from desktop."
+        },
+        {
+            "id": "wallet.portfolio.promotions.dismiss",
+            "mobile_status": "conditional",
+            "navigation": "Home > Promotional banner > Close",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/banners/src/components/DefiYieldPromoBanner.tsx",
+                    "symbol": "DefiYieldPromoBanner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/banners/src/components/DefiYieldPromoBanner.tsx",
+                    "detail": "Eligible native promo cards expose onClose and record dismissal; the DeFi yield banner is an inspected example."
+                },
+                {
+                    "kind": "manual-test",
+                    "path": "suite-native-app/app/e2e/tests/manual/wallet/earnPromoBanners.test.ts",
+                    "detail": "Manual banner navigation and persistence checklist; not executed."
+                }
+            ],
+            "reason": "Eligible native promo cards expose onClose and record dismissal; the DeFi yield banner is an inspected example."
+        },
+        {
+            "id": "onboarding.feedback",
+            "mobile_status": "conditional",
+            "navigation": "Home after setup > Feedback survey banner",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/OnboardingFeedbackBanner.tsx",
+                    "symbol": "OnboardingFeedbackBanner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/OnboardingFeedbackBanner.tsx",
+                    "detail": "Native NoNetworksConfigured composes the banner when selectIsOnboardingFeedbackBannerEnabled is true. The user can open the survey or dismiss the invitation."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native-app/module-home/src/screens/HomeScreen/components/NoNetworksConfigured.tsx",
+                    "detail": "Containing composition or visibility gate for the native banner."
+                }
+            ],
+            "reason": "Native NoNetworksConfigured composes the banner when selectIsOnboardingFeedbackBannerEnabled is true. The user can open the survey or dismiss the invitation."
+        },
+        {
+            "id": "connection.offline",
+            "mobile_status": "conditional",
+            "navigation": "After app onboarding > Offline banner",
+            "roots": [
+                {
+                    "platform": "mobile",
+                    "path": "suite-native/connection-status/src/OfflineBanner.tsx",
+                    "symbol": "OfflineBanner"
+                }
+            ],
+            "evidence": [
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/connection-status/src/OfflineBanner.tsx",
+                    "detail": "Native banner appears after app onboarding when the internet is unreachable or a firmware-revision check failed offline; this does not establish native offline device-creation parity."
+                },
+                {
+                    "kind": "implementation",
+                    "path": "suite-native/connection-status/src/useIsOfflineBannerVisible.tsx",
+                    "detail": "Containing composition or visibility gate for the native banner."
+                }
+            ],
+            "reason": "Native banner appears after app onboarding when the internet is unreachable or a firmware-revision check failed offline; this does not establish native offline device-creation parity."
+        }
+    ],
+    "notes": [
+        "These decisions compare user-facing native controls against the exact desktop node descriptions, not merely shared SDK capability. Conditional group parity can cover only a subset of desktop child controls; consult each leaf.",
+        "The audit establishes implementation at the repository snapshot, not current production rollout. Device models, supported firmware, feature/message-system state, transport and network configuration still constrain availability.",
+        "Native Model One setup is explicitly unsupported. Supported model recovery takes place on device, without host word-count, standard-recovery or advanced-matrix choices.",
+        "Native new-wallet creation has skip_backup:false. Required backups from wallets initialized elsewhere can still be completed through the backup-needed banner; this does not mean native onboarding can defer backup.",
+        "Native backend configuration supports a single custom endpoint, not the desktop multiple-URL editor. Electrum is present when the selected network backendOptions permits it.",
+        "No application tests were executed and no device screens were captured for this source audit. One specific bootloader-upgrade flow remains unknown."
+    ]
+}
