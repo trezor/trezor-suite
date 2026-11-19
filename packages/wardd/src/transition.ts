@@ -1,18 +1,18 @@
 import { ed25519 } from '@noble/curves/ed25519.js';
-import { sha256 } from '@noble/hashes/sha2.js';
-import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
+import { concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
 import { EMPTY_ROOT_HEX } from '@trezor/ward';
 
 export { EMPTY_ROOT_HEX } from '@trezor/ward';
 export const normalizeRoot = (root?: string): string =>
     root === EMPTY_ROOT_HEX ? '' : (root ?? '');
-export const genesisNonce = (wardId: string): string =>
-    bytesToHex(
-        sha256(concatBytes(new TextEncoder().encode('WARD GENESIS v2'), hexToBytes(wardId))),
-    );
+/**
+ * One wallet-signed WM transition, as the WM's JSON API carries it. Roots use '' for the empty
+ * tree; the signed bytes use the canonical empty digest (see `transitionMessage`).
+ */
 export type SignedTransition = {
     wardId: string;
+    kind: 'commit' | 'revert';
     fromCounter: number;
     fromRoot: string;
     counter: number;
@@ -20,11 +20,15 @@ export type SignedTransition = {
     mac: string;
     authCommit: string;
     signature: string;
-    kind: 'commit' | 'revert';
-    headNonce: string;
 };
 
-export const transitionMessage = (record: SignedTransition): Uint8Array => {
+/**
+ * kind (0x00 commit, 0x01 revert) || wardId || fromCounter:u32 || fromRoot || counter:u32
+ *     || root || mac || authCommit
+ *
+ * The transition fields both the wallet and the WM sign, under different domains.
+ */
+const transitionBody = (record: SignedTransition): Uint8Array => {
     const counter = (value: number) => {
         if (!Number.isInteger(value) || value < 0 || value > 0xffffffff)
             throw new Error('invalid transition counter');
@@ -45,7 +49,6 @@ export const transitionMessage = (record: SignedTransition): Uint8Array => {
         throw new Error('transition must advance exactly once');
 
     return concatBytes(
-        new TextEncoder().encode('WARD WM TRANSITION v2'),
         Uint8Array.of(record.kind === 'revert' ? 1 : 0),
         word(record.wardId),
         counter(record.fromCounter),
@@ -54,9 +57,16 @@ export const transitionMessage = (record: SignedTransition): Uint8Array => {
         word(record.root || EMPTY_ROOT_HEX),
         word(record.mac),
         word(record.authCommit),
-        word(record.headNonce),
     );
 };
+
+/** "WARD WM TRANSITION v1" || body: the wallet's authorization of the transition. */
+export const transitionMessage = (record: SignedTransition): Uint8Array =>
+    concatBytes(new TextEncoder().encode('WARD WM TRANSITION v1'), transitionBody(record));
+
+/** "WARD FINAL v1" || body: the WM's signature over the transition it accepted. */
+export const finalizationMessage = (record: SignedTransition): Uint8Array =>
+    concatBytes(new TextEncoder().encode('WARD FINAL v1'), transitionBody(record));
 
 export const verifyTransition = (record: SignedTransition): void => {
     if (

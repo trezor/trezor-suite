@@ -86,7 +86,7 @@ export const recoverWard = async ({
         normalizeRoot(typeof device.root === 'string' ? device.root : undefined) !== head.root
     )
         throw new RelayFailure('bad_request', 'device does not trust the stuck head');
-    // Refresh the nonce-bound head generation without claiming its missing trie data exists.
+    // Refresh the nonce-bound head attestation without claiming its missing trie data exists.
     await ask(
         {
             name: 'WARDIngestAttestation',
@@ -95,7 +95,6 @@ export const recoverWard = async ({
                 mac: head.mac,
                 wm_signature: head.signature,
                 timestamp: head.timestamp,
-                head_nonce: head.headNonce,
             },
         },
         'WARDIngestAttestationAck',
@@ -129,7 +128,6 @@ export const recoverWard = async ({
     }
     const record: WardTransition = {
         kind: 'revert',
-        headNonce: head.headNonce,
         counter,
         prevRoot: head.root,
         targetRoot: root,
@@ -151,7 +149,6 @@ export const recoverWard = async ({
         mac: record.targetRootMac!,
         authCommit: record.authCommit!,
         signature: record.sigCommit!,
-        headNonce: head.headNonce,
     });
     await ask(
         {

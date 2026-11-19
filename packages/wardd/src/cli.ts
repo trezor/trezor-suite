@@ -1,6 +1,6 @@
 /**
  * wardd [--port 21329] [--data-dir ~/.trezor-ward] [--memory] [--token-file F]
- *       [--wm-url URL] [--evolu-node HEX] [--relay URL] [--origin O]... [--verbose]
+ *       [--wm-url URL] [--wm-recovery] [--evolu-node HEX] [--relay URL] [--origin O]... [--verbose]
  *       [--label-freshness] [--service-channel usb|usb:SERIAL|udp:HOST:WALLET_PORT] [--wallet-relay]
  *
  * Serves the relay over a WebSocket for host libraries in another process (HWI). With no
@@ -55,6 +55,17 @@ const main = async () => {
     }
     const delays = flag('delays') || process.env.WARD_DELAYS === '1';
     const memory = flag('memory');
+    const relayUrl = value('relay');
+    const wmUrl =
+        value('wm-url') ??
+        process.env.WARD_MANAGER_URL ??
+        (process.env.WARD_MANAGER_PORT
+            ? `http://127.0.0.1:${process.env.WARD_MANAGER_PORT}`
+            : undefined);
+    const isRecoveryEnabled = flag('wm-recovery');
+    if (isRecoveryEnabled && (!wmUrl || memory || !relayUrl)) {
+        throw new Error('--wm-recovery requires a remote WM and an Evolu relay');
+    }
     const dataDir = value('data-dir') ?? path.join(os.homedir(), '.trezor-ward');
     await fs.mkdir(dataDir, { recursive: true, mode: 0o700 });
     // --memory keeps the replica out of Evolu entirely: a fresh, throwaway store for tests.
@@ -63,15 +74,9 @@ const main = async () => {
         : await EvoluWardStorage.open({
               dataDir,
               evoluNode: value('evolu-node'),
-              relayUrl: value('relay'),
+              relayUrl,
               log,
           });
-    const wmUrl =
-        value('wm-url') ??
-        process.env.WARD_MANAGER_URL ??
-        (process.env.WARD_MANAGER_PORT
-            ? `http://127.0.0.1:${process.env.WARD_MANAGER_PORT}`
-            : undefined);
     const debugPort = value('debug-port') ?? process.env.WARDD_DEBUG_PORT;
     const wardd = new Wardd({
         debugDropTransition:
@@ -79,7 +84,7 @@ const main = async () => {
                 ? (wardId, counter, root) => storage.debugDropTransition(wardId, counter, root)
                 : undefined,
         storage,
-        wm: wmUrl ? new HttpWm(wmUrl, log, delays) : new MockWm(log, delays),
+        wm: wmUrl ? new HttpWm(wmUrl, log, delays, isRecoveryEnabled) : new MockWm(log, delays),
         log: flag('verbose') || delays ? log : undefined,
         delays,
         labelFreshness: flag('label-freshness') || process.env.WARD_LABEL_FRESHNESS === '1',

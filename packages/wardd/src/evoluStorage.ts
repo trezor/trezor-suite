@@ -236,6 +236,8 @@ export type EvoluStorageOptions = {
     dataDir: string | null;
     /** the wallet's 64-byte SLIP-21 Evolu node (hex); without it a local owner secret is used */
     evoluNode?: string;
+    /** 32-byte WARD Evolu owner secret for an independent replica. */
+    ownerSecret?: Uint8Array;
     /** an Evolu relay to replicate through; none keeps the replica local */
     relayUrl?: string;
     /** how long a write may take before it is failed; see `settled` */
@@ -273,9 +275,11 @@ export class EvoluWardStorage implements WardProvider {
     ) {}
 
     static async open(opts: EvoluStorageOptions): Promise<EvoluWardStorage> {
-        const secret = opts.evoluNode
-            ? wardOwnerSecret(opts.evoluNode)
-            : await readOrCreateSecret(opts.dataDir);
+        const secret =
+            opts.ownerSecret ??
+            (opts.evoluNode
+                ? wardOwnerSecret(opts.evoluNode)
+                : await readOrCreateSecret(opts.dataDir));
         const owner = wardOwner(secret);
         const { run, evoluError } = createNodeRun(opts.dataDir);
         const evolu = getOrThrow(

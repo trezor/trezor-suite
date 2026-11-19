@@ -11,8 +11,8 @@ import { bytesToHex, concatBytes, hexToBytes } from '@noble/hashes/utils.js';
 
 // WARD attestation domains — must match apps.ward._qm / trezorlib.ward.
 const WARD_FINAL_DOMAIN = new TextEncoder().encode('WARD FINAL v1');
-const WARD_ATTEST_DOMAIN = new TextEncoder().encode('WARD ATTEST v2');
-const WARD_ATTEST_VERSION = 2;
+const WARD_ATTEST_DOMAIN = new TextEncoder().encode('WARD ATTEST v1');
+const WARD_ATTEST_VERSION = 1;
 
 // All-zero MAC used when the tree is empty (no root MAC to bind).
 export const ZERO_MAC_HEX = '00'.repeat(32);
@@ -58,7 +58,8 @@ export const signWardUpdate = (
 /**
  * Produce the WM freshness attestation the device verifies in WARDIngestAttestation:
  *     Ed25519-Sign(seed,
- *         b"WARD ATTEST v1" || version(1B) || nonce || ward_id || counter(4B BE) || mac)
+ *         b"WARD ATTEST v1" || 0x01 || nonce || ward_id || counter(4B BE) || mac
+ *         || timestamp(8B BE))
  *
  * The WM signs over the device-derived ward_id (SLIP21 anchor, 32B), NOT the local
  * wallet_id. `nonce` is the per-round value the device minted at WARDInitSyncRound.
@@ -72,7 +73,6 @@ export const signWmAttestation = (
     macHex: string,
     seed: Uint8Array = DEBUG_QM_SEED,
     timestamp = 1700000000,
-    headNonce = '68'.repeat(32),
 ): string => {
     const time = new Uint8Array(8);
     new DataView(time.buffer).setBigUint64(0, BigInt(timestamp));
@@ -84,7 +84,6 @@ export const signWmAttestation = (
         counterBE4(counter),
         hexToBytes(macHex),
         time,
-        hexToBytes(headNonce),
     );
 
     return bytesToHex(ed25519.sign(message, seed));

@@ -106,7 +106,6 @@ export const reconstructAvailable = async ({
                 local.authCommit === record.authCommit &&
                 local.sigCommit === record.signature &&
                 local.targetRootMac === record.mac &&
-                local.headNonce === record.headNonce &&
                 (local.kind ?? 'commit') === record.kind,
         );
         const local = matches[0];

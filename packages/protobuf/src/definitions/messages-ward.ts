@@ -69,7 +69,6 @@ export const WARDAttestation = Type.Object(
         mac: Type.Optional(Type.String()),
         wm_signature: Type.String(),
         timestamp: Type.Number(),
-        head_nonce: Type.String(),
     },
     { $id: 'WARDAttestation' },
 );
@@ -269,7 +268,6 @@ export const WARDIngestAttestation = Type.Object(
         mac: Type.Optional(Type.String()),
         wm_signature: Type.String(),
         timestamp: Type.Number(),
-        head_nonce: Type.String(),
     },
     { $id: 'WARDIngestAttestation' },
 );

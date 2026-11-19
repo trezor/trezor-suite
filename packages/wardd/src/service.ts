@@ -132,11 +132,6 @@ export class Wardd implements WardRelay {
 
                 return this.wm.history(...args);
             },
-            attest: (...args) => {
-                available();
-
-                return this.wm.attest(...args);
-            },
         };
         const host = new WardHost({
             storage: this.storage,

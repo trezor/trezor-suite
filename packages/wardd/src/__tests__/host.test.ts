@@ -50,8 +50,8 @@ describe('wardd flows', () => {
         expect(ingest.mac).toBeUndefined();
         // the debug WM's signature over the device's own nonce and ward_id
         const signed = concatBytes(
-            new TextEncoder().encode('WARD ATTEST v2'),
-            Uint8Array.of(2),
+            new TextEncoder().encode('WARD ATTEST v1'),
+            Uint8Array.of(1),
             hexToBytes(NONCE),
             hexToBytes(WARD_ID),
             new Uint8Array(4),
@@ -62,7 +62,6 @@ describe('wardd flows', () => {
 
                 return time;
             })(),
-            hexToBytes(ingest.head_nonce as string),
         );
         expect(
             ed25519.verify(
@@ -164,7 +163,6 @@ describe('wardd flows', () => {
         const wm: WmClient = {
             current: (wardId, nonce) => base.current(wardId, nonce),
             history: wardId => base.history(wardId),
-            attest: new MockWm().attest,
             commit: () => Promise.reject(new WmConflict(5)),
         };
         const { storage, endpoint, dev } = await setup(wm);
@@ -391,14 +389,13 @@ describe('wardd flows', () => {
             const time = new Uint8Array(8);
             new DataView(time.buffer).setBigUint64(0, BigInt(attestation.timestamp));
             const signed = concatBytes(
-                new TextEncoder().encode('WARD ATTEST v2'),
-                Uint8Array.of(2),
+                new TextEncoder().encode('WARD ATTEST v1'),
+                Uint8Array.of(1),
                 hexToBytes(FRESH_NONCE),
                 hexToBytes(WARD_ID),
                 new Uint8Array(4),
                 new Uint8Array(32),
                 time,
-                hexToBytes(attestation.head_nonce),
             );
             expect(
                 ed25519.verify(

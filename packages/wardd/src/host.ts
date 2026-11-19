@@ -81,7 +81,6 @@ export class WardHost {
     private syncedHead?: TreeState;
     private deviceHead?: TreeState;
     private syncedHistory?: SignedTransition[];
-    private headNonce?: string;
     /** The leaves rebuilt for one synced head, reused by the many pulls of one listing walk. */
     private listingRows?: { key: string; rows: BlobRow[] };
 
@@ -159,7 +158,6 @@ export class WardHost {
         }
 
         const attestation = await this.deps.wm.current(wardId, ack.nonce);
-        this.headNonce = attestation.headNonce;
         const tree: TreeState = {
             counter: attestation.counter,
             root: attestation.root,
@@ -179,7 +177,6 @@ export class WardHost {
                     ...(tree?.mac ? { mac: tree.mac } : {}),
                     wm_signature: signature,
                     timestamp: attestation.timestamp,
-                    head_nonce: attestation.headNonce,
                 },
             },
             'WARDIngestAttestationAck',
@@ -419,7 +416,6 @@ export class WardHost {
         });
         const transition: WardTransition = {
             kind,
-            headNonce: this.headNonce,
             counter: candidate.counter,
             prevRoot: normalizeRoot(candidate.from_root),
             targetRoot: normalizeRoot(candidate.new_root),
@@ -439,7 +435,6 @@ export class WardHost {
             authCommit: kind === 'revert' ? candidate.auth_revert : candidate.auth_commit,
             signature: candidate.sig_commit,
             kind,
-            headNonce: this.headNonce!,
         };
         const previewHistory = [...(this.syncedHistory ?? []), publication];
         // Persist the complete candidate before WM advancement; rejected candidates are dead branches.
@@ -457,7 +452,7 @@ export class WardHost {
         );
         let finalSig: string;
         try {
-            finalSig = await wm.commit(publication);
+            finalSig = await wm.commit(publication, transition.leaves);
         } catch (err) {
             if (err instanceof WmUnavailable) {
                 return {
@@ -610,7 +605,6 @@ export class WardHost {
                 ...(head.mac ? { mac: head.mac } : {}),
                 wm_signature: head.signature,
                 timestamp: head.timestamp,
-                head_nonce: head.headNonce,
             };
         } catch (error) {
             this.deps.log(`FRESHNESS unavailable: ${(error as Error).message}`);

@@ -48,7 +48,6 @@ export const fakeDevice = (endpoint: () => WardRelayEndpoint, opts: { wardId?: s
     const cached = new Set<string>();
     const sticky = new Set<string>();
     let counter = 0;
-    let headNonce = '';
     let pending: { entryKey: string; body: string; deleting: boolean } | undefined;
     const root = () => normalizeRoot(computeRootFromBlobs([...leaves.values()]));
     const entryKeyOf = (address: string) => utf8Hex(address).padEnd(64, '0').slice(0, 64);
@@ -143,8 +142,6 @@ export const fakeDevice = (endpoint: () => WardRelayEndpoint, opts: { wardId?: s
                     },
                 };
             case 'WARDIngestAttestation':
-                headNonce = message.head_nonce as string;
-
                 return { name: 'WARDIngestAttestationAck', message: { counter: message.counter } };
             case 'WARDReconcile':
                 return {
@@ -283,7 +280,6 @@ export const fakeDevice = (endpoint: () => WardRelayEndpoint, opts: { wardId?: s
                                     authCommit: '77'.repeat(32),
                                     signature: '',
                                     kind: 'commit',
-                                    headNonce,
                                 }),
                                 WALLET_KEY,
                             ),

@@ -26,7 +26,6 @@ const manager = () => {
         mac: '11'.repeat(32),
         signature: 'signed',
         timestamp: 1700000000,
-        headNonce: '68'.repeat(32),
     });
 
     return wm;

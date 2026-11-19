@@ -43,7 +43,6 @@ const stored = (record: SignedTransition, leaves: WardLeafBlob[]): WardTransitio
     targetRootMac: record.mac,
     authCommit: record.authCommit,
     sigCommit: record.signature,
-    headNonce: record.headNonce,
     leaves,
 });
 const setup = () => {
@@ -156,12 +155,11 @@ it.each(['cancel', 'storage'])('does not publish a rollback after a %s failure',
             root: two.root,
             mac: two.mac,
             timestamp: 1700000000,
-            headNonce: two.headNonce,
             signature: 'signed',
+            transition: two,
         }),
         history: jest.fn().mockResolvedValue([one, two]),
         commit,
-        attest: jest.fn(),
     };
     const ask = jest.fn().mockImplementation(request => {
         if (request.name === 'WARDSync')
@@ -202,7 +200,7 @@ it.each(['cancel', 'storage'])('does not publish a rollback after a %s failure',
 it('refuses recovery from an incomplete durable device anchor', async () => {
     const { storage } = setup();
     const current = jest.fn();
-    const wm: WmClient = { current, history: jest.fn(), commit: jest.fn(), attest: jest.fn() };
+    const wm: WmClient = { current, history: jest.fn(), commit: jest.fn() };
     const ask = jest
         .fn()
         .mockResolvedValue({ ward_id: one.wardId, counter: 2, root: two.root, root_known: false });

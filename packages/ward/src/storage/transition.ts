@@ -13,7 +13,6 @@ export const transitionFingerprint = (value: WardTransition): string =>
         value.headMac ?? null,
         value.sigCommit ?? null,
         value.kind ?? 'commit',
-        value.headNonce ?? null,
         value.leaves
             .toSorted((left, right) => left.entryKey.localeCompare(right.entryKey))
             .map(leaf => [leaf.entryKey, leaf.keyType, part(leaf.identity), part(leaf.content)]),

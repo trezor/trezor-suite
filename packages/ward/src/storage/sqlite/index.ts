@@ -10,7 +10,6 @@ import { mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type { WardProvider } from '../';
-import { transitionFingerprint } from '../transition';
 import type {
     TreeState,
     WardEntry,
@@ -19,6 +18,7 @@ import type {
     WardRow,
     WardTransition,
 } from '../../types';
+import { transitionFingerprint } from '../transition';
 
 type SqliteAddressRow = {
     ward_id: string;
@@ -99,7 +99,7 @@ export class WardDb implements WardProvider {
                 auth_commit     TEXT,
                 head_mac        TEXT,
                 sig_commit      TEXT,
-                kind TEXT, head_nonce TEXT,
+                kind TEXT,
                 PRIMARY KEY (ward_id, counter, target_root)
             );
             INSERT OR IGNORE INTO transitions_v2
@@ -223,14 +223,15 @@ export class WardDb implements WardProvider {
         if (previous) {
             if (transitionFingerprint(previous) !== transitionFingerprint(t))
                 throw new Error('cannot rewrite an existing WARD transition');
+
             return;
         }
         this.db
             .prepare(
                 `INSERT INTO transitions_v2
                      (ward_id, counter, prev_root, target_root, target_root_mac,
-                      leaves, auth_commit, head_mac, sig_commit, kind, head_nonce)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                      leaves, auth_commit, head_mac, sig_commit, kind)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                  `,
             )
             .run(
@@ -244,7 +245,6 @@ export class WardDb implements WardProvider {
                 t.headMac ?? null,
                 t.sigCommit ?? null,
                 t.kind ?? null,
-                t.headNonce ?? null,
             );
     }
 
@@ -252,7 +252,7 @@ export class WardDb implements WardProvider {
         const rows = this.db
             .prepare(
                 `SELECT counter, prev_root, target_root, target_root_mac,
-                        leaves, auth_commit, head_mac, sig_commit, kind, head_nonce
+                        leaves, auth_commit, head_mac, sig_commit, kind
                  FROM transitions_v2 WHERE ward_id = ? ORDER BY counter`,
             )
             .all(wardId) as {
@@ -265,13 +265,11 @@ export class WardDb implements WardProvider {
             head_mac: string | null;
             sig_commit: string | null;
             kind: 'commit' | 'revert' | null;
-            head_nonce: string | null;
         }[];
 
         return rows.map(r => ({
             counter: r.counter,
             ...(r.kind != null && { kind: r.kind }),
-            ...(r.head_nonce != null && { headNonce: r.head_nonce }),
             prevRoot: r.prev_root,
             targetRoot: r.target_root,
             ...(r.target_root_mac != null && { targetRootMac: r.target_root_mac }),

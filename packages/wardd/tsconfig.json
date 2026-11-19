@@ -4,6 +4,7 @@
         "outDir": "libDev",
         "types": ["jest", "node", "w3c-web-usb"]
     },
+    "include": [".", "mocks/**/*.json"],
     "references": [
         { "path": "../protobuf" },
         { "path": "../ward" }

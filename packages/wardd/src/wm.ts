@@ -2,37 +2,46 @@
  * The WARD Manager seam: the WM's Ed25519 signatures the device verifies, over `wardId` (the
  * device's SLIP21-derived WM-facing anchor, never the local wallet_id or an Evolu owner id).
  *
- *   attest   "WARD ATTEST v1" || version || nonce || ward_id || counter || mac   (WARDIngestAttestation)
- *   commit   "WARD FINAL v1"  || ward_id || counter || mac                       (WARDConfirmedByWM)
+ *   attest   "WARD ATTEST v1" || 0x01 || nonce || ward_id || counter || mac || timestamp
+ *                                                                        (WARDIngestAttestation)
+ *   commit   "WARD FINAL v1"  || accepted transition body (see `finalizationMessage`)
+ *                                       (WARDConfirmBatchByWM / WARDConfirmRevertByWM)
+ *
+ * The WM stores each ward's latest accepted wallet-signed transition (`SignedTransition`); that
+ * transition's counter/root/mac is the head. At genesis there is none: counter 0, empty root, no
+ * mac (the zero mac in signed bytes). The WM attests its OWN head over the caller's nonce; wardd
+ * never names the checkpoint it wants signed.
  *
  * Moved here from Connect: only wardd talks to the WM. `MockWm` signs in-process with the debug
  * key that only debug firmware accepts; `HttpWm` calls a running WARD Manager.
- *
- * TODO(gap 2): `attest` signs the head wardd supplies -- a signing oracle. A hardened WM must sign
- * its OWN stored head for `wardId` (input `{ wardId, nonce }`, output the head it signed).
  */
-import { bytesToHex, randomBytes } from '@noble/hashes/utils.js';
+import { ed25519 } from '@noble/curves/ed25519.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
-import { ZERO_MAC_HEX, signWardUpdate, signWmAttestation } from '@trezor/ward/src/mocks';
+import { type WardLeafBlob, commitOf } from '@trezor/ward';
+import { DEBUG_QM_SEED, ZERO_MAC_HEX, signWmAttestation } from '@trezor/ward/src/mocks';
 
 import { type Log, silentLog, startActivity } from './logging';
 import { forwardingDelay } from './pacing';
-import { type SignedTransition, genesisNonce, normalizeRoot, verifyTransition } from './transition';
+import {
+    type SignedTransition,
+    finalizationMessage,
+    normalizeRoot,
+    verifyTransition,
+} from './transition';
 
-export type WmAttestRequest = { wardId: string; nonce: string; counter: number; mac?: string };
 export type WmCommitRequest = SignedTransition;
 export type WmHead = {
     counter: number;
     root: string;
     mac?: string;
-    headNonce: string;
     timestamp: number;
 };
-export type WmAttestation = WmHead & { signature: string };
+/** The WM's head plus its nonce-bound attestation, and the transition that produced the head. */
+export type WmAttestation = WmHead & { signature: string; transition?: SignedTransition };
 
 export interface WmClient {
-    attest(request: WmAttestRequest): Promise<string>;
-    commit(request: WmCommitRequest): Promise<string>;
+    commit(request: WmCommitRequest, leaves?: WardLeafBlob[]): Promise<string>;
     current(wardId: string, nonce: string): Promise<WmAttestation>;
     history(wardId: string): Promise<SignedTransition[]>;
 }
@@ -58,23 +67,31 @@ export class WmConflict extends Error {
     }
 }
 
-/** DEV/TEST: signs with the well-known debug key, in-process and stateless. */
+/** The head a latest accepted transition names; genesis when there is none. */
+const headOf = (transition?: SignedTransition): Omit<WmHead, 'timestamp'> =>
+    transition
+        ? { counter: transition.counter, root: normalizeRoot(transition.root), mac: transition.mac }
+        : { counter: 0, root: '' };
+
+const normalizeTransition = (transition: SignedTransition): SignedTransition => ({
+    ...transition,
+    fromRoot: normalizeRoot(transition.fromRoot),
+    root: normalizeRoot(transition.root),
+});
+
+/** DEV/TEST: signs with the well-known debug key, in-process. */
 export class MockWm implements WmClient {
-    private readonly heads = new Map<string, WmHead>();
     private readonly records = new Map<string, SignedTransition[]>();
+    private readonly timestamps = new Map<string, number>();
     constructor(
         private readonly log: Log = silentLog,
         private readonly delays = false,
     ) {}
 
     async current(wardId: string, nonce: string): Promise<WmAttestation> {
-        const head = this.heads.get(wardId) ?? {
-            counter: 0,
-            root: '',
-            headNonce: genesisNonce(wardId),
-            timestamp: 0,
-        };
-        const timestamp = Math.max(Math.floor(Date.now() / 1000), head.timestamp);
+        const transition = this.records.get(wardId)?.at(-1);
+        const head = headOf(transition);
+        const timestamp = Math.max(Math.floor(Date.now() / 1000), this.timestamps.get(wardId) ?? 0);
         const signature = await this.sign('attest', head.counter, () =>
             signWmAttestation(
                 wardId,
@@ -83,62 +100,46 @@ export class MockWm implements WmClient {
                 head.mac ?? ZERO_MAC_HEX,
                 undefined,
                 timestamp,
-                head.headNonce,
             ),
         );
 
-        return { ...head, timestamp, signature };
+        return {
+            ...head,
+            timestamp,
+            signature,
+            ...(transition && { transition: { ...transition } }),
+        };
     }
 
     history(wardId: string): Promise<SignedTransition[]> {
         return Promise.resolve((this.records.get(wardId) ?? []).map(record => ({ ...record })));
     }
 
-    async attest({ wardId, nonce, counter, mac }: WmAttestRequest) {
-        const head = await this.current(wardId, nonce);
-        if (counter !== head.counter || mac !== head.mac)
-            throw new WmConflict(head.counter, head.mac);
-
-        return head.signature;
-    }
-
-    commit(request: WmCommitRequest) {
+    async commit(request: WmCommitRequest) {
         verifyTransition(request);
-        const { wardId, counter, mac } = request;
-        const head = this.heads.get(wardId) ?? {
-            counter: 0,
-            root: '',
-            headNonce: genesisNonce(wardId),
-            timestamp: 0,
-        };
+        const { wardId, counter } = request;
         const records = this.records.get(wardId) ?? [];
-        const record = {
-            ...request,
-            root: normalizeRoot(request.root),
-            fromRoot: normalizeRoot(request.fromRoot),
-        };
-        const retry =
-            counter === head.counter && JSON.stringify(records.at(-1)) === JSON.stringify(record);
-        if (
-            !retry &&
-            (request.fromCounter !== head.counter ||
-                record.fromRoot !== head.root ||
-                record.headNonce !== head.headNonce)
-        )
+        const latest = records.at(-1);
+        const head = headOf(latest);
+        const record = normalizeTransition(request);
+        // An exact retry of the accepted head transition gets the same finalization again.
+        const retry = latest !== undefined && JSON.stringify(latest) === JSON.stringify(record);
+        if (!retry && (record.fromCounter !== head.counter || record.fromRoot !== head.root))
             throw new WmConflict(head.counter, head.mac);
         if (!retry) {
             records.push(record);
             this.records.set(wardId, records);
-            this.heads.set(wardId, {
-                counter,
-                root: record.root,
-                mac,
-                headNonce: bytesToHex(randomBytes(32)),
-                timestamp: Math.max(Math.floor(Date.now() / 1000), head.timestamp),
-            });
+            this.timestamps.set(
+                wardId,
+                Math.max(Math.floor(Date.now() / 1000), this.timestamps.get(wardId) ?? 0),
+            );
         }
 
-        return this.sign('commit', counter, () => signWardUpdate(wardId, counter, mac));
+        const signature = await this.sign('commit', counter, () =>
+            bytesToHex(ed25519.sign(finalizationMessage(record), DEBUG_QM_SEED)),
+        );
+
+        return signature;
     }
 
     private async sign(method: string, counter: number, sign: () => string) {
@@ -158,7 +159,19 @@ export class MockWm implements WmClient {
     }
 }
 
-/** A running WARD Manager: `POST /ward/attest` and `POST /ward/commit`, 409 on a lost CAS. */
+type WmResponse = {
+    wardId?: string;
+    transition?: SignedTransition;
+    nonce?: string;
+    timestamp?: number;
+    signature?: string;
+    error?: string;
+};
+
+/**
+ * A running WARD Manager: `POST /ward/attest`, `POST /ward/commit` (409 on a lost CAS) and
+ * `GET /ward/{wardId}/history`.
+ */
 export class HttpWm implements WmClient {
     private readonly baseUrl: string;
 
@@ -166,39 +179,51 @@ export class HttpWm implements WmClient {
         baseUrl: string,
         private readonly log: Log = silentLog,
         private readonly delays = false,
+        private readonly isRecoveryEnabled = false,
     ) {
         this.baseUrl = baseUrl.replace(/\/$/, '');
     }
 
-    async attest({ wardId, nonce, counter, mac }: WmAttestRequest) {
-        const body = await this.post('/ward/attest', {
-            wardId,
-            nonce,
-            counter,
-            ...(mac !== undefined && { mac }),
+    async commit(request: WmCommitRequest, leaves?: WardLeafBlob[]) {
+        if (this.isRecoveryEnabled && request.kind === 'commit' && leaves === undefined)
+            throw new Error('Recovery requires the complete WARD batch');
+        const recoveryLeaves =
+            this.isRecoveryEnabled && request.kind === 'commit'
+                ? leaves?.map(({ entryKey, keyType, identity, content }) => ({
+                      entryKey,
+                      valueDigest:
+                          content.bodyHex === ''
+                              ? null
+                              : bytesToHex(commitOf(keyType, identity, content)),
+                  }))
+                : undefined;
+        const body = await this.post('/ward/commit', request.wardId, request.counter, {
+            transition: request,
+            ...(recoveryLeaves !== undefined && { recoveryLeaves }),
         });
-
-        return body.signature;
-    }
-
-    async commit(request: WmCommitRequest) {
-        const body = await this.post('/ward/commit', request);
+        if (typeof body.signature !== 'string')
+            throw new Error('WM omitted the finalization signature');
 
         return body.signature;
     }
 
     async current(wardId: string, nonce: string): Promise<WmAttestation> {
-        const body = await this.post('/ward/attest', { wardId, nonce });
-        if (typeof body.timestamp !== 'number' || typeof body.headNonce !== 'string')
+        const body = await this.post('/ward/attest', wardId, undefined, { wardId, nonce });
+        if (typeof body.timestamp !== 'number' || typeof body.signature !== 'string')
             throw new Error('WM omitted signed freshness metadata');
+        if (body.nonce !== undefined && body.nonce !== nonce)
+            throw new Error('WM attested another nonce');
+        const { transition } = body;
+        if (transition) {
+            if (transition.wardId !== wardId) throw new Error('WM attested another ward');
+            verifyTransition(transition);
+        }
 
         return {
-            counter: body.counter ?? 0,
-            root: body.root ?? '',
-            mac: body.mac,
+            ...headOf(transition),
             signature: body.signature,
             timestamp: body.timestamp,
-            headNonce: body.headNonce,
+            ...(transition && { transition }),
         };
     }
 
@@ -207,8 +232,16 @@ export class HttpWm implements WmClient {
             `${this.baseUrl}/ward/${encodeURIComponent(wardId)}/history`,
         );
         if (!response.ok) throw new Error(`WARD Manager history failed: HTTP ${response.status}`);
-        const body = (await response.json()) as { transitions: SignedTransition[] };
-        body.transitions.forEach(verifyTransition);
+        const body = (await response.json()) as {
+            wardId?: string;
+            transitions: SignedTransition[];
+        };
+        if (body.wardId !== undefined && body.wardId !== wardId)
+            throw new Error('WM history names another ward');
+        body.transitions.forEach(transition => {
+            if (transition.wardId !== wardId) throw new Error('WM history names another ward');
+            verifyTransition(transition);
+        });
 
         return body.transitions;
     }
@@ -225,12 +258,13 @@ export class HttpWm implements WmClient {
         return response;
     }
 
-    private async post(path: string, payload: Record<string, unknown>) {
-        const activity = startActivity(this.log, 'wm.http', {
-            method: 'POST',
-            path,
-            counter: payload.counter,
-        });
+    private async post(
+        path: string,
+        wardId: string,
+        counter: number | undefined,
+        payload: Record<string, unknown>,
+    ): Promise<WmResponse> {
+        const activity = startActivity(this.log, 'wm.http', { method: 'POST', path, counter });
         let status: number | undefined;
         try {
             await forwardingDelay(this.log, `wardd -> WM ${path}`, this.delays);
@@ -241,32 +275,32 @@ export class HttpWm implements WmClient {
             });
             status = response.status;
             if (response.status === 409) {
-                const body = await response.json().catch(() => ({}));
+                const body = (await response.json().catch(() => ({}))) as WmResponse;
+                // The latest accepted transition names the head that won; none means genesis.
+                const head = headOf(
+                    body.transition?.wardId === wardId ? body.transition : undefined,
+                );
                 this.log('wm.head', {
                     source: 'HTTP 409',
-                    counter: body.counter,
-                    mac: body.mac ?? 'EMPTY',
+                    error: body.error,
+                    counter: head.counter,
+                    mac: head.mac ?? 'EMPTY',
                 });
-                throw new WmConflict(body.counter ?? Number(payload.counter), body.mac);
+                throw new WmConflict(head.counter, head.mac);
             }
             if (!response.ok) {
                 throw new Error(`WARD Manager ${path} failed: HTTP ${response.status}`);
             }
 
-            const body = (await response.json()) as {
-                signature: string;
-                counter?: number;
-                mac?: string;
-                root?: string;
-                timestamp?: number;
-                headNonce?: string;
-            };
-            if (body.counter !== undefined)
-                this.log('wm.head', {
-                    source: 'HTTP response',
-                    counter: body.counter,
-                    mac: body.mac ?? 'EMPTY',
-                });
+            const body = (await response.json()) as WmResponse;
+            if (body.wardId !== undefined && body.wardId !== wardId)
+                throw new Error(`WARD Manager ${path} answered for another ward`);
+            const head = headOf(body.transition);
+            this.log('wm.head', {
+                source: 'HTTP response',
+                counter: head.counter,
+                mac: head.mac ?? 'EMPTY',
+            });
             activity.success({ status });
 
             return body;
