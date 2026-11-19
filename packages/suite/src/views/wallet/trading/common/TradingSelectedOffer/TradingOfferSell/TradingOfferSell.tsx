@@ -82,7 +82,9 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const isBankAccountStep = formStep === 'BANK_ACCOUNT';
     const isSendStep = formStep === 'SEND_TRANSACTION';
     const isPartnerReadyToReceive = sellUtils.isReadyToSendCrypto(selectedTrade);
-    const isSendDisabled = isLoading || !device?.connected || isDiscoveryRunning || isSending;
+    const isProviderLoaded = !!selectedTrade.exchange && !!providers?.[selectedTrade.exchange];
+    const isSendDisabled =
+        isLoading || !isProviderLoaded || !device?.connected || isDiscoveryRunning || isSending;
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
         selectedTrade.cryptoCurrency,
