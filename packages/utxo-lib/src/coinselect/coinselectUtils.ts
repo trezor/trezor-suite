@@ -196,13 +196,13 @@ function getDogeFee(
     return fee + dustOutputsCount * dustThreshold;
 }
 
-const MARGINAL_FEE_ZAT_PER_ACTION = 5000;
+const MARGINAL_FEE_ZAT_PER_ACTION = 1000;
 const GRACE_ACTIONS = 2;
 const P2PKH_STANDARD_INPUT_SIZE = 150;
 const P2PKH_STANDARD_OUTPUT_SIZE = 34;
 
-// ZCASH fee policy https://github.com/zcash/zips/blob/c6086941577b711ada286b7c82466a92105ad066/zip-0317.rst
-// 5000 zat per every input or output (whichever there's more of, but at least 2), Orchard/Sapling currently ignored
+// ZCASH fee policy https://zips.z.cash/zip-0317 (marginal fee lowered to 1000 zat/action, zcash/zips#1352)
+// 1000 zat per every input or output (whichever there's more of, but at least 2), Orchard/Sapling currently ignored
 function getZcashFee(
     inputs: CoinSelectInput[],
     outputs: CoinSelectOutput[],
