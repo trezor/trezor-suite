@@ -1,13 +1,17 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { PrecomposedTransactionError } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
+import { type TextProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { isArrayMember } from '@trezor/utils';
 
 export type UsePrecomposedTransactionErrorProps = {
     error: string | null | undefined;
     networkSymbol?: NetworkSymbol;
+    /** Styles the coin symbol to match the text the error is rendered in. */
+    symbolTextProps?: Omit<TextProps, 'children'>;
 };
 
 const VALID_PRECOMPOSED_ERRORS: PrecomposedTransactionError['error'][] = [
@@ -36,13 +40,18 @@ export const isPrecomposedTransactionError = (
 export const usePrecomposedTransactionError = ({
     error,
     networkSymbol,
+    symbolTextProps,
 }: UsePrecomposedTransactionErrorProps): ReactNode | null =>
     useMemo(() => {
         if (!error || !isPrecomposedTransactionError(error)) {
             return null;
         }
 
-        const networkDisplaySymbol = networkSymbol ? getNetworkDisplaySymbol(networkSymbol) : '';
+        const networkDisplaySymbol = networkSymbol ? (
+            <AssetSymbol {...symbolTextProps} networkSymbol={networkSymbol} />
+        ) : (
+            ''
+        );
 
         switch (error) {
             case 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE':
@@ -102,4 +111,4 @@ export const usePrecomposedTransactionError = ({
                     <Translation id="transactionManagement.precomposedTransaction.errors.amountIsNotEnough" />
                 );
         }
-    }, [error, networkSymbol]);
+    }, [error, networkSymbol, symbolTextProps]);

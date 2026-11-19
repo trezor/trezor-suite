@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import {
     Translation,
     type TranslationFunction,
@@ -468,9 +469,12 @@ const getOutputLines = ({
                     {
                         id: 'data',
                         type: 'default',
-                        value: translationString(translation, {
-                            symbol: getNetworkDisplaySymbol(symbol),
-                        }),
+                        value: (
+                            <Translation
+                                id={translation}
+                                values={{ symbol: <AssetSymbol networkSymbol={symbol} /> }}
+                            />
+                        ),
                     },
                 ];
             }

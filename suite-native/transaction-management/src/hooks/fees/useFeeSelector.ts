@@ -25,6 +25,8 @@ import {
     usePrecomposedTransactionError,
 } from '../usePrecomposedTransactionError';
 
+const ERROR_BANNER_SYMBOL_TEXT_PROPS = { variant: 'body-sm', color: 'contentCritical' } as const;
+
 export type UseFeeSelectorParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
@@ -112,6 +114,7 @@ export const useFeeSelector = ({
     const precomposedErrorTitle = usePrecomposedTransactionError({
         error: feeError,
         networkSymbol: symbol,
+        symbolTextProps: ERROR_BANNER_SYMBOL_TEXT_PROPS,
     });
     const feeUnavailableErrorTitle =
         precomposedErrorTitle ??

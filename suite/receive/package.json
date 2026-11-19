@@ -24,6 +24,7 @@
         "@suite/account": "workspace:*",
         "@suite/address": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/assets": "workspace:*",
         "@suite/authenticity-checks": "workspace:*",
         "@suite/device": "workspace:*",
         "@suite/intl": "workspace:*",

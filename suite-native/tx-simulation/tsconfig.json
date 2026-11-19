@@ -17,6 +17,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../assets" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../icons" },

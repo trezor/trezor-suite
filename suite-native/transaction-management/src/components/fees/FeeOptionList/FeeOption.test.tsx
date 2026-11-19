@@ -1,6 +1,8 @@
 import { type Store } from '@reduxjs/toolkit';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeesRootState } from '@suite-common/wallet-core';
 import { Form, useForm, yup } from '@suite-native/forms';
 import {
@@ -14,7 +16,7 @@ import { createFeeLevel } from '../../../__fixtures__/feeLevels';
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
-type State = FeesRootState;
+type State = FeesRootState & NetworksRootState;
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -71,6 +73,7 @@ describe('FeeOption', () => {
 
     const getPreloadedState = (): State => ({
         wallet: getWalletState(),
+        networks: mockNetworksState([asNetworkSymbol('btc'), asNetworkSymbol('eth')]),
     });
 
     const renderFeeOption = (props = {}) => {

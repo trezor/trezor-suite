@@ -7,6 +7,7 @@ import { Translation } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { EvmTxSimulationAssetAmount } from './EvmTxSimulationAssetAmount';
+import { TxSimulationAssetDiffLabel } from './TxSimulationAssetDiffLabel';
 
 type SolanaTxSimulationAssetProps = {
     assetDiff: SolanaAssetDiff;
@@ -40,10 +41,12 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
                                 <Translation
                                     id="moduleConnectPopup.simulation.sendingAsset"
                                     values={{
-                                        amount: getSolanaAssetDiffLabel(
-                                            assetDiff,
-                                            sent,
-                                            network.symbol,
+                                        amount: (
+                                            <TxSimulationAssetDiffLabel
+                                                label={getSolanaAssetDiffLabel(assetDiff, sent)}
+                                                networkSymbol={network.symbol}
+                                                color="contentCritical"
+                                            />
                                         ),
                                     }}
                                 />
@@ -65,10 +68,12 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
                                 <Translation
                                     id="moduleConnectPopup.simulation.receivingAsset"
                                     values={{
-                                        amount: getSolanaAssetDiffLabel(
-                                            assetDiff,
-                                            received,
-                                            network.symbol,
+                                        amount: (
+                                            <TxSimulationAssetDiffLabel
+                                                label={getSolanaAssetDiffLabel(assetDiff, received)}
+                                                networkSymbol={network.symbol}
+                                                color="contentBrand"
+                                            />
                                         ),
                                     }}
                                 />

@@ -83,10 +83,12 @@ const groupAddressesByLabel = (accountLabels: SearchAccountLabels) => {
     return labels;
 };
 
+/** `networkDisplaySymbol` is the symbol of the coin of the network all `transactions` are on. */
 export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
     accountLabels: SearchAccountLabels,
     search: string,
+    networkDisplaySymbol: string,
 ) => {
     // Trim
     search = search.trim();
@@ -201,7 +203,7 @@ export const simpleSearchTransactions = (
     // Find by token name, symbol or contract
     const foundTxsForToken = transactions.flatMap(transaction => {
         const isNativeSymbolSearch = isNativeDisplaySymbolSearch(
-            transaction.symbol,
+            networkDisplaySymbol,
             lowerCaseSearch,
         );
         const hasMatchingToken = transaction.tokens.some(
@@ -223,7 +225,7 @@ export const simpleSearchTransactions = (
 
     // Find by native coin symbol
     const foundTxsForNativeSymbol = transactions.flatMap(transaction => {
-        if (isNativeTransferMatchesSearch(transaction, lowerCaseSearch)) {
+        if (isNativeTransferMatchesSearch(transaction, networkDisplaySymbol, lowerCaseSearch)) {
             return transaction.txid;
         }
 

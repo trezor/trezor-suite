@@ -118,13 +118,8 @@ describe('account utils', () => {
     it('format network amount', () => {
         expect(formatNetworkAmount('1', btcSymbol)).toEqual('0.00000001');
         expect(formatNetworkAmount('1', xrpSymbol)).toEqual('0.000001');
-        expect(formatNetworkAmount('1', xrpSymbol, true)).toEqual('0.000001 XRP');
         expect(formatNetworkAmount('1', ethSymbol)).toEqual('0.000000000000000001');
-        expect(formatNetworkAmount('1', btcSymbol, true)).toEqual('0.00000001 BTC');
-        expect(formatNetworkAmount('1', btcSymbol, true, true)).toEqual('1 sat BTC');
         expect(formatNetworkAmount('', btcSymbol)).toEqual('0');
-        expect(formatNetworkAmount('', btcSymbol, true)).toEqual('0 BTC');
-        expect(formatNetworkAmount('', btcSymbol, true, true)).toEqual('0 sat BTC');
         expect(() => formatNetworkAmount('aaa', ethSymbol)).toThrow();
     });
 

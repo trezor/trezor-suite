@@ -1,6 +1,6 @@
 import { isAddressDeprecated, isBech32AddressUppercase } from '@suite-common/address';
 import { type AddressValidator, type NamedAddressSupport } from '@suite-common/networks';
-import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type FeeInfo, type Output } from '@suite-common/wallet-types';
 import {
@@ -17,6 +17,8 @@ import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 export type SendFormFormContext = {
     addressValidator?: AddressValidator;
     symbol?: NetworkSymbol;
+    /** The symbol of the network's coin, for validation messages. */
+    networkDisplaySymbol?: string;
     availableBalance?: string;
     networkFeeInfo?: FeeInfo;
     isValueInSats?: boolean;
@@ -210,8 +212,13 @@ const outputSchema = yup.object({
             'ripple-higher-than-reserve',
             'Amount is above the required unspendable reserve',
             function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const { symbol, availableBalance, maxSendAmountByFeeLevel, rippleReserve } =
-                    context!;
+                const {
+                    symbol,
+                    networkDisplaySymbol,
+                    availableBalance,
+                    maxSendAmountByFeeLevel,
+                    rippleReserve,
+                } = context!;
 
                 if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
                     return true;
@@ -228,10 +235,8 @@ const outputSchema = yup.object({
                         ),
                     )
                 ) {
-                    const displaySymbol = getDisplaySymbol(symbol);
-
                     return this.createError({
-                        message: `Amount is above the required unspendable reserve${rippleReserve ? ` (${rippleReserve} ${displaySymbol})` : ''}`,
+                        message: `Amount is above the required unspendable reserve${rippleReserve ? ` (${rippleReserve} ${networkDisplaySymbol})` : ''}`,
                     });
                 }
 

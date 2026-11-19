@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { activateStellarTokenThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Form } from '@suite-native/forms';
@@ -127,10 +128,17 @@ export const ActivationFeeScreen = () => {
                             <Translation
                                 id="moduleStellarToken.networkFee.reserveInfo"
                                 values={{
-                                    reserve: formatNetworkAmount(
-                                        account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
-                                        account.symbol,
-                                        true,
+                                    reserve: (
+                                        <>
+                                            {formatNetworkAmount(
+                                                account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
+                                                account.symbol,
+                                            )}{' '}
+                                            <AssetSymbol
+                                                networkSymbol={account.symbol}
+                                                color="contentSecondary"
+                                            />
+                                        </>
                                     ),
                                     link: chunks => (
                                         <Link
@@ -154,15 +162,31 @@ export const ActivationFeeScreen = () => {
                                     <Translation
                                         id="moduleStellarToken.networkFee.insufficientBalance"
                                         values={{
-                                            required: formatNetworkAmount(
-                                                insufficientBalanceInfo.required,
-                                                account.symbol,
-                                                true,
+                                            required: (
+                                                <>
+                                                    {formatNetworkAmount(
+                                                        insufficientBalanceInfo.required,
+                                                        account.symbol,
+                                                    )}{' '}
+                                                    <AssetSymbol
+                                                        networkSymbol={account.symbol}
+                                                        variant="body-sm"
+                                                        color="contentWarning"
+                                                    />
+                                                </>
                                             ),
-                                            available: formatNetworkAmount(
-                                                insufficientBalanceInfo.available,
-                                                account.symbol,
-                                                true,
+                                            available: (
+                                                <>
+                                                    {formatNetworkAmount(
+                                                        insufficientBalanceInfo.available,
+                                                        account.symbol,
+                                                    )}{' '}
+                                                    <AssetSymbol
+                                                        networkSymbol={account.symbol}
+                                                        variant="body-sm"
+                                                        color="contentWarning"
+                                                    />
+                                                </>
                                             ),
                                         }}
                                     />

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type TradingAmountLimitProps } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -29,6 +31,9 @@ export const useContextForTradingForm = (
     const [sendNetworkSymbol, setSendNetworkSymbol] = useState<NetworkSymbol | undefined>(
         undefined,
     );
+    const sendNetworkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        sendNetworkSymbol ? selectNetworkDisplaySymbol(state, sendNetworkSymbol) : undefined,
+    );
     const [sendAssetSymbol, setSendAssetSymbol] = useState<string | undefined>(undefined);
     const [contractAddress, setContractAddress] = useState<TokenAddress | undefined>(undefined);
     const [accountKey, setAccountKey] = useState<AccountKey | undefined>(undefined);
@@ -51,6 +56,7 @@ export const useContextForTradingForm = (
         () => ({
             ...limits,
             sendNetworkSymbol,
+            sendNetworkDisplaySymbol,
             sendAssetSymbol,
             contractAddress,
             translate,
@@ -63,6 +69,7 @@ export const useContextForTradingForm = (
         [
             limits,
             sendNetworkSymbol,
+            sendNetworkDisplaySymbol,
             sendAssetSymbol,
             contractAddress,
             translate,

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
-import { isTranslationKey, useTranslation } from '@suite/intl';
+import { isTranslationKey } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     type ComposeActionContext,
@@ -17,6 +17,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { composeTransaction } from '#src/actions/wallet/stakeActions';
 import { type StakeContextValues } from '#src/components/earn/forms/StakeFormContext';
+import { useComposeErrorText } from '#src/hooks/wallet/useComposeErrorText';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -40,7 +41,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     const [composedLevels, setComposedLevels] =
         useState<StakeContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
-    const { translationString } = useTranslation();
+    const getComposeErrorText = useComposeErrorText();
 
     const { dispatch } = useServices(injectDispatch);
 
@@ -127,7 +128,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
                 const formError = {
                     type: COMPOSE_ERROR_TYPES.COMPOSE,
-                    message: translationString(errorMessage.id, errorMessage.values),
+                    message: getComposeErrorText(errorMessage.id, errorMessage),
                 };
 
                 if (composeField) {
@@ -155,7 +156,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
             setLoading(false);
         },
-        [composeField, getValues, setValue, getErrors, setError, clearErrors, translationString],
+        [composeField, getValues, setValue, getErrors, setError, clearErrors, getComposeErrorText],
     );
 
     // called from the useFees sub-hook

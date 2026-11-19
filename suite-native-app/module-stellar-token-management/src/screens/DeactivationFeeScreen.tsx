@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { TokenMetadataProvider } from '@suite-common/token';
 import { deactivateStellarTokenThunk } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/confirm-on-trezor';
 import { Form } from '@suite-native/forms';
@@ -123,11 +124,17 @@ export const DeactivationFeeScreen = () => {
                                         <Translation
                                             id="moduleStellarToken.deactivationFee.warningText"
                                             values={{
-                                                reserve: formatNetworkAmount(
-                                                    account.misc.baseReserve ??
-                                                        STELLAR_BASE_RESERVE,
-                                                    account.symbol,
-                                                    true,
+                                                reserve: (
+                                                    <>
+                                                        {formatNetworkAmount(
+                                                            account.misc.baseReserve ??
+                                                                STELLAR_BASE_RESERVE,
+                                                            account.symbol,
+                                                        )}{' '}
+                                                        <AssetSymbol
+                                                            networkSymbol={account.symbol}
+                                                        />
+                                                    </>
                                                 ),
                                             }}
                                         />
