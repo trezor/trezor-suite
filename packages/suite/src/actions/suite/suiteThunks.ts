@@ -1,11 +1,18 @@
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
+import { type NetworksRootState } from '@suite-common/networks';
 import { type ReloadAppDep } from '@suite-common/suite-types';
+import {
+    type BlockchainRootState,
+    type WalletSettingsRootState,
+    blockchainActions,
+} from '@suite-common/wallet-core';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
+import { selectResettableCustomBackendSymbols } from '#src/selectors/suite/backendSelectors';
 import { type DbDep } from '#src/storage/createDb';
 
-import { removeDatabaseThunk } from './storageActions';
+import { removeDatabaseThunk, saveBackendThunk } from './storageActions';
 
 type ResetSuiteAppThunkState = GotoThunkState;
 
@@ -30,4 +37,25 @@ export const resetSuiteAppThunk = createThunk<
     }
 
     extra.services.reloadApp();
+});
+
+type ResetCustomServersThunkState = BlockchainRootState &
+    NetworksRootState &
+    WalletSettingsRootState;
+
+type ResetCustomServersThunkDeps = WithServices<DbDep>;
+
+export const resetCustomServersThunk = createThunk<
+    void,
+    void,
+    { state: ResetCustomServersThunkState; extra: ResetCustomServersThunkDeps }
+>('@suite/reset-custom-servers', async (_, { dispatch, getState }) => {
+    const customBackendSymbols = selectResettableCustomBackendSymbols(getState());
+
+    customBackendSymbols.forEach(symbol => {
+        dispatch(blockchainActions.setBackend({ symbol, type: 'default' }));
+    });
+
+    // The storage middleware saves these too, but without awaiting, and the error screen reloads right after.
+    await Promise.all(customBackendSymbols.map(symbol => dispatch(saveBackendThunk(symbol))));
 });
