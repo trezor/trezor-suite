@@ -22,7 +22,11 @@ export const commonQueryKeys = {
         value,
     ],
     solanaRewards: (...args: any[]) => ['solana-rewards', ...args],
-    solanaRewardsTotal: (address: string) => ['solana-rewards-total', address],
+    solanaRewardsTotal: (symbol: string, address: string) => [
+        'solana-rewards-total',
+        symbol,
+        address,
+    ],
     tronStakingStats: () => ['tron-staking-stats'],
     stakingProductInfo: (productId: string) => ['staking-product-info', productId],
     yieldOpportunity: (vaultId: string | undefined) => ['yield-opportunities', 'single', vaultId],

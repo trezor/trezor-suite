@@ -11,7 +11,7 @@ export function useSolanaRewardsTotal<
     return useQuery({
         ...queryOptions,
         enabled: account.symbol === 'sol',
-        queryKey: commonQueryKeys.solanaRewardsTotal(account.descriptor),
+        queryKey: commonQueryKeys.solanaRewardsTotal(account.symbol, account.descriptor),
         queryFn: async () => {
             const { total } = await getSolanaRewardsTotal({
                 routeParams: { address: account.descriptor },

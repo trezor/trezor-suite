@@ -56,13 +56,16 @@ export const SolanaStakingRewardsList = ({
     const rewardsQuery = useSolanaRewardsHistory(account, { limit, offset: 0 });
 
     // A pull refreshes the account, which re-syncs its position, the product info and the rewards.
+    // A manual refetch ignores `enabled`, so a network the rewards API does not serve skips it.
     const handleRefresh = async () => {
         setIsRefreshing(true);
+
         await Promise.allSettled([
             dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key })),
             onRefresh?.(),
-            rewardsQuery.refetch(),
+            rewardsQuery.isEnabled ? rewardsQuery.refetch() : undefined,
         ]);
+
         setIsRefreshing(false);
     };
 
