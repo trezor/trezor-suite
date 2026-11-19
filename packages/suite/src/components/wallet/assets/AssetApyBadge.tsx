@@ -1,10 +1,5 @@
 import { useYieldVaultApy } from '@suite-common/earn-stablecoin';
-import {
-    selectIsStakingOperationDisabled,
-    selectIsStakingPromotedSymbol,
-    selectStakeableStakingProductDescriptorBySymbol,
-    useNetworkStakingRate,
-} from '@suite-common/earn-staking';
+import { selectIsStakingPromotedSymbol, useNetworkStakingRate } from '@suite-common/earn-staking';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
@@ -23,18 +18,11 @@ export const AssetApyBadge = (props: AssetApyBadgeProps) => {
     const isToken = props.contractAddress !== undefined;
     const vaultApy = useYieldVaultApy(props);
 
-    // A row advertises mainnet products only, and none whose stake is switched off.
-    const isStakingAdvertised = useSelector(state => {
-        if (isToken || !selectIsStakingPromotedSymbol(state, props.symbol, 'offered')) {
-            return false;
-        }
-
-        const productId = selectStakeableStakingProductDescriptorBySymbol(state, props.symbol)?.id;
-
-        return (
-            productId !== undefined && !selectIsStakingOperationDisabled(state, productId, 'stake')
-        );
-    });
+    // A row advertises mainnet products only; a stake switched off remotely still has its rate,
+    // as the table always showed it.
+    const isStakingAdvertised = useSelector(
+        state => !isToken && selectIsStakingPromotedSymbol(state, props.symbol, 'offered'),
+    );
 
     const { rate: stakingApy } = useNetworkStakingRate({
         networkSymbol: isStakingAdvertised ? props.symbol : null,
