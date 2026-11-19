@@ -189,6 +189,15 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                     accountByAccountKey.tokens = (accountByAccountKey.tokens ?? []).concat(tokens);
                 }
             })
+            .addCase(accountsActions.removeAccountTokens, (state, action) => {
+                const { accountKey, contracts } = action.payload;
+                const accountByAccountKey = state.find(account => account.key === accountKey);
+                if (accountByAccountKey?.tokens) {
+                    accountByAccountKey.tokens = accountByAccountKey.tokens.filter(
+                        token => !contracts.includes(token.contract),
+                    );
+                }
+            })
             .addCase(accountsActions.renameAccount, (state, action) => {
                 const { accountKey, accountLabel } = action.payload;
                 const accountByAccountKey = state.find(account => account.key === accountKey);

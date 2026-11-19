@@ -8,6 +8,7 @@ import {
     type AccountsRefreshTimeState,
     type AccountsState,
     type BlockchainReducerDeps,
+    type CustomTokensState,
     type EarnOnboardingSliceDeps,
     type EarnOnboardingState,
     type EarnTransactionsState,
@@ -29,6 +30,7 @@ import {
     type WalletSettingsReducerDeps,
     type YieldState,
     accountsRefreshTimeReducer,
+    customTokensReducer,
     earnTransactionsReducer,
     feesReducer,
     prepareAccountsReducer,
@@ -82,6 +84,7 @@ export type WalletState = {
     settings: WalletSettings;
     stablecoinYield: YieldState;
     stellarContractTokens: StellarContractTokensState;
+    customTokens: CustomTokensState;
     tronStake: TronStakeReducerState;
     earnOnboarding: EarnOnboardingState;
 };
@@ -140,6 +143,7 @@ export const createWalletReducer = (deps: WalletReducerDeps): WalletReducer => {
         settings: walletSettingsReducer,
         stablecoinYield: yieldReducer,
         stellarContractTokens: stellarContractTokensReducer,
+        customTokens: customTokensReducer,
         tronStake: tronStakeReducer,
         earnOnboarding: earnOnboardingReducer,
     });

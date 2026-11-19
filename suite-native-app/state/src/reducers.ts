@@ -27,6 +27,7 @@ import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions'
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
+    customTokensReducer,
     earnTransactionsReducer,
     feesReducer,
     formDraftReducer,
@@ -306,11 +307,12 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
         stellarContractTokens: stellarContractTokensReducer,
+        customTokens: customTokensReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions', 'stellarContractTokens'],
+        persistedKeys: ['accounts', 'transactions', 'stellarContractTokens', 'customTokens'],
         key: 'wallet',
         version: 4,
         migrations: {
