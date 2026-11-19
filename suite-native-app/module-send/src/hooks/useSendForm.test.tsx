@@ -1,14 +1,18 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
-
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { sendFormActions } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { AuthorizeDeviceStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { signTransactionNativeThunk } from '@suite-native/send';
 import {
     act,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
+    waitFor,
 } from '@suite-native/test-utils-store';
+import TrezorConnect from '@trezor/connect';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
+import { createDeferred } from '@trezor/utils';
 
 import { useSendForm } from './useSendForm';
 
@@ -20,8 +24,12 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: () => ({ navigate: mockNavigate }),
 }));
 jest.mock('@suite-native/send', () => ({
-    signTransactionNativeThunk: () => mockSigningThunk,
+    signTransactionNativeThunk: jest.fn(() => mockSigningThunk),
 }));
+// The form refreshes the fee info on mount. Without a backend that request fails and the
+// preloaded fees are kept.
+jest.spyOn(TrezorConnect, 'blockchainEstimateFee').mockRejectedValue(new Error('No backend.'));
+
 const account = mockWalletAccount({
     symbol: asNetworkSymbol('xlm'),
     balance: '100000000',
@@ -38,13 +46,14 @@ const finalTransaction: GeneralPrecomposedTransactionFinal = {
     outputsPermutation: [],
 };
 
-const renderUseSendForm = (signingResult: Promise<unknown>) => {
+const renderUseSendForm = async () => {
     const store = createStoreFromPreloadedState({
         analytics: { instanceId: undefined },
         messageSystem: { config: null, validExperiments: [], experimentInclusionOverrides: {} },
         device: { devices: [], selectedDevice: undefined },
         wallet: {
             accounts: [account],
+            blockchain: {},
             fees: {
                 xlm: {
                     status: 'loaded',
@@ -71,12 +80,12 @@ const renderUseSendForm = (signingResult: Promise<unknown>) => {
             },
         },
     });
-    mockSigningThunk.mockReturnValue(signingResult);
-    // Only the signing thunk matters here; fee and max amount thunks are not under test.
-    const dispatch = (action: UnknownAction | typeof mockSigningThunk) =>
-        action === mockSigningThunk ? mockSigningThunk() : Promise.resolve(action);
+    const { actions, dispatch } = createMockDispatch({
+        getState: store.getState,
+        extra: undefined,
+    });
 
-    return renderHookWithStoreProvider(
+    const { result } = await renderHookWithStoreProvider(
         () => {
             const sendForm = useSendForm(account.key);
 
@@ -96,21 +105,25 @@ const renderUseSendForm = (signingResult: Promise<unknown>) => {
             },
         },
     );
+
+    return { result, actions };
 };
 
 describe('useSendForm Stellar submit', () => {
     it('keeps the form submitting until the signing request settles', async () => {
-        let resolveSigning: (value: unknown) => void = () => {};
-        const signingResult = new Promise(resolve => {
-            resolveSigning = resolve;
-        });
-        const { result } = await renderUseSendForm(signingResult);
+        const signing = createDeferred<unknown>();
+        mockSigningThunk.mockReturnValue(signing.promise);
+        const { result, actions } = await renderUseSendForm();
 
-        await act(async () => {
+        await act(() => {
             result.current.handleSubmitSendForm?.();
-            await new Promise(resolve => setTimeout(resolve, 0));
         });
-        expect(mockSigningThunk).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockSigningThunk).toHaveBeenCalledTimes(1));
+        expect(signTransactionNativeThunk).toHaveBeenCalledWith({
+            accountKey: account.key,
+            tokenContract: undefined,
+            feeLevel: finalTransaction,
+        });
         expect(mockNavigate).toHaveBeenCalledWith(
             RootStackRoutes.AuthorizeDeviceStack,
             expect.objectContaining({ screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard }),
@@ -118,9 +131,10 @@ describe('useSendForm Stellar submit', () => {
         expect(result.current.isSubmitting).toBe(true);
 
         await act(async () => {
-            resolveSigning({ type: 'signTransaction/fulfilled', meta: {} });
-            await signingResult;
+            signing.resolve({ type: 'signTransaction/fulfilled', meta: {} });
+            await signing.promise;
         });
-        expect(result.current.isSubmitting).toBe(false);
+        await waitFor(() => expect(result.current.isSubmitting).toBe(false));
+        expect(actions).not.toContainEqual(sendFormActions.discardTransaction());
     });
 });
