@@ -6,11 +6,7 @@ import {
     selectHasBitcoinOnlyFirmware,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import {
-    formatStakingAmount,
-    selectCountedStakingPositionEntriesByAccount,
-} from '@suite-common/earn-staking';
-import { getStakingPositionAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { selectCountedStakingPositionEntriesByAccount } from '@suite-common/earn-staking';
 import {
     type NetworksRootState,
     selectNetworkNamesMap,
@@ -34,17 +30,9 @@ import {
 import {
     type Account,
     type BaseCurrencyAmount,
-    type CryptoBaseCurrencyPair,
-    type Rate,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import {
-    getFiatRateKey,
-    hasNetworkFeatures,
-    isPositiveBalance,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
-import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { getFiatRateKey, hasNetworkFeatures, isPositiveBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -57,6 +45,22 @@ import {
     selectHiddenTokenReasons,
 } from './assetAccountsSelectors';
 import { type WalletAsset, groupWalletAssets } from './homeAssetTableUtils';
+import {
+    type SmallBalanceSummary,
+    byFiatThenCryptoBalance,
+    byValue,
+    fiatValuesResultEquality,
+    formatStakingTotal,
+    getStakingRatio,
+    pickRates,
+    priceAssets,
+    ratesResultEquality,
+    smallBalanceSummaryResultEquality,
+    sumStakingPositionAmounts,
+    summarizeSmallBalances,
+} from './walletAssetValueUtils';
+
+export type { SmallBalanceSummary } from './walletAssetValueUtils';
 
 export type HomeAssetTableState = AssetAccountsRootState &
     DeviceRootState &
@@ -91,122 +95,41 @@ const selectHiddenWalletAssets = createMemoizedSelector(
     ({ hidden }) => groupWalletAssets(hidden),
 );
 
-/**
- * The rate of each asset, as a plain number. The fiat state is rewritten on every fetch — a batch of
- * a few tickers, a loading flag flipped — so whatever reads it reruns often. This pass is the cheap
- * one: a key and a lookup per asset, and the same map handed back when no number moved, so the
- * arithmetic behind it runs only when a price does.
- */
-const pickRatesBy =
-    <Entry>(pickRate: (entry: Entry) => number | undefined) =>
-    (
-        assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
-        rates: Record<CryptoBaseCurrencyPair, Entry> | undefined,
-        baseCurrencyCode: BaseCurrencyCode,
-    ): ReadonlyMap<WalletAssetKey, number> => {
-        const picked = new Map<WalletAssetKey, number>();
-
-        assets.forEach(({ assetKey, networkSymbol, contractAddress }) => {
-            const entry = rates?.[getFiatRateKey(networkSymbol, baseCurrencyCode, contractAddress)];
-            const rate = entry && pickRate(entry);
-
-            if (rate !== undefined) {
-                picked.set(assetKey, rate);
-            }
-        });
-
-        return picked;
-    };
-
-const haveSameRates = (
-    left: ReadonlyMap<WalletAssetKey, number>,
-    right: ReadonlyMap<WalletAssetKey, number>,
-) =>
-    left.size === right.size && [...left].every(([assetKey, rate]) => right.get(assetKey) === rate);
-
-const pickedOnce = { memoizeOptions: { resultEqualityCheck: haveSameRates } };
-
-const pickRates = pickRatesBy((entry: Rate) => entry.rate);
-
 const selectWalletAssetRates = createMemoizedSelector(
     [selectWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
     pickRates,
-    pickedOnce,
+    ratesResultEquality,
 );
 
 const selectWalletAssetWeekAgoRates = createMemoizedSelector(
     [selectWalletAssets, selectLastWeekFiatRates, selectBaseCurrency],
     pickRates,
-    pickedOnce,
+    ratesResultEquality,
 );
 
 const selectHiddenWalletAssetRates = createMemoizedSelector(
     [selectHiddenWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
     pickRates,
-    pickedOnce,
+    ratesResultEquality,
 );
-
-/** What each asset is worth: the one pass with arithmetic in it, run only when a rate or a balance moved. */
-const priceAssets = (
-    assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
-    rates: ReadonlyMap<WalletAssetKey, number>,
-): ReadonlyMap<WalletAssetKey, BigNumber> => {
-    const priced = new Map<WalletAssetKey, BigNumber>();
-
-    rates.forEach((rate, assetKey) => {
-        const amount = assets.get(assetKey)?.amount;
-        const fiatValue = amount === undefined ? null : toFiatCurrency({ amount, rate });
-
-        if (fiatValue !== null) {
-            priced.set(assetKey, fiatValue);
-        }
-    });
-
-    return priced;
-};
-
-const haveSameFiatValues = (
-    left: ReadonlyMap<WalletAssetKey, BigNumber>,
-    right: ReadonlyMap<WalletAssetKey, BigNumber>,
-) =>
-    left.size === right.size &&
-    [...left].every(([assetKey, fiatValue]) => right.get(assetKey)?.eq(fiatValue));
-
-const pricedOnce = { memoizeOptions: { resultEqualityCheck: haveSameFiatValues } };
 
 const selectWalletAssetValues = createMemoizedSelector(
     [selectWalletAssets, selectWalletAssetRates],
     priceAssets,
-    pricedOnce,
+    fiatValuesResultEquality,
 );
 
 const selectWalletAssetWeekAgoValues = createMemoizedSelector(
     [selectWalletAssets, selectWalletAssetWeekAgoRates],
     priceAssets,
-    pricedOnce,
+    fiatValuesResultEquality,
 );
 
 const selectHiddenWalletAssetValues = createMemoizedSelector(
     [selectHiddenWalletAssets, selectHiddenWalletAssetRates],
     priceAssets,
-    pricedOnce,
+    fiatValuesResultEquality,
 );
-
-const byValue =
-    (values: ReadonlyMap<WalletAssetKey, BigNumber>) =>
-    (left: WalletAssetKey, right: WalletAssetKey) => {
-        // What nothing can price goes below everything that can, even below what is worth zero.
-        const isPriced = (assetKey: WalletAssetKey) => values.has(assetKey);
-
-        if (isPriced(left) !== isPriced(right)) {
-            return isPriced(left) ? -1 : 1;
-        }
-
-        const worth = (assetKey: WalletAssetKey) => values.get(assetKey) ?? ZERO;
-
-        // `comparedTo` is typed to answer null for a NaN side, which `toFiatCurrency` rules out.
-        return worth(right).comparedTo(worth(left)) ?? 0;
-    };
 
 // Enabled networks are what discovery looks for on a device. The Portfolio Tracker discovers
 // nothing: its accounts are imported one by one, on networks that setting may not hold.
@@ -303,37 +226,11 @@ const selectSmallBalanceAssetKeySet = createMemoizedSelector(
     },
 );
 
-export type SmallBalanceSummary = {
-    assetCount: number;
-    fiatValue: BigNumber;
-};
-
-const haveSameSmallBalanceSummary = (
-    left: SmallBalanceSummary | undefined,
-    right: SmallBalanceSummary | undefined,
-) => {
-    if (left === undefined || right === undefined) {
-        return left === right;
-    }
-
-    return left.assetCount === right.assetCount && left.fiatValue.eq(right.fiatValue);
-};
-
 export const selectSmallBalanceSummary = createMemoizedSelector(
     [selectSmallBalanceAssetKeySet, selectWalletAssetValues],
-    (small, values): SmallBalanceSummary | undefined => {
-        if (small.size === 0) {
-            return undefined;
-        }
-
-        const fiatValue = [...small].reduce(
-            (total, assetKey) => total.plus(values.get(assetKey) ?? ZERO),
-            ZERO,
-        );
-
-        return { assetCount: small.size, fiatValue };
-    },
-    { memoizeOptions: { resultEqualityCheck: haveSameSmallBalanceSummary } },
+    (small, values): SmallBalanceSummary | undefined =>
+        summarizeSmallBalances([...small].map(assetKey => values.get(assetKey) ?? ZERO)),
+    smallBalanceSummaryResultEquality,
 );
 
 export const selectIsHomeAssetTableMenuAvailable = (state: HomeAssetTableState) =>
@@ -620,10 +517,7 @@ export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
 const selectHomeAssetTableState = (state: HomeAssetTableState) => state;
 
 const getAccountStakingAmount = (state: HomeAssetTableState, account: Account) =>
-    selectCountedStakingPositionEntriesByAccount(state, account.key).reduce(
-        (total, { position }) => total.plus(getStakingPositionAmount(position)),
-        ZERO,
-    );
+    sumStakingPositionAmounts(selectCountedStakingPositionEntriesByAccount(state, account.key));
 
 export const selectWalletAssetStakingAmount = createMemoizedSelector(
     [
@@ -645,26 +539,14 @@ export const selectWalletAssetStakingAmount = createMemoizedSelector(
             ZERO,
         );
 
-        return formatStakingAmount({
-            amount: stakingAmountSchema.parse(stakingAmount.toFixed(0)),
-            networkSymbol,
-        });
+        return formatStakingTotal(stakingAmount, networkSymbol);
     },
 );
 
 export const selectWalletAssetStakingRatio = createMemoizedSelector(
     [selectWalletAssetAmount, selectWalletAssetStakingAmount],
-    (totalAmount, stakingAmount) => {
-        if (
-            totalAmount === undefined ||
-            !isPositiveBalance(totalAmount) ||
-            !isPositiveBalance(stakingAmount)
-        ) {
-            return undefined;
-        }
-
-        return Number(stakingAmount) / Number(totalAmount);
-    },
+    (totalAmount, stakingAmount) =>
+        totalAmount === undefined ? undefined : getStakingRatio(totalAmount, stakingAmount),
 );
 
 export const selectWalletAssetAvailableAmount = createMemoizedSelector(
@@ -686,25 +568,6 @@ export const selectWalletAssetTokenDecimals = (
     assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.tokenDecimals;
-
-const byCryptoBalance =
-    (assets: ReadonlyMap<WalletAssetKey, WalletAsset>) =>
-    (left: WalletAssetKey, right: WalletAssetKey) => {
-        const balance = (assetKey: WalletAssetKey) => assets.get(assetKey)?.cryptoBalance ?? ZERO;
-
-        return balance(right).comparedTo(balance(left)) ?? 0;
-    };
-
-const byFiatThenCryptoBalance = (
-    assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
-    values: ReadonlyMap<WalletAssetKey, BigNumber>,
-) => {
-    const byFiat = byValue(values);
-    const byCrypto = byCryptoBalance(assets);
-
-    return (left: WalletAssetKey, right: WalletAssetKey) =>
-        byFiat(left, right) || byCrypto(left, right);
-};
 
 const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
     [

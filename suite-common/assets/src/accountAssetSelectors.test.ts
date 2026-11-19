@@ -351,6 +351,6 @@ describe('the small balances of an account', () => {
         });
 
         expect(selectAccountSmallBalanceSummary(state, dust.key)).toBeUndefined();
-        expect(displayed(state)).toEqual(['ENS', 'ETH', 'USDC']);
+        expect(displayed(state)).toEqual(['ENS', 'USDC', 'ETH']);
     });
 });

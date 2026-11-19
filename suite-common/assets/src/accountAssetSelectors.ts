@@ -1,9 +1,6 @@
-import {
-    formatStakingAmount,
-    selectCountedStakingPositionEntriesByAccount,
-} from '@suite-common/earn-staking';
-import { getStakingPositionAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
+import { shallowEqual } from 'react-redux';
+
+import { selectCountedStakingPositionEntriesByAccount } from '@suite-common/earn-staking';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     isSupportedStakingNetworkSymbol,
@@ -12,63 +9,52 @@ import {
     selectCurrentFiatRates,
     selectIsTokenFiatRateDisallowed,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type CryptoBaseCurrencyPair } from '@suite-common/wallet-types';
-import {
-    getFiatRateKey,
-    isPositiveBalance,
-    isTestnet,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { getFiatRateKey, isPositiveBalance, isTestnet } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    type AssetAccount,
-    selectAssetAccounts,
-    selectHiddenAssetAccountKeySet,
-} from './assetAccountsSelectors';
+import { selectAssetAccounts, selectHiddenAssetAccountKeySet } from './assetAccountsSelectors';
 import {
     type HomeAssetTableState,
-    type SmallBalanceSummary,
     selectAreHomeAssetSmallBalancesDisplayed,
     selectSmallBalanceThreshold,
 } from './homeAssetTableSelectors';
-import { groupWalletAssets } from './homeAssetTableUtils';
+import { type WalletAsset, groupWalletAssets } from './homeAssetTableUtils';
+import {
+    byFiatThenCryptoBalance,
+    fiatValuesResultEquality,
+    formatStakingTotal,
+    getStakingRatio,
+    pickRates,
+    priceAssets,
+    ratesResultEquality,
+    smallBalanceSummaryResultEquality,
+    sumStakingPositionAmounts,
+    summarizeSmallBalances,
+} from './walletAssetValueUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
 const ZERO = new BigNumber(0);
 
-export type AccountAsset = {
+export type AccountAsset = WalletAsset & {
     kind: 'coin' | 'token';
-    networkSymbol: NetworkSymbol;
-    contractAddress: TokenAddress | undefined;
-    amount: string;
-    tokenSymbol: TokenSymbol | null;
-    tokenDecimals: number | undefined;
     /** Undefined while nothing prices the asset. */
     fiatValue: BigNumber | undefined;
 };
 
-// The wallet's asset accounts are rebuilt whenever any account is written; a rebuild that lands on the
-// same holdings for this account is thrown away, so another account's sync leaves these rows alone.
-const haveSameAssetAccounts = (left: readonly AssetAccount[], right: readonly AssetAccount[]) =>
-    left.length === right.length &&
-    left.every(
-        (assetAccount, index) =>
-            assetAccount.assetAccountKey === right[index]?.assetAccountKey &&
-            assetAccount.cryptoBalance === right[index]?.cryptoBalance &&
-            assetAccount.tokenInfo === right[index]?.tokenInfo,
-    );
-
-/** The account's share of the wallet's assets, without the tokens the Home table hides. */
+/**
+ * The account's share of the wallet's assets, without the tokens the Home table hides. An asset
+ * account keeps its identity while it is unchanged, so another account's sync hands back the same rows.
+ */
 const selectShownAccountAssetAccounts = createMemoizedSelector(
     [
         selectAssetAccounts,
         selectHiddenAssetAccountKeySet,
         (_state: HomeAssetTableState, accountKey: AccountKey) => accountKey,
     ],
-    (assetAccounts, hiddenKeys, accountKey): readonly AssetAccount[] =>
+    (assetAccounts, hiddenKeys, accountKey) =>
         returnStableArrayIfEmpty(
             assetAccounts.filter(
                 assetAccount =>
@@ -76,101 +62,51 @@ const selectShownAccountAssetAccounts = createMemoizedSelector(
                     !hiddenKeys.has(assetAccount.assetAccountKey),
             ),
         ),
-    { memoizeOptions: { resultEqualityCheck: haveSameAssetAccounts } },
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-const haveSameRates = (
-    left: ReadonlyMap<CryptoBaseCurrencyPair, number>,
-    right: ReadonlyMap<CryptoBaseCurrencyPair, number>,
-) => left.size === right.size && [...left].every(([pair, rate]) => right.get(pair) === rate);
+const selectAccountWalletAssets = createMemoizedSelector(
+    [selectShownAccountAssetAccounts],
+    groupWalletAssets,
+);
 
-/**
- * The rate of each of the account's assets. The fiat state is rewritten on every fetch, so this
- * cheap pass hands the same map back while no number moved, and the rows are rebuilt only when one did.
- */
 const selectAccountAssetRates = createMemoizedSelector(
-    [selectShownAccountAssetAccounts, selectCurrentFiatRates, selectBaseCurrency],
-    (assetAccounts, rates, baseCurrencyCode): ReadonlyMap<CryptoBaseCurrencyPair, number> => {
-        const picked = new Map<CryptoBaseCurrencyPair, number>();
-
-        assetAccounts.forEach(({ networkSymbol, contractAddress }) => {
-            const pair = getFiatRateKey(networkSymbol, baseCurrencyCode, contractAddress);
-            const rate = rates?.[pair]?.rate;
-
-            if (rate !== undefined) {
-                picked.set(pair, rate);
-            }
-        });
-
-        return picked;
-    },
-    { memoizeOptions: { resultEqualityCheck: haveSameRates } },
+    [selectAccountWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
+    pickRates,
+    ratesResultEquality,
 );
 
-const byFiatValue = (left: AccountAsset, right: AccountAsset) => {
-    // What nothing can price goes below everything that can, even below what is worth zero.
-    if ((left.fiatValue === undefined) !== (right.fiatValue === undefined)) {
-        return left.fiatValue === undefined ? 1 : -1;
-    }
+const selectAccountAssetValues = createMemoizedSelector(
+    [selectAccountWalletAssets, selectAccountAssetRates],
+    priceAssets,
+    fiatValuesResultEquality,
+);
 
-    return (right.fiatValue ?? ZERO).comparedTo(left.fiatValue ?? ZERO) ?? 0;
-};
-
-/**
- * One account's assets, the most valuable first: its coin, its stake counted in as Home counts it,
- * and the tokens it shows.
- */
+/** One account's assets, sorted as the Home table sorts the wallet's. */
 export const selectAccountAssets = createMemoizedSelector(
-    [
-        selectAccountByKey,
-        selectShownAccountAssetAccounts,
-        selectAccountAssetRates,
-        selectBaseCurrency,
-    ],
-    (account, assetAccounts, rates, baseCurrencyCode): readonly AccountAsset[] => {
-        if (account === null) {
-            return returnStableArrayIfEmpty<AccountAsset>();
-        }
+    [selectAccountWalletAssets, selectAccountAssetValues],
+    (assets, values): readonly AccountAsset[] => {
+        const compare = byFiatThenCryptoBalance(assets, values);
 
-        const assets = [...groupWalletAssets(assetAccounts).values()].map(
-            ({ networkSymbol, contractAddress, tokenSymbol, tokenDecimals, amount }) => {
-                const rate = rates.get(
-                    getFiatRateKey(networkSymbol, baseCurrencyCode, contractAddress),
-                );
-
-                return {
-                    kind: contractAddress === undefined ? 'coin' : 'token',
-                    networkSymbol,
-                    contractAddress,
-                    amount,
-                    tokenSymbol,
-                    tokenDecimals,
-                    fiatValue:
-                        rate === undefined
-                            ? undefined
-                            : (toFiatCurrency({ amount, rate }) ?? undefined),
-                } satisfies AccountAsset;
-            },
+        return returnStableArrayIfEmpty(
+            [...assets.values()]
+                .sort((left, right) => compare(left.assetKey, right.assetKey))
+                .map(asset => ({
+                    ...asset,
+                    kind: asset.contractAddress === undefined ? 'coin' : 'token',
+                    fiatValue: values.get(asset.assetKey),
+                })),
         );
-
-        return assets.sort(byFiatValue);
     },
 );
-
-const haveSameFiatValue = (left: BigNumber | undefined, right: BigNumber | undefined) =>
-    left === undefined || right === undefined ? left === right : left.eq(right);
 
 /** What the account's priced assets are worth together; undefined while none of them is priced. */
 export const selectAccountFiatValue = createMemoizedSelector(
-    [selectAccountAssets],
-    (assets): BigNumber | undefined => {
-        const fiatValues = assets.flatMap(({ fiatValue }) => fiatValue ?? []);
-
-        return fiatValues.length === 0
+    [selectAccountAssetValues],
+    (values): BigNumber | undefined =>
+        values.size === 0
             ? undefined
-            : fiatValues.reduce((total, value) => total.plus(value), ZERO);
-    },
-    { memoizeOptions: { resultEqualityCheck: haveSameFiatValue } },
+            : [...values.values()].reduce((total, value) => total.plus(value), ZERO),
 );
 
 /**
@@ -231,44 +167,31 @@ export type AccountEarnSplit = {
  * splits the wallet's; undefined where the network cannot be staked here or the account holds none.
  */
 export const selectAccountEarnSplit = createMemoizedSelector(
-    [
-        selectAccountByKey,
-        selectShownAccountAssetAccounts,
-        selectCountedStakingPositionEntriesByAccount,
-    ],
-    (account, assetAccounts, stakingEntries): AccountEarnSplit | undefined => {
+    [selectAccountByKey, selectAccountWalletAssets, selectCountedStakingPositionEntriesByAccount],
+    (account, assets, stakingEntries): AccountEarnSplit | undefined => {
         if (account === null || !isSupportedStakingNetworkSymbol(account.symbol)) {
             return undefined;
         }
 
         // The coin's amount counts its stake in, as the Home asset table's does.
         const amount =
-            assetAccounts.find(({ contractAddress }) => contractAddress === undefined)
-                ?.cryptoBalance ?? '0';
+            [...assets.values()].find(({ contractAddress }) => contractAddress === undefined)
+                ?.amount ?? '0';
 
         if (!isPositiveBalance(amount)) {
             return undefined;
         }
 
-        const stakingAmount = formatStakingAmount({
-            amount: stakingAmountSchema.parse(
-                stakingEntries
-                    .reduce(
-                        (total, { position }) => total.plus(getStakingPositionAmount(position)),
-                        ZERO,
-                    )
-                    .toFixed(0),
-            ),
-            networkSymbol: account.symbol,
-        });
+        const stakingAmount = formatStakingTotal(
+            sumStakingPositionAmounts(stakingEntries),
+            account.symbol,
+        );
 
         return {
             networkSymbol: account.symbol,
             availableAmount: new BigNumber(amount).minus(stakingAmount).toFixed(),
             stakingAmount,
-            stakingRatio: isPositiveBalance(stakingAmount)
-                ? Number(stakingAmount) / Number(amount)
-                : 0,
+            stakingRatio: getStakingRatio(amount, stakingAmount) ?? 0,
         };
     },
 );
@@ -292,16 +215,8 @@ const selectSmallAccountAssets = createMemoizedSelector(
 
 export const selectAccountSmallBalanceSummary = createMemoizedSelector(
     [selectSmallAccountAssets],
-    (small): SmallBalanceSummary | undefined =>
-        small.length === 0
-            ? undefined
-            : {
-                  assetCount: small.length,
-                  fiatValue: small.reduce(
-                      (total, { fiatValue }) => total.plus(fiatValue ?? ZERO),
-                      ZERO,
-                  ),
-              },
+    small => summarizeSmallBalances(small.map(({ fiatValue }) => fiatValue ?? ZERO)),
+    smallBalanceSummaryResultEquality,
 );
 
 /** The rows the account's table draws: every asset, or all but the small ones while those are switched off. */
