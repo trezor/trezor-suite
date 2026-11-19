@@ -19,6 +19,7 @@ export const Banner: StoryObj<typeof meta> = {
         description:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         isLoading: false,
+        isInline: false,
         intent: undefined,
         icon: true,
         rightContent: 'button',
@@ -32,6 +33,9 @@ export const Banner: StoryObj<typeof meta> = {
             control: 'text',
         },
         isLoading: {
+            control: 'boolean',
+        },
+        isInline: {
             control: 'boolean',
         },
         icon: {
