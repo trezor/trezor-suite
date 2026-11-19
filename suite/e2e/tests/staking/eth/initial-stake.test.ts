@@ -222,7 +222,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                             withdrawTotalAmount: '0',
                             claimableAmount: '0',
                             restakedReward: '0',
-                            autocompoundBalance: '0',
+                            autocompoundBalance: '100204158497493752', // deposited plus restaked
                         },
                     ],
                 });
@@ -237,7 +237,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();
-                await expect(stakingSection.unstakeToClaimButton).toBeDisabled();
+                await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
             });
         },
     );

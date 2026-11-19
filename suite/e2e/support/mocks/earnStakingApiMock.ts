@@ -23,7 +23,7 @@ const SECONDS_IN_DAY = 24 * 60 * 60;
 type EthStats = Extract<EthOrSolStats, { symbol: 'eth' }>;
 type SolStats = Extract<EthOrSolStats, { symbol: 'sol' }>;
 
-export const CARDANO_EVERSTAKE_POOL_ID = 'pool1k2qhlrrweu8fecd4hx4hn22lv00nrd3rjdxj6durax7m78q7ynu';
+export const CARDANO_EVERSTAKE_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
 
 // Mocks the staking API behind every rate and period: the per-product endpoints the product info is
 // fetched from, and the batch endpoint the legacy slice keeps polling until the read side is removed.
