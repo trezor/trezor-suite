@@ -38,7 +38,7 @@ jest.mock('./useShowDeviceDisconnectedAlert', () => ({
     useShowDeviceDisconnectedAlert: () => jest.fn(),
 }));
 
-const account = mockWalletAccount({ symbol: asNetworkSymbol('xlm'), networkType: 'stellar' });
+const account = mockWalletAccount({ symbol: asNetworkSymbol('xlm') });
 const finalTransaction: GeneralPrecomposedTransactionFinal = {
     type: 'final',
     totalSpent: '1000100',
@@ -93,7 +93,10 @@ const renderUseSendForm = (signingResult: Promise<unknown>) => {
 
 describe('useSendForm Stellar submit', () => {
     it('keeps the form submitting until the signing request settles', async () => {
-        const { promise: signingResult, resolve: resolveSigning } = Promise.withResolvers();
+        let resolveSigning: (value: unknown) => void = () => {};
+        const signingResult = new Promise(resolve => {
+            resolveSigning = resolve;
+        });
         const { result } = await renderUseSendForm(signingResult);
 
         await act(async () => {
