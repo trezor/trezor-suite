@@ -26,19 +26,24 @@ async fn stop_scanning(adapter: &Adapter, manager: &AdapterManager) {
 }
 
 pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) -> MethodResult {
-    let radio = manager.lock_discovery_for_request("start_scan").await?;
+    // a running scan only needs the queue, not the radio
+    let radio = manager
+        .lock_discovery_for_request("start_scan", async { !manager.is_scanning().await })
+        .await?;
     if !manager.has_listener(&broadcast).await {
         return Err(AdapterError::ClientDisconnected.into());
     }
-    let mut receiver = broadcast.subscribe();
-    let adapter = manager.get_powered_adapter_or_die().await?;
 
+    // AdapterManager resets the flag when the adapter turns off
     if manager.is_scanning().await {
         info!("AdapterManager is already scanning");
         drop(radio);
         let devices = manager.get_devices().await;
         return Ok(WsResponsePayload::Peripherals { devices });
     }
+
+    let mut receiver = broadcast.subscribe();
+    let adapter = manager.get_powered_adapter_or_die().await?;
 
     // start or restart scanning process
     // restart (stop/start) ensures that the event stream is really running in
@@ -53,7 +58,6 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
     manager.set_scanning(true).await;
 
     // listen for Abort and AdapterStateChanged messages from the other threads
-    let manager_ref = manager.clone();
     tokio::spawn(async move {
         loop {
             let event = match receiver.recv().await {
@@ -78,13 +82,9 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
                 ChannelMessage::Notification(NotificationEvent::AdapterStateChanged { state })
                     if !matches!(state, AdapterState::Enabled) =>
                 {
-                    let _radio = manager_ref.lock_discovery("adapter_state_changed").await;
-                    if !matches!(manager_ref.get_adapter_state().await, AdapterState::Enabled)
-                        && manager_ref.take_scanning().await
-                    {
-                        stop_scanning(&adapter, &manager_ref).await;
-                        break;
-                    }
+                    // AdapterManager reset the flag before it sent this notification
+                    info!("Adapter {state:?}, the scan stopped");
+                    break;
                 }
                 _ => {}
             }

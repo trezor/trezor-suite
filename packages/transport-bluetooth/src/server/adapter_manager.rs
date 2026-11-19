@@ -122,27 +122,16 @@ impl AdapterManager {
         })
     }
 
-    /// Waits without a limit, for callers no client request is waiting on.
-    pub async fn lock_discovery(&self, owner: &str) -> DiscoveryGuard<'_> {
-        self.radio_lock.lock_discovery(owner).await
-    }
-
     /// Fails with `RadioBusy` instead of outliving the client's request timeout.
+    /// Waits for running connections only when `needs_radio` resolves to true.
     pub async fn lock_discovery_for_request(
         &self,
         owner: &str,
+        needs_radio: impl std::future::Future<Output = bool>,
     ) -> Result<DiscoveryGuard<'_>, AdapterError> {
-        self.radio_lock
-            .lock_discovery_within(owner, RADIO_REQUEST_WAIT)
-            .await
-            .ok_or(AdapterError::RadioBusy)
-    }
-
-    pub async fn lock_discovery_for_stop(&self) -> Result<DiscoveryGuard<'_>, AdapterError> {
         tokio::time::timeout(
             RADIO_REQUEST_WAIT,
-            self.radio_lock
-                .lock_discovery_if_needed("stop_scan", self.is_scanning()),
+            self.radio_lock.lock_discovery_if_needed(owner, needs_radio),
         )
         .await
         .map_err(|_| AdapterError::RadioBusy)
@@ -171,6 +160,38 @@ impl AdapterManager {
         }
         *timeout_ms -= elapsed_ms as u32;
         Ok(guard)
+    }
+
+    /// Stops the adapter scan now when the radio is free, otherwise in the
+    /// background when the connections end. A scan that started again
+    /// meanwhile continues. Returns false only when a stop now failed.
+    pub async fn stop_adapter_scan(&self, owner: &'static str) -> bool {
+        if let Some(radio) = self.radio_lock.try_lock_discovery() {
+            return self.stop_adapter_scan_with(radio).await;
+        }
+
+        info!("{owner}: radio busy, the scan stops when the connections end");
+        let manager = self.clone();
+        tokio::spawn(async move {
+            let radio = manager.radio_lock.lock_discovery_when_idle(owner).await;
+            manager.stop_adapter_scan_with(radio).await;
+        });
+        true
+    }
+
+    async fn stop_adapter_scan_with(&self, _radio: DiscoveryGuard<'_>) -> bool {
+        if self.is_scanning().await {
+            return true;
+        }
+        // without an adapter there is no scan to stop
+        let Ok(adapter) = self.get_adapter_or_die().await else {
+            return true;
+        };
+        if let Err(err) = adapter.stop_scan().await {
+            info!("adapter.stop_scan error: {err}");
+            return false;
+        }
+        true
     }
 
     // get current adapter or start loader if there is none
@@ -589,8 +610,9 @@ impl AdapterManager {
                 match event {
                     CentralEvent::StateUpdate(state) => {
                         info!("CentralEvent::StateUpdate {state:?}");
-                        self_ref.set_adapter_state(AdapterState::from(state)).await;
-                        self_ref.dispatch_adapter_event().await;
+                        self_ref
+                            .update_adapter_state(AdapterState::from(state))
+                            .await;
                     }
                     CentralEvent::DeviceDiscovered(id) => {
                         if let Some(device) = utils::scan_filter(&adapter, &id).await {
@@ -738,7 +760,9 @@ impl AdapterManager {
             .any(|item| item.same_channel(listener))
     }
 
-    pub async fn remove_listener(&self, listener: &ConnectionBroadcast) {
+    /// Returns the scan cleanup task when this was the last listener. The
+    /// cleanup can wait for other discovery calls, so it does not block.
+    pub async fn remove_listener(&self, listener: &ConnectionBroadcast) -> Option<JoinHandle<()>> {
         // Unregister the listener before sweeping its streams. A request of
         // this connection still being processed then either registers its
         // stream in time to be swept below, or is rejected by
@@ -754,9 +778,20 @@ impl AdapterManager {
             .await;
 
         if !self.manager_state.lock().await.listeners.is_empty() {
-            return;
+            return None;
         }
-        let _radio = self.lock_discovery("remove_listener").await;
+        let manager = self.clone();
+        Some(tokio::spawn(async move {
+            manager.stop_scan_without_listeners().await;
+        }))
+    }
+
+    async fn stop_scan_without_listeners(&self) {
+        // the queue only: stop_adapter_scan does not wait for connections
+        let queue = self
+            .radio_lock
+            .lock_discovery_if_needed("remove_listener", std::future::ready(false))
+            .await;
         let mut state = self.manager_state.lock().await;
         if !state.listeners.is_empty() {
             return;
@@ -768,18 +803,14 @@ impl AdapterManager {
 
         let was_scanning = state.is_scanning;
         state.is_scanning = false;
-        drop(state); // unlock for get_adapter_or_die
+        drop(state);
+        drop(queue);
 
         // Scanning must not outlive the last client, even when the client
         // that originally started it disconnected earlier.
         if was_scanning {
             info!("All clients disconnected, stopping scanning");
-            if let Ok(adapter) = self.get_adapter_or_die().await {
-                if let Err(err) = adapter.stop_scan().await {
-                    info!("remove_listener/adapter.stop_scan: {err}");
-                }
-            }
-
+            self.stop_adapter_scan("remove_listener").await;
             self.clear_serviceless_devices().await;
         }
     }
@@ -874,6 +905,19 @@ impl AdapterManager {
                 stream.device_id, stream.characteristic
             );
         }
+    }
+
+    async fn update_adapter_state(&self, state: AdapterState) {
+        let enabled = matches!(state, AdapterState::Enabled);
+        self.set_adapter_state(state).await;
+        // The system stops the scan with the adapter. Reset the flag before the
+        // clients get the new state: a client starts the scan again when the
+        // adapter is enabled, and that start must not find the old flag.
+        if !enabled && self.take_scanning().await {
+            info!("Adapter not enabled, the scan stopped");
+            self.clear_serviceless_devices().await;
+        }
+        self.dispatch_adapter_event().await;
     }
 
     async fn dispatch_adapter_event(&self) {
@@ -1005,7 +1049,8 @@ mod tests {
         assert!(manager.is_scanning().await);
 
         // The last client disconnects.
-        manager.remove_listener(&client_b).await;
+        let cleanup = manager.remove_listener(&client_b).await;
+        cleanup.expect("the last listener").await.expect("cleanup");
         assert!(!manager.is_scanning().await);
     }
 
@@ -1014,7 +1059,7 @@ mod tests {
         let manager = AdapterManager::new().await.expect("manager");
         let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
         manager.add_listener(client.clone()).await;
-        let discovery = manager.lock_discovery("scan").await;
+        let discovery = manager.radio_lock.lock_discovery("scan").await;
 
         let start = || {
             Box::pin(crate::server::methods::start_scan(
@@ -1027,7 +1072,10 @@ mod tests {
         assert!(futures::poll!(&mut first).is_pending());
         assert!(futures::poll!(&mut second).is_pending());
         assert!(!manager.is_scanning().await);
-        let mut cleanup = Box::pin(manager.remove_listener(&client));
+        let mut cleanup = manager
+            .remove_listener(&client)
+            .await
+            .expect("the last listener");
         assert!(futures::poll!(&mut cleanup).is_pending());
 
         drop(discovery);
@@ -1039,7 +1087,7 @@ mod tests {
                 ))
             ));
         }
-        cleanup.await;
+        cleanup.await.expect("cleanup");
         assert!(!manager.is_scanning().await);
     }
 
@@ -1054,7 +1102,7 @@ mod tests {
         manager.add_listener(starter.clone()).await;
         manager.add_listener(stopper).await;
         let mut watcher = starter.subscribe();
-        let _discovery = manager.lock_discovery("scan").await;
+        let _discovery = manager.radio_lock.lock_discovery("scan").await;
 
         for scanning in [false, true] {
             manager.set_scanning(scanning).await;
@@ -1079,18 +1127,21 @@ mod tests {
         let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
         manager.add_listener(client.clone()).await;
         manager.set_scanning(true).await;
-        let discovery = manager.lock_discovery("scan").await;
+        let discovery = manager.radio_lock.lock_discovery("scan").await;
 
         let mut stop = Box::pin(crate::server::methods::stop_scan(manager.clone()));
         assert!(futures::poll!(&mut stop).is_pending());
         assert!(manager.is_scanning().await);
-        let mut cleanup = Box::pin(manager.remove_listener(&client));
+        let mut cleanup = manager
+            .remove_listener(&client)
+            .await
+            .expect("the last listener");
         assert!(futures::poll!(&mut cleanup).is_pending());
         drop(stop);
         assert!(manager.is_scanning().await);
 
         drop(discovery);
-        cleanup.await;
+        cleanup.await.expect("cleanup");
         assert!(!manager.is_scanning().await);
     }
 
@@ -1125,6 +1176,85 @@ mod tests {
             watcher.try_recv(),
             Ok(ChannelMessage::Abort(AbortProcess::Scan))
         ));
+    }
+
+    // A running scan does not need the radio.
+    #[cfg(target_os = "linux")]
+    #[tokio::test(start_paused = true)]
+    async fn start_scan_of_a_running_scan_does_not_wait_for_connections() {
+        use crate::server::{methods, types::WsResponsePayload};
+
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        manager.set_scanning(true).await;
+        let _connection = manager
+            .radio_lock
+            .lock_connection("connect", "device")
+            .await;
+
+        let started = tokio::time::Instant::now();
+        assert!(matches!(
+            methods::start_scan(manager.clone(), client).await,
+            Ok(WsResponsePayload::Peripherals { .. })
+        ));
+        assert_eq!(started.elapsed(), Duration::ZERO);
+        assert!(manager.is_scanning().await);
+    }
+
+    // A stop during a connection must not get lost. The adapter stop waits
+    // for the connection in the background.
+    #[cfg(target_os = "linux")]
+    #[tokio::test(start_paused = true)]
+    async fn stop_scan_during_a_connection_does_not_wait() {
+        use crate::server::{methods, types::WsResponsePayload};
+
+        let manager = AdapterManager::new().await.expect("manager");
+        manager.set_scanning(true).await;
+        let _connection = manager
+            .radio_lock
+            .lock_connection("connect", "device")
+            .await;
+
+        let started = tokio::time::Instant::now();
+        assert!(matches!(
+            methods::stop_scan(manager.clone()).await,
+            Ok(WsResponsePayload::Success { success: true })
+        ));
+        assert_eq!(started.elapsed(), Duration::ZERO);
+        assert!(!manager.is_scanning().await);
+    }
+
+    #[cfg(target_os = "linux")]
+    #[tokio::test(start_paused = true)]
+    async fn last_listener_leaves_during_a_connection_without_waiting() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client = ConnectionBroadcast::new("client".to_string()).expect("broadcast");
+        manager.add_listener(client.clone()).await;
+        manager.set_scanning(true).await;
+        let _connection = manager
+            .radio_lock
+            .lock_connection("connect", "device")
+            .await;
+
+        let cleanup = manager.remove_listener(&client).await;
+        // a timeout, so a regression fails instead of a hang
+        tokio::time::timeout(Duration::from_secs(1), cleanup.expect("the last listener"))
+            .await
+            .expect("the cleanup must not wait for the connection")
+            .expect("cleanup");
+        assert!(!manager.is_scanning().await);
+    }
+
+    // A client starts the scan again when the adapter is enabled again. That
+    // start must not find the flag of the scan the adapter stopped.
+    #[tokio::test]
+    async fn adapter_off_resets_the_scan_flag() {
+        let manager = AdapterManager::new().await.expect("manager");
+        manager.set_scanning(true).await;
+
+        manager.update_adapter_state(AdapterState::Disabled).await;
+        assert!(!manager.is_scanning().await);
     }
 
     #[tokio::test(start_paused = true)]
