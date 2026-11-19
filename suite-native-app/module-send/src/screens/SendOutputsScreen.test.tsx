@@ -58,6 +58,7 @@ type RenderScreenParams = {
     networkReserve?: string;
     amount?: string;
     availableBalance?: string;
+    isSubmitting?: boolean;
 };
 
 const renderScreen = ({
@@ -67,9 +68,10 @@ const renderScreen = ({
     networkReserve,
     amount = '1',
     availableBalance = '2000000000000000000',
+    isSubmitting = false,
 }: RenderScreenParams) => {
     jest.mocked(useSendForm).mockReturnValue({
-        form: { formState: { isValid: true, isSubmitting: false }, setValue: jest.fn() },
+        form: { formState: { isValid: true, isSubmitting }, setValue: jest.fn() },
         handleSubmitSendForm: jest.fn(),
         network: { networkType: 'ethereum' },
         isResolvingNamedAddress: false,
@@ -170,6 +172,23 @@ describe('SendOutputsScreen selected fee readiness', () => {
             });
 
             expect(view.getByTestId('@send/form-submit-button')).toBeOnTheScreen();
+        },
+    );
+});
+
+describe('SendOutputsScreen review button', () => {
+    it.each([true, false])(
+        'is disabled only while the review submission is pending (%s)',
+        async pending => {
+            const view = await renderScreen({
+                selectedFee: 'normal',
+                selectedTransaction: finalTransaction,
+                isSubmitting: pending,
+            });
+            const submitButton = view.getByTestId('@send/form-submit-button');
+
+            if (pending) expect(submitButton).toBeDisabled();
+            else expect(submitButton).toBeEnabled();
         },
     );
 });
