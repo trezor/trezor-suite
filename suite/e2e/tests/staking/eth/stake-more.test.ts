@@ -216,7 +216,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                             withdrawTotalAmount: '0',
                             claimableAmount: '0',
                             restakedReward: '234000000000000000000',
-                            autocompoundBalance: '3234000000000000000000',
+                            autocompoundBalance: '3234100204158497493752', // deposited plus restaked
                         },
                     ],
                 });

@@ -12,7 +12,7 @@ const adaSymbol = asNetworkSymbol('ada');
 // mocked and expected values
 const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
 const startingBalanceFormatted = toADA(startingBalance);
-const EXPECTED_CARDANO_POOL_ID = 'pool1k2qhlrrweu8fecd4hx4hn22lv00nrd3rjdxj6durax7m78q7ynu';
+const EXPECTED_CARDANO_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
 // Mocked 44 lovelace/byte; the vote delegation certificate carries the predefined abstain
 // DRep, which is 30 bytes smaller than a key-hash DRep.
 const feeAmount = 176281;
