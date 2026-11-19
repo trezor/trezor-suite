@@ -461,7 +461,7 @@ export const YieldDepositForm = () => {
                                         summaryValue={
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
-                                                symbol={token.symbol}
+                                                networkSymbol={token.symbol}
                                             />
                                         }
                                         approvedAmount={allowanceAmount || undefined}
@@ -514,7 +514,7 @@ export const YieldDepositForm = () => {
                                         summaryValue={
                                             <FormattedCryptoAmount
                                                 value={maxAmount}
-                                                symbol={token.symbol}
+                                                networkSymbol={token.symbol}
                                             />
                                         }
                                         warning={

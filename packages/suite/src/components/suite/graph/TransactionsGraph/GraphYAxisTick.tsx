@@ -55,7 +55,11 @@ export const GraphYAxisTick = ({
                 )}
 
                 {symbol && (
-                    <FormattedCryptoAmount value={payload.value} symbol={symbol} isRawString />
+                    <FormattedCryptoAmount
+                        value={payload.value}
+                        networkSymbol={symbol}
+                        isRawString
+                    />
                 )}
             </text>
         </g>

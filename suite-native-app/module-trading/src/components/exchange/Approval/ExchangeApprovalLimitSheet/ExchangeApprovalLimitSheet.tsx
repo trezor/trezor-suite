@@ -35,11 +35,11 @@ export const ExchangeApprovalLimitSheet = memo(
             [isVisible, openModal, closeModal],
         );
 
-        const { symbol, contractAddress } = quote.send
+        const { networkSymbol, contractAddress } = quote.send
             ? cryptoIdToNetworkSymbolAndContractAddress(quote.send)
             : {};
 
-        if (!symbol) {
+        if (!networkSymbol) {
             return null;
         }
 
@@ -64,7 +64,7 @@ export const ExchangeApprovalLimitSheet = memo(
                         description={
                             <Translation id="moduleTrading.exchangeApprovalLimitSheet.limitedCard.info" />
                         }
-                        symbol={symbol}
+                        symbol={networkSymbol}
                         contractAddress={contractAddress}
                         tokenSymbol={
                             quote.send
@@ -79,7 +79,7 @@ export const ExchangeApprovalLimitSheet = memo(
                         description={
                             <Translation id="moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info" />
                         }
-                        symbol={symbol}
+                        symbol={networkSymbol}
                         contractAddress={contractAddress}
                         tokenSymbol={
                             quote.send

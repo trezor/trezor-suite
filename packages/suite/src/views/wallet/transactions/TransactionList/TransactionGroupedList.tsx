@@ -1,3 +1,4 @@
+import { TransactionTokenMetadataProvider } from '@suite-common/token';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import {
@@ -67,23 +68,27 @@ export const TransactionGroupedList = ({
 
                 return (
                     account && (
-                        <TransactionItem
+                        <TransactionTokenMetadataProvider
                             key={`${account.key}/${item.tx.txid}`}
                             transaction={item.tx}
-                            isPending={isPending}
-                            accountKey={account.key}
-                            network={network}
-                            accountType={account.accountType}
-                            index={index}
-                            isAccountShown={isAccountShown}
-                            onTransactionDetailOpen={onTransactionDetailOpen}
-                            disableBumpFee={
-                                !isBumpFeeAllowed ||
-                                (network.networkType === 'ethereum'
-                                    ? item.tx.txid !== transactionWithLowestNonce?.txid
-                                    : item.tx.type === 'joint')
-                            }
-                        />
+                        >
+                            <TransactionItem
+                                transaction={item.tx}
+                                isPending={isPending}
+                                accountKey={account.key}
+                                network={network}
+                                accountType={account.accountType}
+                                index={index}
+                                isAccountShown={isAccountShown}
+                                onTransactionDetailOpen={onTransactionDetailOpen}
+                                disableBumpFee={
+                                    !isBumpFeeAllowed ||
+                                    (network.networkType === 'ethereum'
+                                        ? item.tx.txid !== transactionWithLowestNonce?.txid
+                                        : item.tx.type === 'joint')
+                                }
+                            />
+                        </TransactionTokenMetadataProvider>
                     )
                 );
             })}

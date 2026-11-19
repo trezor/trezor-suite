@@ -119,7 +119,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                                 >
                                     <FormattedCryptoAmount
                                         value={rewards}
-                                        symbol={account.symbol}
+                                        networkSymbol={account.symbol}
                                     />
                                 </Text>
                                 <Text

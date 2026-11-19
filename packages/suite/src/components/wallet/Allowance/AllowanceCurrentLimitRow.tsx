@@ -1,17 +1,16 @@
+import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CardList, Column, Icon, Row, Text } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { AllowanceAmount } from './AllowanceAmount';
 
 type AllowanceCurrentLimitRowProps = {
     label: TranslationKey;
     networkSymbol: NetworkSymbol;
-    contractAddress: string;
-    symbol: string;
-    decimals: number;
+    contractAddress: TokenAddress;
     amount: string;
     /** The limit is about to be reset to zero. */
     isRevoked?: boolean;
@@ -21,8 +20,6 @@ export const AllowanceCurrentLimitRow = ({
     label,
     networkSymbol,
     contractAddress,
-    symbol,
-    decimals,
     amount,
     isRevoked = false,
 }: AllowanceCurrentLimitRowProps) => (
@@ -31,17 +28,11 @@ export const AllowanceCurrentLimitRow = ({
             <Translation id={label} />
         </Text>
         <Row gap={8}>
-            <TokenIcon
-                networkSymbol={networkSymbol}
-                contractAddress={contractAddress}
-                size={20}
-                placeholder={symbol}
-            />
+            <AssetIcon networkSymbol={networkSymbol} contractAddress={contractAddress} size={20} />
             <AllowanceAmount
                 amount={amount}
-                symbol={symbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
-                decimals={decimals}
                 typographyStyle="body-sm-strong"
             />
             {isRevoked && (
@@ -49,7 +40,13 @@ export const AllowanceCurrentLimitRow = ({
                     <Column alignSelf="center">
                         <Icon as={ArrowRightIcon} size={16} />
                     </Column>
-                    <Text typographyStyle="body-sm-strong">0 {symbol}</Text>
+                    <Text typographyStyle="body-sm-strong">
+                        0{' '}
+                        <AssetSymbol
+                            networkSymbol={networkSymbol}
+                            contractAddress={contractAddress}
+                        />
+                    </Text>
                 </>
             )}
         </Row>

@@ -66,7 +66,7 @@ export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProp
                                 >
                                     <FormattedCryptoAmount
                                         value={pendingBalance}
-                                        symbol={account.symbol}
+                                        networkSymbol={account.symbol}
                                     />
                                 </Text>
                                 <Text

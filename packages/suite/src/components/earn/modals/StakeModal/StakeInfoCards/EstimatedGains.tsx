@@ -81,7 +81,10 @@ export const EstimatedGains = () => {
                             {label}
                         </Paragraph>
                         <Text intent="brand">
-                            <FormattedCryptoAmount value={gainValue} symbol={account.symbol} />
+                            <FormattedCryptoAmount
+                                value={gainValue}
+                                networkSymbol={account.symbol}
+                            />
                         </Text>
                         <Paragraph align="end">
                             <BaseCurrencyValue amount={gainValue} symbol={account.symbol} />

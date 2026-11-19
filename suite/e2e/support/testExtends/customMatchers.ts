@@ -5,13 +5,16 @@ import { escapeRegExp, isEqualWith, isRegExp } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
 import { toChecksumAddress } from '@suite-common/address';
-import {
-    createAddressValidator,
-    createNetworkModuleRepository,
-    createNetworkModulesCompositionRoot,
-} from '@suite-common/networks';
+import { createAddressValidator, createNetworkModuleRepository } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
+import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
+import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
+import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
+import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
+import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { formatAddress, formatEvmAddress, normalizeWhitespace } from '../common';
@@ -29,10 +32,18 @@ type TranslationValues = Record<string, string | number | RegExp>;
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 
-const networkModules = createNetworkModulesCompositionRoot({
-    getTrezorConnect: mockGetTrezorConnect,
+const networkModuleDeps = { getTrezorConnect: mockGetTrezorConnect };
+const networkModuleRepository = createNetworkModuleRepository({
+    networkModules: [
+        createBitcoinSuiteCommonNetworkModule(networkModuleDeps),
+        createEthereumSuiteCommonNetworkModule(networkModuleDeps),
+        createRippleSuiteCommonNetworkModule(),
+        createCardanoSuiteCommonNetworkModule(networkModuleDeps),
+        createSolanaSuiteCommonNetworkModule(),
+        createStellarSuiteCommonNetworkModule(),
+        createTronSuiteCommonNetworkModule(),
+    ],
 });
-const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 const addressValidator = createAddressValidator({ networkModuleRepository });
 
 const compareTextAndNumber = async (

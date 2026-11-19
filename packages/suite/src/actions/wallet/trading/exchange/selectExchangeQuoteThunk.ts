@@ -42,10 +42,12 @@ export const selectExchangeQuoteThunk = createThunk<
             return;
         }
 
-        const { symbol: sendCryptoNetworkSymbol, contractAddress: sendCryptoContractAddress } =
-            cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.send);
         const {
-            symbol: receiveCryptoNetworkSymbol,
+            networkSymbol: sendCryptoNetworkSymbol,
+            contractAddress: sendCryptoContractAddress,
+        } = cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.send);
+        const {
+            networkSymbol: receiveCryptoNetworkSymbol,
             contractAddress: receiveCryptoContractAddress,
         } = cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receive);
 

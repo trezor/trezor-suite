@@ -256,7 +256,7 @@ export const StakingCard = ({
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/pending"
                                     value={totalPendingStakeBalance}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             }
                             description={
@@ -294,7 +294,7 @@ export const StakingCard = ({
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/staked"
                                     value={depositedBalance || '0'}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             }
                             description={
@@ -342,7 +342,7 @@ export const StakingCard = ({
                             <FormattedCryptoAmount
                                 data-testid="@account/staking/rewards"
                                 value={totalRewards}
-                                symbol={account.symbol}
+                                networkSymbol={account.symbol}
                             />
                         }
                         description={
@@ -380,7 +380,7 @@ export const StakingCard = ({
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/unstaking"
                                     value={withdrawTotalAmount}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             }
                             description={

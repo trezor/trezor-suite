@@ -117,7 +117,7 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
                                                                     reward?.amount,
                                                                     account.symbol,
                                                                 )}
-                                                                symbol={account.symbol}
+                                                                networkSymbol={account.symbol}
                                                                 data-testid={`${TEST_ID}/crypto-amount`}
                                                             />
                                                         )

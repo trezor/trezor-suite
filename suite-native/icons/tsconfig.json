@@ -24,6 +24,12 @@
         { "path": "../test-utils-store" },
         {
             "path": "../../networks/network-module/network-assets-types"
+        },
+        {
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
         }
     ]
 }

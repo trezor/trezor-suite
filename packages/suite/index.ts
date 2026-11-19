@@ -1,4 +1,4 @@
-export { type WalletState, createWalletReducer } from './src/reducers/wallet';
+export { type WalletState, createWalletReducer } from './src/reducers/wallet/walletReducer';
 export { default as guideReducer, type GuideState } from './src/reducers/suite/guideReducer';
 export {
     default as protocolReducer,
@@ -36,7 +36,7 @@ export {
     globalSendReceiveFiltersReducer,
 } from './src/slices/wallet/globalSendReceiveFilters';
 export { type BioAuthState, prepareBioAuthReducer } from './src/reducers/bioAuth';
-export { type DesktopState, desktopReducer } from './src/reducers/desktop';
+export { type DesktopState, desktopReducer } from './src/reducers/desktop/desktopReducer';
 export { ConnectedThemeProvider } from './src/support/suite/ConnectedThemeProvider';
 export {
     ResponsiveContextProvider,
@@ -362,14 +362,14 @@ export {
 export { SmallDeviceItem } from './src/views/suite/SwitchDevice/DeviceItem/SmallDeviceItem';
 export { getOnboardingStepIndex } from './src/config/onboarding/steps';
 export { useOnboarding } from './src/hooks/suite/useOnboarding';
-export { UnexpectedState } from './src/views/onboarding/UnexpectedState';
+export { UnexpectedState } from './src/views/onboarding/UnexpectedState/UnexpectedState';
 export { BackupTypeStep } from './src/views/onboarding/steps/BackupTypeStep';
 export { CreateOrRecoverStep } from './src/views/onboarding/steps/CreateOrRecoverStep';
 export { DeviceAuthenticityStep } from './src/views/onboarding/steps/DeviceAuthenticityStep';
 export { DeviceTutorialStep } from './src/views/onboarding/steps/DeviceTutorialStep';
 export { FinalStep } from './src/views/onboarding/steps/FinalStep';
-export { FirmwareStep } from './src/views/onboarding/steps/FirmwareStep';
+export { FirmwareStep } from './src/views/onboarding/steps/FirmwareStep/FirmwareStep';
 export { PinStep } from './src/views/onboarding/steps/PinStep';
-export { RecoveryStep } from './src/views/onboarding/steps/RecoveryStep';
+export { RecoveryStep } from './src/views/onboarding/steps/RecoveryStep/RecoveryStep';
 export { SecurityStep } from './src/views/onboarding/steps/SecurityStep';
 export * as onboardingSteps from './src/constants/onboarding/steps';

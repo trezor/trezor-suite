@@ -6,8 +6,8 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Form } from '@suite/form';
 import { openModal } from '@suite/modal';
+import { toTokenAddress } from '@suite-common/tokens';
 import { getExchangeApprovalType, tradingExchangeActions } from '@suite-common/trading';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AllowanceLimitType,
@@ -131,9 +131,7 @@ export const TradingExchangeApprovalStepCard = ({
 
     const stepToken: AllowanceStepToken = {
         networkSymbol: account.symbol,
-        contractAddress: token.contract,
-        symbol: getDisplaySymbol(token.symbol, token.contract),
-        decimals: token.decimals,
+        contractAddress: toTokenAddress(token.contract),
     };
     const limitAmount =
         variant === 'revoke'

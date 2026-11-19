@@ -93,7 +93,7 @@ export const TotalSent = () => {
                                                           symbol,
                                                       )
                                             }
-                                            symbol={tokenInfo?.symbol ?? symbol}
+                                            networkSymbol={symbol}
                                             contractAddress={tokenInfo?.contract}
                                             data-testid="@wallet/send/total-sent"
                                         />

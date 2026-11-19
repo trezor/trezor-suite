@@ -35,6 +35,8 @@
     },
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*",
-        "@trezor/network-assets-types": "workspace:*"
+        "@trezor/network-assets-types": "workspace:*",
+        "@trezor/network-bitcoin-suite-common": "workspace:*",
+        "@trezor/network-ethereum-suite-common": "workspace:*"
     }
 }

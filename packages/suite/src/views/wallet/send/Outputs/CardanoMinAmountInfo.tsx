@@ -62,7 +62,7 @@ export const CardanoMinAmountInfo = () => {
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={subunitsToUnits({ symbol, value: minAdaAmount })}
-                        symbol={symbol}
+                        networkSymbol={symbol}
                     />
                 </Text>
             </InfoItem>

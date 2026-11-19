@@ -33,7 +33,7 @@ export const TransactionReviewTronFeeNotes = ({
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={trxBurned.toString()}
-                        symbol={account.symbol}
+                        networkSymbol={account.symbol}
                     />
                 </Note>
             )}

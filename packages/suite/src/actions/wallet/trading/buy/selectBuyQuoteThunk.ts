@@ -50,7 +50,7 @@ export const selectBuyQuoteThunk = createThunk<
         receiveAccount ?? account,
     );
 
-    const { symbol: cryptoNetworkSymbol, contractAddress: cryptoContractAddress } =
+    const { networkSymbol: cryptoNetworkSymbol, contractAddress: cryptoContractAddress } =
         cryptoIdToNetworkSymbolAndContractAddress(quotesRequest.receiveCurrency);
     const cryptoLabel = selectTradingCoinInfoByCryptoId(
         getState(),

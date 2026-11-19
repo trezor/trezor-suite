@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
@@ -155,9 +155,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     // Reverse resolution runs for every hex address typed; it is a bonus lookup, so it must not
     // announce itself or occupy the bottom text the way a name the user typed does.
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
+    // A typed name belongs to an own account when the address it resolves to does.
+    const recipientAddress = resolvedNamedAddress ?? address;
     const recipientHistoryNoteVariant = useRecipientHistoryNote({
         accountKey: account.key,
-        recipientAddress: resolvedNamedAddress ?? address,
+        recipientAddress,
     });
 
     const [isExternalAddressCheckWarningDismissed, setIsExternalAddressCheckWarningDismissed] =
@@ -560,87 +562,81 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     // Required for the correct functionality of bottom text in the input.
     const addressLabelComponent = (
-        <AccountLabelForOwnAddress address={addressValue} knownOnly symbol={symbol} />
+        <AccountLabelForOwnAddress address={recipientAddress} knownOnly symbol={symbol} />
     );
     const isAddressWithLabel = !!addressLabelComponent.type({
         symbol,
-        address: addressValue,
+        address: recipientAddress,
         knownOnly: true,
     });
 
-    const getBottomText = () => {
+    const getAddressHint = (): { text: ReactNode; icon?: ReactNode } | null => {
         if (addressError) {
-            return <InputError message={addressError.message} {...getInputErrorProps()} />;
+            return {
+                text: <InputError message={addressError.message} {...getInputErrorProps()} />,
+                icon: <Icon as={WarningCircleIcon} size={16} intent="critical" />,
+            };
         }
 
         if (hasAddressChecksummed) {
-            return (
-                <Translation
-                    id="TR_CHECKSUM_CONVERSION_INFO"
-                    values={{
-                        a: chunks => <Link href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}>{chunks}</Link>,
-                    }}
-                />
-            );
+            return {
+                text: (
+                    <Translation
+                        id="TR_CHECKSUM_CONVERSION_INFO"
+                        values={{
+                            a: chunks => (
+                                <Link href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}>{chunks}</Link>
+                            ),
+                        }}
+                    />
+                ),
+                icon: <Icon as={CheckIcon} size={16} isDisabled={true} />,
+            };
         }
 
         if (autocorrectMessage) {
-            return autocorrectMessage;
+            return {
+                text: autocorrectMessage,
+                icon: <Icon as={InfoIcon} size={16} intent="info" />,
+            };
         }
 
         if (isResolvingNamedAddress) {
-            return <Translation id="TR_ENS_RESOLVING" />;
+            return { text: <Translation id="TR_ENS_RESOLVING" /> };
+        }
+
+        // The own-account label outranks any name: it already tells the user whose address they
+        // are sending to, so the resolved address or primary name would only repeat it.
+        if (isAddressWithLabel) {
+            return {
+                text: addressLabelComponent,
+                icon: <TokenIcon networkSymbol={symbol} size={16} />,
+            };
         }
 
         if (resolvedNamedAddress) {
-            return (
-                <Translation
-                    id="TR_ENS_WALLET_ADDRESS"
-                    values={{ address: resolvedNamedAddress }}
-                />
-            );
-        }
-
-        // The own-account label outranks a primary name: it tells the user whose address they
-        // are sending to, while reverse resolution is a bonus lookup they never asked for.
-        if (isAddressWithLabel) {
-            return addressLabelComponent;
+            return {
+                text: (
+                    <Translation
+                        id="TR_ENS_WALLET_ADDRESS"
+                        values={{ address: resolvedNamedAddress }}
+                    />
+                ),
+            };
         }
 
         if (reverseResolvedName) {
-            return <Translation id="TR_ENS_PRIMARY_NAME" values={{ name: reverseResolvedName }} />;
+            return {
+                text: (
+                    <Translation id="TR_ENS_PRIMARY_NAME" values={{ name: reverseResolvedName }} />
+                ),
+            };
         }
 
         return null;
     };
 
-    const getBottomTextIconComponent = () => {
-        if (addressError) {
-            return <Icon as={WarningCircleIcon} size={16} intent="critical" />;
-        }
-
-        if (hasAddressChecksummed) {
-            return <Icon as={CheckIcon} size={16} isDisabled={true} />;
-        }
-
-        if (autocorrectMessage) {
-            return <Icon as={InfoIcon} size={16} intent="info" />;
-        }
-
-        // The label icon belongs to the label text, so it must not linger under a forward
-        // resolution message that took the label's place in `getBottomText`.
-        if (isResolvingNamedAddress || resolvedNamedAddress) {
-            return undefined;
-        }
-
-        if (isAddressWithLabel) {
-            return <TokenIcon networkSymbol={symbol} size={16} />;
-        }
-
-        return undefined;
-    };
-
-    const addressHint = getBottomText();
+    const addressHint = getAddressHint();
     const shouldShowRecipientHistoryNote =
         !!recipientHistoryNoteVariant && !addressError && !isAddressWithLabel;
     // Rows of their own, so the note never replaces what a name resolved to.
@@ -649,10 +645,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             {addressHint && (
                 <BottomText
                     hasError={!!addressError}
-                    iconComponent={getBottomTextIconComponent()}
+                    iconComponent={addressHint.icon}
                     data-testid="@send/address/hint"
                 >
-                    {addressHint}
+                    {addressHint.text}
                 </BottomText>
             )}
             {shouldShowRecipientHistoryNote && (

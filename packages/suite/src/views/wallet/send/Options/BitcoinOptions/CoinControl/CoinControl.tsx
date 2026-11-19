@@ -158,7 +158,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     }, [account, dispatch]);
 
     const missingToInputValues = {
-        amount: <FormattedCryptoAmount value={formattedMissing} symbol={account.symbol} />,
+        amount: <FormattedCryptoAmount value={formattedMissing} networkSymbol={account.symbol} />,
     };
 
     const handleAllUtxosSelected = () => {
@@ -190,7 +190,10 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     </Checkbox>
 
                     <Text intent="neutral" priority="secondary">
-                        <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
+                        <FormattedCryptoAmount
+                            value={formattedTotal}
+                            networkSymbol={account.symbol}
+                        />
                     </Text>
                 </Row>
 

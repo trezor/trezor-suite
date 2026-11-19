@@ -123,7 +123,7 @@ export const TronUnstakeAmount = () => {
                         <Translation id="TR_EARN_TRON_STAKED" />{' '}
                         <FormattedCryptoAmount
                             value={stakedBalance}
-                            symbol={account.symbol}
+                            networkSymbol={account.symbol}
                             data-testid="@staking/tron-unstake/staked-balance/amount"
                         />
                     </Text>

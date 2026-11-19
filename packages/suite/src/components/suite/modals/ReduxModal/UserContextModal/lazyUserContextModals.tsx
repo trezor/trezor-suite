@@ -87,14 +87,14 @@ const UnstakeModal = lazy(() =>
 );
 const ConnectPopupTxSimulationModal = lazy(() =>
     import(
-        /* webpackChunkName: "modals-connect-popup" */ '#src/components/tx-simulation/connect-popup'
+        /* webpackChunkName: "modals-connect-popup" */ '#src/components/tx-simulation/connect-popup/ConnectPopupTxSimulationModal'
     ).then(m => ({
         default: m.ConnectPopupTxSimulationModal,
     })),
 );
 const EarnYieldTxSimulationModal = lazy(() =>
     import(
-        /* webpackChunkName: "modals-earn" */ '#src/components/tx-simulation/earn-stablecoin'
+        /* webpackChunkName: "modals-earn" */ '#src/components/tx-simulation/earn-stablecoin/EarnYieldTxSimulationModal'
     ).then(m => ({
         default: m.EarnYieldTxSimulationModal,
     })),
