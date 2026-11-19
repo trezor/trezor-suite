@@ -1,19 +1,11 @@
 import { memo } from 'react';
 
-import styled from 'styled-components';
-
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
-import { selectLanguage } from '@suite/settings';
-import { useCurrencyAmountParts } from '@suite-common/formatters';
 import { Row, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
-import { useSelector } from '#src/hooks/suite/useSelector';
-
-const TabularNumbers = styled.span`
-    font-variant-numeric: tabular-nums;
-`;
+import { FiatAmountHeadline } from '#src/views/home/HomeBalance/FiatAmountHeadline';
 
 type EarnTotalBalanceProps = {
     fiatValue: BigNumber | undefined;
@@ -25,11 +17,6 @@ type EarnTotalBalanceProps = {
 
 export const EarnTotalBalance = memo(
     ({ fiatValue, isIncomplete = false, isExact, dataTestId }: EarnTotalBalanceProps) => {
-        const locale = useSelector(selectLanguage);
-
-        const { currencySymbol, wholeNumber, decimalNumber, isCurrencySymbolFirst } =
-            useCurrencyAmountParts({ value: fiatValue?.toFixed(), locale, isExact });
-
         // Nothing the wallet holds can be priced; a total of zero would say the wallet is empty.
         if (fiatValue === undefined) {
             return (
@@ -40,12 +27,6 @@ export const EarnTotalBalance = memo(
                 </HiddenPlaceholder>
             );
         }
-
-        const symbol = (
-            <Text typographyStyle="headline-lg" color="contentTertiary">
-                {currencySymbol}
-            </Text>
-        );
 
         return (
             <HiddenPlaceholder enforceIntensity={10}>
@@ -60,19 +41,7 @@ export const EarnTotalBalance = memo(
                         </Text>
                     )}
 
-                    {isCurrencySymbolFirst && symbol}
-
-                    <Text typographyStyle="headline-lg">
-                        <TabularNumbers>{wholeNumber}</TabularNumbers>
-                    </Text>
-
-                    {decimalNumber !== '' && (
-                        <Text typographyStyle="headline-lg" color="contentTertiary">
-                            <TabularNumbers>{decimalNumber}</TabularNumbers>
-                        </Text>
-                    )}
-
-                    {!isCurrencySymbolFirst && symbol}
+                    <FiatAmountHeadline fiatValue={fiatValue} isExact={isExact} />
                 </Row>
             </HiddenPlaceholder>
         );
