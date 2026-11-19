@@ -25,9 +25,13 @@ runs:
       # `--deepen` does not: it only deepens commits the server reaches from a ref, so it exits 0
       # without fetching anything and HEAD^1 then does not resolve. A re-run checks out the original
       # run's test merge commit and gets that commit's parents the same way. The PR branch history
-      # is not needed either, which also makes this work for PRs from forks.
+      # is not needed either, which also makes this work for PRs from forks. A checkout that already
+      # has HEAD^1 (a full clone, or a fetch-depth of 2 or more) skips the fetch, which would make a
+      # full clone shallow.
       run: |
-        git fetch --no-tags --depth=2 origin "+${GITHUB_SHA}:refs/remotes/pull/${PR_NUMBER}/merge"
+        if ! git rev-parse -q --verify HEAD^1 >/dev/null; then
+          git fetch --no-tags --depth=2 origin "+${GITHUB_SHA}:refs/remotes/pull/${PR_NUMBER}/merge"
+        fi
         base=$(git rev-parse HEAD^1)
         echo "NX_BASE=$base" >> "$GITHUB_ENV"
         echo "NX_HEAD=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
