@@ -20,6 +20,7 @@ import {
     findAccountDevice,
     findAccountsByAddress,
     findTransactionSenderAccount,
+    getAccountBalanceWithStaking,
     getAccountFiatBalance,
     getAccountIdentifier,
     getAccountSpecific,
@@ -754,6 +755,26 @@ describe(getFirmwareDescriptor.name, () => {
         expect(getFirmwareDescriptor({ descriptor }, { withChecksum: true })).toEqual(
             firmwareDescriptor,
         );
+    });
+});
+
+describe(getAccountBalanceWithStaking.name, () => {
+    it('adds the staking balance in the smallest unit to the formatted balance', () => {
+        expect(
+            getAccountBalanceWithStaking({
+                account: { symbol: ethSymbol, formattedBalance: '1.5' },
+                stakingBalance: '2050000000000000000',
+            }),
+        ).toBe('3.55');
+    });
+
+    it('keeps the formatted balance as it is without staking, its reserve included', () => {
+        expect(
+            getAccountBalanceWithStaking({
+                account: { symbol: asNetworkSymbol('xrp'), formattedBalance: '3.11' },
+                stakingBalance: '0',
+            }),
+        ).toBe('3.11');
     });
 });
 

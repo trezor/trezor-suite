@@ -32,7 +32,6 @@ import {
     selectIsStakingAccountActive,
     selectIsStakingOperationPending,
     selectStakingAccountAmount,
-    selectStakingAccountBalanceWithStaking,
     selectStakingAccountFiatAmount,
     selectStakingAccountPositionDetails,
     selectStakingAccountPositionEntry,
@@ -494,41 +493,6 @@ describe('selectHasStakingAccountWarning', () => {
         });
 
         expect(selectHasStakingAccountWarning(state, solAccount.key, 'missing-drep')).toBe(true);
-    });
-});
-
-describe('selectStakingAccountBalanceWithStaking', () => {
-    it.each([
-        {
-            name: 'adds the locked Ethereum stake',
-            account: ethAccount,
-            expected: '4000000000000000000',
-        },
-        { name: 'adds the counted Solana stake only', account: solAccount, expected: '7500000000' },
-        {
-            name: 'adds the Cardano reward balance to the liquid stake',
-            account: adaAccount,
-            expected: '1005250000',
-        },
-        {
-            name: 'adds frozen TRX and the unfreeze queue',
-            account: trxAccount,
-            expected: '2000000000',
-        },
-    ])('$name', ({ account, expected }) => {
-        expect(selectStakingAccountBalanceWithStaking(createState(), account.key)).toBe(expected);
-    });
-
-    it('is zero without the account', () => {
-        expect(selectStakingAccountBalanceWithStaking(createState(), unknownAccountKey)).toBe('0');
-    });
-
-    it('is the available balance without a position', () => {
-        const state = createState({ positions: {} });
-
-        expect(selectStakingAccountBalanceWithStaking(state, ethAccount.key)).toBe(
-            '1500000000000000000',
-        );
     });
 });
 

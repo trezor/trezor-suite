@@ -58,4 +58,20 @@ describe('AssetAccountListItem', () => {
 
         expect(getByText('0 USDC')).toBeOnTheScreen();
     });
+
+    it('keeps the reserve in the balance of a Ripple account', async () => {
+        const account = mockWalletAccount({
+            symbol: asNetworkSymbol('xrp'),
+            balance: '3110000',
+            availableBalance: '1910000',
+            formattedBalance: '3.11',
+        });
+
+        const { getByText } = await renderWithStoreProvider(
+            <AssetAccountListItem account={account} onPress={jest.fn()} />,
+            { preloadedState: { wallet: { accounts: [account] }, tokenDefinitions: {} } },
+        );
+
+        expect(getByText('3.11 XRP')).toBeOnTheScreen();
+    });
 });

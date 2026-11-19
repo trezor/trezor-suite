@@ -642,6 +642,26 @@ export const getAccountFiatBalance = ({
     return asBaseCurrencyAmount(totalBalance);
 };
 
+type GetAccountBalanceWithStakingParams = {
+    account: Pick<Account, 'symbol' | 'formattedBalance'>;
+    /** In the token's smallest unit. */
+    stakingBalance: string;
+};
+
+// The formatted balance keeps the Ripple and Stellar reserve the available balance leaves out.
+export const getAccountBalanceWithStaking = ({
+    account,
+    stakingBalance,
+}: GetAccountBalanceWithStakingParams): string => {
+    if (new BigNumber(stakingBalance).isZero()) {
+        return account.formattedBalance;
+    }
+
+    return new BigNumber(account.formattedBalance)
+        .plus(formatNetworkAmount(stakingBalance, account.symbol))
+        .toFixed();
+};
+
 type GetTotalFiatBalanceParams = {
     deviceAccounts: readonly Account[];
     baseCurrencyCode: BaseCurrencyCode;

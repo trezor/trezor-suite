@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 
 import {
     type StakingRootState,
-    formatStakingAmount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
-    selectStakingAccountBalanceWithStaking,
 } from '@suite-common/earn-staking';
 import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -24,6 +22,7 @@ import { isNetworkWithTokens } from '@suite-native/tokens';
 
 import {
     type NativeAccountsRootState,
+    selectAccountCryptoBalanceWithStaking,
     selectAccountFiatBalance,
     selectAccountHasAnyKnownTokens,
 } from '../../selectors';
@@ -81,8 +80,8 @@ const AccountsListItemComponent = ({
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
         selectAccountFiatBalance(state, account.key),
     );
-    const balanceWithStaking = useSelector((state: NativeAccountsRootState) =>
-        selectStakingAccountBalanceWithStaking(state, account.key),
+    const cryptoBalanceWithStaking = useSelector((state: NativeAccountsRootState) =>
+        selectAccountCryptoBalanceWithStaking(state, account.key),
     );
 
     const handleOnPress = useCallback(() => {
@@ -104,14 +103,7 @@ const AccountsListItemComponent = ({
         />
     ) : (
         <CryptoToFiatAmountFormatter
-            value={
-                shouldIncludeStakingInFiat
-                    ? formatStakingAmount({
-                          amount: balanceWithStaking,
-                          networkSymbol: account.symbol,
-                      })
-                    : account.formattedBalance
-            }
+            value={shouldIncludeStakingInFiat ? cryptoBalanceWithStaking : account.formattedBalance}
             isBalance={true}
             symbol={account.symbol}
         />

@@ -1,7 +1,6 @@
 import { type DeviceRootState } from '@suite-common/device';
 import {
     type StakingRootState,
-    formatStakingAmount,
     selectStakingAmountsOutsideBalance,
 } from '@suite-common/earn-staking';
 import { type StakingAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
@@ -22,7 +21,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { isNftToken } from '@suite-common/wallet-utils';
+import { getAccountBalanceWithStaking, isNftToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import {
@@ -88,20 +87,7 @@ const createStableAssetAccounts = weakMapMemoize(
 const getNativeTokenCryptoBalance = (
     account: Account,
     stakingAmountOutsideBalance: StakingAmount,
-) => {
-    if (new BigNumber(stakingAmountOutsideBalance).isZero()) {
-        return account.formattedBalance;
-    }
-
-    return new BigNumber(account.formattedBalance)
-        .plus(
-            formatStakingAmount({
-                amount: stakingAmountOutsideBalance,
-                networkSymbol: account.symbol,
-            }),
-        )
-        .toFixed();
-};
+) => getAccountBalanceWithStaking({ account, stakingBalance: stakingAmountOutsideBalance });
 
 // Keyed on the account object, so an account's asset accounts are rebuilt only when it or its
 // staking amount changes, and the cache entry goes with the account.
