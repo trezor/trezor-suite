@@ -4689,6 +4689,22 @@ export const messages = defineMessages({
         id: 'TR_ACCOUNT_TYPE_BIP44_TECH',
         defaultMessage: 'BIP44, P2PKH, Base58',
     },
+    TR_ACCOUNT_TYPE_BIP44_CASHADDR_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP44_CASHADDR_TECH',
+        defaultMessage: 'BIP44, P2PKH, CashAddr',
+    },
+    TR_ACCOUNT_TYPE_BIP44_HEX_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP44_HEX_TECH',
+        defaultMessage: 'BIP44, Hex',
+    },
+    TR_ACCOUNT_TYPE_BIP44_STRKEY_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP44_STRKEY_TECH',
+        defaultMessage: 'BIP44, StrKey',
+    },
+    TR_ACCOUNT_TYPE_BIP44_BASE58_TECH: {
+        id: 'TR_ACCOUNT_TYPE_BIP44_BASE58_TECH',
+        defaultMessage: 'BIP44, Base58',
+    },
     TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME: {
         id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_NAME',
         defaultMessage: 'Bip44Change',

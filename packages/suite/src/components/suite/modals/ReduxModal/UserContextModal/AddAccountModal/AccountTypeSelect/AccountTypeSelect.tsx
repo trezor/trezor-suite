@@ -44,7 +44,7 @@ const AccountTypeSelectComponent = ({
             <Row alignItems="baseline" gap={8}>
                 {accountTypeName && <Translation id={accountTypeName} />}
                 <Text intent="neutral" priority="secondary">
-                    <Translation id={getAccountTypeTech(option.value.bip43Path)} />
+                    <Translation id={getAccountTypeTech(option.value.bip43Path, networkType)} />
                 </Text>
             </Row>
         );
