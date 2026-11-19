@@ -55,10 +55,10 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/requirements": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@types/chrome": "^0.2.2",
+        "@types/chrome": "^0.3.7",
         "@types/jest": "30.0.0",
         "@types/w3c-web-usb": "^1.0.14",
-        "@types/web": "^0.0.345",
+        "@types/web": "^0.0.360",
         "xvfb-maybe": "^0.2.1"
     },
     "peerDependencies": {

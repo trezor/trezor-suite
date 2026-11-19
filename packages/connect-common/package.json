@@ -79,7 +79,7 @@
         "@trezor/requirements": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "@types/chrome": "^0.2.2",
+        "@types/chrome": "^0.3.7",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10"
     }

@@ -222,6 +222,9 @@ export default defineConfig(
                           'vite-plugin-node-polyfills/shims/global',
                           'vite-plugin-node-polyfills/shims/process',
                           'crypto',
+                          // Loaded by the ripple worker of blockchain-link, which the entries above
+                          // do not reach. Found mid-run, it would make Vite reload the page.
+                          'xrpl',
                       ],
                   }
                 : undefined,

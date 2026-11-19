@@ -41,6 +41,6 @@
         "@trezor/node-utils": "workspace:*",
         "node-fetch": "^3.3.2",
         "socks-proxy-agent": "8.0.5",
-        "ws": "^8.20.0"
+        "ws": "^8.23.0"
     }
 }

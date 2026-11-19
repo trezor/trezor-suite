@@ -12,9 +12,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js,mjs,mdx}'"
     },
     "dependencies": {
-        "@codemirror/state": "^6.6.0",
+        "@codemirror/state": "^6.7.6",
         "@hbsnow/rehype-sectionize": "^1.0.7",
-        "@sinclair/typebox": "^0.34.49",
+        "@sinclair/typebox": "^0.34.52",
         "@trezor/components": "workspace:^",
         "@trezor/connect-common": "workspace:^",
         "@trezor/connect-data": "workspace:^",
@@ -41,7 +41,7 @@
         "@trezor/theme": "workspace:^",
         "@trezor/urls": "workspace:^",
         "@trezor/utils": "workspace:^",
-        "@uiw/react-codemirror": "^4.25.9",
+        "@uiw/react-codemirror": "^4.25.12",
         "codemirror-json-schema": "^0.8.1",
         "codemirror-json5": "^1.0.3",
         "json5": "^2.2.3",
@@ -64,15 +64,15 @@
         "styled-components": "^6.5.3",
         "stylelint": "^17.16.0",
         "stylelint-config-standard": "^40.0.0",
-        "swr": "^2.4.1"
+        "swr": "^2.5.1"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "@trezor/requirements": "workspace:*",
-        "@types/chrome": "^0.2.2",
+        "@types/chrome": "^0.3.7",
         "@types/node": "22.13.10",
         "@types/redux-logger": "^3.0.13",
-        "@types/web": "^0.0.345",
+        "@types/web": "^0.0.360",
         "babel-plugin-styled-components": "^2.3.1",
         "copy-webpack-plugin": "^14.0.0",
         "eslint-plugin-mdx": "^3.8.3",

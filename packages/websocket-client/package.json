@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
-        "ws": "^8.20.0"
+        "ws": "^8.23.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
@@ -60,7 +60,7 @@
     "devDependencies": {
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10",
-        "@types/web": "^0.0.345",
-        "@types/ws": "^8.5.13"
+        "@types/web": "^0.0.360",
+        "@types/ws": "^8.18.2"
     }
 }
