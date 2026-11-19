@@ -18,19 +18,25 @@ import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
-    selectAccountAsset,
-    selectAccountAssetFiatValue,
-    selectAccountAssetKeys,
-    selectAccountAssetTotals,
-    selectAccountAvailableAmount,
-    selectAccountDisplayedAssetKeys,
-    selectAccountSmallBalanceSummary,
-    selectAccountStakingAmount,
-    selectAccountStakingRatio,
-    selectIsAccountAssetRatePending,
-    selectIsAccountAssetTotalIncomplete,
+    selectAccountCoinAssetKey,
+    selectIsAssetTableRatePending,
+    selectIsAssetTableTotalIncomplete,
 } from './accountAssetSelectors';
-import { type HomeAssetTableState } from './homeAssetTableSelectors';
+import {
+    type HomeAssetTableState,
+    selectDisplayedWalletAssetKeys,
+    selectHomeAssetTotals,
+    selectShownWalletAssetKeys,
+    selectSmallBalanceSummary,
+    selectWalletAssetAmount,
+    selectWalletAssetAvailableAmount,
+    selectWalletAssetContractAddress,
+    selectWalletAssetFiatValue,
+    selectWalletAssetNetworkSymbol,
+    selectWalletAssetStakingAmount,
+    selectWalletAssetStakingRatio,
+    selectWalletAssetTokenSymbol,
+} from './homeAssetTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 
@@ -135,26 +141,25 @@ const createState = (
     }) as unknown as HomeAssetTableState;
 
 // How the row names the asset: its token symbol, or the network symbol in capitals.
-const labelOf = (state: HomeAssetTableState, account: Account, assetKey: WalletAssetKey) => {
-    const asset = selectAccountAsset(state, account.key, assetKey);
+const labelOf = (state: HomeAssetTableState, assetKey: WalletAssetKey, keys: AccountKey[]) =>
+    selectWalletAssetTokenSymbol(state, assetKey, false, keys) ??
+    selectWalletAssetNetworkSymbol(state, assetKey, false, keys)?.toUpperCase();
 
-    return asset?.tokenSymbol ?? asset?.networkSymbol.toUpperCase();
+const rowsOf = (state: HomeAssetTableState, account: Account) => {
+    const keys = [account.key];
+
+    return selectShownWalletAssetKeys(state, keys).map(assetKey => [
+        selectWalletAssetContractAddress(state, assetKey, false, keys) === undefined
+            ? 'coin'
+            : 'token',
+        labelOf(state, assetKey, keys),
+        selectWalletAssetAmount(state, assetKey, false, keys),
+        selectWalletAssetFiatValue(state, assetKey, keys)?.toFixed(),
+    ]);
 };
 
-const rowsOf = (state: HomeAssetTableState, account: Account) =>
-    selectAccountAssetKeys(state, account.key).map(assetKey => {
-        const asset = selectAccountAsset(state, account.key, assetKey);
-
-        return [
-            asset?.contractAddress === undefined ? 'coin' : 'token',
-            labelOf(state, account, assetKey),
-            asset?.amount,
-            selectAccountAssetFiatValue(state, account.key, assetKey)?.toFixed(),
-        ];
-    });
-
 const totalOf = (state: HomeAssetTableState, account: Account) =>
-    selectAccountAssetTotals(state, account.key).fiatValue;
+    selectHomeAssetTotals(state, [account.key]).fiatValue;
 
 describe('the assets of an account', () => {
     const account = mockAccount({
@@ -241,10 +246,14 @@ describe('the fiat total of an account', () => {
     const failed = (contract?: TokenAddress) => ({
         [getFiatRateKey(ETH, 'usd', contract)]: { error: 'Failed to fetch' },
     });
-    const flagsOf = (state: HomeAssetTableState, ofAccount: Account) => ({
-        isPending: selectIsAccountAssetRatePending(state, ofAccount.key),
-        isIncomplete: selectIsAccountAssetTotalIncomplete(state, ofAccount.key),
-    });
+    const flagsOf = (state: HomeAssetTableState, ofAccount: Account) => {
+        const keys = [ofAccount.key];
+
+        return {
+            isPending: selectIsAssetTableRatePending(state, keys),
+            isIncomplete: selectIsAssetTableTotalIncomplete(state, keys),
+        };
+    };
 
     it('adds up every priced asset, and marks nothing missing when all of them are', () => {
         const state = createState([account], {
@@ -311,11 +320,16 @@ describe('the fiat total of an account', () => {
 });
 
 describe('the staked share of the coin of an account', () => {
-    const splitOf = (state: HomeAssetTableState, account: Account) => ({
-        availableAmount: selectAccountAvailableAmount(state, account.key),
-        stakingAmount: selectAccountStakingAmount(state, account.key),
-        stakingRatio: selectAccountStakingRatio(state, account.key),
-    });
+    const splitOf = (state: HomeAssetTableState, account: Account) => {
+        const keys = [account.key];
+        const coinKey = selectAccountCoinAssetKey(state, account.key);
+
+        return {
+            availableAmount: selectWalletAssetAvailableAmount(state, coinKey, false, keys),
+            stakingAmount: selectWalletAssetStakingAmount(state, coinKey, false, keys),
+            stakingRatio: selectWalletAssetStakingRatio(state, coinKey, false, keys),
+        };
+    };
 
     it('splits the coin into what is staked and what is not', () => {
         const account = mockAccount();
@@ -382,16 +396,19 @@ describe('the small balances of an account', () => {
         tokens: [mockToken(USDC, 'USDC', '1000', 6), mockToken(ENS, 'ENS', '0.03', 18)],
     } as Partial<Account>);
     const rates = { ...mockRate(3000), ...mockRate(1, USDC), ...mockRate(20, ENS) };
-    const displayed = (state: HomeAssetTableState) =>
-        selectAccountDisplayedAssetKeys(state, dust.key).map(assetKey =>
-            labelOf(state, dust, assetKey),
+    const displayed = (state: HomeAssetTableState) => {
+        const keys = [dust.key];
+
+        return selectDisplayedWalletAssetKeys(state, undefined, keys).map(assetKey =>
+            labelOf(state, assetKey, keys),
         );
+    };
 
     it('counts a token worth under a dollar, and lists it only while they are shown', () => {
         const shown = createState([dust], { rates });
         const hidden = createState([dust], { rates, areSmallBalancesShown: false });
 
-        const summary = selectAccountSmallBalanceSummary(shown, dust.key);
+        const summary = selectSmallBalanceSummary(shown, [dust.key]);
 
         expect(summary?.assetCount).toBe(1);
         expect(summary?.fiatValue.toFixed()).toBe('0.6');
@@ -406,7 +423,7 @@ describe('the small balances of an account', () => {
             localCurrency: 'eur',
         });
 
-        expect(selectAccountSmallBalanceSummary(state, dust.key)).toBeUndefined();
+        expect(selectSmallBalanceSummary(state, [dust.key])).toBeUndefined();
         expect(displayed(state)).toEqual(['ENS', 'USDC']);
     });
 });

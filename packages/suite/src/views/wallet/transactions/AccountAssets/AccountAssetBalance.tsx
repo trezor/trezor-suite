@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import {
-    selectAccountAssetKeys,
-    selectAccountAssetTotals,
-    selectIsAccountAssetRatePending,
-    selectIsAccountAssetTotalIncomplete,
+    selectHomeAssetTotals,
+    selectIsAssetTableRatePending,
+    selectIsAssetTableTotalIncomplete,
+    selectShownWalletAssetKeys,
 } from '@suite-common/assets';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Column, Row, Skeleton, Text } from '@trezor/components';
@@ -18,17 +18,17 @@ import { HomeTotalBalance } from '#src/views/home/HomeBalance/HomeTotalBalance';
 const TOTAL_HEIGHT = 56;
 
 type AccountAssetBalanceProps = {
-    accountKey: AccountKey;
+    accountKeys: readonly AccountKey[];
 };
 
 /** What the account is worth in total, and how many assets make it up. */
-export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) => {
-    const assetCount = useSelector(state => selectAccountAssetKeys(state, accountKey).length);
-    const { fiatValue } = useSelector(state => selectAccountAssetTotals(state, accountKey));
+export const AccountAssetBalance = ({ accountKeys }: AccountAssetBalanceProps) => {
+    const assetCount = useSelector(state => selectShownWalletAssetKeys(state, accountKeys).length);
+    const { fiatValue } = useSelector(state => selectHomeAssetTotals(state, accountKeys));
     const isIncomplete = useSelector(state =>
-        selectIsAccountAssetTotalIncomplete(state, accountKey),
+        selectIsAssetTableTotalIncomplete(state, accountKeys),
     );
-    const isRatePending = useSelector(state => selectIsAccountAssetRatePending(state, accountKey));
+    const isRatePending = useSelector(state => selectIsAssetTableRatePending(state, accountKeys));
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { balanceSectionRef } = useAccountHeaderContext();
 

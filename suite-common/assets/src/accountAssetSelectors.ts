@@ -1,6 +1,3 @@
-import { shallowEqual } from 'react-redux';
-
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type WalletAssetKey,
     getWalletAssetKey,
@@ -9,165 +6,32 @@ import {
     selectCurrentFiatRates,
     selectIsTokenFiatRateDisallowed,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet } from '@suite-common/wallet-utils';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
-import { type BigNumber } from '@trezor/utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
-import {
-    selectDeviceAssetAccounts,
-    selectHiddenAssetAccountKeySet,
-} from './assetAccountsSelectors';
 import {
     type HomeAssetTableState,
-    groupWalletAssets,
-    haveSameSmallBalanceSummary,
-    pickRates,
-    pickedOnce,
-    priceAssets,
-    pricedOnce,
-    selectAllDisplayedAssetKeys,
-    selectAreHomeAssetSmallBalancesDisplayed,
-    selectHomeAssetTotals,
     selectShownWalletAssetKeys,
-    selectSmallBalanceAssetKeySet,
-    selectSmallBalanceSummary,
-    selectUsdToBaseCurrencyRate,
-    selectWalletAssetAvailableAmount,
-    selectWalletAssetStakingAmount,
-    selectWalletAssetStakingRatio,
+    selectWalletAssetContractAddress,
+    selectWalletAssetFiatValue,
+    selectWalletAssetNetworkSymbol,
 } from './homeAssetTableSelectors';
-
-// The Home asset table's chain put together again over the holdings of one account: the same
-// result functions, fed that account's assets where Home feeds the wallet's.
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
-const selectAccount = (state: HomeAssetTableState, accountKey: AccountKey) =>
-    selectAccountByKey(state, accountKey);
+type AccountKeys = readonly AccountKey[] | undefined;
 
-const selectAccountAssets = createMemoizedSelector(
-    [
-        selectDeviceAssetAccounts,
-        selectHiddenAssetAccountKeySet,
-        (_state: HomeAssetTableState, accountKey: AccountKey) => accountKey,
-    ],
-    (assetAccounts, hiddenAccounts, accountKey) =>
-        groupWalletAssets(
-            assetAccounts.filter(
-                assetAccount =>
-                    assetAccount.accountKey === accountKey &&
-                    !hiddenAccounts.has(assetAccount.assetAccountKey),
-            ),
-        ),
-);
-
-const selectAccountAssetRates = createMemoizedSelector(
-    [selectAccountAssets, selectCurrentFiatRates, selectBaseCurrency],
-    pickRates,
-    pickedOnce,
-);
-
-const selectAccountAssetValues = createMemoizedSelector(
-    [selectAccountAssets, selectAccountAssetRates],
-    priceAssets,
-    pricedOnce,
-);
-
-// An account is listed whatever networks the wallet has enabled: its own is the only one there is.
-const selectAccountNetworkSymbols = createMemoizedSelector(
-    [selectAccount],
-    (account): readonly NetworkSymbol[] =>
-        returnStableArrayIfEmpty(account === null ? [] : [account.symbol]),
-);
-
-export const selectAccountAssetKeys = createMemoizedSelector(
-    [selectAccountAssets, selectAccountAssetValues, selectAccountNetworkSymbols],
-    selectShownWalletAssetKeys.resultFunc,
-    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
-);
-
-const selectAccountUsdToBaseCurrencyRate = createMemoizedSelector(
-    [selectAccountAssetKeys, selectAccountAssets, selectCurrentFiatRates, selectBaseCurrency],
-    selectUsdToBaseCurrencyRate.resultFunc,
-);
-
-const selectAccountSmallBalanceAssetKeySet = createMemoizedSelector(
-    [selectAccountAssetKeys, selectAccountAssetValues, selectAccountUsdToBaseCurrencyRate],
-    selectSmallBalanceAssetKeySet.resultFunc,
-);
-
-export const selectAccountSmallBalanceSummary = createMemoizedSelector(
-    [selectAccountSmallBalanceAssetKeySet, selectAccountAssetValues],
-    selectSmallBalanceSummary.resultFunc,
-    { memoizeOptions: { resultEqualityCheck: haveSameSmallBalanceSummary } },
-);
-
-export const selectAccountDisplayedAssetKeys = createMemoizedSelector(
-    [
-        selectAccountAssetKeys,
-        selectAccountSmallBalanceAssetKeySet,
-        (state: HomeAssetTableState) => selectAreHomeAssetSmallBalancesDisplayed(state),
-    ],
-    selectAllDisplayedAssetKeys.resultFunc,
-    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
-);
-
-const NO_WEEK_AGO_VALUES: ReadonlyMap<WalletAssetKey, BigNumber> = new Map();
-
-export const selectAccountAssetTotals = createMemoizedSelector(
-    [selectAccountAssetKeys, selectAccountAssetValues, () => NO_WEEK_AGO_VALUES],
-    selectHomeAssetTotals.resultFunc,
-);
-
-export const selectAccountAsset = (
-    state: HomeAssetTableState,
-    accountKey: AccountKey,
-    assetKey: WalletAssetKey | undefined,
-) => (assetKey === undefined ? undefined : selectAccountAssets(state, accountKey).get(assetKey));
-
-export const selectAccountAssetFiatValue = (
-    state: HomeAssetTableState,
-    accountKey: AccountKey,
-    assetKey: WalletAssetKey,
-) => selectAccountAssetValues(state, accountKey).get(assetKey);
-
-export const selectAccountCoinAssetKey = createMemoizedSelector([selectAccount], account =>
-    account === null
-        ? undefined
-        : getWalletAssetKey({
-              deviceState: account.deviceState,
-              networkSymbol: account.symbol,
-              contractAddress: undefined,
-          }),
-);
-
-export const selectAccountCoinAmount = (state: HomeAssetTableState, accountKey: AccountKey) =>
-    selectAccountAsset(state, accountKey, selectAccountCoinAssetKey(state, accountKey))?.amount;
-
-const selectAccountAlone = createMemoizedSelector([selectAccount], (account): Account[] =>
-    returnStableArrayIfEmpty(account === null ? [] : [account]),
-);
-
-export const selectAccountStakingAmount = createMemoizedSelector(
-    [
-        (state: HomeAssetTableState) => state,
-        selectAccountAlone,
-        (state: HomeAssetTableState, accountKey: AccountKey) =>
-            selectAccount(state, accountKey)?.symbol,
-        () => undefined,
-    ],
-    selectWalletAssetStakingAmount.resultFunc,
-);
-
-export const selectAccountStakingRatio = createMemoizedSelector(
-    [selectAccountCoinAmount, selectAccountStakingAmount],
-    selectWalletAssetStakingRatio.resultFunc,
-);
-
-export const selectAccountAvailableAmount = createMemoizedSelector(
-    [selectAccountCoinAmount, selectAccountStakingAmount],
-    selectWalletAssetAvailableAmount.resultFunc,
+export const selectAccountCoinAssetKey = createMemoizedSelector(
+    [(state: HomeAssetTableState, accountKey: AccountKey) => selectAccountByKey(state, accountKey)],
+    account =>
+        account === null
+            ? undefined
+            : getWalletAssetKey({
+                  deviceState: account.deviceState,
+                  networkSymbol: account.symbol,
+                  contractAddress: undefined,
+              }),
 );
 
 /**
@@ -176,54 +40,55 @@ export const selectAccountAvailableAmount = createMemoizedSelector(
  */
 const isAssetRatePending = (
     state: HomeAssetTableState,
-    accountKey: AccountKey,
     assetKey: WalletAssetKey,
+    accountKeys: AccountKeys,
 ) => {
-    const asset = selectAccountAsset(state, accountKey, assetKey);
+    const networkSymbol = selectWalletAssetNetworkSymbol(state, assetKey, false, accountKeys);
+    const contractAddress = selectWalletAssetContractAddress(state, assetKey, false, accountKeys);
 
     return (
-        asset !== undefined &&
-        !isTestnet(asset.networkSymbol) &&
-        !selectIsTokenFiatRateDisallowed(state, asset.networkSymbol, asset.contractAddress) &&
+        networkSymbol !== undefined &&
+        !isTestnet(networkSymbol) &&
+        !selectIsTokenFiatRateDisallowed(state, networkSymbol, contractAddress) &&
         !selectCurrentFiatRates(state)?.[
-            getFiatRateKey(asset.networkSymbol, selectBaseCurrency(state), asset.contractAddress)
+            getFiatRateKey(networkSymbol, selectBaseCurrency(state), contractAddress)
         ]?.error
     );
 };
 
 const isAssetUnpriced = (
     state: HomeAssetTableState,
-    accountKey: AccountKey,
     assetKey: WalletAssetKey,
-) => selectAccountAssetFiatValue(state, accountKey, assetKey) === undefined;
+    accountKeys: AccountKeys,
+) => selectWalletAssetFiatValue(state, assetKey, accountKeys) === undefined;
 
-/** Whether a rate the account still lacks is on its way, so its total is worth waiting for. */
-export const selectIsAccountAssetRatePending = (
+/** Whether a rate the table still lacks is on its way, so its total is worth waiting for. */
+export const selectIsAssetTableRatePending = (
     state: HomeAssetTableState,
-    accountKey: AccountKey,
+    accountKeys?: AccountKeys,
 ) =>
-    selectAccountAssetKeys(state, accountKey).some(
+    selectShownWalletAssetKeys(state, accountKeys).some(
         assetKey =>
-            isAssetUnpriced(state, accountKey, assetKey) &&
-            isAssetRatePending(state, accountKey, assetKey),
+            isAssetUnpriced(state, assetKey, accountKeys) &&
+            isAssetRatePending(state, assetKey, accountKeys),
     );
 
 /**
  * Whether the total leaves out a held asset that has no rate to come. One still on its way is
  * not counted: the total is only short of it until it lands.
  */
-export const selectIsAccountAssetTotalIncomplete = (
+export const selectIsAssetTableTotalIncomplete = (
     state: HomeAssetTableState,
-    accountKey: AccountKey,
+    accountKeys?: AccountKeys,
 ) => {
-    const assetKeys = selectAccountAssetKeys(state, accountKey);
+    const assetKeys = selectShownWalletAssetKeys(state, accountKeys);
 
     return (
-        assetKeys.some(assetKey => !isAssetUnpriced(state, accountKey, assetKey)) &&
+        assetKeys.some(assetKey => !isAssetUnpriced(state, assetKey, accountKeys)) &&
         assetKeys.some(
             assetKey =>
-                isAssetUnpriced(state, accountKey, assetKey) &&
-                !isAssetRatePending(state, accountKey, assetKey),
+                isAssetUnpriced(state, assetKey, accountKeys) &&
+                !isAssetRatePending(state, assetKey, accountKeys),
         )
     );
 };

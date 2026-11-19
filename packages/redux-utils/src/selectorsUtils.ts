@@ -38,9 +38,7 @@ export type CreateWeakMapSelectorFunction<StateType = never> = {
         GetStateFromSelectors<InputSelectors>,
         Result,
         GetParamsFromSelectors<InputSelectors>
-    > & {
-        resultFunc: (...results: Parameters<Combiner<InputSelectors, Result>>) => Result;
-    };
+    >;
     withTypes: <OverrideStateType>() => CreateWeakMapSelectorFunction<OverrideStateType>;
 };
 
