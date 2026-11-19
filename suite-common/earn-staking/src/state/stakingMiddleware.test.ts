@@ -234,6 +234,19 @@ describe('prepareStakingMiddleware', () => {
         });
     });
 
+    it('refreshes the product info on a network change within its maximum age', async () => {
+        const { store, staking, adapter } = initStore();
+
+        staking.loadStakingProducts();
+        await flushThunks();
+        jest.mocked(adapter.fetchProductInfo).mockClear();
+
+        store.dispatch(changeNetworks([asNetworkSymbol('eth')], [asNetworkSymbol('eth')]));
+        await flushThunks();
+
+        expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+    });
+
     describe('confirmation', () => {
         const session = mockStakingSession({
             accountKey: ethAccount.key,
