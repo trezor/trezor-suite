@@ -5,7 +5,6 @@ import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import {
     formatStakingAmount,
-    getPotentialStakingRewards,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingOperationPending,
@@ -36,6 +35,7 @@ import { EarnStakingOutdatedProvider } from './EarnStakingOutdatedProvider';
 import { EarnStakingPotentialRewards } from './EarnStakingPotentialRewards';
 import { EarnStakingRateTooltip } from './EarnStakingRateTooltip';
 import { EarnStakingRemainingVotes } from './EarnStakingRemainingVotes';
+import { getEarnStakingPotentialRewards } from './getEarnStakingPotentialRewards';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
 
@@ -206,12 +206,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
 
     const currentRewards = calculateRewards(stakingBalance, rate);
 
-    const potentialRewards = formatStakingAmount({
-        amount: getPotentialStakingRewards({
-            accounts: [{ availableBalance: account.availableBalance }],
-            limits: stakeableDescriptor?.limits ?? null,
-            rate,
-        }),
+    const potentialRewards = getEarnStakingPotentialRewards({
+        currentRewards,
+        availableBalance: account.availableBalance,
+        limits: stakeableDescriptor?.limits ?? null,
+        rate,
         networkSymbol: account.symbol,
     });
     const formattedStakingBalance = formatCryptoAmount(stakingBalance);
