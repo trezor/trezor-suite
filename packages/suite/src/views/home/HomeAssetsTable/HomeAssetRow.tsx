@@ -1,25 +1,12 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { gotoThunk } from '@suite/router';
-import {
-    selectWalletAssetContractAddress,
-    selectWalletAssetNetworkSymbol,
-    selectWalletAssetTokenDecimals,
-    selectWalletAssetTokenSymbol,
-} from '@suite-common/assets';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
-import { PriceTicker, TrendTicker } from '#src/components/suite';
-import { useSelector } from '#src/hooks/suite';
-
-import { HomeAssetApyBadge } from './HomeAssetApyBadge';
-import { HomeAssetBalance } from './HomeAssetBalance';
-import { HomeAssetIdentity } from './HomeAssetIdentity';
-import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
+import { AssetTableRow } from './AssetTableRow';
 
 type HomeAssetRowProps = {
     assetKey: WalletAssetKey;
@@ -27,70 +14,25 @@ type HomeAssetRowProps = {
     assetNameTestId?: string;
 };
 
-export const HomeAssetRow = memo(function HomeAssetRow({
-    assetKey,
-    hasBorderTop,
-    assetNameTestId,
-}: HomeAssetRowProps) {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
-    const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
-    const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
+const getTestId = (networkSymbol: NetworkSymbol, contractAddress: TokenAddress | undefined) =>
+    `@dashboard/home-asset-item/${networkSymbol}/${contractAddress ?? 'coin'}`;
 
-    if (networkSymbol === undefined) {
-        return null;
-    }
+export const HomeAssetRow = memo(function HomeAssetRow(props: HomeAssetRowProps) {
+    const { analytics } = useServices(injectDesktopAnalytics);
 
-    const openAssetDetail = () => {
-        analytics.report({
-            type: events.navigateFlowEvent.name,
-            payload: {
-                action: 'navigate',
-                type: 'asset',
-                from: 'home-asset-table',
-                networkSymbol,
-            },
-        });
-        dispatch(
-            gotoThunk({
-                routeName: 'suite-asset',
-                params: { symbol: networkSymbol, contractAddress },
+    const reportOpen = useCallback(
+        (networkSymbol: NetworkSymbol) =>
+            analytics.report({
+                type: events.navigateFlowEvent.name,
+                payload: {
+                    action: 'navigate',
+                    type: 'asset',
+                    from: 'home-asset-table',
+                    networkSymbol,
+                },
             }),
-        );
-    };
-
-    return (
-        <Table.Row
-            hasBorderTop={hasBorderTop}
-            onClick={openAssetDetail}
-            data-testid={`@dashboard/home-asset-item/${networkSymbol}/${contractAddress ?? 'coin'}`}
-        >
-            <Table.Cell padding={HOME_ASSET_CELL_PADDING.first} data-testid={assetNameTestId}>
-                <HomeAssetIdentity
-                    symbol={networkSymbol}
-                    contractAddress={contractAddress}
-                    badge={
-                        <HomeAssetApyBadge
-                            symbol={networkSymbol}
-                            contractAddress={contractAddress}
-                            tokenSymbol={tokenSymbol}
-                            tokenDecimals={tokenDecimals}
-                        />
-                    }
-                />
-            </Table.Cell>
-
-            <Table.Cell align="end">
-                <Column alignItems="flex-end" gap={HOME_ASSET_LINE_GAP}>
-                    <PriceTicker symbol={networkSymbol} contractAddress={contractAddress} />
-                    <TrendTicker symbol={networkSymbol} contractAddress={contractAddress} />
-                </Column>
-            </Table.Cell>
-
-            <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
-                <HomeAssetBalance assetKey={assetKey} />
-            </Table.Cell>
-        </Table.Row>
+        [analytics],
     );
+
+    return <AssetTableRow {...props} getTestId={getTestId} onOpen={reportOpen} />;
 });

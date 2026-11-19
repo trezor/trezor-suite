@@ -149,6 +149,14 @@ export const selectAssetAccounts = createMemoizedSelector(
     toStableAssetAccounts,
 );
 
+export const createAssetAccountsSelector = (
+    selectScopedAccounts: (state: AssetAccountsRootState) => readonly Account[],
+) =>
+    createMemoizedSelector(
+        [selectScopedAccounts, selectStakingAmountsOutsideBalance],
+        toStableAssetAccounts,
+    );
+
 /** Only the wallet on screen: another wallet's accounts are no work this table has to do. */
 export const selectDeviceAssetAccounts = createMemoizedSelector(
     [selectVisibleDeviceAccounts, selectStakingAmountsOutsideBalance],

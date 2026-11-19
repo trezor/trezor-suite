@@ -1,15 +1,11 @@
 import { memo } from 'react';
 
-import {
-    selectWalletAssetAmount,
-    selectWalletAssetContractAddress,
-    selectWalletAssetNetworkSymbol,
-} from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 
 import { useSelector } from '#src/hooks/suite';
 
 import { HomeAssetAmount } from './HomeAssetAmount';
+import { useAssetTableSelectors } from './assetTableSelectorsContext';
 
 type HomeAssetBalanceProps = {
     assetKey: WalletAssetKey;
@@ -17,6 +13,11 @@ type HomeAssetBalanceProps = {
 };
 
 export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalanceProps) => {
+    const {
+        selectWalletAssetAmount,
+        selectWalletAssetContractAddress,
+        selectWalletAssetNetworkSymbol,
+    } = useAssetTableSelectors();
     const networkSymbol = useSelector(state =>
         selectWalletAssetNetworkSymbol(state, assetKey, isHidden),
     );

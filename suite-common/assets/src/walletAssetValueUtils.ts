@@ -147,7 +147,6 @@ export const summarizeSmallBalances = (
               fiatValue: fiatValues.reduce((total, value) => total.plus(value), ZERO),
           };
 
-/** The staked amount of the given positions, in base units. */
 export const sumStakingPositionAmounts = (entries: readonly { position: StakingPosition }[]) =>
     entries.reduce((total, { position }) => total.plus(getStakingPositionAmount(position)), ZERO);
 
@@ -157,7 +156,6 @@ export const formatStakingTotal = (total: BigNumber, networkSymbol: NetworkSymbo
         networkSymbol,
     });
 
-/** The share of an amount that is staked; undefined while either side is not positive. */
 export const getStakingRatio = (amount: string, stakingAmount: string) =>
     isPositiveBalance(amount) && isPositiveBalance(stakingAmount)
         ? Number(stakingAmount) / Number(amount)

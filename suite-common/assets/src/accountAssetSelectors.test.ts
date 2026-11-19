@@ -9,23 +9,15 @@ import {
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
 import { type TokenAddress } from '@suite-common/tokens';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAssetKey, getWalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    type AccountAsset,
-    selectAccountAssets,
-    selectAccountEarnSplit,
-    selectAccountFiatValue,
-    selectAccountSmallBalanceSummary,
-    selectDisplayedAccountAssets,
-    selectIsAccountFiatRatePending,
-    selectIsAccountFiatTotalIncomplete,
-} from './accountAssetSelectors';
+import { getAccountAssetTableSelectors } from './accountAssetSelectors';
 import { type HomeAssetTableState } from './homeAssetTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -127,19 +119,32 @@ const createState = (
         },
     }) as unknown as HomeAssetTableState;
 
+const of = (account: Account) => getAccountAssetTableSelectors(account.key);
+
+const coinKeyOf = (networkSymbol: NetworkSymbol) =>
+    getWalletAssetKey({ deviceState: ALICE, networkSymbol, contractAddress: undefined });
+
 // How the row names the asset: its token symbol, or the network symbol in capitals.
-const labelOf = ({ networkSymbol, tokenSymbol }: AccountAsset) =>
-    tokenSymbol ?? networkSymbol.toUpperCase();
+const labelOf = (state: HomeAssetTableState, account: Account, assetKey: WalletAssetKey) =>
+    of(account).selectWalletAssetTokenSymbol(state, assetKey) ??
+    of(account).selectWalletAssetNetworkSymbol(state, assetKey)?.toUpperCase();
 
 const rowsOf = (state: HomeAssetTableState, account: Account) =>
-    selectAccountAssets(state, account.key).map(asset => [
-        asset.kind,
-        labelOf(asset),
-        asset.amount,
-        asset.fiatValue?.toFixed(),
-    ]);
+    of(account)
+        .selectShownWalletAssetKeys(state)
+        .map(assetKey => [
+            of(account).selectWalletAssetContractAddress(state, assetKey) === undefined
+                ? 'coin'
+                : 'token',
+            labelOf(state, account, assetKey),
+            of(account).selectWalletAssetAmount(state, assetKey),
+            of(account).selectWalletAssetFiatValue(state, assetKey)?.toFixed(),
+        ]);
 
-describe('selectAccountAssets', () => {
+const totalOf = (state: HomeAssetTableState, account: Account) =>
+    of(account).selectHomeAssetTotals(state).fiatValue;
+
+describe('the assets of an account', () => {
     const account = mockAccount({
         tokens: [mockToken(USDC, 'USDC', '1000', 6), mockToken(ENS, 'ENS', '1.12', 18)],
     });
@@ -182,7 +187,27 @@ describe('selectAccountAssets', () => {
     });
 
     it('has no rows for an account that is not there', () => {
-        expect(selectAccountAssets(createState([]), 'missing' as AccountKey)).toEqual([]);
+        const missing = mockAccount({ key: 'missing' as AccountKey });
+
+        expect(rowsOf(createState([]), missing)).toEqual([]);
+    });
+
+    it('leaves the other accounts of the wallet out', () => {
+        const other = mockAccount({
+            key: `descriptor1-eth-${ALICE}` as AccountKey,
+            formattedBalance: '10',
+            tokens: [mockToken(USDC, 'USDC', '7', 6)],
+        });
+        const state = createState([account, other], {
+            rates: { ...mockRate(3000), ...mockRate(1, USDC), ...mockRate(20, ENS) },
+        });
+
+        expect(rowsOf(state, other)).toEqual([
+            ['coin', 'ETH', '10', '30000'],
+            ['token', 'USDC', '7', '7'],
+        ]);
+        expect(totalOf(state, other)).toEqual(new BigNumber('30007'));
+        expect(totalOf(state, account)).toEqual(new BigNumber('4622.4'));
     });
 });
 
@@ -200,9 +225,9 @@ describe('the fiat total of an account', () => {
             rates: { ...mockRate(3000), ...mockRate(1, USDC), ...mockRate(20, ENS) },
         });
 
-        expect(selectAccountFiatValue(state, account.key)).toEqual(new BigNumber('4622.4'));
-        expect(selectIsAccountFiatTotalIncomplete(state, account.key)).toBe(false);
-        expect(selectIsAccountFiatRatePending(state, account.key)).toBe(false);
+        expect(totalOf(state, account)).toEqual(new BigNumber('4622.4'));
+        expect(of(account).selectIsFiatTotalIncomplete(state)).toBe(false);
+        expect(of(account).selectIsFiatRatePending(state)).toBe(false);
     });
 
     it('adds up what it can, and says a held asset without a rate is missing', () => {
@@ -210,8 +235,8 @@ describe('the fiat total of an account', () => {
             rates: { ...failed(), ...mockRate(1, USDC), ...mockRate(20, ENS) },
         });
 
-        expect(selectAccountFiatValue(state, account.key)).toEqual(new BigNumber('1022.4'));
-        expect(selectIsAccountFiatTotalIncomplete(state, account.key)).toBe(true);
+        expect(totalOf(state, account)).toEqual(new BigNumber('1022.4'));
+        expect(of(account).selectIsFiatTotalIncomplete(state)).toBe(true);
     });
 
     it('does not call a total incomplete while the rate it lacks is still on its way', () => {
@@ -219,9 +244,9 @@ describe('the fiat total of an account', () => {
             rates: { ...mockRate(1, USDC), ...mockRate(20, ENS) },
         });
 
-        expect(selectAccountFiatValue(state, account.key)).toEqual(new BigNumber('1022.4'));
-        expect(selectIsAccountFiatTotalIncomplete(state, account.key)).toBe(false);
-        expect(selectIsAccountFiatRatePending(state, account.key)).toBe(true);
+        expect(totalOf(state, account)).toEqual(new BigNumber('1022.4'));
+        expect(of(account).selectIsFiatTotalIncomplete(state)).toBe(false);
+        expect(of(account).selectIsFiatRatePending(state)).toBe(true);
     });
 
     it('does not miss an empty asset, whatever its rate', () => {
@@ -231,14 +256,14 @@ describe('the fiat total of an account', () => {
         });
         const state = createState([empty], { rates: { ...failed(), ...mockRate(1, USDC) } });
 
-        expect(selectIsAccountFiatTotalIncomplete(state, empty.key)).toBe(false);
+        expect(of(empty).selectIsFiatTotalIncomplete(state)).toBe(false);
     });
 
     it('has no total while nothing is priced, and waits for rates still on their way', () => {
         const state = createState([account]);
 
-        expect(selectAccountFiatValue(state, account.key)).toBeUndefined();
-        expect(selectIsAccountFiatRatePending(state, account.key)).toBe(true);
+        expect(totalOf(state, account)).toBeUndefined();
+        expect(of(account).selectIsFiatRatePending(state)).toBe(true);
     });
 
     it('stops waiting once every missing rate has failed', () => {
@@ -246,7 +271,7 @@ describe('the fiat total of an account', () => {
             rates: { ...failed(), ...failed(USDC), ...failed(ENS) },
         });
 
-        expect(selectIsAccountFiatRatePending(state, account.key)).toBe(false);
+        expect(of(account).selectIsFiatRatePending(state)).toBe(false);
     });
 
     it('never waits for a testnet, which is not priced', () => {
@@ -258,20 +283,29 @@ describe('the fiat total of an account', () => {
 
         const state = createState([testnet]);
 
-        expect(selectAccountAssets(state, testnet.key)).toHaveLength(1);
-        expect(selectIsAccountFiatRatePending(state, testnet.key)).toBe(false);
+        expect(rowsOf(state, testnet)).toHaveLength(1);
+        expect(of(testnet).selectIsFiatRatePending(state)).toBe(false);
     });
 });
 
-describe('selectAccountEarnSplit', () => {
+describe('the staked share of the coin of an account', () => {
+    const splitOf = (state: HomeAssetTableState, account: Account) => {
+        const coinKey = coinKeyOf(account.symbol);
+
+        return {
+            availableAmount: of(account).selectWalletAssetAvailableAmount(state, coinKey),
+            stakingAmount: of(account).selectWalletAssetStakingAmount(state, coinKey),
+            stakingRatio: of(account).selectWalletAssetStakingRatio(state, coinKey),
+        };
+    };
+
     it('splits the coin into what is staked and what is not', () => {
         const account = mockAccount();
         const state = createState([account], {
             stakingPositions: { [account.key]: [HALF_ETH_STAKED] },
         });
 
-        expect(selectAccountEarnSplit(state, account.key)).toEqual({
-            networkSymbol: ETH,
+        expect(splitOf(state, account)).toEqual({
             availableAmount: '1.2',
             stakingAmount: '0.5',
             stakingRatio: 0.5 / 1.7,
@@ -299,25 +333,22 @@ describe('selectAccountEarnSplit', () => {
             },
         });
 
-        expect(selectAccountEarnSplit(state, cardano.key)).toEqual({
-            networkSymbol: ADA,
+        expect(splitOf(state, cardano)).toEqual({
             availableAmount: '0',
             stakingAmount: '3',
             stakingRatio: 1,
         });
     });
 
-    it('has nothing to split in an empty account, nor where staking is not offered', () => {
-        const empty = mockAccount({ formattedBalance: '0' });
-        const testnet = mockAccount({
-            key: `descriptor0-ttrx-${ALICE}` as AccountKey,
-            symbol: asNetworkSymbol('ttrx'),
-            networkType: 'tron',
-            formattedBalance: '2',
-        } as Partial<Account>);
+    it('counts only the stake of this account, not of another on the same network', () => {
+        const account = mockAccount();
+        const other = mockAccount({ key: `descriptor1-eth-${ALICE}` as AccountKey });
+        const state = createState([account, other], {
+            stakingPositions: { [other.key]: [HALF_ETH_STAKED] },
+        });
 
-        expect(selectAccountEarnSplit(createState([empty]), empty.key)).toBeUndefined();
-        expect(selectAccountEarnSplit(createState([testnet]), testnet.key)).toBeUndefined();
+        expect(splitOf(state, account).stakingAmount).toBe('0');
+        expect(splitOf(state, other).stakingAmount).toBe('0.5');
     });
 });
 
@@ -328,13 +359,15 @@ describe('the small balances of an account', () => {
     } as Partial<Account>);
     const rates = { ...mockRate(3000), ...mockRate(1, USDC), ...mockRate(20, ENS) };
     const displayed = (state: HomeAssetTableState) =>
-        selectDisplayedAccountAssets(state, dust.key).map(labelOf);
+        of(dust)
+            .selectDisplayedWalletAssetKeys(state)
+            .map(assetKey => labelOf(state, dust, assetKey));
 
     it('counts a token worth under a dollar, never the coin, and lists it only while they are shown', () => {
         const shown = createState([dust], { rates });
         const hidden = createState([dust], { rates, areSmallBalancesShown: false });
 
-        const summary = selectAccountSmallBalanceSummary(shown, dust.key);
+        const summary = of(dust).selectSmallBalanceSummary(shown);
 
         expect(summary?.assetCount).toBe(1);
         expect(summary?.fiatValue.toFixed()).toBe('0.6');
@@ -350,7 +383,7 @@ describe('the small balances of an account', () => {
             localCurrency: 'eur',
         });
 
-        expect(selectAccountSmallBalanceSummary(state, dust.key)).toBeUndefined();
-        expect(displayed(state)).toEqual(['ENS', 'USDC', 'ETH']);
+        expect(of(dust).selectSmallBalanceSummary(state)).toBeUndefined();
+        expect(displayed(state)).toEqual(['ENS', 'ETH', 'USDC']);
     });
 });
