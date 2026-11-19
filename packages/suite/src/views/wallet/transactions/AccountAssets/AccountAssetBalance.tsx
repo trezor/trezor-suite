@@ -1,24 +1,29 @@
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { getAccountAssetTableSelectors } from '@suite-common/assets';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Column, Row, Skeleton, Text } from '@trezor/components';
 
 import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
-import { useAssetTableSelectors } from '#src/views/home/HomeAssetsTable/assetTableSelectorsContext';
 import { HomeTotalBalance } from '#src/views/home/HomeBalance/HomeTotalBalance';
 
 /** The line height of the total headline, so its placeholders keep the card from jumping. */
 const TOTAL_HEIGHT = 56;
 
 /** What the account is worth in total, and how many assets make it up. */
-export const AccountAssetBalance = () => {
+type AccountAssetBalanceProps = {
+    accountKey: AccountKey;
+};
+
+export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) => {
     const {
         selectHomeAssetTotals,
         selectIsFiatRatePending,
         selectIsFiatTotalIncomplete,
         selectShownWalletAssetKeys,
-    } = useAssetTableSelectors();
+    } = getAccountAssetTableSelectors(accountKey);
     const assetCount = useSelector(state => selectShownWalletAssetKeys(state).length);
     const fiatValue = useSelector(state => selectHomeAssetTotals(state).fiatValue);
     const isIncomplete = useSelector(selectIsFiatTotalIncomplete);

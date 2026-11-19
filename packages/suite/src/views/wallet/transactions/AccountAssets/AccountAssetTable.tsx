@@ -4,12 +4,14 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     HOME_ASSET_ROW_LIMIT,
+    getAccountAssetTableSelectors,
     getHomeAssetRowLimit,
     selectAreHomeAssetSmallBalancesDisplayed,
 } from '@suite-common/assets';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -18,7 +20,6 @@ import { useSelector } from '#src/hooks/suite';
 import { AssetTableRow } from '#src/views/home/HomeAssetsTable/AssetTableRow';
 import { HomeAssetExpandRow } from '#src/views/home/HomeAssetsTable/HomeAssetExpandRow';
 import { HomeAssetTableFilterHeader } from '#src/views/home/HomeAssetsTable/HomeAssetTableFilter';
-import { useAssetTableSelectors } from '#src/views/home/HomeAssetsTable/assetTableSelectorsContext';
 import {
     HOME_ASSET_CELL_PADDING,
     HOME_ASSET_COL_WIDTHS,
@@ -29,19 +30,24 @@ const getRowTestId = (networkSymbol: NetworkSymbol, contractAddress: TokenAddres
         ? `@wallet/account-asset/coin/${networkSymbol}`
         : `@wallet/account-asset/token/${contractAddress}`;
 
+type AccountAssetTableProps = {
+    accountKey: AccountKey;
+};
+
 /**
  * The Home asset table for one account: its coin, its stake counted in, and its tokens. The
  * small-balance switch is the one Home keeps, though it never hides the coin, so the table is never
  * left empty; there is no grouping, as every row is the account's network.
  */
-export const AccountAssetTable = () => {
+export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
+    const selectors = getAccountAssetTableSelectors(accountKey);
     const {
         selectDisplayedWalletAssetKeys,
         selectIsHomeAssetTableFoldable,
         selectSmallBalanceSummary,
-    } = useAssetTableSelectors();
+    } = selectors;
     const smallBalances = useSelector(selectSmallBalanceSummary);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
     const isFoldable = useSelector(state =>
@@ -86,6 +92,7 @@ export const AccountAssetTable = () => {
                         <AssetTableRow
                             key={assetKey}
                             assetKey={assetKey}
+                            selectors={selectors}
                             getTestId={getRowTestId}
                         />
                     ))}

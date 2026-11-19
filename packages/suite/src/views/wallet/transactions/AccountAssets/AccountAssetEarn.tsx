@@ -1,4 +1,5 @@
 import { gotoThunk } from '@suite/router';
+import { getAccountAssetTableSelectors } from '@suite-common/assets';
 import {
     getWalletAssetKey,
     isSupportedStakingNetworkSymbol,
@@ -12,7 +13,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useSelector } from '#src/hooks/suite';
 import { AssetDetailEarnCard } from '#src/views/home/AssetDetail/AssetDetailEarnCard';
-import { useAssetTableSelectors } from '#src/views/home/HomeAssetsTable/assetTableSelectorsContext';
 
 type AccountAssetEarnProps = {
     accountKey: AccountKey;
@@ -26,7 +26,7 @@ export const AccountAssetEarn = ({ accountKey }: AccountAssetEarnProps) => {
         selectWalletAssetAvailableAmount,
         selectWalletAssetStakingAmount,
         selectWalletAssetStakingRatio,
-    } = useAssetTableSelectors();
+    } = getAccountAssetTableSelectors(accountKey);
     const account = useSelector(state => selectAccountByKey(state, accountKey));
     const networkSymbol = account?.symbol;
     const coinKey =

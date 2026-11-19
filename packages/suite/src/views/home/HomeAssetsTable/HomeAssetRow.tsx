@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { homeAssetTableSelectors } from '@suite-common/assets';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -34,5 +35,12 @@ export const HomeAssetRow = memo(function HomeAssetRow(props: HomeAssetRowProps)
         [analytics],
     );
 
-    return <AssetTableRow {...props} getTestId={getTestId} onOpen={reportOpen} />;
+    return (
+        <AssetTableRow
+            {...props}
+            selectors={homeAssetTableSelectors}
+            getTestId={getTestId}
+            onOpen={reportOpen}
+        />
+    );
 });

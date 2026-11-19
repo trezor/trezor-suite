@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
+import { type AssetTableSelectors } from '@suite-common/assets';
 import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -14,11 +15,11 @@ import { useSelector } from '#src/hooks/suite';
 import { HomeAssetApyBadge } from './HomeAssetApyBadge';
 import { HomeAssetBalance } from './HomeAssetBalance';
 import { HomeAssetIdentity } from './HomeAssetIdentity';
-import { useAssetTableSelectors } from './assetTableSelectorsContext';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
 
 type AssetTableRowProps = {
     assetKey: WalletAssetKey;
+    selectors: AssetTableSelectors;
     hasBorderTop?: boolean;
     assetNameTestId?: string;
     getTestId: (networkSymbol: NetworkSymbol, contractAddress: TokenAddress | undefined) => string;
@@ -27,6 +28,7 @@ type AssetTableRowProps = {
 
 export const AssetTableRow = memo(function AssetTableRow({
     assetKey,
+    selectors,
     hasBorderTop,
     assetNameTestId,
     getTestId,
@@ -38,7 +40,7 @@ export const AssetTableRow = memo(function AssetTableRow({
         selectWalletAssetNetworkSymbol,
         selectWalletAssetTokenDecimals,
         selectWalletAssetTokenSymbol,
-    } = useAssetTableSelectors();
+    } = selectors;
     const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
@@ -87,7 +89,7 @@ export const AssetTableRow = memo(function AssetTableRow({
             </Table.Cell>
 
             <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
-                <HomeAssetBalance assetKey={assetKey} />
+                <HomeAssetBalance assetKey={assetKey} selectors={selectors} />
             </Table.Cell>
         </Table.Row>
     );
