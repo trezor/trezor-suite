@@ -1,5 +1,6 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import {
     ArrowBendDoubleUpLeftIcon,
@@ -17,16 +18,18 @@ import {
 
 interface StakingEarnInANutshellHighlightsProps {
     networkType: NetworkType;
-    displaySymbol: string;
+    networkSymbol: NetworkSymbol;
     unstakingPeriod?: number;
 }
 
 export const StakingEarnInANutshellHighlights = ({
     networkType,
-    displaySymbol,
+    networkSymbol,
     unstakingPeriod,
 }: StakingEarnInANutshellHighlightsProps) => {
     if (!isStakingNetworkType(networkType)) return null;
+
+    const networkDisplaySymbol = <AssetSymbol networkSymbol={networkSymbol} />;
 
     const highlights: EarnInANutshellHighlight[] = (() => {
         switch (networkType) {
@@ -37,7 +40,7 @@ export const StakingEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKED_AMOUNT_LOCKED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -46,7 +49,7 @@ export const StakingEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_REWARDS"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -67,7 +70,7 @@ export const StakingEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKED_AMOUNT_LOCKED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -76,7 +79,7 @@ export const StakingEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_REWARDS"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -97,7 +100,7 @@ export const StakingEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -106,7 +109,7 @@ export const StakingEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },
@@ -115,7 +118,7 @@ export const StakingEarnInANutshellHighlights = ({
                         content: (
                             <Translation
                                 id="TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED"
-                                values={{ networkDisplaySymbol: displaySymbol }}
+                                values={{ networkDisplaySymbol }}
                             />
                         ),
                     },

@@ -1,8 +1,13 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/networks';
-import { toTokenSymbol } from '@suite-common/tokens';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type AlertBoxIntent, BannerFull, Box, type BoxProps } from '@suite-native/atoms';
+import { AssetSymbol } from '@suite-native/assets';
+import {
+    type AlertBoxIntent,
+    BannerFull,
+    Box,
+    type BoxProps,
+    intentToColorMap,
+} from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 type FeeReserveBannerProps = BoxProps & {
@@ -21,15 +26,15 @@ export const FeeReserveBanner = ({
 }: FeeReserveBannerProps) => {
     const { CryptoAmountFormatter } = useFormatters();
 
-    const nativeSymbol = toTokenSymbol(getNetworkDisplaySymbol(networkSymbol));
-
     const values = {
         amount: CryptoAmountFormatter.format(amount, {
             symbol: networkSymbol,
             isBalance: true,
             withSymbol: false,
         }),
-        nativeSymbol,
+        nativeSymbol: (
+            <AssetSymbol networkSymbol={networkSymbol} color={intentToColorMap[intent].textColor} />
+        ),
     };
 
     return (

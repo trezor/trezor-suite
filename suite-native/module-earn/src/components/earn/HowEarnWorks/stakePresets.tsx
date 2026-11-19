@@ -1,6 +1,7 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
@@ -22,7 +23,6 @@ export const useHowStakeWorksPreset = ({
 }: UseHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
     const apyFormatted = useFormattedEarnRate(apy);
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
     const isSolana = isSupportedSolStakingNetworkSymbol(symbol);
 
     const entryPeriodDescriptionId =
@@ -67,7 +67,11 @@ export const useHowStakeWorksPreset = ({
                 title: (
                     <Translation
                         id="earn.howStakeWorksScreen.benefits.second.title"
-                        values={{ displaySymbol }}
+                        values={{
+                            displaySymbol: (
+                                <AssetSymbol networkSymbol={symbol} variant="body-md-strong" />
+                            ),
+                        }}
                     />
                 ),
                 description: (
@@ -166,7 +170,14 @@ export const useHowStakeWorksPreset = ({
                         title: (
                             <Translation
                                 id="earn.howStakeWorksScreen.unstakeTimeline.third.title"
-                                values={{ symbol: displaySymbol }}
+                                values={{
+                                    symbol: (
+                                        <AssetSymbol
+                                            networkSymbol={symbol}
+                                            variant="body-sm-strong"
+                                        />
+                                    ),
+                                }}
                             />
                         ),
                         description: (
@@ -178,7 +189,14 @@ export const useHowStakeWorksPreset = ({
                         title: (
                             <Translation
                                 id="earn.howStakeWorksScreen.unstakeTimeline.fourth.title"
-                                values={{ symbol: displaySymbol }}
+                                values={{
+                                    symbol: (
+                                        <AssetSymbol
+                                            networkSymbol={symbol}
+                                            variant="body-sm-strong"
+                                        />
+                                    ),
+                                }}
                             />
                         ),
                         description: (

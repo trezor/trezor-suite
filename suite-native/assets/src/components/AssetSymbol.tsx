@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
+import { type NetworksRootState, selectNetworkDisplaySymbol } from '@suite-common/networks';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, type TextProps } from '@suite-native/atoms';
 import { TokenSymbol } from '@suite-native/tokens';
 
@@ -15,14 +18,21 @@ export const AssetSymbol = ({
     contractAddress,
     isTruncated,
     ...textProps
-}: AssetSymbolProps) =>
-    contractAddress ? (
-        <TokenSymbol
-            {...textProps}
-            networkSymbol={networkSymbol}
-            contractAddress={contractAddress}
-            isTruncated={isTruncated}
-        />
-    ) : (
-        <Text {...textProps}>{getNetworkDisplaySymbol(networkSymbol)}</Text>
+}: AssetSymbolProps) => {
+    const networkDisplaySymbol = useSelector((state: NetworksRootState) =>
+        selectNetworkDisplaySymbol(state, networkSymbol),
     );
+
+    if (contractAddress) {
+        return (
+            <TokenSymbol
+                {...textProps}
+                networkSymbol={networkSymbol}
+                contractAddress={contractAddress}
+                isTruncated={isTruncated}
+            />
+        );
+    }
+
+    return <Text {...textProps}>{networkDisplaySymbol}</Text>;
+};

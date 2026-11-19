@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type RewardDtoV2,
@@ -7,7 +8,7 @@ import {
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
@@ -121,9 +122,14 @@ export const EarnYieldApyBreakdown = ({
                     const rateTranslationId = getRateTranslationId(reward.yieldSource);
                     // A wrapped-native reward (e.g. WETH in an ETH vault) is presented as its native
                     // asset (#29881), matching how the vault itself is labelled across the earn UI.
-                    const displaySymbol = isWrappedNativeToken(networkSymbol, reward.token.address)
-                        ? getNetworkDisplaySymbol(networkSymbol)
-                        : reward.token.symbol;
+                    const displaySymbol = isWrappedNativeToken(
+                        networkSymbol,
+                        reward.token.address,
+                    ) ? (
+                        <AssetSymbol networkSymbol={networkSymbol} />
+                    ) : (
+                        reward.token.symbol
+                    );
 
                     let rateNode;
                     if (!hasRatePercent) {
@@ -144,7 +150,7 @@ export const EarnYieldApyBreakdown = ({
                     return (
                         <RewardRow key={index}>
                             <TokenIcon
-                                placeholder={displaySymbol || reward.token.name || 'token'}
+                                placeholder={reward.token.symbol || reward.token.name || 'token'}
                                 networkSymbol={networkSymbol}
                                 contractAddress={reward.token.address}
                                 showNetworkIcon

@@ -1,5 +1,5 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getCardanoTokenSendMinAdaAmount,
     isCardanoTokenSendAdaInsufficient,
@@ -34,7 +34,7 @@ export const CardanoMinAmountInfo = () => {
     });
 
     const hasEnoughADA = !isCardanoTokenSendAdaInsufficient({ balance, minAdaAmount });
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = <AssetSymbol networkSymbol={symbol} />;
 
     return (
         <>

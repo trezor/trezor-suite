@@ -1,3 +1,5 @@
+import { AssetSymbol } from '@suite/assets';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { type FormState } from '@suite-common/wallet-types';
@@ -59,7 +61,14 @@ describe('getTransactionReviewModalActionTranslation', () => {
         expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'heading' })).toEqual(
             {
                 id: 'TR_APPROVAL_APPROVE_TOKEN_SPENDING',
-                values: { displaySymbol: 'USDC' },
+                values: {
+                    displaySymbol: (
+                        <AssetSymbol
+                            networkSymbol={asNetworkSymbol('eth')}
+                            contractAddress={toTokenAddress(TOKEN_CONTRACT)}
+                        />
+                    ),
+                },
             },
         );
         expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'button' })).toEqual({
@@ -75,7 +84,14 @@ describe('getTransactionReviewModalActionTranslation', () => {
         expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'heading' })).toEqual(
             {
                 id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
-                values: { displaySymbol: 'USDC' },
+                values: {
+                    displaySymbol: (
+                        <AssetSymbol
+                            networkSymbol={asNetworkSymbol('eth')}
+                            contractAddress={toTokenAddress(TOKEN_CONTRACT)}
+                        />
+                    ),
+                },
             },
         );
         expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'button' })).toEqual({

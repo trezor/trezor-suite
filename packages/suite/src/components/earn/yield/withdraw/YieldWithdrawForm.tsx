@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     getYieldFlowStepSequence,
     getYieldVaultContractAddress,
@@ -92,7 +93,6 @@ export const YieldWithdrawForm = () => {
     const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
     const hasBlockingAmountIssue = amountIssues.length > 0;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     const withdrawActionToken = flowType === 'redeem' ? receiptToken : token;
     // Approximate fiat value shown under the amount input, from the token's own rate.
     const actionApproxFiat = {
@@ -310,7 +310,12 @@ export const YieldWithdrawForm = () => {
                             title: (
                                 <Translation
                                     id="TR_EARN_YIELD_UNWRAP_TITLE"
-                                    values={{ tokenSymbol: token.symbol, nativeSymbol }}
+                                    values={{
+                                        tokenSymbol: token.symbol,
+                                        nativeSymbol: (
+                                            <AssetSymbol networkSymbol={account.symbol} />
+                                        ),
+                                    }}
                                 />
                             ),
                             description: (

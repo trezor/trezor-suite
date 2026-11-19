@@ -1,16 +1,13 @@
 import styled from 'styled-components';
 
 import { selectSelectedAccount } from '@suite/account';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -43,7 +40,7 @@ export const CoinProtocolRenderer = ({
     const networkSymbol = useSelector(state =>
         selectNetworkSymbolForProtocol(state, notification.scheme),
     );
-    const displaySymbol = networkSymbol && getNetworkDisplaySymbol(networkSymbol);
+    const displaySymbol = networkSymbol && <AssetSymbol networkSymbol={networkSymbol} />;
     const networkName = networkSymbol && getNetworkDisplaySymbolName(networkSymbol);
     const networkAccounts = useSelector(state =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),

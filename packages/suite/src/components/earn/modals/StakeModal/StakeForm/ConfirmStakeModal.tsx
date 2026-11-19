@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
-import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import {
     getDaysToAddToPoolInitial,
     getStakingHelpCenterLink,
@@ -115,7 +116,9 @@ export const ConfirmStakeModal = ({
                         <Translation
                             id={getStakeEnteringMessage(account.networkType)}
                             values={{
-                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                networkDisplaySymbol: (
+                                    <AssetSymbol networkSymbol={account.symbol} />
+                                ),
                                 count:
                                     account.networkType === 'ethereum'
                                         ? daysToAddToPool
@@ -135,7 +138,9 @@ export const ConfirmStakeModal = ({
                         <Translation
                             id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                             values={{
-                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                networkDisplaySymbol: (
+                                    <AssetSymbol networkSymbol={account.symbol} />
+                                ),
                             }}
                         />
                     }

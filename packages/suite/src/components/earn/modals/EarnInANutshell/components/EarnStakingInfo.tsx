@@ -1,6 +1,7 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_MAX_DAYS,
     CARDANO_ACTIVATION_PERIOD_MIN_DAYS,
@@ -27,7 +28,7 @@ interface EarnStakingInfoProps {
 
 interface EarnStakingRowsProps {
     flow: EarnFlow;
-    displaySymbol: string;
+    networkSymbol: NetworkSymbol;
     apy: number | null;
     daysToAddToPool?: number;
 }
@@ -59,7 +60,7 @@ const ApproximateApy = ({ apy }: Pick<EarnStakingRowsProps, 'apy'>) => {
 
 const EthereumStakingRows = ({
     flow,
-    displaySymbol,
+    networkSymbol,
     apy,
     daysToAddToPool,
 }: EarnStakingRowsProps) => (
@@ -70,7 +71,7 @@ const EthereumStakingRows = ({
             subheading={
                 <Translation
                     id="TR_EARN_STAKING_GETTING_READY"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             content={{
@@ -90,7 +91,7 @@ const EthereumStakingRows = ({
     </>
 );
 
-const SolanaStakingRows = ({ flow, displaySymbol, apy }: EarnStakingRowsProps) => (
+const SolanaStakingRows = ({ flow, networkSymbol, apy }: EarnStakingRowsProps) => (
     <>
         <StakingSignRow flow={flow} />
         <EarnInfoRow
@@ -98,7 +99,7 @@ const SolanaStakingRows = ({ flow, displaySymbol, apy }: EarnStakingRowsProps) =
             subheading={
                 <Translation
                     id="TR_EARN_STAKE_WAIT_FOR_ACTIVATION"
-                    values={{ networkDisplaySymbol: displaySymbol }}
+                    values={{ networkDisplaySymbol: <AssetSymbol networkSymbol={networkSymbol} /> }}
                 />
             }
             content={{
@@ -164,7 +165,6 @@ export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
 
     const content = (() => {
         switch (account.networkType) {
@@ -172,15 +172,15 @@ export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
                 return (
                     <EthereumStakingRows
                         flow={flow}
-                        displaySymbol={displaySymbol}
+                        networkSymbol={account.symbol}
                         apy={apy}
                         daysToAddToPool={daysToAddToPoolInitial}
                     />
                 );
             case 'solana':
-                return <SolanaStakingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
+                return <SolanaStakingRows flow={flow} networkSymbol={account.symbol} apy={apy} />;
             case 'cardano':
-                return <CardanoStakingRows flow={flow} displaySymbol={displaySymbol} apy={apy} />;
+                return <CardanoStakingRows flow={flow} networkSymbol={account.symbol} apy={apy} />;
             default:
                 return null;
         }

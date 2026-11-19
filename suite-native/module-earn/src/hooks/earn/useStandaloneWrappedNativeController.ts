@@ -146,7 +146,6 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         status: 'ready' as const,
         account,
         accountLabel: account.accountLabel ?? getNetwork(account.symbol).name,
-        nativeSymbol,
         wrappedTokenSymbol: wrappedNative.symbol,
         wrappedTokenContract: toTokenAddress(wrappedNative.address),
         metadataSources: wrappedNativeToTokenMetadataSources(account.symbol, wrappedNative),

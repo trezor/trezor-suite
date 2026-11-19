@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
@@ -236,7 +237,11 @@ export const TronFreezeAmount = () => {
         onChange: currency === 'crypto' ? handleCryptoAmountChange : handleFiatAmountChange,
         rightContent: (
             <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                {currency === 'crypto' ? networkDisplaySymbol : baseCurrencyCode.toUpperCase()}
+                {currency === 'crypto' ? (
+                    <AssetSymbol networkSymbol={account.symbol} />
+                ) : (
+                    baseCurrencyCode.toUpperCase()
+                )}
             </Text>
         ),
     } as const;
@@ -253,7 +258,7 @@ export const TronFreezeAmount = () => {
                     currency={currency}
                     setCurrency={setCurrency}
                     fiatCurrencySymbol={baseCurrencyCode.toUpperCase()}
-                    cryptoCurrencySymbol={networkDisplaySymbol}
+                    networkSymbol={account.symbol}
                 />
             </Row>
 
@@ -312,7 +317,9 @@ export const TronFreezeAmount = () => {
                             id="TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING"
                             values={{
                                 amount: formatCryptoAmount(TRON_STAKING_RESERVE.toString()),
-                                networkDisplaySymbol,
+                                networkDisplaySymbol: (
+                                    <AssetSymbol networkSymbol={account.symbol} />
+                                ),
                             }}
                         />
                     }
@@ -328,7 +335,9 @@ export const TronFreezeAmount = () => {
                             id="TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING"
                             values={{
                                 amount: formatCryptoAmount(TRON_STAKING_RESERVE.toString()),
-                                networkDisplaySymbol,
+                                networkDisplaySymbol: (
+                                    <AssetSymbol networkSymbol={account.symbol} />
+                                ),
                             }}
                         />
                     }

@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getSolanaUnstakeAmountBounds,
     selectBaseCurrency,
@@ -8,6 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
+import { AssetSymbol } from '@suite-native/assets';
 import { BannerInline, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -64,8 +64,6 @@ export const SolanaUnstakeAmountBoundsAlert = ({
         }
     };
 
-    const symbol = getNetworkDisplaySymbol(account.symbol);
-
     const renderFiatSuffix = (fiatValue: typeof higherFiatValue) =>
         fiatValue ? (
             <Text color="contentCritical" variant="body-sm-strong">
@@ -97,7 +95,16 @@ export const SolanaUnstakeAmountBoundsAlert = ({
                     values={{
                         higher: (
                             <Link
-                                label={`${bounds.closestHigher} ${symbol}`}
+                                label={
+                                    <>
+                                        {bounds.closestHigher}{' '}
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            variant="body-sm-strong"
+                                            color="contentCritical"
+                                        />
+                                    </>
+                                }
                                 onPress={() => handleSelectAmount(bounds.closestHigher)}
                                 isUnderlined
                                 textVariant="body-sm-strong"
@@ -108,7 +115,16 @@ export const SolanaUnstakeAmountBoundsAlert = ({
                         higherFiat: renderFiatSuffix(higherFiatValue),
                         lower: bounds.closestLower ? (
                             <Link
-                                label={`${bounds.closestLower} ${symbol}`}
+                                label={
+                                    <>
+                                        {bounds.closestLower}{' '}
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            variant="body-sm-strong"
+                                            color="contentCritical"
+                                        />
+                                    </>
+                                }
                                 onPress={() => handleSelectAmount(bounds.closestLower!)}
                                 isUnderlined
                                 textVariant="body-sm-strong"

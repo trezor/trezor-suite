@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AssetSymbol } from '@suite-native/assets';
 import {
     type ActiveView,
     BannerInline,
@@ -162,7 +162,13 @@ export const UnstakeFlowScreen = () => {
                                     values={{
                                         limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
                                         amount: unstakeLimitAmount,
-                                        symbol: getNetworkDisplaySymbol(networkSymbol),
+                                        symbol: (
+                                            <AssetSymbol
+                                                networkSymbol={networkSymbol}
+                                                variant="body-sm"
+                                                color="contentInfo"
+                                            />
+                                        ),
                                     }}
                                 />
                             }

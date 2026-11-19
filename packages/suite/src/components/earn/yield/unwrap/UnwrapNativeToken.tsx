@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { AssetSymbol } from '@suite/assets';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -105,8 +106,6 @@ export const UnwrapNativeToken = ({
 
     const shouldCheckUnwrapAmount = !broadcast;
 
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
-
     const baseCurrency = useSelector(selectBaseCurrency);
     // The wrapped-native token (WETH) is not held as a balance, so its fiat rate is not fetched by
     // the balance-driven path. Force-fetch it so the approximate fiat value can render.
@@ -124,7 +123,7 @@ export const UnwrapNativeToken = ({
     };
     const nativeToken: YieldFlowDisplayToken = {
         networkSymbol: account.symbol,
-        symbol: nativeSymbol,
+        symbol: getNetworkDisplaySymbol(account.symbol),
         decimals: tokenDecimals,
     };
 
@@ -204,7 +203,10 @@ export const UnwrapNativeToken = ({
                     description={
                         <Translation
                             id="TR_UNWRAP_COMPLETE_DESCRIPTION"
-                            values={{ tokenSymbol, nativeSymbol }}
+                            values={{
+                                tokenSymbol,
+                                nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                            }}
                         />
                     }
                 >
@@ -234,7 +236,10 @@ export const UnwrapNativeToken = ({
                 <Text typographyStyle="headline-md">
                     <Translation
                         id="TR_EARN_YIELD_UNWRAP_TITLE"
-                        values={{ tokenSymbol, nativeSymbol }}
+                        values={{
+                            tokenSymbol,
+                            nativeSymbol: <AssetSymbol networkSymbol={account.symbol} />,
+                        }}
                     />
                 </Text>
 
