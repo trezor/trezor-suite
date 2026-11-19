@@ -65,20 +65,23 @@ const hasDashboardMinimum = (state: EarnStakingTableRootState, account: Account)
     );
 };
 
-// The table lists mainnet staking only; a testnet position still counts in the Earn header.
+// The table lists mainnet staking only; a testnet position still counts in the Earn header. One row
+// stands for an account, however many products it holds a position in.
 export const selectEarnStakingStakedAccounts = createMemoizedSelector(
     [selectDeviceStakingPositionEntries, selectVisibleDeviceAccountsMap],
     (entries, accountsByKey): readonly Account[] =>
         returnStableArrayIfEmpty(
             createStableAccounts(
-                ...entries.flatMap(({ accountKey, descriptor }) => {
-                    const account = accountsByKey.get(accountKey);
+                ...new Set(
+                    entries.flatMap(({ accountKey, descriptor }) => {
+                        const account = accountsByKey.get(accountKey);
 
-                    if (account === undefined) return [];
-                    if (isTestnet(descriptor.networkSymbol)) return [];
+                        if (account === undefined) return [];
+                        if (isTestnet(descriptor.networkSymbol)) return [];
 
-                    return [account];
-                }),
+                        return [account];
+                    }),
+                ),
             ),
         ),
 );
