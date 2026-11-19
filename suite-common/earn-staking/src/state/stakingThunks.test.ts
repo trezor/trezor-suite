@@ -11,11 +11,11 @@ import {
 } from '@suite-common/earn-staking-common/mocks';
 import { type QueryClient, commonQueryKeys } from '@suite-common/react-query';
 import { testMocks } from '@suite-common/test-utils';
-import { initialWalletSettingsState, transactionsInitialState } from '@suite-common/wallet-core';
+import { transactionsInitialState } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
-import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { getCachedStakingProductInfo } from './stakingProductInfoQuery';
@@ -94,15 +94,10 @@ const seedInfo = (queryClient: QueryClient, productId: string, updatedAt: number
 describe('refreshStakingProductInfoThunk', () => {
     const createState = (
         accounts: readonly Account[] = [ethAccount, solAccount, btcAccount],
-        enabledNetworks: NetworkSymbol[] = [asNetworkSymbol('eth')],
         descriptors: readonly StakingProductDescriptor[] = [eth, sol],
     ): RefreshStakingProductInfoThunkState => ({
         earn: { staking: mockStakingState({ descriptors }) },
-        wallet: {
-            accounts: [...accounts],
-            transactions: transactionsInitialState,
-            settings: { ...initialWalletSettingsState, enabledNetworks },
-        },
+        wallet: { accounts: [...accounts], transactions: transactionsInitialState },
     });
 
     const run = async (
@@ -132,7 +127,7 @@ describe('refreshStakingProductInfoThunk', () => {
         jest.restoreAllMocks();
     });
 
-    it('fetches and caches the info of every mainnet product, enabled or not', async () => {
+    it('fetches and caches the info of every product', async () => {
         const ethAdapter = createAdapter(eth);
         const solAdapter = createAdapter(sol);
         const extra = createDeps([ethAdapter, solAdapter]);
@@ -149,28 +144,20 @@ describe('refreshStakingProductInfoThunk', () => {
         );
     });
 
-    it('fetches the info of a testnet product before its network is enabled', async () => {
+    it('fetches the info of a testnet product too', async () => {
         const testnetAdapter = createAdapter(thod);
 
         await run(
-            createState(undefined, [asNetworkSymbol('eth')], [eth, thod]),
+            createState(undefined, [eth, thod]),
             createDeps([createAdapter(eth), testnetAdapter]),
         );
 
         expect(testnetAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
     });
 
-    it('fetches nothing while bitcoin is the only enabled network', async () => {
-        const adapter = createAdapter(eth);
-
-        await run(createState(undefined, [asNetworkSymbol('btc')]), createDeps([adapter]));
-
-        expect(adapter.fetchProductInfo).not.toHaveBeenCalled();
-    });
-
     it('re-syncs the positions of a network whose info arrived, once', async () => {
         const actions = await run(
-            createState(undefined, [asNetworkSymbol('eth'), asNetworkSymbol('sol')]),
+            createState(),
             createDeps([createAdapter(eth), createAdapter(sol)]),
         );
 
@@ -184,7 +171,7 @@ describe('refreshStakingProductInfoThunk', () => {
             ),
         });
         const extra = createDeps([createAdapter(eth), solAdapter]);
-        const state = createState(undefined, [asNetworkSymbol('eth'), asNetworkSymbol('sol')]);
+        const state = createState();
         const getState = () => state;
         const { actions, dispatch } = createMockDispatch({ getState, extra });
 
