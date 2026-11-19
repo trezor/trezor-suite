@@ -64,8 +64,9 @@ export const HowStakeWorksScreen = () => {
         (state: StakingRootState) =>
             selectStakeableStakingProductDescriptorBySymbol(state, symbol)?.id ?? null,
     );
-    const { disabled } = useStakingAccess(stakingProductId);
-    const isStakingDisabled = disabled.stake !== undefined;
+    // Stake is withheld by a switch or the firmware, or left out of the platform's operations.
+    const { operations } = useStakingAccess(stakingProductId);
+    const isStakingDisabled = !operations.includes('stake');
     const stakingMessageContent = useStakingOperationMessage(stakingProductId, 'stake');
 
     const [hasShownOnboarding, setHasShownOnboarding] = useState(false);

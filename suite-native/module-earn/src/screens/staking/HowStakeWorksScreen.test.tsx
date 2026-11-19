@@ -1,9 +1,11 @@
 import { type PropsWithChildren } from 'react';
 
+import { type ResolvedStakingProductAccess } from '@suite-common/earn-staking';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mock } from '@trezor/dependency-injection';
 
@@ -11,7 +13,13 @@ import { HowStakeWorksScreen } from './HowStakeWorksScreen';
 
 type RemoveEvent = { data: { action: { type: string } } };
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const MANAGED_STAKE: ResolvedStakingProductAccess = {
+    access: 'manage',
+    operations: ['stake'],
+    disabled: {},
+};
 let mockIsInfoOnly = false;
+let mockStakingAccess = MANAGED_STAKE;
 const mockNavigation = {
     addListener: mock<(name: string, listener: (event: RemoveEvent) => void) => () => void>(),
     isFocused: () => true,
@@ -39,7 +47,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 jest.mock('@suite-common/earn-staking', () => ({
     ...jest.requireActual('@suite-common/earn-staking'),
-    useStakingAccess: () => ({ access: 'manage', operations: ['stake'], disabled: {} }),
+    useStakingAccess: () => mockStakingAccess,
     useNetworkStakingRate: () => ({ rate: 1, rateKind: 'apy', isPending: false }),
     useNetworkStakingPeriods: () => ({
         entryPeriodDays: 1,
@@ -90,4 +98,33 @@ describe('staking education exit analytics', () => {
             );
         },
     );
+});
+
+describe('stake availability', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockNavigation.addListener.mockReturnValue(() => undefined);
+        mockIsInfoOnly = false;
+    });
+
+    afterEach(() => {
+        mockStakingAccess = MANAGED_STAKE;
+    });
+
+    it('blocks the continue while the platform does not offer stake', async () => {
+        mockStakingAccess = { access: 'manage', operations: ['unstake'], disabled: {} };
+        const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
+
+        const view = await renderWithStoreProvider(<HowStakeWorksScreen />, { services });
+
+        expect(view.getByText(getTranslation('generic.buttons.continue'))).toBeDisabled();
+    });
+
+    it('offers the continue while the platform offers stake', async () => {
+        const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
+
+        const view = await renderWithStoreProvider(<HowStakeWorksScreen />, { services });
+
+        expect(view.getByText(getTranslation('generic.buttons.continue'))).toBeEnabled();
+    });
 });
