@@ -53,7 +53,7 @@ import {
     SendStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { signTransactionNativeThunk } from '@suite-native/send';
+import { injectSignSendFormTransaction } from '@suite-native/send';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
     type FeeLevelsMaxAmount,
@@ -123,11 +123,18 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         variant: 'B',
     });
     const { translate } = useTranslate();
-    const { addressValidator, getNamedAddressSupport, dispatch, getState } = useServices(
+    const {
+        addressValidator,
+        getNamedAddressSupport,
+        dispatch,
+        getState,
+        signSendFormTransaction,
+    } = useServices(
         injectAddressValidator,
         injectGetNamedAddressSupport,
         injectDispatch,
         injectGetState,
+        injectSignSendFormTransaction,
     );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
@@ -461,13 +468,11 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             // We need to wait for device button requests before navigating to the review screen.
             requestDelayedNavigationToOutputsReview();
 
-            const signingResponse = await dispatch(
-                signTransactionNativeThunk({
-                    accountKey,
-                    tokenContract,
-                    feeLevel: transaction,
-                }),
-            );
+            const signingResponse = await signSendFormTransaction({
+                accountKey,
+                tokenContract,
+                feeLevel: transaction,
+            });
 
             if (!isRejected(signingResponse)) return;
 
@@ -538,6 +543,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         },
         [
             dispatch,
+            signSendFormTransaction,
             account,
             accountKey,
             tokenContract,
