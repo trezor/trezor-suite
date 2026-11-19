@@ -1,8 +1,9 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getPotentialStakingRewards } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
 import { EarnPromoBanner } from '@suite-native/banners';
 import { getStakingRateLabelType, useFormattedEarnRate, useStakingRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
@@ -23,7 +24,6 @@ export const AssetDetailStakingRewardsBanner = ({
     const { CryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
 
-    const symbol = getNetworkDisplaySymbol(networkSymbol);
     const rewards = getPotentialStakingRewards(accounts, rate ?? null);
     const formattedRewards = CryptoAmountFormatter.format(rewards.toFixed(), {
         symbol: networkSymbol,
@@ -44,12 +44,22 @@ export const AssetDetailStakingRewardsBanner = ({
                 isAprRate ? (
                     <Translation
                         id="moduleAssets.assetDetailScreen.stakingBanner.titleApr"
-                        values={{ apr: formattedRate, symbol }}
+                        values={{
+                            apr: formattedRate,
+                            symbol: (
+                                <AssetSymbol networkSymbol={networkSymbol} color="contentBrand" />
+                            ),
+                        }}
                     />
                 ) : (
                     <Translation
                         id="moduleAssets.assetDetailScreen.stakingBanner.title"
-                        values={{ apy: formattedRate, symbol }}
+                        values={{
+                            apy: formattedRate,
+                            symbol: (
+                                <AssetSymbol networkSymbol={networkSymbol} color="contentBrand" />
+                            ),
+                        }}
                     />
                 )
             }
@@ -63,13 +73,27 @@ export const AssetDetailStakingRewardsBanner = ({
                         }
                         values={{
                             potentialRewards: displayedRewards,
-                            symbol,
+                            symbol: (
+                                <AssetSymbol
+                                    networkSymbol={networkSymbol}
+                                    variant="body-sm"
+                                    color="contentBrand"
+                                />
+                            ),
                         }}
                     />
                 ) : (
                     <Translation
                         id="moduleAssets.assetDetailScreen.stakingBanner.description"
-                        values={{ symbol }}
+                        values={{
+                            symbol: (
+                                <AssetSymbol
+                                    networkSymbol={networkSymbol}
+                                    variant="body-sm"
+                                    color="contentBrand"
+                                />
+                            ),
+                        }}
                     />
                 )
             }

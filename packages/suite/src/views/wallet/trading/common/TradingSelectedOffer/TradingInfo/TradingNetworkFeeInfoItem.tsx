@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet-types';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
@@ -46,7 +47,7 @@ export const TradingNetworkFeeInfoItem = ({
                                 id={tooltipTextId}
                                 values={{
                                     br: <br />,
-                                    networkDisplaySymbol: getNetworkDisplaySymbol(symbol),
+                                    networkDisplaySymbol: <AssetSymbol networkSymbol={symbol} />,
                                 }}
                             />
                         }

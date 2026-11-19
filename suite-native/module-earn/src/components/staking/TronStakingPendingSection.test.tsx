@@ -1,3 +1,4 @@
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultTron } from '@suite-common/wallet-types/mocks';
@@ -49,6 +50,7 @@ const renderSection = (unstakingBatches: TronUnstakingBatch[]) => {
 
     return renderWithStoreProvider(<TronStakingPendingSection accountKey={account.key} />, {
         preloadedState: {
+            networks: mockNetworksState([account.symbol]),
             wallet: {
                 accounts: [account],
                 fiat: { current: {}, lastWeek: {} },

@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
+import { AssetSymbol } from '@suite/assets';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
     getNetworkAdjustedStakingBalance,
@@ -20,7 +20,7 @@ export interface EmptyStakingCardData {
     potentialRewards: string;
     hasPotentialRewards: boolean;
     hasEnoughBalanceForStaking: boolean;
-    displaySymbol: string;
+    displaySymbol: ReactNode;
     isStartStakingDisabled: boolean;
 }
 
@@ -64,7 +64,7 @@ export const useEmptyStakingCardData = ({
 
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
 
-    const displaySymbol = account?.symbol ? getNetworkDisplaySymbol(account.symbol) : '';
+    const displaySymbol = account ? <AssetSymbol networkSymbol={account.symbol} /> : '';
 
     return {
         rate,
