@@ -1,5 +1,8 @@
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
-import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
+import {
+    type StakingProductDescriptor,
+    stakingProviderIdSchema,
+} from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
@@ -100,6 +103,16 @@ const gated = mockStakingProductDescriptor({
 // In reverse network order, so the promo selector has to sort.
 const DESCRIPTORS = [gated, readOnly, external, subset, testnet, manage];
 
+// Stake paused on mobile alone: the platform manages a subset without it.
+const paused = mockStakingProductDescriptor({
+    networkSymbol: asNetworkSymbol('eth'),
+    type: 'native',
+    platforms: {
+        desktop: { access: 'manage' },
+        mobile: { access: 'manage', operations: ['unstake'] },
+    },
+});
+
 type AccessState = StakingRootState & MessageSystemRootState & DeviceRootState & NetworksRootState;
 
 const createDevice = (firmware: VersionArray, viewOnly = false): TrezorDevice => {
@@ -121,14 +134,16 @@ type StateParams = {
     platform?: 'desktop' | 'mobile';
     disabled?: readonly string[];
     device?: TrezorDevice;
+    descriptors?: readonly StakingProductDescriptor[];
 };
 
 const createState = ({
     platform = 'desktop',
     disabled = [],
     device = createDevice([2, 12, 2]),
+    descriptors = DESCRIPTORS,
 }: StateParams = {}): AccessState => ({
-    earn: { staking: mockStakingState({ platform, descriptors: DESCRIPTORS }) },
+    earn: { staking: mockStakingState({ platform, descriptors }) },
     messageSystem: disabled.length > 0 ? disableFeatures(disabled) : messageSystemInitialState,
     device: { ...deviceInitialState, selectedDevice: device },
     networks: mockNetworksState(asNetworkSymbols(['btc', 'eth', 'thod', 'sol', 'ada', 'trx'])),
@@ -357,6 +372,21 @@ describe('selectStakeableStakingProductDescriptorsBySymbol', () => {
         ).toBe(selectStakeableStakingProductDescriptorsBySymbol(state, asNetworkSymbol('btc')));
     });
 
+    it('leaves out a product whose platform subset omits stake', () => {
+        expect(
+            selectStakeableStakingProductDescriptorsBySymbol(
+                createState({ platform: 'mobile', descriptors: [paused] }),
+                asNetworkSymbol('eth'),
+            ),
+        ).toEqual([]);
+        expect(
+            selectStakeableStakingProductDescriptorsBySymbol(
+                createState({ descriptors: [paused] }),
+                asNetworkSymbol('eth'),
+            ),
+        ).toEqual([paused]);
+    });
+
     it('keeps the reference across a recreated state', () => {
         expect(
             selectStakeableStakingProductDescriptorsBySymbol(createState(), asNetworkSymbol('eth')),
@@ -494,6 +524,21 @@ describe('selectIsStakingManageableSymbol', () => {
     it('is false for a network without a product', () => {
         expect(selectIsStakingManageableSymbol(createState(), asNetworkSymbol('btc'))).toBe(false);
     });
+
+    it('is false while the platform manages a subset without stake', () => {
+        expect(
+            selectIsStakingManageableSymbol(
+                createState({ platform: 'mobile', descriptors: [paused] }),
+                asNetworkSymbol('eth'),
+            ),
+        ).toBe(false);
+        expect(
+            selectIsStakingManageableSymbol(
+                createState({ descriptors: [paused] }),
+                asNetworkSymbol('eth'),
+            ),
+        ).toBe(true);
+    });
 });
 
 describe('selectIsStakingPromotedSymbol', () => {
@@ -593,6 +638,24 @@ describe('selectIsStakingAccountDelegatedOutside', () => {
         expect(selectIsStakingAccountDelegatedOutside(state, fivebinariesAccount.key)).toBe(true);
         expect(selectIsStakingAccountDelegatedOutside(state, everstakeAccount.key)).toBe(false);
     });
+
+    it('is false on a product whose platform subset omits stake', () => {
+        const state: AccessState & AccountsRootState = {
+            ...createState({ platform: 'mobile', descriptors: [paused] }),
+            earn: {
+                staking: mockStakingState({
+                    platform: 'mobile',
+                    descriptors: [paused],
+                    positions: {
+                        [ethAccount.key]: [mockStakingPosition({ productId: paused.id })],
+                    },
+                }),
+            },
+            wallet: { accounts: [ethAccount] },
+        };
+
+        expect(selectIsStakingAccountDelegatedOutside(state, ethAccount.key)).toBe(false);
+    });
 });
 
 describe('selectStakingPromoProductDescriptors', () => {
@@ -614,6 +677,15 @@ describe('selectStakingPromoProductDescriptors', () => {
                 ({ id }) => id,
             ),
         ).toEqual([manage.id, subset.id, gated.id]);
+    });
+
+    it('leaves out a product whose platform subset omits stake', () => {
+        expect(
+            selectStakingPromoProductDescriptors(
+                createState({ platform: 'mobile', descriptors: [paused] }),
+                false,
+            ),
+        ).toEqual([]);
     });
 
     it('keeps the reference across a recreated state', () => {

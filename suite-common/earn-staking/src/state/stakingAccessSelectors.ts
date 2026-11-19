@@ -3,6 +3,7 @@ import type {
     FirmwareVersion,
     StakingOperation,
     StakingPlatform,
+    StakingPlatformSupport,
     StakingProductAccess,
     StakingProductDescriptor,
     StakingProductId,
@@ -83,6 +84,15 @@ const selectMessageSystem = (state: MessageSystemRootState) => state.messageSyst
 const selectAreTestnetsEnabledParam = (_state: StakingRootState, areTestnetsEnabled: boolean) =>
     areTestnetsEnabled;
 
+// The operations a platform offers: its own list where it manages the product, else the product's.
+const getPlatformOperations = (
+    descriptor: StakingProductDescriptor,
+    support: StakingPlatformSupport,
+): readonly StakingOperation[] =>
+    support.access === 'manage'
+        ? (support.operations ?? descriptor.operations)
+        : descriptor.operations;
+
 type GetDisabledReasonParams = {
     descriptor: StakingProductDescriptor;
     operation: StakingOperation;
@@ -139,7 +149,7 @@ export const selectStakingProductAccess = createWeakMapSelector(
 
         const disabled: StakingDisabledOperations = {};
 
-        const operations = (support.operations ?? descriptor.operations).filter(operation => {
+        const operations = getPlatformOperations(descriptor, support).filter(operation => {
             const reason = getDisabledReason({ descriptor, operation, messageSystem, firmware });
 
             if (reason === null) return true;
@@ -185,10 +195,15 @@ export const selectStakingOperationMessageContent = (
 const isStakeableOnPlatform = (
     descriptor: StakingProductDescriptor,
     platform: StakingPlatform | null,
-): boolean =>
-    platform !== null &&
-    descriptor.operations.includes('stake') &&
-    descriptor.platforms[platform].access !== 'hidden';
+): boolean => {
+    if (platform === null) return false;
+
+    const support = descriptor.platforms[platform];
+
+    return (
+        support.access !== 'hidden' && getPlatformOperations(descriptor, support).includes('stake')
+    );
+};
 
 export const selectStakeableStakingProductDescriptorsBySymbol = createWeakMapSelector(
     [selectStakingProductDescriptorsBySymbol, selectStakingPlatform],
@@ -240,18 +255,15 @@ export const selectStakingAccountProductDescriptor = (
 };
 
 // Delegated to an operator Suite does not offer: the position targets one and its product takes no
-// new stake here. A registered stake key without a pool is delegated nowhere.
+// new stake, on any platform. A registered stake key without a pool is delegated nowhere.
 export const selectIsStakingAccountDelegatedOutside = (
     state: StakingRootState,
     accountKey: AccountKey,
-): boolean => {
-    const platform = selectStakingPlatform(state);
-
-    return selectCountedStakingPositionEntriesByAccount(state, accountKey).some(
+): boolean =>
+    selectCountedStakingPositionEntriesByAccount(state, accountKey).some(
         ({ position, descriptor }) =>
-            position.targets.length > 0 && !isStakeableOnPlatform(descriptor, platform),
+            position.targets.length > 0 && !descriptor.operations.includes('stake'),
     );
-};
 
 export const STAKING_PROMOTION_SCOPES = ['offered', 'manageable'] as const;
 
