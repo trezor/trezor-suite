@@ -10,13 +10,18 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
-import { type Account, type FeesState } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FeesState,
+    type FormStateTradingExchange,
+} from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';
+import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { type TradingError, type TradingErrorCode, type TradingFulfillValue } from '../../types';
@@ -58,6 +63,7 @@ const tradingReducer = prepareTradingReducer({
 const trxSymbol = asNetworkSymbol('trx');
 const ethSymbol = asNetworkSymbol('eth');
 const solSymbol = asNetworkSymbol('sol');
+const polSymbol = asNetworkSymbol('pol');
 const btcFeeData = {
     blockHeight: 890366,
     blockTime: 10,
@@ -93,6 +99,10 @@ const fees: FeesState = {
         data: btcFeeData,
     },
     [solSymbol]: {
+        status: 'loaded',
+        data: btcFeeData,
+    },
+    [polSymbol]: {
         status: 'loaded',
         data: btcFeeData,
     },
@@ -844,6 +854,116 @@ describe('recomposeAndSignTxThunk', () => {
             expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
         },
     );
+
+    describe('when the composed asset is checked against the traded asset', () => {
+        const usdtToken = { contract: '0xC2132D05D31c914a87C6611C10748AEb04B58e8F' } as TokenInfo;
+
+        const tokenTradeFormState: FormStateTradingExchange = {
+            activeSection: 'exchange',
+            isSlip24Active: false,
+            recipientName: 'Provider',
+            send: {
+                cryptoId: undefined,
+                accountKey: undefined,
+                symbol: polSymbol,
+                contractAddress: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+                amount: '12',
+            },
+            receive: {
+                cryptoId: undefined,
+                accountKey: undefined,
+                symbol: ethSymbol,
+                amount: '0.006',
+            },
+        };
+
+        const dispatchWithComposedToken = (
+            composedToken: TokenInfo | undefined,
+            tradingFormState: FormStateTradingExchange = tokenTradeFormState,
+        ) => {
+            const { store } = getMocks({
+                composedTransactionInfo: {
+                    ...mockComposedTransactionInfo,
+                    composed: { ...mockComposedTransactionInfo.composed, token: usdtToken },
+                },
+            });
+            const account = {
+                ...accountBtc,
+                symbol: polSymbol,
+                networkType: 'ethereum',
+            } as Account;
+            const signAndPushSendFormTransaction = jest
+                .fn<Promise<TradingFulfillValue>, []>()
+                .mockResolvedValueOnce({ success: true, payload: { txid: 'txid' } });
+
+            (
+                composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock
+            ).mockImplementationOnce(
+                createThunk(
+                    composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                    (_, { fulfillWithValue }) =>
+                        fulfillWithValue({
+                            normal: {
+                                type: 'final',
+                                token: composedToken,
+                                outputs: [{ address: 'address', amount: '12000000' }],
+                            },
+                        }),
+                ),
+            );
+
+            const response = store.dispatch(
+                tradingThunks.recomposeAndSignTxThunk({
+                    account,
+                    address: 'address',
+                    amount: '12',
+                    tradingFormState,
+                    signAndPushSendFormTransaction,
+                }),
+            );
+
+            return { response, signAndPushSendFormTransaction };
+        };
+
+        it('should refuse to sign a native transfer for a token trade', async () => {
+            const { response, signAndPushSendFormTransaction } =
+                dispatchWithComposedToken(undefined);
+            const result = await response;
+
+            expect(result.meta.requestStatus).toBe('rejected');
+            expect(result.payload).toEqual({
+                type: 'sign-tx-error',
+                code: 'cannot-create-transaction',
+            });
+            expect(signAndPushSendFormTransaction).not.toHaveBeenCalled();
+        });
+
+        it('should sign when the composed token is the traded token', async () => {
+            const { response, signAndPushSendFormTransaction } =
+                dispatchWithComposedToken(usdtToken);
+            const result = await response;
+
+            expect(result.meta.requestStatus).toBe('fulfilled');
+            expect(signAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+        });
+
+        it('should sign a native transfer when the traded native coin has the zero contract address', async () => {
+            const { response, signAndPushSendFormTransaction } = dispatchWithComposedToken(
+                undefined,
+                {
+                    ...tokenTradeFormState,
+                    send: {
+                        ...tokenTradeFormState.send,
+                        contractAddress: CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
+                    },
+                },
+            );
+            const result = await response;
+
+            expect(result.meta.requestStatus).toBe('fulfilled');
+            expect(signAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+        });
+    });
 
     it('should return successful recomposed and signed transaction using custom fees', async () => {
         const { store, account, tradingFormState } = getMocks({
