@@ -1,4 +1,4 @@
-import { type TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice, asDeviceKey } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -11,6 +11,9 @@ export const DEVICE_MODULE_PREFIX = '@suite/device';
 export const PORTFOLIO_TRACKER_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
 export const PORTFOLIO_TRACKER_DEVICE_STATE = `state@${PORTFOLIO_TRACKER_DEVICE_ID}:1`;
 
+// The portfolio tracker is a singleton, so its key is well-known and the same on every install.
+export const PORTFOLIO_TRACKER_DEVICE_KEY = asDeviceKey(PORTFOLIO_TRACKER_DEVICE_ID);
+
 export const DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD = 40;
 
 export const PIN_MAX_LENGTH = 50;
@@ -18,6 +21,7 @@ export const PASSPHRASE_MAX_LENGTH = 50;
 
 export const portfolioTrackerDevice: TrezorDevice = {
     type: 'acquired',
+    key: PORTFOLIO_TRACKER_DEVICE_KEY,
     id: PORTFOLIO_TRACKER_DEVICE_ID,
     status: 'available',
     mode: 'normal',

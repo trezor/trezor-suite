@@ -60,6 +60,7 @@ import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/s
 import {
     type MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
+    backfillDeviceKeys,
     backfillManualCheckResult,
     backfillPortfolioTrackerUnavailableCapabilities,
     blockchainPersistTransform,
@@ -375,7 +376,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             'persistentDeviceData' as any,
         ],
         key: 'devices',
-        version: 5,
+        version: 6,
         transforms: [devicePersistTransform],
         migrations: {
             2: (oldState: any /* FIXME */) => {
@@ -403,6 +404,12 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             },
             // v5 was deleted – it modified state.device.persistentDeviceData, which was migrated (data not explicitely deleted here).
             // Migration 1 of the `persistentDeviceData` persist key also includes does the job of the former v5 here.
+            6: (oldState: any /* FIXME */) => {
+                if (!oldState?.devices) return oldState;
+                const migratedDevices = backfillDeviceKeys(oldState.devices);
+
+                return { ...oldState, devices: migratedDevices };
+            },
         },
         storage: deps.mmkvStorage,
     });
