@@ -6,6 +6,7 @@ import {
     type AccountKey,
     type FormOptions,
     type FormState,
+    type GeneralPrecomposedLevels,
     type GeneralPrecomposedTransaction,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
@@ -60,6 +61,32 @@ export const getSendFeeStatus = ({
         isFeeReady: new BigNumber(feeLevel.max ?? amount).lte(maxAmountForReserve),
         maxAmountForReserve,
     };
+};
+
+export type AmountComposeError =
+    | { id: 'AMOUNT_IS_LESS_THAN_RESERVE' }
+    | { id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE'; symbol: string };
+
+export const getAmountComposeError = (
+    feeLevels: GeneralPrecomposedLevels,
+): AmountComposeError | undefined => {
+    const errorLevels = Object.values(feeLevels).filter(level => level.type === 'error');
+
+    const missingTrustline = errorLevels.find(
+        level => level.error === 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+    );
+    if (missingTrustline) {
+        return {
+            id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+            symbol: missingTrustline.errorMessage?.values?.symbol ?? '',
+        };
+    }
+
+    if (errorLevels.some(level => level.error === 'AMOUNT_IS_LESS_THAN_RESERVE')) {
+        return { id: 'AMOUNT_IS_LESS_THAN_RESERVE' };
+    }
+
+    return undefined;
 };
 
 type GetSendMaxAmountParams = {
