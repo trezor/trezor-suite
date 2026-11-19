@@ -22,6 +22,7 @@ import {
     type MessageSystemState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -114,8 +115,25 @@ const messageSystemWithYieldDepositsOff = {
     },
 } as unknown as MessageSystemState;
 
+const getMessageSystem = ({
+    areYieldDepositsOff,
+    isEthStakeOff,
+}: Pick<InitialStateParams, 'areYieldDepositsOff' | 'isEthStakeOff'>): MessageSystemState => {
+    if (areYieldDepositsOff) {
+        return messageSystemWithYieldDepositsOff;
+    }
+
+    if (isEthStakeOff) {
+        return mockMessageSystemStateWithFeatureFlags({ [Feature.stake.eth]: false });
+    }
+
+    return mockInitialAppState.messageSystem;
+};
+
 type InitialStateParams = {
     areYieldDepositsOff?: boolean;
+    /** Ethereum staking switched off remotely; the stake kill switch, not the rate. */
+    isEthStakeOff?: boolean;
     accounts?: Account[];
     firmwareType?: FirmwareType;
     grouping?: HomeAssetsTableGrouping;
@@ -124,15 +142,14 @@ type InitialStateParams = {
 
 const getInitialState = ({
     areYieldDepositsOff = false,
+    isEthStakeOff = false,
     accounts = [ethereumAccount, bitcoinAccount],
     firmwareType = FirmwareType.Universal,
     grouping = 'default',
     areSmallBalancesShown = true,
 }: InitialStateParams = {}): MockSuiteState => ({
     ...mockInitialAppState,
-    messageSystem: areYieldDepositsOff
-        ? messageSystemWithYieldDepositsOff
-        : mockInitialAppState.messageSystem,
+    messageSystem: getMessageSystem({ areYieldDepositsOff, isEthStakeOff }),
     networks: mockNetworksState([BTC, ETH]),
     earn: { staking: mockStakingState() },
     device: {
@@ -305,6 +322,12 @@ describe('the home-asset table', () => {
             expect(mockUseAllYieldOpportunities).not.toHaveBeenCalledWith(
                 expect.objectContaining({ enabled: true }),
             );
+        });
+
+        it('keeps the staking rate while the stake is switched off, as the table always did', () => {
+            renderTable(getInitialState({ isEthStakeOff: true }), { ethStakingApy: 3.2 });
+
+            expect(badgeIn('eth/coin')?.textContent).toBe(upToApy('3.2'));
         });
     });
 
