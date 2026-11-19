@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-11-18T10:19:16+00:00",
-    "sequence": 169,
+    "timestamp": "2026-11-19T10:08:34+00:00",
+    "sequence": 170,
     "actions": [
         {
             "conditions": [
@@ -3929,11 +3929,11 @@
                 "groups": [
                     {
                         "variant": "A",
-                        "percentage": 100
+                        "percentage": 90
                     },
                     {
                         "variant": "B",
-                        "percentage": 0
+                        "percentage": 10
                     }
                 ]
             }
