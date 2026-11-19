@@ -4,8 +4,8 @@ import tseslint from 'typescript-eslint';
  * `ESLINT_RULE_SET` names the rule set a lint run enforces:
  * - `basic`, the default: every rule that needs no type information. No TypeScript program is
  *   built, which is what editors and the default `lint:js` run want.
- * - `type-aware`: the rules that need a TypeScript program. CI enforces them in a job of their
- *   own, in parallel with the basic run.
+ * - `type-aware`: the rules that need a TypeScript program. CI enforces them in a run of their
+ *   own, after the basic run.
  * - `all`: both sets in one run.
  * @typedef {'basic' | 'type-aware' | 'all'} RuleSet
  */
@@ -39,11 +39,11 @@ export const ruleSet = parseRuleSet(process.env.ESLINT_RULE_SET);
 export const isTypeInformationNeeded = ruleSet !== 'basic';
 
 /**
- * CI enforces the two rule sets in separate jobs, `lint` and `lint-type-aware`:
- * If each job turned the other set's rules off in the config, ESLint would report every directive naming one of them as unused,
- * so neither job could keep `reportUnusedDisableDirectives` on and CI would not check unused directives at all.
+ * CI enforces the two rule sets in separate runs, the two `Lint JS` steps of the `lint` job:
+ * If each run turned the other set's rules off in the config, ESLint would report every directive naming one of them as unused,
+ * so neither run could keep `reportUnusedDisableDirectives` on and CI would not check unused directives at all.
  * The runner in `bin/eslint.mjs` therefore keeps every rule configured and picks the set to run with ESLint's `ruleFilter`.
- * ESLint skips directives naming a filtered rule, so each job checks the directives of its own set.
+ * ESLint skips directives naming a filtered rule, so each run checks the directives of its own set.
  * It also skips directives naming no rule, which `local-rules/no-unlimited-disable` forbids.
  */
 export const isRuleFilterActive = process.env.ESLINT_RULE_FILTER_ACTIVE === 'true';
