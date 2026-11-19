@@ -117,7 +117,7 @@ running the app, E2E or tests that load native modules requires a full install.
   and fetch guide content per `nx.json`.
 - Package lint: `yarn workspace <package-name> lint:js` runs the basic rules in parallel threads;
   `ESLINT_RULE_SET=type-aware` runs the type-aware rules instead and `ESLINT_RULE_SET=all` runs both.
-  CI runs the two sets as separate jobs. Use the package's `lint:styles` script for styles where present.
+  CI runs the two sets as separate steps of one job. Use the package's `lint:styles` script for styles where present.
 - Formatting changed files: `yarn prettier --check <files>`; use `--write` only on intended files.
 - Affected checks: `yarn test:unit --no-tui`, `yarn type-check --no-tui` (only on user's request),
   `yarn lint:js --no-tui` plus `ESLINT_RULE_SET=type-aware yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.

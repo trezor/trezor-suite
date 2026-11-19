@@ -76,8 +76,7 @@ jobs:
         run: yarn requirements:verify --only=type-declaration-size
 
   lint:
-    # Branch protection requires "Linting and formatting", which the `lint-result` job reports.
-    name: Linting, basic rules and formatting
+    name: Linting and formatting
     needs: setup-and-cache
     runs-on: ubuntu-latest
     steps:
@@ -111,57 +110,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-inputs.outputs.toolchain }}-
       - name: Lint JS
+        id: lint-js
         run: yarn lint:js --output-style=stream
-      - name: Lint Styles
-        run: yarn lint:styles --output-style=stream
-
-  lint-type-aware:
-    # The type-aware rules are bound by the TypeScript program each lint worker builds, while the
-    # rest of the rules parallelize freely, so the two rule sets run as separate jobs. The config
-    # keeps every rule enabled in both; `ESLINT_RULE_SET` only picks which set a job enforces
-    # (see packages/eslint/src/ruleSets.mjs).
-    # Unlike the `lint` job, it restores no ESLint cache: ESLint reuses a file's cached result while
-    # that file is unchanged, but a type-aware result also depends on the types of the files it
-    # imports, so a restored cache would pass a file that a change elsewhere broke.
-    name: Linting, type-aware rules
-    needs: setup-and-cache
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-      - name: "Checkout branches for Nx"
-        uses: ./.github/actions/nx-checkout
-      - name: "Minimal yarn install"
-        uses: ./.github/actions/minimal-yarn-install
-        with:
-          disable-hardened-mode: "true"
-      - name: Lint JS
+      - name: Lint JS, type-aware rules
+        # The type-aware rules are bound by the TypeScript program each lint worker builds, so they
+        # run as a lint run of their own. The config keeps every rule enabled in both runs;
+        # `ESLINT_RULE_SET` only picks which set a run enforces (see
+        # packages/eslint/src/ruleSets.mjs).
+        # The ESLint cache step above restores and saves only the basic run's `.eslintcache` files:
+        # ESLint reuses a file's cached result while that file is unchanged, but a type-aware result
+        # also depends on the types of the files it imports, so a restored cache would pass a file
+        # that a change elsewhere broke. It also runs when the basic run failed, so one CI run
+        # reports both sets.
+        if: ${{ success() || steps.lint-js.outcome == 'failure' }}
         env:
           ESLINT_RULE_SET: type-aware
         run: yarn lint:js --output-style=stream
-
-  lint-result:
-    # Branch protection requires a check named "Linting and formatting". The two rule sets run as
-    # parallel jobs, so this job reports their combined result under that name: a failure in either
-    # one blocks the merge, with no change to the required checks. It runs unless the workflow is
-    # cancelled, because GitHub counts a skipped required check as passed.
-    name: Linting and formatting
-    needs: [lint, lint-type-aware]
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Require both lint jobs to succeed
-        env:
-          BASIC_RESULT: ${{ needs.lint.result }}
-          TYPE_AWARE_RESULT: ${{ needs.lint-type-aware.result }}
-        run: |
-          echo "Linting, basic rules and formatting: $BASIC_RESULT"
-          echo "Linting, type-aware rules: $TYPE_AWARE_RESULT"
-          if [ "$BASIC_RESULT" != success ] || [ "$TYPE_AWARE_RESULT" != success ]; then
-            echo "::error::Both lint jobs must succeed."
-            exit 1
-          fi
+      - name: Lint Styles
+        run: yarn lint:styles --output-style=stream
 
   rust-checks:
     name: Rust checks
