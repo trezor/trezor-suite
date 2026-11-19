@@ -8,6 +8,7 @@ import {
     act,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
+    waitFor,
 } from '@suite-native/test-utils-store';
 
 import { useSendForm } from './useSendForm';
@@ -106,11 +107,11 @@ describe('useSendForm Stellar submit', () => {
         });
         const { result } = await renderUseSendForm(signingResult);
 
-        await act(async () => {
-            result.current.handleSubmitSendForm?.();
-            await new Promise(resolve => setTimeout(resolve, 0));
+        // The submit is not awaited: it stays pending until signing settles, which is what is under test.
+        await act(() => {
+            void result.current.handleSubmitSendForm?.();
         });
-        expect(mockSigningThunk).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockSigningThunk).toHaveBeenCalledTimes(1));
         expect(mockNavigate).toHaveBeenCalledWith(
             RootStackRoutes.AuthorizeDeviceStack,
             expect.objectContaining({ screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard }),
