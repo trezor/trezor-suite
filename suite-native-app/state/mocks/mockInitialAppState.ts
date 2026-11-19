@@ -17,6 +17,7 @@ import {
     accountsInitialState,
     accountsRefreshTimeInitialState,
     blockchainInitialState,
+    customTokensInitialState,
     discoveryInitialState,
     earnOnboardingInitialState,
     earnTransactionsInitialState,
@@ -107,6 +108,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         settings: initialWalletSettingsState,
         formDrafts: formDraftInitialState,
         stellarContractTokens: stellarContractTokensInitialState,
+        customTokens: customTokensInitialState,
     },
 
     ...partialState,

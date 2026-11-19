@@ -26,6 +26,7 @@ import {
     type AccountsState,
     type BlockchainRootState,
     type BlockchainState,
+    type CustomTokensRootState,
     type FeesRootState,
     type StellarContractTokensRootState,
     type SyncAccountsWithBlockchainThunkDeps,
@@ -33,6 +34,7 @@ import {
     type TransactionsState,
     type WalletSettingsRootState,
     blockchainActions,
+    customTokensInitialState,
     feesReducer,
     initBlockchainThunk,
     initialWalletSettingsState,
@@ -77,6 +79,7 @@ interface Args {
 // These fixtures exercise several blockchain thunks plus notification and window-dependent behavior.
 type State = AccountsRootState &
     BlockchainRootState &
+    CustomTokensRootState &
     DeviceRootState &
     FeesRootState &
     NetworksRootState &
@@ -122,6 +125,7 @@ const getInitialState = (
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         },
         stellarContractTokens: stellarContractTokensInitialState,
+        customTokens: customTokensInitialState,
     },
     notifications: notificationsReducer([], action),
     tokenDefinitions: tokenDefinitionsInitialState,
