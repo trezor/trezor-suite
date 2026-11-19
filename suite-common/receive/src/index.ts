@@ -14,7 +14,6 @@ export {
     buildGlobalReceiveAssetOption,
     buildGlobalReceiveAssetOptions,
     buildGlobalReceiveAssetSearchIndex,
-    getGlobalReceiveAssetDescriptionValues,
     getGlobalReceiveAssetSections,
     type GlobalReceiveAssetListItem,
     type GlobalReceiveAssetSections,

@@ -30,7 +30,6 @@ const BTC_ASSET: TradingAssetOption = {
     coingeckoId: 'bitcoin',
     contractAddress: null,
     symbol: btcSymbol,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,
 };
@@ -42,7 +41,6 @@ const ETH_ASSET: TradingAssetOption = {
     coingeckoId: 'ethereum',
     contractAddress: null,
     symbol: ethSymbol,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
 };
@@ -54,7 +52,6 @@ const SOL_ASSET: TradingAssetOption = {
     coingeckoId: 'solana',
     contractAddress: null,
     symbol: solSymbol,
-    displaySymbol: 'SOL',
     networkName: 'Solana',
     networkSymbol: solSymbol,
 };

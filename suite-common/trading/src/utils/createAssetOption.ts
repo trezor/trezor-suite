@@ -2,7 +2,6 @@ import { type CoinInfo, type CryptoId, type PlatformsInfo } from 'invity-api';
 
 import { type NetworkMetadata } from '@suite-common/networks';
 import { toTokenAddress } from '@suite-common/tokens';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import {
     type TradingAssetOption,
@@ -48,14 +47,12 @@ export function createAssetOption({
         return {
             isNativeToken: true,
             id: networkConfig.tradeCryptoId as CryptoId,
-            name: networkConfig.name,
             coingeckoId: networkConfig.coingeckoId,
-            symbol: networkSymbol,
-            displaySymbol: networkConfig.displaySymbol,
             contractAddress: contractAddress as TradingAssetOptionNativeToken['contractAddress'],
             networkName: networkConfig.name,
             networkSymbol,
-            displaySymbolName: networkConfig.displaySymbolName || networkConfig.name,
+            name: networkConfig.displaySymbolName || networkConfig.name,
+            symbol: networkConfig.displaySymbol,
         } satisfies TradingAssetOptionNativeToken;
     }
 
@@ -63,18 +60,14 @@ export function createAssetOption({
         return null;
     }
 
-    const coinInfoSymbol = coinInfo.symbol;
-
     return {
         isNativeToken: false,
         id: cryptoId,
-        name: coinInfo.name,
-        symbol: coinInfoSymbol,
         coingeckoId: networkConfig.coingeckoId,
-        displaySymbol: getDisplaySymbol(coinInfoSymbol.toUpperCase(), contractAddress),
         contractAddress: toTokenAddress(contractAddress),
         networkName: networkConfig.name,
         networkSymbol,
-        displaySymbolName: coinInfo.name,
+        name: coinInfo.name,
+        symbol: coinInfo.symbol.toUpperCase(),
     } satisfies TradingAssetOptionWithContractAddress;
 }
