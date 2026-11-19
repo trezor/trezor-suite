@@ -2,11 +2,10 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
+import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
+import { getWrappedNativeTransactionToken } from '../../utils/earn/wrappedNativeTransactionTokenUtils';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
 
 type UseWrappedNativeReviewPreviewParams = {
@@ -23,30 +22,15 @@ export const useWrappedNativeReviewPreview = ({
     unsignedTransaction,
 }: UseWrappedNativeReviewPreviewParams) => {
     const device = useSelector(selectSelectedDevice);
-    const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
 
-    const spentToken: YieldFlowDisplayToken | null = useMemo(() => {
-        if (!account || !wrappedNative) {
+    return useMemo(() => {
+        if (!account || !device || amount === undefined || !unsignedTransaction) {
             return null;
         }
 
-        return flowType === 'wrap'
-            ? {
-                  networkSymbol: account.symbol,
-                  symbol: getNetworkDisplaySymbol(account.symbol),
-                  decimals: getNetwork(account.symbol).decimals,
-                  contractAddress: null,
-              }
-            : {
-                  networkSymbol: account.symbol,
-                  symbol: wrappedNative.symbol,
-                  decimals: wrappedNative.decimals,
-                  contractAddress: wrappedNative.address,
-              };
-    }, [account, flowType, wrappedNative]);
+        const transactionToken = getWrappedNativeTransactionToken(account.symbol, flowType);
 
-    const preview = useMemo(() => {
-        if (!account || !device || !spentToken || amount === undefined || !unsignedTransaction) {
+        if (flowType === 'unwrap' && !transactionToken) {
             return null;
         }
 
@@ -54,10 +38,8 @@ export const useWrappedNativeReviewPreview = ({
             account,
             device,
             review: { amount, unsignedTransaction },
-            reviewToken: spentToken,
+            transactionToken,
             type: flowType,
         });
-    }, [account, amount, device, flowType, spentToken, unsignedTransaction]);
-
-    return { preview, spentToken };
+    }, [account, amount, device, flowType, unsignedTransaction]);
 };

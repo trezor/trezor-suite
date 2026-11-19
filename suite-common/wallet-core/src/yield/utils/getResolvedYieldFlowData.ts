@@ -3,8 +3,8 @@ import {
     type YieldDtoV2,
     getProtocolIncentiveRewardTokens,
 } from '@suite-common/earn-stablecoin-api';
-import { type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
-import { getNetworkByYieldXyzId, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type TokenSymbol, toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
+import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
@@ -82,7 +82,6 @@ type UnresolvedYieldFlowData = {
     depositedAmount: string | null;
     depositedSharesAmount: string | null;
     isWrappedNativeVault: boolean;
-    wrappedNativeSymbol: string | null;
     bonusRewardTokenSymbol: string | null;
     providerName: string | null;
     tokenSymbol: TokenSymbol | null;
@@ -102,7 +101,6 @@ type FullyResolvedYieldFlowData = YieldVaultDisplayData & {
     depositedAmount: string;
     depositedSharesAmount: string;
     isWrappedNativeVault: boolean;
-    wrappedNativeSymbol: string | null;
     tokenSymbol: TokenSymbol;
 };
 
@@ -126,7 +124,6 @@ const unresolvedYieldFlowData: UnresolvedYieldFlowData = {
     depositedAmount: null,
     depositedSharesAmount: null,
     isWrappedNativeVault: false,
-    wrappedNativeSymbol: null,
     bonusRewardTokenSymbol: null,
     providerName: null,
     tokenSymbol: null,
@@ -194,20 +191,16 @@ export const getResolvedYieldFlowData = ({
         token: vault.outputToken,
     });
 
+    const resolvedTokenContract = matchedToken?.contract ?? underlyingTokenContract;
     const token: YieldFlowToken = {
         networkSymbol: account.symbol,
-        symbol:
-            matchedToken?.symbol ?? vault.token.symbol ?? getNetworkDisplaySymbol(account.symbol),
-        decimals: matchedToken?.decimals ?? vault.token.decimals,
-        contractAddress: matchedToken?.contract ?? underlyingTokenContract,
+        contractAddress: resolvedTokenContract ? toTokenAddress(resolvedTokenContract) : undefined,
         balance: matchedToken?.balance ?? '0',
     };
 
     const receiptToken: YieldFlowDisplayToken = {
         networkSymbol: account.symbol,
-        symbol: matchedReceiptToken?.symbol ?? vault.outputToken.symbol,
-        decimals: matchedReceiptToken?.decimals ?? vault.outputToken.decimals,
-        contractAddress: matchedReceiptToken?.contract ?? receiptTokenContract,
+        contractAddress: toTokenAddress(matchedReceiptToken?.contract ?? receiptTokenContract),
     };
 
     const flowData: YieldFlowResolvedData = { account, vault, token, receiptToken };
@@ -236,7 +229,6 @@ export const getResolvedYieldFlowData = ({
         }),
         depositedSharesAmount,
         isWrappedNativeVault,
-        wrappedNativeSymbol: isWrappedNativeVault ? getNetworkDisplaySymbol(account.symbol) : null,
         tokenSymbol: toTokenSymbol((matchedToken?.symbol ?? vault.token.symbol).toUpperCase()),
     };
 };

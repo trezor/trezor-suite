@@ -90,9 +90,7 @@ export const getApprovalContractAddress = ({
     flowType,
     flowData,
 }: GetApprovalContractAddressParams) =>
-    flowType === 'deposit'
-        ? (flowData.token.contractAddress ?? undefined)
-        : (flowData.receiptToken.contractAddress ?? undefined);
+    flowType === 'deposit' ? flowData.token.contractAddress : flowData.receiptToken.contractAddress;
 
 export const getApprovalRequestAmount = ({
     flowType,
@@ -106,8 +104,8 @@ export const getApprovalRequestAmount = ({
     return getWithdrawRequestAmount({
         networkSymbol: flowData.account.symbol,
         amount,
-        token: flowData.token,
-        receiptToken: flowData.receiptToken,
+        token: flowData.vault.token,
+        receiptToken: flowData.vault.outputToken,
         pricePerShare: flowData.vault.state?.pricePerShareState?.price,
     });
 };
@@ -254,7 +252,7 @@ export const initYieldAllowanceThunk = createThunk<
             });
             const fetchedAmount = subunitsToUnits({
                 value: allowanceSubunits,
-                decimals: flowData.token.decimals,
+                decimals: flowData.vault.token.decimals,
             });
             const amount = fetchedAmount.gt(0) ? fetchedAmount.toString() : '0';
 
@@ -281,7 +279,7 @@ export const initYieldAllowanceThunk = createThunk<
                     ? allowanceSubunits.gte(
                           unitsToSubunits({
                               value: asAmountUnit(new BigNumber(requestAmount)),
-                              decimals: flowData.token.decimals,
+                              decimals: flowData.vault.token.decimals,
                           }),
                       )
                     : amount !== '0';
@@ -372,7 +370,7 @@ export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePaylo
                 requestedAmount: requestAmount,
                 currentAllowanceAmount: subunitsToUnits({
                     value: allowanceSubunits,
-                    decimals: flowData.token.decimals,
+                    decimals: flowData.vault.token.decimals,
                 }).toFixed(),
                 shouldConsiderAllowance: true,
                 isRevokeRequired: false,

@@ -24,6 +24,7 @@ import type {
     YieldFlowStepId,
     YieldFlowType,
     YieldPendingTransactionState,
+    YieldPositionFlowType,
     YieldWithdrawFlowType,
 } from '../yieldTypes';
 
@@ -48,7 +49,7 @@ type WithdrawRequestAmountParams = {
     networkSymbol: NetworkSymbol;
     amount: string;
     token: TokenLike;
-    receiptToken: TokenLike;
+    receiptToken?: TokenLike;
     pricePerShare?: string | number;
 };
 
@@ -170,6 +171,42 @@ export const getYieldWithdrawInputToken = ({
 }: GetYieldWithdrawInputTokenParams): YieldFlowDisplayToken =>
     flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
+/** The vault's own description of the withdrawal input token, which carries its decimals. */
+export const getYieldWithdrawInputVaultToken = ({
+    flowData,
+    flowType,
+}: GetYieldWithdrawInputTokenParams) =>
+    flowType === 'redeem' ? flowData.vault.outputToken : flowData.vault.token;
+
+type GetYieldFlowTransactionTokenParams = {
+    flowData: YieldFlowResolvedData;
+    flowType: YieldPositionFlowType;
+};
+
+/**
+ * The token a deposit, withdraw or redeem transaction spends, as its review describes it. The
+ * vault supplies its symbol and decimals; a token without a contract is the native coin.
+ */
+export const getYieldFlowTransactionToken = ({
+    flowData,
+    flowType,
+}: GetYieldFlowTransactionTokenParams) => {
+    const token = isYieldWithdrawFlow(flowType)
+        ? getYieldWithdrawInputToken({ flowData, flowType })
+        : flowData.token;
+    const vaultToken = isYieldWithdrawFlow(flowType)
+        ? getYieldWithdrawInputVaultToken({ flowData, flowType })
+        : flowData.vault.token;
+
+    return token.contractAddress && vaultToken
+        ? {
+              contractAddress: token.contractAddress,
+              symbol: vaultToken.symbol,
+              decimals: vaultToken.decimals,
+          }
+        : undefined;
+};
+
 export const buildYieldWithdrawCalldata = ({
     amount,
     flowData,
@@ -178,10 +215,15 @@ export const buildYieldWithdrawCalldata = ({
     flowType,
 }: BuildYieldWithdrawCalldataParams) => {
     const isRedeem = flowType === 'redeem';
-    const inputToken = getYieldWithdrawInputToken({ flowData, flowType });
+    const inputVaultToken = getYieldWithdrawInputVaultToken({ flowData, flowType });
+
+    if (!inputVaultToken) {
+        throw new Error('Failed to encode withdraw calldata: the vault has no receipt token.');
+    }
+
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
-        decimals: inputToken.decimals,
+        decimals: inputVaultToken.decimals,
     });
 
     const builderResult = isRedeem
@@ -219,7 +261,7 @@ export const buildYieldDepositCalldata = ({
 }: BuildYieldDepositCalldataParams) => {
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
-        decimals: flowData.token.decimals,
+        decimals: flowData.vault.token.decimals,
     });
 
     const builderResult = Calldata.evm.erc4626.deposit.encode(
@@ -555,7 +597,7 @@ export const getWithdrawRequestAmount = ({
         return amount;
     }
 
-    if (!pricePerShare || new BigNumber(pricePerShare).lte(0)) {
+    if (!receiptToken || !pricePerShare || new BigNumber(pricePerShare).lte(0)) {
         return null;
     }
 

@@ -1,3 +1,4 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 
@@ -21,7 +22,14 @@ export const YieldFlowCompleteWithdraw = ({
         description={
             <Translation
                 id="TR_EARN_YIELD_WITHDRAW_COMPLETE_DESCRIPTION"
-                values={{ displaySymbol: output.token.symbol }}
+                values={{
+                    displaySymbol: (
+                        <AssetSymbol
+                            networkSymbol={output.token.networkSymbol}
+                            contractAddress={output.token.contractAddress}
+                        />
+                    ),
+                }}
             />
         }
         vaultId={vaultId}

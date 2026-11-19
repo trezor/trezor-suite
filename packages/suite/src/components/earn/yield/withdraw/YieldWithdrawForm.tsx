@@ -8,7 +8,6 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     getYieldFlowStepSequence,
     getYieldVaultContractAddress,
-    getYieldWithdrawInputToken,
     splitYieldPendingTransaction,
     useFetchFees,
 } from '@suite-common/wallet-core';
@@ -84,11 +83,16 @@ export const YieldWithdrawForm = () => {
         pendingTransaction?.type === 'unwrap' ? pendingTransaction : undefined;
     const isSharesInput = flowType === 'redeem';
     const withdrawInputUnit = isSharesInput ? 'shares' : 'asset';
-    const inputTokenSymbol = getYieldWithdrawInputToken({
-        flowData: { account, vault, token, receiptToken },
-        flowType,
-    }).symbol;
-    const otherUnitTokenSymbol = isSharesInput ? token.symbol : receiptToken.symbol;
+    const otherUnitToken = isSharesInput ? token : receiptToken;
+    const tokenSymbol = (
+        <AssetSymbol networkSymbol={token.networkSymbol} contractAddress={token.contractAddress} />
+    );
+    const receiptTokenSymbol = (
+        <AssetSymbol
+            networkSymbol={receiptToken.networkSymbol}
+            contractAddress={receiptToken.contractAddress}
+        />
+    );
     const isAmountTooHigh = amountIssues.includes('amount-too-high');
     const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
     const hasBlockingAmountIssue = amountIssues.length > 0;
@@ -227,7 +231,7 @@ export const YieldWithdrawForm = () => {
                     description={
                         <Translation
                             id="TR_EARN_YIELD_MAX_WITHDRAW_INFO"
-                            values={{ receiptTokenSymbol: receiptToken.symbol }}
+                            values={{ receiptTokenSymbol }}
                         />
                     }
                 />
@@ -278,7 +282,8 @@ export const YieldWithdrawForm = () => {
                                     summaryValue={
                                         <FormattedCryptoAmount
                                             value={maxAmount}
-                                            networkSymbol={inputTokenSymbol}
+                                            networkSymbol={withdrawActionToken.networkSymbol}
+                                            contractAddress={withdrawActionToken.contractAddress}
                                         />
                                     }
                                     warning={getWithdrawWarning()}
@@ -295,7 +300,16 @@ export const YieldWithdrawForm = () => {
                                         // the pending transaction is stored.
                                         !isDisabled && !isSubmittingAction
                                             ? {
-                                                  otherTokenSymbol: otherUnitTokenSymbol,
+                                                  otherTokenSymbol: (
+                                                      <AssetSymbol
+                                                          networkSymbol={
+                                                              otherUnitToken.networkSymbol
+                                                          }
+                                                          contractAddress={
+                                                              otherUnitToken.contractAddress
+                                                          }
+                                                      />
+                                                  ),
                                                   onClick: handleToggleWithdrawInputUnit,
                                               }
                                             : undefined
@@ -311,7 +325,7 @@ export const YieldWithdrawForm = () => {
                                 <Translation
                                     id="TR_EARN_YIELD_UNWRAP_TITLE"
                                     values={{
-                                        tokenSymbol: token.symbol,
+                                        tokenSymbol,
                                         nativeSymbol: (
                                             <AssetSymbol networkSymbol={account.symbol} />
                                         ),
@@ -322,7 +336,7 @@ export const YieldWithdrawForm = () => {
                                 <Translation
                                     id="TR_EARN_YIELD_UNWRAP_DESCRIPTION"
                                     values={{
-                                        tokenSymbol: token.symbol,
+                                        tokenSymbol,
                                         networkName: getNetwork(account.symbol).name,
                                     }}
                                 />
@@ -341,8 +355,7 @@ export const YieldWithdrawForm = () => {
                                         />
                                     )}
                                     <YieldUnwrapStep
-                                        tokenSymbol={token.symbol}
-                                        tokenDecimals={token.decimals}
+                                        token={token}
                                         tokenBalance={token.balance}
                                         approxFiat={unwrapApproxFiat}
                                         fiatToggle={fiatToggle}

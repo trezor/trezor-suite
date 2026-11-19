@@ -46,19 +46,16 @@ const buildFlowData = (overrides: Record<string, unknown> = {}) =>
         vault: {
             id: `eth-${VAULT_OUTPUT_TOKEN_ADDRESS}`,
             chainId: 1,
-            outputToken: { address: VAULT_OUTPUT_TOKEN_ADDRESS },
+            token: { symbol: 'usdc', decimals: 6 },
+            outputToken: { address: VAULT_OUTPUT_TOKEN_ADDRESS, symbol: 'musdc', decimals: 18 },
         },
         token: {
             networkSymbol: 'eth',
-            symbol: 'usdc',
-            decimals: 6,
             contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
             balance: '100',
         },
         receiptToken: {
             networkSymbol: 'eth',
-            symbol: 'musdc',
-            decimals: 18,
             contractAddress: RECEIPT_TOKEN_ADDRESS,
         },
         ...overrides,
@@ -131,12 +128,7 @@ describe(composeYieldWithdrawTransactionThunk.name, () => {
     it('falls back to the vault output token when the receipt token has no contract address', async () => {
         const result = await composeWithdraw({
             flowData: buildFlowData({
-                receiptToken: {
-                    networkSymbol: 'eth',
-                    symbol: 'musdc',
-                    decimals: 18,
-                    contractAddress: null,
-                },
+                receiptToken: { networkSymbol: 'eth' },
             }),
             amount: '1',
             flowType: 'withdraw',
@@ -152,13 +144,8 @@ describe(composeYieldWithdrawTransactionThunk.name, () => {
     it('fails when no vault address can be resolved', async () => {
         const result = await composeWithdraw({
             flowData: buildFlowData({
-                vault: { id: 'eth-vault', chainId: 1 },
-                receiptToken: {
-                    networkSymbol: 'eth',
-                    symbol: 'musdc',
-                    decimals: 18,
-                    contractAddress: null,
-                },
+                vault: { id: 'eth-vault', chainId: 1, token: { symbol: 'usdc', decimals: 6 } },
+                receiptToken: { networkSymbol: 'eth' },
             }),
             amount: '1',
             flowType: 'withdraw',

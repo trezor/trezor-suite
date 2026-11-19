@@ -9,10 +9,10 @@ import {
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
     type WalletSettingsRootState,
-    type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldPositionFlowType,
     type YieldRootState,
+    getYieldFlowTransactionToken,
     isEarnSigningCancelled,
     isYieldSupported,
     isYieldTxReviewForFlow,
@@ -40,7 +40,6 @@ type YieldActionReviewThunkPayload = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
     flowType: YieldPositionFlowType;
-    reviewToken?: YieldFlowDisplayToken;
 };
 
 type YieldSignTransactionError = {
@@ -75,10 +74,7 @@ export const signYieldActionReviewThunk = createThunk<
     }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
-    async (
-        { flowData, flowKey, flowType, reviewToken },
-        { dispatch, getState, rejectWithValue, extra },
-    ) => {
+    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), flowType, flowKey);
         const {
             action: { review },
@@ -106,7 +102,7 @@ export const signYieldActionReviewThunk = createThunk<
                 amount: review.amount,
                 selectedFee: null,
                 symbol: flowData.account.symbol,
-                token: reviewToken ?? flowData.token,
+                token: getYieldFlowTransactionToken({ flowData, flowType }),
                 unsignedTransaction: review.unsignedTransaction,
             });
         } catch (error) {

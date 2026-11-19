@@ -70,8 +70,8 @@ const getYieldAllowanceReviewAmount = ({
                 amount,
                 approvalLimitType,
                 tokenContract,
-                tokenDecimals: flowData.token.decimals,
-                tokenSymbol: flowData.token.symbol,
+                tokenDecimals: flowData.vault.token.decimals,
+                tokenSymbol: flowData.vault.token.symbol,
             });
         case 'revoke':
             return REVOKE_ALLOWANCE_AMOUNT;

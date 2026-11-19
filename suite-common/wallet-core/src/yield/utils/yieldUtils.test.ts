@@ -37,19 +37,17 @@ const flowData = {
     vault: {
         chainId: 1,
         id: 'ethereum:1:0x58d97b57bb95320f9a05dc918aef65434969c2b2',
+        token: { symbol: 'USDC', decimals: 6 },
+        outputToken: { address: VAULT_ADDRESS, symbol: 'trUSDC', decimals: 18 },
     },
     token: {
         balance: '0',
         contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        decimals: 6,
         networkSymbol: ethSymbol,
-        symbol: 'USDC',
     },
     receiptToken: {
         contractAddress: VAULT_ADDRESS,
-        decimals: 18,
         networkSymbol: ethSymbol,
-        symbol: 'trUSDC',
     },
 } as unknown as Parameters<typeof buildYieldWithdrawCalldata>[0]['flowData'];
 

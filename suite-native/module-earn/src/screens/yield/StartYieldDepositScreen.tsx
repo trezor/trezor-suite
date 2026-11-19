@@ -17,11 +17,12 @@ type StartYieldDepositScreenProps = {
 
 export const StartYieldDepositScreen = ({ yieldFlowData }: StartYieldDepositScreenProps) => {
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
-    const { flowData, flowKey, account, vault } = yieldFlowData;
+    const { flowData, flowKey, account, vault, isWrappedNativeVault } = yieldFlowData;
     const { analytics } = useServices(injectNativeAnalytics);
     const { handleStartYieldDepositFlow } = useStartYieldDepositFlow({
         flowData,
         flowKey,
+        isWrappedNativeVault,
         routeParams: route.params,
         shouldReplaceRoute: true,
     });

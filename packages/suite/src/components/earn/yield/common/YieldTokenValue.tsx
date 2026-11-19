@@ -1,18 +1,11 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { AssetIcon } from '@suite/assets';
+import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
-type YieldTokenValueToken = {
-    symbol: string;
-    networkSymbol: NetworkSymbol;
-    contractAddress: string | null;
-    decimals: number;
-};
-
 type YieldTokenValueProps = {
-    token: YieldTokenValueToken;
+    token: YieldFlowDisplayToken;
     amount: string;
     'data-testid'?: string;
 };
@@ -23,19 +16,18 @@ export const YieldTokenValue = ({
     'data-testid': dataTestId,
 }: YieldTokenValueProps) => (
     <Row alignItems="center" gap={8}>
-        <TokenIcon
+        <AssetIcon
             size={24}
             networkSymbol={token.networkSymbol}
             contractAddress={token.contractAddress}
-            placeholder={token.symbol}
             showNetworkIcon
             isBordered={false}
         />
         <Text typographyStyle="body-md-strong">
             <FormattedCryptoAmount
                 value={amount}
-                networkSymbol={token.symbol}
-                tokenDecimals={token.decimals}
+                networkSymbol={token.networkSymbol}
+                contractAddress={token.contractAddress}
                 data-testid={dataTestId}
             />
         </Text>

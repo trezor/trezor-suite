@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { gotoThunk } from '@suite/router';
+import { wrappedNativeToTokenMetadataSources } from '@suite-common/earn-stablecoin';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { useServices } from '@trezor/dependency-injection';
-import { getWrappedNativeToken, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     EarnLayoutFallback,
@@ -18,6 +21,13 @@ export const EarnUnwrapPage = () => {
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
     // Held here rather than in UnwrapNativeToken because useLayout renders the header outside it.
     const [isFlowComplete, setIsFlowComplete] = useState(false);
+    const metadataSources = useMemo(
+        () =>
+            account && wrappedNative
+                ? wrappedNativeToTokenMetadataSources(account.symbol, wrappedNative)
+                : [],
+        [account, wrappedNative],
+    );
 
     useEffect(() => {
         if (!routeParams) {
@@ -46,18 +56,21 @@ export const EarnUnwrapPage = () => {
         return <EarnLayoutFallback layoutState={{ status: 'invalid', reason: 'token-mismatch' }} />;
     }
 
-    const wrappedToken = account.tokens?.find(token =>
-        isWrappedNativeToken(account.symbol, token.contract),
+    const wrappedToken = account.tokens?.find(
+        token => token.contract.toLowerCase() === wrappedNative.address.toLowerCase(),
     );
 
     return (
-        <UnwrapNativeToken
-            account={account}
-            tokenSymbol={wrappedNative.symbol}
-            tokenDecimals={wrappedNative.decimals}
-            tokenBalance={wrappedToken?.balance ?? '0'}
-            tokenContractAddress={wrappedNative.address}
-            onFlowCompleteChange={setIsFlowComplete}
-        />
+        <TokenMetadataProvider sources={metadataSources}>
+            <UnwrapNativeToken
+                account={account}
+                token={{
+                    networkSymbol: account.symbol,
+                    contractAddress: toTokenAddress(wrappedNative.address),
+                }}
+                tokenBalance={wrappedToken?.balance ?? '0'}
+                onFlowCompleteChange={setIsFlowComplete}
+            />
+        </TokenMetadataProvider>
     );
 };

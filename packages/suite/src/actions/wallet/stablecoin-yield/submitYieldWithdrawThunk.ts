@@ -9,6 +9,7 @@ import {
     type YieldWithdrawFlowType,
     composeYieldWithdrawTransactionThunk,
     getConvertedOutputTokenBalanceToInputTokenAmount,
+    getYieldFlowTransactionToken,
     isYieldWithdrawFeeError,
     notifyEarnTransactionBroadcastThunk,
     transactionsActions,
@@ -122,12 +123,11 @@ export const submitYieldWithdrawThunk = createThunk<
             }
 
             const { selectedFee, selectedFeeLevel } = userAcceptedTxSimulation;
-            const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
                 account,
                 amount,
-                token: reviewToken,
+                transactionToken: getYieldFlowTransactionToken({ flowData, flowType }),
                 unsignedTransaction,
                 flowKey,
                 flowType,
@@ -165,8 +165,8 @@ export const submitYieldWithdrawThunk = createThunk<
                 flowType === 'redeem'
                     ? getConvertedOutputTokenBalanceToInputTokenAmount({
                           networkSymbol: account.symbol,
-                          token: flowData.token,
-                          outputToken: flowData.receiptToken,
+                          token: flowData.vault.token,
+                          outputToken: flowData.vault.outputToken,
                           outputTokenBalance: amount,
                           pricePerShareState: flowData.vault.state?.pricePerShareState,
                       })

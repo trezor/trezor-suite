@@ -2,6 +2,7 @@ import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldUnwrapTransactionThunkState,
@@ -50,11 +51,9 @@ jest.mock('./stablecoin-yield/signingHelpers', () => ({
 const ethSymbol = asNetworkSymbol('eth');
 const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
-const token: YieldFlowDisplayToken & { contractAddress: string } = {
+const token: YieldFlowDisplayToken & { contractAddress: TokenAddress } = {
     networkSymbol: ethSymbol,
-    symbol: 'WETH',
-    decimals: 18,
-    contractAddress: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    contractAddress: toTokenAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
 };
 
 const buildStore = (report?: jest.Mock) =>
@@ -224,7 +223,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
             metadata: {
                 send: {
                     symbol: account.symbol,
-                    displaySymbol: token.symbol,
+                    displaySymbol: 'WETH',
                     contractAddress: token.contractAddress,
                     amount: '1.5',
                 },

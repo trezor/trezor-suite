@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { gotoThunk } from '@suite/router';
+import { wrappedNativeToTokenMetadataSources } from '@suite-common/earn-stablecoin';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -18,6 +21,13 @@ export const EarnWrapPage = () => {
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
     // Held here rather than in WrapNativeToken because useLayout renders the header outside it.
     const [isFlowComplete, setIsFlowComplete] = useState(false);
+    const metadataSources = useMemo(
+        () =>
+            account && wrappedNative
+                ? wrappedNativeToTokenMetadataSources(account.symbol, wrappedNative)
+                : [],
+        [account, wrappedNative],
+    );
 
     useEffect(() => {
         if (!routeParams) {
@@ -48,12 +58,16 @@ export const EarnWrapPage = () => {
 
     const token = {
         networkSymbol: account.symbol,
-        symbol: wrappedNative.symbol,
-        decimals: wrappedNative.decimals,
-        contractAddress: wrappedNative.address,
+        contractAddress: toTokenAddress(wrappedNative.address),
     };
 
     return (
-        <WrapNativeToken account={account} token={token} onFlowCompleteChange={setIsFlowComplete} />
+        <TokenMetadataProvider sources={metadataSources}>
+            <WrapNativeToken
+                account={account}
+                token={token}
+                onFlowCompleteChange={setIsFlowComplete}
+            />
+        </TokenMetadataProvider>
     );
 };
