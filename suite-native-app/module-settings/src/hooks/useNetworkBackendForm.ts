@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import {
     type BackendType,
@@ -13,7 +13,9 @@ import {
 } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
+    type WalletSettingsRootState,
     blockchainActions,
+    selectIsNetworkEnabled,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -29,14 +31,18 @@ type FormValues = {
     serverAddress: string;
 };
 
-export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
+export const useNetworkBackendForm = ({ symbol, backendOptions, chainId }: Network) => {
     const { translate } = useTranslate();
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
+    const navigation = useNavigation();
 
     const {
         connected,
         backends: { selected, urls },
     } = useSelector((state: BlockchainRootState) => selectNetworkBlockchainInfo(state, symbol));
+    const isNetworkEnabled = useSelector((state: WalletSettingsRootState) =>
+        selectIsNetworkEnabled(state, symbol),
+    );
 
     const serverTypes = useMemo(() => {
         const defaultItem: SelectItemType<ServerType> = {
@@ -92,7 +98,7 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
         defaultValues,
         mode: 'onSubmit',
     });
-    const { isDirty } = form.formState;
+    const { isDirty, isSubmitting } = form.formState;
 
     const setServerType = (value: ServerType) => {
         form.clearErrors();
@@ -124,9 +130,57 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
         });
     };
 
-    const submit = form.handleSubmit(formValues => {
-        setIsConnecting(true);
+    const getUnableToConnectMessage = useCallback(
+        () =>
+            translate(
+                isOnionAddress
+                    ? 'moduleSettings.networkBackends.server.unableToConnect.tor'
+                    : 'moduleSettings.networkBackends.server.unableToConnect.clearnet',
+            ),
+        [translate, isOnionAddress],
+    );
+
+    // Probes the URL on a throwaway link, so it works before the network is enabled and never
+    // replaces the network's current backend with an unreachable or wrong-chain one.
+    const getEvmRpcUrlError = async (url: string) => {
+        const result = await TrezorConnect.blockchainEvmRpcGetChainId({ url });
+        if (!result.success) {
+            return getUnableToConnectMessage();
+        }
+        if (chainId !== undefined && result.payload.chainId !== chainId) {
+            return translate('moduleSettings.networkBackends.server.chainMismatch', {
+                expected: chainId,
+                actual: result.payload.chainId,
+            });
+        }
+    };
+
+    const submit = form.handleSubmit(async formValues => {
+        if (formValues.serverType === 'evm-rpc') {
+            const urlError = await getEvmRpcUrlError(formValues.serverAddress);
+            // The user may have discarded and left while the probe was running.
+            if (!navigation.isFocused()) {
+                return;
+            }
+            if (urlError) {
+                form.setError('serverAddress', { message: urlError });
+
+                return;
+            }
+        }
+
         setBackend(formValues);
+
+        // A disabled network does not connect, so no connection event would end the wait. Its
+        // toggle may also still be pending on the coin-enabling screen underneath this one.
+        if (!isNetworkEnabled) {
+            form.reset(formValues);
+            Keyboard.dismiss();
+
+            return;
+        }
+
+        setIsConnecting(true);
     });
 
     const discard = () => {
@@ -143,16 +197,12 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
         (e: BlockchainError) => {
             if (e.code === 'Backend_Error') {
                 form.setError('serverAddress', {
-                    message: translate(
-                        isOnionAddress
-                            ? 'moduleSettings.networkBackends.server.unableToConnect.tor'
-                            : 'moduleSettings.networkBackends.server.unableToConnect.clearnet',
-                    ),
+                    message: getUnableToConnectMessage(),
                 });
                 setIsConnecting(false);
             }
         },
-        [form, isOnionAddress, translate],
+        [form, getUnableToConnectMessage],
     );
 
     useFocusEffect(
@@ -176,8 +226,9 @@ export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
         selectedServerType,
         setServerType,
         serverAddressExample: getServerAddressExample(symbol, selectedServerType),
+        isNetworkEnabled,
         isConnected: connected,
-        isConnecting,
+        isConnecting: isConnecting || isSubmitting,
         submit,
         discard,
     };
