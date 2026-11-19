@@ -64,6 +64,12 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
     );
     const hasPendingOperation = position !== null && hasPendingStakingOperation(position);
 
+    // The rate belongs to a delegation Suite offers; a registered key without a pool has none to
+    // show until a transaction that may delegate it is pending.
+    const isStakedWithProvider =
+        position !== null && position.targets.length > 0 && !isDelegatedOutside;
+    const shownRate = isStakedWithProvider || hasPendingOperation ? rate : null;
+
     const shouldShowStakingDashboard = isStakingActive || hasPendingOperation;
 
     return (
@@ -79,7 +85,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <CardanoNewProviderCard account={account} />
 
                                 <Flex gap={12}>
-                                    <ApyCard apy={isDelegatedOutside ? null : rate} />
+                                    <ApyCard apy={shownRate} />
 
                                     <PayoutCardFrequencyRewards
                                         rewardFrequency={rewardPeriodDays}
