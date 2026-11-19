@@ -26,11 +26,8 @@ const OTHER_ACCOUNT = mockWalletAccount({ symbol: ethSymbol, formattedBalance: '
 const buildSelect = (accountKey: AccountKey): TradingAssetSellOption => ({
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
-    name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: btcSymbol,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,
     accountKey,

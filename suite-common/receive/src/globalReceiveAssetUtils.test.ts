@@ -10,6 +10,7 @@ import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
 import {
     buildGlobalReceiveAssetOptions,
+    buildGlobalReceiveAssetSearchIndex,
     getGlobalReceiveAssetDescriptionValues,
     getGlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
@@ -19,8 +20,6 @@ type CryptoId = TradingAssetOption['id'];
 
 type CreateAssetParams = {
     id: string;
-    name: string;
-    displaySymbol: string;
     contractAddress?: string;
     isNativeToken?: boolean;
     networkName?: string;
@@ -29,8 +28,6 @@ type CreateAssetParams = {
 
 const createAsset = ({
     id,
-    name,
-    displaySymbol,
     contractAddress,
     isNativeToken = false,
     networkName,
@@ -38,9 +35,6 @@ const createAsset = ({
 }: CreateAssetParams): TradingAssetOption =>
     ({
         id: id as CryptoId,
-        name,
-        displaySymbolName: name,
-        displaySymbol,
         contractAddress,
         isNativeToken,
         networkSymbol,
@@ -54,63 +48,71 @@ const createBalance = (fiatAmount: string | null): TradeableAssetBalance => ({
 
 const bitcoin = createAsset({
     id: 'bitcoin',
-    name: 'Bitcoin',
-    displaySymbol: 'BTC',
     isNativeToken: true,
     networkName: 'Bitcoin',
     networkSymbol: 'btc',
 });
 const ethereum = createAsset({
     id: 'ethereum',
-    name: 'Ethereum',
-    displaySymbol: 'ETH',
     isNativeToken: true,
     networkName: 'Ethereum',
     networkSymbol: 'eth',
 });
 const ethereumUSDC = createAsset({
     id: 'ethereum--usdc',
-    name: 'USD Coin',
-    displaySymbol: 'USDC',
     contractAddress: '0x-usdc',
     networkName: 'Ethereum',
     networkSymbol: 'eth',
 });
 const arbitrumUSDC = createAsset({
     id: 'arbitrum--usdc',
-    name: 'USD Coin',
-    displaySymbol: 'USDC',
     contractAddress: '0x-arb-usdc',
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
 });
 const arbitrumEthereum = createAsset({
     id: 'arbitrum',
-    name: 'Arbitrum One Ethereum',
-    displaySymbol: 'ETH',
     isNativeToken: true,
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
 });
 const bridgedEthereum = createAsset({
     id: 'arbitrum--bridged-ethereum',
-    name: 'Alpha Bridged Ethereum',
-    displaySymbol: 'ETH',
     contractAddress: '0x-bridged-eth',
     networkName: 'Arbitrum One',
     networkSymbol: 'arb',
 });
 
+const searchDefinitions: RankedTokenStructure = (
+    [
+        ['ethereum', '0x-zeta-usdc', 'Zeta USD Coin', 'usdc'],
+        ['ethereum', '0x-usdc', 'USD Coin', 'usdc'],
+        ['arbitrum-one', '0x-arb-usdc', 'USD Coin', 'usdc'],
+        ['arbitrum-one', '0x-bridged-eth', 'Alpha Bridged Ethereum', 'eth'],
+    ] as const
+).map(([assetPlatformId, address, name, symbol]) => ({
+    assetPlatformId,
+    address,
+    name,
+    symbol,
+    marketCap: 0,
+}));
+
+const getSections = (
+    params: Omit<Parameters<typeof getGlobalReceiveAssetSections>[0], 'searchIndex'>,
+) =>
+    getGlobalReceiveAssetSections({
+        ...params,
+        searchIndex: buildGlobalReceiveAssetSearchIndex(params.assets, searchDefinitions),
+    });
+
 describe(getGlobalReceiveAssetDescriptionValues.name, () => {
     it('omits the network for a native asset', () => {
-        expect(getGlobalReceiveAssetDescriptionValues(bitcoin)).toEqual({
-            assetName: 'Bitcoin',
-        });
+        expect(getGlobalReceiveAssetDescriptionValues(bitcoin)).toEqual({});
     });
 
     it('includes the network for a token', () => {
         expect(getGlobalReceiveAssetDescriptionValues(ethereumUSDC)).toEqual({
-            assetName: 'USD Coin',
             networkName: 'Ethereum',
         });
     });
@@ -119,7 +121,7 @@ describe(getGlobalReceiveAssetDescriptionValues.name, () => {
 describe(getGlobalReceiveAssetSections.name, () => {
     it('includes previously used zero-balance assets after funded assets in My assets', () => {
         const balances = new Map([[ethereum.id, createBalance('20')]]);
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bitcoin, ethereum, ethereumUSDC, arbitrumUSDC],
             balances,
             assetIdsWithHistory: new Set([bitcoin.id, arbitrumUSDC.id]),
@@ -147,7 +149,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it('applies search and network filters to zero-balance assets with history', () => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bitcoin, ethereum, ethereumUSDC, arbitrumUSDC],
             balances: new Map(),
             assetIdsWithHistory: new Set([bitcoin.id, ethereumUSDC.id, arbitrumUSDC.id]),
@@ -167,7 +169,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             [arbitrumUSDC.id, createBalance(null)],
         ]);
 
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bitcoin, ethereum, ethereumUSDC, arbitrumUSDC],
             balances,
             search: '',
@@ -194,7 +196,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             [ethereum.id, createBalance('20')],
         ]);
 
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [arbitrumUSDC, ethereumUSDC, bitcoin, ethereum],
             balances,
             search: '',
@@ -216,7 +218,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it('searches multichain assets and native coins by their network', () => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum],
             balances: new Map(),
             search: 'usdc',
@@ -229,7 +231,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             ethereumUSDC.id,
         ]);
 
-        const networkResult = getGlobalReceiveAssetSections({
+        const networkResult = getSections({
             assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum, arbitrumEthereum],
             balances: new Map(),
             search: 'arbitrum',
@@ -243,7 +245,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it('puts a native asset before equally relevant token search results', () => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bridgedEthereum, ethereum],
             balances: new Map(),
             search: 'eth',
@@ -257,7 +259,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it('puts the native asset first when filtering to a network', () => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [arbitrumUSDC, arbitrumEthereum],
             balances: new Map(),
             search: '',
@@ -271,7 +273,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it('combines search and network filtering without reordering', () => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum],
             balances: new Map(),
             search: 'usd coin',
@@ -284,11 +286,10 @@ describe(getGlobalReceiveAssetSections.name, () => {
     it('preserves catalogue order in search results instead of ranking matches alphabetically', () => {
         const highestRanked = createAsset({
             id: 'ethereum--highest',
-            name: 'Zeta USD Coin',
-            displaySymbol: 'USDC',
+            contractAddress: '0x-zeta-usdc',
             networkSymbol: 'eth',
         });
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [highestRanked, ethereumUSDC, arbitrumUSDC],
             balances: new Map(),
             search: 'usd coin',
@@ -303,7 +304,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it('keeps a held token before an unheld native asset in a network search', () => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [arbitrumEthereum, arbitrumUSDC],
             balances: new Map([[arbitrumUSDC.id, createBalance('10')]]),
             search: 'arbitrum',
@@ -319,7 +320,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             [arbitrumUSDC.id, createBalance('10')],
         ]);
 
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bitcoin, ethereum, arbitrumEthereum, arbitrumUSDC],
             balances,
             assetIdsWithHistory: new Set([ethereum.id]),
@@ -337,7 +338,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it('does not report more assets when every matching asset fits under the limit', () => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [bitcoin, ethereum, arbitrumEthereum],
             balances: new Map(),
             assetIdsWithHistory: new Set([ethereum.id]),
@@ -354,7 +355,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
     });
 
     it.each(['USD COIN', 'usdc', 'Ethereum', 'eth', '0X-USDC'])('searches by %s', search => {
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets: [ethereumUSDC],
             balances: new Map(),
             search,
@@ -421,7 +422,7 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
         );
     });
 
-    it('maps platforms using their CoinGecko ID, normalizes display symbols, and preserves token rank', () => {
+    it('maps platforms using their CoinGecko ID and preserves token rank', () => {
         const assets = buildGlobalReceiveAssetOptions({
             networks: getMainnets(),
             definitions: rankedDefinitions,
@@ -442,15 +443,7 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
             `solana--${wrappedSolToken.address}`,
             `stellar--${stellarToken.address}`,
         ]);
-        expect(tokens.map(asset => asset.displaySymbol)).toEqual([
-            'USDC',
-            'USDT',
-            'USDC',
-            'WSOL',
-            'USDC',
-        ]);
         expect(tokens[3]).toMatchObject({
-            name: 'Wrapped SOL',
             isNativeToken: false,
             contractAddress: wrappedSolToken.address,
         });
@@ -470,17 +463,15 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
     });
 
     it('keeps the highest-ranked entry when contracts normalize to the same ID', () => {
-        const assets = buildGlobalReceiveAssetOptions({
-            networks: getMainnets(),
-            definitions: [
-                polygonToken,
-                { ...polygonToken, address: '0xabcd', name: 'Duplicate', marketCap: 0 },
-            ],
-        });
+        const definitions = [
+            polygonToken,
+            { ...polygonToken, address: '0xabcd', name: 'Duplicate', marketCap: 0 },
+        ];
+        const assets = buildGlobalReceiveAssetOptions({ networks: getMainnets(), definitions });
+        const tokens = assets.filter(asset => !asset.isNativeToken);
+        const searchIndex = buildGlobalReceiveAssetSearchIndex(assets, definitions);
 
-        expect(assets.filter(asset => !asset.isNativeToken).map(asset => asset.name)).toEqual([
-            'USD Coin',
-        ]);
+        expect(tokens.map(asset => searchIndex.get(asset)?.name)).toEqual(['usd coin']);
     });
 
     it('uses token IDs compatible with the local balance lookup', () => {
@@ -489,7 +480,7 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
             definitions: rankedDefinitions,
         });
         const balance = createBalance('25');
-        const result = getGlobalReceiveAssetSections({
+        const result = getSections({
             assets,
             balances: new Map([
                 [getCryptoId(asNetworkSymbol('sol'), wrappedSolToken.address), balance],
@@ -499,7 +490,10 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
         });
 
         expect(result.myAssets).toEqual([
-            { asset: expect.objectContaining({ name: 'Wrapped SOL' }), balance },
+            {
+                asset: expect.objectContaining({ contractAddress: wrappedSolToken.address }),
+                balance,
+            },
         ]);
     });
 });

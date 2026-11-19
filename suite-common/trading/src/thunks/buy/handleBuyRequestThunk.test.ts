@@ -89,11 +89,7 @@ describe('handleBuyRequestThunk', () => {
             cryptoSelect: {
                 id: 'bitcoin' as CryptoId,
                 isNativeToken: true,
-                name: 'Bitcoin',
-                symbol: btcSymbol,
                 coingeckoId: 'bitcoin',
-                displaySymbol: 'BTC',
-                displaySymbolName: 'Bitcoin',
                 contractAddress: null,
                 networkName: 'Bitcoin',
                 networkSymbol: btcSymbol,

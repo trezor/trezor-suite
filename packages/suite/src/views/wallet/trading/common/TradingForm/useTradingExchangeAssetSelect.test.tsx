@@ -26,11 +26,8 @@ const solSymbol = toNetworkSymbolNonTestnet('sol');
 const BTC_ASSET: TradingAssetOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
-    name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: btcSymbol,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,
 };
@@ -38,11 +35,8 @@ const BTC_ASSET: TradingAssetOption = {
 const ETH_ASSET: TradingAssetOption = {
     id: 'ethereum' as CryptoId,
     isNativeToken: true,
-    name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: ethSymbol,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
 };
@@ -50,11 +44,8 @@ const ETH_ASSET: TradingAssetOption = {
 const SOL_ASSET: TradingAssetOption = {
     id: 'solana' as CryptoId,
     isNativeToken: true,
-    name: 'Solana',
     coingeckoId: 'solana',
     contractAddress: null,
-    symbol: solSymbol,
-    displaySymbol: 'SOL',
     networkName: 'Solana',
     networkSymbol: solSymbol,
 };

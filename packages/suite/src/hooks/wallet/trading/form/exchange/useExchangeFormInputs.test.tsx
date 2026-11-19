@@ -48,11 +48,8 @@ const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
     isNativeToken: true,
-    name: 'Bitcoin',
     coingeckoId: 'bitcoin',
     contractAddress: null,
-    symbol: btcSymbol,
-    displaySymbol: 'BTC',
     networkName: 'Bitcoin',
     networkSymbol: btcSymbol,
     accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
@@ -61,11 +58,8 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
 const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     id: 'ethereum' as CryptoId,
     isNativeToken: true,
-    name: 'Ethereum',
     coingeckoId: 'ethereum',
     contractAddress: null,
-    symbol: ethSymbol,
-    displaySymbol: 'ETH',
     networkName: 'Ethereum',
     networkSymbol: ethSymbol,
 };

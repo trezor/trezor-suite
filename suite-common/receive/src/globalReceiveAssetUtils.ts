@@ -1,19 +1,25 @@
 import { normalizeForSearch } from '@suite-common/suite-utils';
+import {
+    type TokenMetadata,
+    type TokenMetadataByNetwork,
+    type TokenMetadataSource,
+} from '@suite-common/token';
 import { type RankedTokenStructure } from '@suite-common/token-definitions';
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import {
     type TradeableAssetBalance,
     type TradeableAssetBalances,
-    type TradeableAssetSearchFields,
     type TradeableAssetSearchIndex,
     type TradingAssetOption,
     buildTradeableAssetSearchIndex,
     createAssetNativeTokenOption,
     createAssetTokenOption,
+    getTradingAssetSearchFields,
 } from '@suite-common/trading';
 import {
     type Network,
     type NetworkSymbol,
+    getMainnets,
     toNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -41,11 +47,7 @@ export const buildGlobalReceiveAssetOptions = ({
             return;
         }
 
-        const asset = createAssetTokenOption(network.symbol, {
-            contract: token.address,
-            symbol: token.symbol.toUpperCase(),
-            name: token.name,
-        });
+        const asset = createAssetTokenOption(network.symbol, token.address);
         if (!includedIds.has(asset.id)) {
             assets.push(asset);
             includedIds.add(asset.id);
@@ -66,7 +68,7 @@ export const buildGlobalReceiveAssetOption = ({
 }: BuildGlobalReceiveAssetOptionParams): TradingAssetOption =>
     contractAddress === undefined
         ? createAssetNativeTokenOption(toNetworkSymbolNonTestnet(symbol))
-        : createAssetTokenOption(symbol, { contract: contractAddress, symbol: '', name: '' });
+        : createAssetTokenOption(symbol, contractAddress);
 
 export type GlobalReceiveAssetListItem = {
     asset: TradingAssetOption;
@@ -81,18 +83,14 @@ export type GlobalReceiveAssetSections = {
 
 export const getGlobalReceiveAssetDescriptionValues = (
     asset: TradingAssetOption,
-): { assetName: string; networkName?: string } => {
-    const assetName = asset.displaySymbolName ?? asset.name;
-
-    return asset.isNativeToken ? { assetName } : { assetName, networkName: asset.networkName };
-};
+): { networkName?: string } => (asset.isNativeToken ? {} : { networkName: asset.networkName });
 
 type GetGlobalReceiveAssetSectionsParams = {
     assets: readonly TradingAssetOption[];
     balances: TradeableAssetBalances;
     assetIdsWithHistory?: ReadonlySet<string>;
     search: string;
-    searchIndex?: TradeableAssetSearchIndex<TradingAssetOption>;
+    searchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
     networkSymbols: NetworkSymbol[];
     otherAssetsLimit?: number;
 };
@@ -103,16 +101,53 @@ const ZERO_ASSET_BALANCE: TradeableAssetBalance = {
     fiatAmount: asBaseCurrencyAmount(new BigNumber(0)),
 };
 
-const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFields => ({
-    name: asset.displaySymbolName ?? asset.name,
-    symbol: asset.displaySymbol,
-    networkName: asset.networkName,
-    networkSymbol: asset.networkSymbol,
-    contractAddress: asset.contractAddress ?? '',
-});
+export const rankedTokenDefinitionsToTokenMetadataSources = (
+    definitions: RankedTokenStructure,
+): TokenMetadataSource[] => {
+    const networkSymbolsByPlatform = new Map(
+        getMainnets().map(network => [network.coingeckoId, network.symbol]),
+    );
+    const tokensByNetwork = new Map<NetworkSymbol, TokenMetadata[]>();
 
-export const buildGlobalReceiveAssetSearchIndex = (assets: readonly TradingAssetOption[]) =>
-    buildTradeableAssetSearchIndex({ assets, getSearchFields: getAssetSearchFields });
+    for (const token of definitions) {
+        const networkSymbol = networkSymbolsByPlatform.get(token.assetPlatformId);
+        if (!networkSymbol) continue;
+
+        const tokens = tokensByNetwork.get(networkSymbol) ?? [];
+        tokens.push({
+            contract: toTokenAddress(token.address),
+            name: token.name,
+            symbol: token.symbol.toUpperCase(),
+            isRecognized: true,
+        });
+        tokensByNetwork.set(networkSymbol, tokens);
+    }
+
+    return Array.from(tokensByNetwork, ([networkSymbol, tokens]) => ({ networkSymbol, tokens }));
+};
+
+// The first entry of a contract wins, as in the ranked asset list.
+const toTokenMetadataByNetwork = (sources: TokenMetadataSource[]): TokenMetadataByNetwork =>
+    new Map(
+        sources.map(({ networkSymbol, tokens }) => [
+            networkSymbol,
+            new Map(tokens.toReversed().map(token => [token.contract, token])),
+        ]),
+    );
+
+export const buildGlobalReceiveAssetSearchIndex = (
+    assets: readonly TradingAssetOption[],
+    definitions: RankedTokenStructure,
+) => {
+    const tokensByNetwork = toTokenMetadataByNetwork(
+        rankedTokenDefinitionsToTokenMetadataSources(definitions),
+    );
+
+    return buildTradeableAssetSearchIndex({
+        assets,
+        getSearchFields: asset => getTradingAssetSearchFields(asset, tokensByNetwork),
+    });
+};
 
 const compareHeldAssets = (
     balances: TradeableAssetBalances,
@@ -142,7 +177,7 @@ export const getGlobalReceiveAssetSections = ({
     balances,
     assetIdsWithHistory = EMPTY_ASSET_IDS_WITH_HISTORY,
     search,
-    searchIndex = buildGlobalReceiveAssetSearchIndex(assets),
+    searchIndex,
     networkSymbols,
     otherAssetsLimit = Infinity,
 }: GetGlobalReceiveAssetSectionsParams): GlobalReceiveAssetSections => {

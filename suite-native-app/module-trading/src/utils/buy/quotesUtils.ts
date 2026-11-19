@@ -77,7 +77,6 @@ export const tradingBuyFormToTradingBuyFormProps = (
         },
         cryptoSelect: createAssetOption({
             cryptoId: asset.cryptoId,
-            coinInfo,
             platformInfo,
             networkConfigs,
         })!,
