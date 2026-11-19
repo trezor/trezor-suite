@@ -1,6 +1,11 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { type FormState } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type FormState,
+    type FormStateTradingCryptoCurrency,
+    type GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     isCompleteTradingForm,
@@ -19,7 +24,7 @@ import {
     type CreatePaymentRequestsThunkState,
     createPaymentRequestsThunk,
 } from './createPaymentRequestsThunk';
-import { TRADING_THUNK_PREFIX } from '../../constants';
+import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, TRADING_THUNK_PREFIX } from '../../constants';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
@@ -32,6 +37,7 @@ import type {
     TradingSignAndPushError,
     TradingSignAndPushSendFormTransactionProps,
 } from '../../types';
+import { mapTestnetSymbol } from '../../utils';
 import { toTradingError } from '../../utils/tradingErrorUtils';
 
 export type RecomposeAndSignTxThunkProps = ComposeTradingTransactionThunkProps & {
@@ -56,6 +62,22 @@ const SIGNING_CANCEL_ERROR_CODES = [
 ] as const;
 
 const DEVICE_NOT_CONNECTED_ERROR_CODES = ['Device_Disconnected', 'Device_NotFound'] as const;
+
+const isComposedTradedAsset = (
+    account: Account,
+    send: FormStateTradingCryptoCurrency,
+    { token }: GeneralPrecomposedTransactionFinal,
+): boolean => {
+    const tradedContract =
+        send.contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN
+            ? undefined
+            : send.contractAddress;
+
+    return (
+        mapTestnetSymbol(account.symbol) === mapTestnetSymbol(send.symbol) &&
+        token?.contract.toLowerCase() === tradedContract?.toLowerCase()
+    );
+};
 
 const getSignAndPushRejectionType = (
     signAndPushError: TradingSignAndPushError,
@@ -171,6 +193,17 @@ export const recomposeAndSignTxThunk = createThunk<
             }
 
             const { formState, precomposedTransaction: precomposedToSign } = composeResult.payload;
+
+            if (
+                !transactionData &&
+                isCompleteTradingForm(tradingFormState) &&
+                !isComposedTradedAsset(account, tradingFormState.send, precomposedToSign)
+            ) {
+                return rejectWithValue({
+                    type: 'sign-tx-error',
+                    code: 'cannot-create-transaction',
+                });
+            }
 
             /*
                 SLIP-24 to achieve the consistent trade data
