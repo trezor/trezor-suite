@@ -1,16 +1,21 @@
 import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { type AssetTableSelectors } from '@suite-common/assets';
-import { type TokenAddress } from '@suite-common/tokens';
+import {
+    selectWalletAssetContractAddress,
+    selectWalletAssetNetworkSymbol,
+    selectWalletAssetTokenDecimals,
+    selectWalletAssetTokenSymbol,
+} from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { PriceTicker, TrendTicker } from '#src/components/suite';
-import { useSelector } from '#src/hooks/suite';
+import { useAccountScopedSelector } from '#src/hooks/wallet/useAccountScopedSelector';
 
 import { HomeAssetApyBadge } from './HomeAssetApyBadge';
 import { HomeAssetBalance } from './HomeAssetBalance';
@@ -19,32 +24,35 @@ import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLa
 
 type AssetTableRowProps = {
     assetKey: WalletAssetKey;
-    selectors: AssetTableSelectors;
+    /** The row of one account's table, with what that account holds; the wallet's when left out. */
+    accountKey?: AccountKey;
+    testIdPrefix: string;
     hasBorderTop?: boolean;
     assetNameTestId?: string;
-    getTestId: (networkSymbol: NetworkSymbol, contractAddress: TokenAddress | undefined) => string;
     onOpen?: (networkSymbol: NetworkSymbol) => void;
 };
 
 export const AssetTableRow = memo(function AssetTableRow({
     assetKey,
-    selectors,
+    accountKey,
+    testIdPrefix,
     hasBorderTop,
     assetNameTestId,
-    getTestId,
     onOpen,
 }: AssetTableRowProps) {
     const { dispatch } = useServices(injectDispatch);
-    const {
-        selectWalletAssetContractAddress,
-        selectWalletAssetNetworkSymbol,
-        selectWalletAssetTokenDecimals,
-        selectWalletAssetTokenSymbol,
-    } = selectors;
-    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
-    const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
-    const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
+    const networkSymbol = useAccountScopedSelector(accountKey, state =>
+        selectWalletAssetNetworkSymbol(state, assetKey),
+    );
+    const contractAddress = useAccountScopedSelector(accountKey, state =>
+        selectWalletAssetContractAddress(state, assetKey),
+    );
+    const tokenSymbol = useAccountScopedSelector(accountKey, state =>
+        selectWalletAssetTokenSymbol(state, assetKey),
+    );
+    const tokenDecimals = useAccountScopedSelector(accountKey, state =>
+        selectWalletAssetTokenDecimals(state, assetKey),
+    );
 
     if (networkSymbol === undefined) {
         return null;
@@ -64,7 +72,7 @@ export const AssetTableRow = memo(function AssetTableRow({
         <Table.Row
             hasBorderTop={hasBorderTop}
             onClick={openAssetDetail}
-            data-testid={getTestId(networkSymbol, contractAddress)}
+            data-testid={`${testIdPrefix}/${networkSymbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={HOME_ASSET_CELL_PADDING.first} data-testid={assetNameTestId}>
                 <HomeAssetIdentity
@@ -89,7 +97,7 @@ export const AssetTableRow = memo(function AssetTableRow({
             </Table.Cell>
 
             <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
-                <HomeAssetBalance assetKey={assetKey} selectors={selectors} />
+                <HomeAssetBalance assetKey={assetKey} accountKey={accountKey} />
             </Table.Cell>
         </Table.Row>
     );

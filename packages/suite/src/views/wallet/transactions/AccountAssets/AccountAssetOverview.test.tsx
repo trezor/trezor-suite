@@ -161,12 +161,12 @@ describe('the account overview with the asset-first Home', () => {
         renderOverview([ethAccount, otherEthAccount]);
 
         expect(rowTestIds()).toEqual([
-            '@wallet/account-asset/coin/eth',
-            `@wallet/account-asset/token/${USDC}`,
-            `@wallet/account-asset/token/${ONE_INCH}`,
+            '@wallet/account-asset/eth/coin',
+            `@wallet/account-asset/eth/${USDC}`,
+            `@wallet/account-asset/eth/${ONE_INCH}`,
         ]);
         // 1.2 ETH + 0.5 ETH staked at $3,000.
-        expect(screen.getByTestId('@wallet/account-asset/coin/eth')).toHaveTextContent(
+        expect(screen.getByTestId('@wallet/account-asset/eth/coin')).toHaveTextContent(
             /\$5,100.*1\.7\d* ETH/,
         );
     });
@@ -203,8 +203,8 @@ describe('the account overview with the asset-first Home', () => {
 
         expect(screen.getByTestId('@dashboard/home-asset/grouping')).toBeInTheDocument();
         expect(rowTestIds()).toEqual([
-            '@wallet/account-asset/coin/eth',
-            `@wallet/account-asset/token/${USDC}`,
+            '@wallet/account-asset/eth/coin',
+            `@wallet/account-asset/eth/${USDC}`,
         ]);
         expect(screen.getByTestId('@wallet/account-assets/fiat-amount')).toHaveTextContent(
             '$6,100.61',

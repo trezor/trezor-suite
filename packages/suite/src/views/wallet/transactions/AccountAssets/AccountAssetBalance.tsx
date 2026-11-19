@@ -1,33 +1,36 @@
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
-import { getAccountAssetTableSelectors } from '@suite-common/assets';
+import {
+    selectHomeAssetTotals,
+    selectIsAssetTableRatePending,
+    selectIsAssetTableTotalIncomplete,
+    selectShownWalletAssetKeys,
+} from '@suite-common/assets';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Column, Row, Skeleton, Text } from '@trezor/components';
 
 import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite';
+import { useAccountScopedSelector } from '#src/hooks/wallet/useAccountScopedSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 import { HomeTotalBalance } from '#src/views/home/HomeBalance/HomeTotalBalance';
 
 /** The line height of the total headline, so its placeholders keep the card from jumping. */
 const TOTAL_HEIGHT = 56;
 
-/** What the account is worth in total, and how many assets make it up. */
 type AccountAssetBalanceProps = {
     accountKey: AccountKey;
 };
 
+/** What the account is worth in total, and how many assets make it up. */
 export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) => {
-    const {
-        selectHomeAssetTotals,
-        selectIsFiatRatePending,
-        selectIsFiatTotalIncomplete,
-        selectShownWalletAssetKeys,
-    } = getAccountAssetTableSelectors(accountKey);
-    const assetCount = useSelector(state => selectShownWalletAssetKeys(state).length);
-    const fiatValue = useSelector(state => selectHomeAssetTotals(state).fiatValue);
-    const isIncomplete = useSelector(selectIsFiatTotalIncomplete);
-    const isRatePending = useSelector(selectIsFiatRatePending);
+    const assetCount = useAccountScopedSelector(
+        accountKey,
+        state => selectShownWalletAssetKeys(state).length,
+    );
+    const { fiatValue } = useAccountScopedSelector(accountKey, selectHomeAssetTotals);
+    const isIncomplete = useAccountScopedSelector(accountKey, selectIsAssetTableTotalIncomplete);
+    const isRatePending = useAccountScopedSelector(accountKey, selectIsAssetTableRatePending);
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { balanceSectionRef } = useAccountHeaderContext();
 

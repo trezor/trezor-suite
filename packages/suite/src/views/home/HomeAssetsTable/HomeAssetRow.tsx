@@ -1,8 +1,6 @@
 import { memo, useCallback } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { homeAssetTableSelectors } from '@suite-common/assets';
-import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
@@ -14,9 +12,6 @@ type HomeAssetRowProps = {
     hasBorderTop?: boolean;
     assetNameTestId?: string;
 };
-
-const getTestId = (networkSymbol: NetworkSymbol, contractAddress: TokenAddress | undefined) =>
-    `@dashboard/home-asset-item/${networkSymbol}/${contractAddress ?? 'coin'}`;
 
 export const HomeAssetRow = memo(function HomeAssetRow(props: HomeAssetRowProps) {
     const { analytics } = useServices(injectDesktopAnalytics);
@@ -36,11 +31,6 @@ export const HomeAssetRow = memo(function HomeAssetRow(props: HomeAssetRowProps)
     );
 
     return (
-        <AssetTableRow
-            {...props}
-            selectors={homeAssetTableSelectors}
-            getTestId={getTestId}
-            onOpen={reportOpen}
-        />
+        <AssetTableRow {...props} testIdPrefix="@dashboard/home-asset-item" onOpen={reportOpen} />
     );
 });

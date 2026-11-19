@@ -4,12 +4,13 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     HOME_ASSET_ROW_LIMIT,
-    getAccountAssetTableSelectors,
     getHomeAssetRowLimit,
     selectAreHomeAssetSmallBalancesDisplayed,
+    selectDisplayedWalletAssetKeys,
+    selectHasShownWalletAssets,
+    selectIsHomeAssetTableFoldable,
+    selectSmallBalanceSummary,
 } from '@suite-common/assets';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Table } from '@trezor/components';
@@ -17,18 +18,15 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite';
+import { useAccountScopedSelector } from '#src/hooks/wallet/useAccountScopedSelector';
 import { AssetTableRow } from '#src/views/home/HomeAssetsTable/AssetTableRow';
 import { HomeAssetExpandRow } from '#src/views/home/HomeAssetsTable/HomeAssetExpandRow';
+import { HomeAssetSmallBalancesHiddenRow } from '#src/views/home/HomeAssetsTable/HomeAssetSmallBalancesHiddenRow';
 import { HomeAssetTableFilterHeader } from '#src/views/home/HomeAssetsTable/HomeAssetTableFilter';
 import {
     HOME_ASSET_CELL_PADDING,
     HOME_ASSET_COL_WIDTHS,
 } from '#src/views/home/HomeAssetsTable/homeAssetTableLayout';
-
-const getRowTestId = (networkSymbol: NetworkSymbol, contractAddress: TokenAddress | undefined) =>
-    contractAddress === undefined
-        ? `@wallet/account-asset/coin/${networkSymbol}`
-        : `@wallet/account-asset/token/${contractAddress}`;
 
 type AccountAssetTableProps = {
     accountKey: AccountKey;
@@ -36,25 +34,22 @@ type AccountAssetTableProps = {
 
 /**
  * The Home asset table for one account: its coin, its stake counted in, and its tokens. The
- * small-balance switch is the one Home keeps, though it never hides the coin, so the table is never
- * left empty; there is no grouping, as every row is the account's network.
+ * small-balance switch is the one Home keeps; there is no grouping, as every row is the
+ * account's network.
  */
 export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
-    const selectors = getAccountAssetTableSelectors(accountKey);
-    const {
-        selectDisplayedWalletAssetKeys,
-        selectIsHomeAssetTableFoldable,
-        selectSmallBalanceSummary,
-    } = selectors;
-    const smallBalances = useSelector(selectSmallBalanceSummary);
+    const hasAssets = useAccountScopedSelector(accountKey, selectHasShownWalletAssets);
+    const smallBalances = useAccountScopedSelector(accountKey, selectSmallBalanceSummary);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
-    const isFoldable = useSelector(state =>
+    const isFoldable = useAccountScopedSelector(accountKey, state =>
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
     const rowLimit = getHomeAssetRowLimit({ isFoldable, isExpanded });
-    const assetKeys = useSelector(state => selectDisplayedWalletAssetKeys(state, rowLimit));
+    const assetKeys = useAccountScopedSelector(accountKey, state =>
+        selectDisplayedWalletAssetKeys(state, rowLimit),
+    );
 
     const changeSmallBalances = (areShown: boolean) => {
         // Turning them on while the table is folded would otherwise change nothing on screen.
@@ -63,6 +58,10 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
         }
         dispatch(setAreHomeAssetSmallBalancesShown(areShown));
     };
+
+    if (!hasAssets) {
+        return null;
+    }
 
     return (
         <Card paddingType="none" data-testid="@wallet/account-assets/table">
@@ -88,12 +87,17 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
+                    {assetKeys.length === 0 && (
+                        <HomeAssetSmallBalancesHiddenRow
+                            onShowSmallBalances={() => changeSmallBalances(true)}
+                        />
+                    )}
                     {assetKeys.map(assetKey => (
                         <AssetTableRow
                             key={assetKey}
                             assetKey={assetKey}
-                            selectors={selectors}
-                            getTestId={getRowTestId}
+                            accountKey={accountKey}
+                            testIdPrefix="@wallet/account-asset"
                         />
                     ))}
                     {isFoldable && (
