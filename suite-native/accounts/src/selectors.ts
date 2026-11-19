@@ -51,6 +51,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
+    getAccountBalanceWithStaking,
     getAccountFiatBalance,
     getFiatRateKey,
     isAccountFailed,
@@ -286,6 +287,12 @@ export const selectAccountFiatBalance = createMemoizedSelector(
             resultEqualityCheck: areBaseCurrencyAmountsEqual,
         },
     },
+);
+
+export const selectAccountCryptoBalanceWithStaking = createMemoizedSelector(
+    [selectAccountByKey, selectStakingAccountAmountOutsideBalance],
+    (account, stakingBalance): string =>
+        account ? getAccountBalanceWithStaking({ account, stakingBalance }) : '0',
 );
 
 export const selectAccountTokenFiatBalance = createMemoizedSelector(

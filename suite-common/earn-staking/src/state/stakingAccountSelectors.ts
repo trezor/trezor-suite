@@ -48,8 +48,6 @@ export type StakingAccountFiatRootState = StakingRootState &
     FiatRatesRootState &
     WalletSettingsRootState;
 
-const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
-
 const createStakingPositionEntry = weakMapMemoize(
     (
         accountKey: AccountKey,
@@ -161,24 +159,6 @@ export const selectHasStakingAccountWarning = (
     selectStakingPositionsByAccount(state, accountKey).some(position =>
         hasStakingPositionWarning(position, code),
     );
-
-const selectAccountAvailableBalanceParam = (state: AccountsRootState, accountKey: AccountKey) =>
-    selectAccountByKey(state, accountKey)?.availableBalance ?? null;
-
-export const selectStakingAccountBalanceWithStaking = createWeakMapSelector(
-    [selectAccountAvailableBalanceParam, selectStakingAccountAmountOutsideBalance],
-    (availableBalance, amountOutsideBalance): StakingAmount => {
-        if (availableBalance === null) {
-            return ZERO_STAKING_AMOUNT;
-        }
-
-        const balanceWithStaking = new BigNumber(availableBalance).plus(amountOutsideBalance);
-
-        return balanceWithStaking.isFinite()
-            ? stakingAmountSchema.parse(balanceWithStaking.toFixed(0))
-            : amountOutsideBalance;
-    },
-);
 
 const selectAccountSymbolParam = (
     state: AccountsRootState,

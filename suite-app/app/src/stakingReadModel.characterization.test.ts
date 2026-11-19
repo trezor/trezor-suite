@@ -9,7 +9,7 @@ import {
     selectDeviceStakingPositionsCount,
     selectDeviceStakingSymbols,
     selectIsStakingAccountActive,
-    selectStakingAccountBalanceWithStaking,
+    selectStakingAccountAmountOutsideBalance,
     selectStakingAccountTotals,
     stakingActions,
     stakingReducer,
@@ -43,6 +43,7 @@ import {
     mockTronStakingAccount,
 } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbols } from '@trezor/network-module-types';
+import { BigNumber } from '@trezor/utils';
 
 // The oracle is the seven P0.1 characterization suites in wallet-core and wallet-utils, whose
 // literals the parity suites of the products package carry. This suite runs the real products, the
@@ -202,7 +203,11 @@ const read = (state: State, descriptor: string): Reading => {
         unstaking: format(totals.unstaking),
         withdrawable: format(totals.withdrawable),
         rewards: format(totals.rewards),
-        balanceWithStaking: format(selectStakingAccountBalanceWithStaking(state, account.key)),
+        // Composed one level up, as the asset and account rows do: the formatted balance plus the
+        // amount outside it.
+        balanceWithStaking: new BigNumber(account.formattedBalance)
+            .plus(format(selectStakingAccountAmountOutsideBalance(state, account.key)))
+            .toFixed(),
     };
 };
 

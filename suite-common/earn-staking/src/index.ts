@@ -112,7 +112,6 @@ export {
     selectIsStakingAccountActive,
     selectIsStakingOperationPending,
     selectStakingAccountAmount,
-    selectStakingAccountBalanceWithStaking,
     selectStakingAccountFiatAmount,
     selectStakingAccountPositionDetails,
     selectStakingAccountPositionEntry,
