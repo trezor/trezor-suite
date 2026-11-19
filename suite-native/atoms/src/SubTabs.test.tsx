@@ -92,7 +92,6 @@ describe('SubTabs', () => {
             backgroundColor: colors.elementFillElevated,
             borderRadius: 100,
             gap: 8,
-            borderBottomWidth: 2,
             paddingVertical: 8,
             paddingHorizontal: 16,
         });

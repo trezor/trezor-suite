@@ -51,9 +51,11 @@ export const ActivityCenterScreen = () => {
             }
         >
             {/* 0.6 → apx. centered to whole screen, similar in SearchNoResults. It's a crude solution, we could maybe unify it somehow. */}
-            <VStack flex={0.6} spacing="sp16">
-                <SubTabs items={tabs} value={activeTab} onChange={setActiveTab} />
-                <Box flex={1}>
+            <VStack spacing="sp16" flex={0.6}>
+                <Box>
+                    <SubTabs items={tabs} value={activeTab} onChange={setActiveTab} />
+                </Box>
+                <Box flex={1} justifyContent="center">
                     <ActivityCenterTabContent activeTab={activeTab} />
                 </Box>
             </VStack>
