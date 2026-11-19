@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import {
+    selectAccountAssetTableState,
     selectHomeAssetTotals,
     selectIsAssetTableRatePending,
     selectIsAssetTableTotalIncomplete,
@@ -11,7 +12,6 @@ import { Box, Card, Column, Row, Skeleton, Text } from '@trezor/components';
 
 import { NoRatesTooltip } from '#src/components/suite/Ticker/NoRatesTooltip';
 import { useSelector } from '#src/hooks/suite';
-import { useAccountScopedSelector } from '#src/hooks/wallet/useAccountScopedSelector';
 import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 import { HomeTotalBalance } from '#src/views/home/HomeBalance/HomeTotalBalance';
 
@@ -24,13 +24,18 @@ type AccountAssetBalanceProps = {
 
 /** What the account is worth in total, and how many assets make it up. */
 export const AccountAssetBalance = ({ accountKey }: AccountAssetBalanceProps) => {
-    const assetCount = useAccountScopedSelector(
-        accountKey,
-        state => selectShownWalletAssetKeys(state).length,
+    const assetCount = useSelector(
+        state => selectShownWalletAssetKeys(selectAccountAssetTableState(state, accountKey)).length,
     );
-    const { fiatValue } = useAccountScopedSelector(accountKey, selectHomeAssetTotals);
-    const isIncomplete = useAccountScopedSelector(accountKey, selectIsAssetTableTotalIncomplete);
-    const isRatePending = useAccountScopedSelector(accountKey, selectIsAssetTableRatePending);
+    const { fiatValue } = useSelector(state =>
+        selectHomeAssetTotals(selectAccountAssetTableState(state, accountKey)),
+    );
+    const isIncomplete = useSelector(state =>
+        selectIsAssetTableTotalIncomplete(selectAccountAssetTableState(state, accountKey)),
+    );
+    const isRatePending = useSelector(state =>
+        selectIsAssetTableRatePending(selectAccountAssetTableState(state, accountKey)),
+    );
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { balanceSectionRef } = useAccountHeaderContext();
 

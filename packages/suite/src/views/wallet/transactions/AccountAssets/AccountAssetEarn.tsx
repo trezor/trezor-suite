@@ -1,5 +1,6 @@
 import { gotoThunk } from '@suite/router';
 import {
+    selectAccountAssetTableState,
     selectAccountCoinAssetKey,
     selectWalletAssetAmount,
     selectWalletAssetAvailableAmount,
@@ -14,7 +15,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useStakingRate } from '#src/hooks/earn/useStakingRate';
 import { useSelector } from '#src/hooks/suite';
-import { useAccountScopedSelector } from '#src/hooks/wallet/useAccountScopedSelector';
 import { AssetDetailEarnCard } from '#src/views/home/AssetDetail/AssetDetailEarnCard';
 
 type AccountAssetEarnProps = {
@@ -26,18 +26,18 @@ export const AccountAssetEarn = ({ accountKey }: AccountAssetEarnProps) => {
     const { dispatch } = useServices(injectDispatch);
     const networkSymbol = useSelector(state => selectAccountByKey(state, accountKey)?.symbol);
     const coinKey = useSelector(state => selectAccountCoinAssetKey(state, accountKey));
-    const amount = useAccountScopedSelector(accountKey, state =>
-        selectWalletAssetAmount(state, coinKey),
+    const amount = useSelector(state =>
+        selectWalletAssetAmount(selectAccountAssetTableState(state, accountKey), coinKey),
     );
-    const availableAmount = useAccountScopedSelector(accountKey, state =>
-        selectWalletAssetAvailableAmount(state, coinKey),
+    const availableAmount = useSelector(state =>
+        selectWalletAssetAvailableAmount(selectAccountAssetTableState(state, accountKey), coinKey),
     );
-    const stakingAmount = useAccountScopedSelector(accountKey, state =>
-        selectWalletAssetStakingAmount(state, coinKey),
+    const stakingAmount = useSelector(state =>
+        selectWalletAssetStakingAmount(selectAccountAssetTableState(state, accountKey), coinKey),
     );
     const stakingRatio =
-        useAccountScopedSelector(accountKey, state =>
-            selectWalletAssetStakingRatio(state, coinKey),
+        useSelector(state =>
+            selectWalletAssetStakingRatio(selectAccountAssetTableState(state, accountKey), coinKey),
         ) ?? 0;
     const { rate: apy } = useStakingRate({ symbol: networkSymbol, accountKey });
 
