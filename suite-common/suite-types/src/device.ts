@@ -47,7 +47,12 @@ export type DelegatedIdentityKey = string & Branded<'DelegatedIdentityKey'>; // 
 export const asDelegatedIdentityKey = (privateKey: string): DelegatedIdentityKey =>
     privateKey as DelegatedIdentityKey;
 
+/** Assigned when a `TrezorDevice` entry is created and never changes, unlike `id` or `path`. */
+export type DeviceKey = string & Branded<'DeviceKey'>;
+export const asDeviceKey = (key: string): DeviceKey => key as DeviceKey;
+
 export interface ExtendedDevice {
+    key: DeviceKey;
     useEmptyPassphrase?: boolean;
     remember?: boolean; // device should be remembered
     temporaryRemember?: boolean; // device should be remembered only for fw update or this session

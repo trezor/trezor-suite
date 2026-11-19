@@ -260,6 +260,7 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                 },
                 connected: true,
                 metadata: {},
+                key: 'e2e-device-key',
                 passwords: {},
                 firstConnectedTimestamp: 1759899657048,
                 ts: 1759899696757,

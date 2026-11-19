@@ -1,11 +1,31 @@
-import { type TrezorDevice } from '@suite-common/suite-types';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { type AcquiredDevice, type TrezorDevice, asDeviceKey } from '@suite-common/suite-types';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { generateDeviceKey, isDeviceAcquired } from '@suite-common/suite-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import fixtures from './__fixtures__/deviceReducer';
 import { type DeviceStateActionPayload, deviceActions } from './deviceActions';
+import { PORTFOLIO_TRACKER_DEVICE_KEY, portfolioTrackerDevice } from './deviceConstants';
 import { deviceReducerInitialState, prepareDeviceReducer } from './deviceReducer';
+
+jest.mock('@suite-common/suite-utils', () => ({
+    ...jest.requireActual('@suite-common/suite-utils'),
+    generateDeviceKey: jest.fn(),
+}));
+
+const generateDeviceKeyMock = jest.mocked(generateDeviceKey);
+
+// Keys are generated as 'key-1', 'key-2', ... so uniqueness and reuse can be asserted on exact
+// values.
+beforeEach(() => {
+    let lastKeyNumber = 0;
+
+    generateDeviceKeyMock.mockImplementation(() => {
+        lastKeyNumber += 1;
+
+        return asDeviceKey(`key-${lastKeyNumber}`);
+    });
+});
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {
@@ -327,5 +347,132 @@ describe('SUITE.REMEMBER_DEVICE', () => {
                 expect(device).toMatchObject(expected);
             });
         });
+    });
+});
+
+describe('device key', () => {
+    const getAcquiredDevice = (device: TrezorDevice): AcquiredDevice => {
+        if (!isDeviceAcquired(device)) throw new Error('Expected an acquired device');
+
+        return device;
+    };
+
+    const getKeys = (state: State) => state.devices.map(({ key }) => key);
+
+    const connectDevice = (state: State, path: string, deviceId?: string) =>
+        deviceReducer(
+            state,
+            deviceActions.connectDevice({
+                device: mockConnectDevice({ path }, deviceId ? { device_id: deviceId } : undefined),
+            }),
+        );
+
+    it('assigns a key to a connected device', () => {
+        const state = connectDevice(deviceReducerInitialState, '1');
+
+        expect(getKeys(state)).toEqual(['key-1']);
+    });
+
+    it('assigns a key to a connected unacquired device', () => {
+        const state = deviceReducer(
+            deviceReducerInitialState,
+            deviceActions.connectUnacquiredDevice({
+                device: mockConnectDevice({ type: 'unacquired', path: '1' }),
+            }),
+        );
+
+        expect(getKeys(state)).toEqual(['key-1']);
+    });
+
+    it('assigns a different key to each connected device', () => {
+        const state = connectDevice(
+            connectDevice(deviceReducerInitialState, '1'),
+            '2',
+            'other-device-id',
+        );
+
+        expect(getKeys(state)).toEqual(['key-1', 'key-2']);
+    });
+
+    it('keeps the key when the same device is connected again', () => {
+        const connected = connectDevice(deviceReducerInitialState, '1');
+        const reconnected = connectDevice(connected, '1');
+
+        expect(getKeys(connected)).toEqual(['key-1']);
+        expect(getKeys(reconnected)).toEqual(['key-1']);
+    });
+
+    it('keeps the key when the device_id changes, e.g. after wipe', () => {
+        const connected = connectDevice(deviceReducerInitialState, '1');
+        const changed = deviceReducer(
+            connected,
+            deviceActions.deviceChanged(
+                mockConnectDevice({ path: '1' }, { device_id: 'wiped-device-id' }),
+            ),
+        );
+
+        expect(changed.devices).toHaveLength(1);
+        expect(changed.devices[0]?.id).toEqual('wiped-device-id');
+        expect(getKeys(connected)).toEqual(['key-1']);
+        expect(getKeys(changed)).toEqual(['key-1']);
+    });
+
+    it('keeps the key when an unacquired device becomes acquired', () => {
+        const unacquired = deviceReducer(
+            deviceReducerInitialState,
+            deviceActions.connectUnacquiredDevice({
+                device: mockConnectDevice({ type: 'unacquired', path: '1' }),
+            }),
+        );
+        const acquired = connectDevice(unacquired, '1');
+
+        expect(acquired.devices).toHaveLength(1);
+        expect(acquired.devices[0]?.type).toEqual('acquired');
+        expect(getKeys(unacquired)).toEqual(['key-1']);
+        expect(getKeys(acquired)).toEqual(['key-1']);
+    });
+
+    it('assigns a new key to an added passphrase wallet', () => {
+        const device = getAcquiredDevice(
+            mockSuiteDevice({
+                connected: true,
+                path: '1',
+                state: { staticSessionId: '1stTestnet@device-id:0' },
+                useEmptyPassphrase: true,
+                key: asDeviceKey('first-wallet-key'),
+            }),
+        );
+
+        const state = deviceReducer(
+            { ...deviceReducerInitialState, devices: [device] },
+            deviceActions.addAuthorizedDevice({
+                device,
+                state: { staticSessionId: '1stTestnet@device-id:1' },
+                useEmptyPassphrase: false,
+            }),
+        );
+
+        expect(getKeys(state)).toEqual(['first-wallet-key', 'key-1']);
+    });
+
+    it('assigns a new key to a created device instance', () => {
+        const device = mockSuiteDevice({ key: asDeviceKey('source-device-key') });
+
+        const state = deviceReducer(
+            deviceReducerInitialState,
+            deviceActions.createDeviceInstance({ device }),
+        );
+
+        expect(getKeys(state)).toEqual(['key-1']);
+    });
+
+    it('keeps the well-known key of the portfolio tracker device', () => {
+        const state = deviceReducer(
+            deviceReducerInitialState,
+            deviceActions.createDeviceInstance({ device: portfolioTrackerDevice }),
+        );
+
+        expect(state.devices).toHaveLength(1);
+        expect(state.devices[0]?.key).toEqual(PORTFOLIO_TRACKER_DEVICE_KEY);
     });
 });

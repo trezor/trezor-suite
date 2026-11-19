@@ -131,6 +131,7 @@ const merge = (
     ...device,
     ...(({ state, ...rest }) => rest)(upcoming),
     id: upcoming.id ?? device.id,
+    key: device.key,
     state: mergeDeviceState(device, upcoming),
     instance: device.instance,
     features: {
@@ -194,6 +195,7 @@ const connectDevice = (draft: DeviceReducerState, { state, ...device }: Device) 
         draft.devices.push({
             ...device,
             ...deviceCommonFields,
+            key: deviceUtils.generateDeviceKey(),
             available: false,
         });
 
@@ -227,6 +229,8 @@ const connectDevice = (draft: DeviceReducerState, { state, ...device }: Device) 
     const newDevice: TrezorDevice = {
         ...device,
         ...deviceCommonFields,
+        // The entry replaced by this device (unacquired, or with a changed `id`) keeps its key.
+        key: unacquiredDevices[0]?.key ?? deviceUtils.generateDeviceKey(),
         state,
         useEmptyPassphrase: undefined,
         remember: false,
@@ -353,6 +357,7 @@ const addAuthorizedDevice = (
     const { discovered, ...oldDevice } = device;
     const newDevice = {
         ...oldDevice,
+        key: deviceUtils.generateDeviceKey(),
         metadata: {},
         passwords: {},
         remember: false,
@@ -470,6 +475,7 @@ const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
     const currentTime = new Date().getTime();
     const newDevice: TrezorDevice = {
         ...device,
+        key: isPortfolioTrackerDevice ? device.key : deviceUtils.generateDeviceKey(),
         remember: true,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
