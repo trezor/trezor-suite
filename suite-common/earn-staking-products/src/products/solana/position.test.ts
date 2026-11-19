@@ -123,7 +123,7 @@ describe('getSolanaProductPosition', () => {
                 withdrawable: '500000000',
                 rewards: '1025753',
             }),
-            activations: [{ amount: `1${SOL}`, availableAt: null }],
+            activations: [{ amount: `1${SOL}`, startedAt: null, availableAt: null }],
             unlocks: [{ amount: '2300000000', availableAt: null }],
             operations: ['stake', 'unstake', 'withdraw'],
         });

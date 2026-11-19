@@ -44,14 +44,17 @@ export const getEthereumEverstakePooledProductPosition = ({
 
     const operations = getPositionOperations({ balances, pendingTransactions });
 
-    // Each period starts at the latest mined transaction of its operation, as legacy estimated.
+    // Each period starts at the confirmed mined transaction of its operation, as legacy estimated.
+    const stakeStartedAt = getEverstakeLatestTxBlockTimeByOperation({
+        operation: 'stake',
+        transactions,
+    });
+
     const activations = getPositionActivations({
         balances,
+        startedAt: stakeStartedAt,
         availableAt: getPeriodEnd({
-            startedAt: getEverstakeLatestTxBlockTimeByOperation({
-                operation: 'stake',
-                transactions,
-            }),
+            startedAt: stakeStartedAt,
             periodDays: productInfo?.entryPeriodDays ?? null,
         }),
     });

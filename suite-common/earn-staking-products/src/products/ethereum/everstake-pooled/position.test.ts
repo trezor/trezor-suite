@@ -101,7 +101,9 @@ describe('getEthereumEverstakePooledProductPosition', () => {
                 ...emptyPosition,
                 status: 'activating',
                 balances: { ...emptyPosition.balances, pending: amount(`75${ETHER.slice(2)}`) },
-                activations: [{ amount: amount(`75${ETHER.slice(2)}`), availableAt: null }],
+                activations: [
+                    { amount: amount(`75${ETHER.slice(2)}`), startedAt: null, availableAt: null },
+                ],
             },
         },
         {
@@ -110,7 +112,9 @@ describe('getEthereumEverstakePooledProductPosition', () => {
                 ...emptyPosition,
                 status: 'activating',
                 balances: { ...emptyPosition.balances, pending: amount(`25${ETHER.slice(2)}`) },
-                activations: [{ amount: amount(`25${ETHER.slice(2)}`), availableAt: null }],
+                activations: [
+                    { amount: amount(`25${ETHER.slice(2)}`), startedAt: null, availableAt: null },
+                ],
             },
         },
         {
@@ -387,6 +391,23 @@ describe('getEthereumEverstakePooledProductPosition', () => {
                     minedTransaction('0x3a29dbae', 1_700_050_000),
                 ]),
             ).toEqual({ activatesAt: [1_700_100_000 * 1000 + 4 * DAY_MS], unlocksAt: [] });
+        });
+
+        it('starts the activation at the latest mined stake', () => {
+            const position = getEthereumEverstakePooledProductPosition({
+                productId: eth.id,
+                poolAddress: ETH_POOL_ADDRESS,
+                account: mockEthereumStakingAccount('pending'),
+                productInfo,
+                transactions: [
+                    minedTransaction('0x3a29dbae', 1_700_000_000),
+                    minedTransaction('0x3a29dbae', 1_700_100_000),
+                ],
+            });
+
+            expect(position?.activations.map(({ startedAt }) => startedAt)).toEqual([
+                1_700_100_000 * 1000,
+            ]);
         });
 
         it('dates the unlock from the latest mined unstake and the exit period', () => {

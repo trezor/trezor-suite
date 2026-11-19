@@ -195,6 +195,7 @@ export const getPositionActivations = ({
 
     const activation: StakingPositionActivation = {
         amount: balances.pending,
+        startedAt: null,
         availableAt: null,
     };
 

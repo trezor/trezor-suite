@@ -112,7 +112,11 @@ describe('stakingPositionSchema', () => {
     it('parses an activation without a known time', () => {
         const position = mockStakingPosition({
             activations: [
-                { amount: stakingAmountSchema.parse('750000000000000000'), availableAt: null },
+                {
+                    amount: stakingAmountSchema.parse('750000000000000000'),
+                    startedAt: null,
+                    availableAt: null,
+                },
             ],
         });
 
@@ -130,10 +134,24 @@ describe('stakingPositionSchema', () => {
     it('rejects a negative activation time', () => {
         const result = stakingPositionSchema.safeParse({
             ...mockStakingPosition(),
-            activations: [{ amount: stakingAmountSchema.parse('1'), availableAt: -1 }],
+            activations: [
+                { amount: stakingAmountSchema.parse('1'), startedAt: null, availableAt: -1 },
+            ],
         });
 
         expect(result.success).toBe(false);
         expect(result.error?.issues[0]?.path).toEqual(['activations', 0, 'availableAt']);
+    });
+
+    it('rejects a negative activation start', () => {
+        const result = stakingPositionSchema.safeParse({
+            ...mockStakingPosition(),
+            activations: [
+                { amount: stakingAmountSchema.parse('1'), startedAt: -1, availableAt: null },
+            ],
+        });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.issues[0]?.path).toEqual(['activations', 0, 'startedAt']);
     });
 });

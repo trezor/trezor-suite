@@ -49,6 +49,8 @@ export type StakingPositionUnlock = z.infer<typeof stakingPositionUnlockSchema>;
 
 export const stakingPositionActivationSchema = z.strictObject({
     amount: stakingAmountSchema,
+    /** When the wait began, for example when the stake mined; null when unknown. */
+    startedAt: timestampSchema.nullable(),
     availableAt: timestampSchema.nullable(),
 });
 

@@ -59,7 +59,7 @@ const getPendingFirstStakePosition = ({
             withdrawable: ZERO_STAKING_AMOUNT,
             rewards: ZERO_STAKING_AMOUNT,
         },
-        activations: [{ amount: availableBalance, availableAt: null }],
+        activations: [{ amount: availableBalance, startedAt: null, availableAt: null }],
         unlocks: [],
         targets: [],
         operations: [],

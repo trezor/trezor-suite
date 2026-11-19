@@ -5,7 +5,6 @@ import {
     formatStakingAmount,
     selectIsStakingOperationPending,
     useStakingAccountPosition,
-    useStakingDaysUntil,
     useStakingPeriods,
 } from '@suite-common/earn-staking';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
@@ -29,6 +28,7 @@ import {
     StakingDetailModalStep,
     StakingManagementModalStepIndicator,
 } from './StakingManagementModalStepIndicator';
+import { useStakingActivationDays } from '../../hooks/staking/useStakingActivationDays';
 
 type StakingManagementPendingStakeModalProps = {
     ref: BottomSheetModalRef;
@@ -56,14 +56,14 @@ export const StakingManagementPendingStakeModal = ({
     const { applyStyle } = useNativeStyles();
     const { networkSymbol } = parseAccountKey(accountKey);
 
-    const { productId, position, totals } = useStakingAccountPosition(accountKey);
+    const { productId, totals } = useStakingAccountPosition(accountKey);
     const isStakeConfirming = useSelector((state: StakingRootState) =>
         selectIsStakingOperationPending(state, accountKey, 'stake'),
     );
     const { entryPeriodDays } = useStakingPeriods(productId);
 
     // The first activation dates the stake; a position that cannot date it shows the entry period.
-    const daysUntilActivation = useStakingDaysUntil(position?.activations[0]?.availableAt ?? null);
+    const daysUntilActivation = useStakingActivationDays(accountKey);
     const daysUntilActive = daysUntilActivation ?? entryPeriodDays;
 
     const totalStakePending = formatStakingAmount({ amount: totals.pending, networkSymbol });
