@@ -4,7 +4,7 @@ import { XIcon } from '@trezor/icons';
 import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
 import { countBytesInString } from '@trezor/utils';
 
-import { useSendFormContext } from '#src/hooks/wallet';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 type SolanaMemoProps = {
     close: () => void;

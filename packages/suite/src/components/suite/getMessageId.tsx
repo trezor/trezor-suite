@@ -2,7 +2,7 @@ import { type TranslationKey } from '@suite/intl';
 import { type DeviceStatus as ConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { isDesktop } from '@trezor/env-utils';
 
-import type { PrerequisiteType } from '#src/types/suite';
+import type { PrerequisiteType } from '#src/utils/suite/prerequisites';
 
 type GetWarningMessageParams = {
     deviceStatus: ConnectedDeviceStatus | null;

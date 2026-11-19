@@ -10,7 +10,6 @@ packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/
 packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts > packages/suite/src/utils/wallet/graph/index.ts > packages/suite/src/utils/wallet/graph/utils.ts
 packages/suite/src/reducers/wallet/graphReducer.ts > packages/suite/src/actions/wallet/graphActions.ts > packages/suite/src/utils/wallet/graph/index.ts > packages/suite/src/utils/wallet/graph/utilsWorker.ts
 packages/suite/src/storage/migrations/runLegacyMigrations.ts > packages/suite/src/storage/migrations/legacyVersions/migrateToV56.ts
-packages/suite/src/types/suite/index.ts > packages/suite/src/utils/suite/prerequisites.ts
 packages/suite/src/types/wallet/sendForm.ts > packages/suite/src/hooks/wallet/useSendFormChangeHandlers.ts
 packages/suite/src/types/wallet/sendForm.ts > packages/suite/src/hooks/wallet/useSendFormFields.ts
 packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress.tsx > packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls.tsx > packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAccountModal/TradingReceiveAccountModal.tsx
