@@ -9,7 +9,7 @@ import {
     requestBioAuthChangeThunk,
     requestBioAuthValidationThunk,
 } from '#src/actions/suite/bioAuthThunks';
-import { selectBioAuth } from '#src/reducers/bioAuth';
+import { selectBioAuth } from '#src/reducers/bioAuth/bioAuthReducer';
 
 import { useSelector } from './useSelector';
 

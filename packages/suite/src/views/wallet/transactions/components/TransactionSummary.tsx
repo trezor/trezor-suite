@@ -17,11 +17,8 @@ import { GraphRangeSelector, HiddenPlaceholder } from '#src/components/suite';
 import { TransactionsGraphLoader } from '#src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from '#src/hooks/suite';
 import { selectGraph, selectGraphSelectedRange } from '#src/reducers/wallet/graphReducer';
-import {
-    aggregateBalanceHistory,
-    getGraphDataForInterval,
-    getMinMaxValueFromData,
-} from '#src/utils/wallet/graph';
+import { getGraphDataForInterval, getMinMaxValueFromData } from '#src/utils/wallet/graph/utils';
+import { aggregateBalanceHistory } from '#src/utils/wallet/graph/utilsWorker';
 
 import { SummaryCards } from './SummaryCards';
 
