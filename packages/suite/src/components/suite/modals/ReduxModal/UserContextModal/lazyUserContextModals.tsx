@@ -44,24 +44,24 @@ const RequestEnableTorModal = lazy(() =>
     })),
 );
 const EarnClaimModal = lazy(() =>
-    import(/* webpackChunkName: "modals-earn" */ '#src/components/earn').then(m => ({
-        default: m.EarnClaimModal,
-    })),
+    import(
+        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnClaimModal/EarnClaimModal'
+    ).then(m => ({ default: m.EarnClaimModal })),
 );
 const EarnInANutshellModal = lazy(() =>
-    import(/* webpackChunkName: "modals-earn" */ '#src/components/earn').then(m => ({
-        default: m.EarnInANutshellModal,
-    })),
+    import(
+        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnInANutshell/EarnInANutshellModal'
+    ).then(m => ({ default: m.EarnInANutshellModal })),
 );
 const EarnProviderConsentModal = lazy(() =>
-    import(/* webpackChunkName: "modals-earn" */ '#src/components/earn').then(m => ({
-        default: m.EarnProviderConsentModal,
-    })),
+    import(
+        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnProviderConsent/EarnProviderConsentModal'
+    ).then(m => ({ default: m.EarnProviderConsentModal })),
 );
 const StakeModal = lazy(() =>
-    import(/* webpackChunkName: "modals-earn" */ '#src/components/earn').then(m => ({
-        default: m.StakeModal,
-    })),
+    import(
+        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/StakeModal/StakeModal'
+    ).then(m => ({ default: m.StakeModal })),
 );
 const TronStakeConsentModal = lazy(() =>
     import(
@@ -71,19 +71,19 @@ const TronStakeConsentModal = lazy(() =>
     })),
 );
 const TronStakeInANutshellModal = lazy(() =>
-    import(/* webpackChunkName: "modals-earn" */ '#src/components/earn').then(m => ({
-        default: m.TronStakeInANutshellModal,
-    })),
+    import(
+        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/EarnInANutshell/TronStakeInANutshellModal'
+    ).then(m => ({ default: m.TronStakeInANutshellModal })),
 );
 const TronVoteConsentModal = lazy(() =>
-    import(/* webpackChunkName: "modals-earn" */ '#src/components/earn').then(m => ({
-        default: m.TronVoteConsentModal,
-    })),
+    import(
+        /* webpackChunkName: "modals-earn" */ '#src/components/earn/staking/tron/vote/TronVoteConsentModal'
+    ).then(m => ({ default: m.TronVoteConsentModal })),
 );
 const UnstakeModal = lazy(() =>
-    import(/* webpackChunkName: "modals-earn" */ '#src/components/earn').then(m => ({
-        default: m.UnstakeModal,
-    })),
+    import(
+        /* webpackChunkName: "modals-earn" */ '#src/components/earn/modals/UnstakeModal/UnstakeModal'
+    ).then(m => ({ default: m.UnstakeModal })),
 );
 const ConnectPopupTxSimulationModal = lazy(() =>
     import(

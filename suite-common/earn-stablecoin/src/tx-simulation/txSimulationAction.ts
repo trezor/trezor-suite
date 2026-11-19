@@ -1,10 +1,9 @@
-import z from 'zod';
-
 import { UnsignedEvmTransactionForSigningSchema } from '@suite-common/earn-stablecoin-api';
 import { evmHexString } from '@suite-common/schemas/src/evm';
 import { getNetwork, getSupportedNetworks, networksCollection } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationMethod } from '@suite-common/wallet-types';
 import { type EthereumSignTransaction } from '@trezor/connect-common';
+import { z } from '@trezor/zod';
 
 const partialAccount = z.object({
     key: z.string(),

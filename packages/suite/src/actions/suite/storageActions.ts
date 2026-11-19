@@ -36,6 +36,7 @@ import {
     selectSuiteSyncQuotaManager,
 } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { type ThpRootState, selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -73,6 +74,7 @@ import {
     selectWalletSettings,
 } from '@suite-common/wallet-core';
 import type {
+    Account,
     AccountKey,
     FormDraftKeyPrefix,
     FormState,
@@ -98,13 +100,11 @@ import {
     selectSeenDisconnectNotificationForDeviceIds,
 } from '#src/selectors/suite/suiteSelectors';
 import { type DbDep } from '#src/storage/createDb';
-import type { TrezorDevice } from '#src/types/suite';
-import type { Account } from '#src/types/wallet';
 import { type GraphData } from '#src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
 import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph';
 
-import { STORAGE } from './constants';
+import * as STORAGE from './constants/storageConstants';
 
 type SaveExplorerParams = {
     symbol: NetworkSymbol;

@@ -7,7 +7,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from '#src/hooks/suite';
-import type { CustomBackend } from '#src/types/wallet';
+import type { CustomBackend } from '#src/types/wallet/backend';
 
 type BackendRowProps = {
     backend: CustomBackend;

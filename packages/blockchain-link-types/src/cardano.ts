@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@trezor/zod';
 
 export const cardanoDrepInfoSchema = z.object({
     drep_id: z.string(),

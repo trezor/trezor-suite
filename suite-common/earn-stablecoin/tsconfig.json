@@ -16,6 +16,7 @@
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" }
     ]
 }

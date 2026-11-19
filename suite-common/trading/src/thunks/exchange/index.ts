@@ -1,6 +1,7 @@
 import { composeExchangeTradeFeeLevelsThunk } from './composeExchangeTradeFeeLevelsThunk';
 import { confirmApprovalThunk } from './confirmApprovalThunk';
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
+import { fetchExchangeAllowanceThunk } from './fetchExchangeAllowanceThunk';
 import { fetchSelectedProviderQuoteThunk } from './fetchSelectedProviderQuoteThunk';
 import { handleExchangeRequestThunk } from './handleExchangeRequestThunk';
 import { loadExchangeInfoThunk } from './loadExchangeInfoThunk';
@@ -26,6 +27,7 @@ type ExchangeThunks = {
     sendDexTransactionThunk: typeof sendDexTransactionThunk;
     sendTransactionThunk: typeof sendTransactionThunk;
     watchExchangeApprovalThunk: typeof watchExchangeApprovalThunk;
+    fetchExchangeAllowanceThunk: typeof fetchExchangeAllowanceThunk;
 };
 
 export const exchangeThunks: ExchangeThunks = {
@@ -41,4 +43,5 @@ export const exchangeThunks: ExchangeThunks = {
     sendDexTransactionThunk,
     sendTransactionThunk,
     watchExchangeApprovalThunk,
+    fetchExchangeAllowanceThunk,
 };

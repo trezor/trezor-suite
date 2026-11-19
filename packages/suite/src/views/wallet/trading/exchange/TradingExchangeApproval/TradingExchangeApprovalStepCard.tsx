@@ -51,6 +51,7 @@ type TradingExchangeApprovalStepCardProps = {
     pendingApprovalTxid: string | undefined;
     tokenContractAddress: string;
     spender: string;
+    currentAllowance: string;
     getCryptoInfo: GetTradingExchangeCryptoInfo;
 };
 
@@ -64,6 +65,7 @@ export const TradingExchangeApprovalStepCard = ({
     pendingApprovalTxid,
     tokenContractAddress,
     spender,
+    currentAllowance,
     getCryptoInfo,
 }: TradingExchangeApprovalStepCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -99,6 +101,7 @@ export const TradingExchangeApprovalStepCard = ({
         isSending,
         composedTransaction,
         canSubmit,
+        selectedFee,
         methods,
         selectLimitType,
         confirmAndSend,
@@ -110,9 +113,9 @@ export const TradingExchangeApprovalStepCard = ({
         tokenContractAddress,
         spender,
         shouldShowApprovalToast: false,
-        onSelectLimitType: (nextLimitType, selectedFee) =>
-            reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType], selectedFee),
-        onConfirm: (_limitType, selectedFee) => reportAction('continue', selectedFee),
+        onSelectLimitType: (nextLimitType, feeLevel) =>
+            reportAction(LIMIT_TYPE_ANALYTICS_ACTION[nextLimitType], feeLevel),
+        onConfirm: (_limitType, feeLevel) => reportAction('continue', feeLevel),
         onSent: txid => {
             dispatch(tradingExchangeActions.setApprovalFlowStepTxid({ step: variant, txid }));
             confirmPendingApproval({
@@ -135,7 +138,7 @@ export const TradingExchangeApprovalStepCard = ({
     };
     const limitAmount =
         variant === 'revoke'
-            ? (quote.preapprovedStringAmount ?? '0')
+            ? currentAllowance
             : subunitsToUnits({ value: inputAmount, decimals: token.decimals }).toString();
     const txid = quote.approvalSendTxHash ?? pendingApprovalTxid;
 
@@ -170,7 +173,11 @@ export const TradingExchangeApprovalStepCard = ({
 
     const onConfirmFee = (feeValues: AllowanceFeeValues) => {
         setAllowanceFeeValues(methods, feeValues);
-        reportAction('fee-change', feeValues.selectedFee);
+
+        if (feeValues.selectedFee !== selectedFee) {
+            reportAction('fee-change', feeValues.selectedFee);
+        }
+
         composeRequest();
     };
 
@@ -201,7 +208,7 @@ export const TradingExchangeApprovalStepCard = ({
                 token={stepToken}
                 limitType={limitType}
                 limitAmount={limitAmount}
-                currentLimitAmount={quote.preapprovedStringAmount}
+                currentLimitAmount={currentAllowance}
                 onEditLimit={variant === 'revoke' ? undefined : () => setIsLimitModalOpen(true)}
                 networkFee={
                     isComposing || !composedTransaction ? (

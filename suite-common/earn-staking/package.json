@@ -28,9 +28,9 @@
         "@trezor/network-module-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
         "react": "19.3.0",
-        "react-redux": "9.3.0",
-        "zod": "4.6.7"
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-common/suite-types": "workspace:*",

@@ -1,11 +1,10 @@
 import { Fingerprint } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Card, Modal } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-
-import { type TrezorDevice } from '#src/types/suite';
 
 type ConfirmFingerprintProps = {
     device: TrezorDevice;

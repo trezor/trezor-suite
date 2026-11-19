@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import { evmHexString } from '@suite-common/schemas/src/evm';
+import { z } from '@trezor/zod';
 
 export const UnsignedEvmTransactionSchema = z.object({
     from: evmHexString,

@@ -9,22 +9,18 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import {
-    AssetGroupLabel,
-    AssetGroupSpace,
-    AssetGroupsCard,
-    AssetRowAccountWithBalance,
-    AssetRowToken,
-    AssetsList,
-    AssetsListEmpty,
-    AssetsModal,
-    ExpandableAssetRowGroup,
-} from '#src/components/suite/asset-picker/components';
-import {
-    useExpandableGroups,
-    useFilterAccountsWithTokens,
-    useInsertGroupLabelsAndSpaces,
-} from '#src/components/suite/asset-picker/hooks';
+import { AssetGroupLabel } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupLabel';
+import { AssetGroupSpace } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupSpace';
+import { AssetGroupsCard } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupsCard';
+import { AssetRowAccountWithBalance } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAccount/AssetRowAccountWithBalance';
+import { AssetRowToken } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowToken/AssetRowToken';
+import { ExpandableAssetRowGroup } from '#src/components/suite/asset-picker/components/AssetRow/ExpandableAssetRowGroup/ExpandableAssetRowGroup';
+import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
+import { AssetsListEmpty } from '#src/components/suite/asset-picker/components/AssetsListEmpty/AssetsListEmpty';
+import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
+import { useExpandableGroups } from '#src/components/suite/asset-picker/hooks/useExpandableGroups';
+import { useFilterAccountsWithTokens } from '#src/components/suite/asset-picker/hooks/useFilterAccountsWithTokens';
+import { useInsertGroupLabelsAndSpaces } from '#src/components/suite/asset-picker/hooks/useInsertGroupLabelsAndSpaces';
 import { type AssetPickerListItem } from '#src/components/suite/asset-picker/types';
 import { createTokenOption } from '#src/components/suite/asset-picker/utils/assetOptions';
 import { getAssetPickerItemHeight } from '#src/components/suite/asset-picker/utils/assetPickerItemHeights';
@@ -63,6 +59,7 @@ export function GlobalSendModal({
     const filteredAccountsWithTokens = useFilterAccountsWithTokens({
         accountsWithTokens,
         search: searchFilter,
+        shouldKeepAccountWithMatchedToken: false,
     });
     const targetOptions = useSelector((state: SendTargetOptionsState) =>
         selectSendTargetOptions(state, targets),

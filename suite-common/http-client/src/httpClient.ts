@@ -5,9 +5,9 @@ import {
     type UpFetch,
     up,
 } from 'up-fetch';
-import type z from 'zod';
 
 import type { Fetch, FetchDep } from '@trezor/type-utils';
+import type { z } from '@trezor/zod';
 
 import { type GenerateRouteParams, composePathnameFromRoute } from './routeParams';
 

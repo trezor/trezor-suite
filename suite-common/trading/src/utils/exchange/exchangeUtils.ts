@@ -23,6 +23,7 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { hasExistingAllowance } from './exchangeAllowanceUtils';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
 import { type TradingExchangeAmountLimitProps } from '../../types';
@@ -195,36 +196,42 @@ const getInsufficientAllowanceStatus = (send: CryptoId): ApprovalStatus =>
         ? 'needs_increase'
         : 'needs_revoke';
 
-export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
+export const getApprovalStatus = (
+    candidateQuote?: ExchangeTrade,
+    currentAllowance?: string,
+): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
     }
 
-    const { send, status, preapprovedStringAmount } = candidateQuote;
+    const { send, status } = candidateQuote;
 
     if (!send || !requiresTokenApproval(candidateQuote)) {
         return 'not_needed';
     }
 
-    const hasPreapprovedAmount = new BigNumber(preapprovedStringAmount ?? 0).gt(0);
+    const hasAllowance = hasExistingAllowance(candidateQuote, currentAllowance);
 
     if (status === 'APPROVAL_REQ') {
-        return hasPreapprovedAmount ? getInsufficientAllowanceStatus(send) : 'needs_approval';
+        return hasAllowance ? getInsufficientAllowanceStatus(send) : 'needs_approval';
     }
 
-    if (hasPreapprovedAmount) {
+    if (hasAllowance) {
         return 'approved';
     }
 
     return status === 'CONFIRM' || status === 'SIGN_DATA' ? 'not_needed' : 'needs_approval';
 };
 
-export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
+export const getDexEstimationData = (
+    quote: ExchangeTrade,
+    currentAllowance?: string,
+): string | undefined => {
     if (!quote.dexTx?.data) {
         return undefined;
     }
 
-    if (getApprovalStatus(quote) === 'needs_revoke') {
+    if (getApprovalStatus(quote, currentAllowance) === 'needs_revoke') {
         const spender = getErc20ApproveSpender(quote.dexTx.data);
         if (spender) {
             try {

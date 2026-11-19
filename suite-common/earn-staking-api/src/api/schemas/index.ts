@@ -4,7 +4,7 @@
  * Trezor Earn Staking API
  * OpenAPI spec version: 0.1.0
  */
-import * as zod from 'zod';
+import * as zod from '@trezor/zod';
 
 /**
  * @summary Batch staking snapshot (eth + sol + ada + trx)

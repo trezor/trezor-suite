@@ -6,6 +6,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo, selectSendFormDrafts } from '@suite-common/wallet-core';
 import {
+    type Account,
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
     type SendFormDraftKey,
@@ -20,7 +21,6 @@ import { BigNumber } from '@trezor/utils';
 import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
 import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
 import { useConnectedDateFnsLocale, useSelector } from '#src/hooks/suite';
-import { type Account } from '#src/types/wallet';
 
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
 import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';

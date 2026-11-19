@@ -11,12 +11,11 @@ import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { resolveAfter } from '@trezor/utils';
-
-import { type Account } from '#src/types/wallet';
 
 import { AddButton } from './AddButton';
 

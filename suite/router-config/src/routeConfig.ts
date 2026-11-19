@@ -361,6 +361,11 @@ export const routes = [
         app: 'wallet',
     },
     {
+        name: 'wallet-trading-exchange-allowance',
+        pattern: '/accounts/coinmarket/exchange/allowance',
+        app: 'wallet',
+    },
+    {
         name: 'wallet-trading-redirect',
         pattern: '/coinmarket-redirect',
         app: 'wallet',

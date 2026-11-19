@@ -1,5 +1,6 @@
 import type { BtcSwapComposeTemplate } from 'invity-api';
-import { z } from 'zod';
+
+import { z } from '@trezor/zod';
 
 const btcSwapComposeAmountSchema = z.discriminatedUnion('kind', [
     z.object({

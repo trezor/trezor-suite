@@ -50,7 +50,6 @@ packages/suite/src/hooks/wallet/trading/form/common/useTradingComposeTransaction
 packages/suite/src/hooks/wallet/trading/form/common/useTradingQuoteRequest.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
 packages/suite/src/hooks/wallet/trading/form/exchange/useTradingExchangeForm.ts	opt-out	'use no memo'
 packages/suite/src/hooks/wallet/trading/form/sell/useTradingSellForm.ts	opt-out	'use no memo'
-packages/suite/src/hooks/wallet/trading/form/useModalLastValidParams.ts	bail	Cannot access refs during render
 packages/suite/src/hooks/wallet/trading/useTradingExchangeTradeActions.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
 packages/suite/src/hooks/wallet/trading/useTradingSellTradeActions.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
 packages/suite/src/hooks/wallet/useRbfForm.ts	partial	Unexpected terminal kind `logical` for logical test block

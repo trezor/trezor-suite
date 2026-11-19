@@ -4,12 +4,12 @@ import { useDebounce } from 'react-use';
 
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { sortByBlockHeightThenTime } from '@suite-common/wallet-core';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import {
     type SelectAccountLabelsForSearchState,
     selectAccountsLabelsForSearch,
 } from '#src/selectors/suite/selectAccountLabelsForSearch';
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
 
 import { findTransactionAccount } from './findTransactionAccount';
 

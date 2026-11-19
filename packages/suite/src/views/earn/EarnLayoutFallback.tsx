@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Column, Spinner } from '@trezor/components';
 import { CloudIcon } from '@trezor/icons';
 
-import { EarnException } from '#src/components/earn';
+import { EarnException } from '#src/components/earn/yield/common/EarnException';
 import { type EarnLayoutFallbackState } from '#src/types/earn/earnLayout';
 
 type EarnLayoutFallbackProps = {

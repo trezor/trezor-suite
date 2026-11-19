@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { selectIsRegionRestricted } from '@suite/regions';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
@@ -12,7 +13,6 @@ import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
 import { PriceTicker, TrendTicker } from '#src/components/suite';
 import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
 import { useLayoutSize, useSelector } from '#src/hooks/suite';
-import { type Account } from '#src/types/wallet';
 
 import { TradeBoxActionButton } from './TradeBoxActionButton';
 import { WrapNativeTokenButton } from './WrapNativeTokenButton';

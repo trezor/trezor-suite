@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type Account, type WalletAccountTransaction } from '#src/types/wallet';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { MultiAccountTransactionList } from './MultiAccountTransactionList';
 

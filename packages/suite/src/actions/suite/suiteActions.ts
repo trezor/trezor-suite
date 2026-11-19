@@ -5,7 +5,7 @@ import { suiteSettingsActions } from '@suite/settings';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { SUITE } from './constants';
+import * as SUITE from './constants/suiteConstants';
 
 export const setSendFormPrefill = createAction(
     SUITE.SET_SEND_FORM_PREFILL,
