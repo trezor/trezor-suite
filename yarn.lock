@@ -11372,6 +11372,7 @@ __metadata:
     "@suite-app/apps-embedding-demo": "workspace:*"
     "@suite-app/module-onboarding": "workspace:*"
     "@suite-app/suite-sync": "workspace:*"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/bip329": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
@@ -11445,6 +11446,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/logger": "workspace:*"
@@ -11793,15 +11795,11 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/env-utils": "workspace:*"
-    "@trezor/icons": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@trezor/urls": "workspace:*"
     react: "npm:19.3.0"
-    react-redux: "npm:9.3.0"
-    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 

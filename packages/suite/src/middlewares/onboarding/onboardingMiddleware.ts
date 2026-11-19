@@ -7,7 +7,6 @@ import {
     recoveryActions,
     selectRecoveryStatus,
 } from '@suite/recovery';
-import { routerAppChanged } from '@suite/router';
 import { type AnalyticsRootState, selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { type FirmwareRootState, firmwareActions, selectFirmware } from '@suite-common/firmware';
@@ -65,14 +64,6 @@ const onboardingMiddleware =
                     forceForget: true,
                 }),
             );
-        }
-
-        if (routerAppChanged.match(action)) {
-            // here middleware detects that onboarding app is loaded, do following:
-            //  1. make reducer to accept actions (enableReducer) and apply changes
-            if (action.payload === 'onboarding') {
-                api.dispatch(onboardingActions.enableOnboardingReducer(true));
-            }
         }
 
         // Resume an interrupted recovery when the device reports it is mid-recovery. After a reload the

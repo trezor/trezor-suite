@@ -89,6 +89,7 @@ const StyledMarkdown = styled.div`
     ul,
     ol {
         padding: 0 0 0 24px;
+        list-style: revert;
     }
 
     li {

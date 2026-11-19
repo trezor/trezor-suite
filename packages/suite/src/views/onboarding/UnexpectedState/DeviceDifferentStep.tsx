@@ -1,13 +1,16 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceInternalModel } from '@suite-common/device';
+import { useServices } from '@trezor/dependency-injection';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
-import { useOnboarding, useSelector } from '#src/hooks/suite';
+import { startOnboardingThunk } from '#src/actions/onboarding/startOnboardingThunk';
+import { useSelector } from '#src/hooks/suite';
 
 export const DeviceDifferentStep = () => {
-    const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
+    const { dispatch } = useServices(injectDispatch);
     const deviceModelInternal = useSelector(selectDeviceInternalModel);
 
     return (
@@ -24,8 +27,7 @@ export const DeviceDifferentStep = () => {
             innerActions={
                 <OnboardingCard.Button
                     onClick={() => {
-                        resetOnboarding();
-                        enableOnboardingReducer(true);
+                        dispatch(startOnboardingThunk({ shouldRestart: true }));
                     }}
                     intent="warning"
                     data-testid="@onboarding/unexpected-state/is-same/start-over-button"

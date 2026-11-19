@@ -42,8 +42,15 @@ const GlobalStyle = createGlobalStyle<{ theme: DefaultTheme }>`
     * {
         margin: 0;
         padding: 0;
+        border: none;
+        background: none;
         outline: none;
         font-family: var(--font-sans);
+    }
+
+    ul,
+    ol {
+        list-style: none;
     }
 
     *,

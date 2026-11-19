@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { type ReactNode, useEffect, useMemo } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { gotoThunk } from '@suite/router';
+import { gotoThunk, selectRouterApp } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
@@ -16,10 +16,13 @@ import {
     FirmwareStep,
     PinStep,
     RecoveryStep,
+    SecurityCheckStep,
     SecurityStep,
     UnexpectedState,
     getOnboardingStepIndex,
     onboardingSteps,
+    selectCanStartOnboarding,
+    startOnboardingThunk,
     useOnboarding,
     useSelector,
 } from '@trezor/suite';
@@ -27,11 +30,17 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { OnboardingLayout } from './OnboardingLayout';
 
-export const Onboarding = () => {
+type OnboardingProps = {
+    sidebar: ReactNode;
+};
+
+export const Onboarding = ({ sidebar }: OnboardingProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
-    const { activeStepId } = useOnboarding();
+    const { activeStepId, isActive } = useOnboarding();
     const device = useSelector(selectSelectedDevice);
+    const routerApp = useSelector(selectRouterApp);
+    const canStartOnboarding = useSelector(selectCanStartOnboarding);
     const thpStep = useSelector(selectThpStep);
 
     // This is a temporary hack until we refactor onboarding.
@@ -39,6 +48,7 @@ export const Onboarding = () => {
     // we redirect user to the dashboard where onboarding starts over and picks up where it ended.
     useEffect(() => {
         if (
+            activeStepId !== onboardingSteps.ID_SECURITY_CHECK_STEP &&
             activeStepId !== onboardingSteps.ID_FIRMWARE_STEP &&
             thpStep === 'ConfirmOnlyConnection'
         ) {
@@ -46,9 +56,19 @@ export const Onboarding = () => {
         }
     }, [device, thpStep, activeStepId, dispatch]);
 
+    // Preloader resolves startup/security gates before mounting this flow.
+    // Retry entry when a device prompt that blocked navigation closes.
+    useEffect(() => {
+        if (routerApp !== 'onboarding' || !isActive) {
+            dispatch(startOnboardingThunk());
+        }
+    }, [dispatch, routerApp, canStartOnboarding, device?.path, device?.features, isActive]);
+
     // Fires once per step entry. activeStepId is the dep, so it does not fire on
     // re-render and re-fires on re-entry (e.g. user navigates back and forward).
     useEffect(() => {
+        if (routerApp !== 'onboarding' || !isActive) return;
+
         analytics.report({
             type: events.onboardingStepViewedEvent.name,
             payload: {
@@ -57,10 +77,12 @@ export const Onboarding = () => {
                 platform: 'desktop',
             },
         });
-    }, [activeStepId, analytics]);
+    }, [activeStepId, analytics, routerApp, isActive]);
 
     const StepComponent = useMemo(() => {
         switch (activeStepId) {
+            case onboardingSteps.ID_SECURITY_CHECK_STEP:
+                return SecurityCheckStep;
             case onboardingSteps.ID_FIRMWARE_STEP:
                 // Firmware installation
                 return FirmwareStep;
@@ -94,7 +116,7 @@ export const Onboarding = () => {
     }, [activeStepId]);
 
     return (
-        <OnboardingLayout>
+        <OnboardingLayout sidebar={sidebar}>
             <UnexpectedState>
                 <StepComponent />
             </UnexpectedState>

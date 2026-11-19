@@ -1,10 +1,9 @@
-import { getIsDeviceAuthenticityCheckSupportedAndEnabled } from '@suite-common/device-authenticity';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { ID_AUTHENTICATE_DEVICE_STEP, ID_SET_PIN_STEP } from '#src/constants/onboarding/steps';
-import { type AnyPath, type AnyStepId, type Step, type StepCategory } from '#src/types/onboarding';
+import { type AnyPath, type AnyStepId, type Step } from '#src/types/onboarding';
 
 import { stepCategories } from '../../config/onboarding/steps';
 
@@ -64,11 +63,12 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
     }
 
     if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
-        return getIsDeviceAuthenticityCheckSupportedAndEnabled({
-            device,
-            isDeviceAuthenticityCheckEnabled,
-            isUnlockedBootloaderAllowed,
-        });
+        // Step eligibility must survive firmware bootloader/reconnection states.
+        // Prerequisites handle whether the device is ready to run the check.
+        return (
+            isDeviceAuthenticityCheckEnabled &&
+            !(isUnlockedBootloaderAllowed && device?.features?.bootloader_locked === false)
+        );
     }
 
     if (!step.path) {
@@ -81,9 +81,6 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
 
     return onboardingPath.every((pathMember: AnyPath) => step.path?.includes(pathMember));
 };
-
-export const isStepCategoryUsed = (stepCategory: StepCategory, props: IsStepUsedProps): boolean =>
-    stepCategory.steps.some(step => isStepUsed(step, props));
 
 // Validates if Id of the next step is available, or returns the earliest next available step
 export const resolveNextAvailableStep = (

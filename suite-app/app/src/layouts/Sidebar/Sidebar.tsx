@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -6,14 +6,14 @@ import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks
 import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
 import { selectIsAnyDeviceSelected, selectSelectedDevice } from '@suite-common/device';
-import { Box, Icon, ResizableBox } from '@trezor/components';
+import { Icon, ResizableBox, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
 import { TrezorLogo } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import {
     AccountsMenu,
+    DEVICE_SELECTOR_HEIGHT,
     DeviceSelector,
     MIN_CONTENT_WIDTH,
     QuickActions,
@@ -61,31 +61,38 @@ const HorizontalSpacer = styled.div`
 
 type WalletSwitcherProps = {
     isCollapsed: boolean;
+    isInteractive: boolean;
 };
 
-const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
+const WalletSwitcher = ({ isCollapsed, isInteractive }: WalletSwitcherProps) => {
     const isAnyDeviceSelected = useSelector(selectIsAnyDeviceSelected);
 
     if (isAnyDeviceSelected) {
-        return <DeviceSelector />;
+        return <DeviceSelector isInteractive={isInteractive} />;
     }
 
     return isCollapsed ? (
-        <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
+        <Row height={DEVICE_SELECTOR_HEIGHT} justifyContent="center">
             <Icon as={TrezorLogoIcon} size={24} pointerEvents="none" />
-        </Box>
+        </Row>
     ) : (
-        <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>
+        <Row height={DEVICE_SELECTOR_HEIGHT} padding={{ horizontal: 20 }}>
             <TrezorLogo width="107px" type="horizontal" />
-        </Box>
+        </Row>
     );
 };
 
 type SidebarProps = {
     showAccounts?: boolean;
+    children?: ReactNode;
+    isDeviceSelectorInteractive?: boolean;
 };
 
-export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
+export const Sidebar = ({
+    showAccounts = true,
+    children,
+    isDeviceSelectorInteractive = true,
+}: SidebarProps) => {
     const {
         isSidebarCollapsed,
         setSidebarWidth,
@@ -205,15 +212,21 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 <Container>
                     <TrafficLightOffset>
                         <Content>
-                            <WalletSwitcher isCollapsed={isSidebarCollapsed} />
-
-                            <Navigation />
-                            <HorizontalSpacer>
-                                {showAccountsAndIsDeviceReady && <AccountsMenu />}
-                            </HorizontalSpacer>
-                            {!isSidebarCollapsed && <SidebarBanners />}
-                            <BottomNavigation />
-                            <QuickActions isSidebarCollapsed={isSidebarCollapsed} />
+                            <WalletSwitcher
+                                isCollapsed={isSidebarCollapsed}
+                                isInteractive={isDeviceSelectorInteractive}
+                            />
+                            {children ?? (
+                                <>
+                                    <Navigation />
+                                    <HorizontalSpacer>
+                                        {showAccountsAndIsDeviceReady && <AccountsMenu />}
+                                    </HorizontalSpacer>
+                                    {!isSidebarCollapsed && <SidebarBanners />}
+                                    <BottomNavigation />
+                                    <QuickActions isSidebarCollapsed={isSidebarCollapsed} />
+                                </>
+                            )}
                         </Content>
                     </TrafficLightOffset>
                 </Container>

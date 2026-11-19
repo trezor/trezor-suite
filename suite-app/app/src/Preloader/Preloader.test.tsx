@@ -2,17 +2,23 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { act, fireEvent, screen } from '@testing-library/react';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events as desktopEvents } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type DesktopDeviceState } from '@suite/device';
-import { type RouterState, type SuiteRouterHistoryDep } from '@suite/router';
-import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { lockUI, locksReducer } from '@suite/locks';
+import { type RouterState, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
+import { createRouterStateMockForRoute, mockSuiteRouterHistory } from '@suite/router/mocks';
+import { events } from '@suite-common/analytics';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
+import { deviceActions } from '@suite-common/device';
+import { firmwareInitialState } from '@suite-common/firmware';
 import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import {
     type PersistentDeviceDataState,
+    persistentDeviceDataActions,
     persistentDeviceDataInitialState,
+    preparePersistentDeviceDataReducer,
 } from '@suite-common/persistent-device-data';
 import {
     type AcquiredDevice,
@@ -32,9 +38,11 @@ import {
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { isLinux } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
-import { type SuiteState } from '@trezor/suite';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
+import { type SuiteState, onboardingReducers } from '@trezor/suite';
 import {
     type MockSuiteState,
     findByTestId,
@@ -127,6 +135,7 @@ const getInitialState = ({
     device: { ...mockInitialAppState.device, ...device } as DesktopDeviceState,
     analytics: { ...mockInitialAppState.analytics, ...analytics },
     persistentDeviceData,
+    onboarding: onboardingReducers(undefined, { type: 'init' }),
     suite: {
         ...mockInitialAppState.suite,
         lifecycle: {
@@ -619,19 +628,483 @@ describe(`${Preloader.name} component`, () => {
         unmount();
     });
 
-    // Fresh or factory-reset device always needs Manual Device Check, regardless of persistent device data
-    it('Bootloader device without firmware', () => {
+    it.each<{ name: string; overrides: GetInitialStateProps }>([
+        { name: 'Suite is loading', overrides: { suite: { lifecycle: { status: 'loading' } } } },
+        { name: 'the router is loading', overrides: { router: { loaded: false } } },
+    ])('does not enter onboarding while $name', ({ overrides }) => {
+        const initialState = getInitialState({
+            ...overrides,
+            suite: {
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                ...overrides.suite,
+            },
+            device: {
+                selectedDevice: mockSuiteDevice(
+                    { mode: 'initialize', connected: true, available: true },
+                    { initialized: false },
+                ),
+            },
+            persistentDeviceData: persistentDeviceDataInitialState,
+        });
         const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
-            preloadedState: getInitialState({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app="dashboard" />,
+        );
+
+        expect(screen.getByTestId('@suite/loading')).not.toBeNull();
+        expect(screen.queryByTestId('@onboarding/device-check/setup-button')).toBeNull();
+        expect(services.store.getState().onboarding.isActive).toBe(false);
+        expect(services.store.getState().router.app).not.toBe('onboarding');
+
+        unmount();
+    });
+
+    it.each([false, true])(
+        'retries onboarding after navigation unlocks without remounting the sidebar (direct route=%s)',
+        directRoute => {
+            const initialState = getInitialState({
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: {
+                    selectedDevice: mockSuiteDevice(
+                        { mode: 'initialize', connected: true, available: true },
+                        { initialized: false },
+                    ),
+                },
+                persistentDeviceData: persistentDeviceDataInitialState,
+            });
+            if (directRoute)
+                initialState.router = createRouterStateMockForRoute('onboarding-index');
+            initialState.locks = { ...initialState.locks, ui: 1, router: directRoute ? 1 : 0 };
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                reducer: (state = initialState, action) => ({
+                    ...state,
+                    router: routerReducer(state.router, action),
+                    onboarding: onboardingReducers(state.onboarding, action),
+                    locks: locksReducer(state.locks, action),
+                }),
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="dashboard" />,
+            );
+
+            const sidebar = screen.getByRole('navigation');
+            expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+            expect(services.store.getState().router.app === 'onboarding').toBe(directRoute);
+            expect(services.store.getState().onboarding.isActive).toBe(false);
+
+            act(() => {
+                services.store.dispatch(lockUI(false));
+            });
+
+            expect(services.store.getState().router.app).toBe('onboarding');
+            expect(services.store.getState().onboarding.isActive).toBe(true);
+            expect(screen.getByTestId('@onboarding/stepper')).not.toBeNull();
+            expect(screen.getByRole('navigation')).toBe(sidebar);
+            expect(
+                screen.getByTestId('@onboarding/stepper/device').getAttribute('aria-label'),
+            ).toMatch(/33%$/);
+
+            unmount();
+        },
+    );
+
+    // Fresh or factory-reset device always needs Manual Device Check, regardless of persistent device data
+    it.each([true, false])(
+        'shows connection prerequisites on a direct onboarding route without a device (transport=%s)',
+        hasTransport => {
+            const initialState = getInitialState({
+                router: createRouterStateMockForRoute('onboarding-index'),
+                suite: {
+                    transport: {
+                        transports: hasTransport
+                            ? [createTransportInfo({ type: 'BridgeTransport' })]
+                            : [],
+                    },
+                },
+                device: { selectedDevice: undefined },
+            });
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="onboarding" />,
+            );
+
+            expect(screen.getByTestId('@connect-device-prompt')).not.toBeNull();
+            if (!hasTransport)
+                expect(
+                    screen.getByTestId('@connect-device-prompt/bridge-not-running'),
+                ).not.toBeNull();
+            expect(services.store.getState().onboarding.isActive).toBe(false);
+            expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+            unmount();
+        },
+    );
+
+    it.each([DeviceModelInternal.T1B1, DeviceModelInternal.T2T1])(
+        'keeps Device progress stable during firmware reconnects on %s',
+        model => {
+            const device = mockSuiteDevice(
+                { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+                {
+                    initialized: false,
+                    internal_model: model,
+                    major_version: model === DeviceModelInternal.T1B1 ? 1 : 2,
+                },
+            );
+            const initialState = getInitialState({
+                router: createRouterStateMockForRoute('onboarding-index'),
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: { selectedDevice: device },
+                persistentDeviceData: {
+                    devices: [{ ...matchingDevicePersistentData, internal_model: model }],
+                },
+            });
+            initialState.onboarding = {
+                ...initialState.onboarding,
+                isActive: true,
+                activeStepId: 'firmware',
+            };
+            initialState.firmware = firmwareInitialState;
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                reducer: (state = initialState, action) => {
+                    let nextDeviceState = state.device;
+                    if (deviceActions.deviceDisconnect.match(action)) {
+                        nextDeviceState = { ...state.device, selectedDevice: undefined };
+                    } else if (deviceActions.updateSelectedDevice.match(action)) {
+                        nextDeviceState = { ...state.device, selectedDevice: action.payload };
+                    }
+
+                    return {
+                        ...state,
+                        router: routerReducer(state.router, action),
+                        onboarding: onboardingReducers(state.onboarding, action),
+                        device: nextDeviceState,
+                    };
+                },
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="onboarding" />,
+            );
+            const deviceStep = screen.getByTestId('@onboarding/stepper/device');
+            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+
+            act(() => {
+                services.store.dispatch(deviceActions.deviceDisconnect(device));
+            });
+            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+
+            const bootloaderDevice = mockSuiteDevice(
+                { mode: 'bootloader', connected: true, available: true },
+                {
+                    internal_model: model,
+                    initialized: false,
+                    firmware_present: true,
+                    major_version: model === DeviceModelInternal.T1B1 ? 1 : 2,
+                },
+            );
+            act(() => {
+                services.store.dispatch(deviceActions.updateSelectedDevice(bootloaderDevice));
+            });
+            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+
+            act(() => {
+                services.store.dispatch(deviceActions.updateSelectedDevice(device));
+            });
+            expect(deviceStep.getAttribute('aria-label')).toMatch(/67%$/);
+            unmount();
+        },
+    );
+
+    it.each([true, false])(
+        'retries direct onboarding entry after acquisition on the same path with manual check saved=%s',
+        manualCheckSaved => {
+            const initialState = getInitialState({
+                router: createRouterStateMockForRoute('onboarding-index'),
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: {
+                    selectedDevice: mockSuiteDevice({
+                        type: 'unacquired',
+                        connected: true,
+                        transportSessionOwner: undefined,
+                        path: 'onboarding-acquisition-device',
+                    }),
+                },
+                persistentDeviceData: {
+                    devices: manualCheckSaved ? [matchingDevicePersistentData] : [],
+                },
+            });
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                reducer: (state = initialState, action) => ({
+                    ...state,
+                    router: routerReducer(state.router, action),
+                    onboarding: onboardingReducers(state.onboarding, action),
+                    device: deviceActions.updateSelectedDevice.match(action)
+                        ? { ...state.device, selectedDevice: action.payload }
+                        : state.device,
+                }),
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="onboarding" />,
+            );
+
+            expect(services.store.getState().onboarding.isActive).toBe(false);
+            expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+
+            act(() => {
+                services.store.dispatch(
+                    deviceActions.updateSelectedDevice(
+                        mockSuiteDevice(
+                            {
+                                mode: 'initialize',
+                                connected: true,
+                                available: true,
+                                firmware: 'valid',
+                                path: 'onboarding-acquisition-device',
+                            },
+                            { initialized: false },
+                        ),
+                    ),
+                );
+            });
+
+            expect(services.store.getState().onboarding.isActive).toBe(true);
+            expect(services.store.getState().onboarding.activeStepId).toBe(
+                manualCheckSaved ? 'firmware' : 'security-check',
+            );
+            expect(screen.queryByTestId('@onboarding/device-check/setup-button') !== null).toBe(
+                !manualCheckSaved,
+            );
+            unmount();
+        },
+    );
+
+    it.each([true, false])(
+        'initializes a direct onboarding route with manual check saved=%s',
+        manualCheckSaved => {
+            const initialState = getInitialState({
+                router: createRouterStateMockForRoute('onboarding-index'),
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: {
+                    selectedDevice: mockSuiteDevice(
+                        { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+                        { initialized: false },
+                    ),
+                },
+                persistentDeviceData: {
+                    devices: manualCheckSaved ? [matchingDevicePersistentData] : [],
+                },
+            });
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                reducer: (state = initialState, action) => ({
+                    ...state,
+                    router: routerReducer(state.router, action),
+                    onboarding: onboardingReducers(state.onboarding, action),
+                }),
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="onboarding" />,
+            );
+
+            expect(services.store.getState().onboarding.isActive).toBe(true);
+            expect(services.store.getState().onboarding.activeStepId).toBe(
+                manualCheckSaved ? 'firmware' : 'security-check',
+            );
+            expect(screen.queryByTestId('@onboarding/device-check/setup-button') !== null).toBe(
+                !manualCheckSaved,
+            );
+            if (manualCheckSaved) {
+                expect(services.analytics.report).not.toHaveBeenCalledWith({
+                    type: events.onboardingStepViewedEvent.name,
+                    payload: { stepName: 'security-check', stepIndex: 1, platform: 'desktop' },
+                });
+            }
+            unmount();
+        },
+    );
+
+    it('detects a device swap before the manual check can be completed and restarts using the new device history', () => {
+        const firstDevice = mockSuiteDevice(
+            { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+            { initialized: false },
+        );
+        const secondDevice = mockSuiteDevice(
+            {
+                id: 'second-device',
+                mode: 'initialize',
+                connected: true,
+                available: true,
+                firmware: 'valid',
+            },
+            { device_id: 'second-device', initialized: false },
+        );
+        const initialState = getInitialState({
+            suite: {
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+            },
+            device: { selectedDevice: firstDevice },
+            persistentDeviceData: {
+                devices: [{ ...matchingDevicePersistentData, device_id: 'second-device' }],
+            },
+        });
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
+                device: deviceActions.updateSelectedDevice.match(action)
+                    ? { ...state.device, selectedDevice: action.payload }
+                    : state.device,
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app="dashboard" />,
+        );
+        expect(screen.getByTestId('@onboarding/device-check/setup-button')).not.toBeNull();
+
+        act(() => {
+            services.store.dispatch(deviceActions.deviceDisconnect(firstDevice));
+            services.store.dispatch(deviceActions.updateSelectedDevice(secondDevice));
+        });
+
+        expect(screen.queryByTestId('@onboarding/device-check/setup-button')).toBeNull();
+        fireEvent.click(
+            screen.getByTestId('@onboarding/unexpected-state/is-same/start-over-button'),
+        );
+        expect(services.store.getState().onboarding.activeStepId).toBe('firmware');
+        expect(services.store.getState().onboarding.prevDeviceId).toBeNull();
+        expect(screen.queryByTestId('@onboarding/device-check/setup-button')).toBeNull();
+        unmount();
+    });
+
+    it('keeps ALT+W available on the dashboard when a previous onboarding remains active', () => {
+        const initialState = getInitialState({
+            router: createRouterStateMockForRoute('suite-index'),
+            suite: {
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+            },
+            device: { selectedDevice: mockSuiteDevice({ connected: true, available: true }) },
+            persistentDeviceData: { devices: [matchingDevicePersistentData] },
+        });
+        initialState.onboarding = { ...initialState.onboarding, isActive: true };
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app="dashboard" />,
+        );
+
+        fireEvent.keyDown(window, { code: 'KeyW', altKey: true });
+
+        expect(services.store.getState().router.route?.name).toBe('suite-switch-device');
+        unmount();
+    });
+
+    it('allows Settings navigation during the onboarding manual check in debug mode', () => {
+        const initialState = {
+            ...getInitialState({
+                router: createRouterStateMockForRoute('onboarding-index'),
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: {
+                    selectedDevice: mockSuiteDevice(
+                        { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+                        { initialized: false },
+                    ),
+                },
+                persistentDeviceData: { devices: [] },
+            }),
+            debug: { ...mockInitialAppState.debug, showDebugMenu: true },
+        };
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app="dashboard" />,
+        );
+
+        expect(services.store.getState().router.app).toBe('onboarding');
+        fireEvent.click(screen.getByTestId('@suite/menu/settings'));
+
+        expect(services.store.getState().router.route?.name).toBe('settings-index');
+        expect(screen.queryByTestId('@onboarding-layout/body')).toBeNull();
+        unmount();
+    });
+
+    it('keeps Device active and the sidebar mounted when moving from the manual check to firmware', () => {
+        const initialState = {
+            ...getInitialState({
                 suite: {
                     transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
                 },
                 device: {
                     selectedDevice: mockSuiteDevice(
                         { mode: 'bootloader', connected: true },
-                        { firmware_present: false, bootloader_mode: true, initialized: false },
+                        {
+                            firmware_present: false,
+                            bootloader_mode: true,
+                            initialized: false,
+                            internal_model: DeviceModelInternal.T3B1,
+                        },
                     ),
                 },
+            }),
+            onboarding: onboardingReducers(undefined, { type: 'init' }),
+        };
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
             }),
             services: createServices,
         });
@@ -641,9 +1114,198 @@ describe(`${Preloader.name} component`, () => {
         );
 
         expect(findByTestId('@onboarding/device-check/setup-button')).not.toBeNull();
+        expect(services.store.getState().router.app).toBe('onboarding');
+        expect(services.store.getState().onboarding.activeStepId).toBe('security-check');
+        expect(services.store.getState().onboarding.isActive).toBe(true);
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: events.onboardingStepViewedEvent.name,
+            payload: { stepName: 'security-check', stepIndex: 1, platform: 'desktop' },
+        });
+
+        const stepper = screen.getByTestId('@onboarding/stepper');
+
+        expect(services.analytics.report).not.toHaveBeenCalledWith(
+            expect.objectContaining({ type: desktopEvents.deviceSetupStartedEvent.name }),
+            expect.anything(),
+        );
+
+        expect(screen.getByTestId('@onboarding/stepper/device').getAttribute('aria-label')).toMatch(
+            /20%$/,
+        );
+        expect(screen.getByTestId('@onboarding/stepper/device').getAttribute('aria-current')).toBe(
+            'step',
+        );
+        ['wallet', 'pin'].forEach(category => {
+            const step = screen.getByTestId(`@onboarding/stepper/${category}`);
+
+            expect(step.getAttribute('aria-label')).toMatch(/0%$/);
+            expect(step.getAttribute('aria-current')).toBeNull();
+        });
+
+        const navigate = jest.spyOn(services.suiteRouterHistory, 'navigate');
+
+        fireEvent.click(screen.getByTestId('@menu/switch-device'));
+        expect(navigate).not.toHaveBeenCalled();
+
+        fireEvent.keyDown(window, { code: 'KeyW', altKey: true });
+        expect(navigate).not.toHaveBeenCalled();
+
+        screen.getAllByRole('checkbox').forEach(checkbox => fireEvent.click(checkbox));
+        fireEvent.click(screen.getByTestId('@onboarding/device-check/setup-button'));
+
+        expect(screen.getByTestId('@onboarding/stepper')).toBe(stepper);
+        expect(
+            jest
+                .mocked(services.analytics.report)
+                .mock.calls.filter(
+                    ([event]) => event.type === desktopEvents.deviceSetupStartedEvent.name,
+                ),
+        ).toHaveLength(1);
+        expect(services.store.getState().onboarding.activeStepId).toBe('firmware');
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: events.onboardingStepViewedEvent.name,
+            payload: { stepName: 'firmware', stepIndex: 2, platform: 'desktop' },
+        });
+        const deviceStep = screen.getByTestId('@onboarding/stepper/device');
+
+        expect(deviceStep.getAttribute('aria-label')).toMatch(/40%$/);
+        expect(deviceStep.getAttribute('aria-current')).toBe('step');
 
         unmount();
     });
+
+    it('keeps a pending hardware check outside onboarding when manual inspection already passed', () => {
+        const device = mockSuiteDevice(
+            { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+            { initialized: false, internal_model: DeviceModelInternal.T3B1 },
+        );
+        const initialState = getInitialState({
+            suite: {
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+            },
+            device: { selectedDevice: device },
+            persistentDeviceData: {
+                devices: [
+                    {
+                        ...matchingDevicePersistentData,
+                        internal_model: DeviceModelInternal.T3B1,
+                    },
+                ],
+            },
+        });
+        const persistentDeviceDataReducer = preparePersistentDeviceDataReducer({
+            actionTypes: { storageLoad: mockActionType('storageLoad') },
+            reducers: { storageLoadPersistentDeviceData: mockReducer() },
+        });
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
+                persistentDeviceData: persistentDeviceDataReducer(
+                    state.persistentDeviceData,
+                    action,
+                ),
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            { ...services, networks: { networkIcon } },
+            <Index app="dashboard" />,
+        );
+
+        expect(screen.getByTestId('TR_LETS_CHECK_YOUR_DEVICE')).not.toBeNull();
+        expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+        expect(services.store.getState().onboarding.isActive).toBe(false);
+
+        act(() => {
+            services.store.dispatch(
+                persistentDeviceDataActions.setDeviceAuthenticityResult({
+                    deviceId: device.id,
+                    result: {
+                        valid: true,
+                        optigaResult: { valid: true, rootPubKey: 'root-pub-key' },
+                        tropicResult: null,
+                        mcuResult: null,
+                    },
+                }),
+            );
+        });
+        fireEvent.click(screen.getByTestId('@authenticity-check/continue-button'));
+
+        expect(screen.getByTestId('@button/go-to-onboarding')).not.toBeNull();
+        expect(services.store.getState().onboarding.isActive).toBe(false);
+
+        fireEvent.click(screen.getByTestId('@button/go-to-onboarding'));
+
+        expect(services.store.getState().onboarding.activeStepId).toBe('firmware');
+        expect(screen.getByTestId('TR_FIRMWARE_IS_UP_TO_DATE')).not.toBeNull();
+
+        fireEvent.click(screen.getByTestId('@firmware/continue-button'));
+
+        expect(services.store.getState().onboarding.activeStepId).toBe('authenticate-device');
+        expect(screen.getByTestId('TR_CONGRATS')).not.toBeNull();
+        expect(screen.queryByTestId('@authenticity-check/start-button')).toBeNull();
+
+        unmount();
+    });
+
+    it.each([DeviceModelInternal.T2T1, DeviceModelInternal.T3B1])(
+        'does not repeat a saved manual check when onboarding is explicitly started again (%s)',
+        deviceModel => {
+            const initialState = getInitialState({
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: {
+                    selectedDevice: mockSuiteDevice(
+                        { mode: 'initialize', connected: true, available: true, firmware: 'valid' },
+                        { initialized: false, internal_model: deviceModel },
+                    ),
+                },
+                persistentDeviceData: {
+                    devices: [
+                        {
+                            ...matchingDevicePersistentData,
+                            internal_model: deviceModel,
+                            authenticityResult: {
+                                valid: true,
+                                optigaResult: { valid: true, rootPubKey: 'root-pub-key' },
+                                tropicResult: null,
+                                mcuResult: null,
+                            },
+                        },
+                    ],
+                },
+            });
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: initialState,
+                reducer: (state = initialState, action) => ({
+                    ...state,
+                    router: routerReducer(state.router, action),
+                    onboarding: onboardingReducers(state.onboarding, action),
+                }),
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(
+                { ...services, networks: { networkIcon } },
+                <Index app="dashboard" />,
+            );
+
+            fireEvent.click(screen.getByTestId('@button/go-to-onboarding'));
+
+            expect(services.store.getState().onboarding.activeStepId).toBe('firmware');
+            expect(screen.queryByTestId('@onboarding/device-check/setup-button')).toBeNull();
+            expect(screen.getByTestId('TR_FIRMWARE_IS_UP_TO_DATE')).not.toBeNull();
+            expect(services.analytics.report).not.toHaveBeenCalledWith({
+                type: events.onboardingStepViewedEvent.name,
+                payload: { stepName: 'security-check', stepIndex: 1, platform: 'desktop' },
+            });
+
+            unmount();
+        },
+    );
 
     it('Initialized device missing in persistent device data', () => {
         const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
@@ -662,23 +1324,74 @@ describe(`${Preloader.name} component`, () => {
         );
 
         expect(findByTestId('@onboarding/complete-onboarding')).not.toBeNull();
+        expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
 
         unmount();
     });
 
+    it.each([true, false])(
+        'opens the appropriate standalone check for a configured Safe device (manual check passed: %s)',
+        manualCheckPassed => {
+            const device = mockSuiteDevice(
+                { connected: true, available: true },
+                { initialized: true, internal_model: DeviceModelInternal.T3B1 },
+            );
+            const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
+                preloadedState: getInitialState({
+                    suite: {
+                        transport: {
+                            transports: [createTransportInfo({ type: 'BridgeTransport' })],
+                        },
+                    },
+                    device: { selectedDevice: device },
+                    persistentDeviceData: {
+                        devices: manualCheckPassed
+                            ? [
+                                  {
+                                      ...defaultDevicePersistentData,
+                                      internal_model: DeviceModelInternal.T3B1,
+                                  },
+                              ]
+                            : [],
+                    },
+                }),
+                services: createServices,
+            });
+            const { unmount } = renderWithProviders(services, <Index app="dashboard" />);
+
+            if (manualCheckPassed) {
+                expect(screen.getByTestId('TR_LETS_CHECK_YOUR_DEVICE')).not.toBeNull();
+                expect(screen.queryByTestId('@onboarding/complete-onboarding')).toBeNull();
+            } else {
+                expect(screen.getByTestId('TR_USED_TREZOR_BEFORE')).not.toBeNull();
+                expect(screen.getByTestId('@onboarding/complete-onboarding')).not.toBeNull();
+            }
+            expect(screen.queryByTestId('@onboarding/stepper')).toBeNull();
+            expect(services.store.getState().onboarding.isActive).toBe(false);
+
+            unmount();
+        },
+    );
+
     it('Not initialized device missing in persistent device data', () => {
+        const initialState = getInitialState({
+            suite: {
+                transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+            },
+            device: {
+                selectedDevice: mockSuiteDevice(
+                    { mode: 'initialize', connected: true },
+                    { initialized: false },
+                ),
+            },
+            persistentDeviceData: persistentDeviceDataInitialState,
+        });
         const { services } = createTestCompositionRoot<PreloaderTestDeps, MockSuiteState>({
-            preloadedState: getInitialState({
-                suite: {
-                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
-                },
-                device: {
-                    selectedDevice: mockSuiteDevice(
-                        { mode: 'initialize', connected: true },
-                        { initialized: false },
-                    ),
-                },
-                persistentDeviceData: persistentDeviceDataInitialState,
+            preloadedState: initialState,
+            reducer: (state = initialState, action) => ({
+                ...state,
+                router: routerReducer(state.router, action),
+                onboarding: onboardingReducers(state.onboarding, action),
             }),
             services: createServices,
         });

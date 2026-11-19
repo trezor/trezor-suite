@@ -1,7 +1,7 @@
 import { isRecoveryInProgress } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
-import type { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 
 import type { TransportState } from '#src/reducers/suite/suiteReducer';
 
