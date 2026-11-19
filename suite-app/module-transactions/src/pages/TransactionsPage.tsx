@@ -3,9 +3,8 @@ import { type ReactNode } from 'react';
 import { type SelectedAccountState, selectFullSelectedAccount } from '@suite/account';
 import {
     selectAccountTransactionsWithNulls,
-    selectIsLoadingAccountTransactions,
+    selectHasAccountHistory,
 } from '@suite-common/wallet-core';
-import { getOlderHistoryFrom, isDirectRpcHistoryUnscanned } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import {
     AccountEmpty,
@@ -36,12 +35,11 @@ const Layout = ({ selectedAccount, children }: LayoutProps) => (
 
 export const TransactionsPage = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const transactionsIsLoading = useSelector(state =>
-        selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
-    );
+    const accountKey = selectedAccount.account?.key || null;
     const accountTransactions = useSelector(state =>
-        selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
+        selectAccountTransactionsWithNulls(state, accountKey),
     );
+    const hasHistory = useSelector(state => selectHasAccountHistory(state, accountKey));
 
     if (selectedAccount.status !== 'loaded') {
         return <Layout selectedAccount={selectedAccount} />;
@@ -79,13 +77,7 @@ export const TransactionsPage = () => {
         );
     }
 
-    // A direct-RPC backend has only scanned a recent window, or nothing yet, so an empty list is not
-    // proof that history is unavailable: the list shows the progress and the way further back.
-    const hasDirectRpcHistoryToLoad =
-        !account.empty &&
-        (isDirectRpcHistoryUnscanned(account) || getOlderHistoryFrom(account) !== undefined);
-
-    if (accountTransactions.length > 0 || transactionsIsLoading || hasDirectRpcHistoryToLoad) {
+    if (hasHistory) {
         return (
             <Layout selectedAccount={selectedAccount}>
                 <CardanoNewProviderCard account={account} />

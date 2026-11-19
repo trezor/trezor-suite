@@ -1,7 +1,8 @@
 import { ContextMessage } from '@suite/message-system';
-import { Context, ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
+import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
 import {
+    AssetFirstHomeExperiment,
     AssetsView,
     DashboardFooter,
     DashboardPromoBanner,
@@ -46,20 +47,14 @@ export const DashboardPage = () => {
     useNotificationForDisconnectedDevice();
 
     return (
-        <ExperimentWrapper
-            id={ExperimentId.assetFirstHomeTable}
-            components={[
-                { variant: 'A', element: <DashboardAsItWas /> },
-                {
-                    variant: 'B',
-                    element: (
-                        <Column gap={24} data-testid="@dashboard/index">
-                            <DashboardNotices />
-                            <HomeAssetDashboard />
-                        </Column>
-                    ),
-                },
-            ]}
+        <AssetFirstHomeExperiment
+            asItWas={<DashboardAsItWas />}
+            assetFirst={
+                <Column gap={24} data-testid="@dashboard/index">
+                    <DashboardNotices />
+                    <HomeAssetDashboard />
+                </Column>
+            }
         />
     );
 };
