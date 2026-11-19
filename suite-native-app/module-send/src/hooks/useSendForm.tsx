@@ -456,85 +456,85 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     );
 
     const startStellarSigningFlow = useCallback(
-        ({ transaction }: { transaction: GeneralPrecomposedTransactionFinal }) => {
+        async ({ transaction }: { transaction: GeneralPrecomposedTransactionFinal }) => {
             // The first review entry of Stellar is neither a destination address nor a destination tag.
             // We need to wait for device button requests before navigating to the review screen.
-            dispatch(
+            requestDelayedNavigationToOutputsReview();
+
+            const signingResponse = await dispatch(
                 signTransactionNativeThunk({
                     accountKey,
                     tokenContract,
                     feeLevel: transaction,
                 }),
-            ).then(signingResponse => {
-                if (isRejected(signingResponse)) {
-                    const errorCode = signingResponse.payload?.errorCode;
-                    const message = signingResponse.payload?.message;
+            );
 
-                    if (
-                        errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
-                        errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
-                        errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
-                    ) {
-                        navigation.popTo(SendStackRoutes.SendOutputs, {
-                            accountKey,
-                            tokenContract,
-                        });
+            if (!isRejected(signingResponse)) return;
 
-                        return;
-                    }
+            const errorCode = signingResponse.payload?.errorCode;
+            const message = signingResponse.payload?.message;
 
-                    if (
-                        errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
-                        errorCode === 'Method_Interrupted' // Passphrase modal closed.
-                    ) {
-                        showAlert({
-                            title: <Translation id="modulePassphrase.featureAuthorizationError" />,
-                            pictogramVariant: 'critical',
-                            primaryButtonTitle: <Translation id="generic.buttons.close" />,
-                            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
-                        });
+            if (
+                errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
+                errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
+                errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
+            ) {
+                navigation.popTo(SendStackRoutes.SendOutputs, {
+                    accountKey,
+                    tokenContract,
+                });
 
-                        return;
-                    }
+                return;
+            }
 
-                    // Device disconnected during the review.
-                    if (
-                        message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                        message === TRANSPORT_ERROR.UNEXPECTED_ERROR
-                    ) {
-                        if (isViewOnlyDevice) {
-                            navigation.popTo(SendStackRoutes.SendOutputs, {
-                                accountKey,
-                                tokenContract,
-                                postNavigationAction: 'deviceDisconnectedAlert',
-                            });
-                        } else {
-                            showDeviceDisconnectedAlert();
-                        }
+            if (
+                errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
+                errorCode === 'Method_Interrupted' // Passphrase modal closed.
+            ) {
+                showAlert({
+                    title: <Translation id="modulePassphrase.featureAuthorizationError" />,
+                    pictogramVariant: 'critical',
+                    primaryButtonTitle: <Translation id="generic.buttons.close" />,
+                    primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+                });
 
-                        return;
-                    }
+                return;
+            }
 
-                    dispatch(sendFormActions.discardTransaction());
-                    if (isAssetsFirstEnabled && account) {
-                        navigation.navigate(RootStackRoutes.AssetsStack, {
-                            screen: AssetsStackRoutes.AssetDetail,
-                            params: { networkSymbol: account.symbol, tokenContract },
-                        });
-                    } else {
-                        navigation.navigate(RootStackRoutes.AccountDetailStack, {
-                            screen: AccountDetailStackRoutes.AccountDetail,
-                            params: {
-                                accountKey,
-                                tokenContract,
-                                closeActionType: 'back',
-                            },
-                        });
-                    }
+            // Device disconnected during the review.
+            if (
+                message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
+                message === TRANSPORT_ERROR.UNEXPECTED_ERROR
+            ) {
+                if (isViewOnlyDevice) {
+                    navigation.popTo(SendStackRoutes.SendOutputs, {
+                        accountKey,
+                        tokenContract,
+                        postNavigationAction: 'deviceDisconnectedAlert',
+                    });
+                } else {
+                    showDeviceDisconnectedAlert();
                 }
-            });
 
-            requestDelayedNavigationToOutputsReview();
+                return;
+            }
+
+            dispatch(sendFormActions.discardTransaction());
+            if (isAssetsFirstEnabled && account) {
+                navigation.navigate(RootStackRoutes.AssetsStack, {
+                    screen: AssetsStackRoutes.AssetDetail,
+                    params: { networkSymbol: account.symbol, tokenContract },
+                });
+            } else {
+                navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                    screen: AccountDetailStackRoutes.AccountDetail,
+                    params: {
+                        accountKey,
+                        tokenContract,
+                        closeActionType: 'back',
+                    },
+                });
+            }
         },
         [
             dispatch,
@@ -550,6 +550,22 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         ],
     );
 
+    // In case that view only device is not connected, show connect screen first.
+    const navigateToDeviceConnectionGuard = useCallback(() => {
+        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+            params: {
+                onCancelNavigationTarget: {
+                    name: RootStackRoutes.SendStack,
+                    params: {
+                        screen: SendStackRoutes.SendOutputs,
+                        params: { accountKey, tokenContract },
+                    },
+                },
+            },
+        });
+    }, [accountKey, tokenContract, navigation]);
+
     if (!account || !networkFeeInfo) return null;
 
     const feeStatusParams = {
@@ -564,7 +580,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         amount: watchedFormValues.outputs?.[0]?.amount ?? '',
     });
 
-    const handleSubmitSendForm = handleSubmit(formValues => {
+    const handleSubmitSendForm = handleSubmit(async formValues => {
         Keyboard.dismiss();
 
         if (!network) return;
@@ -600,9 +616,16 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                 break;
             }
             case 'stellar': {
-                startStellarSigningFlow({ transaction: selectedFeeLevelTransaction });
+                const signingFlow = startStellarSigningFlow({
+                    transaction: selectedFeeLevelTransaction,
+                });
+                navigateToDeviceConnectionGuard();
 
-                break;
+                // Stellar stays on this screen until the device responds, so the form is kept
+                // submitting to block another signing request.
+                await signingFlow;
+
+                return;
             }
             default: {
                 navigateToAddressReview({ transaction: selectedFeeLevelTransaction });
@@ -611,19 +634,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             }
         }
 
-        // In case that view only device is not connected, show connect screen first.
-        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
-            params: {
-                onCancelNavigationTarget: {
-                    name: RootStackRoutes.SendStack,
-                    params: {
-                        screen: SendStackRoutes.SendOutputs,
-                        params: { accountKey, tokenContract },
-                    },
-                },
-            },
-        });
+        navigateToDeviceConnectionGuard();
     });
 
     const amount = isAmountInSats

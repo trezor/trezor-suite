@@ -20,7 +20,7 @@ export const SendOutputsScreenFooter = ({
                     accessibilityLabel={translate('generic.validateForm')}
                     testID="@send/form-submit-button"
                     onPress={handleNavigateToReviewScreen}
-                    isDisabled={isSubmitting}
+                    isLoading={isSubmitting}
                 >
                     <Translation id="moduleSend.fees.submitButton" />
                 </Button>
