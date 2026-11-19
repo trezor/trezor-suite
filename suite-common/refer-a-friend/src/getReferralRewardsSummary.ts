@@ -9,10 +9,12 @@ const getWaitingPeriodDays = (voucher: ReferralVoucher) =>
         (new Date(voucher.readyAt).getTime() - new Date(voucher.orderPaidAt).getTime()) / DAY_MS,
     );
 
-// TODO: Redesign it. The waiting period differs per voucher and the API has no general value, so the
-// longest one is shown. Without vouchers, there is none.
-const getRewardWaitingPeriodDays = (vouchers: ReferralVoucher[]) =>
-    vouchers.length === 0 ? null : Math.max(...vouchers.map(getWaitingPeriodDays));
+// TODO: Consider redesign. The waiting period is displayed as single value, but it differs per voucher.
+const getRewardWaitingPeriodDays = (vouchers: ReferralVoucher[]): number | null => {
+    const allWaitingPeriods = vouchers.map(getWaitingPeriodDays).filter(value => !isNaN(value));
+
+    return allWaitingPeriods.length === 0 ? null : Math.max(...allWaitingPeriods);
+};
 
 const roundToCents = (value: number) => Math.round(value * 100) / 100;
 

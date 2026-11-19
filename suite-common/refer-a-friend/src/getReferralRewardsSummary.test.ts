@@ -49,4 +49,22 @@ describe(getReferralRewardsSummary.name, () => {
 
         expect(getReferralRewardsSummary(vouchers).rewardWaitingPeriodDays).toBe(41);
     });
+
+    it('ignores vouchers with invalid dates in the waiting period', () => {
+        const validVoucher = createVoucher('available', 20);
+        const invalidReadyAtVoucher = { ...createVoucher('pending', 20), readyAt: 'invalid' };
+        const invalidOrderPaidAtVoucher = { ...createVoucher('pending', 20), orderPaidAt: '' };
+
+        expect(
+            getReferralRewardsSummary([
+                invalidReadyAtVoucher,
+                validVoucher,
+                invalidOrderPaidAtVoucher,
+            ]).rewardWaitingPeriodDays,
+        ).toBe(30);
+        expect(
+            getReferralRewardsSummary([invalidReadyAtVoucher, invalidOrderPaidAtVoucher])
+                .rewardWaitingPeriodDays,
+        ).toBeNull();
+    });
 });
