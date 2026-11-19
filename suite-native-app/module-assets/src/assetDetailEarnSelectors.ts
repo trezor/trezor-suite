@@ -44,7 +44,7 @@ export const selectShouldShowWalletAssetEarnSection = (
     );
 };
 
-// The banner promotes a product the platform can stake into.
+// The banner promotes a product the platform shows.
 export const selectWalletAssetStakingBannerAccounts = (
     state: AssetDetailStakingBannerState,
     assetKey: WalletAssetKey | undefined,

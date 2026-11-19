@@ -41,45 +41,48 @@ const renderCard = (unlocks: StakingPositionUnlock[]) => {
         BigNumber.sum(0, ...unlocks.map(({ amount }) => amount)).toFixed(0),
     );
 
-    return renderWithStoreProvider(<TronStakingUnstakeCard accountKey={account.key} />, {
-        preloadedState: {
-            wallet: {
-                accounts: [account],
-                fiat: { current: { 'trx-usd': { rate: 0.25 } }, lastWeek: {} },
-            },
-            earn: {
-                staking: mockStakingState({
-                    platform: 'mobile',
-                    descriptors: [tronProduct],
-                    positions: {
-                        [account.key]: [
-                            mockStakingPosition({
-                                productId: tronProduct.id,
-                                balances: {
-                                    staked: zero,
-                                    pending: zero,
-                                    unstaking,
-                                    withdrawable: unlocks.length === 0 ? sun(5 * TRX) : zero,
-                                    rewards: zero,
-                                },
-                                unlocks,
-                                targets: [],
-                                operations: [],
-                                details: {
-                                    kind: 'tron-staking',
-                                    frozen: { energy: zero, bandwidth: zero },
-                                    delegated: { energy: zero, bandwidth: zero },
-                                    votingPower: zero,
-                                    unallocatedVotingPower: zero,
-                                    rewardClaimAvailableAt: null,
-                                },
-                            }),
-                        ],
-                    },
-                }),
+    return renderWithStoreProvider(
+        <TronStakingUnstakeCard accountKey={account.key} nowMs={NOW_MS} />,
+        {
+            preloadedState: {
+                wallet: {
+                    accounts: [account],
+                    fiat: { current: { 'trx-usd': { rate: 0.25 } }, lastWeek: {} },
+                },
+                earn: {
+                    staking: mockStakingState({
+                        platform: 'mobile',
+                        descriptors: [tronProduct],
+                        positions: {
+                            [account.key]: [
+                                mockStakingPosition({
+                                    productId: tronProduct.id,
+                                    balances: {
+                                        staked: zero,
+                                        pending: zero,
+                                        unstaking,
+                                        withdrawable: unlocks.length === 0 ? sun(5 * TRX) : zero,
+                                        rewards: zero,
+                                    },
+                                    unlocks,
+                                    targets: [],
+                                    operations: [],
+                                    details: {
+                                        kind: 'tron-staking',
+                                        frozen: { energy: zero, bandwidth: zero },
+                                        delegated: { energy: zero, bandwidth: zero },
+                                        votingPower: zero,
+                                        unallocatedVotingPower: zero,
+                                        rewardClaimAvailableAt: null,
+                                    },
+                                }),
+                            ],
+                        },
+                    }),
+                },
             },
         },
-    });
+    );
 };
 
 describe('TronStakingUnstakeCard', () => {

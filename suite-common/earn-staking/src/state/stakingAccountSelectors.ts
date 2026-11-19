@@ -156,7 +156,7 @@ export const selectHasStakingAccountWarning = (
     accountKey: AccountKey,
     code: StakingPositionWarningCode,
 ): boolean =>
-    selectStakingPositionsByAccount(state, accountKey).some(position =>
+    selectCountedStakingPositionEntriesByAccount(state, accountKey).some(({ position }) =>
         hasStakingPositionWarning(position, code),
     );
 

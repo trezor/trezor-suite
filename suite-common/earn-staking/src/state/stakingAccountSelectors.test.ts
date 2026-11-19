@@ -483,7 +483,7 @@ describe('selectHasStakingAccountWarning', () => {
         ).toBe(false);
     });
 
-    it('also reads an uncounted position', () => {
+    it('ignores an uncounted position, as the other account readings do', () => {
         const state = createState({
             positions: {
                 [solAccount.key]: [
@@ -492,7 +492,7 @@ describe('selectHasStakingAccountWarning', () => {
             },
         });
 
-        expect(selectHasStakingAccountWarning(state, solAccount.key, 'missing-drep')).toBe(true);
+        expect(selectHasStakingAccountWarning(state, solAccount.key, 'missing-drep')).toBe(false);
     });
 });
 
