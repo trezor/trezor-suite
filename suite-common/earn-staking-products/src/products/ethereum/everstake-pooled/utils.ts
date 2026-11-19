@@ -203,11 +203,13 @@ export const getPositionTargets = ({
 
 type GetPositionActivationsParams = {
     balances: StakingPositionBalances;
+    startedAt: number | null;
     availableAt: number | null;
 };
 
 export const getPositionActivations = ({
     balances,
+    startedAt,
     availableAt,
 }: GetPositionActivationsParams): StakingPositionActivation[] => {
     if (!isPositiveStakingAmount(balances.pending)) {
@@ -216,6 +218,7 @@ export const getPositionActivations = ({
 
     const activation: StakingPositionActivation = {
         amount: balances.pending,
+        startedAt,
         availableAt,
     };
 

@@ -371,7 +371,9 @@ describe('getCardanoProductPosition', () => {
                 status: 'activating',
                 lockup: 'liquid',
                 balances: balances({ pending: account.availableBalance }),
-                activations: [{ amount: account.availableBalance, availableAt: null }],
+                activations: [
+                    { amount: account.availableBalance, startedAt: null, availableAt: null },
+                ],
                 unlocks: [],
                 targets: [],
                 operations: [],
