@@ -76,7 +76,8 @@ jobs:
         run: yarn requirements:verify --only=type-declaration-size
 
   lint:
-    name: Linting and formatting
+    # Branch protection requires "Linting and formatting", which the `lint-result` job reports.
+    name: Linting, basic rules and formatting
     needs: setup-and-cache
     runs-on: ubuntu-latest
     steps:
@@ -138,6 +139,29 @@ jobs:
         env:
           ESLINT_RULE_SET: type-aware
         run: yarn lint:js --output-style=stream
+
+  lint-result:
+    # Branch protection requires a check named "Linting and formatting". The two rule sets run as
+    # parallel jobs, so this job reports their combined result under that name: a failure in either
+    # one blocks the merge, with no change to the required checks. It runs unless the workflow is
+    # cancelled, because GitHub counts a skipped required check as passed.
+    name: Linting and formatting
+    needs: [lint, lint-type-aware]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require both lint jobs to succeed
+        env:
+          BASIC_RESULT: ${{ needs.lint.result }}
+          TYPE_AWARE_RESULT: ${{ needs.lint-type-aware.result }}
+        run: |
+          echo "Linting, basic rules and formatting: $BASIC_RESULT"
+          echo "Linting, type-aware rules: $TYPE_AWARE_RESULT"
+          if [ "$BASIC_RESULT" != success ] || [ "$TYPE_AWARE_RESULT" != success ]; then
+            echo "::error::Both lint jobs must succeed."
+            exit 1
+          fi
 
   rust-checks:
     name: Rust checks
