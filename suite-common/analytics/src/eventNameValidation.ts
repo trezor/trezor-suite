@@ -11,6 +11,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'dashboard',
     'device',
     'earn',
+    'feedback',
     'firmware',
     'guide',
     'menu',
@@ -25,6 +26,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'yield',
     'trading',
     'transaction',
+    'wallet',
     'wallet-connect',
 ] as const;
 
