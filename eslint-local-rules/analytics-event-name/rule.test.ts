@@ -36,13 +36,8 @@ typescriptRuleTester.run('analytics-event-name', analyticsEventNameRule, {
             errors: [{ messageId: 'notKebabCase', data: { eventPart: 'settings/appLogExported' } }],
         },
         {
-            code: "export enum EventType { Bad = 'settings/device/change_pin' }",
-            errors: [
-                {
-                    messageId: 'notKebabCase',
-                    data: { eventPart: 'settings/device/change_pin' },
-                },
-            ],
+            code: "export enum EventType { Bad = 'settings/device/change-pin' }",
+            errors: [{ messageId: 'invalidFormat' }],
         },
     ],
 } as Parameters<typeof typescriptRuleTester.run>[2]);

@@ -1,9 +1,6 @@
 import type { Rule } from 'eslint';
 
-import {
-    ANALYTICS_ALLOWED_DOMAINS,
-    validateAnalyticsEventName,
-} from '../../suite-common/analytics/src/eventNameValidation';
+import { ANALYTICS_ALLOWED_DOMAINS, validateAnalyticsEventName } from '@suite-common/analytics';
 
 export const analyticsEventNameRule: Rule.RuleModule = {
     meta: {
@@ -16,7 +13,7 @@ export const analyticsEventNameRule: Rule.RuleModule = {
         },
         messages: {
             invalidFormat:
-                "Event name must be in format 'domain/event' (e.g. 'settings/app-log-exported'). Use one of the allowed domains and kebab-case for the event part.",
+                "Event name must be in format 'domain/event' with exactly one '/' (e.g. 'settings/app-log-exported'). Use one of the allowed domains and kebab-case for the event part.",
             invalidDomain: `Invalid domain '{{domain}}'. Allowed: ${ANALYTICS_ALLOWED_DOMAINS.join(', ')}.`,
             notKebabCase:
                 "Event part after domain must use kebab-case (e.g. 'app-log-exported'), got '{{eventPart}}'.",

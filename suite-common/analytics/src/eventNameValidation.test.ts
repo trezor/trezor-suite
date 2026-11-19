@@ -18,4 +18,10 @@ describe('Earn analytics event names', () => {
             data: { domain: 'earning' },
         });
     });
+
+    it('rejects an event name with more than one slash', () => {
+        expect(validateAnalyticsEventName('settings/device/change-pin')).toEqual({
+            messageId: 'invalidFormat',
+        });
+    });
 });
