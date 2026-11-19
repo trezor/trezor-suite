@@ -4384,6 +4384,24 @@ export const messages = {
             limitLabel: 'Limit',
             revokeErrorAlert: 'Error revoking spending limit. Try again.',
         },
+        tradingExchangeFlowScreen: {
+            screenTitle: 'Trade',
+            approveStep: {
+                title: 'Approve spending',
+                description: 'Let the provider use your {symbol} to process your swap.',
+            },
+            increaseStep: {
+                title: 'Increase approved limit',
+                description:
+                    'Your current limit is too low. Let the provider access more {symbol} to process your swap.',
+            },
+            stepTitles: {
+                revoke: 'Revoke',
+                approve: 'Approve spending',
+                increaseLimit: 'Increase limit',
+                swap: 'Swap',
+            },
+        },
         tradingReviewOutputs: {
             title: 'Confirm on Trezor',
             submitButton: 'Send transaction',

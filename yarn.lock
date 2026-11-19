@@ -14906,6 +14906,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/regions": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@suite-native/step-cards": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/tokens": "workspace:*"
@@ -16651,7 +16652,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/step-cards@workspace:suite-native/step-cards":
+"@suite-native/step-cards@workspace:*, @suite-native/step-cards@workspace:suite-native/step-cards":
   version: 0.0.0-use.local
   resolution: "@suite-native/step-cards@workspace:suite-native/step-cards"
   dependencies:
