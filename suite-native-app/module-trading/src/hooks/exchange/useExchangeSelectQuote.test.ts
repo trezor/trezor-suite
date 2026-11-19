@@ -758,5 +758,77 @@ describe('useExchangeSelectQuote', () => {
 
             expect(mockNavigation.navigate).not.toHaveBeenCalled();
         });
+
+        describe('selectQuoteForFlow', () => {
+            const selectQuoteForFlowAndRunNextStep = async (quote: ExchangeTrade) => {
+                await act(() => {
+                    exchangeForm.setValue('quote', quote);
+                });
+
+                const dispatchSpy = jest.spyOn(store, 'dispatch');
+                const { result } = await renderUseExchangeSelectQuote();
+                dispatchSpy.mockClear();
+
+                await act(() => {
+                    result.current.selectQuoteForFlow();
+                });
+
+                const { calls } = dispatchSpy.mock;
+                // @ts-expect-error: indexing with noUncheckedIndexedAccess
+                const firstCall: (typeof calls)[number] = calls[0];
+                const [dispatchCall] = firstCall;
+                const { nextStep } = (dispatchCall as any).payload;
+
+                await act(() => {
+                    nextStep();
+                });
+
+                return dispatchSpy;
+            };
+
+            it.each([
+                ['needs_approval', {}],
+                ['needs_increase', { preapprovedStringAmount: '10' }],
+                [
+                    'needs_revoke',
+                    {
+                        preapprovedStringAmount: '10',
+                        // USDT contract does not support increasing allowance
+                        send: 'ethereum--0xdAC17F958D2ee523a2206206994597C13D831ec7' as any,
+                    },
+                ],
+            ])(
+                'should navigate to TradingExchangeFlow with %s',
+                async (approvalStatus, quoteOverrides) => {
+                    const quote: ExchangeTrade = {
+                        ...invityDexQuote,
+                        status: 'APPROVAL_REQ',
+                        ...quoteOverrides,
+                    };
+
+                    const dispatchSpy = await selectQuoteForFlowAndRunNextStep(quote);
+
+                    expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
+                        screen: 'TradingExchangeFlow',
+                        params: { approvalStatus },
+                    });
+                    expect(dispatchSpy).toHaveBeenCalledWith({
+                        type: '@trading-exchange/saveSelectedQuote',
+                        payload: quote,
+                    });
+                },
+            );
+
+            it('should navigate to TradingExchangePreview when the selected quote needs no approval', async () => {
+                const quote: ExchangeTrade = { ...mercuryoFixedBestQuote, status: 'CONFIRM' };
+
+                await selectQuoteForFlowAndRunNextStep(quote);
+
+                expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingStack', {
+                    screen: 'TradingExchangePreview',
+                    params: {},
+                });
+            });
+        });
     });
 });

@@ -3,7 +3,11 @@ import { type RequireAllOrNone } from 'type-fest';
 
 import { type BackupType } from '@suite-common/suite-types';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type TradingAssetOption, type TradingType } from '@suite-common/trading';
+import {
+    type ApprovalStatus,
+    type TradingAssetOption,
+    type TradingType,
+} from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -643,6 +647,11 @@ export type TransactionDetailStackParamList = {
 
 export type ConfirmingScreenFlowType = AllowanceTransactionType | 'revoke-and-approve';
 export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
+export type ExchangeFlowStep = 'revoke' | 'approval' | 'preview';
+export type ExchangeFlowApprovalStatus = Extract<
+    ApprovalStatus,
+    'needs_approval' | 'needs_increase' | 'needs_revoke'
+>;
 
 export type TradingScreenParams = {
     tradingType?: TradingType;
@@ -661,6 +670,10 @@ export type TradingStackParamList = {
     };
     [TradingStackRoutes.TradingExchangeRevoke]: {
         shouldIncreaseLimit?: boolean;
+    };
+    [TradingStackRoutes.TradingExchangeFlow]: {
+        approvalStatus: ExchangeFlowApprovalStatus;
+        currentStep?: ExchangeFlowStep;
     };
     [TradingStackRoutes.TradingSellPreview]: undefined;
     [TradingStackRoutes.TradingSellCompletion]: undefined;

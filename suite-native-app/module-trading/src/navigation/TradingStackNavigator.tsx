@@ -12,6 +12,7 @@ import { TradingRestrictedGuard } from '../components/general/TradingRestrictedG
 import { TradingBuyPreviewScreen } from '../screens/TradingBuyPreviewScreen';
 import { TradingConfirmingScreen } from '../screens/TradingConfirmingScreen';
 import { TradingExchangeApprovalScreen } from '../screens/TradingExchangeApprovalScreen';
+import { TradingExchangeFlowScreen } from '../screens/TradingExchangeFlowScreen';
 import { TradingExchangePreviewScreen } from '../screens/TradingExchangePreviewScreen';
 import { TradingExchangeRevokeScreen } from '../screens/TradingExchangeRevokeScreen';
 import { TradingExchangeTransactionReviewScreen } from '../screens/TradingExchangeTransactionReviewScreen';
@@ -104,6 +105,11 @@ const TradingStackScreens = () => (
                 options={{ title: TradingStackRoutes.TradingExchangeRevoke }}
                 name={TradingStackRoutes.TradingExchangeRevoke}
                 component={TradingExchangeRevokeScreen}
+            />
+            <TradingStack.Screen
+                options={{ title: TradingStackRoutes.TradingExchangeFlow }}
+                name={TradingStackRoutes.TradingExchangeFlow}
+                component={TradingExchangeFlowScreen}
             />
             <TradingStack.Screen
                 options={{ title: TradingStackRoutes.TradingConfirming }}

@@ -347,6 +347,7 @@ export enum TradingStackRoutes {
     TradingExchangePreview = 'TradingExchangePreview',
     TradingExchangeApproval = 'TradingExchangeApproval',
     TradingExchangeRevoke = 'TradingExchangeRevoke',
+    TradingExchangeFlow = 'TradingExchangeFlow',
     TradingSellPreview = 'TradingSellPreview',
     TradingSellCompletion = 'TradingSellCompletion',
     TradingConfirming = 'TradingConfirming',

@@ -34,6 +34,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
+import { isExchangeFlowApprovalStatus } from '../../utils/exchange/exchangeFlowApprovalStatus';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 
 type NavigationProps = TabToStackCompositeNavigationProp<
@@ -120,50 +121,69 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         );
     };
 
-    const selectQuote = () =>
+    const navigateToSelectedQuote = (
+        approvalStatus: ApprovalStatus,
+        selectedQuote: ExchangeTrade,
+    ) => {
+        // selectExchangeQuoteThunk skips saveSelectedQuote for DEX ERC-20 quotes in pre-CONFIRM
+        // status to preserve desktop behavior. The approval/revoke screens read selectedQuote,
+        // so persist it explicitly here.
+        dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
+
+        switch (approvalStatus) {
+            case 'approved':
+            case 'not_needed':
+                return navigation.navigate(RootStackRoutes.TradingStack, {
+                    screen: TradingStackRoutes.TradingExchangePreview,
+                    params: {},
+                });
+
+            case 'needs_increase':
+                return navigation.navigate(RootStackRoutes.TradingStack, {
+                    screen: TradingStackRoutes.TradingExchangeApproval,
+                    params: {
+                        shouldIncreaseLimit: true,
+                    },
+                });
+
+            case 'needs_revoke':
+                return navigation.navigate(RootStackRoutes.TradingStack, {
+                    screen: TradingStackRoutes.TradingExchangeRevoke,
+                    params: {
+                        shouldIncreaseLimit: true,
+                    },
+                });
+
+            case 'needs_approval':
+                return navigation.navigate(RootStackRoutes.TradingStack, {
+                    screen: TradingStackRoutes.TradingExchangeApproval,
+                    params: {},
+                });
+
+            case null:
+                // do nothing (should not happen when quote is defined)
+                return;
+
+            default:
+                return exhaustive(approvalStatus);
+        }
+    };
+
+    const selectQuote = () => dispatchSelectQuote('continue', navigateToSelectedQuote);
+
+    const selectQuoteForFlow = () =>
         dispatchSelectQuote('continue', (approvalStatus, selectedQuote) => {
-            // selectExchangeQuoteThunk skips saveSelectedQuote for DEX ERC-20 quotes in pre-CONFIRM
-            // status to preserve desktop behavior. The approval/revoke screens read selectedQuote,
-            // so persist it explicitly here.
+            // The selected quote may no longer need an approval, so it continues the regular way.
+            if (!isExchangeFlowApprovalStatus(approvalStatus)) {
+                return navigateToSelectedQuote(approvalStatus, selectedQuote);
+            }
+
             dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
 
-            switch (approvalStatus) {
-                case 'approved':
-                case 'not_needed':
-                    return navigation.navigate(RootStackRoutes.TradingStack, {
-                        screen: TradingStackRoutes.TradingExchangePreview,
-                        params: {},
-                    });
-
-                case 'needs_increase':
-                    return navigation.navigate(RootStackRoutes.TradingStack, {
-                        screen: TradingStackRoutes.TradingExchangeApproval,
-                        params: {
-                            shouldIncreaseLimit: true,
-                        },
-                    });
-
-                case 'needs_revoke':
-                    return navigation.navigate(RootStackRoutes.TradingStack, {
-                        screen: TradingStackRoutes.TradingExchangeRevoke,
-                        params: {
-                            shouldIncreaseLimit: true,
-                        },
-                    });
-
-                case 'needs_approval':
-                    return navigation.navigate(RootStackRoutes.TradingStack, {
-                        screen: TradingStackRoutes.TradingExchangeApproval,
-                        params: {},
-                    });
-
-                case null:
-                    // do nothing (should not happen when quote is defined)
-                    return;
-
-                default:
-                    return exhaustive(approvalStatus);
-            }
+            return navigation.navigate(RootStackRoutes.TradingStack, {
+                screen: TradingStackRoutes.TradingExchangeFlow,
+                params: { approvalStatus },
+            });
         });
 
     const selectQuoteForRevoke = () =>
@@ -201,5 +221,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         selectReceiveAccount,
         selectQuote,
         selectQuoteForRevoke,
+        selectQuoteForFlow,
     };
 };

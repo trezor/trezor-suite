@@ -5,6 +5,7 @@ import { AnimatedBox, Button, VStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
+import { ExchangeFlowDebugButton } from './ExchangeFlowDebugButton';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 import { useExchangeSelectQuote } from '../../hooks/exchange/useExchangeSelectQuote';
 import { useTradingStellarActivateToken } from '../../hooks/general/useTradingStellarActivateToken';
@@ -21,6 +22,7 @@ export const ExchangeConfirmation = () => {
         canProceed,
         selectQuote,
         selectQuoteForRevoke,
+        selectQuoteForFlow,
         isLoading,
         isDexQuoteApprovalPrefetchLoadingForCandidateQuote,
     } = useExchangeSelectQuote(form);
@@ -69,6 +71,12 @@ export const ExchangeConfirmation = () => {
                             )}
                         </Button>
                     </AnimatedBox>
+                    {canProceed && (
+                        <ExchangeFlowDebugButton
+                            approvalStatus={approvalStatus}
+                            onPress={selectQuoteForFlow}
+                        />
+                    )}
                     {canRevoke && (
                         <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
                             <Button
