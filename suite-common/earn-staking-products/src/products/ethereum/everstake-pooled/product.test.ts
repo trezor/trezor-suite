@@ -60,6 +60,18 @@ describe('createEthereumEverstakePooledProduct', () => {
         expect(deps.getEthereumValidatorsQueue).toHaveBeenCalledTimes(1);
     });
 
+    it('fetches the Hoodi product info with the mainnet periods and no rate', async () => {
+        const product = createEthereumEverstakePooledProduct({
+            networkSymbol: asNetworkSymbol('thod'),
+            ...createDeps(),
+        });
+
+        await expect(product.fetchProductInfo({})).resolves.toMatchObject({
+            rate: null,
+            entryPeriodDays: 4,
+        });
+    });
+
     it('derives the position of an account with an Everstake pool', () => {
         const product = createEthereumEverstakePooledProduct({
             networkSymbol: asNetworkSymbol('eth'),

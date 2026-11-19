@@ -16,7 +16,6 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
@@ -147,11 +146,8 @@ export const refreshStakingProductInfoThunk = createThunk<
             return;
         }
 
-        // Every mainnet product serves the promo lists, enabled or not; a testnet once enabled.
-        const descriptors = selectStakingProductDescriptors(getState()).filter(
-            ({ networkSymbol }) =>
-                !isTestnet(networkSymbol) || enabledNetworks.includes(networkSymbol),
-        );
+        // Every product serves the promo lists, enabled or not, testnets included.
+        const descriptors = selectStakingProductDescriptors(getState());
         const networkSymbols = [...new Set(descriptors.map(({ networkSymbol }) => networkSymbol))];
 
         const refreshProductInfo = async (productId: StakingProductId): Promise<boolean> => {

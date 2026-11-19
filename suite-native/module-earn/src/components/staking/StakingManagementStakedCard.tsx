@@ -273,7 +273,7 @@ export const StakingManagementStakedCard = ({
                         <ApyValue
                             apy={rate}
                             isNotEarning={hasOutdatedProvider}
-                            withLabel={isCardanoStaking || rate !== null}
+                            withLabel
                             rateType={rateKind ?? 'apy'}
                         />
                     </Text>

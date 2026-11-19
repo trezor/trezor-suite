@@ -4,6 +4,7 @@ import {
     type StakingProductInfo,
     stakingProductInfoSchema,
 } from '@suite-common/earn-staking-common';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
 const SECONDS_IN_DAY = 24 * 60 * 60;
 
@@ -28,11 +29,15 @@ export type EthereumEverstakePooledProductInfoDeps = {
     getEthereumValidatorsQueue: typeof getEthereumValidatorsQueue;
 };
 
+export type FetchEthereumEverstakePooledProductInfoParams = FetchProductInfoParams & {
+    networkSymbol: NetworkSymbol;
+};
+
 export const fetchEthereumEverstakePooledProductInfo = async (
     deps: EthereumEverstakePooledProductInfoDeps,
-    { abortSignal }: FetchProductInfoParams,
+    { networkSymbol, abortSignal }: FetchEthereumEverstakePooledProductInfoParams,
 ): Promise<StakingProductInfo> => {
-    // The staking API knows mainnet only, so Hoodi reads the same numbers.
+    // The staking API knows mainnet only, so Hoodi reads the same periods.
     const [stats, queue] = await Promise.all([
         deps.getStakingStats({ routeParams: { networkSymbol: 'eth' }, signal: abortSignal }),
         deps.getEthereumValidatorsQueue({ signal: abortSignal }).catch(() => null),
@@ -42,7 +47,9 @@ export const fetchEthereumEverstakePooledProductInfo = async (
         throw new Error(`Expected eth staking stats, received ${stats.symbol}`);
     }
 
-    const rate = stats.apy;
+    // The stats rate the network they name; a product on another network, Hoodi, takes no rate, as
+    // the legacy selectors left it.
+    const rate = networkSymbol === asNetworkSymbol(stats.symbol) ? stats.apy : null;
 
     const entryPeriodDays = getPeriodDays(queue?.addingDelay, queue?.activationTime);
     const exitPeriodDays = getPeriodDays(queue?.withdrawTime, queue?.exitTime);

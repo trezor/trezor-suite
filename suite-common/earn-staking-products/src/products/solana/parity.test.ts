@@ -424,8 +424,8 @@ describe('solana delegation products parity with the P0.1 snapshots', () => {
     });
 
     // The legacy selectors leave the devnet APY null through a missing switch case and so expect
-    // no epoch reward; the product reads the mainnet stats for both networks (decision 4), so the
-    // APY of 6.24 and the reward of 0.000854795 are the deliberate differences from the snapshot.
+    // no epoch reward; the product reads the mainnet periods and takes no rate, so the reading
+    // matches the snapshot.
     it('devnet', async () => {
         const account = mockSolanaStakingAccount('active', { symbol: asNetworkSymbol('dsol') });
         const { positions, productInfo } = await readPositions({
@@ -433,7 +433,11 @@ describe('solana delegation products parity with the P0.1 snapshots', () => {
             account,
         });
 
-        expect(toLegacyReading({ account, positions, productInfo })).toEqual(SOLANA_ACTIVE_READING);
+        expect(toLegacyReading({ account, positions, productInfo })).toEqual({
+            ...SOLANA_ACTIVE_READING,
+            apy: null,
+            rewards: '0.000000000',
+        });
         expect(toLegacyDetailsReading(positions)).toEqual(ACTIVE_DETAILS);
     });
 

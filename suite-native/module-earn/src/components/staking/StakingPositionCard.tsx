@@ -49,7 +49,10 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
         selectAccountByKey(state, accountKey),
     );
 
-    const { rate, rateKind } = useNetworkStakingRate({ networkSymbol: symbol, accountKey });
+    const { rate, rateKind, isPending } = useNetworkStakingRate({
+        networkSymbol: symbol,
+        accountKey,
+    });
 
     const isDelegatedOutside = useSelector((state: StakingRootState) =>
         selectIsStakingAccountDelegatedOutside(state, accountKey),
@@ -70,7 +73,7 @@ export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps
             ? formatStakingAmount({ amount: unallocatedVotingPower, networkSymbol: symbol })
             : null;
 
-    const isRateShown = isDelegatedOutside || rate !== null;
+    const isRateShown = isDelegatedOutside || !isPending;
     const isRateAvailable = !isDelegatedOutside && isApyAvailable(rate);
 
     const onPress = useCallback(() => {

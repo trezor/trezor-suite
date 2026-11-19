@@ -15,6 +15,8 @@ import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { ApyValue } from '../earn/ApyValue';
+
 const promoItemStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
     minHeight: 70,
@@ -46,7 +48,7 @@ export const StakingPromoListItem = ({ descriptor, onPress }: StakingPromoListIt
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { rate } = useStakingRate({ productId: descriptor.id });
+    const { rate, isPending } = useStakingRate({ productId: descriptor.id });
 
     const onPromoItemPress = () => onPress(networkSymbol);
 
@@ -76,9 +78,9 @@ export const StakingPromoListItem = ({ descriptor, onPress }: StakingPromoListIt
                     <BoxSkeleton width={70} height={20} />
                 ) : (
                     <Box style={applyStyle(valuesContainerStyle)}>
-                        {rate != null && (
+                        {!isPending && (
                             <Text variant="body-md" color="contentPrimary">
-                                {isApyAvailable(rate) ? (
+                                {rate !== null && isApyAvailable(rate) ? (
                                     <Translation
                                         id={
                                             rateKind === 'apr'
@@ -88,7 +90,7 @@ export const StakingPromoListItem = ({ descriptor, onPress }: StakingPromoListIt
                                         values={{ apy: PercentageFormatter.format(rate) }}
                                     />
                                 ) : (
-                                    <Translation id="earn.notAvailableShort" />
+                                    <ApyValue apy={null} withLabel rateType={rateKind} />
                                 )}
                             </Text>
                         )}

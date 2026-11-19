@@ -149,22 +149,15 @@ describe('refreshStakingProductInfoThunk', () => {
         );
     });
 
-    it('fetches the info of a testnet product once its network is enabled', async () => {
-        const disabledAdapter = createAdapter(thod);
+    it('fetches the info of a testnet product before its network is enabled', async () => {
+        const testnetAdapter = createAdapter(thod);
 
         await run(
             createState(undefined, [asNetworkSymbol('eth')], [eth, thod]),
-            createDeps([createAdapter(eth), disabledAdapter]),
+            createDeps([createAdapter(eth), testnetAdapter]),
         );
-        expect(disabledAdapter.fetchProductInfo).not.toHaveBeenCalled();
 
-        const enabledAdapter = createAdapter(thod);
-
-        await run(
-            createState(undefined, [asNetworkSymbol('eth'), asNetworkSymbol('thod')], [eth, thod]),
-            createDeps([createAdapter(eth), enabledAdapter]),
-        );
-        expect(enabledAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+        expect(testnetAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
     });
 
     it('fetches nothing while bitcoin is the only enabled network', async () => {
