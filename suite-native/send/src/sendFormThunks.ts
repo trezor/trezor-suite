@@ -1,3 +1,5 @@
+import { isRejected } from '@reduxjs/toolkit';
+
 import { getTransactionCreatedEventPayload, events as sharedEvents } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import {
@@ -7,20 +9,32 @@ import {
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
+    type EnhancePrecomposedTransactionThunkState,
     type PushSendFormTransactionThunkDeps,
     type PushSendFormTransactionThunkState,
     type PushTransactionError,
     type SendRootState,
+    type SignTransactionError,
+    type SignTransactionThunkState,
+    type SignTransactionTimeoutError,
+    enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
     selectIsMevProtectionEnabled,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
     sendFormActions,
+    signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
     type AddTransactionLabelingThunkDeps,
@@ -28,11 +42,87 @@ import {
     type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 import { isNotNull, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
+
+export type SignTransactionNativeThunkState = SendRootState &
+    EnhancePrecomposedTransactionThunkState &
+    SignTransactionThunkState;
+
+export const signTransactionNativeThunk = createThunk<
+    BlockbookTransaction | undefined,
+    {
+        accountKey: AccountKey;
+        feeLevel: GeneralPrecomposedTransactionFinal;
+        tokenContract?: TokenAddress;
+        // Overrides the account's send draft, for flows that sign a form state which was never
+        // stored as a draft (e.g. a composed cancel transaction).
+        formState?: FormState;
+    },
+    {
+        rejectValue: SignTransactionError | SignTransactionTimeoutError | undefined;
+        state: SignTransactionNativeThunkState;
+    }
+>(
+    `${SEND_MODULE_PREFIX}/signTransactionNativeThunk`,
+    async (
+        { accountKey, tokenContract, feeLevel, formState: providedFormState },
+        { dispatch, rejectWithValue, fulfillWithValue, getState },
+    ) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        const formState =
+            providedFormState ?? selectSendFormDraftByKey(getState(), accountKey, tokenContract);
+
+        if (!account || !formState)
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Account or form draft not found.',
+            });
+
+        // prepare transaction with select fee level
+        const precomposedTransaction = await dispatch(
+            enhancePrecomposedTransactionThunk({
+                transactionFormValues: formState,
+                precomposedTransaction: feeLevel,
+                selectedAccount: account,
+            }),
+        ).unwrap();
+
+        if (!precomposedTransaction)
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Unable to precompose transaction for signing.',
+            });
+        const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
+            dispatch(
+                signTransactionThunk({
+                    formState,
+                    precomposedTransaction,
+                    selectedAccount: account,
+                }),
+            ),
+        );
+
+        if (!deviceAccessResponse.success) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Prioritized device access failed.',
+            });
+        }
+
+        const signTransactionResponse = deviceAccessResponse.payload;
+
+        if (isRejected(signTransactionResponse)) {
+            return rejectWithValue(signTransactionResponse.payload);
+        }
+
+        return fulfillWithValue(signTransactionResponse.payload.signedTx);
+    },
+);
 
 type CleanupSendFormThunkParams = {
     accountKey: AccountKey;

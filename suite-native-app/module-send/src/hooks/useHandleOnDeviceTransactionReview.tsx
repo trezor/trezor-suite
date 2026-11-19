@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { isRejected } from '@reduxjs/toolkit';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type TokenAddress } from '@suite-common/tokens';
@@ -25,7 +26,7 @@ import {
     type SendStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { injectSignSendFormTransaction } from '@suite-native/send';
+import { signTransactionNativeThunk } from '@suite-native/send';
 import {
     type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
@@ -53,10 +54,7 @@ export const useHandleOnDeviceTransactionReview = ({
     tokenContract,
     transaction,
 }: HandleOnDeviceTransactionReviewProps) => {
-    const { dispatch, signSendFormTransaction } = useServices(
-        injectDispatch,
-        injectSignSendFormTransaction,
-    );
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
@@ -96,22 +94,24 @@ export const useHandleOnDeviceTransactionReview = ({
             return;
         }
 
-        const signingResult = await signSendFormTransaction({
-            accountKey,
-            tokenContract,
-            feeLevel: transaction,
-        });
+        const response = await dispatch(
+            signTransactionNativeThunk({
+                accountKey,
+                tokenContract,
+                feeLevel: transaction,
+            }),
+        );
 
-        if (!signingResult.success) {
-            if (signingResult.error.error === 'sign-transaction-timeout') {
+        if (isRejected(response)) {
+            if (response.payload?.error === 'sign-transaction-timeout') {
                 return;
             }
 
-            if (handleCommonSignRejection(signingResult.error)) {
+            if (handleCommonSignRejection(response.payload)) {
                 return;
             }
 
-            const { errorCode } = signingResult.error;
+            const errorCode = response.payload?.errorCode;
 
             if (
                 errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
@@ -153,7 +153,7 @@ export const useHandleOnDeviceTransactionReview = ({
         isAssetsFirstEnabled,
         networkSymbol,
         handleCommonSignRejection,
-        signSendFormTransaction,
+        dispatch,
         showAlert,
     ]);
 

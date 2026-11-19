@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
+import { isRejected } from '@reduxjs/toolkit';
 
 import { type TokenAddress } from '@suite-common/tokens';
 import {
@@ -18,7 +19,7 @@ import {
     SendStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { cleanupSendFormThunk, injectSignSendFormTransaction } from '@suite-native/send';
+import { cleanupSendFormThunk, signTransactionNativeThunk } from '@suite-native/send';
 import {
     selectIsTransactionAlreadySigned,
     useTxValidityTimer,
@@ -48,10 +49,7 @@ export const useTxValidityFlow = ({
     revealConfirmOnTrezorSheet,
     isSendInProgress,
 }: UseTxValidityFlowProps) => {
-    const { dispatch, signSendFormTransaction } = useServices(
-        injectDispatch,
-        injectSignSendFormTransaction,
-    );
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const handleCommonSignRejection = useHandleCommonSignRejection({ accountKey, tokenContract });
 
@@ -72,34 +70,35 @@ export const useTxValidityFlow = ({
         revealConfirmOnTrezorSheet();
 
         const trySign = () =>
-            signSendFormTransaction({
-                accountKey,
-                tokenContract,
-                feeLevel: txToRetry,
-            });
+            dispatch(
+                signTransactionNativeThunk({
+                    accountKey,
+                    tokenContract,
+                    feeLevel: txToRetry,
+                }),
+            );
 
-        let signingResult = await trySign();
+        let response = await trySign();
 
         // Cancel + new sign in the same tick can transiently reject mid-session-reset; retry once.
-        if (!signingResult.success) {
-            const transientErrorCode = signingResult.error.errorCode;
+        if (isRejected(response)) {
+            const transientErrorCode = response.payload?.errorCode;
             if (
                 transientErrorCode === 'Device_InvalidState' ||
                 transientErrorCode === 'Method_Interrupted'
             ) {
-                signingResult = await trySign();
+                response = await trySign();
             }
         }
 
-        if (signingResult.success) return;
+        if (!isRejected(response)) return;
 
-        handleCommonSignRejection(signingResult.error);
+        handleCommonSignRejection(response.payload);
     }, [
         accountKey,
         tokenContract,
         precomposedTx,
         dispatch,
-        signSendFormTransaction,
         revealConfirmOnTrezorSheet,
         handleCommonSignRejection,
     ]);

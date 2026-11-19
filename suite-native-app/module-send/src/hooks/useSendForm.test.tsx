@@ -1,26 +1,26 @@
-import { type Store } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { AuthorizeDeviceStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { type SignSendFormTransaction } from '@suite-native/send';
 import {
     act,
     createStoreFromPreloadedState,
     renderHookWithStoreProvider,
-    waitFor,
 } from '@suite-native/test-utils-store';
-import { mock } from '@trezor/dependency-injection';
-import { createDeferred } from '@trezor/utils';
 
 import { useSendForm } from './useSendForm';
 
+const mockSigningThunk = jest.fn();
 const mockNavigate = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({ navigate: mockNavigate }),
+}));
+jest.mock('@suite-native/send', () => ({
+    signTransactionNativeThunk: () => mockSigningThunk,
 }));
 const account = mockWalletAccount({
     symbol: asNetworkSymbol('xlm'),
@@ -38,10 +38,7 @@ const finalTransaction: GeneralPrecomposedTransactionFinal = {
     outputsPermutation: [],
 };
 
-// The form's fee and compose thunks call Trezor Connect directly, so they are left unexecuted.
-const dispatch: Store['dispatch'] = action => action;
-
-const renderUseSendForm = (signSendFormTransaction: SignSendFormTransaction) => {
+const renderUseSendForm = (signingResult: Promise<unknown>) => {
     const store = createStoreFromPreloadedState({
         analytics: { instanceId: undefined },
         messageSystem: { config: null, validExperiments: [], experimentInclusionOverrides: {} },
@@ -74,6 +71,10 @@ const renderUseSendForm = (signSendFormTransaction: SignSendFormTransaction) => 
             },
         },
     });
+    mockSigningThunk.mockReturnValue(signingResult);
+    // Only the signing thunk matters here; fee and max amount thunks are not under test.
+    const dispatch = (action: UnknownAction | typeof mockSigningThunk) =>
+        action === mockSigningThunk ? mockSigningThunk() : Promise.resolve(action);
 
     return renderHookWithStoreProvider(
         () => {
@@ -92,7 +93,6 @@ const renderUseSendForm = (signSendFormTransaction: SignSendFormTransaction) => 
                     addressValidator: { isAddressValid: () => true },
                     getNamedAddressSupport: () => ({ isSupported: false, isNameLike: () => false }),
                 },
-                signSendFormTransaction,
             },
         },
     );
@@ -100,19 +100,17 @@ const renderUseSendForm = (signSendFormTransaction: SignSendFormTransaction) => 
 
 describe('useSendForm Stellar submit', () => {
     it('keeps the form submitting until the signing request settles', async () => {
-        const signing = createDeferred<Awaited<ReturnType<SignSendFormTransaction>>>();
-        const signSendFormTransaction = mock<SignSendFormTransaction>(() => signing.promise);
-        const signingParams = { accountKey: account.key, feeLevel: finalTransaction };
-        const { result } = await renderUseSendForm(signSendFormTransaction);
+        let resolveSigning: (value: unknown) => void = () => {};
+        const signingResult = new Promise(resolve => {
+            resolveSigning = resolve;
+        });
+        const { result } = await renderUseSendForm(signingResult);
 
-        await act(() => {
+        await act(async () => {
             result.current.handleSubmitSendForm?.();
+            await new Promise(resolve => setTimeout(resolve, 0));
         });
-        await waitFor(() => expect(signSendFormTransaction).toHaveBeenCalledTimes(1));
-        expect(signSendFormTransaction).toHaveBeenCalledWith({
-            ...signingParams,
-            tokenContract: undefined,
-        });
+        expect(mockSigningThunk).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith(
             RootStackRoutes.AuthorizeDeviceStack,
             expect.objectContaining({ screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard }),
@@ -120,8 +118,8 @@ describe('useSendForm Stellar submit', () => {
         expect(result.current.isSubmitting).toBe(true);
 
         await act(async () => {
-            signing.resolve({ success: true, payload: undefined });
-            await signing.promise;
+            resolveSigning({ type: 'signTransaction/fulfilled', meta: {} });
+            await signingResult;
         });
         expect(result.current.isSubmitting).toBe(false);
     });

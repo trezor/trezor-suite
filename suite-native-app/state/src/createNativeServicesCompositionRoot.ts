@@ -21,7 +21,6 @@ import {
 } from '@suite-native/device';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
-import { createSignSendFormTransaction } from '@suite-native/send';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
@@ -111,10 +110,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         networks,
         ...createSignVerifyCompositionRoot({ getTrezorConnect: deps.getTrezorConnect }),
         staking,
-        signSendFormTransaction: createSignSendFormTransaction({
-            dispatch: deps.dispatch,
-            getState: deps.getState,
-        }),
         queryClient,
         suiteSync,
         bip329,
