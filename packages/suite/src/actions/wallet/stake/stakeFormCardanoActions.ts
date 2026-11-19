@@ -73,7 +73,7 @@ import {
     getStakingPath,
 } from '@trezor/network-cardano-suite-common';
 import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
-import { type WithServices } from '@trezor/redux-utils';
+import { type WithServices, weakMapMemoize } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 /**
@@ -95,12 +95,12 @@ export class CardanoComposeError extends Error {
 
 // The pool shape the pool choice and the delegation analytics read: a target without a rate or a
 // saturation cannot be ranked and is left out.
-export const getCardanoPoolsFromTargets = (
-    targets: readonly StakingProductTarget[],
-): AdaPools['pools'] =>
-    targets.flatMap(({ address, rate, saturation }) =>
-        rate === null || saturation === null ? [] : [{ id: address, apy: rate, saturation }],
-    );
+export const getCardanoPoolsFromTargets = weakMapMemoize(
+    (targets: readonly StakingProductTarget[]): AdaPools['pools'] =>
+        targets.flatMap(({ address, rate, saturation }) =>
+            rate === null || saturation === null ? [] : [{ id: address, apy: rate, saturation }],
+        ),
+);
 
 // The pools of the product the network stakes on, as the last refresh cached them; an empty cache
 // leaves the pool choice to its default pool.

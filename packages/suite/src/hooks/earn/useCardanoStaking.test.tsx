@@ -343,6 +343,20 @@ describe('useCardanoStaking', () => {
         expect(getDelegationPool()).toBe(poolBech32ToHex(MOCK_CARDANO_EVERSTAKE_OTHER_POOL));
     });
 
+    it('keeps the fee calculation callback while the cached pools are the same', () => {
+        const { result, rerender } = renderCardanoStaking({
+            account: mockNeverStakedAccount(),
+            productInfo: mockStakingProductInfo({
+                targets: [everstakeTarget(MOCK_CARDANO_EVERSTAKE_POOL, 80)],
+            }),
+        });
+        const { calculateFeeAndDeposit } = result.current;
+
+        rerender();
+
+        expect(result.current.calculateFeeAndDeposit).toBe(calculateFeeAndDeposit);
+    });
+
     it('delegates to the default Everstake pool while no product info is cached', async () => {
         cardanoComposeTransactionMock.mockResolvedValue({
             success: true,
