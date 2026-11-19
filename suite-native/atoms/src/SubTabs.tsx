@@ -38,7 +38,6 @@ type SubTabProps = {
 
 type SubTabStyleProps = {
     isActive: boolean;
-    size: SubTabsSize;
 };
 
 type TabsStyleProps = {
@@ -61,7 +60,7 @@ const tabsStyle = prepareNativeStyle<TabsStyleProps>((utils, { paddingHorizontal
     paddingBottom: utils.spacings.sp2, // To prevent bottom shadow cutoff.
 }));
 
-const tabStyle = prepareNativeStyle<SubTabStyleProps>((utils, { isActive, size }) => ({
+const tabStyle = prepareNativeStyle<SubTabStyleProps>((utils, { isActive }) => ({
     alignItems: 'center',
     backgroundColor: utils.colors.elementFillElevated,
     borderRadius: utils.borders.radii.round,
@@ -91,7 +90,7 @@ const SubTab = ({ isActive, item, onPress, size }: SubTabProps) => {
             accessibilityRole="tab"
             accessibilityState={{ selected: isActive }}
             onPress={onPress}
-            style={applyStyle(tabStyle, { isActive, size })}
+            style={applyStyle(tabStyle, { isActive })}
             testID={item.testID}
         >
             {!!item.icon && (
