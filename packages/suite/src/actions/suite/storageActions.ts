@@ -102,7 +102,7 @@ import {
 import { type DbDep } from '#src/storage/createDb';
 import { type GraphData } from '#src/types/wallet/graph';
 import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
-import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph';
+import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph/utils';
 
 import * as STORAGE from './constants/storageConstants';
 
