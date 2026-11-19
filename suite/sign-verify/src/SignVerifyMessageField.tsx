@@ -2,12 +2,10 @@ import { type UseFormRegisterReturn } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
-import { Box, Switch, Textarea } from '@trezor/components';
+import { Switch, Textarea } from '@trezor/components';
 
 import { CopyFieldButton } from './CopyFieldButton';
 import { type SignVerifyFormFields } from './useSignVerifyForm';
-
-const FIELD_PADDING = 16;
 
 type SignVerifyMessageFieldProps = {
     message?: string;
@@ -31,33 +29,10 @@ export const SignVerifyMessageField = ({
     const { ref, ...field } = registration;
 
     return (
-        <Box position={{ type: 'relative' }}>
-            <Textarea
-                label={<Translation id="TR_MESSAGE" />}
-                readOnly={isCompleted}
-                hasError={hasError}
-                characterCount={
-                    isCompleted
-                        ? undefined
-                        : {
-                              current: message?.length,
-                              max: MAX_LENGTH_MESSAGE,
-                          }
-                }
-                bottomText={errorMessage || null}
-                rows={4}
-                data-testid="@sign-verify/message"
-                innerRef={ref}
-                {...field}
-            />
-            <Box
-                position={{
-                    type: 'absolute',
-                    top: FIELD_PADDING,
-                    right: FIELD_PADDING,
-                }}
-            >
-                {isCompleted ? (
+        <Textarea
+            labelLeft={<Translation id="TR_MESSAGE" />}
+            labelRight={
+                isCompleted ? (
                     <CopyFieldButton
                         onClick={() => onCopy(message || '')}
                         data-testid="@sign-verify/copy-message"
@@ -68,8 +43,23 @@ export const SignVerifyMessageField = ({
                         labelPosition="start"
                         {...hexField}
                     />
-                )}
-            </Box>
-        </Box>
+                )
+            }
+            readOnly={isCompleted}
+            hasError={hasError}
+            characterCount={
+                isCompleted
+                    ? undefined
+                    : {
+                          current: message?.length,
+                          max: MAX_LENGTH_MESSAGE,
+                      }
+            }
+            bottomText={errorMessage || null}
+            rows={4}
+            data-testid="@sign-verify/message"
+            innerRef={ref}
+            {...field}
+        />
     );
 };
