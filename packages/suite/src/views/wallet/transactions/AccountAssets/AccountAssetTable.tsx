@@ -5,12 +5,10 @@ import { gotoThunk } from '@suite/router';
 import {
     HOME_ASSET_ROW_LIMIT,
     getHomeAssetRowLimit,
-    selectAccountAssetTableState,
+    selectAccountAssetKeys,
+    selectAccountDisplayedAssetKeys,
+    selectAccountSmallBalanceSummary,
     selectAreHomeAssetSmallBalancesDisplayed,
-    selectDisplayedWalletAssetKeys,
-    selectHasShownWalletAssets,
-    selectIsHomeAssetTableFoldable,
-    selectSmallBalanceSummary,
 } from '@suite-common/assets';
 import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -41,23 +39,15 @@ type AccountAssetTableProps = {
 export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
-    const hasAssets = useSelector(state =>
-        selectHasShownWalletAssets(selectAccountAssetTableState(state, accountKey)),
-    );
-    const smallBalances = useSelector(state =>
-        selectSmallBalanceSummary(selectAccountAssetTableState(state, accountKey)),
-    );
+    const hasAssets = useSelector(state => selectAccountAssetKeys(state, accountKey).length > 0);
+    const smallBalances = useSelector(state => selectAccountSmallBalanceSummary(state, accountKey));
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
-    const isFoldable = useSelector(state =>
-        selectIsHomeAssetTableFoldable(
-            selectAccountAssetTableState(state, accountKey),
-            HOME_ASSET_ROW_LIMIT,
-        ),
+    const displayedAssetKeys = useSelector(state =>
+        selectAccountDisplayedAssetKeys(state, accountKey),
     );
+    const isFoldable = displayedAssetKeys.length > HOME_ASSET_ROW_LIMIT;
     const rowLimit = getHomeAssetRowLimit({ isFoldable, isExpanded });
-    const assetKeys = useSelector(state =>
-        selectDisplayedWalletAssetKeys(selectAccountAssetTableState(state, accountKey), rowLimit),
-    );
+    const assetKeys = displayedAssetKeys.slice(0, rowLimit);
 
     const changeSmallBalances = (areShown: boolean) => {
         // Turning them on while the table is folded would otherwise change nothing on screen.

@@ -79,7 +79,7 @@ type WalletAsset = {
     accountCount: number;
 };
 
-const groupWalletAssets = (
+export const groupWalletAssets = (
     assetAccounts: readonly AssetAccount[],
 ): ReadonlyMap<WalletAssetKey, WalletAsset> => {
     const byKey = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
@@ -172,9 +172,9 @@ const haveSameRates = (
 ) =>
     left.size === right.size && [...left].every(([assetKey, rate]) => right.get(assetKey) === rate);
 
-const pickedOnce = { memoizeOptions: { resultEqualityCheck: haveSameRates } };
+export const pickedOnce = { memoizeOptions: { resultEqualityCheck: haveSameRates } };
 
-const pickRates = pickRatesBy((entry: Rate) => entry.rate);
+export const pickRates = pickRatesBy((entry: Rate) => entry.rate);
 
 const selectWalletAssetRates = createMemoizedSelector(
     [selectWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
@@ -195,7 +195,7 @@ const selectHiddenWalletAssetRates = createMemoizedSelector(
 );
 
 /** What each asset is worth: the one pass with arithmetic in it, run only when a rate or a balance moved. */
-const priceAssets = (
+export const priceAssets = (
     assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
     rates: ReadonlyMap<WalletAssetKey, number>,
 ): ReadonlyMap<WalletAssetKey, BigNumber> => {
@@ -220,7 +220,7 @@ const haveSameFiatValues = (
     left.size === right.size &&
     [...left].every(([assetKey, fiatValue]) => right.get(assetKey)?.eq(fiatValue));
 
-const pricedOnce = { memoizeOptions: { resultEqualityCheck: haveSameFiatValues } };
+export const pricedOnce = { memoizeOptions: { resultEqualityCheck: haveSameFiatValues } };
 
 const selectWalletAssetValues = createMemoizedSelector(
     [selectWalletAssets, selectWalletAssetRates],
@@ -294,7 +294,7 @@ const SMALL_BALANCE_USD_VALUE = new BigNumber(1);
  * worth almost exactly a dollar may fall on either side of the line; for a switch that hides dust
  * that is nothing. The most valuable priced asset is asked first: its rates are the ones most watched.
  */
-const selectUsdToBaseCurrencyRate = createMemoizedSelector(
+export const selectUsdToBaseCurrencyRate = createMemoizedSelector(
     [selectShownWalletAssetKeys, selectWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
     (assetKeys, assets, rates, baseCurrencyCode): number | undefined => {
         if (baseCurrencyCode === 'usd') {
@@ -322,7 +322,7 @@ const selectUsdToBaseCurrencyRate = createMemoizedSelector(
  * Assets worth under $1 in the selected currency. An unpriced asset is never small, and nothing is
  * small until the USD rate is known, so nothing is hidden by mistake.
  */
-const selectSmallBalanceAssetKeySet = createMemoizedSelector(
+export const selectSmallBalanceAssetKeySet = createMemoizedSelector(
     [selectShownWalletAssetKeys, selectWalletAssetValues, selectUsdToBaseCurrencyRate],
     (assetKeys, values, usdToBaseCurrencyRate): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
@@ -349,7 +349,7 @@ export type SmallBalanceSummary = {
     fiatValue: BigNumber;
 };
 
-const haveSameSmallBalanceSummary = (
+export const haveSameSmallBalanceSummary = (
     left: SmallBalanceSummary | undefined,
     right: SmallBalanceSummary | undefined,
 ) => {
@@ -391,7 +391,7 @@ export const selectHomeAssetGrouping = (state: HomeAssetTableState): HomeAssetGr
 export const selectAreHomeAssetSmallBalancesDisplayed = (state: HomeAssetTableState) =>
     !selectIsHomeAssetTableMenuAvailable(state) || selectAreHomeAssetSmallBalancesShown(state);
 
-const selectAllDisplayedAssetKeys = createMemoizedSelector(
+export const selectAllDisplayedAssetKeys = createMemoizedSelector(
     [
         selectShownWalletAssetKeys,
         selectSmallBalanceAssetKeySet,

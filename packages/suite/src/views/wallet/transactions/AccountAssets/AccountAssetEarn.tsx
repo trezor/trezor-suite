@@ -1,11 +1,9 @@
 import { gotoThunk } from '@suite/router';
 import {
-    selectAccountAssetTableState,
-    selectAccountCoinAssetKey,
-    selectWalletAssetAmount,
-    selectWalletAssetAvailableAmount,
-    selectWalletAssetStakingAmount,
-    selectWalletAssetStakingRatio,
+    selectAccountAvailableAmount,
+    selectAccountCoinAmount,
+    selectAccountStakingAmount,
+    selectAccountStakingRatio,
 } from '@suite-common/assets';
 import { isSupportedStakingNetworkSymbol, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -25,20 +23,10 @@ type AccountAssetEarnProps = {
 export const AccountAssetEarn = ({ accountKey }: AccountAssetEarnProps) => {
     const { dispatch } = useServices(injectDispatch);
     const networkSymbol = useSelector(state => selectAccountByKey(state, accountKey)?.symbol);
-    const coinKey = useSelector(state => selectAccountCoinAssetKey(state, accountKey));
-    const amount = useSelector(state =>
-        selectWalletAssetAmount(selectAccountAssetTableState(state, accountKey), coinKey),
-    );
-    const availableAmount = useSelector(state =>
-        selectWalletAssetAvailableAmount(selectAccountAssetTableState(state, accountKey), coinKey),
-    );
-    const stakingAmount = useSelector(state =>
-        selectWalletAssetStakingAmount(selectAccountAssetTableState(state, accountKey), coinKey),
-    );
-    const stakingRatio =
-        useSelector(state =>
-            selectWalletAssetStakingRatio(selectAccountAssetTableState(state, accountKey), coinKey),
-        ) ?? 0;
+    const amount = useSelector(state => selectAccountCoinAmount(state, accountKey));
+    const availableAmount = useSelector(state => selectAccountAvailableAmount(state, accountKey));
+    const stakingAmount = useSelector(state => selectAccountStakingAmount(state, accountKey));
+    const stakingRatio = useSelector(state => selectAccountStakingRatio(state, accountKey)) ?? 0;
     const { rate: apy } = useStakingRate({ symbol: networkSymbol, accountKey });
 
     if (

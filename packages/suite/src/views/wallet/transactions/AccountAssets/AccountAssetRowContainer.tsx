@@ -1,14 +1,7 @@
 import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import {
-    selectAccountAssetTableState,
-    selectWalletAssetAmount,
-    selectWalletAssetContractAddress,
-    selectWalletAssetNetworkSymbol,
-    selectWalletAssetTokenDecimals,
-    selectWalletAssetTokenSymbol,
-} from '@suite-common/assets';
+import { selectAccountAsset } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -28,21 +21,19 @@ export const AccountAssetRowContainer = memo(function AccountAssetRowContainer({
     assetKey,
 }: AccountAssetRowContainerProps) {
     const { dispatch } = useServices(injectDispatch);
-    const networkSymbol = useSelector(state =>
-        selectWalletAssetNetworkSymbol(selectAccountAssetTableState(state, accountKey), assetKey),
+    const networkSymbol = useSelector(
+        state => selectAccountAsset(state, accountKey, assetKey)?.networkSymbol,
     );
-    const contractAddress = useSelector(state =>
-        selectWalletAssetContractAddress(selectAccountAssetTableState(state, accountKey), assetKey),
+    const contractAddress = useSelector(
+        state => selectAccountAsset(state, accountKey, assetKey)?.contractAddress,
     );
-    const tokenSymbol = useSelector(state =>
-        selectWalletAssetTokenSymbol(selectAccountAssetTableState(state, accountKey), assetKey),
+    const tokenSymbol = useSelector(
+        state => selectAccountAsset(state, accountKey, assetKey)?.tokenSymbol ?? null,
     );
-    const tokenDecimals = useSelector(state =>
-        selectWalletAssetTokenDecimals(selectAccountAssetTableState(state, accountKey), assetKey),
+    const tokenDecimals = useSelector(
+        state => selectAccountAsset(state, accountKey, assetKey)?.tokenDecimals,
     );
-    const amount = useSelector(state =>
-        selectWalletAssetAmount(selectAccountAssetTableState(state, accountKey), assetKey),
-    );
+    const amount = useSelector(state => selectAccountAsset(state, accountKey, assetKey)?.amount);
 
     if (networkSymbol === undefined) {
         return null;
