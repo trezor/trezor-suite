@@ -4,10 +4,12 @@ import { type Route } from './route';
 import {
     type AssetParams,
     type DashboardParams,
+    type WatchAccountParams,
     decodeEarnVaultAddress,
     parseAssetParams,
     parseDashboardParams,
     parseEarnParams,
+    parseWatchAccountParams,
     validateAccountRouteParams,
 } from './routerParams';
 import {
@@ -199,12 +201,19 @@ const validateAssetParams = (hash: HashString): AssetParams | undefined => {
     return parseAssetParams({ symbol, contractAddress });
 };
 
+const validateWatchAccountParams = (hash: HashString): WatchAccountParams | undefined => {
+    const [symbol, address] = parseHash(hash);
+
+    return parseWatchAccountParams({ symbol, address });
+};
+
 const getAppParams = (route: Route, hash: HashString = '') => {
     switch (route.app) {
         case 'dashboard':
-            return route.name === 'suite-asset'
-                ? validateAssetParams(hash)
-                : validateDashboardParams(hash);
+            if (route.name === 'suite-asset') return validateAssetParams(hash);
+            if (route.name === 'suite-watch-account') return validateWatchAccountParams(hash);
+
+            return validateDashboardParams(hash);
         case 'earn':
             return undefined;
         case 'earn-yield':

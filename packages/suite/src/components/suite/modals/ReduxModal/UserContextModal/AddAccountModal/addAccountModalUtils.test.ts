@@ -1,10 +1,12 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { type Network, WATCH_ONLY_ACCOUNT_TYPE, getNetwork } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import {
     enqueueNetworkActivation,
+    getAddableAccountTypes,
     getSortedNetworks,
     getVisibleAccountCounts,
+    hasTypeSelectionStep,
 } from './addAccountModalUtils';
 
 describe('addAccountModalUtils', () => {
@@ -73,5 +75,64 @@ describe('addAccountModalUtils', () => {
                 enqueueNetworkActivation([getNetwork('btc').symbol], getNetwork('eth').symbol),
             ).toEqual([getNetwork('btc').symbol, getNetwork('eth').symbol]);
         });
+    });
+});
+
+describe(getAddableAccountTypes.name, () => {
+    const eth = getNetwork('eth');
+    const derivedAccountTypes = [{ accountType: 'normal' as const, bip43Path: eth.bip43Path }];
+    const watchOnly = { accountType: WATCH_ONLY_ACCOUNT_TYPE, bip43Path: eth.bip43Path };
+    const getAccountTypes = (
+        network: Network,
+        { isDeviceConnected = true, isDebugModeEnabled = true } = {},
+    ) =>
+        getAddableAccountTypes({
+            network,
+            isDeviceConnected,
+            isDebugModeEnabled,
+            getDerivedAccountTypes: () => derivedAccountTypes,
+        });
+
+    it('appends the watch-only type to the derived ones', () => {
+        expect(getAccountTypes(eth)).toEqual([...derivedAccountTypes, watchOnly]);
+    });
+
+    it('offers only the watch-only type without a connected device', () => {
+        expect(getAccountTypes(eth, { isDeviceConnected: false })).toEqual([watchOnly]);
+    });
+
+    it.each(['sol', 'trx'] as const)('offers the watch-only type on %s', symbol => {
+        const network = getNetwork(symbol);
+
+        expect(getAccountTypes(network, { isDeviceConnected: false })).toEqual([
+            { accountType: WATCH_ONLY_ACCOUNT_TYPE, bip43Path: network.bip43Path },
+        ]);
+    });
+
+    it('offers nothing without a connected device where watching is not possible', () => {
+        expect(getAccountTypes(getNetwork('btc'), { isDeviceConnected: false })).toBeUndefined();
+        expect(
+            getAccountTypes(eth, { isDeviceConnected: false, isDebugModeEnabled: false }),
+        ).toBeUndefined();
+    });
+
+    it('leaves the watch-only type out outside debug mode', () => {
+        expect(getAccountTypes(eth, { isDebugModeEnabled: false })).toEqual(derivedAccountTypes);
+    });
+});
+
+describe(hasTypeSelectionStep.name, () => {
+    const eth = getNetwork('eth');
+
+    it('selects among several types, or asks for the watched address', () => {
+        expect(
+            hasTypeSelectionStep([
+                { accountType: WATCH_ONLY_ACCOUNT_TYPE, bip43Path: eth.bip43Path },
+            ]),
+        ).toBe(true);
+        expect(hasTypeSelectionStep([{ accountType: 'normal', bip43Path: eth.bip43Path }])).toBe(
+            false,
+        );
+        expect(hasTypeSelectionStep(undefined)).toBe(false);
     });
 });

@@ -1,13 +1,19 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type Network, type NetworkAccount } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkAccount,
+    WATCH_ONLY_ACCOUNT_TYPE,
+} from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { AddButton } from './AddButton';
 import { AddCoinjoinAccountButton } from './AddCoinjoinAccountButton';
+import { AddWatchOnlyAccountButton } from './AddWatchOnlyAccountButton';
 import { verifyAvailability } from '../verifyAvailability';
 
 interface AddAccountButtonProps {
@@ -18,6 +24,11 @@ interface AddAccountButtonProps {
     onAddNewAccount: () => void;
     isLoading?: boolean;
 }
+
+type AddAnyAccountButtonProps = AddAccountButtonProps & {
+    watchOnlyAddress: string | undefined;
+    onAddWatchOnlyAccount: (address: string) => void;
+};
 
 const AddDefaultAccountButton = ({
     scopedAccounts,
@@ -61,10 +72,25 @@ export const AddAccountButton = ({
     onEnableAccount,
     onAddNewAccount,
     isLoading,
-}: AddAccountButtonProps) => {
+    watchOnlyAddress,
+    onAddWatchOnlyAccount,
+}: AddAnyAccountButtonProps) => {
+    const isDebugModeEnabled = useSelector(selectIsDebugModeActive);
+
     switch (selectedAccount?.accountType) {
         case 'coinjoin':
             return <AddCoinjoinAccountButton network={network} selectedAccount={selectedAccount} />;
+        case WATCH_ONLY_ACCOUNT_TYPE:
+            if (!isDebugModeEnabled) return null;
+
+            return (
+                <AddWatchOnlyAccountButton
+                    network={network}
+                    address={watchOnlyAddress}
+                    onAddWatchOnlyAccount={onAddWatchOnlyAccount}
+                    isLoading={isLoading}
+                />
+            );
         default:
             return (
                 <AddDefaultAccountButton

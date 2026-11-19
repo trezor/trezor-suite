@@ -1,8 +1,9 @@
 import { AccountLabel } from '@suite/account';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
-import { WarningIcon } from '@trezor/icons';
+import { EyeIcon, WarningIcon } from '@trezor/icons';
 
 import { CoinBalance } from '#src/components/suite/CoinBalance';
 import { useSelector } from '#src/hooks/suite/useSelector';
@@ -45,15 +46,26 @@ export const AccountItemContent = ({
             justifyContent="space-between"
         >
             <Column flex="1" minWidth={0} gap={2} alignItems="flex-start">
-                <Text
-                    minWidth={0}
-                    maxWidth="100%"
-                    typographyStyle="body-sm"
-                    ellipsisLineCount={1}
-                    data-testid={`${dataTestKey}/label`}
-                >
-                    <AccountLabel account={account} />
-                </Text>
+                <Row minWidth={0} maxWidth="100%" gap={4}>
+                    {isAccountWatchOnly(account) && (
+                        <Icon
+                            as={EyeIcon}
+                            size={16}
+                            intent="neutral"
+                            priority="secondary"
+                            data-testid={`${dataTestKey}/watch-only`}
+                        />
+                    )}
+                    <Text
+                        minWidth={0}
+                        maxWidth="100%"
+                        typographyStyle="body-sm"
+                        ellipsisLineCount={1}
+                        data-testid={`${dataTestKey}/label`}
+                    >
+                        <AccountLabel account={account} />
+                    </Text>
+                </Row>
                 <AccountItemBadges
                     account={account}
                     tokenCount={tokenCount}

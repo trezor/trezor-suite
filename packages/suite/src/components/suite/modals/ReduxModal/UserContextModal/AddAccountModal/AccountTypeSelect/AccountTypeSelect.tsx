@@ -6,7 +6,11 @@ import {
     type NetworkSymbol,
     type NetworkType,
 } from '@suite-common/wallet-config';
-import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
+import {
+    getAccountTypeName,
+    getAccountTypeTech,
+    isAccountWatchOnly,
+} from '@suite-common/wallet-utils';
 import { Column, Paragraph, Row, Select, Text } from '@trezor/components';
 
 import { AccountTypeDescription } from './AccountTypeDescription';
@@ -43,9 +47,11 @@ const AccountTypeSelectComponent = ({
         return (
             <Row alignItems="baseline" gap={8}>
                 {accountTypeName && <Translation id={accountTypeName} />}
-                <Text intent="neutral" priority="secondary">
-                    <Translation id={getAccountTypeTech(option.value.bip43Path)} />
-                </Text>
+                {!isAccountWatchOnly(option.value) && (
+                    <Text intent="neutral" priority="secondary">
+                        <Translation id={getAccountTypeTech(option.value.bip43Path)} />
+                    </Text>
+                )}
             </Row>
         );
     };
@@ -80,7 +86,7 @@ const AccountTypeSelectComponent = ({
             <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <AccountTypeDescription
                     bip43Path={bip43PathToDescribe}
-                    accountType={selectedAccountType?.accountType || 'normal'}
+                    accountType={(selectedAccountType ?? defaultAccountType).accountType}
                     networkType={networkType}
                     symbol={symbol}
                 />

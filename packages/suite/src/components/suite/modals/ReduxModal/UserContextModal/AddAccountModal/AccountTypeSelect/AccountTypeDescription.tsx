@@ -6,7 +6,11 @@ import {
     type NetworkType,
     getNetwork,
 } from '@suite-common/wallet-config';
-import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
+import {
+    getAccountTypeDesc,
+    getAccountTypeUrl,
+    isAccountWatchOnly,
+} from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 
@@ -23,7 +27,9 @@ export const AccountTypeDescription = ({
     symbol,
     networkType,
 }: AccountTypeDescriptionProps) => {
-    const accountTypeUrl = getAccountTypeUrl(bip43Path);
+    const accountTypeUrl = isAccountWatchOnly({ accountType })
+        ? undefined
+        : getAccountTypeUrl(bip43Path);
     const accountTypeDescId = getAccountTypeDesc({ path: bip43Path, accountType, networkType });
 
     return (
