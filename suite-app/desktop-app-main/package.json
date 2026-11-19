@@ -49,14 +49,14 @@
         "@trezor/transport-common": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
         "chalk": "^6.0.1",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "11.0.2",
         "electron-updater": "7.0.0-alpha.9",
         "node-loader": "^2.1.0",
         "openpgp": "^6.3.2",
-        "ws": "^8.20.0",
-        "zod": "4.6.7"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
         "@electron/fuses": "^2.1.3",

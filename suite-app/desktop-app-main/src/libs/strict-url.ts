@@ -1,6 +1,5 @@
-import { z } from 'zod';
-
 import { safeParseUrl } from '@trezor/utils';
+import { z } from '@trezor/zod';
 
 /**
  * Whether the URL parser would read the string as it is written.
