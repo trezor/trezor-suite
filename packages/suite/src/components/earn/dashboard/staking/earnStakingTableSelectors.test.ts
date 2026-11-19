@@ -1,3 +1,6 @@
+import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
+import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
+
 import {
     selectEarnStakingActivateSymbols,
     selectEarnStakingAvailableCount,
@@ -18,6 +21,7 @@ import {
     messageSystemWithStakeOff,
     mockAccount,
     mockStakedPosition,
+    products,
     thodProduct,
 } from './earnStakingTableTestState';
 
@@ -63,6 +67,26 @@ describe('selectEarnStakingStakedAccounts', () => {
         expect(selectEarnStakingStakedAccounts({ ...state })).toBe(
             selectEarnStakingStakedAccounts(state),
         );
+    });
+
+    it('lists an account with a position in two products once', () => {
+        const otherEthProduct = mockStakingProductDescriptor({
+            providerId: stakingProviderIdSchema.parse('p2p.org'),
+        });
+
+        expect(
+            selectEarnStakingStakedAccounts(
+                createState({
+                    descriptors: [...products, otherEthProduct],
+                    positions: {
+                        [ethStaked.key]: [
+                            mockStakedPosition(ethProduct.id, ONE_ETH),
+                            mockStakedPosition(otherEthProduct.id, ONE_ETH),
+                        ],
+                    },
+                }),
+            ),
+        ).toEqual([ethStaked]);
     });
 });
 
