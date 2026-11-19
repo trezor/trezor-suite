@@ -1,4 +1,5 @@
 import { type JSX, useCallback, useState } from 'react';
+import { RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FlashList } from '@shopify/flash-list';
@@ -7,8 +8,11 @@ import {
     type SolRewardsHistoryRewardsItem,
     useSolanaRewardsHistory,
 } from '@suite-common/earn-staking-api';
+import { fetchAndUpdateAccountThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, ListItemSkeleton, Loader, VStack } from '@suite-native/atoms';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SolanaStakingRewardItem } from './SolanaStakingRewardItem';
@@ -19,6 +23,7 @@ const SOL_REWARDS_PAGE_SIZE = 20;
 type SolanaStakingRewardsListProps = {
     account: Account;
     listHeaderComponent: JSX.Element;
+    onRefresh?: () => Promise<unknown>;
 };
 
 const listFooterStyle = prepareNativeStyle<{ insetBottom: number }>((utils, { insetBottom }) => ({
@@ -36,12 +41,30 @@ const RewardsSkeleton = () => (
 export const SolanaStakingRewardsList = ({
     account,
     listHeaderComponent,
+    onRefresh,
 }: SolanaStakingRewardsListProps) => {
-    const { applyStyle } = useNativeStyles();
+    const {
+        applyStyle,
+        utils: { colors },
+    } = useNativeStyles();
     const { bottom: insetBottom } = useSafeAreaInsets();
+
+    const { dispatch } = useServices(injectDispatch);
     const [limit, setLimit] = useState(SOL_REWARDS_PAGE_SIZE);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const rewardsQuery = useSolanaRewardsHistory(account, { limit, offset: 0 });
+
+    // A pull refreshes the account, which re-syncs its position, the product info and the rewards.
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        await Promise.allSettled([
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key })),
+            onRefresh?.(),
+            rewardsQuery.refetch(),
+        ]);
+        setIsRefreshing(false);
+    };
 
     const rewards = rewardsQuery.data?.rewards ?? [];
     const totalCount = rewardsQuery.data?.totalCount ?? 0;
@@ -87,6 +110,14 @@ export const SolanaStakingRewardsList = ({
                 ListFooterComponentStyle={applyStyle(listFooterStyle, { insetBottom })}
                 onEndReached={handleEndReached}
                 onEndReachedThreshold={0.5}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={handleRefresh}
+                        colors={[colors.elementFillBrandBold]}
+                    />
+                }
+                refreshing={isRefreshing}
             />
         </Box>
     );
