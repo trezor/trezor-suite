@@ -20,7 +20,7 @@ export const StakingApyBadge = ({ account }: StakingApyBadgeProps) => {
     const formattedRate = useFormattedEarnRate(rate);
 
     // A product without a rate, a testnet, says so once its info is cached.
-    if (isPending || rateKind === null || rate === null) return null;
+    if (isPending || rateKind === null) return null;
 
     return (
         <HStack spacing="sp8" alignItems="center" testID="@accountList/item/yieldRateBadge">

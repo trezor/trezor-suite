@@ -52,10 +52,10 @@ export function useSolanaRewardsHistory(
     account: Account,
     { limit, offset }: UseSolanaRewardsProps,
 ) {
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.descriptor (+ offset/limit); the queryFn only additionally reads account.misc/symbol to derive staleness & telemetry flags, which intentionally must not widen the key
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.symbol + account.descriptor (+ offset/limit), as a devnet account shares its address with its mainnet sibling; the queryFn only additionally reads account.misc to derive staleness & telemetry flags, which intentionally must not widen the key
     return useQuery({
         enabled: account.symbol === 'sol',
-        queryKey: commonQueryKeys.solanaRewards(account.descriptor, offset, limit),
+        queryKey: commonQueryKeys.solanaRewards(account.symbol, account.descriptor, offset, limit),
         queryFn: async () => {
             const { rewards, totalCount } = await getSolanaRewardsHistory({
                 routeParams: { address: account.descriptor },
