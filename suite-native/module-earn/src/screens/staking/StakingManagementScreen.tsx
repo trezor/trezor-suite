@@ -73,6 +73,7 @@ export const StakingManagementScreen = () => {
                         <SolanaStakingRewardsList
                             account={account}
                             listHeaderComponent={listHeaderComponent}
+                            onRefresh={refreshProductInfoNow}
                         />
                     ) : (
                         <TransactionList
