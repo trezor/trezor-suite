@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
@@ -468,16 +468,15 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             // We need to wait for device button requests before navigating to the review screen.
             requestDelayedNavigationToOutputsReview();
 
-            const signingResponse = await signSendFormTransaction({
+            const signingResult = await signSendFormTransaction({
                 accountKey,
                 tokenContract,
                 feeLevel: transaction,
             });
 
-            if (!isRejected(signingResponse)) return;
+            if (signingResult.success) return;
 
-            const errorCode = signingResponse.payload?.errorCode;
-            const message = signingResponse.payload?.message;
+            const { errorCode, message } = signingResult.error;
 
             if (
                 errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device

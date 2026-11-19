@@ -4,7 +4,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { AuthorizeDeviceStackRoutes, RootStackRoutes } from '@suite-native/navigation';
-import { type SignSendFormTransaction, signTransactionNativeThunk } from '@suite-native/send';
+import { type SignSendFormTransaction } from '@suite-native/send';
 import {
     act,
     createStoreFromPreloadedState,
@@ -120,9 +120,7 @@ describe('useSendForm Stellar submit', () => {
         expect(result.current.isSubmitting).toBe(true);
 
         await act(async () => {
-            signing.resolve(
-                signTransactionNativeThunk.fulfilled(undefined, 'requestId', signingParams),
-            );
+            signing.resolve({ success: true, payload: undefined });
             await signing.promise;
         });
         expect(result.current.isSubmitting).toBe(false);

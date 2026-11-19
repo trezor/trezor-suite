@@ -111,7 +111,10 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         networks,
         ...createSignVerifyCompositionRoot({ getTrezorConnect: deps.getTrezorConnect }),
         staking,
-        signSendFormTransaction: createSignSendFormTransaction({ dispatch: deps.dispatch }),
+        signSendFormTransaction: createSignSendFormTransaction({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+        }),
         queryClient,
         suiteSync,
         bip329,
