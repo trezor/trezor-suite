@@ -3,6 +3,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { AuthorizeDeviceStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import {
     act,
     createStoreFromPreloadedState,
@@ -12,33 +13,20 @@ import {
 import { useSendForm } from './useSendForm';
 
 const mockSigningThunk = jest.fn();
+const mockNavigate = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => ({ navigate: jest.fn(), popTo: jest.fn() }),
+    useNavigation: () => ({ navigate: mockNavigate }),
 }));
 jest.mock('@suite-native/send', () => ({
     signTransactionNativeThunk: () => mockSigningThunk,
 }));
-jest.mock('@suite-common/message-system', () => ({
-    ...jest.requireActual('@suite-common/message-system'),
-    useIsExperimentVariantActive: () => false,
-}));
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    useResolveNamedAddress: () => ({ mode: undefined, isResolving: false }),
-}));
-jest.mock('../sendOutputsFormSchema', () => ({
-    sendOutputsFormValidationSchema: jest.requireActual('yup').object(),
-}));
-jest.mock('./useRequestDelayedNavigationToOutputsReview', () => ({
-    useRequestDelayedNavigationToOutputsReview: () => jest.fn(),
-}));
-jest.mock('./useShowDeviceDisconnectedAlert', () => ({
-    useShowDeviceDisconnectedAlert: () => jest.fn(),
-}));
-
-const account = mockWalletAccount({ symbol: asNetworkSymbol('xlm') });
+const account = mockWalletAccount({
+    symbol: asNetworkSymbol('xlm'),
+    balance: '100000000',
+    availableBalance: '100000000',
+});
 const finalTransaction: GeneralPrecomposedTransactionFinal = {
     type: 'final',
     totalSpent: '1000100',
@@ -52,6 +40,8 @@ const finalTransaction: GeneralPrecomposedTransactionFinal = {
 
 const renderUseSendForm = (signingResult: Promise<unknown>) => {
     const store = createStoreFromPreloadedState({
+        analytics: { instanceId: undefined },
+        messageSystem: { config: null, validExperiments: [], experimentInclusionOverrides: {} },
         device: { devices: [], selectedDevice: undefined },
         wallet: {
             accounts: [account],
@@ -61,7 +51,24 @@ const renderUseSendForm = (signingResult: Promise<unknown>) => {
                     data: { blockHeight: 0, blockTime: 0, minFee: 100, maxFee: 100, levels: [] },
                 },
             },
-            send: { drafts: {}, feeLevels: { normal: finalTransaction } },
+            send: {
+                drafts: {
+                    [account.key]: {
+                        isDestinationTagEnabled: false,
+                        outputs: [
+                            {
+                                type: 'payment',
+                                address: 'GDESTINATION',
+                                amount: '1',
+                                fiat: '',
+                                currency: { value: 'usd', label: 'USD' },
+                                token: null,
+                            },
+                        ],
+                    },
+                },
+                feeLevels: { normal: finalTransaction },
+            },
         },
     });
     mockSigningThunk.mockReturnValue(signingResult);
@@ -83,8 +90,8 @@ const renderUseSendForm = (signingResult: Promise<unknown>) => {
             services: {
                 store: { ...store, dispatch },
                 networks: {
-                    addressValidator: () => true,
-                    getNamedAddressSupport: () => undefined,
+                    addressValidator: { isAddressValid: () => true },
+                    getNamedAddressSupport: () => ({ isSupported: false, isNameLike: () => false }),
                 },
             },
         },
@@ -104,6 +111,10 @@ describe('useSendForm Stellar submit', () => {
             await new Promise(resolve => setTimeout(resolve, 0));
         });
         expect(mockSigningThunk).toHaveBeenCalledTimes(1);
+        expect(mockNavigate).toHaveBeenCalledWith(
+            RootStackRoutes.AuthorizeDeviceStack,
+            expect.objectContaining({ screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard }),
+        );
         expect(result.current.isSubmitting).toBe(true);
 
         await act(async () => {
