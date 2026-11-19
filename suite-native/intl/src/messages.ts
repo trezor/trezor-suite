@@ -1446,6 +1446,8 @@ export const messages = {
                     clearnet: "Can't connect to the server. Check the address and connection.",
                     tor: 'Can’t connect to the server. Check the address and make sure Orbot is running.',
                 },
+                chainMismatch:
+                    'This server is for a different network. Expected chain ID {expected}, got {actual}.',
             },
             explorer: {
                 title: 'Explorer',

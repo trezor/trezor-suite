@@ -66,7 +66,11 @@ export const NetworkBackendsScreen = ({
                         />
                     }
                     subtitle={<Translation id="moduleSettings.networkBackends.description" />}
-                    rightIcon={<ConnectionInfoButton network={network} />}
+                    rightIcon={
+                        networkBackendForm.isNetworkEnabled && (
+                            <ConnectionInfoButton network={network} />
+                        )
+                    }
                     closeAction={closeAction}
                 />
             }

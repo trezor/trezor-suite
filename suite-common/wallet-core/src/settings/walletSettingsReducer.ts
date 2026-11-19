@@ -156,6 +156,8 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
 export const selectWalletSettings = (state: WalletSettingsRootState) => state.wallet.settings;
 export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
     returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
+export const selectIsNetworkEnabled = (state: WalletSettingsRootState, symbol: NetworkSymbol) =>
+    selectEnabledNetworks(state).includes(symbol);
 export const selectBaseCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
 export const selectSuspiciousTransactionsFilter = (
