@@ -75,6 +75,7 @@ export type BannerProps = AllowedFrameProps & {
     'data-testid'?: string;
     isLoading?: boolean;
     isIconVerticallyCentered?: boolean;
+    isInline?: boolean;
     contentGap?: SpacingValue;
 } & ({ title: ReactNode; description?: ReactNode } | { title?: ReactNode; description: ReactNode });
 
@@ -87,6 +88,7 @@ export const Banner = ({
     'data-testid': dataTest,
     isLoading = false,
     isIconVerticallyCentered = false,
+    isInline = false,
     contentGap = 0,
     width = '100%',
     ...rest
@@ -98,10 +100,10 @@ export const Banner = ({
         <Box
             as="section"
             backgroundColor={mapIntentToBackgroundColor(intent)}
-            borderColor={mapIntentToBorderColor(intent)}
-            borderWidth={1}
-            borderOffset={-1}
-            borderRadius={8}
+            borderColor={isInline ? undefined : mapIntentToBorderColor(intent)}
+            borderWidth={isInline ? undefined : 1}
+            borderOffset={isInline ? undefined : -1}
+            borderRadius={isInline ? 0 : 8}
             data-component="Banner"
             data-testid={dataTest}
             overflow="hidden"

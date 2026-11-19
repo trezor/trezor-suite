@@ -1,10 +1,11 @@
 export const spacingValues = [
-    0, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 64, 80, 96, 128, 160,
+    0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 64, 80, 96, 128, 160,
 ] as const;
 
 export type SpacingValue = (typeof spacingValues)[number];
 
 export type NegativeSpacingValue =
+    | -1
     | -2
     | -4
     | -6
