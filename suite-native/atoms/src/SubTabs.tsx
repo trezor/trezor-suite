@@ -79,20 +79,6 @@ const tabStyle = prepareNativeStyle<SubTabStyleProps>((utils, { isActive, size }
                 ...utils.boxShadows.none,
             },
         },
-        {
-            condition: size === 'normal',
-            style: {
-                borderBottomColor: 'transparent',
-                borderBottomWidth: utils.borders.widths.large,
-                height: utils.spacings.sp36,
-            },
-        },
-        {
-            condition: size === 'large',
-            style: {
-                height: utils.spacings.sp40,
-            },
-        },
     ],
 }));
 
