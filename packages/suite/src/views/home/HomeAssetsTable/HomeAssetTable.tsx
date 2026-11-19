@@ -30,7 +30,7 @@ import { AssetRowsSkeleton } from './AssetRowsSkeleton';
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';
 import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
 import { HomeAssetNewBanner } from './HomeAssetNewBanner';
-import { HomeAssetRow } from './HomeAssetRow';
+import { HomeAssetRowContainer } from './HomeAssetRowContainer';
 import { HomeAssetSmallBalancesHiddenRow } from './HomeAssetSmallBalancesHiddenRow';
 import { HomeAssetTableEmptyState } from './HomeAssetTableEmptyState';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
@@ -140,7 +140,7 @@ export const HomeAssetTable = () => {
                               />
                           ))
                         : assetKeys.map(assetKey => (
-                              <HomeAssetRow key={assetKey} assetKey={assetKey} />
+                              <HomeAssetRowContainer key={assetKey} assetKey={assetKey} />
                           ))}
                     {isFoldable && (
                         <HomeAssetExpandRow

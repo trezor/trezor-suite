@@ -17,17 +17,17 @@ import { useSelector } from '#src/hooks/suite';
 
 import { AssetTableRowView } from './AssetTableRowView';
 
-type HomeAssetRowProps = {
+type HomeAssetRowContainerProps = {
     assetKey: WalletAssetKey;
     hasBorderTop?: boolean;
     assetNameTestId?: string;
 };
 
-export const HomeAssetRow = memo(function HomeAssetRow({
+export const HomeAssetRowContainer = memo(function HomeAssetRowContainer({
     assetKey,
     hasBorderTop,
     assetNameTestId,
-}: HomeAssetRowProps) {
+}: HomeAssetRowContainerProps) {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));

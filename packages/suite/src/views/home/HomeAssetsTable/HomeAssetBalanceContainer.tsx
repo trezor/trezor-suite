@@ -11,12 +11,15 @@ import { useSelector } from '#src/hooks/suite';
 
 import { HomeAssetAmount } from './HomeAssetAmount';
 
-type HomeAssetBalanceProps = {
+type HomeAssetBalanceContainerProps = {
     assetKey: WalletAssetKey;
     isHidden?: boolean;
 };
 
-export const HomeAssetBalance = memo(({ assetKey, isHidden }: HomeAssetBalanceProps) => {
+export const HomeAssetBalanceContainer = memo(function HomeAssetBalanceContainer({
+    assetKey,
+    isHidden,
+}: HomeAssetBalanceContainerProps) {
     const networkSymbol = useSelector(state =>
         selectWalletAssetNetworkSymbol(state, assetKey, isHidden),
     );

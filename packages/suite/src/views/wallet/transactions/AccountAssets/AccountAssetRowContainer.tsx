@@ -17,16 +17,16 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useSelector } from '#src/hooks/suite';
 import { AssetTableRowView } from '#src/views/home/HomeAssetsTable/AssetTableRowView';
 
-type AccountAssetRowProps = {
+type AccountAssetRowContainerProps = {
     accountKey: AccountKey;
     assetKey: WalletAssetKey;
 };
 
 /** A Home asset row with what one account holds of the asset. */
-export const AccountAssetRow = memo(function AccountAssetRow({
+export const AccountAssetRowContainer = memo(function AccountAssetRowContainer({
     accountKey,
     assetKey,
-}: AccountAssetRowProps) {
+}: AccountAssetRowContainerProps) {
     const { dispatch } = useServices(injectDispatch);
     const networkSymbol = useSelector(state =>
         selectWalletAssetNetworkSymbol(selectAccountAssetTableState(state, accountKey), assetKey),

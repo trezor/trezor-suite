@@ -27,7 +27,7 @@ import {
     HOME_ASSET_COL_WIDTHS,
 } from '#src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
-import { AccountAssetRow } from './AccountAssetRow';
+import { AccountAssetRowContainer } from './AccountAssetRowContainer';
 
 type AccountAssetTableProps = {
     accountKey: AccountKey;
@@ -101,7 +101,7 @@ export const AccountAssetTable = ({ accountKey }: AccountAssetTableProps) => {
                         />
                     )}
                     {assetKeys.map(assetKey => (
-                        <AccountAssetRow
+                        <AccountAssetRowContainer
                             key={assetKey}
                             accountKey={accountKey}
                             assetKey={assetKey}
