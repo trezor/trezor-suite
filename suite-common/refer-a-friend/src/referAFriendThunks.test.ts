@@ -68,7 +68,7 @@ const availableVoucher: ReferralVoucher = {
     amount: 20,
     fiatCurrency: 'USD',
     orderPaidAt: '2026-09-15T15:30:00Z',
-    readyAt: '2026-10-15T00:00:00Z',
+    availableAt: '2026-10-15T00:00:00Z',
     expiresAt: '2027-10-15T00:00:00Z',
     usedAt: null,
 };
