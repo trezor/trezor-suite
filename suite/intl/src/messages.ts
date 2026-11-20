@@ -11260,13 +11260,21 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DEPOSIT_BUTTON',
         defaultMessage: 'Deposit',
     },
-    TR_EARN_YIELD_BADGE_RATE: {
-        id: 'TR_EARN_YIELD_BADGE_RATE',
-        defaultMessage: '{apy}% APY',
+    TR_EARN_YIELD_BADGE_RATE_APY: {
+        id: 'TR_EARN_YIELD_BADGE_RATE_APY',
+        defaultMessage: '{rate}% APY',
     },
-    TR_EARN_YIELD_BADGE_UP_TO_RATE: {
-        id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
-        defaultMessage: 'up to {apy}% APY',
+    TR_EARN_YIELD_BADGE_RATE_APR: {
+        id: 'TR_EARN_YIELD_BADGE_RATE_APR',
+        defaultMessage: '{rate}% APR',
+    },
+    TR_EARN_YIELD_BADGE_UP_TO_RATE_APY: {
+        id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APY',
+        defaultMessage: 'up to {rate}% APY',
+    },
+    TR_EARN_YIELD_BADGE_UP_TO_RATE_APR: {
+        id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APR',
+        defaultMessage: 'up to {rate}% APR',
     },
     TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
         id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
