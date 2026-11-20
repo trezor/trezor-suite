@@ -2,7 +2,11 @@ import { atom } from 'jotai';
 
 export type DeviceDangerBannerCause = 'device-compromised' | 'backup-needed' | 'backup-failed';
 
-type DeviceDangerBanner =
+export type DeviceDangerBannerIntent = 'critical' | 'warning';
+
+type DeviceDangerBanner = {
+    intent: DeviceDangerBannerIntent;
+} & (
     | {
           variant: 'brief' | 'extended';
           cause: DeviceDangerBannerCause;
@@ -10,7 +14,8 @@ type DeviceDangerBanner =
     | {
           cause: 'device-compromised';
           variant: 'other-error';
-      };
+      }
+);
 
 /**
  * Represents the display variants for the DeviceCompromisedBanner.
