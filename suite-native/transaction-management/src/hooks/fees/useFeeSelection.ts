@@ -29,6 +29,12 @@ export type CustomFeeParams = {
     customMaxPriorityFeePerGas?: string;
 };
 
+type Trc20FeeLimitParams = {
+    feeLimit: string;
+    estimatedFeeLimit: string | undefined;
+    feePerUnit: string;
+};
+
 export const useFeeSelection = ({
     accountKey,
     tokenContract,
@@ -109,6 +115,28 @@ export const useFeeSelection = ({
         [handleFeeLevelChange],
     );
 
+    const handleTrc20FeeLimitSet = useCallback(
+        async ({ feeLimit, estimatedFeeLimit, feePerUnit }: Trc20FeeLimitParams) => {
+            if (feeLimit === estimatedFeeLimit) {
+                await handleFeeLevelChange('normal');
+
+                return;
+            }
+
+            await dispatch(
+                updateThunk({
+                    accountKey,
+                    tokenContract,
+                    feeLevelLabel: 'custom',
+                    feePerUnit,
+                    feeLimit,
+                    formDraftKey,
+                }),
+            );
+        },
+        [handleFeeLevelChange, dispatch, updateThunk, accountKey, tokenContract, formDraftKey],
+    );
+
     const hasDispatchedDefaultFee = useRef(false);
 
     // pre-select default 'normal' fee level without analytics if fee is not already set
@@ -128,5 +156,10 @@ export const useFeeSelection = ({
         );
     }, [dispatch, updateThunk, accountKey, tokenContract, formDraftKey]);
 
-    return { handleFeeLevelChange, handleCustomFeeSet, dispatchDefaultFee };
+    return {
+        handleFeeLevelChange,
+        handleCustomFeeSet,
+        handleTrc20FeeLimitSet,
+        dispatchDefaultFee,
+    };
 };

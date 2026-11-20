@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type TradingExchangeType,
     type TradingSellType,
@@ -38,10 +39,12 @@ export const TradeFeeInfoRow = ({ trade, accountKey, tradingType }: TradeFeeInfo
     );
     const isFeeFixed =
         !!trade && !!networkType && isExchangeTrade(trade) && hasFixedPsbtFee(trade, networkType);
+    const sendToken = formDraft?.outputs[0]?.token;
 
     return (
         <FeeSelectorRow
             accountKey={accountKey}
+            tokenContract={sendToken ? toTokenAddress(sendToken) : undefined}
             updateThunk={updateTradingSelectedFeeLevelThunk}
             selectedFee={(formDraft?.selectedFee as FeeLevelLabel | undefined) ?? 'normal'}
             selectedFeePerUnit={formDraft?.feePerUnit}
