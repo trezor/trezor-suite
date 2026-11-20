@@ -326,7 +326,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             fetchedFeePerUnit = feeLevel.feePerUnit;
             fetchedFeeLimit = feeLevel.feeLimit;
         } else {
-            // Error fetching fee, fall back on default values defined in `/packages/connect-core/src/data/defaultFeeLevels.ts`
+            // Error fetching fee, fall back on default values defined in `/packages/blockchain-core/src/data/defaultFeeLevels.ts`
             console.warn('Error fetching fee, using default values.', estimatedFee.error.message);
         }
 
