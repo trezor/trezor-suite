@@ -391,6 +391,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const { ref: inputRef, ...inputField } = register(inputName, {
         onChange: () => {
+            // The error on screen belongs to the previous value: react-hook-form keeps it until
+            // this value's validation settles, which for EVM is a backend round trip, two when
+            // the checksum rewrite re-triggers it. An "Address isn't set" left by an emptied
+            // field would otherwise sit next to the pasted address meanwhile.
+            clearErrors(inputName);
             composeTransaction(amountInputName);
             setHasAddressChecksummed(false);
             setAutocorrectMessage(undefined);
