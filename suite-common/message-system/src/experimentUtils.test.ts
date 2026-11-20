@@ -6,6 +6,7 @@ import {
     getActiveExperimentGroup,
     getExperimentGroupByInclusion,
     getInclusionFromInstanceId,
+    resolveExperimentGroup,
 } from './experimentUtils';
 import { type ExperimentId } from './messageSystemTypes';
 
@@ -135,6 +136,69 @@ describe('testing experiment utils', () => {
 
             expect(shareA).toEqual(experimentTest.groups[0].percentage / 100);
             expect(shareB).toEqual(experimentTest.groups[1].percentage / 100);
+        });
+    });
+
+    describe('resolveExperimentGroup', () => {
+        const groups = [
+            { variant: 'A', percentage: 100 },
+            { variant: 'B', percentage: 0 },
+        ];
+        const experiment = { id: experimentId, groups };
+        const instanceId = 'test-instance-id';
+
+        it('returns the group assigned by instance ID when nothing is overridden', () => {
+            expect(resolveExperimentGroup({ experiment, instanceId })).toEqual(groups[0]);
+        });
+
+        it('returns the forced variant even when its percentage is 0', () => {
+            expect(
+                resolveExperimentGroup({ experiment, instanceId, variantOverride: 'B' }),
+            ).toEqual(groups[1]);
+        });
+
+        it('returns the forced variant when instance ID is missing', () => {
+            expect(
+                resolveExperimentGroup({ experiment, instanceId: undefined, variantOverride: 'B' }),
+            ).toEqual(groups[1]);
+        });
+
+        it('prefers the forced variant to the inclusion override', () => {
+            expect(
+                resolveExperimentGroup({
+                    experiment,
+                    instanceId,
+                    variantOverride: 'B',
+                    inclusionOverride: 10,
+                }),
+            ).toEqual(groups[1]);
+        });
+
+        it('ignores a forced variant that the experiment does not have', () => {
+            expect(
+                resolveExperimentGroup({ experiment, instanceId, variantOverride: 'C' }),
+            ).toEqual(groups[0]);
+        });
+
+        it('returns the group matching the inclusion override', () => {
+            const evenGroups = [
+                { variant: 'A', percentage: 50 },
+                { variant: 'B', percentage: 50 },
+            ];
+
+            expect(
+                resolveExperimentGroup({
+                    experiment: { id: experimentId, groups: evenGroups },
+                    instanceId: undefined,
+                    inclusionOverride: 75,
+                }),
+            ).toEqual(evenGroups[1]);
+        });
+
+        it('returns undefined when the experiment is missing', () => {
+            expect(
+                resolveExperimentGroup({ experiment: undefined, instanceId, variantOverride: 'B' }),
+            ).toBeUndefined();
         });
     });
 });

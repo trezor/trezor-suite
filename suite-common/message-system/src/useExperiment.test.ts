@@ -1,6 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import {
+    act,
+    createTestCompositionRoot,
+    renderHookWithStoreProvider,
+} from '@suite-common/test-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
@@ -12,6 +16,7 @@ jest.mock('@trezor/utils', () => ({
 }));
 
 import { createMessageSystemState } from './__fixtures__/createMessageSystemState';
+import { messageSystemActions } from './messageSystemActions';
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { ExperimentId, type MessageSystemState } from './messageSystemTypes';
 import { useExperiment, useIsExperimentVariantActive } from './useExperiment';
@@ -120,6 +125,44 @@ describe('useExperiment', () => {
             expect(result.current.activeExperimentVariant?.variant).toBe(expectedVariant);
         },
     );
+
+    it('assigns the forced variant even when its percentage is 0', () => {
+        const services = createTestServices({
+            messageSystem: createMessageSystemState({
+                groups: [
+                    { variant: 'A', percentage: 100 },
+                    { variant: 'B', percentage: 0 },
+                ],
+                variantOverride: 'B',
+            }),
+        });
+        const { result } = renderUseExperiment(services);
+
+        expect(result.current.activeExperimentVariant?.variant).toBe('B');
+    });
+
+    it('returns to the assigned variant when the forced variant is cleared', () => {
+        const services = createTestServices({
+            messageSystem: createMessageSystemState({
+                groups: [
+                    { variant: 'A', percentage: 100 },
+                    { variant: 'B', percentage: 0 },
+                ],
+                variantOverride: 'B',
+            }),
+        });
+        const { result } = renderUseExperiment(services);
+
+        act(() => {
+            services.store.dispatch(
+                messageSystemActions.clearExperimentVariantOverride(
+                    ExperimentId.tradingFeedbackForm,
+                ),
+            );
+        });
+
+        expect(result.current.activeExperimentVariant?.variant).toBe('A');
+    });
 });
 
 describe('useIsExperimentVariantActive', () => {
