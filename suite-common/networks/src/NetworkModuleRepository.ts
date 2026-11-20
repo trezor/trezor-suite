@@ -43,7 +43,3 @@ export const createNetworkModuleRepository = (
             isArrayMember(symbol, supportedNetworks),
     };
 };
-
-export const injectNetworkModuleRepository = (services: any): NetworkModuleRepositoryDep => ({
-    networkModuleRepository: services.networks.networkModuleRepository,
-});

@@ -35,10 +35,10 @@ export type CliCompositionRoot = CliAppDep;
 export const createCliCompositionRoot = (deps: CliCompositionRootDeps): CliCompositionRoot => {
     const networkModuleRepository = createNetworkModuleRepository({
         networkModules: [
-            createBitcoinSuiteCommonNetworkModule(deps),
+            createBitcoinSuiteCommonNetworkModule(),
             createEthereumSuiteCommonNetworkModule(deps),
             createRippleSuiteCommonNetworkModule(),
-            createCardanoSuiteCommonNetworkModule(deps),
+            createCardanoSuiteCommonNetworkModule(),
             createSolanaSuiteCommonNetworkModule(),
             createStellarSuiteCommonNetworkModule(),
             createTronSuiteCommonNetworkModule(),

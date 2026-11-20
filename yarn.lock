@@ -11923,11 +11923,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-app/module-sign-verify@workspace:suite-app/module-sign-verify"
   dependencies:
-    "@suite-common/sign-verify": "workspace:*"
     "@suite/account": "workspace:*"
     "@suite/device": "workspace:*"
-    "@suite/sign-verify": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
@@ -12579,7 +12578,6 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/react-query": "workspace:*"
-    "@suite-common/sign-verify": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -13041,14 +13039,12 @@ __metadata:
   dependencies:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
-    "@suite-common/networks": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
-    "@trezor/dependency-injection": "workspace:*"
     "@trezor/device": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -14864,7 +14860,8 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/sign-verify": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-module-suite-native-types": "workspace:*"
     react: "npm:19.3.0"
     react-redux: "npm:9.3.1"
   languageName: unknown
@@ -16766,15 +16763,12 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/sign-verify": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/clipboard": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
-    "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@trezor/dependency-injection": "workspace:*"
-    "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -18520,12 +18514,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/sign-verify@workspace:suite/sign-verify"
   dependencies:
-    "@hookform/resolvers": "npm:^5.9.2"
-    "@suite-common/networks": "workspace:*"
     "@suite-common/sign-verify": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/device": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -18533,7 +18524,6 @@ __metadata:
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
-    "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -18542,7 +18532,6 @@ __metadata:
     "@types/react": "npm:19.3.0"
     react: "npm:19.3.0"
     react-hook-form: "npm:^7.91.0"
-    react-redux: "npm:9.3.1"
   languageName: unknown
   linkType: soft
 
@@ -20203,9 +20192,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-bitcoin-suite-native@workspace:networks/bitcoin/network-bitcoin-suite-native"
   dependencies:
+    "@suite-common/sign-verify": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/sign-verify": "workspace:*"
     "@trezor/network-bitcoin-suite-common": "workspace:*"
     "@trezor/network-bitcoin-types": "workspace:*"
     "@trezor/network-module-suite-native-types": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.1"
   languageName: unknown
   linkType: soft
 
@@ -20213,9 +20208,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-bitcoin-suite@workspace:networks/bitcoin/network-bitcoin-suite"
   dependencies:
+    "@hookform/resolvers": "npm:^5.9.2"
+    "@suite-common/sign-verify": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/sign-verify": "workspace:*"
     "@trezor/network-bitcoin-suite-common": "workspace:*"
     "@trezor/network-bitcoin-types": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-hook-form: "npm:^7.91.0"
+    react-redux: "npm:9.3.1"
   languageName: unknown
   linkType: soft
 
@@ -20252,6 +20255,7 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
     "@trezor/network-cardano-assets": "workspace:*"
@@ -20259,7 +20263,6 @@ __metadata:
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^4.3.2"
   languageName: unknown
@@ -20269,9 +20272,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-cardano-suite-native@workspace:networks/cardano/network-cardano-suite-native"
   dependencies:
+    "@suite-common/sign-verify": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/sign-verify": "workspace:*"
     "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-cardano-types": "workspace:*"
     "@trezor/network-module-suite-native-types": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-redux: "npm:9.3.1"
   languageName: unknown
   linkType: soft
 
@@ -20279,9 +20288,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-cardano-suite@workspace:networks/cardano/network-cardano-suite"
   dependencies:
+    "@hookform/resolvers": "npm:^5.9.2"
+    "@suite-common/sign-verify": "workspace:*"
+    "@suite/intl": "workspace:*"
+    "@suite/sign-verify": "workspace:*"
     "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-cardano-types": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-hook-form: "npm:^7.91.0"
+    react-redux: "npm:9.3.1"
   languageName: unknown
   linkType: soft
 
@@ -20339,9 +20356,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ethereum-suite-native@workspace:networks/ethereum/network-ethereum-suite-native"
   dependencies:
+    "@suite-common/sign-verify": "workspace:*"
+    "@suite-native/sign-verify": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-ethereum-types": "workspace:*"
     "@trezor/network-module-suite-native-types": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
   languageName: unknown
   linkType: soft
 
@@ -20349,9 +20370,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ethereum-suite@workspace:networks/ethereum/network-ethereum-suite"
   dependencies:
+    "@hookform/resolvers": "npm:^5.9.2"
+    "@suite-common/sign-verify": "workspace:*"
+    "@suite/sign-verify": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-ethereum-types": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
+    "@types/react": "npm:19.3.0"
+    react: "npm:19.3.0"
+    react-hook-form: "npm:^7.91.0"
   languageName: unknown
   linkType: soft
 

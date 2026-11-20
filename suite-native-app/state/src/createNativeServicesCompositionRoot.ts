@@ -15,7 +15,7 @@ import {
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createQueryClient } from '@suite-common/react-query';
 import { createReferAFriendCompositionRoot } from '@suite-common/refer-a-friend';
-import { createSignVerify } from '@suite-common/sign-verify';
+import { createSignVerifyReporter } from '@suite-common/sign-verify';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { analytics } from '@suite-native/analytics';
@@ -111,8 +111,9 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         fetch: globalThis.fetch.bind(globalThis),
     });
     const networkModuleDeps = {
-        getTrezorConnect: deps.getTrezorConnect,
+        ...deps,
         getTrezorBlockchain: () => TrezorBlockchain,
+        signVerifyReporter: createSignVerifyReporter({ analytics, dispatch: deps.dispatch }),
     };
     const suiteNativeNetworkModules: SuiteNativeNetworkModule[] = [
         createBitcoinSuiteNativeNetworkModule(networkModuleDeps),
@@ -152,11 +153,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     return {
         networks,
-        signVerify: createSignVerify({
-            networkModuleRepository,
-            analytics,
-            dispatch: deps.dispatch,
-        }),
         getSignVerify: createGetSignVerify({ suiteNativeNetworkModuleRepository }),
         staking,
         queryClient,

@@ -1,6 +1,5 @@
 export {
     type CardanoSuiteCommonNetworkModule,
-    type CardanoSuiteCommonNetworkModuleDeps,
     createCardanoSuiteCommonNetworkModule,
 } from './CardanoNetworkSuiteCommonNetworkModule';
 
@@ -14,6 +13,11 @@ export {
     getProtocolMagic,
     getStakingPath,
 } from './cardanoAddressParameters';
+export {
+    CARDANO_DEFAULT_SIGNATURE_FORMAT,
+    CARDANO_SIGNATURE_FORMATS,
+    type CardanoSignatureFormat,
+} from './signVerify/cardanoSignatureFormats';
 export {
     createSignCardanoMessage,
     injectSignCardanoMessage,

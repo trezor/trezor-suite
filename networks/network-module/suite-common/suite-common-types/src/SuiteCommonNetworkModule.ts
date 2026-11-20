@@ -5,7 +5,6 @@ import type { IsWrappedNativeToken } from './IsWrappedNativeToken';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 import type { AddressValidator } from './addressValidator/AddressValidator';
 import type { NamedAddressResolver } from './namedAddressResolver/NamedAddressResolver';
-import type { NetworkSignVerify } from './signVerify/NetworkSignVerify';
 
 /** @serviceContract */
 export type SuiteCommonNetworkModule = {
@@ -21,6 +20,4 @@ export type SuiteCommonNetworkModule = {
     getNetworkConfig: (networkSymbol: NetworkSymbol) => SuiteCommonNetworkConfig;
 
     getAccountSyncInterval: (networkSymbol: NetworkSymbol) => number;
-
-    signVerify?: NetworkSignVerify<NetworkSymbol>;
 };

@@ -49,3 +49,4 @@ export {
     type VerifyEthereumMessageDeps,
     type VerifyEthereumMessageParams,
 } from './signVerify/createVerifyEthereumMessage';
+export { ethereumValidator } from './addressValidator/ethereumAddressValidator';

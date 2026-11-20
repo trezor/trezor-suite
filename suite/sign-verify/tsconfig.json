@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/sign-verify"
         },
@@ -11,9 +10,6 @@
         },
         {
             "path": "../../suite-common/toast-notifications"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
         },
         { "path": "../address" },
         { "path": "../device" },
@@ -24,9 +20,6 @@
         },
         { "path": "../../packages/dom-utils" },
         { "path": "../../packages/icons" },
-        {
-            "path": "../../networks/cardano/network-cardano-suite-common"
-        },
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
         },

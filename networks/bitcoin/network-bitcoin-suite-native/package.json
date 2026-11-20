@@ -14,8 +14,16 @@
         ".": "./src/index.ts"
     },
     "dependencies": {
+        "@suite-common/sign-verify": "workspace:*",
+        "@suite-native/intl": "workspace:*",
+        "@suite-native/sign-verify": "workspace:*",
         "@trezor/network-bitcoin-suite-common": "workspace:*",
         "@trezor/network-bitcoin-types": "workspace:*",
-        "@trezor/network-module-suite-native-types": "workspace:*"
+        "@trezor/network-module-suite-native-types": "workspace:*",
+        "react": "19.3.0",
+        "react-redux": "9.3.1"
+    },
+    "devDependencies": {
+        "@types/react": "19.3.0"
     }
 }

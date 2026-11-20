@@ -3,9 +3,17 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../suite-common/sign-verify"
+        },
+        {
+            "path": "../../../suite/sign-verify"
+        },
+        {
             "path": "../network-ethereum-suite-common"
         },
-        { "path": "../network-ethereum-types" },
+        {
+            "path": "../network-ethereum-types"
+        },
         {
             "path": "../../network-module/suite/suite-types"
         }

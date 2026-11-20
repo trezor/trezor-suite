@@ -4,7 +4,6 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../device" },
-        { "path": "../networks" },
         { "path": "../receive" },
         { "path": "../suite-types" },
         { "path": "../toast-notifications" },
@@ -13,18 +12,11 @@
         {
             "path": "../../packages/analytics-uploader"
         },
-        {
-            "path": "../../packages/dependency-injection"
-        },
-        {
-            "path": "../../packages/device"
-        },
+        { "path": "../../packages/device" },
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         { "path": "../../packages/redux-utils" },
-        {
-            "path": "../../packages/type-utils"
-        }
+        { "path": "../../packages/type-utils" }
     ]
 }

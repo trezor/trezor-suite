@@ -14,7 +14,10 @@
             "path": "../../suite-native/navigation"
         },
         {
-            "path": "../../suite-native/sign-verify"
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/network-module/suite-native/suite-native-types"
         }
     ],
     "include": [".", "**/*.json"]

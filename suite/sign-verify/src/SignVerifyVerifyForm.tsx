@@ -48,7 +48,6 @@ export const SignVerifyVerifyForm = ({ form, verify, children }: SignVerifyVerif
                 break;
             case 'DeviceError':
             case 'DeviceNotConnectedError':
-            case 'SignVerifyNotSupported':
                 setOutcome(page, 'failed');
                 break;
             default:
