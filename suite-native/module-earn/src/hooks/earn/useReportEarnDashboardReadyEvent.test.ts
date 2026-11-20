@@ -1,3 +1,4 @@
+import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -5,14 +6,14 @@ import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store
 import { mock } from '@trezor/dependency-injection';
 
 import { useReportEarnDashboardReadyEvent } from './useReportEarnDashboardReadyEvent';
-import { selectStakingPromoListSymbols } from '../../earnScreenSelectors';
+import { selectStakingPromoListDescriptors } from '../../earnScreenSelectors';
 
 let mockIsFocused = true;
 let mockEntryId = 1;
 
 jest.mock('../../earnScreenSelectors', () => ({
     ...jest.requireActual('../../earnScreenSelectors'),
-    selectStakingPromoListSymbols: jest.fn(),
+    selectStakingPromoListDescriptors: jest.fn(),
 }));
 
 jest.mock('@suite-native/navigation', () => ({
@@ -72,9 +73,9 @@ describe('useReportEarnDashboardReadyEvent', () => {
     beforeEach(() => {
         mockIsFocused = true;
         mockEntryId = 1;
-        jest.mocked(selectStakingPromoListSymbols).mockReturnValue([
-            asNetworkSymbol('eth'),
-            asNetworkSymbol('ada'),
+        jest.mocked(selectStakingPromoListDescriptors).mockReturnValue([
+            mockStakingProductDescriptor(),
+            mockStakingProductDescriptor({ networkSymbol: asNetworkSymbol('ada'), type: 'native' }),
         ]);
     });
 

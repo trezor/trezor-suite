@@ -1,10 +1,11 @@
+import { selectStakingAmountsOutsideBalance } from '@suite-common/earn-staking';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { useSelector } from 'src/hooks/suite';
-import { getTokens } from 'src/utils/wallet/tokenUtils';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { getTokens } from '#src/utils/wallet/tokenUtils';
 
 export const useTotalFiatBalance = (
     accounts: Account[],
@@ -12,6 +13,8 @@ export const useTotalFiatBalance = (
     rates?: RatesByKey,
 ) => {
     const tokenDefinitions = useSelector(selectTokenDefinitions);
+    const stakingBalances = useSelector(selectStakingAmountsOutsideBalance);
+
     const deviceAccounts: Account[] = accounts.map(account => {
         const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin;
         const tokens = getTokens({
@@ -27,6 +30,7 @@ export const useTotalFiatBalance = (
         deviceAccounts,
         baseCurrencyCode,
         rates,
+        stakingBalances,
     }).toString();
 
     return totalBaseCurrencyBalance;

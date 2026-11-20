@@ -1,26 +1,27 @@
 import { shallowEqual } from 'react-redux';
 
-import {
-    type TransactionsRootState,
-    type WalletAssetKey,
-    isAccountStakingActiveByHistory,
-    selectAccounts,
-    selectDeviceAssetAccounts,
-    selectTransactions,
-} from '@suite-common/wallet-core';
+import { selectIsStakingAccountActive } from '@suite-common/earn-staking';
+import { type WalletAssetKey, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { hasAccountOrTokenSpendableBalance } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type HomeAssetTableState } from './homeAssetTableSelectors';
+import { selectDeviceAssetAccounts } from './assetAccountsSelectors';
+import {
+    type HomeAssetTableState,
+    selectWalletAssetContractAddress,
+} from './homeAssetTableSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
+
+const selectState = (state: HomeAssetTableState) => state;
 
 export const selectWalletAssetAccounts = createMemoizedSelector(
     [
         selectDeviceAssetAccounts,
         selectAccounts,
-        (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey,
+        (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
     ],
     (assetAccounts, accounts, assetKey): readonly Account[] => {
         const accountKeys = new Set(
@@ -34,19 +35,20 @@ export const selectWalletAssetAccounts = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-const createStakingMemoizedSelector = createWeakMapSelector.withTypes<
-    HomeAssetTableState & TransactionsRootState
->();
+export const selectWalletAssetHasSpendableBalance = createMemoizedSelector(
+    [selectWalletAssetAccounts, selectWalletAssetContractAddress],
+    (accounts, contractAddress): boolean =>
+        accounts.some(account =>
+            hasAccountOrTokenSpendableBalance({ account, tokenContract: contractAddress }),
+        ),
+);
 
-export const selectWalletAssetUnstakedAccounts = createStakingMemoizedSelector(
-    [selectWalletAssetAccounts, selectTransactions],
-    (accounts, transactions): readonly Account[] =>
+export const selectWalletAssetUnstakedAccounts = createMemoizedSelector(
+    [selectState, selectWalletAssetAccounts],
+    (state, accounts): readonly Account[] =>
         returnStableArrayIfEmpty(
             accounts
-                .filter(
-                    account =>
-                        !isAccountStakingActiveByHistory(account, transactions[account.key] ?? []),
-                )
+                .filter(account => !selectIsStakingAccountActive(state, account.key))
                 .sort(
                     (left, right) =>
                         new BigNumber(right.formattedBalance).comparedTo(left.formattedBalance) ??

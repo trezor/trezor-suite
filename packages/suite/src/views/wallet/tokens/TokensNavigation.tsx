@@ -1,7 +1,7 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsDebugModeActive } from '@suite/debug';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
@@ -31,8 +31,8 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 import { arrayPartition } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { type GetTokensOutputType, getTokens } from '#src/utils/wallet/tokenUtils';
 
 type SubTabConfig = {
     isNft: boolean;
@@ -195,14 +195,16 @@ export const TokensNavigation = ({
                     }
                 />
                 {showAddToken && (
-                    <IconButton
-                        icon={PlusIcon}
-                        size="medium"
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={handleAddToken}
-                        tooltip={{ content: <Translation id="TR_ADD_TOKEN_SUBMIT" /> }}
-                    />
+                    <DebugOnlyBadge>
+                        <IconButton
+                            icon={PlusIcon}
+                            size="medium"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={handleAddToken}
+                            tooltip={{ content: <Translation id="TR_ADD_TOKEN_SUBMIT" /> }}
+                        />
+                    </DebugOnlyBadge>
                 )}
             </Row>
         </Row>

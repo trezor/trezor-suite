@@ -2,7 +2,7 @@
 #
 # EAS uploads the project directory as it is on disk and this file replaces every
 # .gitignore, so it alone decides what reaches Expo's servers. It is an allowlist:
-# everything is excluded, then the workspace closure of @suite-native/app is
+# everything is excluded, then the workspace closure of @suite-native-app/app is
 # re-included. A package the mobile app does not use therefore cannot be uploaded,
 # and one it does use cannot be dropped by an unrelated refactor elsewhere in the
 # monorepo - a missing entry fails the mobile build instead.
@@ -18,6 +18,7 @@
 !/packages
 !/suite-common
 !/suite-native
+!/suite-native-app
 !/tsconfig.base.json
 !/yarn.lock
 /.yarn/*
@@ -56,6 +57,7 @@
 !/packages/eslint
 !/packages/icons
 !/packages/jsonl
+!/packages/lazy-loading
 !/packages/logger
 !/packages/node-utils
 !/packages/perf-e2e
@@ -80,6 +82,7 @@
 !/packages/utils
 !/packages/utxo-lib
 !/packages/websocket-client
+!/packages/zod
 /suite-common/*
 !/suite-common/address
 !/suite-common/analytics
@@ -97,14 +100,17 @@
 !/suite-common/device-authenticity
 !/suite-common/discreet-mode
 !/suite-common/e2e-evolu-client
+!/suite-common/earn
 !/suite-common/earn-stablecoin
 !/suite-common/earn-stablecoin-api
 !/suite-common/earn-stablecoin-defs
+!/suite-common/earn-staking
 !/suite-common/earn-staking-api
+!/suite-common/earn-staking-common
+!/suite-common/earn-staking-products
 !/suite-common/extra-dependencies
 !/suite-common/feedback
 !/suite-common/fiat-services
-!/suite-common/finprom
 !/suite-common/firmware
 !/suite-common/firmware-authenticity
 !/suite-common/flags
@@ -125,6 +131,8 @@
 !/suite-common/price-chart
 !/suite-common/react-query
 !/suite-common/receive
+!/suite-common/refer-a-friend
+!/suite-common/regions
 !/suite-common/schemas
 !/suite-common/sentry
 !/suite-common/sign-verify
@@ -143,7 +151,9 @@
 !/suite-common/test-utils
 !/suite-common/thp
 !/suite-common/toast-notifications
+!/suite-common/token
 !/suite-common/token-definitions
+!/suite-common/tokens
 !/suite-common/trading
 !/suite-common/transaction-search
 !/suite-common/transfer-uri
@@ -162,10 +172,7 @@
 !/suite-native/alerts
 !/suite-native/analytics
 !/suite-native/analytics-redux
-!/suite-native/app
-!/suite-native/app-init
 !/suite-native/apps-embedding
-!/suite-native/apps-embedding-demo
 !/suite-native/assets
 !/suite-native/atoms
 !/suite-native/banners
@@ -185,11 +192,11 @@
 !/suite-native/device-mutex
 !/suite-native/device-onboarding
 !/suite-native/discovery
+!/suite-native/earn
 !/suite-native/experimental-features
 !/suite-native/feature-feedback
 !/suite-native/feature-flags
 !/suite-native/feedback-form
-!/suite-native/finprom
 !/suite-native/firmware
 !/suite-native/formatters
 !/suite-native/formatters-config
@@ -202,33 +209,10 @@
 !/suite-native/keyboard
 !/suite-native/labeling
 !/suite-native/link
+!/suite-native/localized-amount-input
 !/suite-native/markdown
 !/suite-native/message-system
-!/suite-native/module-account-detail
-!/suite-native/module-accounts
-!/suite-native/module-accounts-import
-!/suite-native/module-activity-center
-!/suite-native/module-add-accounts
-!/suite-native/module-assets
-!/suite-native/module-authenticity-checks
-!/suite-native/module-authorize-device
-!/suite-native/module-check-backup
-!/suite-native/module-connect-popup
-!/suite-native/module-demo-account-questionnaire
-!/suite-native/module-dev-utils
-!/suite-native/module-device-onboarding
-!/suite-native/module-device-settings
 !/suite-native/module-earn
-!/suite-native/module-home
-!/suite-native/module-onboarding
-!/suite-native/module-passphrase
-!/suite-native/module-receive
-!/suite-native/module-send
-!/suite-native/module-settings
-!/suite-native/module-sign-verify
-!/suite-native/module-stellar-token-management
-!/suite-native/module-trading
-!/suite-native/module-transactions
 !/suite-native/navigation
 !/suite-native/passphrase
 !/suite-native/performance-metrics
@@ -236,15 +220,13 @@
 !/suite-native/price-chart
 !/suite-native/qr-code
 !/suite-native/react-native-graph
+!/suite-native/regions
 !/suite-native/scrollview
 !/suite-native/search
 !/suite-native/send
 !/suite-native/sentry
-!/suite-native/services
 !/suite-native/settings
-!/suite-native/state
 !/suite-native/storage
-!/suite-native/storybook
 !/suite-native/suite-sync
 !/suite-native/swipeable-walkthrough
 !/suite-native/test-utils
@@ -263,6 +245,7 @@
 !/suite-native/trading-provider-utils
 !/suite-native/trading-quote-utils
 !/suite-native/trading-residence
+!/suite-native/trading-shared
 !/suite-native/trading-slippage
 !/suite-native/trading-state
 !/suite-native/trading-types
@@ -272,47 +255,88 @@
 !/suite-native/tx-simulation
 !/suite-native/video-assets
 !/suite-native/wallet
+/suite-native-app/*
+!/suite-native-app/app
+!/suite-native-app/app-init
+!/suite-native-app/apps-embedding-demo
+!/suite-native-app/module-account-detail
+!/suite-native-app/module-accounts
+!/suite-native-app/module-accounts-import
+!/suite-native-app/module-activity-center
+!/suite-native-app/module-add-accounts
+!/suite-native-app/module-assets
+!/suite-native-app/module-authenticity-checks
+!/suite-native-app/module-authorize-device
+!/suite-native-app/module-check-backup
+!/suite-native-app/module-connect-popup
+!/suite-native-app/module-demo-account-questionnaire
+!/suite-native-app/module-dev-utils
+!/suite-native-app/module-device-onboarding
+!/suite-native-app/module-device-settings
+!/suite-native-app/module-home
+!/suite-native-app/module-onboarding
+!/suite-native-app/module-passphrase
+!/suite-native-app/module-receive
+!/suite-native-app/module-send
+!/suite-native-app/module-settings
+!/suite-native-app/module-sign-verify
+!/suite-native-app/module-stellar-token-management
+!/suite-native-app/module-trading
+!/suite-native-app/module-transactions
+!/suite-native-app/state
+!/suite-native-app/storybook
+!/suite-native-app/suite-sync
 /networks/bitcoin/*
 !/networks/bitcoin/network-bitcoin-assets
 !/networks/bitcoin/network-bitcoin-suite-common
+!/networks/bitcoin/network-bitcoin-suite-native
 !/networks/bitcoin/network-bitcoin-types
 /networks/cardano/*
 !/networks/cardano/network-cardano
 !/networks/cardano/network-cardano-assets
 !/networks/cardano/network-cardano-coin-selection
 !/networks/cardano/network-cardano-suite-common
+!/networks/cardano/network-cardano-suite-native
 !/networks/cardano/network-cardano-types
 /networks/ethereum/*
 !/networks/ethereum/network-ethereum
 !/networks/ethereum/network-ethereum-assets
 !/networks/ethereum/network-ethereum-suite-common
+!/networks/ethereum/network-ethereum-suite-native
 !/networks/ethereum/network-ethereum-types
 /networks/network-module/*
 !/networks/network-module/network-assets-types
 !/networks/network-module/network-module-types
 !/networks/network-module/suite-common
+!/networks/network-module/suite-native
 /networks/ripple/*
 !/networks/ripple/network-ripple
 !/networks/ripple/network-ripple-assets
 !/networks/ripple/network-ripple-suite-common
+!/networks/ripple/network-ripple-suite-native
 !/networks/ripple/network-ripple-types
 /networks/solana/*
 !/networks/solana/network-solana
 !/networks/solana/network-solana-assets
 !/networks/solana/network-solana-suite-common
+!/networks/solana/network-solana-suite-native
 !/networks/solana/network-solana-types
 /networks/stellar/*
 !/networks/stellar/network-stellar
 !/networks/stellar/network-stellar-assets
 !/networks/stellar/network-stellar-suite-common
+!/networks/stellar/network-stellar-suite-native
 !/networks/stellar/network-stellar-types
 /networks/tron/*
 !/networks/tron/network-tron
 !/networks/tron/network-tron-assets
 !/networks/tron/network-tron-suite-common
+!/networks/tron/network-tron-suite-native
 !/networks/tron/network-tron-types
 /networks/network-module/suite-common/*
 !/networks/network-module/suite-common/suite-common-types
+/networks/network-module/suite-native/*
+!/networks/network-module/suite-native/suite-native-types
 
 # Never uploaded, including out of the allowed directories
 **/node_modules/
@@ -335,10 +359,10 @@
 .DS_Store
 
 # Written by `expo prebuild`, which EAS runs itself
-/suite-native/app/android/
-/suite-native/app/ios/
+/suite-native-app/app/android/
+/suite-native-app/app/ios/
 
 # Local secrets
 **/.env*
-!/suite-native/app/.env.development
-!/suite-native/app/.env.test
+!/suite-native-app/app/.env.development
+!/suite-native-app/app/.env.test

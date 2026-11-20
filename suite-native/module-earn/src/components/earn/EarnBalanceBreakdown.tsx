@@ -1,5 +1,17 @@
 import { useSelector } from 'react-redux';
 
+import {
+    type EarnRootState,
+    selectEarnTotalFiatAmount,
+    selectIsEarnBalanceBreakdownDisplayed,
+    useEarnMissingRateTickersQuery,
+} from '@suite-common/earn';
+import { selectDeviceStakingTotalFiatAmount } from '@suite-common/earn-staking';
+import {
+    type EarnListRootState,
+    selectYieldTotalFiatAmount,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
@@ -7,16 +19,6 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
-
-import {
-    type EarnListRootState,
-    selectEarnTotalFiatAmount,
-    selectIsEarnBalanceBreakdownDisplayed,
-    selectStakingTotalFiatAmount,
-    selectYieldTotalFiatAmount,
-} from '../../earnScreenSelectors';
-import { useEarnMissingRateTickersQuery } from '../../hooks/earn/useEarnMissingRateTickersQuery';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 
 const MIN_BALANCE_SEGMENT_FLEX = 0.05;
 
@@ -63,13 +65,14 @@ const EarnBalanceLegendItem = ({ amount, color, title }: EarnBalanceLegendItemPr
             <Box style={applyStyle(legendDotStyle, { color })} />
 
             <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                {title}{' '}
-                <BaseCurrencyAmountFormatter
-                    value={amount}
-                    variant="body-sm"
-                    color="contentSecondary"
-                />
+                {title}
             </Text>
+
+            <BaseCurrencyAmountFormatter
+                value={amount}
+                variant="body-sm"
+                color="contentSecondary"
+            />
         </HStack>
     );
 };
@@ -79,17 +82,17 @@ export const EarnBalanceBreakdown = () => {
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();
     const { yieldOpportunities } = useYieldOpportunities();
 
-    const isBreakdownDisplayed = useSelector((state: EarnListRootState) =>
+    const isBreakdownDisplayed = useSelector((state: EarnRootState) =>
         selectIsEarnBalanceBreakdownDisplayed(state, yieldOpportunities, isFiatRatesLoading),
     );
 
-    const totalStakingFiatAmount = useSelector(selectStakingTotalFiatAmount);
+    const totalStakingFiatAmount = useSelector(selectDeviceStakingTotalFiatAmount);
 
     const totalYieldFiatAmount = useSelector((state: EarnListRootState) =>
         selectYieldTotalFiatAmount(state, yieldOpportunities),
     );
 
-    const totalEarnFiatAmount = useSelector((state: EarnListRootState) =>
+    const totalEarnFiatAmount = useSelector((state: EarnRootState) =>
         selectEarnTotalFiatAmount(state, yieldOpportunities),
     );
 

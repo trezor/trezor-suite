@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
@@ -24,6 +25,7 @@ type UpdateStatusActionBarIconProps = {
 export const UpdateStatusActionBarIcon = ({
     isSidebarCollapsed,
 }: UpdateStatusActionBarIconProps) => {
+    const { translationString } = useTranslation();
     const discoveryInProgress = useSelector(selectHasRunningDiscovery);
 
     const { updateStatus, updateStatusDevice, updateStatusSuite } = useSelector(selectUpdateStatus);
@@ -64,6 +66,7 @@ export const UpdateStatusActionBarIcon = ({
 
     return (
         <QuickActionButton
+            aria-label={translationString('TR_QUICK_ACTION_UPDATE_STATUS')}
             onClick={handleClick}
             tooltip={{
                 isActive: !hideUpdateQuickAction,

@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { isWorkerUrl } from './is-worker-url.js';
+
 // Match relative imports without extension: "./x", "../x", "./x/y"
 const isRelativeImport = src => src.startsWith('.') && !path.extname(src);
 
@@ -15,6 +17,66 @@ const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 
 const externalJsonImports = [];
 
+// A bundler ?query / #fragment suffix is not part of the path: the extension goes before it, and
+// the file-vs-directory stat must not see it. The segment boundary it marks is the one
+// internalSrcSpecifier pins in babel-plugin-sanitize-internal-imports.js.
+const splitSuffix = specifier => {
+    const at = specifier.search(/[?#]/);
+
+    return at === -1 ? [specifier, ''] : [specifier.slice(0, at), specifier.slice(at)];
+};
+
+// Locate the src/ tree of the imported @trezor package. It is a workspace package symlinked into
+// node_modules, so walking the node_modules chain up from the file being transformed finds it in
+// any layout: packages/<pkg> as well as the networks/<chain>/<pkg> workspaces, whose package root
+// is not an ancestor of the file. The package directory is addressed directly because a manifest's
+// exports map does not have to expose ./package.json, which rules out require.resolve.
+const resolveLinkedPackageSrc = (filename, packageName) => {
+    let dir = path.dirname(filename);
+
+    while (dir !== path.dirname(dir)) {
+        const src = path.join(dir, 'node_modules', '@trezor', packageName, 'src');
+        if (fs.existsSync(src)) return src;
+        dir = path.dirname(dir);
+    }
+
+    return null;
+};
+
+// Locate the packages root (the directory holding every @trezor package) from the absolute path of
+// the file being transformed, i.e. the parent of the package directory whose lib/ holds the file.
+// A path can contain several lib/ segments, so the candidates are validated rather than guessed:
+// neither an ancestor directory named lib (a checkout under ~/lib) nor one nested in the package's
+// own output (lib/device/lib/helpers.js) may be mistaken for the package's own lib/.
+// e.g. /packages/connect/lib/device/thp/pairing.js → /packages/
+const resolvePackagesRoot = (filename, packageName) => {
+    const segment = `${path.sep}lib${path.sep}`;
+    const innermost = filename.lastIndexOf(segment);
+
+    // Walk the lib/ segments from the end and keep the first candidate that actually holds
+    // <packageName>/src.
+    let index = innermost;
+    while (index > 0) {
+        const candidate = path.dirname(filename.substring(0, index));
+        if (fs.existsSync(path.join(candidate, packageName, 'src'))) return candidate;
+        index = filename.lastIndexOf(segment, index - 1);
+    }
+
+    // No candidate holds <packageName>/src: inside the monorepo that is never a legitimate state —
+    // every @trezor/* specifier addresses a workspace package with a src/ tree — so the lookup is
+    // broken and the file-vs-directory decision below would be a guess rather than a verdict.
+    throw new Error(
+        `add-js-extension: cannot locate @trezor/${packageName} from ${filename}; ` +
+            `the file-vs-directory decision for its subpaths would be a guess`,
+    );
+};
+
+// The node_modules link is authoritative; the lib/ segment walk stays as the fallback for a tree
+// where the imported package is not installed, and throws when it finds nothing either.
+const resolvePackageSrc = (filename, packageName) =>
+    resolveLinkedPackageSrc(filename, packageName) ??
+    path.join(resolvePackagesRoot(filename, packageName), packageName, 'src');
+
 /**
  * Babel plugin to rewrite import/export statements to their runtime ESM extensions.
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
@@ -27,32 +89,29 @@ const externalJsonImports = [];
  */
 const addEsmExtensionPlugin = ({ types }) => {
     // Returns the specifier with its runtime extension, or null when it needs no change.
-    const withExtension = (src, filename) => {
+    const withExtension = (specifier, filename) => {
+        const [src, suffix] = splitSuffix(specifier);
+
         // Handle @trezor package imports to lib
         if (isTrezorLibImport(src)) {
             const match = src.match(/^@trezor\/([^/]+)\/lib\/(.+)$/);
             const [, packageName, subpath] = match;
 
-            // Find packages/ root from the current file's absolute path by locating the lib/ segment.
-            // e.g., /packages/connect/lib/device/thp/pairing.js → /packages/
-            const libIndex = filename.indexOf(`${path.sep}lib${path.sep}`);
-            const packageDir = filename.substring(0, libIndex);
-            const packagesRoot = path.dirname(packageDir);
             // Check src/ instead of lib/ — src/ is always present in the repo regardless of
             // build order, whereas lib/ may not exist yet in CI when this package is compiled.
-            const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);
+            const resolvedSrcPath = path.join(resolvePackageSrc(filename, packageName), subpath);
 
             const isDirectory =
                 fs.existsSync(resolvedSrcPath) && fs.statSync(resolvedSrcPath).isDirectory();
 
             // e.g., @trezor/protocol/lib/protocol-tpn -> @trezor/protocol/lib/protocol-tpn/index.js
             // e.g., @trezor/protocol/lib/bigNumber -> @trezor/protocol/lib/bigNumber.js
-            return isDirectory ? src + '/index.js' : src + '.js';
+            return isDirectory ? src + '/index.js' + suffix : src + '.js' + suffix;
         }
 
         // External CJS subpaths need .js for ESM
         if (isExternalCjsSubpath(src)) {
-            return src + '.js';
+            return src + '.js' + suffix;
         }
 
         if (isRelativeImport(src)) {
@@ -62,7 +121,7 @@ const addEsmExtensionPlugin = ({ types }) => {
             const isDirectory =
                 fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
 
-            return isDirectory ? src + '/index.js' : src + '.js';
+            return isDirectory ? src + '/index.js' + suffix : src + '.js' + suffix;
         }
 
         return null;
@@ -115,9 +174,12 @@ const addEsmExtensionPlugin = ({ types }) => {
                 if (!types.isImport(nodePath.node.callee)) return;
                 modifyStringLiteral(nodePath.node.arguments[0], state);
             },
-            // Bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)).
+            // Bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)). The
+            // guard keeps every other new URL(...) untouched, including an extensionless asset
+            // path addressed with import.meta.url, which must not gain a .js extension.
             NewExpression(nodePath, state) {
                 if (!types.isIdentifier(nodePath.node.callee, { name: 'URL' })) return;
+                if (!isWorkerUrl(types, nodePath)) return;
                 modifyStringLiteral(nodePath.node.arguments[0], state);
             },
             // Inline import("...") types in .d.ts files.

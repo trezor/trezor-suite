@@ -1,0 +1,41 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/device-mutex"
+        },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/swipeable-walkthrough"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
+    ]
+}

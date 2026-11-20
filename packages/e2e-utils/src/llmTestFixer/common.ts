@@ -6,8 +6,10 @@ import {
     query,
 } from '@anthropic-ai/claude-agent-sdk';
 import { formatMessage } from 'claude-pretty-printer';
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+import { readJson } from '@trezor/node-utils';
 
 import { log, warn } from '../logger';
 import { reportToSlack } from './errors';
@@ -31,7 +33,7 @@ export function loadLedger(path: string): Ledger {
     }
 
     try {
-        const parsed = LedgerSchema.safeParse(JSON.parse(readFileSync(path, 'utf-8')));
+        const parsed = LedgerSchema.safeParse(readJson(path));
         if (parsed.success) {
             return parsed.data;
         }
@@ -59,9 +61,7 @@ export function readSummaries(summariesDir: string | undefined): ReadSummariesRe
         n => n.startsWith('slack-fix-summary-') && n.endsWith('.json'),
     );
     for (const filename of allSummariesFiles) {
-        const parsed = SlackFixSummarySchema.safeParse(
-            JSON.parse(readFileSync(join(summariesDir, filename), 'utf-8')),
-        );
+        const parsed = SlackFixSummarySchema.safeParse(readJson(join(summariesDir, filename)));
 
         if (!parsed.success) {
             warn(`[summaries] Failed to parse ${filename}: ${parsed.error.message}`);

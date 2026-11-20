@@ -5,11 +5,11 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -25,7 +25,7 @@ import {
     type TradingType,
     getTradingPrefilledFromAccountData,
     getUnusedAddressFromAccount,
-    selectTradingInfo,
+    selectTradingCoins,
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
@@ -76,12 +76,13 @@ import {
 } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
-import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
+import { setSendFormPrefill, setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
+import { getEarnRouteParams } from '#src/components/earn/utils/getEarnRouteParams';
+import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModal';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useMessageSystemWrappedNative } from '#src/hooks/suite/useMessageSystemWrappedNative';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import type { TokensTableType } from './types';
 
@@ -118,8 +119,8 @@ const TokenRowBasicActions = ({
 
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
-    const { coins } = useSelector(selectTradingInfo);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const coins = useSelector(selectTradingCoins);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isDeviceLocked = isLocked(true);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
 
@@ -389,7 +390,7 @@ const TokenRowBasicActions = ({
                 <FirmwareUpgradeNeededModal
                     onClose={closeFirmwareModal}
                     onUpdate={updateFirmware}
-                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
+                    featureName={translationString('TR_EARN_DEFI_YIELD')}
                 />
             )}
             <Dropdown
@@ -434,7 +435,7 @@ const TokenRowBasicActions = ({
                         icon: CurrencyCircleDollarIcon,
                         onClick: onBuyButtonClick,
                         isDisabled: !canBuyToken,
-                        isHidden: isFinpromRestricted,
+                        isHidden: isRegionRestricted,
                     },
                     {
                         label: <Translation id="TR_TRADING_SELL" />,
@@ -442,14 +443,14 @@ const TokenRowBasicActions = ({
                         icon: CurrencyCircleDollarIcon,
                         onClick: onSellButtonClick,
                         isDisabled: token.balance === '0' || !canSellToken,
-                        isHidden: isFinpromRestricted,
+                        isHidden: isRegionRestricted,
                     },
                     {
                         label: <Translation id="TR_TRADING_SWAP" />,
                         'data-testid': '@trading/tokens/swap-button',
                         icon: RepeatIcon,
                         onClick: onSwapButtonClick,
-                        isHidden: isFinpromRestricted || (type === 'defi' ? false : !isBelowTablet),
+                        isHidden: isRegionRestricted || (type === 'defi' ? false : !isBelowTablet),
                         isDisabled: !canSwapToken,
                     },
                     {
@@ -540,7 +541,7 @@ const TokenRowBasicActions = ({
                 ]}
             />
 
-            {type !== 'defi' && !isBelowTablet && !isFinpromRestricted && (
+            {type !== 'defi' && !isBelowTablet && !isRegionRestricted && (
                 <IconButton
                     isDisabled={!canSwapToken}
                     key="swap"

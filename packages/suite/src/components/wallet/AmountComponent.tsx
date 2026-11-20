@@ -7,8 +7,8 @@ import {
 import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FormattedNftAmount } from '#src/components/suite/FormattedNftAmount';
 
 type AmountComponentProps = {
     transfer: TokenTransfer;
@@ -51,7 +51,7 @@ export const AmountComponent = ({
         return (
             <FormattedCryptoAmount
                 value={convertAmountSubunitsToUnits(transfer.amount, transfer.decimals)}
-                symbol={transfer.symbol}
+                networkSymbol={networkSymbol}
                 contractAddress={transfer.contract}
                 signValue={operation}
                 signGrayscale={signGrayscale}

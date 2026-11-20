@@ -4,23 +4,22 @@ import { useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
-    selectTradingDisplayComposedFee,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { useTradingDetailMissingTradeRedirect } from 'src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { TradingDetailLayout } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
-import { TradingDetailProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
-import { TradingDetailProgress } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
-import { TradingDetailSendingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
-import { TradingDetailTransactionIdRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingDetailContext } from '#src/hooks/wallet/trading/useTradingDetail';
+import { useTradingDetailMissingTradeRedirect } from '#src/hooks/wallet/trading/useTradingDetailMissingTradeRedirect';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
+import { TradingDetailLayout } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailLayout';
+import { TradingDetailProcessingStep } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProcessingStep';
+import { TradingDetailProgress } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailProgress';
+import { TradingDetailSendingStep } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailSendingStep';
+import { TradingDetailTransactionIdRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTransactionIdRow';
 import {
     getTradingDetailStepState,
     processingHeaderMessages,
-} from 'src/views/wallet/trading/common/TradingDetail/utils';
+} from '#src/views/wallet/trading/common/TradingDetail/utils';
 
 import { TradingExchangeDetailPaymentKYC } from './TradingExchangeDetailPaymentKYC';
 import { TradingExchangeDetailPaymentReturned } from './TradingExchangeDetailPaymentReturned';
@@ -46,10 +45,6 @@ export const TradingExchangeDetailContent = () => {
     const exchange = trade?.data?.exchange;
     const provider = exchange ? info?.providerInfos?.[exchange] : undefined;
 
-    const networkFee = useSelector(reduxState =>
-        selectTradingDisplayComposedFee(reduxState, trade?.data),
-    );
-
     const sendAccount = accounts.find(account => account.key === trade?.sendAccountKey);
     const receiveAccount = accounts.find(account => account.key === trade?.receiveAccountKey);
 
@@ -64,7 +59,6 @@ export const TradingExchangeDetailContent = () => {
         sendCurrency: trade.data.send,
         receiveAmount: trade.data.receiveStringAmount ?? '',
         receiveCurrency: trade.data.receive,
-        networkFee,
     };
 
     const getContent = () => {

@@ -1,11 +1,8 @@
 import { shallowEqual } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { getNetworkType } from '@suite-common/wallet-config';
-import {
-    type AccountKey,
-    type TokenAddress,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     isPending,
     isTrezorConnectBackendType,

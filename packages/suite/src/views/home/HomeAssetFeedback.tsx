@@ -19,7 +19,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const HomeAssetFeedback = () => {
     const isClosed = useSelector(selectIsHomeAssetTableFeedbackClosed);
@@ -61,7 +61,7 @@ export const HomeAssetFeedback = () => {
     }
 
     return (
-        <Box position={{ type: 'relative' }}>
+        <Box position={{ type: 'relative' }} data-testid="@dashboard/home-asset/feedback">
             <FeedbackCard
                 heading={<Translation id="TR_HOME_ASSET_FEEDBACK_TITLE" />}
                 description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}

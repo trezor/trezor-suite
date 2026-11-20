@@ -1,62 +1,55 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type FormDraftRootState,
     REVOKE_ALLOWANCE_AMOUNT,
     type YieldFlowResolvedData,
     type YieldRootState,
-    formDraftActions,
     selectDeepCopyOfFormDraft,
     selectYieldSession,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
+    type AllowanceLimitType,
+    type AllowanceTransactionType,
     type FormState,
-    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
-import {
-    type NativeSendRootState,
-    type UpdateSelectedFeeLevelThunkParams,
-    selectFeeLevels,
-} from '@suite-native/transaction-management';
+import { type NativeSendRootState, selectFeeLevels } from '@suite-native/transaction-management';
 import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
-import {
-    type YieldAllowanceFormDraftTransactionType,
-    type YieldApprovalLimitType,
-} from '../../types';
 import {
     buildYieldAllowanceFormState,
     getYieldAllowanceFeeState,
     getYieldApprovalAllowanceAmount,
 } from '../../utils/yield/yieldApprovalUtils';
 
-const yieldAllowanceFormDraftPrefixes: Record<YieldAllowanceFormDraftTransactionType, string> = {
+const yieldAllowanceFormDraftPrefixes: Record<AllowanceTransactionType, string> = {
     approve: 'yield-approval',
     revoke: 'yield-revoke',
 };
 
 export const getYieldAllowanceFormDraftKey = (
     flowKey: string,
-    transactionType: YieldAllowanceFormDraftTransactionType,
+    transactionType: AllowanceTransactionType,
 ) => `${yieldAllowanceFormDraftPrefixes[transactionType]}/${flowKey}`;
 
 type PrepareYieldAllowanceReviewTransactionParams = {
     amount?: string;
-    approvalLimitType?: YieldApprovalLimitType;
+    approvalLimitType?: AllowanceLimitType;
     flowData: YieldFlowResolvedData;
     flowKey: string;
-    transactionType: YieldAllowanceFormDraftTransactionType;
+    transactionType: AllowanceTransactionType;
     tokenContract: TokenAddress;
 };
 
 type GetYieldAllowanceReviewAmountParams = {
     amount?: string;
-    approvalLimitType?: YieldApprovalLimitType;
+    approvalLimitType?: AllowanceLimitType;
     flowData: YieldFlowResolvedData;
-    modalTxType: 'approve' | 'revoke';
+    modalTxType: AllowanceTransactionType;
     tokenContract: TokenAddress;
 };
 
@@ -88,8 +81,8 @@ const getYieldAllowanceReviewAmount = ({
 };
 
 const isExpectedAllowanceModalTxType = (
-    transactionType: YieldAllowanceFormDraftTransactionType,
-    modalTxType: 'approve' | 'revoke',
+    transactionType: AllowanceTransactionType,
+    modalTxType: AllowanceTransactionType,
 ) => {
     if (transactionType === 'approve') {
         return modalTxType === 'approve';
@@ -166,46 +159,5 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
                 accountKey: flowData.account.key,
             }),
         );
-    },
-);
-
-export type UpdateYieldAllowanceSelectedFeeLevelThunkState = FormDraftRootState;
-
-export const updateYieldAllowanceSelectedFeeLevelThunk = createThunk<
-    void,
-    UpdateSelectedFeeLevelThunkParams,
-    { state: UpdateYieldAllowanceSelectedFeeLevelThunkState }
->(
-    `${EARN_MODULE_PREFIX}/updateYieldAllowanceSelectedFeeLevelThunk`,
-    (
-        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
-        { dispatch, getState },
-    ) => {
-        if (!formDraftKey) return;
-
-        const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey) as
-            FormState | undefined;
-
-        if (!formDraft) return;
-
-        formDraft.selectedFee = feeLevelLabel;
-
-        if (feePerUnit) {
-            formDraft.feePerUnit = feePerUnit;
-        }
-
-        if (feeLimit) {
-            formDraft.feeLimit = feeLimit;
-        }
-
-        if (maxFeePerGas) {
-            formDraft.maxFeePerGas = maxFeePerGas;
-        }
-
-        if (maxPriorityFeePerGas) {
-            formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        }
-
-        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
     },
 );

@@ -1,3 +1,4 @@
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectWalletAssetHoldings } from '@suite-common/assets';
@@ -7,8 +8,8 @@ import { CardList } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AssetsModal } from 'src/components/suite/asset-picker/components';
-import { useSelector } from 'src/hooks/suite';
+import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailAccountListItem } from './AssetDetailAccountListItem';
 import { AssetDetailAssetDescription } from './AssetDetailAssetDescription';
@@ -20,11 +21,20 @@ type AssetDetailAccountsModalProps = {
 };
 
 export const AssetDetailAccountsModal = ({ assetKey, onClose }: AssetDetailAccountsModalProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const assetAccounts = useSelector(state => selectWalletAssetHoldings(state, assetKey));
 
     const openAccount = (account: Account) => {
         onClose();
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'account-detail',
+                from: 'asset-detail',
+                networkSymbol: account.symbol,
+            },
+        });
         dispatch(
             gotoThunk({
                 routeName: 'wallet-index',

@@ -25,6 +25,7 @@ export type SearchableAccountsListHeaderProps = {
     closeAction?: () => void;
     onAddAccount?: () => void;
     networkFilter: NetworkFilter;
+    hideNetworkFilter?: boolean;
     noPaddingTop?: boolean;
 };
 
@@ -55,6 +56,7 @@ export const SearchableAccountsListHeader = ({
     closeAction,
     onAddAccount,
     networkFilter,
+    hideNetworkFilter = false,
     noPaddingTop = false,
 }: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
@@ -135,7 +137,7 @@ export const SearchableAccountsListHeader = ({
                             spacing="sp8"
                             style={applyStyle(sideActionsStyle)}
                         >
-                            <NetworkFilterButton filter={networkFilter} />
+                            {!hideNetworkFilter && <NetworkFilterButton filter={networkFilter} />}
                             {flowType && (
                                 <AddAccountButton
                                     flowType={flowType}

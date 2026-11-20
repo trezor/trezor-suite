@@ -1,0 +1,75 @@
+import { useMemo } from 'react';
+
+import { type TradingTypeWithConcierge } from '@suite-common/trading';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
+import { DEFAULT_TRADING_TYPE } from '@suite-native/trading-consts';
+import { useServices } from '@trezor/dependency-injection';
+import { useNativeStyles } from '@trezor/styles-native';
+
+import { useTradingTabs } from '../../../hooks/general/useTradingTabs';
+
+const useTabsData = () => {
+    const { translate } = useTranslate();
+
+    return useMemo(() => {
+        const tabs: SubTabItem<TradingTypeWithConcierge>[] = [
+            {
+                value: 'exchange',
+                label: translate('moduleTrading.tradingScreen.tabs.exchange'),
+                icon: 'repeat',
+                testID: '@trading/exchange/header-tab',
+            },
+            {
+                value: 'buy',
+                label: translate('moduleTrading.tradingScreen.tabs.buy'),
+                icon: 'plus',
+                testID: '@trading/buy/header-tab',
+            },
+            {
+                value: 'sell',
+                label: translate('moduleTrading.tradingScreen.tabs.sell'),
+                icon: 'minus',
+                testID: '@trading/sell/header-tab',
+            },
+        ];
+
+        return tabs;
+    }, [translate]);
+};
+
+export const HeaderTabs = () => {
+    const { utils } = useNativeStyles();
+    const { activeTab, setActiveTab } = useTradingTabs();
+    const data = useTabsData();
+    const { analytics } = useServices(injectNativeAnalytics);
+
+    const onTabPress = (tab: TradingTypeWithConcierge) => {
+        if (tab === activeTab) {
+            return;
+        }
+
+        setActiveTab(tab);
+        analytics.report({
+            type: events.tradingNavigateEvent.name,
+            payload: {
+                action: 'navigate',
+                type: tab,
+                from: `trade/${activeTab ?? DEFAULT_TRADING_TYPE}`,
+            },
+        });
+    };
+
+    return (
+        <>
+            <SubTabs
+                items={data}
+                onChange={onTabPress}
+                paddingHorizontal="sp16"
+                value={activeTab}
+            />
+            <EdgeFades direction="horizontal" startSize={utils.spacings.sp20} />
+        </>
+    );
+};

@@ -8,13 +8,13 @@ import { Model } from '@trezor/trezor-user-env-link';
 import { getIndexOrThrow } from '@trezor/utils';
 
 import { step } from '../../common';
+import { DeviceFixture } from '../../device';
 import { AnalyticsSection } from '../analyticsSection';
 import { DevicePrompt } from '../devicePrompt';
 import { BackupSection } from './backupSection';
 import { FirmwareSection } from './firmwareSection';
 import { PinSection } from './pinSection';
 import { TutorialSection } from './tutorialSection';
-import { DeviceFixture } from '../../device';
 import { SettingsPage } from '../settings/settingsPage';
 
 export class OnboardingPage {
@@ -27,6 +27,7 @@ export class OnboardingPage {
     readonly databaseUpgradeModalHeading: Locator;
     readonly completeOnboardingButton: Locator;
     readonly setupDeviceButton: Locator;
+    readonly deviceCheckCheckboxes: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
     readonly createBackupButton: Locator;
@@ -64,6 +65,9 @@ export class OnboardingPage {
         this.databaseUpgradeModalHeading = this.page.getByTestId('@modal/database-upgrade/heading');
         this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
         this.setupDeviceButton = this.page.getByTestId('@onboarding/device-check/setup-button');
+        this.deviceCheckCheckboxes = this.page.locator(
+            '[data-testid^="@onboarding/device-check/checkbox/"]',
+        );
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
             '@authenticity-check/continue-button',
@@ -128,7 +132,7 @@ export class OnboardingPage {
         await expect(
             this.devicePrompt.acquireDeviceButton,
             'expected device prompt acquire button to be hidden',
-        ).toBeHidden();
+        ).toBeHidden({ timeout: 30_000 });
     }
 
     @step()
@@ -149,21 +153,39 @@ export class OnboardingPage {
 
         await this.pairTHP();
 
-        await this.completeOnboardingButton.click();
+        await this.passInitializedDeviceCheck();
         await this.page.discoveryShouldFinish();
+    }
+
+    @step()
+    async passDeviceCheck() {
+        await this.confirmDeviceCheckAndContinue(this.setupDeviceButton);
+    }
+
+    @step()
+    async passInitializedDeviceCheck() {
+        await this.confirmDeviceCheckAndContinue(this.completeOnboardingButton);
+    }
+
+    private async confirmDeviceCheckAndContinue(continueButton: Locator) {
+        await continueButton.waitFor();
+        for (const checkbox of await this.deviceCheckCheckboxes.all()) {
+            await checkbox.click();
+        }
+        await continueButton.click();
     }
 
     @step()
     async passThroughAnalyticsAndDeviceCheck() {
         await this.analyticsSection.continueButton.click();
-        await this.setupDeviceButton.click();
+        await this.passDeviceCheck();
     }
 
     @step()
     async enableAutoconnect() {
         await this.settingsPage.navigateTo('device');
         await this.settingsPage.deviceTab.autoconnectSwitch.click();
-        await this.devicePrompt.allowConnectToTrezor();
+        await this.devicePrompt.allowAutoconnect();
         await this.settingsPage.closeSettings();
     }
 
@@ -270,6 +292,7 @@ export class OnboardingPage {
     async passThroughAuthenticityCheck() {
         await this.authenticityStartButton.click();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
+        await this.device.expectToContainOnDisplay('to check the authenticity of your');
         await this.device.pressYes();
         await this.authenticityContinueButton.click();
     }

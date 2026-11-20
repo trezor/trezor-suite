@@ -1,0 +1,26 @@
+{
+    "name": "@suite-native-app/suite-sync",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@evolu/common": "8.10.0",
+        "@evolu/react-native": "16.0.2",
+        "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/delegated-identity-key-types": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
+        "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-evolu": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "expo-sqlite": "~58.0.14"
+    }
+}

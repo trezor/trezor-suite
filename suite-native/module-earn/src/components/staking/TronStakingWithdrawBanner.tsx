@@ -1,33 +1,39 @@
 import { useSelector } from 'react-redux';
 
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
-    getTronWithdrawableBalance,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingAccountPositionEntry,
+} from '@suite-common/earn-staking';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-interface TronStakingWithdrawBannerProps {
+import { settleTronUnlocks } from '../../utils/staking/settleTronUnlocks';
+
+type TronStakingWithdrawBannerProps = {
     accountKey: AccountKey;
-    nowSeconds: number;
-}
+    nowMs: number;
+};
 
 export const TronStakingWithdrawBanner = ({
     accountKey,
-    nowSeconds,
+    nowMs,
 }: TronStakingWithdrawBannerProps) => {
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const positionEntry = useSelector((state: StakingRootState) =>
+        selectStakingAccountPositionEntry(state, accountKey),
     );
 
-    if (account?.networkType !== 'tron') return null;
+    if (positionEntry === null) return null;
 
-    const withdrawableBalance = getTronWithdrawableBalance(account, nowSeconds);
+    const { networkSymbol } = positionEntry.descriptor;
+    const { withdrawable } = settleTronUnlocks({ position: positionEntry.position, nowMs });
 
-    if (withdrawableBalance === '0') return null;
+    const withdrawableBalance = formatStakingAmount({ amount: withdrawable, networkSymbol });
+
+    if (!isPositiveBalance(withdrawableBalance)) return null;
 
     return (
         <BannerInline
@@ -37,7 +43,7 @@ export const TronStakingWithdrawBanner = ({
                     id="earn.tron.readyToWithdrawAlert"
                     values={{
                         amount: withdrawableBalance,
-                        displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                        displaySymbol: getNetworkDisplaySymbol(networkSymbol),
                     }}
                 />
             }

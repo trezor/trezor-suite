@@ -3,9 +3,7 @@ name: "[Test] PR Suite Desktop Connect e2e tests"
 # or the connect e2e tests themselves
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
-  pull-requests: write # for posting comments
+  contents: read
 
 on:
   pull_request:
@@ -37,6 +35,9 @@ jobs:
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
   run-e2e-connect-tests:
+    permissions:
+      contents: read
+      pull-requests: write
     if: github.repository == 'trezor/trezor-suite'
     needs:
       - build-app

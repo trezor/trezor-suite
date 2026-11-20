@@ -12,6 +12,7 @@ import {
 } from '@suite-common/trading';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 
@@ -216,6 +217,7 @@ describe('useExchangeDexQuote', () => {
                 provider: DEX_QUOTE_WITHOUT_TRANSACTION.exchange,
                 transactionData: '0xstale',
                 outputs: STALE_OUTPUTS,
+                ethereumAdjustGasLimit: ETHEREUM_ADJUST_GAS_LIMIT,
             }),
             quotes: [DEX_QUOTE_WITHOUT_TRANSACTION, SELECTED_DEX_QUOTE],
         });
@@ -226,9 +228,8 @@ describe('useExchangeDexQuote', () => {
             expect(result.current.methods.getValues('ethereumFixedGasLimit')).toBe(
                 ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
             );
+            expect(result.current.methods.getValues('ethereumAdjustGasLimit')).toBeUndefined();
         });
-
-        expect(result.current.methods.getValues('ethereumAdjustGasLimit')).toBeUndefined();
     });
 
     it('does not use a fixed gas limit for a token send without dexTx', async () => {
@@ -249,12 +250,13 @@ describe('useExchangeDexQuote', () => {
         });
     });
 
-    it('clears transaction data and receive address for a non-DEX exchange type', async () => {
+    it('clears transaction data, receive address and gas limits for a non-DEX exchange type', async () => {
         const { result } = renderExchangeDexQuote({
             defaultValues: buildDefaults({
                 exchangeType: TRADING_EXCHANGE_FORM_CEX,
                 transactionData: '0xstale',
                 outputs: STALE_OUTPUTS,
+                ethereumAdjustGasLimit: ETHEREUM_ADJUST_GAS_LIMIT,
                 ethereumFixedGasLimit: ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
             }),
             quotes: [DEX_QUOTE],
@@ -263,6 +265,7 @@ describe('useExchangeDexQuote', () => {
         await waitFor(() => {
             expect(result.current.methods.getValues('transactionData')).toBe('');
             expect(result.current.methods.getValues('outputs.0.address')).toBe('');
+            expect(result.current.methods.getValues('ethereumAdjustGasLimit')).toBeUndefined();
             expect(result.current.methods.getValues('ethereumFixedGasLimit')).toBeUndefined();
         });
     });

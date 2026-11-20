@@ -64,8 +64,7 @@ test.describe('Passphrase with cardano', { tag: ['@optional', '@T3W1', '@T3T1'] 
             await test.step('Enter correct passphrase when device asks for passphrase after reset', async () => {
                 await dashboardPage.passphraseInput.fill(passphrase);
                 await dashboardPage.passphraseSubmitButton.click();
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+                await devicePrompt.confirmPassphraseOnDevice(passphrase);
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowReceiveAddress(correctPassphraseAddr, {
@@ -83,8 +82,7 @@ test.describe('Passphrase with cardano', { tag: ['@optional', '@T3W1', '@T3T1'] 
                 await walletPage.verifyAddressButton.click();
                 await dashboardPage.passphraseInput.fill('wrong passphrase');
                 await dashboardPage.passphraseSubmitButton.click();
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+                await devicePrompt.confirmPassphraseOnDevice('wrong passphrase');
 
                 await expect(walletPage.verifyAddressErrorToast).toBeVisible();
             });

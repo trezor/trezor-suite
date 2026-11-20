@@ -1,9 +1,4 @@
-import type { BundledParams, GetPublicKey, Params, Response } from '../../params';
+import type { BundleableMethod, GetPublicKey } from '../../params';
 import type { HDNodeResponse } from '../account/getPublicKey';
 
-export declare function ethereumGetPublicKey(
-    params: Params<GetPublicKey>,
-): Response<HDNodeResponse>;
-export declare function ethereumGetPublicKey(
-    params: BundledParams<GetPublicKey>,
-): Response<HDNodeResponse[]>;
+export declare const ethereumGetPublicKey: BundleableMethod<GetPublicKey, HDNodeResponse>;

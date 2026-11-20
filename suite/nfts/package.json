@@ -12,8 +12,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -29,7 +31,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

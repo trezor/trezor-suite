@@ -43,6 +43,10 @@ jobs:
       fail-fast: false
       matrix:
         TEST_GROUP: [0, 1, 2, 3, 4]
+    env:
+      CURRENTS_PROJECT_ID: iUe1Y4
+      CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
+      CURRENTS_MACHINE_ID: android-group-${{ matrix.TEST_GROUP }}
 
     steps:
       - name: Checkout project
@@ -60,6 +64,13 @@ jobs:
           swap-storage: false
           large-packages: false
 
+      - name: Pull trezor-user-env images
+        id: pull-tenv-images
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+        run: docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+        background: true
+
       - name: Install node and yarn
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
@@ -74,7 +85,7 @@ jobs:
         with:
           path: |
             node_modules
-            suite-native/app/node_modules
+            suite-native-app/app/node_modules
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
@@ -101,6 +112,8 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
+          permission-pull-requests: write
 
       - name: Extract Release Build
         id: extract_branch
@@ -110,20 +123,21 @@ jobs:
 
       - name: Get device name from detox config file
         id: device
-        run: node -e "console.log('AVD_NAME=' + require('./suite-native/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
+        run: node -e "console.log('AVD_NAME=' + require('./suite-native-app/app/.detoxrc').devices.emulator.device.avdName)" >> $GITHUB_OUTPUT
+
+      - name: Wait for trezor-user-env images
+        wait: pull-tenv-images
 
       - name: Run trezor-user-env
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
-        run: |
-          docker compose pull trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
-          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
+        run: docker compose up --detach trezor-user-env-unix trezor-user-env-regtest quota-db suite-sync
 
       - name: Download Android build artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: android-test-build-${{ github.run_id }}
-          path: suite-native/app/android/app/build/
+          path: suite-native-app/app/android/app/build/
 
       - name: Enable Android emulator KVM optimalization
         run: |
@@ -141,10 +155,8 @@ jobs:
           PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
           TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
           GITHUB_ACTION: true
-          CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
-          CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
           # On a pull request GITHUB_SHA is the ephemeral merge commit, not what was pushed.
@@ -153,7 +165,7 @@ jobs:
           api-level: 34
           profile: pixel_6
           arch: x86_64
-          working-directory: suite-native/app
+          working-directory: suite-native-app/app
           ram-size: 4096M
           force-avd-creation: true
           avd-name: ${{ steps.device.outputs.AVD_NAME }}
@@ -175,44 +187,56 @@ jobs:
           project: "native android"
           currents-project-id: "iUe1Y4"
 
-      # The Detox artifacts and the trezor-user-env logs are attached to the Currents results by the
-      # test runner, only what it cannot reach from inside the emulator run is collected here.
+      - name: Extract and Attach Logs to Currents
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/upload-test-logs
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          TEST_ENV_LOG_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+        with:
+          destination: currents
+          currents-workspace: "@suite-native-app/app"
+
       - name: Extract emulator crash reports
         if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
-          LOG_DIR="suite-native/app/crash-reports"
+          LOG_DIR="suite-native-app/app/crash-reports"
           mkdir -p "$LOG_DIR/tombstones"
-          # Emulator crash DB written by QEMU to the host filesystem on abnormal termination
+          # Crashpad databases also exist on healthy runs; only collect those with crash dumps.
           find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
             | while IFS= read -r -d '' db; do
-              cp "$db" "$LOG_DIR/$(basename "$db")" || true
-              sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
+              if [[ -d "$db" && -z "$(find "$db" -type f -name '*.dmp' -print -quit)" ]]; then
+                continue
+              fi
+              cp -r "$db" "$LOG_DIR/$(basename "$db")" || true
+              if [[ -f "$db" ]]; then
+                sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
+              fi
             done || true
           # Android tombstones (only available if the emulator is still reachable via ADB)
           adb shell ls /data/tombstones/ 2>/dev/null \
             && adb pull /data/tombstones/. "$LOG_DIR/tombstones" \
             || true
-          docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
-          docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 
       - name: Summarize performance report
         if: always()
         continue-on-error: true
         shell: bash
         env:
-          # Absolute: `yarn workspace … exec` runs inside suite-native/app.
-          PERF_REPORT: ${{ github.workspace }}/suite-native/app/artifacts/performance/perf-report.json
+          # Absolute: `yarn workspace … exec` runs inside suite-native-app/app.
+          PERF_REPORT: ${{ github.workspace }}/suite-native-app/app/artifacts/performance/perf-report.json
           SHARD: ${{ matrix.TEST_GROUP }}
-        run: yarn workspace @suite-native/app exec tsx e2e/support/performance/summarize.ts
+        run: yarn workspace @suite-native-app/app exec tsx e2e/support/performance/summarize.ts
 
       - name: "Store performance report"
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-perf-report-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/artifacts/performance/perf-report.json
+          path: suite-native-app/app/artifacts/performance/perf-report.json
           if-no-files-found: ignore
           retention-days: 14
 
@@ -221,6 +245,6 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-emulator-crashes-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/crash-reports
+          path: suite-native-app/app/crash-reports
           if-no-files-found: ignore
           retention-days: 14

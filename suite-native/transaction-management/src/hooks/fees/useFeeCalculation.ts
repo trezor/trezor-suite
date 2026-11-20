@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -22,6 +23,7 @@ import { selectFeeLevels } from '../../selectors';
 
 type UseFeeCalculationParams = {
     accountKey: AccountKey;
+    tokenContract?: TokenAddress;
     selectedFee?: FeeLevelLabel;
     selectedFeePerUnit?: string;
     selectedSetMaxOutputId?: number;
@@ -29,6 +31,7 @@ type UseFeeCalculationParams = {
 
 export const useFeeCalculation = ({
     accountKey,
+    tokenContract,
     selectedFee,
     selectedFeePerUnit,
     selectedSetMaxOutputId,
@@ -43,6 +46,7 @@ export const useFeeCalculation = ({
 
     const form = useFeesForm({
         accountKey,
+        tokenContract,
         defaultFeeLevel: selectedFee,
         defaultFeePerUnit: selectedFeePerUnit,
     });

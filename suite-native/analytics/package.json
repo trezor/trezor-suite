@@ -15,6 +15,7 @@
         "@suite-common/feedback": "workspace:*",
         "@suite-common/locale": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -25,6 +26,6 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:^",
-        "react-native": "0.86.3"
+        "react-native": "0.88.1"
     }
 }

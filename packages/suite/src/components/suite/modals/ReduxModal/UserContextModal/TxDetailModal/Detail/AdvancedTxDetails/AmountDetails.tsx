@@ -1,10 +1,11 @@
 import { Translation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     selectBaseCurrency,
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatCardanoDeposit,
@@ -21,12 +22,11 @@ import {
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FormattedDate } from 'src/components/suite/FormattedDate';
-import { AmountComponent } from 'src/components/wallet/AmountComponent';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FormattedDate } from '#src/components/suite/FormattedDate';
+import { AmountComponent } from '#src/components/wallet/AmountComponent';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { HistoricRateChange } from './HistoricRateChange';
 
@@ -125,7 +125,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <Text intent="neutral">
                                     <FormattedCryptoAmount
                                         value={amount.abs().toString()}
-                                        symbol={tx.symbol}
+                                        networkSymbol={tx.symbol}
                                         signValue={getAmountSignValue()}
                                     />
                                 </Text>
@@ -164,7 +164,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={formatNetworkAmount(transfer.amount, tx.symbol)}
-                                    symbol={tx.symbol}
+                                    networkSymbol={tx.symbol}
                                     signValue={getTxOperation(transfer.type, true)}
                                 />
                             </Text>
@@ -260,7 +260,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                             historicRate={historicTokenRate}
                                             historicTimestamp={tx.blockTime as Timestamp}
                                             tokenAddress={transfer.contract as TokenAddress}
-                                            displaySymbol={transfer.symbol}
                                         />
                                     )}
                                 </Table.Cell>
@@ -278,7 +277,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={cardanoWithdrawal}
-                                    symbol={tx.symbol}
+                                    networkSymbol={tx.symbol}
                                     signValue={getCardanoStakingSignValue(tx)}
                                 />
                             </Text>
@@ -312,7 +311,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={cardanoDeposit}
-                                    symbol={tx.symbol}
+                                    networkSymbol={tx.symbol}
                                     signValue={getCardanoStakingSignValue(tx)}
                                 />
                             </Text>
@@ -347,7 +346,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <Text intent="neutral">
                                 <FormattedCryptoAmount
                                     value={fee}
-                                    symbol={tx.symbol}
+                                    networkSymbol={tx.symbol}
                                     signValue={new BigNumber(fee).isZero() ? undefined : 'negative'}
                                 />
                             </Text>

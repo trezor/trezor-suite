@@ -152,6 +152,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
             await test.step('Approve and Verify Send readiness', async () => {
                 // hold & sign
                 if (device.model !== Model.T3W1) {
+                    await device.expectToContainOnDisplay('Sign transaction');
                     await devicePrompt.waitForPromptAndClick();
                 }
 

@@ -1,21 +1,15 @@
-import { useSelector } from 'react-redux';
-
 import {
-    type StakeRootState,
-    isSupportedNativeStakingManagementSymbol,
-    selectAccountNetworkSymbol,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
-    selectTotalStakePendingByAccountKey,
-    selectUnstakingBalanceByAccountKey,
-    selectUnstakingPeriodInDaysByAccountKey,
-} from '@suite-common/wallet-core';
+    formatStakingAmount,
+    getStakingOperationAvailability,
+    useStakingAccountPosition,
+    useStakingPeriods,
+} from '@suite-common/earn-staking';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { isPositiveBalance, parseAccountKey } from '@suite-common/wallet-utils';
 import { Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 
+import { StakingDaysLabel } from './StakingDaysLabel';
 import { StakingManagementPendingItem } from './StakingManagementPendingItem';
 import { StakingManagementPendingStakeModal } from './StakingManagementPendingStakeModal';
 import { StakingManagementReadyToClaimCard } from './StakingManagementReadyToClaimCard';
@@ -28,32 +22,10 @@ type StakingManagementPendingSectionProps = {
 export const StakingManagementPendingSection = ({
     accountKey,
 }: StakingManagementPendingSectionProps) => {
-    const claimableAmount =
-        useSelector((state: StakeRootState) =>
-            selectClaimableAmountByAccountKey(state, accountKey),
-        ) ?? '0';
+    const { networkSymbol } = parseAccountKey(accountKey);
 
-    const unstakingBalance =
-        useSelector((state: StakeRootState) =>
-            selectUnstakingBalanceByAccountKey(state, accountKey),
-        ) ?? '0';
-
-    const totalStakePending =
-        useSelector((state: StakeRootState) =>
-            selectTotalStakePendingByAccountKey(state, accountKey),
-        ) ?? '0';
-
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
-        selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
-    );
-
-    const canClaim = useSelector((state: StakeRootState) =>
-        selectCanClaimByAccountKey(state, accountKey),
-    );
-
-    const symbol = useSelector((state: StakeRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
+    const { productId, position, totals, access } = useStakingAccountPosition(accountKey);
+    const { exitPeriodDays } = useStakingPeriods(productId);
 
     const {
         bottomSheetRef: unstakingModalRef,
@@ -67,15 +39,15 @@ export const StakingManagementPendingSection = ({
         closeModal: closePendingStakeModal,
     } = useBottomSheetModal();
 
+    // A withheld withdraw keeps its card, with the reason, as the kill switch did.
     const isClaim =
-        isPositiveBalance(claimableAmount) &&
-        canClaim &&
-        !!symbol &&
-        isSupportedNativeStakingManagementSymbol(symbol);
+        getStakingOperationAvailability({ position, access, operation: 'withdraw' }) !==
+        'unavailable';
 
-    const hasPendingUnstaking =
-        isPositiveBalance(unstakingBalance) && !new BigNumber(unstakingBalance).eq(claimableAmount);
+    const unstakingBalance = formatStakingAmount({ amount: totals.unstaking, networkSymbol });
+    const totalStakePending = formatStakingAmount({ amount: totals.pending, networkSymbol });
 
+    const hasPendingUnstaking = isPositiveBalance(unstakingBalance);
     const hasPendingDeposit = isPositiveBalance(totalStakePending);
 
     const hasPendingActions = isClaim || hasPendingUnstaking || hasPendingDeposit;
@@ -93,9 +65,10 @@ export const StakingManagementPendingSection = ({
                     <StakingManagementPendingItem
                         accountKey={accountKey}
                         label={
-                            <Translation
-                                id="earn.stakingManagementScreen.unstakingItem.label"
-                                values={{ days: unstakingPeriodInDays }}
+                            <StakingDaysLabel
+                                days={exitPeriodDays}
+                                withDaysId="earn.stakingManagementScreen.unstakingItem.label"
+                                withoutDaysId="earn.stakingManagementScreen.unstakingItem.labelWithoutDays"
                             />
                         }
                         amount={unstakingBalance}

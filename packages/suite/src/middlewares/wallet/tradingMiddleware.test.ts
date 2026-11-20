@@ -12,37 +12,35 @@ import {
 import { getRequiredRoute } from '@suite/router/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
+    type ApprovalFlowState,
     type TradingState,
+    createInstallTradeApiKey,
+    createSaltedTradeApiKey,
     initialState,
     prepareTradingReducer,
     tradeApi,
     tradingActions,
+    tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
 import { type AccountsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
-import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type SelectedAccountStatus,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
-import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { ACCOUNT } from '#src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
+import { tradingMiddleware } from '#src/middlewares/wallet/tradingMiddleware';
+import suiteReducer, { type SuiteState } from '#src/reducers/suite/suiteReducer';
 
 import { tradingMiddlewareFixtures } from './__fixtures__/tradingMiddleware';
 
-jest.mock('@suite-common/trading', () => {
-    const originalModule = jest.requireActual('@suite-common/trading');
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        tradeApi: {
-            createApiKey: jest.fn(),
-        },
-    };
-});
+jest.spyOn(tradeApi, 'setApiKey').mockImplementation(() => {});
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -62,7 +60,12 @@ type StoreState = {
     router: RouterState;
     modal: ModalState;
 };
-const accounts = [ACCOUNT];
+const RECEIVE_ACCOUNT = {
+    ...ACCOUNT,
+    descriptor: asAccountDescriptor('receiveDescriptor'),
+    key: mockAccountKey({ descriptor: 'receiveDescriptor' }),
+};
+const accounts = [ACCOUNT, RECEIVE_ACCOUNT];
 
 interface Args {
     trading?: TradingState;
@@ -320,6 +323,38 @@ describe('tradingMiddleware', () => {
         expect(store.getState().wallet.trading.exchange.tradingAccountKey).toBe(boundAccountKey);
     });
 
+    const approvalFlow: ApprovalFlowState = { steps: ['approve', 'swap'], sentTxids: {} };
+
+    it.each([
+        ['clears', 'the form', tradingMiddlewareFixtures.TRADING_EXCHANGE_ROUTE, undefined],
+        [
+            'keeps',
+            'the confirm route',
+            tradingMiddlewareFixtures.TRADING_EXCHANGE_CONFIRM_ROUTE,
+            approvalFlow,
+        ],
+    ] as const)(
+        '%s the approval flow when %s is entered from the approval route',
+        (_, __, routeChange, expected) => {
+            const store = initStore(
+                getInitialState({
+                    trading: {
+                        ...initialState,
+                        exchange: {
+                            ...initialState.exchange,
+                            approvalFlow,
+                        },
+                    },
+                    router: tradingMiddlewareFixtures.TRADING_EXCHANGE_APPROVAL_ROUTE,
+                }),
+            );
+
+            store.dispatch(routerLocationChange({ ...routeChange }));
+
+            expect(store.getState().wallet.trading.exchange.approvalFlow).toEqual(expected);
+        },
+    );
+
     it('should reset trading account keys when the trading redirect is entered from outside the trading section', () => {
         const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
         const store = initStore(
@@ -460,9 +495,32 @@ describe('tradingMiddleware', () => {
             payload: 'btc-descriptor',
         });
 
-        expect(tradeApi.createApiKey).toHaveBeenCalledTimes(1);
+        expect(tradeApi.setApiKey).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading[section].tradingAccountKey).toEqual(
             'btc-descriptor',
+        );
+    });
+
+    it('sets the API key of the buy receive account and falls back to the install key for a custom address', () => {
+        const store = initStore(
+            getInitialState({
+                trading: { ...initialState, activeSection: 'buy' },
+                router: { ...getInitialState().router },
+            }),
+        );
+        const getInstallSalt = () => store.getState().wallet.trading.tradeApiInstallSalt ?? '';
+
+        store.dispatch(tradingBuyActions.setReceiveAccountKey(RECEIVE_ACCOUNT.key));
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createSaltedTradeApiKey({
+                descriptor: RECEIVE_ACCOUNT.descriptor,
+                salt: getInstallSalt(),
+            }),
+        );
+
+        store.dispatch(tradingBuyActions.setReceiveAccountKey(undefined));
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createInstallTradeApiKey(getInstallSalt()),
         );
     });
 
@@ -491,7 +549,7 @@ describe('tradingMiddleware', () => {
                 }),
             );
 
-            expect(tradeApi.createApiKey).toHaveBeenCalledTimes(calls);
+            expect(tradeApi.setApiKey).toHaveBeenCalledTimes(calls);
         },
     );
 });

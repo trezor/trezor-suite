@@ -14,6 +14,7 @@ import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 
 import {
@@ -25,6 +26,7 @@ import {
     selectDeviceTradingTradesOrderedByDate,
     selectGroupedExchangeQuotes,
     selectGroupedTradingExchangeQuotes,
+    selectIsTradingBuyAvailableForNetworkSymbol,
     selectIsTradingNetworkFeeMissing,
     selectTradedAccountKeys,
     selectTradingAccountAccordingActiveSection,
@@ -53,6 +55,7 @@ import {
     selectTradingDisplayComposedFee,
     selectTradingExchange,
     selectTradingExchangeActiveTrade,
+    selectTradingExchangeAllowance,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeCexQuotes,
@@ -70,6 +73,7 @@ import {
     selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
+    selectTradingExchangeSelectedQuoteAllowance,
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
@@ -386,7 +390,7 @@ describe('tradingSelectors', () => {
         state = { ...getState(), networks: mockNetworksState(supportedCoins) };
     });
 
-    describe(selectTradingBuy.name, () => {
+    describe('selectTradingBuy', () => {
         it('should return correct data', () => {
             const expectedState = getBuyState() as Record<string, any>;
             expectedState.buyInfo.buyInfo.defaultAmountsOfFiatCurrencies = new Map([
@@ -411,7 +415,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchange.name, () => {
+    describe('selectTradingExchange', () => {
         it('should return correct data', () => {
             const expectedState = getExchangeState() as Record<string, any>;
             expectedState.exchangeInfo.buyCryptoIds = new Set(['bitcoin']);
@@ -433,7 +437,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyInfo.name, () => {
+    describe('selectTradingBuyInfo', () => {
         it('should return correct data', () => {
             const stateBuy = {
                 wallet: {
@@ -477,7 +481,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeInfo.name, () => {
+    describe('selectTradingExchangeInfo', () => {
         it('should return correct data', () => {
             expect(selectTradingExchangeInfo(state)).toEqual({
                 providerInfos: { test: expect.objectContaining({ name: 'test' }) },
@@ -512,7 +516,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellInfo.name, () => {
+    describe('selectTradingSellInfo', () => {
         it('should return correct data', () => {
             const stateExchange = {
                 wallet: {
@@ -554,7 +558,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyProviders.name, () => {
+    describe('selectTradingBuyProviders', () => {
         it('should return correct data', () => {
             expect(selectTradingBuyProviders(state)).toEqual(
                 state.wallet.trading.buy.buyInfo?.providerInfos,
@@ -566,7 +570,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeProviders.name, () => {
+    describe('selectTradingExchangeProviders', () => {
         it('should return correct data', () => {
             expect(selectTradingExchangeProviders(state)).toEqual(
                 state.wallet.trading.exchange.exchangeInfo?.providerInfos,
@@ -580,7 +584,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellProviders.name, () => {
+    describe('selectTradingSellProviders', () => {
         it('should return correct data', () => {
             expect(selectTradingSellProviders(state)).toEqual(
                 state.wallet.trading.sell.sellInfo?.providerInfos,
@@ -680,7 +684,7 @@ describe('tradingSelectors', () => {
         expect(selectTradingTrades(state)).toBe(state.wallet.trading.trades);
     });
 
-    describe(selectTradedAccountKeys.name, () => {
+    describe('selectTradedAccountKeys', () => {
         it('should return unique account keys across all trades (send, receive, selected)', () => {
             expect(selectTradedAccountKeys(state)).toEqual([accountEth.key, accountBtc.key]);
         });
@@ -692,7 +696,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectDeviceTradingTradesOrderedByDate.name, () => {
+    describe('selectDeviceTradingTradesOrderedByDate', () => {
         it('should return trades ordered by date in descending order', () => {
             const result = selectDeviceTradingTradesOrderedByDate(state);
 
@@ -734,7 +738,7 @@ describe('tradingSelectors', () => {
         expect(selectTradingTradeByOrderId(state, 'unknown_order')).toBeUndefined();
     });
 
-    describe(selectTradingSellActiveTrade.name, () => {
+    describe('selectTradingSellActiveTrade', () => {
         const sellTrade: TradingTransactionSell = {
             tradeType: 'sell',
             key: 'sell1',
@@ -772,7 +776,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeActiveTrade.name, () => {
+    describe('selectTradingExchangeActiveTrade', () => {
         const sellTrade: TradingTransactionSell = {
             tradeType: 'sell',
             key: 'sell1',
@@ -809,7 +813,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingCoinInfoByCryptoId.name, () => {
+    describe('selectTradingCoinInfoByCryptoId', () => {
         it('should return coin data', () => {
             expect(selectTradingCoinInfoByCryptoId(state, 'bitcoin' as CryptoId)).toEqual({
                 symbol: 'btc',
@@ -828,7 +832,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingCoinSymbolByCryptoId.name, () => {
+    describe('selectTradingCoinSymbolByCryptoId', () => {
         it('should return coin symbol', () => {
             expect(selectTradingCoinSymbolByCryptoId(state, 'bitcoin' as CryptoId)).toBe('BTC');
         });
@@ -846,7 +850,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSymbolAndContractAddressByCryptoId.name, () => {
+    describe('selectTradingSymbolAndContractAddressByCryptoId', () => {
         it.each([
             ['bitcoin', { coinSymbol: 'BTC', contractAddress: undefined }],
             [
@@ -872,7 +876,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuySupportedCryptoIds.name, () => {
+    describe('selectTradingBuySupportedCryptoIds', () => {
         it('should select only coins presented in buyInfo and info', () => {
             expect(selectTradingBuySupportedCryptoIds(state)).toEqual([
                 'bitcoin',
@@ -927,7 +931,58 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellSupportedCryptoIds.name, () => {
+    describe('selectIsTradingBuyAvailableForNetworkSymbol', () => {
+        const btc = asNetworkSymbol('btc');
+        const zec = asNetworkSymbol('zec');
+
+        it('should follow the loaded catalog', () => {
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, btc)).toBe(true);
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(false);
+        });
+
+        it('should not count a token as its native coin', () => {
+            const buyInfo = getBuyState().buyInfo!;
+
+            state.wallet.trading.buy.buyInfo = {
+                ...buyInfo,
+                supportedCryptoCurrencies: [
+                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                    'bitcoin',
+                ] as CryptoId[],
+            };
+
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, btc)).toBe(true);
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, asNetworkSymbol('eth'))).toBe(
+                false,
+            );
+        });
+
+        it('should keep buying available while buy info is not loaded', () => {
+            state.wallet.trading.buy.buyInfo = undefined;
+
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(true);
+        });
+
+        it('should keep buying available when the provider list failed to load', () => {
+            const buyInfo = getBuyState().buyInfo!;
+
+            state.wallet.trading.buy.buyInfo = {
+                ...buyInfo,
+                buyInfo: { ...buyInfo.buyInfo, providers: [] },
+                supportedCryptoCurrencies: [],
+            };
+
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(true);
+        });
+
+        it('should keep buying available while the coin catalog is not loaded', () => {
+            state.wallet.trading.info.coins = undefined;
+
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(true);
+        });
+    });
+
+    describe('selectTradingSellSupportedCryptoIds', () => {
         it('should select only coins presented in sellInfo and info', () => {
             expect(selectTradingSellSupportedCryptoIds(state)).toEqual([
                 'bitcoin',
@@ -963,7 +1018,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeSellCryptoIds.name, () => {
+    describe('selectTradingExchangeSellCryptoIds', () => {
         it('should select only coins presented in exchangeInfo and info', () => {
             expect(selectTradingExchangeSellCryptoIds(state)).toEqual([
                 'bitcoin',
@@ -999,7 +1054,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeBuyCryptoIds.name, () => {
+    describe('selectTradingExchangeBuyCryptoIds', () => {
         it('should select only coins presented in exchangeInfo and info', () => {
             expect(selectTradingExchangeBuyCryptoIds(state)).toEqual(['bitcoin']);
         });
@@ -1030,7 +1085,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyIsLoading.name, () => {
+    describe('selectTradingBuyIsLoading', () => {
         it('should be false when trading is not loading', () => {
             expect(selectTradingBuyIsLoading(state)).toBe(false);
         });
@@ -1052,13 +1107,13 @@ describe('tradingSelectors', () => {
         expect(selectTradingBuyAmountLimits(state)).toEqual(state.wallet.trading.buy.amountLimits);
     });
 
-    describe(selectTradingBuyQuotes.name, () => {
+    describe('selectTradingBuyQuotes', () => {
         it('should return quotes', () => {
             expect(selectTradingBuyQuotes(state)).toBe(state.wallet.trading.buy.quotes);
         });
     });
 
-    describe(selectTradingBuyQuotesByPaymentMethod.name, () => {
+    describe('selectTradingBuyQuotesByPaymentMethod', () => {
         it('should filter quotes by payment method and ignore quote errors', () => {
             state.wallet.trading.buy.quotes = [
                 {
@@ -1091,7 +1146,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyOfferQuotes.name, () => {
+    describe('selectTradingBuyOfferQuotes', () => {
         it('should deduplicate quotes of the selected payment method by provider', () => {
             state.wallet.trading.buy.quotes = [
                 {
@@ -1141,7 +1196,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeIsLoading.name, () => {
+    describe('selectTradingExchangeIsLoading', () => {
         it('should be false when trading is not loading', () => {
             expect(selectTradingExchangeIsLoading(state)).toBe(false);
         });
@@ -1165,7 +1220,7 @@ describe('tradingSelectors', () => {
         );
     });
 
-    describe(selectGroupedTradingExchangeQuotes.name, () => {
+    describe('selectGroupedTradingExchangeQuotes', () => {
         beforeEach(() => {
             state.wallet.trading.exchange.exchangeInfo = {
                 providerInfos: {
@@ -1212,7 +1267,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectGroupedExchangeQuotes.name, () => {
+    describe('selectGroupedExchangeQuotes', () => {
         beforeEach(() => {
             state.wallet.trading.exchange.exchangeInfo = {
                 providerInfos: {
@@ -1259,7 +1314,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeDexQuotes.name, () => {
+    describe('selectTradingExchangeDexQuotes', () => {
         it('should return dex exchange quotes only', () => {
             state.wallet.trading.exchange.exchangeInfo = {
                 providerInfos: {},
@@ -1285,7 +1340,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeCexQuotes.name, () => {
+    describe('selectTradingExchangeCexQuotes', () => {
         it('should return non-dex exchange quotes only', () => {
             state.wallet.trading.exchange.exchangeInfo = {
                 providerInfos: {
@@ -1322,7 +1377,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSelectedQuoteByFormValues.name, () => {
+    describe('selectTradingSelectedQuoteByFormValues', () => {
         describe('buy', () => {
             beforeEach(() => {
                 state.wallet.trading.buy.quotes = [
@@ -1504,7 +1559,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingFormCryptoId.name, () => {
+    describe('selectTradingFormCryptoId', () => {
         const eligibleBtc = mockWalletAccount({
             symbol: asNetworkSymbol('btc'),
             deviceState: accountBtc.deviceState as StaticSessionId,
@@ -1703,7 +1758,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingActiveSection.name, () => {
+    describe('selectTradingActiveSection', () => {
         it('should return stable activeSection ', () => {
             expect(selectTradingActiveSection(state)).toEqual('sell');
         });
@@ -1728,7 +1783,7 @@ describe('tradingSelectors', () => {
         },
     } as unknown as ExchangeTrade;
 
-    describe(selectTradingExchangeQuoteToEstimate.name, () => {
+    describe('selectTradingExchangeQuoteToEstimate', () => {
         const offer: ExchangeTrade = {
             exchange: 'lifi',
             isDex: true,
@@ -1810,7 +1865,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingDisplayComposedFee.name, () => {
+    describe('selectTradingDisplayComposedFee', () => {
         it.each([
             ['return the composed fee for a regular quote', { fee: '12345' }, undefined, '12345'],
             ['return undefined when there is no composed fee', undefined, undefined, undefined],
@@ -1827,7 +1882,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectIsTradingNetworkFeeMissing.name, () => {
+    describe('selectIsTradingNetworkFeeMissing', () => {
         it.each([
             ['false when the composed fee is present', { fee: '12345' }, undefined, false],
             ['true when the composed fee is undefined', undefined, undefined, true],
@@ -1848,7 +1903,7 @@ describe('tradingSelectors', () => {
         );
     });
 
-    describe(selectTradingAccountAccordingActiveSection.name, () => {
+    describe('selectTradingAccountAccordingActiveSection', () => {
         it('should return correct account for buy according to tradingAccountKey', () => {
             expect(
                 selectTradingAccountAccordingActiveSection(
@@ -1892,7 +1947,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectValidTradingBuyQuotes.name, () => {
+    describe('selectValidTradingBuyQuotes', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
                 {
@@ -1935,7 +1990,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectValidTradingSellQuotes.name, () => {
+    describe('selectValidTradingSellQuotes', () => {
         beforeEach(() => {
             const quoteDraft = state.wallet.trading.sell.quotes[0];
 
@@ -1969,7 +2024,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyPaymentMethods.name, () => {
+    describe('selectTradingBuyPaymentMethods', () => {
         it('should map each quote to a payment method option', () => {
             state.wallet.trading.buy.quotes = [
                 {
@@ -1990,7 +2045,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyQuotesPerPaymentMethod.name, () => {
+    describe('selectTradingBuyQuotesPerPaymentMethod', () => {
         const buildBuyQuote = (overrides: Partial<BuyTrade>): BuyTrade => ({
             fiatStringAmount: '10',
             fiatCurrency: 'EUR',
@@ -2049,7 +2104,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellPaymentMethods.name, () => {
+    describe('selectTradingSellPaymentMethods', () => {
         it('should map each quote to a payment method option', () => {
             const quoteDraft = state.wallet.trading.sell.quotes[0];
             state.wallet.trading.sell.quotes = [
@@ -2070,7 +2125,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellQuotesPerPaymentMethod.name, () => {
+    describe('selectTradingSellQuotesPerPaymentMethod', () => {
         it('should keep the best quote per payment method', () => {
             const quoteDraft = {
                 ...state.wallet.trading.sell.quotes[0],
@@ -2133,7 +2188,7 @@ describe('tradingSelectors', () => {
         );
     });
 
-    describe(selectTradingSellQuotesByPaymentMethod.name, () => {
+    describe('selectTradingSellQuotesByPaymentMethod', () => {
         it('should filter quotes by payment method and ignore quote errors', () => {
             state.wallet.trading.sell.quotes = [
                 {
@@ -2166,7 +2221,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellOfferQuotes.name, () => {
+    describe('selectTradingSellOfferQuotes', () => {
         it('should deduplicate quotes of the selected payment method by provider', () => {
             state.wallet.trading.sell.quotes = [
                 {
@@ -2213,7 +2268,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyLoadingTimestampAndStatus.name, () => {
+    describe('selectTradingBuyLoadingTimestampAndStatus', () => {
         it.each<[boolean, number]>([
             [true, 0],
             [false, 123456789],
@@ -2255,7 +2310,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingExchangeLoadingTimestampAndStatus.name, () => {
+    describe('selectTradingExchangeLoadingTimestampAndStatus', () => {
         it.each<[boolean, number]>([
             [true, 0],
             [false, 123456789],
@@ -2311,7 +2366,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellLoadingTimestampAndStatus.name, () => {
+    describe('selectTradingSellLoadingTimestampAndStatus', () => {
         it.each<[boolean, number]>([
             [true, 0],
             [false, 123456789],
@@ -2352,13 +2407,13 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSellQuotes.name, () => {
+    describe('selectTradingSellQuotes', () => {
         it('should return quotes from trading sell state', () => {
             expect(selectTradingSellQuotes(state)).toBe(state.wallet.trading.sell.quotes);
         });
     });
 
-    describe(selectTradingQuotesByType.name, () => {
+    describe('selectTradingQuotesByType', () => {
         it('should return buy quotes for buy type', () => {
             expect(selectTradingQuotesByType(state, 'buy')).toBe(state.wallet.trading.buy.quotes);
         });
@@ -2374,7 +2429,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingPaymentMethodsByType.name, () => {
+    describe('selectTradingPaymentMethodsByType', () => {
         it('should return buy payment methods for buy type', () => {
             state.wallet.trading.buy.quotes = [
                 {
@@ -2405,7 +2460,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSelectedPaymentMethodByType.name, () => {
+    describe('selectTradingSelectedPaymentMethodByType', () => {
         beforeEach(() => {
             state.wallet.trading.buy.quotes = [
                 {
@@ -2459,7 +2514,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingQuotesPerPaymentMethodByType.name, () => {
+    describe('selectTradingQuotesPerPaymentMethodByType', () => {
         it('should return buy quotes per payment method for buy type', () => {
             expect(selectTradingQuotesPerPaymentMethodByType(state, 'buy')).toEqual(
                 selectTradingBuyQuotesPerPaymentMethod(state),
@@ -2477,7 +2532,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingProvidersByTradeType.name, () => {
+    describe('selectTradingProvidersByTradeType', () => {
         it.each([
             ['buy', () => state.wallet.trading.buy.buyInfo?.providerInfos],
             ['exchange', () => state.wallet.trading.exchange.exchangeInfo?.providerInfos],
@@ -2496,7 +2551,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSupportedFiatCurrenciesByTradeType.name, () => {
+    describe('selectTradingSupportedFiatCurrenciesByTradeType', () => {
         it('should return the supported fiat currencies for buy', () => {
             expect(selectTradingSupportedFiatCurrenciesByTradeType(state, 'buy')).toEqual(
                 new Set(['usd', 'eur', 'czk']),
@@ -2522,7 +2577,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingProviderByNameAndTradeType.name, () => {
+    describe('selectTradingProviderByNameAndTradeType', () => {
         it('should return the correct provider for buy trade type', () => {
             const providerName = 'provider1';
             state.wallet.trading.buy.buyInfo = {
@@ -2579,7 +2634,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingSupportedSymbols.name, () => {
+    describe('selectTradingSupportedSymbols', () => {
         const supportedSymbols = [
             'bitcoin',
             'ethereum',
@@ -2600,7 +2655,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingBuyReceiveAccount.name, () => {
+    describe('selectTradingBuyReceiveAccount', () => {
         it('should return account for receiveAccountKey', () => {
             state.wallet.trading.buy.receiveAccountKey = accountBtc.key;
 
@@ -2622,7 +2677,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingAccountKeyByTradeType.name, () => {
+    describe('selectTradingAccountKeyByTradeType', () => {
         it('should return exchange account key for exchange trade type', () => {
             const result = selectTradingAccountKeyByTradeType(state, 'exchange');
             expect(result).toBe(accountEth.key);
@@ -2725,7 +2780,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingIsSlip24Allowed.name, () => {
+    describe('selectTradingIsSlip24Allowed', () => {
         beforeEach(() => {
             if (state.device.selectedDevice) {
                 state.device.selectedDevice.unavailableCapabilities = undefined;
@@ -2785,7 +2840,7 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTradingIsSlip24SellAllowed.name, () => {
+    describe('selectTradingIsSlip24SellAllowed', () => {
         const setFirmwareVersion = (minorVersion: number, patchVersion: number) => {
             if (state.device.selectedDevice?.features) {
                 state.device.selectedDevice.features.minor_version = minorVersion;
@@ -2814,4 +2869,69 @@ describe('tradingSelectors', () => {
             expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, false)).toBe(false);
         });
     });
+});
+
+describe('exchange allowance selectors', () => {
+    const ACCOUNT_KEY = mockAccountKey({ descriptor: 'owner' });
+    const USDT_CONTRACT = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+    const SPENDER = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
+    const APPROVE_CALLDATA = buildApprovalTransactionData({ spender: SPENDER, amount: '1' });
+    const allowance = {
+        accountKey: ACCOUNT_KEY,
+        tokenContractAddress: USDT_CONTRACT,
+        spender: SPENDER,
+        requestId: 'read-1',
+        confirmedTxCount: 1,
+        status: 'loaded' as const,
+        amount: '50',
+    };
+    const selectedQuote: ExchangeTrade = {
+        send: `ethereum--${USDT_CONTRACT}` as CryptoId,
+        status: 'APPROVAL_REQ',
+        dexTx: { from: '0xowner', to: USDT_CONTRACT, value: '0', data: APPROVE_CALLDATA },
+    };
+
+    const createState = (
+        exchange: Partial<TradingRootState['wallet']['trading']['exchange']>,
+    ): TradingRootState => ({
+        wallet: {
+            trading: {
+                ...initialState,
+                exchange: { ...initialState.exchange, allowance, selectedQuote, ...exchange },
+            },
+        },
+    });
+
+    it('selectTradingExchangeAllowance returns the tracked allowance', () => {
+        expect(selectTradingExchangeAllowance(createState({}))).toBe(allowance);
+    });
+
+    it('selectTradingExchangeSelectedQuoteAllowance returns the allowance matching the quote', () => {
+        expect(selectTradingExchangeSelectedQuoteAllowance(createState({}), ACCOUNT_KEY)).toBe(
+            allowance,
+        );
+    });
+
+    it.each<[string, Partial<TradingRootState['wallet']['trading']['exchange']>, AccountKey]>([
+        ['another account', {}, mockAccountKey({ descriptor: 'other' })],
+        [
+            'another spender',
+            { allowance: { ...allowance, spender: '0x1111111111111111111111111111111111111111' } },
+            ACCOUNT_KEY,
+        ],
+        [
+            'a quote without approve calldata',
+            { selectedQuote: { ...selectedQuote, dexTx: undefined } },
+            ACCOUNT_KEY,
+        ],
+        ['no quote', { selectedQuote: undefined }, ACCOUNT_KEY],
+        ['no tracked allowance', { allowance: undefined }, ACCOUNT_KEY],
+    ])(
+        'selectTradingExchangeSelectedQuoteAllowance is undefined for %s',
+        (_description, exchange, accountKey) => {
+            expect(
+                selectTradingExchangeSelectedQuoteAllowance(createState(exchange), accountKey),
+            ).toBeUndefined();
+        },
+    );
 });

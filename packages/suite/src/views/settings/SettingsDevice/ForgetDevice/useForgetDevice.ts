@@ -3,7 +3,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk';
+import { suiteForgetDeviceThunk } from '#src/actions/suite/suiteForgetDeviceThunk';
 
 /**
  * Hook that wraps `forgetDeviceThunk` with toast and analytics.

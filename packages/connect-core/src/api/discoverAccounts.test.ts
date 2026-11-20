@@ -1,22 +1,21 @@
 import {
+    type AccountInfo,
     type CoinInfo,
     type Device as DeviceMessage,
     type DiscoverAccountsProgress,
+    type DiscoveryAccountInfoParams,
     UI_EVENTS,
+    UI_REQUESTS,
+    UI_RESPONSE,
     createUiEventMessage,
 } from '@trezor/connect-common';
 
 import DiscoverAccounts from './discoverAccounts';
 import { calculateXPubHash } from './firmware/calculateXPubHash';
-import { initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 import type { Device } from '../device/Device';
-
-jest.mock('../backend/BlockchainLink', () => ({
-    initBlockchain: jest.fn(),
-    assertBackendSupported: jest.fn(),
-}));
+import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
 jest.mock('../data/coinInfo', () => ({
     getCoinInfoOrThrow: jest.fn(),
@@ -38,15 +37,21 @@ const mockDevice = () =>
 
 const mockCoinInfo = () => ({ type: 'bitcoin', shortcut: 'BTC' }) as CoinInfo;
 
+const mockAccountInfo = (descriptor: string, isEmpty: boolean): AccountInfo => ({
+    descriptor,
+    balance: isEmpty ? '0' : '1000',
+    availableBalance: isEmpty ? '0' : '1000',
+    empty: isEmpty,
+    history: { total: isEmpty ? 0 : 1, unconfirmed: 0 },
+});
+
 type DiscoverParams = {
     usedIndexes: number[];
     accountInfoFailingIndexes?: number[];
-    utxoFailingIndexes?: number[];
+    // Indexes whose reads fail only with full details, like a failed UTXO fetch.
+    detailsFailingIndexes?: number[];
     skip?: number;
 };
-
-const rejectOrResolve = <T>(isFailing: boolean, value: T) =>
-    isFailing ? Promise.reject(new Error('Backend error')) : Promise.resolve(value);
 
 const createMethod = (skip = 0) => {
     const method = new DiscoverAccounts({
@@ -60,35 +65,54 @@ const createMethod = (skip = 0) => {
     return method;
 };
 
+// Answers the account info requests the way Suite does, with the response of getAccountInfo.
 const discover = async ({
     usedIndexes,
     accountInfoFailingIndexes = [],
-    utxoFailingIndexes = [],
+    detailsFailingIndexes = [],
     skip = 0,
 }: DiscoverParams) => {
     jest.mocked(getCoinInfoOrThrow).mockReturnValue(mockCoinInfo());
-    jest.mocked(initBlockchain).mockResolvedValue({
-        getAccountInfo: ({ descriptor }: { descriptor: string }) =>
-            rejectOrResolve(accountInfoFailingIndexes.includes(Number(descriptor)), {
-                empty: !usedIndexes.includes(Number(descriptor)),
-            }),
-        getAccountUtxo: (descriptor: string) =>
-            rejectOrResolve(utxoFailingIndexes.includes(Number(descriptor)), []),
-    } as unknown as Awaited<ReturnType<typeof initBlockchain>>);
+    const uiPromises = createUiPromiseManager();
+    const requests: DiscoveryAccountInfoParams[] = [];
+    const discoveredAccounts: (
+        { index: number; failed: true } | { index: number; empty: boolean }
+    )[] = [];
 
-    const sendCoreMessage = jest.fn();
+    const sendCoreMessage: MethodContext['sendCoreMessage'] = message => {
+        if (message.type === UI_EVENTS.BUNDLE_PROGRESS) {
+            const { response }: { response: DiscoverAccountsProgress } = message.payload;
+            discoveredAccounts.push(
+                response.failed
+                    ? { index: response.index, failed: true }
+                    : { index: response.index, empty: response.empty },
+            );
+        }
+        if (message.type !== UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO) return;
+
+        const { descriptor, details } = message.payload;
+        const index = Number(descriptor);
+        const isFailing =
+            accountInfoFailingIndexes.includes(index) ||
+            (details !== 'basic' && detailsFailingIndexes.includes(index));
+        requests.push(message.payload);
+        uiPromises.resolve({
+            type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
+            payload: isFailing
+                ? { success: false, error: { message: 'Backend error', code: 'Backend_Error' } }
+                : {
+                      success: true,
+                      payload: mockAccountInfo(descriptor, !usedIndexes.includes(index)),
+                  },
+            requestId: message.requestId,
+        });
+    };
     const result = await createMethod(skip).run({
         sendCoreMessage,
-    } as unknown as MethodContext);
-    const discoveredAccounts = sendCoreMessage.mock.calls.map(([message]) => {
-        const { response }: { response: DiscoverAccountsProgress } = message.payload;
-
-        return response.failed
-            ? { index: response.index, failed: true }
-            : { index: response.index, empty: response.empty };
+        createUiPromise: uiPromises.create,
     });
 
-    return { result, discoveredAccounts };
+    return { result, discoveredAccounts, requests };
 };
 
 describe('DiscoverAccounts', () => {
@@ -141,7 +165,7 @@ describe('DiscoverAccounts', () => {
     it('counts a failed account as neither empty nor nonempty', async () => {
         const { result, discoveredAccounts } = await discover({
             usedIndexes: [0, 2],
-            utxoFailingIndexes: [2],
+            detailsFailingIndexes: [2],
         });
 
         expect(discoveredAccounts).toEqual([
@@ -165,15 +189,23 @@ describe('DiscoverAccounts', () => {
         expect(result).toEqual({ empty: 1, nonempty: 1, failed: 0 });
     });
 
-    it('counts nothing when the backend cannot be initialized', async () => {
-        jest.mocked(getCoinInfoOrThrow).mockReturnValue(mockCoinInfo());
-        jest.mocked(initBlockchain).mockRejectedValue(new Error('Backend error'));
+    it('counts nothing but a failed account when the backend cannot be reached', async () => {
+        const { result, discoveredAccounts } = await discover({
+            usedIndexes: [],
+            accountInfoFailingIndexes: [0, 1],
+        });
 
-        const result = await createMethod().run({
-            sendCoreMessage: jest.fn(),
-        } as unknown as MethodContext);
-
+        expect(discoveredAccounts).toEqual([{ index: 0, failed: true }]);
         expect(result).toEqual({ empty: 0, nonempty: 0, failed: 1 });
+    });
+
+    it('asks to read each account, and only the basic details of the one after an empty account', async () => {
+        const { requests } = await discover({ usedIndexes: [] });
+
+        expect(requests).toEqual([
+            { coin: 'btc', descriptor: '0', details: 'txs' },
+            { coin: 'btc', descriptor: '1', details: 'basic' },
+        ]);
     });
 });
 

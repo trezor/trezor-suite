@@ -1,7 +1,8 @@
 import { createRouterStateMock } from '@suite/router/mocks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { deviceInitialState } from '@suite-common/device';
-import { messageSystemInitialState } from '@suite-common/message-system';
+import { Feature, messageSystemInitialState } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -94,6 +95,18 @@ describe(selectIsDeviceCompromised.name, () => {
 
         expect(selectIsDeviceCompromised(state)).toBe(true);
     });
+
+    it.each([Feature.entropyCheckDiscovery, Feature.entropyCheck])(
+        'returns false if discovery entropy check failed but %s is disabled by message system',
+        feature => {
+            const state: AuthenticityChecksRootState = {
+                ...discoveryEntropyCheckFailState,
+                messageSystem: mockMessageSystemStateWithFeatureFlags({ [feature]: false }),
+            };
+
+            expect(selectIsDeviceCompromised(state)).toBe(false);
+        },
+    );
 
     it('returns true if firmware revision check failed, even if dismissed', () => {
         const state: AuthenticityChecksRootState = {

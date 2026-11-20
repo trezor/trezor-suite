@@ -25,11 +25,12 @@ import {
 } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
-import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
-import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
-import { useSelector } from 'src/hooks/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
+import type { NotificationViewProps } from '#src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
+import { useSelector } from '#src/hooks/suite/useSelector';
+
+import type { NotificationRendererProps } from './NotificationRendererProps';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<TransactionNotificationType>;
@@ -140,10 +141,8 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                             notificationAmount !== undefined ? (
                                 <FormattedCryptoAmount
                                     value={notificationAmount}
-                                    symbol={
-                                        isSymbolRenderedBesideAmount
-                                            ? undefined
-                                            : (transactionToken?.symbol ?? symbol)
+                                    networkSymbol={
+                                        isSymbolRenderedBesideAmount ? undefined : symbol
                                     }
                                     contractAddress={transactionToken?.contract}
                                     tokenDecimals={transactionToken?.decimals}

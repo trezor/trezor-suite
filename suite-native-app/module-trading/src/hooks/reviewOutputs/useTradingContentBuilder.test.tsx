@@ -1,0 +1,164 @@
+import type { CryptoId, ExchangeTrade } from 'invity-api';
+
+import type {
+    IsWrappedNativeTokenDep,
+    NetworkIconDep,
+    NetworkModuleRepositoryDep,
+} from '@suite-common/networks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import type {
+    AccountKey,
+    FormStateTradingCryptoCurrency,
+    FormStateTradingFiatCurrency,
+} from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
+import {
+    btc1NormalAccount,
+    mercuryoDexQuote,
+    mercuryoFixedBestQuote,
+} from '@suite-native/trading-fixtures';
+
+import { type ContentBuilderProps, useTradingContentBuilder } from './useTradingContentBuilder';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+
+type ContentBuilderTestServices = {
+    networks: IsWrappedNativeTokenDep & NetworkIconDep & NetworkModuleRepositoryDep;
+};
+
+const services: ContentBuilderTestServices = {
+    networks: {
+        isWrappedNativeToken: () => false,
+        networkIcon: mockNetworkIcon(),
+        networkModuleRepository: mockNetworkModuleRepository(),
+    },
+};
+
+const mockSend: FormStateTradingCryptoCurrency = {
+    cryptoId: 'bitcoin' as CryptoId,
+    accountKey: undefined,
+    symbol: asNetworkSymbol('btc'),
+    amount: '1.22',
+};
+
+const mockReceiveCrypto: FormStateTradingCryptoCurrency = {
+    cryptoId: 'ethereum' as CryptoId,
+    accountKey: btc1NormalAccount.key,
+    symbol: asNetworkSymbol('eth'),
+    amount: '0.462586',
+};
+
+const mockReceiveFiat: FormStateTradingFiatCurrency = {
+    amount: '1500',
+    fiatCurrency: 'USD',
+};
+
+const baseProps: ContentBuilderProps = {
+    accountKey: 'account-key' as AccountKey,
+    outputType: 'traded_assets',
+    value: '',
+    send: mockSend,
+    receive: mockReceiveCrypto,
+};
+
+describe('useTradingContentBuilder', () => {
+    const ContentBuilderWrapper = ({ props }: { props: Partial<ContentBuilderProps> }) => {
+        const contentBuilder = useTradingContentBuilder();
+
+        return <>{contentBuilder({ ...baseProps, ...props })}</>;
+    };
+
+    const renderContentBuilder = (
+        props: Partial<ContentBuilderProps> = {},
+        selectedQuote: ExchangeTrade = mercuryoDexQuote,
+    ) =>
+        renderWithTradingProvider<ContentBuilderTestServices>(
+            <ContentBuilderWrapper props={props} />,
+            {
+                tradeType: 'exchange',
+                services,
+                overrides: { wallet: { trading: { exchange: { selectedQuote } } } },
+            },
+        );
+
+    it('returns undefined for non-traded_assets output type', async () => {
+        const { toJSON } = await renderContentBuilder({ outputType: 'note' });
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('returns undefined when send is missing', async () => {
+        const { toJSON } = await renderContentBuilder({ send: undefined });
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it('renders the send leg only for a partial swap (receive missing)', async () => {
+        const { getByText, queryByText } = await renderContentBuilder({ receive: undefined });
+
+        expect(getByText('-1.22 BTC')).toBeOnTheScreen();
+        expect(queryByText('+0.45796014 ETH')).toBeNull();
+        expect(
+            queryByText(
+                getTranslation('moduleTrading.tradingReviewOutputs.tradedAssets.recipient'),
+            ),
+        ).toBeNull();
+    });
+
+    it('renders crypto and fiat icons when receive is fiat', async () => {
+        const { getByLabelText, getByText } = await renderContentBuilder({
+            receive: mockReceiveFiat,
+        });
+
+        expect(getByLabelText('BTC')).toBeOnTheScreen();
+        expect(getByText('-1.22 BTC')).toBeOnTheScreen();
+        expect(getByLabelText('flag-US')).toHaveStyle({ height: 24, width: 24 });
+        expect(getByText('+$1,500.00')).toBeOnTheScreen();
+    });
+
+    it('renders send amount with minus prefix', async () => {
+        const { getByText } = await renderContentBuilder();
+
+        expect(getByText('-1.22 BTC')).toBeOnTheScreen();
+    });
+
+    it('renders receive amount adjusted by slippage with plus prefix for DEX quote', async () => {
+        const { getByText } = await renderContentBuilder();
+
+        expect(getByText('+0.45796014 ETH')).toBeOnTheScreen();
+    });
+
+    it('renders receive amount without slippage for non-DEX quote', async () => {
+        const { getByText } = await renderContentBuilder({}, mercuryoFixedBestQuote);
+
+        expect(getByText('+0.462586 ETH')).toBeOnTheScreen();
+    });
+
+    describe('recipient row', () => {
+        it('renders recipient label and address when receive account is found', async () => {
+            const { getByText } = await renderContentBuilder({});
+
+            expect(
+                getByText(
+                    getTranslation('moduleTrading.tradingReviewOutputs.tradedAssets.recipient'),
+                ),
+            ).toBeOnTheScreen();
+            expect(getByText(btc1NormalAccount.descriptor)).toBeOnTheScreen();
+        });
+
+        it('does not render recipient row when receive account is not found', async () => {
+            const { queryByText } = await renderContentBuilder({
+                receive: {
+                    ...mockReceiveCrypto,
+                    accountKey: 'non-existent-account-key' as AccountKey,
+                },
+            });
+
+            expect(
+                queryByText(
+                    getTranslation('moduleTrading.tradingReviewOutputs.tradedAssets.recipient'),
+                ),
+            ).toBeNull();
+        });
+    });
+});

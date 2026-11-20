@@ -1,0 +1,68 @@
+import { useSelector } from 'react-redux';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
+import {
+    type AccountsRootState,
+    selectDeviceAccountByDescriptorAndNetworkSymbol,
+} from '@suite-common/wallet-core';
+import { ErrorMessage } from '@suite-native/atoms';
+import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { Translation } from '@suite-native/intl';
+import {
+    type AccountsImportStackParamList,
+    type AccountsImportStackRoutes,
+    type RootStackParamList,
+    type StackToTabCompositeScreenProps,
+    useInterceptNativeNavigation,
+} from '@suite-native/navigation';
+
+import { AccountAlreadyImportedScreen } from '../components/AccountAlreadyImportedScreen';
+import { AccountImportConfirmFormScreen } from '../components/AccountImportConfirmFormScreen';
+
+export const AccountImportSummaryScreen = ({
+    route,
+}: StackToTabCompositeScreenProps<
+    AccountsImportStackParamList,
+    AccountsImportStackRoutes.AccountImportSummary,
+    RootStackParamList
+>) => {
+    const { accountInfo, networkSymbol } = route.params;
+
+    useInterceptNativeNavigation();
+
+    const account = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountByDescriptorAndNetworkSymbol(
+            state,
+            accountInfo.descriptor,
+            networkSymbol,
+        ),
+    );
+    const supportedNetworks = useSelector(selectDiscoveryNetworkSymbols);
+
+    const isAccountImportSupported = supportedNetworks.includes(networkSymbol);
+
+    if (!isAccountImportSupported) {
+        return (
+            <ErrorMessage
+                errorMessage={<Translation id="moduleAccountImport.error.unsupportedNetworkType" />}
+            />
+        );
+    }
+
+    if (account) {
+        return <AccountAlreadyImportedScreen account={account} />;
+    }
+
+    const tokens = (accountInfo.tokens ?? []).map(token => ({
+        ...token,
+        contract: toTokenAddress(token.contract),
+    }));
+
+    return (
+        <TokenMetadataProvider sources={[{ networkSymbol, tokens }]}>
+            <AccountImportConfirmFormScreen symbol={networkSymbol} accountInfo={accountInfo} />
+        </TokenMetadataProvider>
+    );
+};

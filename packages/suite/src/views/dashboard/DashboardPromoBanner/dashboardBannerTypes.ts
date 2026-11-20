@@ -1,3 +1,4 @@
+import { blackFridayHolidayBannerTypes } from '@suite-common/suite-constants';
 import { isArrayMember } from '@trezor/utils';
 
 export const dashboardBannerTypes = [
@@ -5,6 +6,7 @@ export const dashboardBannerTypes = [
     'defi-yield',
     'eth-vault',
     'trading-experience',
+    ...blackFridayHolidayBannerTypes,
 ] as const;
 export type DashboardBannerType = (typeof dashboardBannerTypes)[number];
 export type DashboardBannerTypeWithNull = DashboardBannerType | null;

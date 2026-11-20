@@ -21,10 +21,11 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useTradingTransactionClick } from './useTradingTransactionClick';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
 const BITCOIN = 'bitcoin' as CryptoId;
 
@@ -70,7 +71,7 @@ const submittedSell: TradingTransactionSell = {
     },
 };
 
-const buildState = (): AppState => ({
+const buildState = (): MockSuiteState => ({
     ...mockInitialAppState,
     wallet: {
         ...mockInitialAppState.wallet,
@@ -89,7 +90,7 @@ const renderClickHandler = () => {
     const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
     const { services } = createTestCompositionRoot<
         WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
-        AppState
+        MockSuiteState
     >({
         preloadedState: buildState(),
         services: () => ({ analytics: mockDesktopAnalytics(), suiteRouterHistory }),

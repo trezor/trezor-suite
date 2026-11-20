@@ -35,22 +35,22 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { ONBOARDING } from 'src/actions/onboarding/constants';
-import { stepCategories } from 'src/config/onboarding/steps';
-import * as STEP from 'src/constants/onboarding/steps';
-import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
+import * as ONBOARDING from '#src/actions/onboarding/constants/onboarding';
+import { stepCategories } from '#src/config/onboarding/steps';
+import * as STEP from '#src/constants/onboarding/steps';
+import { type OnboardingRootState } from '#src/reducers/onboarding/onboardingState';
 import {
     selectOnboardingActiveStepId,
     selectOnboardingAnalytics,
     selectOnboardingPath,
-} from 'src/selectors/onboarding/onboardingSelectors';
-import { type AnyPath, type AnyStepId, type BackupMedium } from 'src/types/onboarding';
+} from '#src/selectors/onboarding/onboardingSelectors';
+import { type AnyPath, type AnyStepId, type BackupMedium } from '#src/types/onboarding';
 import {
     findNextStep,
     findPrevStep,
     isStepUsed,
     resolveNextAvailableStep,
-} from 'src/utils/onboarding/steps';
+} from '#src/utils/onboarding/steps';
 
 const goToStep = createAction<AnyStepId>(ONBOARDING.SET_STEP_ACTIVE);
 
@@ -156,13 +156,18 @@ const goToSuiteThunk =
         // there must be a device to progress with onboarding
         if (device?.features === undefined) return;
 
-        dispatch(startDiscoveryThunk({ device }));
+        dispatch(startDiscoveryThunk({ device, trigger: 'onboarding' }));
         const reportAnalytics = () => {
             const { analytics } = extra.services;
-            const { startTime, ...onboardingAttributes } = onboardingAnalytics;
             const fullPayload = {
-                ...onboardingAttributes,
-                duration: Date.now() - startTime!,
+                firmware: onboardingAnalytics.firmware,
+                seed: onboardingAnalytics.seed,
+                seedType: onboardingAnalytics.seedType,
+                wasSelectTypeOpened: onboardingAnalytics.wasSelectTypeOpened,
+                recoveryType: onboardingAnalytics.recoveryType,
+                backup: onboardingAnalytics.backup,
+                pin: onboardingAnalytics.pin,
+                duration: Date.now() - onboardingAnalytics.startTime!,
                 device: device.features.internal_model,
                 unitPackaging: device.features.unit_packaging ?? 0,
             };

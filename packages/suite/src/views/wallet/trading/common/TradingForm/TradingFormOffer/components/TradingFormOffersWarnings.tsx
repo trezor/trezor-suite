@@ -2,11 +2,11 @@ import { Translation } from '@suite/intl';
 import { isCountrySubdivisionEmpty } from '@suite-common/trading';
 import { Card, Paragraph } from '@trezor/components';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     isTradingBuyContext,
     isTradingSellContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+} from '#src/utils/wallet/trading/tradingTypingUtils';
 
 type TradingFormOffersWarningsProps = {
     hasQuote: boolean;

@@ -32,8 +32,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
-import { InputError } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
+import { InputError } from '#src/components/wallet/InputError';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export type VotingPreferenceOption = {
     type: VotingDelegationOption['type'];
@@ -213,6 +213,7 @@ export const VotingPreferenceCard = ({
                                     isChecked={selectedVotingDelegation.type === option.type}
                                     verticalAlignment="center"
                                     onChange={() => handleOptionSelect(option.type)}
+                                    data-testid={`@staking/voting-preference/option/${option.type}`}
                                 >
                                     <Column gap={2}>
                                         <Row gap={8}>

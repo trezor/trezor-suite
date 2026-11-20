@@ -20,10 +20,12 @@ import {
     type NetworksRootState,
     selectSupportedNetworkSymbols,
 } from '@suite-common/networks';
+import { type TokenMetadata, type TokenMetadataSource } from '@suite-common/token';
 import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type NetworkSymbolExtended,
     getNetwork,
@@ -31,7 +33,9 @@ import {
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
+    selectAccountTransactions,
     selectAccounts,
     selectDeviceAccounts,
     selectVisibleDeviceAccounts,
@@ -71,6 +75,7 @@ import type { TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     type SelectedTradingAsset,
     type TradingBuyPaymentMethodProps,
+    type TradingExchangeAllowance,
     type TradingExchangeFormType,
     type TradingFiatCurrenciesProps,
     type TradingPaymentMethodListProps,
@@ -84,14 +89,24 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
+    cryptoIdToNetworkAndContractAddress,
     cryptoIdToNetworkSymbol,
     cryptoIdToNetworkSymbolAndContractAddress,
+    getCryptoId,
     getTradingQuotesByPaymentMethod,
     getTradingQuotesDedupedByProvider,
     isBuyTrade,
     isExchangeProvider,
     testnetToProdCryptoId,
 } from '../utils';
+import {
+    findPendingApprovalTxid,
+    getApprovalFlowStepStatuses,
+} from '../utils/exchange/approvalFlowUtils';
+import {
+    getExchangeAllowanceKey,
+    isSameExchangeAllowanceKey,
+} from '../utils/exchange/exchangeAllowanceUtils';
 import {
     getDisplayNetworkFee,
     hasEip712SignDataType,
@@ -160,6 +175,9 @@ const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 const createMemoizedFormAccountSelector =
     createWeakMapSelector.withTypes<TradingFormAccountRootState>();
+const createMemoizedFormAccountTransactionsSelector = createWeakMapSelector.withTypes<
+    TradingFormAccountRootState & TransactionsRootState
+>();
 
 export const bestBuyQuotePerPaymentMethodProjection = (quotes: BuyTrade[]) =>
     bestQuotePerPaymentMethodProjection<BuyCryptoPaymentMethod, BuyTrade>(
@@ -205,6 +223,34 @@ export const selectTradingBtcSwapComposeTemplate = (state: TradingRootState) =>
 
 export const selectTradingCoins = (state: TradingRootState): Coins | undefined =>
     state.wallet.trading.info.coins;
+
+/** Catalog tokens as token metadata, so a token the user does not hold has a name and symbol. */
+export const selectTradingTokenMetadataSources = createMemoizedSelector(
+    [selectTradingCoins],
+    (coins): TokenMetadataSource[] => {
+        const tokensByNetwork = new Map<NetworkSymbol, TokenMetadata[]>();
+
+        for (const [cryptoId, coin] of Object.entries(coins ?? {})) {
+            const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(
+                cryptoId as CryptoId,
+            );
+            if (!network || !contractAddress) continue;
+
+            const tokens = tokensByNetwork.get(network.symbol) ?? [];
+            tokens.push({
+                contract: toTokenAddress(contractAddress),
+                name: coin.name,
+                symbol: coin.symbol.toUpperCase(),
+            });
+            tokensByNetwork.set(network.symbol, tokens);
+        }
+
+        return Array.from(tokensByNetwork, ([networkSymbol, tokens]) => ({
+            networkSymbol,
+            tokens,
+        }));
+    },
+);
 
 export const selectTradingBuyInfo = createMemoizedSelector(
     [state => state.wallet.trading.buy.buyInfo],
@@ -406,6 +452,9 @@ export const selectTradingExchangeIsFromRedirect = (state: TradingRootState) =>
 export const selectTradingExchangeQuotes = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotes;
 
+export const selectTradingExchangeSelectedQuoteTimestamp = (state: TradingRootState) =>
+    state.wallet.trading.exchange.selectedQuoteTimestamp;
+
 export const selectTradingSellQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.sell.quotesRequest;
 
@@ -421,6 +470,25 @@ export const selectTradingBuySelectedQuote = (state: TradingRootState) =>
 export const selectTradingExchangeSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote;
 
+export const selectTradingExchangeApprovalFlow = (state: TradingRootState) =>
+    state.wallet.trading.exchange.approvalFlow;
+
+export const selectTradingExchangeAllowance = (state: TradingRootState) =>
+    state.wallet.trading.exchange.allowance;
+
+export const selectTradingExchangeSelectedQuoteAllowance = (
+    state: TradingRootState,
+    accountKey: AccountKey | undefined,
+): TradingExchangeAllowance | undefined => {
+    const allowance = selectTradingExchangeAllowance(state);
+    const key = getExchangeAllowanceKey({
+        accountKey,
+        quote: selectTradingExchangeSelectedQuote(state),
+    });
+
+    return allowance && key && isSameExchangeAllowanceKey(allowance, key) ? allowance : undefined;
+};
+
 export const selectTradingExchangeSelectedQuoteSwapSlippage = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote?.swapSlippage;
 
@@ -430,8 +498,14 @@ export const selectTradingExchangeSelectedQuoteIsDex = (state: TradingRootState)
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
 
+export const selectTradeApiInstallSalt = (state: TradingRootState) =>
+    state.wallet.trading.tradeApiInstallSalt;
+
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.trading.trades);
+
+export const selectTradingTradeApiKey = (state: TradingRootState, tradeKey: string | undefined) =>
+    state.wallet.trading.trades.find(trade => trade.key === tradeKey)?.apiKey;
 
 export const selectTradedAccountKeys = createMemoizedSelector([selectTradingTrades], trades =>
     unique(
@@ -564,6 +638,13 @@ export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
+
+export const selectIsTradingBuyAvailableForNetworkSymbol = (
+    state: TradingRootState & NetworksRootState,
+    networkSymbol: NetworkSymbol,
+): boolean =>
+    !selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded ||
+    selectTradingBuySupportedCryptoIds(state).includes(getCryptoId(networkSymbol));
 
 export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [
@@ -943,6 +1024,15 @@ export const selectTradingBuyReceiveAccount = createMemoizedSelectorWithAccounts
     },
 );
 
+export const selectTradeApiKeyAccount = (
+    state: TradingRootStateWithAccounts,
+    activeSection: TradingType,
+    selectedAccount: SelectedAccountStatus,
+) =>
+    activeSection === 'buy'
+        ? selectTradingBuyReceiveAccount(state)
+        : selectTradingAccountAccordingActiveSection(state, activeSection, selectedAccount);
+
 export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
     state.wallet.trading.exchange.tradingAccountKey;
 
@@ -1161,6 +1251,39 @@ const selectTradingActiveTradeSendAccount = (
 export const selectTradingSendAccount = createMemoizedFormAccountSelector(
     [selectTradingActiveTradeSendAccount, selectTradingFormAccount],
     (tradeSendAccount, formAccount) => tradeSendAccount ?? formAccount,
+);
+
+const selectTradingExchangeSendAccountTransactions = (
+    state: TradingFormAccountRootState & TransactionsRootState,
+) => selectAccountTransactions(state, selectTradingSendAccount(state, 'exchange')?.key ?? null);
+
+export const selectTradingExchangePendingApprovalTxid =
+    createMemoizedFormAccountTransactionsSelector(
+        [selectTradingExchangeSendAccountTransactions, selectTradingExchangeSelectedQuote],
+        findPendingApprovalTxid,
+    );
+
+export const selectTradingExchangeApprovalFlowSteps = createMemoizedFormAccountTransactionsSelector(
+    [
+        selectTradingExchangeApprovalFlow,
+        selectTradingExchangeSelectedQuote,
+        selectTradingExchangeSendAccountTransactions,
+        selectTradingExchangePendingApprovalTxid,
+        state =>
+            selectTradingExchangeSelectedQuoteAllowance(
+                state,
+                selectTradingSendAccount(state, 'exchange')?.key,
+            ),
+    ],
+    (approvalFlow, selectedQuote, transactions, pendingApprovalTxid, allowance) =>
+        getApprovalFlowStepStatuses({
+            steps: approvalFlow?.steps ?? [],
+            quote: selectedQuote,
+            sentTxids: approvalFlow?.sentTxids ?? {},
+            transactions,
+            hasPendingApprovalTx: !!pendingApprovalTxid,
+            currentAllowance: allowance?.amount,
+        }),
 );
 
 export const selectSelectedTradingAsset = createMemoizedFormAccountSelector(

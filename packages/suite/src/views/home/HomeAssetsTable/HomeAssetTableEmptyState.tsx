@@ -1,17 +1,17 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { Button, Column, H3, Illustration, Paragraph, Row, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, PlusIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const HomeAssetTableEmptyState = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
     const handleReceive = () => {
         analytics.report({
@@ -56,7 +56,7 @@ export const HomeAssetTableEmptyState = () => {
                         <Translation id="TR_HOME_ASSET_EMPTY_DESCRIPTION" />
                     </Paragraph>
                     <Row gap={12} margin={{ top: 16 }}>
-                        {!isFinpromRestricted && (
+                        {!isRegionRestricted && (
                             <Button
                                 intent="neutral"
                                 priority="secondary"

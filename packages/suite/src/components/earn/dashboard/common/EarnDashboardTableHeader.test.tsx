@@ -2,7 +2,7 @@ import { type ComponentProps } from 'react';
 
 import { render, screen } from '@testing-library/react';
 
-import { ThemeProvider } from 'src/support/suite/ThemeProvider';
+import { ThemeProvider } from '#src/support/suite/ThemeProvider';
 
 import { EarnDashboardTableHeader } from './EarnDashboardTableHeader';
 

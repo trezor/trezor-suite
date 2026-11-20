@@ -4,9 +4,9 @@ import {
     type StorageCorruptedPayload,
     type StorageErrorPayload,
     type StorageLoadPayload,
-} from 'src/storage/StorageLoadPayload';
+} from '#src/storage/StorageLoadPayload';
 
-import { STORAGE } from './constants';
+import * as STORAGE from './constants/storageConstants';
 
 export const storageLoad: ActionCreatorWithPayload<StorageLoadPayload, typeof STORAGE.LOAD> =
     createAction<StorageLoadPayload, typeof STORAGE.LOAD>(STORAGE.LOAD);

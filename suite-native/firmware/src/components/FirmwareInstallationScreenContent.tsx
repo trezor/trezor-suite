@@ -248,7 +248,6 @@ export const FirmwareInstallationScreenContent = ({
 
     const buttonStyle = applyStyle(bottomButtonsContainerStyle);
 
-    // Using useNavigationRemoveActionInterceptor breaks navigateToInitialScreen().
     useInterceptNativeNavigation();
 
     useEffect(() => {

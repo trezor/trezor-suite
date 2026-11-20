@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
 import { type NetworksRootState } from '@suite-common/networks';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
@@ -24,6 +25,7 @@ type AccountsListProps = {
     onSelectAccount: OnSelectAccount;
     searchValue?: string;
     isSendFlow?: boolean;
+    tokenContract?: TokenAddress;
     networkFilter?: NetworkSymbol[];
     ListHeaderComponent?: ReactElement;
     ListEmptyComponent?: ReactElement;
@@ -46,6 +48,7 @@ export const AccountsList = ({
     onSelectAccount,
     searchValue = '',
     isSendFlow = false,
+    tokenContract,
     networkFilter = DEFAULT_NETWORK_FILTER,
     ListHeaderComponent,
     ListEmptyComponent,
@@ -58,7 +61,13 @@ export const AccountsList = ({
     const { applyStyle } = useNativeStyles();
 
     const accountListRows = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
-        selectFilteredDeviceAccountListRows(state, searchValue, isSendFlow, networkFilter),
+        selectFilteredDeviceAccountListRows(
+            state,
+            searchValue,
+            isSendFlow,
+            networkFilter,
+            tokenContract,
+        ),
     );
 
     const renderItem = useCallback(
@@ -66,10 +75,11 @@ export const AccountsList = ({
             <AccountsListRow
                 {...item}
                 hasBottomSpacing={item.isLast}
+                tokenContract={tokenContract}
                 onSelectAccount={onSelectAccount}
             />
         ),
-        [onSelectAccount],
+        [onSelectAccount, tokenContract],
     );
 
     return (

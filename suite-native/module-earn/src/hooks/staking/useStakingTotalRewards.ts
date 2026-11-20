@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
-    type StakeRootState,
-    selectAccountByKey,
-    selectRewardsBalanceByAccountKey,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingAccountTotals,
+} from '@suite-common/earn-staking';
+import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type AccountKey } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -21,8 +21,8 @@ export const useStakingTotalRewards = (accountKey: AccountKey) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const rewardsBalance = useSelector((state: StakeRootState) =>
-        selectRewardsBalanceByAccountKey(state, accountKey),
+    const totals = useSelector((state: StakingRootState) =>
+        selectStakingAccountTotals(state, accountKey),
     );
 
     const solanaRewardsTotalQuery = useSolanaRewardsTotal(
@@ -30,7 +30,7 @@ export const useStakingTotalRewards = (accountKey: AccountKey) => {
     );
 
     // Only mainnet 'sol' is served by the Earn rewards API.
-    // Other networks keep the Redux-derived rewards balance.
+    // Other networks show the rewards of their position.
     if (account?.symbol === 'sol') {
         const totalRewards = subunitsToUnits({
             value: asAmountSubunit(new BigNumber(solanaRewardsTotalQuery.data ?? '0')),
@@ -40,5 +40,15 @@ export const useStakingTotalRewards = (accountKey: AccountKey) => {
         return { totalRewards, isTotalRewardsLoading: solanaRewardsTotalQuery.isLoading };
     }
 
-    return { totalRewards: rewardsBalance, isTotalRewardsLoading: false };
+    // A Solana position's rewards estimate the next epoch, which is no total: a Solana network
+    // the rewards API does not serve shows none.
+    if (account && getNetworkType(account.symbol) === 'solana') {
+        return { totalRewards: '0', isTotalRewardsLoading: false };
+    }
+
+    const totalRewards = account
+        ? formatStakingAmount({ amount: totals.rewards, networkSymbol: account.symbol })
+        : '0';
+
+    return { totalRewards, isTotalRewardsLoading: false };
 };

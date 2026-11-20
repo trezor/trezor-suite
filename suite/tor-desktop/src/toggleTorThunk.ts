@@ -1,6 +1,6 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events, redactRouterUrl } from '@suite/analytics';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type ModalRootState, openDeferredModal, selectModalType } from '@suite/modal';
 import { type RouterRootState, selectRouterUrl } from '@suite/router';
@@ -65,7 +65,7 @@ export const toggleTorThunk =
                 type: events.settingsTorEvent.name,
                 payload: {
                     value: shouldEnable,
-                    location: selectRouterUrl(getState()),
+                    location: redactRouterUrl(selectRouterUrl(getState())),
                     modal,
                 },
             });

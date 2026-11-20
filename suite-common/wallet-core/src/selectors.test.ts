@@ -18,6 +18,7 @@ import {
 import {
     type WalletCoreCompoundRootState,
     selectDiscoveryAccountsParam,
+    selectRediscoveryReason,
     selectShouldRediscover,
 } from './selectors';
 import { initialWalletSettingsState } from './settings/walletSettingsReducer';
@@ -206,6 +207,41 @@ describe(selectShouldRediscover.name, () => {
                 device,
             ),
         ).toBe(false);
+    });
+});
+
+describe(selectRediscoveryReason.name, () => {
+    it('returns device-connect when the device is not discovered yet', () => {
+        const device = mockDeviceWithPathAndState({ discovered: false });
+        expect(selectRediscoveryReason(getState({ device }), device)).toBe('device-connect');
+    });
+
+    it('returns coin-toggle when an enabled network has no known accounts yet', () => {
+        const device = mockDeviceWithPathAndState();
+        expect(
+            selectRediscoveryReason(
+                getState({
+                    device,
+                    accounts: [mockSolAccount({ index: 0, empty: false })],
+                    enabledNetworks: [solSymbol, btcSymbol],
+                    networks: [solSymbol, btcSymbol],
+                }),
+                device,
+            ),
+        ).toBe('coin-toggle');
+    });
+
+    it('returns account-update when the last known account is used', () => {
+        const device = mockDeviceWithPathAndState();
+        expect(
+            selectRediscoveryReason(
+                getState({
+                    device,
+                    accounts: [mockSolAccount({ index: 0, empty: false })],
+                }),
+                device,
+            ),
+        ).toBe('account-update');
     });
 });
 

@@ -26,9 +26,10 @@ import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';
 
@@ -53,8 +54,8 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
 
     const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '0';
     const hasStake = new BigNumber(stakedBalance).gt(0);
-    const votedAddresses = getTronVotes(account).map(vote => vote.address);
-    const apr = votedAddresses.length > 0 ? getTronVotedApr(stats.data, votedAddresses) : maxApr;
+    const votes = getTronVotes(account);
+    const apr = votes.length > 0 ? getTronVotedApr(stats.data, votes) : maxApr;
     const remainingVotes = getTronAvailableVotingPower(account);
     const totalVotes = getTronTotalVotingPower(account);
     const hasRemainingVotes = new BigNumber(remainingVotes).gt(0);
@@ -113,7 +114,10 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                         typographyStyle="headline-sm"
                         data-testid="@staking/tron-staked-card/staked-amount"
                     >
-                        <FormattedCryptoAmount value={stakedBalance} symbol={account.symbol} />
+                        <FormattedCryptoAmount
+                            value={stakedBalance}
+                            networkSymbol={account.symbol}
+                        />
                     </Text>
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         <BaseCurrencyValue

@@ -13,6 +13,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';
 import { resolveDescriptorForTaproot } from '../device/resolveDescriptorForTaproot';
 import type { TypedCallProvider } from '../types/typed-call-provider';
+import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
 import { getScriptType, getSerializedPath, isTaprootPath } from '../utils/pathUtils';
 
@@ -114,8 +115,21 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             fingerprint: publicKey.node.fingerprint,
             rootFingerprint: publicKey.root_fingerprint,
             depth: publicKey.node.depth,
-            descriptor: publicKey.descriptor,
-            displayablePublicKey: xpubSegwit ?? xpub,
+            descriptor:
+                publicKey.descriptor ??
+                buildOutputDescriptor({
+                    path,
+                    scriptType: params.script_type,
+                    xpub,
+                    rootFingerprint: publicKey.root_fingerprint,
+                }),
+            // The string firmware puts on the screen: the descriptor for a taproot script type when
+            // it sends one (core 2.7.0+, legacy 1.14.0+), otherwise the xpub serialized for the
+            // script type.
+            displayablePublicKey:
+                params.script_type === 'SPENDTAPROOT' && publicKey.descriptor
+                    ? publicKey.descriptor
+                    : publicKey.xpub,
             ...(xpubSegwit !== undefined && { xpubSegwit }),
         };
 
@@ -126,7 +140,6 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
             });
             response.xpubSegwit = taprootXpubSegwit;
             response.descriptorChecksum = checksum;
-            response.displayablePublicKey = taprootXpubSegwit;
         }
 
         return response;

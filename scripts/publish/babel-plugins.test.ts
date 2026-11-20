@@ -1,0 +1,382 @@
+import { type TransformOptions, transformSync } from '@babel/core';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+import addEsmExtension from './babel-plugin-add-js-extension.js';
+import sanitizeInternalImports from './babel-plugin-sanitize-internal-imports.js';
+
+// These plugins decide file-vs-directory by stat-ing the on-disk src/ tree next to the file being
+// transformed, so the suite builds a throwaway package layout and points `filename` into its lib/.
+//
+//   <root>/fixture-pkg/src/workers/{solana,blockbook}/index.ts  (directories → /index.js)
+//   <root>/fixture-pkg/src/workers/baseWorker.ts                (file       → .js)
+//   <root>/connect-core/lib/workers/localdir/index.js           (directory  → /index.js)
+//   <root>/connect-core/lib/workers/localfile.js                (file       → .js)
+//
+// The imported package is deliberately named after no workspace: the lookup also searches
+// <ancestor>/node_modules/@trezor/<pkg>/src up to the filesystem root, so a fixture named like a
+// real workspace resolves against the checkout's link instead whenever TMPDIR sits under it.
+let root: string;
+let esmFilename: string;
+let dtsFilename: string;
+
+beforeAll(() => {
+    root = fs.mkdtempSync(path.join(os.tmpdir(), 'publish-transform-'));
+
+    const workers = path.join(root, 'fixture-pkg', 'src', 'workers');
+    for (const dir of ['solana', 'blockbook']) {
+        fs.mkdirSync(path.join(workers, dir), { recursive: true });
+        fs.writeFileSync(path.join(workers, dir, 'index.ts'), '');
+    }
+    fs.writeFileSync(path.join(workers, 'baseWorker.ts'), '');
+
+    const libWorkers = path.join(root, 'connect-core', 'lib', 'workers');
+    fs.mkdirSync(path.join(libWorkers, 'localdir'), { recursive: true });
+    fs.writeFileSync(path.join(libWorkers, 'localdir', 'index.js'), '');
+    fs.writeFileSync(path.join(libWorkers, 'localfile.js'), '');
+
+    esmFilename = path.join(libWorkers, 'workers.js');
+    dtsFilename = path.join(root, 'connect-core', 'lib', 'index.d.ts');
+});
+
+afterAll(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+});
+
+const transform = (code: string, options: TransformOptions) => {
+    const result = transformSync(code, {
+        configFile: false,
+        babelrc: false,
+        sourceType: 'module',
+        ...options,
+    });
+    if (!result?.code) throw new Error('transform produced no output');
+
+    return result.code;
+};
+
+// Composes both plugins in the same order as babel.config.json (sanitize src→lib first, then the
+// extension pass), which is the pipeline replace-imports.sh runs over built .js files.
+const runEsm = (code: string) =>
+    transform(code, {
+        filename: esmFilename,
+        plugins: [sanitizeInternalImports, addEsmExtension],
+    });
+
+// Mirrors babel.config.ts.json: only the extension pass runs, with the dts parser. The src→lib
+// rewrite happened earlier via sed, so inputs here already reference /lib/.
+const runDts = (code: string) =>
+    transform(code, {
+        filename: dtsFilename,
+        parserOpts: { plugins: [['typescript', { dts: true }]] },
+        plugins: [addEsmExtension],
+    });
+
+describe('publish import transforms — specifier positions', () => {
+    it('static import: src→lib and directory → /index.js', () => {
+        const out = runEsm(`import { solana } from '@trezor/fixture-pkg/src/workers/solana';`);
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    it('static import: file specifier → .js', () => {
+        const out = runEsm(
+            `import { baseWorker } from '@trezor/fixture-pkg/src/workers/baseWorker';`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/baseWorker.js');
+    });
+
+    it('relative import: directory → /index.js, file → .js', () => {
+        const out = runEsm(`import './localdir';\nimport './localfile';`);
+        expect(out).toContain('./localdir/index.js');
+        expect(out).toContain('./localfile.js');
+    });
+
+    it('dynamic import(): src→lib and directory → /index.js', () => {
+        const out = runEsm(
+            `export const w = () => import('@trezor/fixture-pkg/src/workers/solana');`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    it('new URL(..., import.meta.url): rewrites the worker specifier', () => {
+        const out = runEsm(
+            `new Worker(new URL('@trezor/fixture-pkg/src/workers/blockbook', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/blockbook/index.js');
+    });
+
+    it('new URL(relative, import.meta.url): appends the extension', () => {
+        const out = runEsm(`new Worker(new URL('./localfile', import.meta.url));`);
+        expect(out).toContain('./localfile.js');
+    });
+
+    it('export * / export … from: src→lib and the runtime extension', () => {
+        const out = runEsm(
+            `export * from '@trezor/fixture-pkg/src/workers/solana';\n` +
+                `export { baseWorker } from '@trezor/fixture-pkg/src/workers/baseWorker';`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/baseWorker.js');
+    });
+
+    // Pins the plugin order replace-imports.sh depends on: a re-export that keeps the extensionless
+    // /lib/ specifier does not resolve under a consumer's NodeNext, and the named exports vanish.
+    it('export * from in a .d.ts: appends the extension', () => {
+        const out = runDts(`export * from '@trezor/fixture-pkg/lib/workers/solana';`);
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    it('TSImportType in .d.ts: appends the extension', () => {
+        const out = runDts(
+            `export declare const w: import('@trezor/fixture-pkg/lib/workers/solana').Worker;`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+});
+
+describe('publish import transforms — new URL is gated on the worker idiom', () => {
+    it('leaves a runtime new URL(relative, base) untouched', () => {
+        const out = runEsm(`const u = new URL('./api/status', origin);`);
+        expect(out).toContain('./api/status');
+        expect(out).not.toContain('./api/status.js');
+    });
+
+    // Passing it through would ship a specifier no consumer can resolve, with no diagnostic, so
+    // the gate fails the build instead — the same choice the CJS require path already makes.
+    it('throws on a new URL(@trezor/*/src, base) when base is not import.meta.url', () => {
+        expect(() =>
+            runEsm(`const u = new URL('@trezor/fixture-pkg/src/workers/blockbook', base);`),
+        ).toThrow(/published packages ship lib\/ only/);
+    });
+
+    // Pins the other branch of the gate: the base is import.meta.url, but the parent is not a
+    // worker constructor, so the specifier is still unresolvable for a consumer.
+    it('throws on a non-worker new URL(@trezor/*/src, import.meta.url)', () => {
+        expect(() =>
+            runEsm(
+                `const d = readFileSync(new URL('@trezor/fixture-pkg/src/workers/blockbook', import.meta.url));`,
+            ),
+        ).toThrow(/published packages ship lib\/ only/);
+    });
+
+    // src must match a whole path segment: a @trezor/*/src-prefixed runtime address is not an
+    // internal import, so it neither fails the build nor gets rewritten to a lib-prefixed one.
+    // The .d.ts half of the same src->lib rewrite is the sed in replace-imports.sh:48,51, which is
+    // shell and so uncovered here — keep its pattern in sync with internalSrcSpecifier.
+    it('leaves a new URL(@trezor/*/src-maps, base) untouched', () => {
+        const out = runEsm(`const u = new URL('@trezor/fixture-pkg/src-maps/foo', base);`);
+        expect(out).toContain('@trezor/fixture-pkg/src-maps/foo');
+    });
+
+    // A query or a fragment terminates the path segment as well, so a suffixed specifier is an
+    // internal import too: a gated one must still be rewritten, and a non-gated one must still fail
+    // the build instead of publishing an unresolvable /src path.
+    it('rewrites a gated new URL(@trezor/*/src?suffix, import.meta.url)', () => {
+        const out = runEsm(
+            `new Worker(new URL('@trezor/fixture-pkg/src?worker', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib?worker');
+        expect(out).not.toContain('lib?worker.js');
+    });
+
+    // The suffix is not part of the path: the runtime extension goes before it, and the
+    // file-vs-directory stat must not see it — otherwise a suffixed subpath ships as
+    // workers/solana?worker.js, which resolves to nothing in the published package.
+    it('rewrites a gated new URL(@trezor/*/src/<dir>?suffix, import.meta.url) before the suffix', () => {
+        const out = runEsm(
+            `new Worker(new URL('@trezor/fixture-pkg/src/workers/solana?worker', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js?worker');
+        expect(out).not.toContain('?worker.js');
+    });
+
+    it('rewrites a gated new URL(relative dir#fragment, import.meta.url) before the fragment', () => {
+        const out = runEsm(`new Worker(new URL('./localdir#frag', import.meta.url));`);
+        expect(out).toContain('./localdir/index.js#frag');
+        expect(out).not.toContain('#frag.js');
+    });
+
+    it('throws on a non-worker new URL(@trezor/*/src#fragment, base)', () => {
+        expect(() => runEsm(`const u = new URL('@trezor/fixture-pkg/src#frag', base);`)).toThrow(
+            /published packages ship lib\/ only/,
+        );
+    });
+
+    it('leaves a single-argument new URL(literal) untouched', () => {
+        const out = runEsm(`const u = new URL('./api/status');`);
+        expect(out).not.toContain('./api/status.js');
+    });
+
+    // import.meta.url is also the idiomatic base for a data file next to the module, so only the
+    // new Worker(new URL(...)) shape may gain a runtime extension.
+    it('leaves a non-worker new URL(literal, import.meta.url) untouched', () => {
+        const out = runEsm(`const data = readFileSync(new URL('./localdir', import.meta.url));`);
+        expect(out).toContain('./localdir');
+        expect(out).not.toContain('./localdir/index.js');
+    });
+
+    it('rewrites the specifier of a new SharedWorker(new URL(...)) too', () => {
+        const out = runEsm(
+            `new SharedWorker(new URL('@trezor/fixture-pkg/src/workers/solana', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    // Webpack and Vite resolve a new URL(..., import.meta.url) in these call positions as a module
+    // reference too, so the gate accepts them next to the worker constructors.
+    it('rewrites the specifier of a serviceWorker.register(new URL(...))', () => {
+        const out = runEsm(
+            `navigator.serviceWorker.register(new URL('./localfile', import.meta.url));`,
+        );
+        expect(out).toContain('./localfile.js');
+    });
+
+    // Babel spells an optional call as its own node type, the bundlers' parser does not, so both
+    // spellings of the same registration must pass the gate — `navigator.serviceWorker` is absent in
+    // insecure contexts, which makes the optional one the defensive spelling authors reach for.
+    it('rewrites the specifier of a serviceWorker?.register(new URL(...))', () => {
+        const out = runEsm(
+            `navigator.serviceWorker?.register(new URL('./localfile', import.meta.url));`,
+        );
+        expect(out).toContain('./localfile.js');
+    });
+
+    it('rewrites the specifier of a navigator?.serviceWorker.register(new URL(...))', () => {
+        const out = runEsm(
+            `navigator?.serviceWorker.register(new URL('@trezor/fixture-pkg/src/workers/solana', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    it('rewrites the specifier of an audioWorklet.addModule(new URL(...))', () => {
+        const out = runEsm(
+            `audioWorklet.addModule(new URL('@trezor/fixture-pkg/src/workers/solana', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    // Pins what the gate still rejects: a specifier shape the throw cannot flag either, because it
+    // already points at lib/. Reading a data file next to the module must not gain an extension.
+    it('leaves a non-worker new URL(@trezor/*/lib, import.meta.url) untouched', () => {
+        const out = runEsm(
+            `const d = readFileSync(new URL('@trezor/fixture-pkg/lib/workers/solana', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana');
+        expect(out).not.toContain('/solana/index.js');
+    });
+
+    it('leaves a non-worker new URL(relative file, import.meta.url) untouched', () => {
+        const out = runEsm(`const d = readFileSync(new URL('./localfile', import.meta.url));`);
+        expect(out).toContain('./localfile');
+        expect(out).not.toContain('./localfile.js');
+    });
+});
+
+describe('publish import transforms — package root lookup', () => {
+    // The @trezor/<pkg>/lib/<subpath> branch locates the packages root by a lib/ segment of the
+    // file being transformed, so neither an ancestor directory named lib nor one nested in the
+    // package's own output must be mistaken for it — otherwise the src/ stat misses and a
+    // directory specifier silently ships as a bare .js path.
+    it('resolves the package root under an ancestor directory named lib', () => {
+        const nested = path.join(root, 'lib', 'packages');
+        const workers = path.join(nested, 'fixture-pkg', 'src', 'workers');
+        fs.mkdirSync(path.join(workers, 'blockbook'), { recursive: true });
+        fs.writeFileSync(path.join(workers, 'blockbook', 'index.ts'), '');
+        const filename = path.join(nested, 'connect-core', 'lib', 'workers', 'workers.js');
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
+
+        const out = transform(
+            `import { blockbook } from '@trezor/fixture-pkg/src/workers/blockbook';`,
+            { filename, plugins: [sanitizeInternalImports, addEsmExtension] },
+        );
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/blockbook/index.js');
+    });
+
+    // lib/ mirrors src/ one-to-one, so a src/**/lib/ directory in a published package yields a
+    // transformed file with a lib/ segment below the package's own one. Nested under the ancestor
+    // lib as well, so the case fails both for a first-segment and for a last-segment lookup: only
+    // validating each candidate against <pkg>/src picks the package's own lib/ here.
+    it('resolves the package root with a lib directory inside the package output', () => {
+        const nested = path.join(root, 'lib', 'packages');
+        const workers = path.join(nested, 'fixture-pkg', 'src', 'workers', 'solana');
+        fs.mkdirSync(workers, { recursive: true });
+        fs.writeFileSync(path.join(workers, 'index.ts'), '');
+        const filename = path.join(nested, 'connect-core', 'lib', 'device', 'lib', 'helpers.js');
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
+
+        const out = transform(`import { solana } from '@trezor/fixture-pkg/src/workers/solana';`, {
+            filename,
+            plugins: [sanitizeInternalImports, addEsmExtension],
+        });
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    // The networks/<chain>/<pkg> workspaces run the same replace-imports.sh pipeline, and the
+    // packages root is not the parent of their own package directory, so no lib/ segment of the
+    // transformed file leads to it — only the node_modules link does. The fixture gets its own
+    // subtree so that the link stays out of the lib/ segment cases above.
+    it('resolves an imported package from a networks/<chain>/<pkg> layout', () => {
+        const monorepo = path.join(root, 'monorepo');
+        const fixturePkg = path.join(monorepo, 'packages', 'fixture-pkg');
+        const workers = path.join(fixturePkg, 'src', 'workers', 'solana');
+        fs.mkdirSync(workers, { recursive: true });
+        fs.writeFileSync(path.join(workers, 'index.ts'), '');
+        // Every workspace package is linked into node_modules, as yarn's node-modules linker does.
+        const linked = path.join(monorepo, 'node_modules', '@trezor');
+        fs.mkdirSync(linked, { recursive: true });
+        fs.symlinkSync(fixturePkg, path.join(linked, 'fixture-pkg'), 'dir');
+        const pkg = path.join(monorepo, 'networks', 'ethereum', 'network-ethereum');
+        const filename = path.join(pkg, 'lib', 'foo.js');
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
+
+        const out = transform(`import { solana } from '@trezor/fixture-pkg/src/workers/solana';`, {
+            filename,
+            plugins: [sanitizeInternalImports, addEsmExtension],
+        });
+        expect(out).toContain('@trezor/fixture-pkg/lib/workers/solana/index.js');
+    });
+
+    // Every @trezor/* specifier addresses a workspace package with a src/ tree, so a lookup that
+    // finds nothing is a broken lookup, not a file subpath — reported instead of absorbed, which
+    // would ship the guess with no build-time signal.
+    it('throws when the imported package cannot be located', () => {
+        const filename = path.join(root, 'connect-core', 'lib', 'workers', 'workers.js');
+
+        expect(() =>
+            transform(`import { x } from '@trezor/not-a-workspace/src/workers/solana';`, {
+                filename,
+                plugins: [sanitizeInternalImports, addEsmExtension],
+            }),
+        ).toThrow('cannot locate @trezor/not-a-workspace');
+    });
+});
+
+describe('publish import transforms — preserved behaviors', () => {
+    // Guards the pre-existing isStringLiteral check (shared by every rewrite position), not the
+    // import.meta.url gate: a non-literal specifier can never be resolved to a runtime path.
+    it('leaves a new URL(variable, ...) with a non-literal specifier untouched', () => {
+        const out = runEsm(`const u = new URL(specifier, import.meta.url);`);
+        expect(out).toContain('new URL(specifier, import.meta.url)');
+    });
+
+    it('keeps JSON imports extensionless and adds the type attribute', () => {
+        const out = runEsm(`import config from './localfile.json';`);
+        expect(out).toContain('./localfile.json');
+        expect(out).not.toContain('./localfile.json.js');
+        expect(out).toMatch(/type:\s*["']json["']/);
+    });
+
+    it('is idempotent: transforming already-transformed output is a no-op', () => {
+        const source = [
+            `import { solana } from '@trezor/fixture-pkg/src/workers/solana';`,
+            `import './localdir';`,
+            `export const w = () => import('@trezor/fixture-pkg/src/workers/blockbook');`,
+            `new Worker(new URL('./localfile', import.meta.url));`,
+        ].join('\n');
+
+        const once = runEsm(source);
+        const twice = runEsm(once);
+        expect(twice).toBe(once);
+    });
+});

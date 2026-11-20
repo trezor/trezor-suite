@@ -65,6 +65,11 @@ export const routes = [
         app: 'earn',
     },
     {
+        name: 'suite-refer-a-friend',
+        pattern: '/refer-a-friend',
+        app: 'refer-a-friend',
+    },
+    {
         name: 'earn-yield-deposit',
         pattern: '/earn/yield/deposit',
         app: 'earn-yield',
@@ -348,6 +353,16 @@ export const routes = [
     {
         name: 'wallet-trading-exchange-confirm',
         pattern: '/accounts/coinmarket/exchange/confirm',
+        app: 'wallet',
+    },
+    {
+        name: 'wallet-trading-exchange-approval',
+        pattern: '/accounts/coinmarket/exchange/approval',
+        app: 'wallet',
+    },
+    {
+        name: 'wallet-trading-exchange-allowance',
+        pattern: '/accounts/coinmarket/exchange/allowance',
         app: 'wallet',
     },
     {

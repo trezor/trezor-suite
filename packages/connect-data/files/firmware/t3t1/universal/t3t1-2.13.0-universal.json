@@ -1,0 +1,27 @@
+{
+    "required": false,
+    "version": [2, 13, 0],
+    "min_bootloader_version": [2, 1, 6],
+    "min_firmware_version": [2, 7, 2],
+    "bootloader_version": [2, 1, 16],
+    "firmware_revision": "037e506db454691bda188df2803df2fc26c75f36",
+    "url": "firmware/t3t1/trezor-t3t1-2.13.0.bin",
+    "fingerprint": "fbbecfbe8345d54e6a592d64ebc81f9b6355603c32e0b2dd328de3642d2d1362",
+    "changelog": "* Stellar: Support Protocol 27 delegated authentication.\n* Stellar: Support creating contracts.\n* Stellar: Added definitions for Centrifuge SEP-41 token contracts.\n* Ethereum: Improved clear signing support.\n* Solana: Confirm non-zero space allocation when creating an account.\n* Increase maximum passphrase length to 128 bytes.\n* Allow going back and changing previous selections during multishare backup creation, and remove the option to interrupt the flow from the checklist and number input screens.\n* Ripple: Destination tag 0 no longer omitted in payment requests.\n* Don't warn about unknown derivation path when exporting valid xpubs.\n* Allow signing messages with multisig keys and exportable account nodes.\n* Check the correctness of thresholds in Advanced Shamir backup to prevent unfinished backup state.\n* Fix future timestamp formatting.\n* Monero: Reject a payment ID that is not 8 or 32 bytes before displaying it.\n* Monero: Always confirm the payment ID that will be included in the signed transaction.\n* Cardano: Ask for the level of details when a simple transaction contains a script data hash.\n* Cardano: Ask for the level of details when an output of a simple transaction contains a datum or a reference script.\n* Solana: Always show the assigned account and new owner program in System Program Assign instructions.\n* Solana: Ask user for confirmation of optional instruction parameters that were previously hidden, e.g. when unsetting a token authority.\n* Solana: Confirm foreign base account when creating an account.\n* Solana: Fixed misleading account labels in Token program instructions.\n* Solana: Show trailing account references with their actual flags instead of presenting them as multisig signers.\n* Solana: Warn about a possible transfer hook in Token-2022 Transfer Checked instructions with trailing accounts.\n* Stellar: Fix the asset used as the price unit when confirming DEX offers.",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3t1/translation-T3T1-cs-CZ-2.13.0.bin",
+        "de-DE": "firmware/translations/t3t1/translation-T3T1-de-DE-2.13.0.bin",
+        "es-ES": "firmware/translations/t3t1/translation-T3T1-es-ES-2.13.0.bin",
+        "fr-FR": "firmware/translations/t3t1/translation-T3T1-fr-FR-2.13.0.bin",
+        "id-ID": "firmware/translations/t3t1/translation-T3T1-id-ID-2.13.0.bin",
+        "pt-BR": "firmware/translations/t3t1/translation-T3T1-pt-BR-2.13.0.bin"
+    },
+    "translations_metadata": {
+        "cs-CZ": { "status": "production" },
+        "de-DE": { "status": "beta" },
+        "es-ES": { "status": "beta" },
+        "fr-FR": { "status": "beta" },
+        "id-ID": { "status": "beta" },
+        "pt-BR": { "status": "beta" }
+    }
+}

@@ -31,8 +31,9 @@ import { PROTO } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { type DeepPartial } from '@trezor/type-utils';
 
-import { type AppState } from 'src/reducers/store';
-import protocolReducer from 'src/reducers/suite/protocolReducer';
+import protocolReducer from '#src/reducers/suite/protocolReducer';
+
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -78,7 +79,7 @@ const UTXO = {
     }),
 };
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
@@ -276,7 +277,7 @@ const DEFAULT_FEES: FeesState = {
 
 // - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
 // - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 // Todo: Replace `any` with an accurate type.
 export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
@@ -301,6 +302,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             () => {},
         ),
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
+        tokenDefinitions: createReducer({}, () => ({})),
         wallet: combineReducers({
             send: sendFormReducer,
             stablecoinYield: yieldReducer,
@@ -314,6 +316,10 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
                 () => ({}),
             ),
             selectedAccount: createReducer(selectedAccount, () => ({})),
+            phishing: createReducer(
+                { dustPhishing: { isEnabled: false, dustThreshold: '0' } },
+                () => ({}),
+            ),
             coinjoin: createReducer({ accounts: [] }, () => ({})),
             stake: createReducer(stakeInitialState, () => ({})),
             discovery: createReducer([], () => ({})),
@@ -417,6 +423,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             transactions: createReducer(
                 {
                     transactions: {},
+                    phishing: {},
                 },
                 () => ({}),
             ),
@@ -1833,7 +1840,7 @@ export const signAndPush: SignAndPush[] = [
 type FeeChangeFixture = {
     skip?: boolean;
     description: string;
-    store: DeepPartial<AppState['wallet']>;
+    store: DeepPartial<MockSuiteState['wallet']>;
     connect: any; // note: don't blame me, it was even worse before I added this type
     actionSequence: any;
     finalResult: any;
@@ -2311,7 +2318,8 @@ export const amountUnitChange = [
         store: {
             bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
         },
-        actions: [{ type: 'input', element: 'outputs.0.amount', value: '111' }],
+        // Enter the amount atomically so slow typing cannot trigger intermediate compositions.
+        actions: [{ type: 'paste', element: 'outputs.0.amount', value: '111' }],
         finalResult: {
             composeTransactionCalls: 1,
             formValues: {

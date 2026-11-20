@@ -36,11 +36,30 @@ describe(GetAccountInfo.name, () => {
         const method = createMethod([CONTRACT]);
 
         // `params` is protected; element access is how a test may read it.
-        expect(method['params'][0]!.stellarContractTokens).toEqual([CONTRACT]);
+        expect(method['params'].stellarContractTokens).toEqual([CONTRACT]);
     });
 
     it('accepts an omitted watch list', () => {
         expect(() => createMethod()).not.toThrow();
+    });
+
+    it('describes the account by its network', () => {
+        const method = createMethod();
+
+        expect(method.info).toBe('Export Stellar account info');
+        expect(method.requiredPermissions).toEqual([
+            { permission: 'read_account_info', coin: 'xlm' },
+        ]);
+    });
+
+    // Trezor Suite derives the descriptor on the device and answers a bundle itself.
+    it.each([
+        ['an account given by path', { coin: 'btc', path: "m/84'/0'/0'" }],
+        ['a bundle', { bundle: [{ coin: 'btc', descriptor: DESCRIPTOR }] }],
+    ])('rejects %s', (_, params) => {
+        expect(
+            () => new GetAccountInfo({ payload: { method: 'getAccountInfo', ...params } as any }),
+        ).toThrow(expect.objectContaining({ code: 'Method_NotAllowed' }));
     });
 
     // Blockbook rejects the `h` form (#16748), while the SDK contract is that the returned

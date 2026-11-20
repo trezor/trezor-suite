@@ -5,11 +5,11 @@
 - @trezor/connect API
     - suite-web
         - `@trezor/connect` is part of the JavaScript bundle as a regular module.
-        - `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite/web-app/webpack.config.ts)
+        - `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite-app/web-app/webpack.config.ts)
     - suite-desktop
         - `@trezor/connect` is installed as regular node_module and works in nodejs context (electron main process).
         - `@trezor/connect` files are **not** hosted on the electron renderer context.
-        - In the renderer context, `@trezor/connect` is aliased to `@trezor/connect-electron`, which proxies its methods via `@trezor/ipc-proxy`; see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite/desktop-app-renderer/webpack.config.ts).
+        - In the renderer context, `@trezor/connect` is aliased to `@trezor/connect-electron`, which proxies its methods via `@trezor/ipc-proxy`; see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite-app/desktop-app-renderer/webpack.config.ts).
 - Firmware binaries
     - suite-web
         - newest firmware binaries are hosted at `[url]/build/static/connect/data/firmware` and they are downloaded using regular `fetch` API.
@@ -37,7 +37,7 @@ If you want to run built Suite app with fresh data on every start (similarly to 
 
 ### Testing the environments
 
-In the codebase, the environment is detected [using these two ENV variables](https://github.com/trezor/trezor-suite/blob/5f77e40c9bd043c34ed84fc5c8b4fb5624b75046/suite/desktop-app-main/webpack/core.webpack.config.ts#L21-L22):
+In the codebase, the environment is detected [using these two ENV variables](https://github.com/trezor/trezor-suite/blob/5f77e40c9bd043c34ed84fc5c8b4fb5624b75046/suite-app/desktop-app-main/webpack/core.webpack.config.ts#L21-L22):
 
 - `NODE_ENV` distinguishes packaged app from local dev server. If set to `production`, it is packaged app:<br />
   **counterintuitively**, both production **and** development packaged app. Else it is local dev server.

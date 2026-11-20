@@ -1,5 +1,6 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { type BigNumber } from '@trezor/utils';
 
 export type FiatGraphPoint = {

@@ -1,8 +1,5 @@
-import {
-    type AccountKey,
-    type TokenAddress,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import {
     isAccountsTransactionsPageReady,

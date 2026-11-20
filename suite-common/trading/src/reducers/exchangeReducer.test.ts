@@ -1,8 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit';
-import { type CryptoId } from 'invity-api';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { transactionsActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { type TradingExchangeFormProps } from '../types';
@@ -228,5 +229,230 @@ describe('tradingExchangeReducer', () => {
             expect(state?.quotesRequest).toBeUndefined();
             expect(state?.formValues).toBeUndefined();
         });
+    });
+
+    describe('approvalFlow', () => {
+        const STEPS = ['revoke', 'approve', 'swap'] as const;
+
+        it('stores the step plan', () => {
+            const state = tradingExchangeReducer(
+                undefined,
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+            );
+
+            expect(state.approvalFlow).toEqual({ steps: STEPS, sentTxids: {} });
+        });
+
+        it('tracks a sent tx per step and replaces it on resend', () => {
+            const actions = [
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xfailed',
+                }),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xresent',
+                }),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'approve',
+                    txid: '0xapprove',
+                }),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.sentTxids).toEqual({
+                revoke: '0xresent',
+                approve: '0xapprove',
+            });
+        });
+
+        it('ignores a sent tx without a flow', () => {
+            const state = tradingExchangeReducer(
+                undefined,
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xrevoke',
+                }),
+            );
+
+            expect(state.approvalFlow).toBeUndefined();
+        });
+
+        it('starts a new flow without sent txs', () => {
+            const actions = [
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xrevoke',
+                }),
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.sentTxids).toEqual({});
+        });
+
+        it('follows a sent tx replaced by a speed-up', () => {
+            const actions = [
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'revoke',
+                    txid: '0xrevoke',
+                }),
+                tradingExchangeActions.setApprovalFlowStepTxid({
+                    step: 'approve',
+                    txid: '0xapprove',
+                }),
+                transactionsActions.replaceTransaction({
+                    key: 'account-1' as AccountKey,
+                    txid: '0xrevoke',
+                    tx: testMocks.getWalletTransaction({ txid: '0xspedup' }),
+                }),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.sentTxids).toEqual({
+                revoke: '0xspedup',
+                approve: '0xapprove',
+            });
+        });
+
+        it('keeps the step plan when the selected quote is replaced', () => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(changellyExchangeQuote),
+                tradingExchangeActions.startApprovalFlow([...STEPS]),
+                tradingExchangeActions.saveSelectedQuote({
+                    ...changellyExchangeQuote,
+                    status: 'APPROVAL_PENDING',
+                }),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow?.steps).toEqual(STEPS);
+        });
+
+        it.each([
+            ['clearApprovalFlow', tradingExchangeActions.clearApprovalFlow()],
+            ['clearQuotes', tradingExchangeActions.clearQuotes()],
+            ['clearQuotesAndParams', tradingExchangeActions.clearQuotesAndParams()],
+            [
+                'setTradingAccountKey(undefined)',
+                tradingExchangeActions.setTradingAccountKey(undefined),
+            ],
+        ])('is cleared by %s', (_, clearAction) => {
+            const actions = [tradingExchangeActions.startApprovalFlow([...STEPS]), clearAction];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.approvalFlow).toBeUndefined();
+        });
+    });
+
+    describe('selectedQuoteTimestamp', () => {
+        const SELECTED_QUOTE_TIMESTAMP = new Date('2026-10-23T10:00:00Z').getTime();
+
+        it('stores the time the selected quote was confirmed', () => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(changellyExchangeQuote),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuoteTimestamp).toBe(SELECTED_QUOTE_TIMESTAMP);
+        });
+
+        const confirmedTrade = { ...changellyExchangeQuote, orderId: 'order-1' };
+
+        it('is kept when the same confirmed trade is saved again', () => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(confirmedTrade),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+                tradingExchangeActions.saveSelectedQuote({ ...confirmedTrade, status: 'CONFIRM' }),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuote?.status).toBe('CONFIRM');
+            expect(state?.selectedQuoteTimestamp).toBe(SELECTED_QUOTE_TIMESTAMP);
+        });
+
+        it.each<[string, ExchangeTrade]>([
+            ['another confirmed trade', { ...confirmedTrade, orderId: 'order-2' }],
+            ['an unconfirmed quote', { ...changellyExchangeQuote, orderId: undefined }],
+        ])('is dropped when %s is saved', (_quote, quote) => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(confirmedTrade),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+                tradingExchangeActions.saveSelectedQuote(quote),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuote).toEqual(quote);
+            expect(state?.selectedQuoteTimestamp).toBeUndefined();
+        });
+
+        it.each<[string, UnknownAction]>([
+            ['saveSelectedQuote(undefined)', tradingExchangeActions.saveSelectedQuote(undefined)],
+            ['clearQuotes', tradingExchangeActions.clearQuotes()],
+            ['clearQuotesAndParams', tradingExchangeActions.clearQuotesAndParams()],
+            [
+                'setTradingAccountKey(undefined)',
+                tradingExchangeActions.setTradingAccountKey(undefined),
+            ],
+        ])('is cleared together with the selected quote by %s', (_action, action) => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(changellyExchangeQuote),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+                action,
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuote).toBeUndefined();
+            expect(state?.selectedQuoteTimestamp).toBeUndefined();
+        });
+    });
+});
+
+describe('exchangeReducer allowance', () => {
+    const READ = {
+        accountKey: 'account-1' as AccountKey,
+        tokenContractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        spender: '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae',
+        requestId: 'read-1',
+        confirmedTxCount: 1,
+    };
+    const NEXT_READ = { ...READ, requestId: 'read-2' };
+
+    it('keeps the last amount while the same key is re-read', () => {
+        const reRead = { ...NEXT_READ, spender: READ.spender.toUpperCase() };
+        const state = [
+            tradingExchangeActions.startAllowanceRead(READ),
+            tradingExchangeActions.setAllowance({ ...READ, amount: '50' }),
+            tradingExchangeActions.startAllowanceRead(reRead),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance).toEqual({
+            ...reRead,
+            status: 'loading',
+            amount: '50',
+        });
+    });
+
+    it('forgets the failure reason when the key is read again', () => {
+        const state = [
+            tradingExchangeActions.startAllowanceRead(READ),
+            tradingExchangeActions.setAllowanceError({ ...READ, errorMessage: 'timeout' }),
+            tradingExchangeActions.startAllowanceRead(NEXT_READ),
+        ].reduce(tradingExchangeReducer, undefined);
+
+        expect(state?.allowance?.errorMessage).toBeUndefined();
     });
 });

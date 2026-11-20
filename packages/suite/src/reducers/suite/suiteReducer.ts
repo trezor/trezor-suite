@@ -3,14 +3,13 @@ import { produce } from 'immer';
 
 import { onSuiteInit, onSuiteReady, updateOnlineStatus } from '@suite/suite-lifecycle';
 import type { CountryCode } from '@suite-common/geolocation';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { TRANSPORT, type TransportInfo, isTransportEventOfType } from '@trezor/connect';
 
 import {
     storageCorrupted,
     storageError,
     storageLoad,
-} from 'src/actions/suite/storageLifecycleActions';
+} from '#src/actions/suite/storageLifecycleActions';
 import {
     addDeviceIdToSeenDisconnectNotification,
     closeEvmExplanationBanner,
@@ -20,7 +19,9 @@ import {
     setSendFormPrefill,
     setSuiteError,
     setTransactionHistoryPrefill,
-} from 'src/actions/suite/suiteActions';
+} from '#src/actions/suite/suiteActions';
+
+import { type EvmSettings } from './evmSettings';
 
 export type SuiteRootState = {
     suite: SuiteState;
@@ -37,11 +38,6 @@ type SuiteLifecycle =
     | { status: 'db-error'; error: 'blocking' | 'blocked' }
     // inconsistent IDB state detected, need to reset storage
     | { status: 'db-corrupted'; error: unknown };
-
-export interface EvmSettings {
-    confirmExplanationModalClosed: Partial<Record<NetworkSymbol, Record<string, boolean>>>;
-    explanationBannerClosed: Partial<Record<NetworkSymbol, boolean>>;
-}
 
 export interface PrefillFields {
     sendForm?: string;

@@ -3,11 +3,10 @@ import { Pressable } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 
 type YieldDepositApprovalLimitCardProps = {
     contractAddress?: string;
-    tokenSymbol?: string;
     description: ReactNode;
     isChecked: boolean;
     onChange: () => void;
@@ -18,7 +17,6 @@ type YieldDepositApprovalLimitCardProps = {
 export const YieldDepositApprovalLimitCard = ({
     children,
     contractAddress,
-    tokenSymbol,
     description,
     isChecked,
     onChange,
@@ -33,7 +31,6 @@ export const YieldDepositApprovalLimitCard = ({
                         <TokenIcon
                             networkSymbol={symbol}
                             contractAddress={contractAddress}
-                            tokenSymbol={tokenSymbol}
                             size="extraSmall"
                         />
                         {title}

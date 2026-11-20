@@ -242,9 +242,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await devicePrompt.sendButton.click();
                 await stakingSection.verifyStakingToast({ type: 'claimed' });
                 await expect(stakingSection.claimCard).toBeHidden();
-                await expect(
-                    walletPage.balanceOfAccount({ symbol: ethSymbol, atIndex: 0 }),
-                ).toHaveText('4,468.00');
+                await expect(walletPage.topPanelBalance).toHaveText('4,468');
             });
         },
     );

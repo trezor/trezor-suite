@@ -4,8 +4,8 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { InfoItem, Row, Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 type EarnAvailableBalanceProps = {
     formattedBalance: string;
@@ -18,7 +18,7 @@ export const EarnAvailableBalance = ({ formattedBalance, symbol }: EarnAvailable
             <FormattedCryptoAmount
                 data-testid="@staking/available-balance"
                 value={formattedBalance}
-                symbol={symbol}
+                networkSymbol={symbol}
             />{' '}
             <BaseCurrencyValue
                 data-testid="@staking/base-currency-value"

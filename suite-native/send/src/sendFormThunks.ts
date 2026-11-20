@@ -6,6 +6,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type EnhancePrecomposedTransactionThunkState,
@@ -30,7 +31,6 @@ import {
     type AccountKey,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -255,10 +255,7 @@ export const sendTransactionThunk = createThunk<
         if (sendResponse.payload === undefined) {
             return rejectWithValue({
                 error: 'push-transaction-failed',
-                metadata: {
-                    success: false,
-                    error: { message: 'Payload is undefined.', code: 'Failure_UnknownCode' },
-                },
+                message: 'Payload is undefined.',
             });
         }
 

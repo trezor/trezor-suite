@@ -1,13 +1,5 @@
 import { getBitcoinNetwork, getEthereumNetwork, getMiscNetwork } from '../../data/coinInfo';
-import type { getAccountLabel, isUtxoBased } from '../accountUtils';
-
-export const getAccountLabelFixtures: TestFixtures<typeof getAccountLabel> = [
-    {
-        description: 'Legacy',
-        input: [[44], getBitcoinNetwork('btc')!],
-        output: 'legacy account #1',
-    },
-];
+import type { isUtxoBased } from '../accountUtils';
 
 export const isUtxoBasedFixtures: TestFixtures<typeof isUtxoBased> = [
     {

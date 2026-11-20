@@ -8,9 +8,8 @@ import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-c
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { createThunk } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useTradingExchangeTradeActions } from './useTradingExchangeTradeActions';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
 const DEVICE_CANCEL_TOAST_ERROR = 'Cancelled';
 
@@ -29,8 +28,8 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-jest.mock('src/actions/wallet/send/sendFormThunks', () => ({
-    ...jest.requireActual('src/actions/wallet/send/sendFormThunks'),
+jest.mock('#src/actions/wallet/send/sendFormThunks', () => ({
+    ...jest.requireActual('#src/actions/wallet/send/sendFormThunks'),
     signAndPushSendFormTransactionThunk: jest.fn(() => (dispatch: (action: unknown) => void) => {
         dispatch(
             notificationsActions.addToast({
@@ -58,11 +57,11 @@ jest.mock('@suite/intl', () => ({
     useTranslation: () => ({ translationString: (id: string) => id }),
 }));
 
-jest.mock('src/hooks/wallet/useBitcoinAmountUnit', () => ({
+jest.mock('#src/hooks/wallet/useBitcoinAmountUnit', () => ({
     useBitcoinAmountUnit: () => ({ isBtcSatsAmountUnit: false }),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 18 }),
 }));
 
@@ -76,7 +75,7 @@ jest.mock('@suite/settings', () => ({
     selectHasExperimentalFeature: () => () => false,
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
     useTradingExchangeTradeRequest: () => ({
         getTradeRequestParams: () =>
             Promise.resolve({
@@ -90,7 +89,7 @@ jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest',
 
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
-jest.mock('src/hooks/wallet/trading/form/useTradingFormAccount', () => ({
+jest.mock('#src/hooks/wallet/trading/form/useTradingFormAccount', () => ({
     useTradingFormAccount: () => ({
         tradingAccountKey: ACCOUNT.key,
         account: ACCOUNT,
@@ -185,7 +184,7 @@ describe('cancelling a swap on the device', () => {
     });
 
     it('reports the cancellation once and nothing else', async () => {
-        const { services } = createTestCompositionRoot<void, AppState>({ preloadedState });
+        const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState });
         const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
             services,
         });

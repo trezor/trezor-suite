@@ -60,6 +60,11 @@ export interface SelectionDotProps {
     circleY: SharedValue<number>;
 }
 
+export type SelectionTooltipProps = {
+    circleX: SharedValue<number>;
+    circleY: SharedValue<number>;
+};
+
 interface BaseLineGraphProps extends ViewProps {
     /**
      * All points to be marked in the graph. Coordinate system will adjust to scale automatically.
@@ -141,6 +146,11 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
     SelectionDot?: ComponentType<SelectionDotProps> | null;
 
     /**
+     * The element that gets rendered next to the selection dot while the user pans over the graph
+     */
+    SelectionTooltip?: ComponentType<SelectionTooltipProps> | null;
+
+    /**
      * The element that gets rendered above the Graph (usually the "max" point/value of the Graph)
      */
     TopAxisLabel?: () => ReactElement | null;
@@ -179,6 +189,12 @@ export type AnimatedLineGraphProps<TEventPayload extends object> = BaseLineGraph
      * Blur whole graph, for example in case of error or privacy mode
      */
     blurOverlay?: boolean;
+
+    /**
+     * Override the blur intensity when blurOverlay is enabled.
+     * @default 2
+     */
+    enforceIntensity?: number;
 
     /**
      * Show placeholder line

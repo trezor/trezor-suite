@@ -3,23 +3,25 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type YieldListItem,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
+import { useYieldDetailNavigation } from '@suite-native/earn';
 import {
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
-import { useYieldDetailNavigation } from '../../hooks/yield/useYieldDetailNavigation';
-import { type YieldListItem } from '../../types';
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 
@@ -29,7 +31,7 @@ type YieldPositionCardProps = {
 };
 
 export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => {
-    const { PercentageFormatter } = useFormatters();
+    const { PercentageFormatter, NetworkNameFormatter } = useFormatters();
     const { analytics } = useServices(injectNativeAnalytics);
     const { navigateToYieldDetail } = useYieldDetailNavigation();
 
@@ -72,8 +74,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                 <TokenIcon
                     networkSymbol={item.networkSymbol}
                     contractAddress={item.tokenContractAddress}
-                    tokenSymbol={item.tokenSymbol}
-                    size="extraSmall"
+                    size="small"
                     showNetworkIcon
                     wrappedTokenIcon="network"
                 />
@@ -81,7 +82,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
             title={item.vaultName}
             description={
                 <Text variant="body-sm" color="contentSecondary">
-                    {account?.accountLabel || getNetworkDisplaySymbolName(item.networkSymbol)}
+                    {account?.accountLabel || <NetworkNameFormatter value={item.networkSymbol} />}
                 </Text>
             }
             value={
@@ -97,9 +98,9 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                     />
                 ) : (
                     <CompactTokenAmountFormatter
+                        networkSymbol={item.networkSymbol}
+                        contractAddress={item.tokenContractAddress}
                         value={asDecimalTokenAmount(item.tokenBalance)}
-                        tokenSymbol={item.tokenSymbol}
-                        tokenDecimals={item.token?.decimals}
                         numberOfLines={1}
                         adjustsFontSizeToFit
                         variant="body-md"

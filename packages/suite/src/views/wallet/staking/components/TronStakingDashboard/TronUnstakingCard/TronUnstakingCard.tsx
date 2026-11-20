@@ -16,8 +16,9 @@ import {
     Text,
 } from '@trezor/components';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TronUnstakingRow } from './TronUnstakingRow';
 
@@ -66,7 +67,7 @@ export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProp
                                 >
                                     <FormattedCryptoAmount
                                         value={pendingBalance}
-                                        symbol={account.symbol}
+                                        networkSymbol={account.symbol}
                                     />
                                 </Text>
                                 <Text

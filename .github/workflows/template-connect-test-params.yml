@@ -57,6 +57,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           submodules: true
+      - name: Pull trezor-user-env image
+        id: pull-tenv-image
+        run: docker compose -f ./docker/docker-compose.connect-test.yml pull
+        background: true
       - name: Setup node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
@@ -83,17 +87,31 @@ jobs:
       - if: ${{ inputs.disable_cache_tx == 'true' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
       - if: ${{ inputs.testFirmwareModel }}
-        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.testFirmwareModel }}" >> "$GITHUB_ENV"
+        env:
+          TEST_FIRMWARE_MODEL: ${{ inputs.testFirmwareModel }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m $TEST_FIRMWARE_MODEL" >> "$GITHUB_ENV"
       - if: ${{ inputs.includeFilter }}
-        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.includeFilter }}" >> "$GITHUB_ENV"
+        env:
+          INCLUDE_FILTER: ${{ inputs.includeFilter }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i $INCLUDE_FILTER" >> "$GITHUB_ENV"
       - if: ${{ inputs.testRandomizedOrder }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -r" >> "$GITHUB_ENV"
       - if: ${{ inputs.transport }}
-        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -t ${{ inputs.transport }}" >> "$GITHUB_ENV"
-      - run: './docker/docker-connect-test.sh ${{ inputs.testEnv }} -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
+        env:
+          TRANSPORT: ${{ inputs.transport }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -t $TRANSPORT" >> "$GITHUB_ENV"
+      - name: Wait for trezor-user-env image
+        wait: pull-tenv-image
+      - env:
+          TEST_ENV: ${{ inputs.testEnv }}
+          TEST_PATTERN: ${{ inputs.testPattern }}
+          TESTS_FIRMWARE: ${{ inputs.testsFirmware }}
+        run: ./docker/docker-connect-test.sh "$TEST_ENV" -p "$TEST_PATTERN" -f "$TESTS_FIRMWARE" $ADDITIONAL_ARGS
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}
         uses: ./.github/actions/upload-test-logs
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.connect-test.yml
         with:
           target: ${{ inputs.testEnv }}
           test-group: ${{ inputs.testGroup }}-${{ inputs.testDescription }}

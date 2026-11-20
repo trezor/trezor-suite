@@ -1,0 +1,126 @@
+import { type Store, combineReducers } from '@reduxjs/toolkit';
+
+import {
+    type TradingCountryCode,
+    type TradingCountryOption,
+    type TradingCountrySubdivisionOption,
+} from '@suite-common/trading';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { useForm } from '@suite-native/forms';
+import { localeReducer } from '@suite-native/intl';
+import { act } from '@suite-native/test-utils';
+import {
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
+import {
+    type TradingRootState,
+    selectTradingResidenceCountry,
+    selectTradingResidenceCountrySubdivision,
+    tradingSlice,
+} from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
+
+import { useCountryChangeEffect } from './useCountryChangeEffect';
+
+type State = TradingRootState;
+
+type CountryFormValues = {
+    country: TradingCountryOption | undefined;
+    countrySubdivision: TradingCountrySubdivisionOption | undefined;
+};
+
+const buildCountryOption = (value: TradingCountryCode): TradingCountryOption => ({
+    codeAlpha3: 'USA',
+    flag: '🇺🇸',
+    name: 'United States of America',
+    value,
+    label: '🇺🇸 United States',
+    shortLabel: '🇺🇸 USA',
+});
+
+describe('useCountryChangeEffect', () => {
+    let store: Store<State>;
+
+    const reducer = {
+        locale: localeReducer,
+        wallet: combineReducers({
+            settings: createStaticReducer(initialWalletSettingsState),
+            trading: tradingSlice.prepareReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+            }),
+        }),
+    } as const;
+
+    const renderUseCountryChangeEffect = (defaultValues: CountryFormValues) =>
+        renderHookWithStoreProvider(
+            () => {
+                const form = useForm<CountryFormValues>({
+                    defaultValues,
+                });
+                useCountryChangeEffect(form.control);
+
+                return form;
+            },
+            { services: { store } },
+        );
+
+    beforeEach(() => {
+        store = createLightStore({ reducer });
+    });
+
+    it('should do nothing on mount', async () => {
+        await renderUseCountryChangeEffect({
+            country: buildCountryOption('US'),
+            countrySubdivision: undefined,
+        });
+
+        expect(selectTradingResidenceCountry(store.getState())).toBeUndefined();
+    });
+
+    it('should update trading residence country on country change', async () => {
+        const { result } = await renderUseCountryChangeEffect({
+            country: buildCountryOption('US'),
+            countrySubdivision: undefined,
+        });
+
+        await act(() => result.current.setValue('country', buildCountryOption('CA')));
+
+        expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
+        expect(selectTradingResidenceCountrySubdivision(store.getState())).toBeUndefined();
+    });
+
+    it('should not update when country becomes undefined', async () => {
+        const { result } = await renderUseCountryChangeEffect({
+            country: buildCountryOption('US'),
+            countrySubdivision: undefined,
+        });
+
+        await act(() => result.current.setValue('country', undefined));
+
+        expect(selectTradingResidenceCountry(store.getState())).toBeUndefined();
+    });
+
+    it('should update trading residence country subdivision on subdivision change', async () => {
+        const { result } = await renderUseCountryChangeEffect({
+            country: buildCountryOption('US'),
+            countrySubdivision: {
+                value: 'CA',
+                label: 'California',
+                name: 'California',
+            },
+        });
+
+        await act(() =>
+            result.current.setValue('countrySubdivision', {
+                value: 'NY',
+                label: 'New York',
+                name: 'New York',
+            }),
+        );
+
+        expect(selectTradingResidenceCountry(store.getState())).toBe('US');
+        expect(selectTradingResidenceCountrySubdivision(store.getState())).toBe('NY');
+    });
+});

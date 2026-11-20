@@ -1,17 +1,18 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { BannerFull, Box, Button, VStack } from '@suite-native/atoms';
+import { YieldDisabledAlert } from '@suite-native/earn';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { EarnFeeSection } from './EarnFeeSection';
 import { WrappedNativeFeeReserveBanner } from './WrappedNativeFeeReserveBanner';
 import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { useStandaloneWrappedNativeController } from '../../hooks/earn/useStandaloneWrappedNativeController';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
-import { YieldDisabledAlert } from '../yield/YieldDisabledAlert';
-import { YieldFeeSection } from '../yield/YieldFeeSection';
 import { YieldFlowScreenHeader } from '../yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../yield/YieldSessionTxSimulationSheet';
@@ -39,10 +40,10 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
+        metadataSources,
         nativeSymbol,
         pendingModal,
         simulationSheet,
-        spentSymbol,
         spentTokenContract,
         submit,
         wrappedTokenContract,
@@ -51,7 +52,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
 
     const messages = wrappedNativeFlowMessages[flowType].form;
 
-    return (
+    const content = (
         <Screen
             header={
                 <YieldFlowScreenHeader
@@ -89,8 +90,6 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             onMaxPress={amountInput.onMaxPress}
                             symbol={account.symbol}
                             tokenContract={spentTokenContract}
-                            tokenDecimals={amountInput.tokenDecimals}
-                            tokenSymbol={spentSymbol}
                         />
                     </Form>
 
@@ -100,7 +99,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                     />
 
                     {feeSection.isVisible && (
-                        <YieldFeeSection
+                        <EarnFeeSection
                             accountKey={account.key}
                             fees={feeSection.fees}
                             tokenContract={spentTokenContract}
@@ -151,9 +150,10 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id={messages.amountLabel} />}
                 amountTokenContract={spentTokenContract}
-                amountTokenSymbol={spentSymbol}
                 title={<Translation id={messages.pendingTransactionTitle} />}
             />
         </Screen>
     );
+
+    return <TokenMetadataProvider sources={metadataSources}>{content}</TokenMetadataProvider>;
 };

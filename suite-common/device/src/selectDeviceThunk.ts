@@ -11,6 +11,7 @@ import { selectDevices, selectIsSameOrNewDevice } from './deviceSelectors';
 
 type SelectDeviceThunkParams = {
     device: Device | TrezorDevice | undefined;
+    isNewlyConnected?: boolean;
 };
 
 type SelectDeviceThunkState = DeviceRootState;
@@ -26,7 +27,7 @@ export const selectDeviceThunk = createThunk<
     { state: SelectDeviceThunkState }
 >(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
-    ({ device }, { dispatch, getState, fulfillWithValue }) => {
+    ({ device, isNewlyConnected }, { dispatch, getState, fulfillWithValue }) => {
         let trezorDevice: TrezorDevice | undefined;
         const devices = selectDevices(getState());
         if (device) {
@@ -44,7 +45,7 @@ export const selectDeviceThunk = createThunk<
             }
         }
 
-        dispatch(deviceActions.selectDevice(trezorDevice));
+        dispatch(deviceActions.selectDevice(trezorDevice, { isNewlyConnected }));
 
         return fulfillWithValue({ device: trezorDevice });
     },
@@ -65,6 +66,6 @@ export const selectNewlyConnectedDeviceThunk = createThunk<
             return rejectWithValue('no-need-to-select');
         }
 
-        dispatch(selectDeviceThunk({ device }));
+        dispatch(selectDeviceThunk({ device, isNewlyConnected: true }));
     },
 );

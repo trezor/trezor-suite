@@ -69,13 +69,51 @@ export const redactCoinjoinData: ChainableBeforeSend = event => {
     return event;
 };
 
+/**
+ * Suite keeps route params in the URL query and hash, and some of them are confidential
+ * (e.g. trading redirects carry amounts and payment ids, the web protocol handler an address),
+ * so everything from the first `?` or `#` on is replaced.
+ */
+const redactUrlParams = (url: string) => url.replace(/([?#]).*$/s, '$1redacted');
+
+const URL_BREADCRUMB_DATA_KEYS = ['url', 'from', 'to'];
+
+// Covers the event fields that carry a Suite URL (breadcrumbs are handled in beforeBreadcrumb).
+export const redactEventUrlParams: ChainableBeforeSend = event => {
+    if (event === null) return null;
+
+    if (event.request?.url) {
+        event.request.url = redactUrlParams(event.request.url);
+    }
+
+    const { tags } = event;
+    if (tags) {
+        Object.entries(tags).forEach(([key, value]) => {
+            if (typeof value === 'string') {
+                tags[key] = redactUrlParams(value);
+            }
+        });
+    }
+
+    const electronContext = event.contexts?.electron;
+    if (typeof electronContext?.crashed_url === 'string') {
+        electronContext.crashed_url = redactUrlParams(electronContext.crashed_url);
+    }
+
+    return event;
+};
+
 const beforeSend: ChainableBeforeSend = event =>
-    redactSentryEvent(redactInvalidParameterValue(redactUserPath(redactCoinjoinData(event))));
+    redactSentryEvent(
+        redactInvalidParameterValue(
+            redactUserPath(redactEventUrlParams(redactCoinjoinData(event))),
+        ),
+    );
 
 export const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
-    const { category } = breadcrumb;
+    const { category, data } = breadcrumb;
     // Sentry types breadcrumb.data as arbitrary data object, making the `url` typed as `any`. We expect string.
-    const url: unknown = breadcrumb.data?.url;
+    const url: unknown = data?.url;
 
     // filter out analytics requests and image fetches
     const isAnalytics =
@@ -88,6 +126,15 @@ export const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
 
     if (isAnalytics || isImageFetch || isConsole) {
         return null;
+    }
+
+    // Strip URLs inside breadcrumb items, as the URLs may be sensitive.
+    if (data) {
+        URL_BREADCRUMB_DATA_KEYS.forEach(key => {
+            if (typeof data[key] === 'string') {
+                data[key] = redactUrlParams(data[key]);
+            }
+        });
     }
 
     return breadcrumb;

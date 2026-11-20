@@ -22,8 +22,13 @@ export const commonQueryKeys = {
         value,
     ],
     solanaRewards: (...args: any[]) => ['solana-rewards', ...args],
-    solanaRewardsTotal: (address: string) => ['solana-rewards-total', address],
+    solanaRewardsTotal: (symbol: string, address: string) => [
+        'solana-rewards-total',
+        symbol,
+        address,
+    ],
     tronStakingStats: () => ['tron-staking-stats'],
+    stakingProductInfo: (productId: string) => ['staking-product-info', productId],
     yieldOpportunity: (vaultId: string | undefined) => ['yield-opportunities', 'single', vaultId],
     yieldOpportunitiesList: (params: { limit: number }) => ['yield-opportunities', 'list', params],
     yieldOpportunitiesByAddress: (params: { outputToken?: string; network?: string }) => [
@@ -33,6 +38,11 @@ export const commonQueryKeys = {
     ],
     merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
+    assetPriceHistory: (
+        symbol: string | null | undefined,
+        tokenAddress: string | undefined,
+        ...args: unknown[]
+    ) => ['asset-price-history', symbol, tokenAddress, ...args],
     transactionsPage: ({
         accountKeys,
         contractAddress,

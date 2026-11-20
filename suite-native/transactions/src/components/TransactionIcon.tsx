@@ -1,10 +1,7 @@
 import { getNativeAssetIconSymbol } from '@suite-common/icons';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type StakeType,
-    type TokenAddress,
-    type TransactionType,
-} from '@suite-common/wallet-types';
+import { type StakeType, type TransactionType } from '@suite-common/wallet-types';
 import {
     Box,
     CircularSpinner,
@@ -12,7 +9,8 @@ import {
     type IconCircleIntent,
     type IconCircleSize,
 } from '@suite-native/atoms';
-import { type IconName, TokenIcon } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionIconProps = {
@@ -20,7 +18,6 @@ type TransactionIconProps = {
     stakeOperationType?: StakeType;
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
-    tokenSymbol?: string;
     isAnimated?: boolean;
     intent?: IconCircleIntent;
     size?: IconCircleSize;
@@ -55,7 +52,6 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
 export const TransactionIcon = ({
     symbol,
     contractAddress,
-    tokenSymbol,
     transactionType,
     stakeOperationType,
     intent,
@@ -80,7 +76,6 @@ export const TransactionIcon = ({
                     <TokenIcon
                         networkSymbol={iconSymbol}
                         contractAddress={contractAddress}
-                        tokenSymbol={tokenSymbol}
                         size="tiny"
                     />
                 </Box>

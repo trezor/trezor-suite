@@ -23,7 +23,9 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/token": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/tx-simulation": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
@@ -38,14 +40,13 @@
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
-        "@trezor/react-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
+        "@trezor/zod": "workspace:*",
+        "react": "19.3.0",
         "react-redux": "9.3.0",
-        "yup": "1.7.1",
-        "zod": "4.6.7"
+        "yup": "1.7.1"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",

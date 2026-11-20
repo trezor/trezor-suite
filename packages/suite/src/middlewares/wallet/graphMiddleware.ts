@@ -1,18 +1,25 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { accountsActions, discoveryActions } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    accountsActions,
+    selectAccounts,
+    updateDiscoveryMatcher,
+} from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import * as graphActions from 'src/actions/wallet/graphActions';
-import { type AppState } from 'src/types/suite';
+import { type UpdateGraphDataThunkState } from '#src/actions/wallet/graphActions';
+import * as graphActions from '#src/actions/wallet/graphActions';
+
+type GraphMiddlewareState = AccountsRootState & UpdateGraphDataThunkState;
 
 const graphMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, GraphMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         next(action);
-        const currentAccounts = api.getState().wallet.accounts;
+        const currentAccounts = selectAccounts(api.getState());
 
         if (accountsActions.updateSelectedAccount.match(action)) {
             // fetch graph data for selected account and range if needed
@@ -25,10 +32,7 @@ const graphMiddleware =
             }
         }
 
-        if (
-            discoveryActions.updateDiscovery.match(action) &&
-            action.payload.status.status === 'complete'
-        ) {
+        if (updateDiscoveryMatcher.match(action) && action.payload.status.status === 'complete') {
             api.dispatch(
                 graphActions.updateGraphDataThunk({
                     accounts: currentAccounts,

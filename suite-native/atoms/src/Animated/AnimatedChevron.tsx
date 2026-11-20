@@ -27,7 +27,7 @@ export const AnimatedChevron = ({ isExpanded }: AnimatedChevronProps) => {
 
     return (
         <AnimatedBox style={animatedStyle}>
-            <Icon name="caretDown" size="mediumLarge" />
+            <Icon name="caretDown" size="mediumLarge" color="contentTertiary" />
         </AnimatedBox>
     );
 };

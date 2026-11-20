@@ -1,5 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
+import { CSV_NEWLINE, CSV_SEPARATOR, sanitizeCsvValue } from '@trezor/utils';
+
 import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import {
     selectTradingCoinSymbolByCryptoId,
@@ -9,25 +11,7 @@ import { type TradingTransaction, type TradingType } from '../types';
 import { cryptoIdToNetwork, isBuyTrade, isExchangeTrade } from '../utils';
 import { getTradeOperationData } from './tradeOperationUtils';
 
-const CSV_NEWLINE = '\n';
-const CSV_SEPARATOR = ',';
-const CSV_LEADING_CHARACTERS_TO_ESCAPE_REGEX = /^[\s\uFEFF]*[=+\-@＝＋－＠]/u;
 const CSV_BOM = '\uFEFF';
-
-export const sanitizeTradingCsvValue = (value: string): string => {
-    const sanitizedValue = CSV_LEADING_CHARACTERS_TO_ESCAPE_REGEX.test(value) ? `'${value}` : value;
-
-    if (
-        sanitizedValue.includes(CSV_SEPARATOR) ||
-        sanitizedValue.includes('"') ||
-        sanitizedValue.includes('\n') ||
-        sanitizedValue.includes('\r')
-    ) {
-        return `"${sanitizedValue.replace(/"/g, '""')}"`;
-    }
-
-    return sanitizedValue;
-};
 
 export const TRADING_HISTORY_CSV_COLUMNS = [
     'orderId',
@@ -118,15 +102,15 @@ export const buildTradingHistoryCsv =
     (labels: TradingHistoryCsvColumnLabels) =>
     (trades: TradingTransaction[], resolvers: TradingHistoryCsvResolvers): string => {
         const header = TRADING_HISTORY_CSV_COLUMNS.map(column =>
-            sanitizeTradingCsvValue(labels[column]),
+            sanitizeCsvValue(labels[column]),
         ).join(CSV_SEPARATOR);
 
         const rows = trades.map(trade => {
             const row = getTradingHistoryCsvRow(trade, resolvers);
 
-            return TRADING_HISTORY_CSV_COLUMNS.map(column =>
-                sanitizeTradingCsvValue(row[column]),
-            ).join(CSV_SEPARATOR);
+            return TRADING_HISTORY_CSV_COLUMNS.map(column => sanitizeCsvValue(row[column])).join(
+                CSV_SEPARATOR,
+            );
         });
 
         return CSV_BOM + [header, ...rows].join(CSV_NEWLINE);

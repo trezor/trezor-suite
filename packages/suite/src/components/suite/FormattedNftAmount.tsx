@@ -1,7 +1,9 @@
-import { RedactNumericalValue } from '@suite/discreet-mode';
+import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
+import { TokenUrlBlur } from '@suite/token';
 import { type SignValue } from '@suite-common/suite-types';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getExplorerUrl, getNetworkType } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
@@ -9,10 +11,9 @@ import { Box, Column, Row, Text } from '@trezor/components';
 import { type TokenTransfer } from '@trezor/connect';
 import { type TypographyStyle } from '@trezor/theme';
 
-import { HiddenPlaceholder, Sign } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
-import { TokenUrlBlur } from './TokenUrlBlur';
+import { Sign } from './Sign';
 
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
@@ -39,7 +40,11 @@ export const FormattedNftAmount = ({
 
     const symbolComponent = transfer.symbol ? (
         <Text ellipsisLineCount={1}>
-            <TokenUrlBlur text={transfer.symbol} />
+            <TokenUrlBlur
+                networkSymbol={networkSymbol}
+                tokenContract={toTokenAddress(transfer.contract)}
+                text={transfer.symbol}
+            />
         </Text>
     ) : null;
 
@@ -58,6 +63,8 @@ export const FormattedNftAmount = ({
                             ) : null}
                             {transfer.name ? (
                                 <TokenUrlBlur
+                                    networkSymbol={networkSymbol}
+                                    tokenContract={toTokenAddress(transfer.contract)}
                                     text={translationString('TR_COLLECTION_NAME_OF_TOKEN_ID', {
                                         tokenValue: token.value,
                                         collectionName: transfer.name,

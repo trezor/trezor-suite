@@ -11,9 +11,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { FunnelSimpleIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { CollapsedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
-import { ExpandedSidebarOnly } from 'src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { CollapsedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
+import { ExpandedSidebarOnly } from '#src/components/suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
@@ -55,7 +56,7 @@ export const AccountsMenuHeader = () => {
 
     return (
         <>
-            <Divider margin={{ top: 0, bottom: 12 }} />
+            <Divider margin={{ top: 0, bottom: 12 }} color="surfaceBorderSunken" />
             <Box margin={{ horizontal: 8 }}>
                 <ExpandedSidebarOnly>
                     <Row gap={12} padding={{ right: !isEmpty ? 10 : 0 }}>

@@ -6,16 +6,15 @@ import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
 
-import { type FormatterProps } from '../types';
-import { AmountText } from './AmountText';
+import { type DiscreetMode, type FormatterProps } from '../types';
+import { DiscreetAmountText } from './DiscreetAmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { EmptyAmountText } from './EmptyAmountText';
 
 type FiatAmountFormatterProps = FormatterProps<BaseCurrencyAmount | null> &
     TextProps & {
         symbol?: NetworkSymbol;
-        isDiscreetText?: boolean;
-        isForcedDiscreetMode?: boolean;
+        discreetMode?: DiscreetMode;
         isLoading?: boolean;
         maximumFractionDigits?: number;
     };
@@ -25,32 +24,32 @@ export const BaseCurrencyAmountFormatter = React.memo(
         symbol,
         value,
         variant,
-        isDiscreetText = true,
+        discreetMode = 'auto',
         isLoading = false,
-        isForcedDiscreetMode,
         maximumFractionDigits,
         ...otherProps
     }: FiatAmountFormatterProps) => {
-        const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
+        const formatters = useFormatters();
 
         if (!!symbol && isTestnet(symbol)) {
             return <EmptyAmountText variant={variant} />;
         }
-        if (isLoading || (value === null && !isForcedDiscreetMode)) {
+        if (isLoading || value === null) {
             return <EmptyAmountSkeleton variant={variant} />;
         }
 
-        // in case of isForceDiscreetMode the value is blurred, so the real value does not matter
-        const formattedValue = isForcedDiscreetMode
-            ? '$0.00'
-            : formatter.format(value!, { maximumFractionDigits });
+        const formattedValue = (
+            <formatters.BaseCurrencyAmountFormatter
+                value={value}
+                maximumFractionDigits={maximumFractionDigits}
+            />
+        );
 
         return (
-            <AmountText
+            <DiscreetAmountText
                 value={formattedValue}
                 variant={variant}
-                isDiscreetText={isDiscreetText}
-                isForcedDiscreetMode={isForcedDiscreetMode}
+                discreetMode={discreetMode}
                 {...otherProps}
             />
         );

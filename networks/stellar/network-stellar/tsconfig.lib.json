@@ -6,6 +6,11 @@
     },
     "include": ["./src"],
     "references": [
+        {
+            "path": "../../../packages/blockchain-link-types"
+        },
+        { "path": "../../../packages/env-utils" },
+        { "path": "../network-stellar-types" },
         { "path": "../../../packages/utils" }
     ]
 }

@@ -184,7 +184,7 @@ export const StellarClaimClaimableBalanceOperation = Type.Object({
 // Soroban smart-contract invocation. Unlike the classic operations, its payload has no
 // simpler representation than the on-wire XDR, so `function` and `auth` reuse the protobuf
 // structures directly. network-stellar walks the parsed XDR into this shape.
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred (recursive) protobuf types in the emitted declaration.
 export type StellarInvokeHostFunctionOperation = {
     type: 'invokeHostFunction';
@@ -201,7 +201,7 @@ export const StellarInvokeHostFunctionOperation: TUnsafe<StellarInvokeHostFuncti
         auth: Type.Array(PROTO.StellarSorobanAuthorizationEntry), // Proto: "auth"
     });
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 export type StellarOperation =
     | StellarCreateAccountOperation
@@ -295,7 +295,7 @@ type StellarOperationMessageOf<
     TOperation extends TSchema,
 > = Static<TOperation> & { type: TType };
 
-// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// [typescript-performance]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 export type StellarOperationMessage =
     | StellarOperationMessageOf<'StellarCreateAccountOp', typeof PROTO.StellarCreateAccountOp>

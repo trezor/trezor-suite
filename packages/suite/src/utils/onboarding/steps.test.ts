@@ -1,8 +1,8 @@
 import type { AcquiredDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { stepCategories } from 'src/config/onboarding/steps';
-import * as STEP from 'src/constants/onboarding/steps';
+import { stepCategories } from '#src/config/onboarding/steps';
+import * as STEP from '#src/constants/onboarding/steps';
 
 import {
     type IsStepUsedProps,

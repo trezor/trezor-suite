@@ -9,6 +9,12 @@ import { getVideoPath, mockRemoteMessageSystem } from './common';
 import { Suite, launchSuite } from './electron';
 import { ElectronConf } from './types';
 
+type AutoStartDesktopApi = {
+    appAutoStartPopupResponse: (response: 'quit-now') => Promise<void>;
+};
+
+type DesktopApiWindow = Window & { desktopApi: AutoStartDesktopApi };
+
 export const electronSetup = async (
     testInfo: TestInfo,
     locale: string | undefined,
@@ -20,17 +26,18 @@ export const electronSetup = async (
     // default for Electron projects (playwright#13180 workaround).
     await (testInfo as any)._tracing.startIfNeeded('on');
 
+    const { measurePerf, ...launchConf } = electronConf;
     const suite = await launchSuite({
         locale,
         colorScheme,
         artefactFolder: testInfo.outputDir,
         viewport: testInfo.project.use.viewport!,
-        ...electronConf,
+        ...launchConf,
     });
 
     // The reload puts the init script in place before the renderer's React loads; the window is
-    // still on its initial screen, so no state is lost. Passive until a test opts in. PERF=0 skips it.
-    if (process.env.PERF !== '0') {
+    // still on its initial screen, so no state is lost.
+    if (measurePerf) {
         await suite.window.addInitScript(installPerfInstrumentation);
         await suite.window.reload();
     }
@@ -83,16 +90,30 @@ export const electronTeardown = async (
         });
     }
     const closePromise = suite.electronApp.close();
-    // Handle modal that asks to enable auto-start
-    if (electronConf.exposeConnectWs) {
-        const autoStartQuitButton = suite.window.getByTestId('@auto-start-before-quit/button-quit');
-        await expect(
-            autoStartQuitButton,
-            'expected the AutoStart Quit button to be enabled',
-        ).toBeEnabled();
-        await autoStartQuitButton.click();
+    try {
+        // Handle modal that asks to enable auto-start.
+        if (electronConf.exposeConnectWs) {
+            const confirmQuitPromise = expect(async () => {
+                if (suite.window.isClosed()) {
+                    return;
+                }
+
+                await suite.window.evaluate(async () => {
+                    await (
+                        window as unknown as DesktopApiWindow
+                    ).desktopApi.appAutoStartPopupResponse('quit-now');
+                });
+            }).toPass({ timeout: 15_000 });
+
+            await Promise.race([closePromise, confirmQuitPromise]);
+        }
+    } catch (error) {
+        suite.electronApp.process().kill();
+
+        throw error;
+    } finally {
+        await closePromise.catch(() => undefined);
     }
-    await closePromise;
 };
 
 type WebSetupParams = { webClipboardRead: boolean };
@@ -141,7 +162,7 @@ export const webSetup = async (
 
     const page = await browserContext.newPage();
 
-    // Tells the app to attach Redux Store to window object. suite/web-app/src/support/usePlaywright.ts
+    // Tells the app to attach Redux Store to window object. suite-app/web-app/src/support/usePlaywright.ts
     // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck
     await page.context().addInitScript(() => {
         window.Playwright = true;

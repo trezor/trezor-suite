@@ -15,44 +15,50 @@ interface UsePairRewardsWithAccountsProps {
     chainsRewardsWithFiat: ChainRewardsWithFiat[];
 }
 
+export const pairRewardsWithAccounts = ({
+    accounts,
+    chainsRewardsWithFiat,
+}: UsePairRewardsWithAccountsProps) =>
+    chainsRewardsWithFiat
+        .map(({ chainId, rewards, address }) => {
+            const claimableRewards = rewards.filter(reward => reward.claimable.gt(0));
+            const totalClaimableFiatAmount = claimableRewards.reduce(
+                (total, reward) => total.plus(reward.fiat.claimable ?? '0'),
+                new BigNumber(0),
+            );
+
+            const network = getNetworkByEvmChainId(chainId);
+            const rewardAccount = accounts.find(
+                (account): account is AccountWithNetworkType<'ethereum'> =>
+                    account.networkType === 'ethereum' &&
+                    account.symbol === network?.symbol &&
+                    account.descriptor.toLowerCase() === address.toLowerCase(),
+            );
+
+            if (!rewardAccount || claimableRewards.length === 0) {
+                return null;
+            }
+
+            return {
+                account: rewardAccount,
+                rewards,
+                totalClaimableFiatAmount: asBaseCurrencyAmount(totalClaimableFiatAmount),
+                isTotalClaimableFiatAmountComplete: claimableRewards.every(
+                    reward => reward.fiat.claimable !== null,
+                ),
+            };
+        })
+        .filter((account): account is NonNullable<typeof account> => !!account);
+
 export function usePairRewardsWithAccounts({
     accounts,
     chainsRewardsWithFiat,
 }: UsePairRewardsWithAccountsProps) {
     return useMemo(
-        () =>
-            chainsRewardsWithFiat
-                .map(({ chainId, rewards, address }) => {
-                    const totalClaimableFiatAmount = rewards.reduce(
-                        (total, reward) => total.plus(reward.fiat.claimable ?? '0'),
-                        new BigNumber(0),
-                    );
-
-                    const network = getNetworkByEvmChainId(chainId);
-                    const rewardAccount = accounts.find(
-                        (account): account is AccountWithNetworkType<'ethereum'> =>
-                            account.networkType === 'ethereum' &&
-                            account.symbol === network?.symbol &&
-                            account.descriptor.toLowerCase() === address.toLowerCase(),
-                    );
-
-                    if (!rewardAccount) {
-                        return null;
-                    }
-
-                    return {
-                        account: rewardAccount,
-                        rewards,
-                        totalClaimableFiatAmount: asBaseCurrencyAmount(totalClaimableFiatAmount),
-                    };
-                })
-                .filter(
-                    (account): account is NonNullable<typeof account> =>
-                        !!account && account.totalClaimableFiatAmount.gt(0),
-                ),
+        () => pairRewardsWithAccounts({ accounts, chainsRewardsWithFiat }),
         [chainsRewardsWithFiat, accounts],
     );
 }
 
-export type YieldAccountsRewards = ReturnType<typeof usePairRewardsWithAccounts>;
+export type YieldAccountsRewards = ReturnType<typeof pairRewardsWithAccounts>;
 export type YieldAccountRewards = YieldAccountsRewards[number];

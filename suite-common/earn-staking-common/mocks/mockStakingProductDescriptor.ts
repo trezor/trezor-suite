@@ -8,12 +8,14 @@ import {
 } from '../src';
 
 const defaults: Omit<StakingProductDescriptor, 'id'> = {
-    symbol: asNetworkSymbol('eth'),
+    networkSymbol: asNetworkSymbol('eth'),
+    asset: { kind: 'native' },
     providerId: stakingProviderIdSchema.parse('everstake'),
     type: 'pooled',
     operations: ['stake', 'unstake', 'withdraw'],
     exclusivity: 'none',
     rateKind: 'apy',
+    rewardsKind: 'compounded',
     limits: {
         minStakeAmount: stakingAmountSchema.parse('100000000000000000'),
         maxStakeAmount: stakingAmountSchema.parse('1000000000000000000000'),
@@ -21,6 +23,7 @@ const defaults: Omit<StakingProductDescriptor, 'id'> = {
         feeBufferBalance: stakingAmountSchema.parse('10000000000000000'),
         minBalanceForStaking: stakingAmountSchema.parse('110000000000000000'),
         minStakeAmountForDashboard: stakingAmountSchema.parse('100000000000000000'),
+        registrationDeposit: stakingAmountSchema.parse('0'),
     },
     options: [{ key: 'instant', kind: 'boolean' }],
     consentKey: 'staking:everstake',
@@ -33,6 +36,8 @@ const defaults: Omit<StakingProductDescriptor, 'id'> = {
         unstake: 'eth.staking.unstake',
         withdraw: 'eth.staking.claim',
     },
+    minFirmware: {},
+    isCountedInAccountTotals: true,
 };
 
 export const mockStakingProductDescriptor = (

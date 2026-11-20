@@ -6,7 +6,7 @@ import { Card, Column, Icon, Paragraph, Row, ShortcutBadge, Spinner } from '@tre
 import { QrCodeIcon, WarningIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';
 
-import { decodeQRFromImage } from 'src/utils/suite/qrCode';
+import { decodeQRFromImage } from '#src/utils/suite/qrCode';
 
 const IMAGE_ACCEPT = '.png,.jpg,.jpeg,.gif,.bmp,.webp';
 

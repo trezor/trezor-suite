@@ -22,6 +22,7 @@
 /packages/coinjoin @marekrjpolak @szymonlesisz
 
 /packages/components @trezor/suite-growth @seibei-iguchi @jvaclavik
+/suite-native/atoms @trezor/suite-growth @seibei-iguchi @yanascz
 
 /packages/product-components @trezor/suite-growth @seibei-iguchi @jvaclavik
 
@@ -73,8 +74,8 @@
 
 /packages/dom-utils @trezor/suite-growth
 
-/packages/device-authenticity/src/config/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka
-/packages/device-authenticity/src/config/deviceAuthenticityBlacklistConfig.ts @tsusanka @MiroslavProchazka
+/packages/device-authenticity/src/config/deviceAuthenticityConfig.ts @tsusanka @MiroslavProchazka @pavelmario
+/packages/device-authenticity/src/config/deviceAuthenticityBlacklistConfig.ts @tsusanka @MiroslavProchazka @pavelmario
 
 /packages/schema-utils @martykan
 
@@ -93,7 +94,7 @@
 /packages/trezor-user-env-link @Vere-Grey
 /suite/e2e @Vere-Grey
 /suite-common/e2e-evolu-client @Vere-Grey
-/suite-native/app/e2e @Vere-Grey
+/suite-native-app/app/e2e @Vere-Grey
 
 # Analytics
 /packages/analytics-docs @jvaclavik
@@ -111,8 +112,8 @@
 /suite-native/analytics/src/events @jvaclavik @kolomaznikt
 /suite-native/analytics/src/constants.ts @jvaclavik @kolomaznikt
 /suite-native/analytics/src/types.ts @jvaclavik @kolomaznikt
-/suite-native/module-authorize-device @juriczech
-/suite-native/module-passphrase @juriczech
+/suite-native-app/module-authorize-device @juriczech
+/suite-native-app/module-passphrase @juriczech
 /suite-native/passphrase @juriczech
 
 # Suite Common Packages
@@ -121,5 +122,13 @@
 /suite-common/analytics/src/constants.ts @jvaclavik @kolomaznikt
 /suite-common/analytics/src/types.ts @jvaclavik @kolomaznikt
 /suite-common/graph @trezor/suite-mobile
-/suite-common/message-system @tomasklim @matejkriz @MiroslavProchazka @pavelmario
+/suite-common/message-system @tomasklim @matejkriz @pavelmario
 /suite-common/token-definitions @tomasklim
+
+# Wallet
+/suite-common/assets @trezor/suite-wallet
+/suite-common/price-chart @trezor/suite-wallet
+/suite/price-chart @trezor/suite-wallet
+/suite-native-app/module-assets @trezor/suite-wallet
+/suite-native-app/module-send @trezor/suite-wallet
+/suite-native/price-chart @trezor/suite-wallet

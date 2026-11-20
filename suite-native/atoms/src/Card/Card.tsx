@@ -1,5 +1,5 @@
-import React, { type ComponentProps, type ReactNode } from 'react';
-import { View } from 'react-native';
+import { type ComponentProps, type ReactNode, type Ref } from 'react';
+import { View, type ViewInstance } from 'react-native';
 
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
@@ -22,6 +22,7 @@ export type CardProps = {
     alertProps?: BannerInlineProps;
     alertPosition?: AlertPosition;
     testID?: string;
+    ref?: Ref<ViewInstance>;
 };
 
 const cardOuterContainerStyle = prepareNativeStyle<{
@@ -100,71 +101,64 @@ const alertBoxWrapperStyle = prepareNativeStyle<{
     ],
 }));
 
-export const Card = React.forwardRef<View, CardProps>(
-    (
-        {
-            children,
-            style,
-            alertProps,
-            alertPosition: alertPositionProp,
-            borderColor,
-            noPadding = false,
-            noShadow = false,
-            testID,
-        }: CardProps,
-        ref,
-    ) => {
-        const { applyStyle } = useNativeStyles();
+export const Card = ({
+    children,
+    style,
+    alertProps,
+    alertPosition: alertPositionProp,
+    borderColor,
+    noPadding = false,
+    noShadow = false,
+    testID,
+    ref,
+}: CardProps) => {
+    const { applyStyle } = useNativeStyles();
 
-        const isAlertDisplayed = !!alertProps;
-        const alertPosition = isAlertDisplayed ? (alertPositionProp ?? 'top') : undefined;
+    const isAlertDisplayed = !!alertProps;
+    const alertPosition = isAlertDisplayed ? (alertPositionProp ?? 'top') : undefined;
 
-        return (
-            <View
-                style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}
-                testID={testID}
-            >
-                {isAlertDisplayed && alertPosition === 'top' && (
-                    <View
-                        style={applyStyle(alertBoxWrapperStyle, {
-                            alertPosition,
-                        })}
-                        testID={ALERT_TEST_ID + 'top'}
-                    >
-                        <BannerInline {...alertProps} />
-                    </View>
-                )}
+    return (
+        <View style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })} testID={testID}>
+            {isAlertDisplayed && alertPosition === 'top' && (
                 <View
-                    style={[
-                        /* CAUTION: in case that alert is displayed, it is not possible to change styles of the borders by the `style` prop. */
-                        applyStyle(cardInnerContainerStyle, {
-                            alertPosition,
-                            noPadding,
-                            borderColor,
-                            noShadow,
-                        }),
-                        style,
-                    ]}
-                    testID={CARD_CONTAINER_TEST_ID}
-                    // Ref must be here otherwise the animation will not work
-                    ref={ref}
+                    style={applyStyle(alertBoxWrapperStyle, {
+                        alertPosition,
+                    })}
+                    testID={ALERT_TEST_ID + 'top'}
                 >
-                    {children}
+                    <BannerInline {...alertProps} />
                 </View>
-                {isAlertDisplayed && alertPosition === 'bottom' && (
-                    <View
-                        style={applyStyle(alertBoxWrapperStyle, {
-                            alertPosition,
-                        })}
-                        testID={ALERT_TEST_ID + 'bottom'}
-                    >
-                        <BannerInline {...alertProps} />
-                    </View>
-                )}
+            )}
+            <View
+                style={[
+                    /* CAUTION: in case that alert is displayed, it is not possible to change styles of the borders by the `style` prop. */
+                    applyStyle(cardInnerContainerStyle, {
+                        alertPosition,
+                        noPadding,
+                        borderColor,
+                        noShadow,
+                    }),
+                    style,
+                ]}
+                testID={CARD_CONTAINER_TEST_ID}
+                // Ref must be here otherwise the animation will not work
+                ref={ref}
+            >
+                {children}
             </View>
-        );
-    },
-);
+            {isAlertDisplayed && alertPosition === 'bottom' && (
+                <View
+                    style={applyStyle(alertBoxWrapperStyle, {
+                        alertPosition,
+                    })}
+                    testID={ALERT_TEST_ID + 'bottom'}
+                >
+                    <BannerInline {...alertProps} />
+                </View>
+            )}
+        </View>
+    );
+};
 
 Card.displayName = 'Card';
 

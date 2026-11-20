@@ -1,0 +1,122 @@
+# @suite-native-app/app
+
+Trezor Suite native application.
+
+## Prerequisites
+
+Generally it's recommended to follow official [React Native environment setup](https://reactnative.dev/docs/set-up-your-environment) guide.
+
+1. [Android Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=android)
+    - If you have Linux, `watchman` can be installed via `apt` on debian/ubuntu. Alternatively you may install it via Homebrew for Linux - recommended by watchman, but may cause other issues on Linux.
+2. [iOS Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=ios)
+    - Make sure you have the latest version of the Xcode command line tools installed: `xcode-select --install`
+
+### NixOS prerequisites
+
+shell
+
+```
+USE_ANDROID=1 nix-shell
+```
+
+flakes
+
+```
+nix develop .#use_android
+```
+
+## Before you run the app
+
+1. Run `yarn native:prebuild` (shortcut `yarn p`) to generate `ios/` and `android/` directories.
+    - You can prebuild for specific platform if you setup only Android/iOS: `yarn prebuild --platform [android|ios]`
+    - It's necessary to re-run faster version of this command `yarn native:prebuild:no-clean` on any change in native code (when you change branch/pull/rebase).
+
+## Running app on Android
+
+1. Connect device or run emulator.
+    - For a physical device, [refer to instructions](https://developer.android.com/studio/run/device).
+        - It's recommended to use [adb over wifi](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) because you will have free up a USB port to connect Trezor device.
+2. Run packager - `yarn native:start` in separate terminal window and keep it running
+3. Run native build - `yarn native:android` this takes time (~10min) and it should install and start the app at the end
+    - If you need to debug a C++ issue, run `yarn workspace @suite-native-app/app android:debug` to use the regular `debug` variant.
+4. With emulator running, reverse android emulator ports to enable communication between the app and localhost services - `yarn native:reverse-ports`
+
+## Running app on iOS
+
+You need a Mac to be able to run the iOS app.
+
+Trezor can't be connected to iOS device via cable, but it's possible to use Portfolio tracker feature for watch only wallets. You will need Xcode and [xcode-select](https://www.freecodecamp.org/news/install-xcode-command-line-tools/).
+
+1. Run packager - `yarn native:start`
+2. Run `yarn native:ios` to build and run the app on iOS Simulator/device
+
+Or via Xcode (for native errors debug):
+
+1. Open `suite-native-app/app/ios/TrezorSuite.xcworkspace` in Xcode (from cli `xed suite-native-app/app/ios`)
+2. Hit the ▶️ `Run` button
+
+It is also possible for development purposes to connect Trezor emulator to iOS Simulator if you turn on the feature flag `Connect device` in DEV utils.
+
+## Connecting a physical Trezor
+
+Once Trezor Suite is running in iOS Simulator / Android emulator, it's possible to use it with a physical Trezor.
+
+1. Start desktop version of Trezor Suite that will serve as Trezor Bridge.
+    - Make sure Trezor emulator is stopped before starting the desktop app.
+2. Connect a physical Trezor to your laptop and unlock it if necessary.
+3. You might need to tap the _Use Trezor here_ button and/or reload the app.
+
+Patience might be required but your Trezor should be connected eventually.
+
+## Aliases
+
+You can use shorter versions of previous script commands OR navigate to suite-native-app/app folder and run scripts from there.
+
+Aliases available in root folder:
+
+- `yarn s` = yarn native:start
+- `yarn p` = yarn native:prebuild
+- `yarn ports` = yarn native:reverse-ports
+- `yarn a` = yarn native:android
+- `yarn ios` = yarn native:ios
+
+## DEV utils
+
+You can show DEV utils on production build FOR DEVELOPMENT PURPOSES ONLY – do not use it for your personal wallets!
+
+To reveal dev menu, you have to click at least 7 times on commit hash at the bottom of About Trezor Suite page.
+
+## Environment variables
+
+How our ENV variables works is describe in [Environment variables in Expo](https://docs.expo.dev/guides/environment-variables/) documentation.
+
+ENV variables for each Expo profile are defined in `eas.json` config.
+
+You can override ENV variables locally using `.env.development.local` (or `.env.test.local` for tests) files.
+
+> If you use `.env` file, it has the lowest priority. See [what other .env\* files you can use](https://github.com/bkeepers/dotenv/blob/c6e583a/README.md#what-other-env-files-can-i-use).
+
+- `EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true` to debug Sentry locally and
+- `EXPO_PUBLIC_IS_NATIVE_USB_LOGGER_ENABLED=true` to debug @trezor/transport-native-usb locally.
+- `EXPO_PUBLIC_IS_NATIVE_BLUETOOTH_LOGGER_ENABLED=true` to debug @trezor/transport-native-bluetooth locally.
+- `EXPO_PUBLIC_IS_ROZENITE_REDUX_DEVTOOLS_ENABLED=true` to enable Rozenite Redux DevTools locally.
+- `EXPO_PUBLIC_IS_ROZENITE_MMKV_DEVTOOLS_ENABLED=true` to enable Rozenite MMKV DevTools locally.
+- Rozenite Network Activity DevTools are enabled by default in debug builds.
+- `EXPO_PUBLIC_FF_*` overrides initial state for Feature Flags. See [.env.development](./.env.development) for examples to copy to `.env.development.local` file and [featureFlagsSlice.ts](../../suite-native/feature-flags/src/featureFlagsSlice.ts) for all available values.
+
+## Native changes - bumping runtimeVersion
+
+Whenever you do a change in a native code (updating native dependency and so on), you have to bump `runtimeVersion` in `app.config.ts` file manually so EAS knows that it has to prepare new development build. See [Runtime Versions Expo Docs](https://docs.expo.dev/distribution/runtime-versions/). Hopefully it's just a temporary situation until [fingerprint policy](https://docs.expo.dev/eas-update/runtime-versions/#fingerprint-runtime-version-policy) is finalized. Fingerprint policy is not working well with development builds yet, waiting for SDK 52.
+
+## Troubleshooting
+
+1. For any issues with the build, try to clean the project and rebuild it:
+    - `yarn native:prebuild`
+    - `yarn native:android` or `yarn native:ios`
+2. In case of issues with the packager, try to restart it with `--reset-cache` i.e (`yarn s --reset-cache`).
+3. If metro crashes after running `yarn start` on iOS, try running `watchman watch-del-all` to clear stale file‑watch state.
+4. Sometimes it's helpful to combine two previous points with uninstalling the app from the device/emulator.
+5. Make sure you are using pure Node or `nvm` for managing node version (other version managers like `fnm` can cause build issues on iOS).
+6. `npx react-native doctor` may help to identify issues with your environment, though not every check _has_ to pass
+7. Android emulator on Linux may be unstable with default software renderer. Then go to settings of the Android Virtual Device and choose Graphics acceleration: Hardware.<br />
+   For further debugging, start emulator with `adb logcat -v long > emulator_log.txt` running somewhere in the background.

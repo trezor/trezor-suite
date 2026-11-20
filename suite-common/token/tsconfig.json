@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "references": [
+        { "path": "../tokens" },
+        {
+            "path": "../wallet-core"
+        },
+        { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../packages/redux-utils"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
+    ]
+}

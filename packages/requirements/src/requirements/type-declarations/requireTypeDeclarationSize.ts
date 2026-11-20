@@ -1,5 +1,7 @@
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
+
+import { readJson } from '@trezor/node-utils';
 
 import { type WalkDirectoryOptions, normalizePath, walkDirectory } from '../../fileSystem';
 import { listAllWorkspaces } from '../../workspaces';
@@ -91,7 +93,7 @@ const findSourceFileFromDeclarationMap = (declarationFile: string) => {
     if (!existsSync(declarationMapFile)) return undefined;
 
     try {
-        const declarationMap: unknown = JSON.parse(readFileSync(declarationMapFile, 'utf8'));
+        const declarationMap = readJson<unknown>(declarationMapFile);
 
         if (typeof declarationMap !== 'object' || declarationMap === null) return undefined;
 

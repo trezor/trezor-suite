@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
-import { getOsTheme } from 'src/utils/suite/env';
-import { getThemeColors } from 'src/utils/suite/theme';
+import { getOsTheme } from '#src/utils/suite/env';
+import { getThemeColors } from '#src/utils/suite/theme';
 
 import GlobalStyle from './styles/GlobalStyle';
 

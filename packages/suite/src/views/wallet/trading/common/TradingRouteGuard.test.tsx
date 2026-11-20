@@ -7,11 +7,10 @@ import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-sy
 import { type Localization } from '@suite-common/suite-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { type AppState } from 'src/reducers/store';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingRouteGuard } from './TradingRouteGuard';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 type TranslationMockProps = { id: string };
 
@@ -31,17 +30,17 @@ const RESTRICTED_CONTENT: Localization = {
 
 type RenderGuardParams = {
     routeName: string;
-    isFinpromRestricted: boolean;
+    isRegionRestricted: boolean;
     content?: Localization;
 };
 
-const renderGuard = ({ routeName, isFinpromRestricted, content }: RenderGuardParams) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+const renderGuard = ({ routeName, isRegionRestricted, content }: RenderGuardParams) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             ...mockInitialAppState,
             messageSystem: mockMessageSystemStateWithFeatureFlags(
-                { [Feature.finprom.presenceRestriction]: isFinpromRestricted },
-                { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+                { [Feature.regions.presenceRestriction]: isRegionRestricted },
+                { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
                 content,
             ),
         },
@@ -59,7 +58,7 @@ describe('TradingRouteGuard', () => {
     it('shows the message content instead of a trading page when restricted', () => {
         renderGuard({
             routeName: 'wallet-trading-buy',
-            isFinpromRestricted: true,
+            isRegionRestricted: true,
             content: RESTRICTED_CONTENT,
         });
 
@@ -68,20 +67,20 @@ describe('TradingRouteGuard', () => {
     });
 
     it('falls back to the built-in text when the message has no content', () => {
-        renderGuard({ routeName: 'wallet-trading-redirect', isFinpromRestricted: true });
+        renderGuard({ routeName: 'wallet-trading-redirect', isRegionRestricted: true });
 
         expect(screen.getByText('TR_TRADING_RESTRICTED')).toBeInTheDocument();
         expect(screen.queryByText('page')).not.toBeInTheDocument();
     });
 
     it('shows a non-trading page when restricted', () => {
-        renderGuard({ routeName: 'suite-earn', isFinpromRestricted: true });
+        renderGuard({ routeName: 'suite-earn', isRegionRestricted: true });
 
         expect(screen.getByText('page')).toBeInTheDocument();
     });
 
     it('shows a trading page when not restricted', () => {
-        renderGuard({ routeName: 'wallet-trading-buy', isFinpromRestricted: false });
+        renderGuard({ routeName: 'wallet-trading-buy', isRegionRestricted: false });
 
         expect(screen.getByText('page')).toBeInTheDocument();
     });

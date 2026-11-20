@@ -6,13 +6,13 @@ import { type ExcludedUtxos, type FormState, type UtxoSorting } from '@suite-com
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     type SendContextValues,
     type UseSendFormState,
     type UtxoSelectionContext,
-} from 'src/types/wallet/sendForm';
-import { sortUtxos } from 'src/utils/wallet/utxoSortingUtils';
+} from '#src/types/wallet/sendForm';
+import { sortUtxos } from '#src/utils/wallet/utxoSortingUtils';
 
 import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
 
@@ -21,6 +21,10 @@ interface UtxoSelectionContextProps
     excludedUtxos: ExcludedUtxos;
     composeRequest: SendContextValues['composeTransaction'];
 }
+
+// Composed inputs are PROTO.TxInputType rather than AccountUtxo, so they are matched on a plain
+// `txid:vout` key instead of getUtxoOutpoint, which throws on anything but a 64-character hash.
+const getTxidVoutKey = (txid: string, vout: number) => `${txid}:${vout}`;
 
 export const useUtxoSelection = ({
     account,
@@ -60,33 +64,42 @@ export const useUtxoSelection = ({
     const anonymityWarningChecked = !!watch('anonymityWarningChecked');
     // manually selected UTXOs
     const selectedUtxos = watch('selectedUtxos', []);
+    const selectedUtxoOutpoints = useMemo(
+        () => new Set(selectedUtxos.map(getUtxoOutpoint)),
+        [selectedUtxos],
+    );
+
+    const accountUtxoOutpoints = useMemo(
+        () => new Set((account.utxo ?? []).map(getUtxoOutpoint)),
+        [account.utxo],
+    );
+    const coinjoinRegisteredOutpoints = useMemo(
+        () => new Set(coinjoinRegisteredUtxos.map(getUtxoOutpoint)),
+        [coinjoinRegisteredUtxos],
+    );
 
     // watch changes of account utxos AND utxos registered in coinjoin Round,
     // exclude spent/registered utxos from the subset of selectedUtxos
     useEffect(() => {
         if (isCoinControlEnabled && selectedUtxos.length > 0) {
-            const spentUtxos = selectedUtxos.filter(
-                selected => !account.utxo?.some(utxo => isSameUtxo(selected, utxo)),
-            );
-            const registeredUtxos = selectedUtxos.filter(selected =>
-                coinjoinRegisteredUtxos.some(utxo => isSameUtxo(selected, utxo)),
-            );
+            const remainingUtxos = selectedUtxos.filter(selected => {
+                const outpoint = getUtxoOutpoint(selected);
+                const isSpent = !accountUtxoOutpoints.has(outpoint);
+                const isRegistered = coinjoinRegisteredOutpoints.has(outpoint);
 
-            if (spentUtxos.length > 0 || registeredUtxos.length > 0) {
-                setValue(
-                    'selectedUtxos',
-                    selectedUtxos.filter(
-                        u => !spentUtxos.includes(u) && !registeredUtxos.includes(u),
-                    ),
-                );
+                return !isSpent && !isRegistered;
+            });
+
+            if (remainingUtxos.length !== selectedUtxos.length) {
+                setValue('selectedUtxos', remainingUtxos);
                 composeRequest();
             }
         }
     }, [
         isCoinControlEnabled,
         selectedUtxos,
-        account.utxo,
-        coinjoinRegisteredUtxos,
+        accountUtxoOutpoints,
+        coinjoinRegisteredOutpoints,
         setValue,
         composeRequest,
     ]);
@@ -126,9 +139,7 @@ export const useUtxoSelection = ({
     // is there at least one UTXO and are all UTXOs in the top category selected?
     const allUtxosSelected =
         !!topCategory.length &&
-        !!topCategory?.every((utxo: AccountUtxo) =>
-            selectedUtxos.some(selected => isSameUtxo(selected, utxo)),
-        );
+        topCategory.every(utxo => selectedUtxoOutpoints.has(getUtxoOutpoint(utxo)));
 
     // transaction composed for the fee level chosen by the user
     const composedLevel = composedLevels?.[selectedFee || 'normal'];
@@ -139,16 +150,20 @@ export const useUtxoSelection = ({
         [composedLevel],
     ) as PROTO.TxInputType[];
 
+    const composedInputKeys = useMemo(
+        () =>
+            new Set(composedInputs.map(input => getTxidVoutKey(input.prev_hash, input.prev_index))),
+        [composedInputs],
+    );
+
     // UTXOs corresponding to the inputs
     // it is a different object type, but some properties are shared between the two
     const preselectedUtxos = useMemo(
         () =>
             account.utxo?.filter(utxo =>
-                composedInputs.some(
-                    input => input.prev_hash === utxo.txid && input.prev_index === utxo.vout,
-                ),
+                composedInputKeys.has(getTxidVoutKey(utxo.txid, utxo.vout)),
             ) || [],
-        [account.utxo, composedInputs],
+        [account.utxo, composedInputKeys],
     );
 
     // at least one of the selected UTXOs does not comply to target anonymity
@@ -173,15 +188,17 @@ export const useUtxoSelection = ({
         if (allUtxosSelected) {
             setValue('selectedUtxos', []);
         } else {
+            const topCategoryOutpoints = new Set(topCategory.map(getUtxoOutpoint));
+
             // check top category and keep any already checked UTXOs from other categories
             const selectedUtxosFromLowerCategories = selectedUtxos.filter(
-                selected => !topCategory?.find(utxo => isSameUtxo(selected, utxo)),
+                selected => !topCategoryOutpoints.has(getUtxoOutpoint(selected)),
             );
             setValue(
                 'selectedUtxos',
                 topCategory
                     .concat(selectedUtxosFromLowerCategories)
-                    .filter(utxo => !coinjoinRegisteredUtxos.includes(utxo)),
+                    .filter(utxo => !coinjoinRegisteredOutpoints.has(getUtxoOutpoint(utxo))),
             );
             setValue('isCoinControlEnabled', true);
         }
@@ -228,6 +245,7 @@ export const useUtxoSelection = ({
         isLowAnonymityUtxoSelected,
         lowAnonymityUtxos,
         selectedUtxos,
+        selectedUtxoOutpoints,
         spendableUtxos,
         coinjoinRegisteredUtxos,
         utxoSorting,

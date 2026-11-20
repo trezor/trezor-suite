@@ -1,6 +1,6 @@
 ---
 name: retries
-description: Await and retry strategy for Suite E2E tests: Playwright auto-waiting, expect polling, Redux waits, flakiness prevention. Use every time a test is flaky due to timing.
+description: 'Await and retry strategy for Suite E2E tests: Playwright auto-waiting, expect polling, Redux waits, flakiness prevention. Use every time a test is flaky due to timing.'
 ---
 
 # Await & Retry Strategy
@@ -27,7 +27,7 @@ Use `page.expectReduxObjectNotToBeEmpty()`, `page.expectReduxObjectToEqual()`, o
 ## Device Interaction (Critical)
 
 **Always** verify the device prompt is shown **before** triggering a device action (`device.pressYes()`, etc.). Use `devicePrompt.confirmOnDevicePromptIsShown()` or `devicePrompt.waitForFinalPromptAndConfirm()` for multi-step flows.
-Verify display before action: use `device.expectToContainOnDisplay()` before `device.pressYes()`
+Verify display before action: use `device.expectToContainOnDisplay()` before `device.pressYes()`. Display checks skip on canary firmware; pass `{ shouldRunOnCanary: true }` when the check is what keeps `device.pressYes()` from hitting the previous screen.
 
 ---
 

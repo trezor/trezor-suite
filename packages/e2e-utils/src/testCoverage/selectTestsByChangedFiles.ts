@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as readline from 'node:readline';
 
+import { readJson } from '@trezor/node-utils';
 import { unique } from '@trezor/utils';
 
 import { error, log, output } from '../logger';
@@ -162,7 +163,7 @@ const main = async () => {
         process.exit(1);
     }
 
-    const index: CoverageIndex = JSON.parse(fs.readFileSync(coverageMapFile, 'utf8'));
+    const index = readJson<CoverageIndex>(coverageMapFile);
 
     const stdinFiles = await readStdin();
     const changedFiles = unique([...stdinFiles, ...explicitFiles]);

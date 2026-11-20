@@ -1,0 +1,73 @@
+import { type RouteProp, useRoute } from '@react-navigation/native';
+
+import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
+import { Translation } from '@suite-native/intl';
+import {
+    type AddCoinFlowType,
+    DynamicScreenHeader,
+    Screen,
+    type TradingStackParamList,
+    type TradingStackRoutes,
+} from '@suite-native/navigation';
+
+import { AccountList } from '../components/general/AccountList/AccountList';
+import { useReceiveAccountsListData } from '../hooks/general/useReceiveAccountsListData';
+
+export const TradingReceiveAccountsPickerScreen = () => {
+    const {
+        params: { symbol, tradingType },
+    } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.ReceiveAccounts>>();
+
+    const {
+        onSelectedNetworkItem,
+        clearNetworkWithTypeToBeAdded,
+        handleAccountTypeConfirmation,
+        handleAccountTypeSelection,
+        getAccountTypeToBeAddedName,
+        bottomSheetRef,
+    } = useAddCoinAccount();
+
+    const data = useReceiveAccountsListData({ symbol });
+    const hasAccounts = data.length > 0;
+
+    const flowType: AddCoinFlowType = 'trade';
+
+    const handleAddAccount = () => onSelectedNetworkItem({ symbol, flowType });
+
+    const handleAccountTypeSelectionTap = () => handleAccountTypeSelection(flowType);
+
+    const handleAddAccountConfirmTap = () => handleAccountTypeConfirmation(flowType);
+
+    return (
+        <Screen
+            isScrollable={false}
+            noBottomPadding={hasAccounts}
+            hasBottomInset={!hasAccounts}
+            header={
+                <DynamicScreenHeader
+                    title={
+                        hasAccounts ? (
+                            <Translation id="moduleTrading.accountScreen.titleStep1" />
+                        ) : undefined
+                    }
+                    closeActionType="back"
+                />
+            }
+        >
+            <AccountList
+                data={data}
+                symbol={symbol}
+                onAddAccountTap={handleAddAccount}
+                tradingType={tradingType}
+            />
+            <AccountTypeDecisionBottomSheet
+                ref={bottomSheetRef}
+                coinName={symbol}
+                typeName={getAccountTypeToBeAddedName()}
+                onClose={clearNetworkWithTypeToBeAdded}
+                onTypeSelectionTap={handleAccountTypeSelectionTap}
+                onConfirmTap={handleAddAccountConfirmTap}
+            />
+        </Screen>
+    );
+};

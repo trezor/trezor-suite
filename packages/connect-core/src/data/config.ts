@@ -10,15 +10,6 @@ export const config: Config = {
     webusb: TREZOR_USB_DESCRIPTORS,
     supportedFirmware: [
         {
-            coin: ['xrp', 'txrp'],
-            methods: ['getAccountInfo'],
-            min: { T1B1: '0', T2T1: '2.1.0' },
-            max: undefined, // NOTE: max field is not used anywhere at the moment, it is here for type compatibility
-            comment: [
-                "Since firmware 2.1.0 there is a new protobuf field 'destination_tag' in RippleSignTx",
-            ],
-        },
-        {
             coin: ['eth', 'tsep', 'thod'],
             min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],
@@ -49,13 +40,6 @@ export const config: Config = {
             methods: ['cardanoGetNativeScriptHash'],
             min: { T1B1: '0', T2T1: '2.4.3' },
             comment: ['Since 2.4.3 Cardano derivation behavior has changed'],
-        },
-        {
-            methods: ['tezosSignTransaction'],
-            min: { T1B1: '0', T2T1: '2.1.8' },
-            comment: [
-                'Since 2.1.8 there are new protobuf fields in tezos transaction (Babylon fork)',
-            ],
         },
         {
             methods: ['stellarSignTransaction'],
@@ -140,6 +124,7 @@ export const config: Config = {
             min: {
                 T1B1: '0',
                 T2T1: '0',
+                // Informational only: T3T1 < 2.8.0 is unsupported, because 2.8.0 is marked as required in @trezor/connect-data.
                 T3T1: '2.8.0',
             },
         },
@@ -162,6 +147,7 @@ export const config: Config = {
                 T2B1: '0',
                 T3B1: '0',
                 T3T1: '0',
+                // Informational only: T3W1 < 2.12.1 is unsupported, because 2.12.1 is marked as required in @trezor/connect-data.
                 T3W1: '2.12.1',
             },
         },

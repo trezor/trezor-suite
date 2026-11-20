@@ -1,7 +1,9 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { prettifyError } from 'zod';
+
+import { readJson } from '@trezor/node-utils';
+import { prettifyError } from '@trezor/zod';
 
 import { error, log } from '../logger';
 import { runAgent } from './common';
@@ -31,7 +33,7 @@ async function main(): Promise<void> {
     }).trim();
     const fixAgentDir = join(root, 'packages/e2e-utils/src/llmTestFixer');
 
-    const report = AnalysisReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
+    const report = AnalysisReportSchema.parse(readJson(reportPath));
     const task = report.fixTasks.find(t => t.id === taskId);
 
     if (!task) {

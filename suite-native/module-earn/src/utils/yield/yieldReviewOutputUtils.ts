@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
-    type EvmSelectedFee,
+    type AllowanceTransactionType,
     type EvmTransactionPurpose,
     type FormState,
     type PrecomposedTransactionFinal,
@@ -85,7 +85,6 @@ type BuildYieldWithdrawReviewPreviewParams = {
     flowData: YieldFlowResolvedData;
     review: YieldWithdrawScreenReview;
     reviewToken: YieldFlowDisplayToken;
-    selectedFee?: EvmSelectedFee | null;
     type: 'withdraw';
     vaultName: string;
 };
@@ -113,7 +112,7 @@ type BuildYieldAllowanceReviewPreviewParams = {
     device: TrezorDevice;
     formState: FormState;
     precomposedTransaction: PrecomposedTransactionFinal;
-    type: 'approve' | 'revoke';
+    type: AllowanceTransactionType;
     vaultName?: string;
 };
 
@@ -287,32 +286,15 @@ export const buildYieldReviewPreview = (
 ): YieldReviewPreview | null => {
     try {
         switch (params.type) {
-            case 'deposit': {
+            case 'deposit':
+            case 'withdraw': {
                 const { formState, precomposedTransaction } = buildStablecoinYieldTransactionReview(
                     {
                         amount: params.review.amount,
                         selectedFee: null,
                         symbol: params.flowData.account.symbol,
-                        token: params.flowData.token,
-                        unsignedTransaction: params.review.unsignedTransaction,
-                    },
-                );
-
-                return buildYieldReviewPreviewResult({
-                    account: params.flowData.account,
-                    device: params.device,
-                    formState,
-                    precomposedTransaction,
-                    vaultName: params.vaultName,
-                });
-            }
-            case 'withdraw': {
-                const { formState, precomposedTransaction } = buildStablecoinYieldTransactionReview(
-                    {
-                        amount: params.review.amount,
-                        selectedFee: params.selectedFee ?? null,
-                        symbol: params.flowData.account.symbol,
-                        token: params.reviewToken,
+                        token:
+                            params.type === 'withdraw' ? params.reviewToken : params.flowData.token,
                         unsignedTransaction: params.review.unsignedTransaction,
                     },
                 );

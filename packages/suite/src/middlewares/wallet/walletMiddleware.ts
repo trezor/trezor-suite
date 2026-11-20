@@ -1,16 +1,19 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { selectSelectedAccountKey } from '@suite/account';
-import { routerLocationChange, selectRouteName } from '@suite/router';
+import { selectSelectedAccount, selectSelectedAccountKey } from '@suite/account';
+import { routerLocationChange, selectRouteName, selectRouter } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
+    type SendRootState,
+    type SyncAccountsWithBlockchainThunkState,
     WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
+    selectAccounts,
     selectAllNetworkSymbolsOfVisibleAccounts,
     selectNetworksWithPendingTxs,
     sendFormActions,
@@ -21,22 +24,30 @@ import {
 } from '@suite-common/wallet-core';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import { updateWindowVisibility } from 'src/actions/suite/windowActions';
-import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
-import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
-import type { AppState } from 'src/types/suite';
+import { updateWindowVisibility } from '#src/actions/suite/windowActions';
+import { type SyncSelectedAccountThunkState } from '#src/actions/wallet/selectedAccountActions';
+import * as selectedAccountActions from '#src/actions/wallet/selectedAccountActions';
+import { type ConvertDraftsThunkState } from '#src/actions/wallet/trading/tradingCommonActions';
+import * as tradingCommonActions from '#src/actions/wallet/trading/tradingCommonActions';
+import { type WindowRootState, selectIsWindowVisible } from '#src/reducers/suite/windowReducer';
+
+type WalletMiddlewareState = SyncSelectedAccountThunkState &
+    SyncAccountsWithBlockchainThunkState &
+    ConvertDraftsThunkState &
+    SendRootState &
+    WindowRootState;
 
 const walletMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, WalletMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
 
         if (deviceActions.forgetDevice.match(action)) {
             const deviceState = action.payload.device.state?.staticSessionId;
-            const accountsToRemove = api
-                .getState()
-                .wallet.accounts.filter(a => a.deviceState === deviceState);
+            const accountsToRemove = selectAccounts(api.getState()).filter(
+                a => a.deviceState === deviceState,
+            );
             api.dispatch(accountsActions.removeAccount(accountsToRemove));
         }
 
@@ -69,7 +80,7 @@ const walletMiddleware =
         if (
             updateWindowVisibility.match(action) &&
             action.payload.isVisible &&
-            !prevState.window.isVisible
+            !selectIsWindowVisible(prevState)
         ) {
             const state = api.getState();
             const visibleNetworks = new Set(selectAllNetworkSymbolsOfVisibleAccounts(state));
@@ -82,13 +93,13 @@ const walletMiddleware =
                 });
         }
 
-        const prevRouter = prevState.router;
-        const nextRouter = api.getState().router;
+        const prevRouter = selectRouter(prevState);
+        const nextRouter = selectRouter(api.getState());
         let resetReducers = action.type === deviceActions.selectDevice.type;
 
         if (
             deviceActions.forgetDevice.match(action) &&
-            prevState.wallet.selectedAccount.account?.deviceState ===
+            selectSelectedAccount(prevState)?.deviceState ===
                 action.payload.device.state?.staticSessionId
         ) {
             // if currently selected account is related to forgotten device

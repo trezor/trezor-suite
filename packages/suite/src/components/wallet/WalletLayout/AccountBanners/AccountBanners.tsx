@@ -1,5 +1,5 @@
 import { ContextMessage } from '@suite/message-system';
-import { selectRouter } from '@suite/router';
+import { selectRouteName } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import {
     isSupportedAdaStakingNetworkSymbol,
@@ -7,10 +7,10 @@ import {
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
@@ -29,28 +29,28 @@ type AccountBannersProps = {
 };
 
 export const AccountBanners = ({ account }: AccountBannersProps) => {
-    const { route } = useSelector(selectRouter);
+    const routeName = useSelector(selectRouteName);
 
     return (
         <Column gap={12}>
             {account?.symbol &&
                 isSupportedEthStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('eth')} />
                 )}
             {account?.symbol &&
                 isSupportedSolStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('sol')} />
                 )}
             {account?.symbol &&
                 isSupportedTronStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('trx')} />
                 )}
             {account?.symbol &&
                 isSupportedAdaStakingNetworkSymbol(account.symbol) &&
-                route?.name === 'wallet-staking' && (
+                routeName === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('ada')} />
                 )}
             <BackendDisconnected />

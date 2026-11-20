@@ -75,8 +75,8 @@
   <text x="416" y="140" class="t">Spec list stays empty.</text>
   <text x="416" y="158" class="t">Whole PR suite runs.</text>
   <text x="416" y="186" class="t mu">Edited test files are still passed</text>
-  <text x="416" y="202" class="t mu">as E2E_EDITED_SPECS so their</text>
-  <text x="416" y="218" class="t mu">@optional tests are not filtered.</text>
+  <text x="416" y="202" class="t mu">as E2E_EDITED_SPECS and skip every</text>
+  <text x="416" y="218" class="t mu">filter but @skipOnPR.</text>
 
   <rect x="400" y="332" width="230" height="44" rx="3" class="box outcome"/>
   <text x="416" y="350" class="t b m">analyze</text>
@@ -89,11 +89,11 @@
   <rect x="760" y="98" width="230" height="140" rx="3" class="box cfg"/>
   <text x="776" y="120" class="t b">Spec list empty</text>
   <text x="776" y="140" class="t m">*-pr.config.ts</text>
-  <text x="776" y="160" class="t">Full run. Filters out @skipOnPR</text>
-  <text x="776" y="176" class="t">and @optional, except @optional in</text>
-  <text x="776" y="192" class="t">files listed in E2E_EDITED_SPECS.</text>
-  <text x="776" y="216" class="t mu">Web: only @webOnly.</text>
-  <text x="776" y="231" class="t mu">T3T1: exclusive tests only.</text>
+  <text x="776" y="160" class="t">Full run. Filters out @skipOnPR,</text>
+  <text x="776" y="176" class="t">@optional. Web: only @webOnly.</text>
+  <text x="776" y="192" class="t">T3T1: exclusive tests only.</text>
+  <text x="776" y="216" class="t mu">Files in E2E_EDITED_SPECS skip</text>
+  <text x="776" y="231" class="t mu">every filter but @skipOnPR.</text>
 
   <rect x="760" y="332" width="230" height="122" rx="3" class="box cfg"/>
   <text x="776" y="354" class="t b">Spec list set</text>

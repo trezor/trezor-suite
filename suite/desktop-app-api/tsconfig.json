@@ -15,6 +15,7 @@
         { "path": "../../suite-common/schemas" },
         { "path": "../tor-types" },
         { "path": "../../packages/type-utils" },
+        { "path": "../../packages/zod" },
         {
             "path": "../../packages/dependency-injection"
         }

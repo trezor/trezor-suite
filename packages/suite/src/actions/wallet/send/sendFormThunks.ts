@@ -8,7 +8,11 @@ import {
 } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '@suite/labeling';
-import { type MetadataRootState, metadataLabelingActions, selectMetadata } from '@suite/metadata';
+import {
+    type MetadataRootState,
+    metadataLabelingActions,
+    selectMetadataEnabled,
+} from '@suite/metadata';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -179,10 +183,10 @@ const applySendFormMetadataLabelsThunk = createThunk<
 >(
     `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
     ({ selectedAccount, precomposedTransaction, txid }, { dispatch, getState }) => {
-        const metadata = selectMetadata(getState());
+        const metadataEnabled = selectMetadataEnabled(getState());
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
 
-        if (!metadata.enabled && !isSuiteSyncEnabled) {
+        if (!metadataEnabled && !isSuiteSyncEnabled) {
             return;
         }
 
@@ -247,6 +251,7 @@ type SignAndPushSendFormTransactionThunkParams = {
     precomposedTransaction: GeneralPrecomposedTransactionFinal;
     selectedAccount?: Account;
     paymentRequests?: PROTO.PaymentRequest[];
+    shouldShowApprovalToast?: boolean;
 };
 
 export type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
@@ -274,7 +279,13 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 >(
     `${MODULE_PREFIX}/signSendFormTransactionThunk`,
     async (
-        { formState, precomposedTransaction, selectedAccount, paymentRequests },
+        {
+            formState,
+            precomposedTransaction,
+            selectedAccount,
+            paymentRequests,
+            shouldShowApprovalToast,
+        },
         { dispatch, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());
@@ -327,13 +338,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 
             // Keep the modal open to show the expired transaction state.
             if (signResponse.payload?.error === 'sign-transaction-timeout') {
-                return {
-                    success: false,
-                    error: {
-                        code: 'sign-transaction-timeout',
-                        message: signResponse.payload.message,
-                    },
-                };
+                return { success: false, error: signResponse.payload };
             }
 
             if (
@@ -382,6 +387,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             pushSendFormTransactionThunk({
                 selectedAccount,
                 isMevProtectionEnabled,
+                shouldShowApprovalToast,
             }),
         );
 
@@ -403,7 +409,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         if (isRejected(pushResponse)) {
             dispatch(sendFormActions.clearSignedTransactionData());
 
-            return pushResponse.payload?.metadata;
+            return pushResponse.payload && { success: false, error: pushResponse.payload };
         }
 
         const result = pushResponse.payload;

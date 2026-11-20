@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { View } from 'react-native';
+import { View, type ViewInstance } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -46,7 +46,7 @@ export const PassphraseForm = ({
     onAfterSubmit,
 }: PassphraseFormProps) => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
-    const formWrapperView = useRef<View>(null);
+    const formWrapperView = useRef<ViewInstance>(null);
 
     const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -112,7 +112,7 @@ export const PassphraseForm = ({
                                 <Button
                                     accessibilityRole="button"
                                     accessibilityLabel="confirm passphrase"
-                                    onPress={handleCreateHiddenWallet}
+                                    onPress={() => handleCreateHiddenWallet()}
                                     testID="@passphrase/confirmButton"
                                 >
                                     <Translation id="generic.buttons.confirm" />

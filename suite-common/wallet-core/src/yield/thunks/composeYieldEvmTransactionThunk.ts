@@ -58,6 +58,23 @@ export const composeYieldEvmTransactionThunk = createThunk<
             return { type: 'error', reason: 'missing-chain-id' } as const;
         }
 
+        const rawFeeInfo = await dispatch(
+            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
+        ).unwrap();
+
+        const feeInfo = getConvertedOrDefaultFeeInfo({
+            networkType: account.networkType,
+            feeInfo: rawFeeInfo,
+        });
+
+        const feeLevel =
+            feeInfo.levels.find(level => level.label === 'normal') ??
+            feeInfo.levels.find(level => level.label !== 'custom');
+
+        if (!feeLevel) {
+            return { type: 'error', reason: 'missing-fee-level' } as const;
+        }
+
         const [{ nonce }, estimatedFeeLevel] = await Promise.all([
             dispatch(
                 ethereumGetCurrentNonceThunk({
@@ -81,22 +98,6 @@ export const composeYieldEvmTransactionThunk = createThunk<
 
         if (!gasLimit) {
             return { type: 'error', reason: 'fee-estimation-failed' } as const;
-        }
-
-        const rawFeeInfo = await dispatch(
-            getOrFetchRawFeeInfoThunk({ networkSymbol: account.symbol }),
-        ).unwrap();
-
-        const feeInfo = getConvertedOrDefaultFeeInfo({
-            networkType: account.networkType,
-            feeInfo: rawFeeInfo,
-        });
-
-        const feeLevel =
-            feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
-
-        if (!feeLevel) {
-            return { type: 'error', reason: 'missing-fee-level' } as const;
         }
 
         const unsignedTransaction = JSON.stringify(

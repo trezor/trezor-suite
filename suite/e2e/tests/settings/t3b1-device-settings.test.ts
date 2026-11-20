@@ -46,10 +46,12 @@ test.describe('T3B1 - Device settings', { tag: ['@T3B1'] }, () => {
     test(
         'Device Wipe',
         { annotation: createTestAnnotation({ stream: TestStream.Firmware }) },
-        async ({ page, device }) => {
+        async ({ page, device, devicePrompt }) => {
             await page.getByTestId('@settings/device/open-wipe-modal-button').click();
             await page.getByTestId('@wipe/wipe-button').click();
             await page.getByTestId('@wipe/wipe-button').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.expectToContainOnDisplay('Do you really want to wipe the device?');
             await device.pressYes();
             //TODO: Verification?
         },

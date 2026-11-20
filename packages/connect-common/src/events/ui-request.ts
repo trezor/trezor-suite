@@ -5,8 +5,8 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { createTypeGuardByType } from '@trezor/type-utils';
 
 import type { DeviceThpPairingPayload } from './device';
-import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
-import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
+import type { DiscoveryAccountInfoParams } from '../types/api/account/discoverAccounts';
+import type { BitcoinNetworkInfo } from '../types/coinInfo';
 import type { Device } from '../types/device';
 import type { FeeLevel } from '../types/fees';
 
@@ -16,10 +16,9 @@ export const UI_REQUESTS = {
     REQUEST_PIN: 'ui-request_pin', // -> RECEIVE_PIN
     REQUEST_PASSPHRASE: 'ui-request_passphrase', // -> RECEIVE_PASSPHRASE
     REQUEST_THP_PAIRING_TAG: 'ui-request_thp_pairing_tag', // -> RECEIVE_THP_PAIRING_TAG
-    REQUEST_ACCOUNT: 'ui-request_account', // -> RECEIVE_ACCOUNT
-    REQUEST_FEE: 'ui-request_fee', // -> RECEIVE_FEE
+    REQUEST_FEE: 'ui-request_fee', // sent within Trezor Suite only, by its sendTransaction popup flow
     REQUEST_WORD: 'ui-request_word', // -> RECEIVE_WORD
-    REQUEST_DISCOVERY_ACCOUNTS: 'ui-request_discovery_accounts', // -> RECEIVE_DISCOVERY_ACCOUNTS
+    REQUEST_DISCOVERY_ACCOUNT_INFO: 'ui-request_discovery_account_info', // -> RECEIVE_DISCOVERY_ACCOUNT_INFO
 } as const;
 
 export type UiRequestDeviceAction =
@@ -59,26 +58,6 @@ export interface UiRequestConfirmation {
     };
 }
 
-export interface UiRequestSelectAccount {
-    type: typeof UI_REQUESTS.REQUEST_ACCOUNT;
-    payload:
-        | {
-              type: 'start' | 'progress' | 'end';
-              coinInfo: CoinInfo;
-              accountTypes?: DiscoveryAccountType[];
-              defaultAccountType?: DiscoveryAccountType;
-              accounts?: DiscoveryAccount[];
-              preventEmpty?: boolean;
-          }
-        | {
-              type: 'complete';
-              coinInfo: CoinInfo;
-              accountTypes: DiscoveryAccountType[];
-              defaultAccountType?: DiscoveryAccountType;
-              accounts: DiscoveryAccount[];
-          };
-}
-
 export interface UiRequestSelectFee {
     type: typeof UI_REQUESTS.REQUEST_FEE;
     payload: {
@@ -87,20 +66,17 @@ export interface UiRequestSelectFee {
     };
 }
 
-export interface UiRequestDiscoveryAccounts {
-    type: typeof UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNTS;
-    payload: {
-        coinInfo: CoinInfo;
-    };
+export interface UiRequestDiscoveryAccountInfo {
+    type: typeof UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO;
+    payload: DiscoveryAccountInfoParams;
 }
 
 export type UiRequestEvent = (
     | UiRequestDeviceAction
     | UiRequestConfirmation
-    | UiRequestSelectAccount
     | UiRequestSelectFee
     | UiRequestThpPairing
-    | UiRequestDiscoveryAccounts
+    | UiRequestDiscoveryAccountInfo
 ) & { requestId: string };
 
 export const isUiRequestOfType = createTypeGuardByType<UiRequestEvent>();

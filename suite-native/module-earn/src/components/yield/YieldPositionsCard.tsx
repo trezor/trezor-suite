@@ -1,6 +1,14 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { TokenMetadataProvider } from '@suite-common/token';
+import {
+    type EarnListRootState,
+    selectYieldClaimListItems,
+    selectYieldListItems,
+    useYieldClaimRewardsWithFiat,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import {
     Box,
     Card,
@@ -16,19 +24,13 @@ import { Translation } from '@suite-native/intl';
 import { YieldClaimRewardsSummaryCard } from './YieldClaimRewardsSummaryCard';
 import { YieldPositionsBottomSheet } from './YieldPositionsBottomSheet';
 import { YieldPositionsIcons } from './YieldPositionsIcons';
-import {
-    type EarnListRootState,
-    selectYieldClaimListItems,
-    selectYieldListItems,
-} from '../../earnScreenSelectors';
-import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
+import { yieldPositionsToTokenMetadataSources } from '../../utils/yield/yieldPositionsToTokenMetadataSources';
 
 export const YieldPositionsCard = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const { yieldOpportunities } = useYieldOpportunities();
-    const { claimRewardsWithFiat, isClaimLoading } = useClaimRewardsWithFiat();
+    const { claimRewardsWithFiat, isClaimLoading } = useYieldClaimRewardsWithFiat();
 
     const positions = useSelector((state: EarnListRootState) =>
         selectYieldListItems(state, yieldOpportunities),
@@ -50,7 +52,7 @@ export const YieldPositionsCard = () => {
 
     if (!isPositionsVisible && !isClaimRewardsVisible) return null;
 
-    return (
+    const content = (
         <>
             <Card noPadding borderColor="borderNeutral">
                 <VStack spacing={0}>
@@ -86,5 +88,11 @@ export const YieldPositionsCard = () => {
                 onClose={closeYieldPositionsSheet}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldPositionsToTokenMetadataSources(positions)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

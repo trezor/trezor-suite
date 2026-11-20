@@ -1,10 +1,12 @@
+import { type ButtonRequest } from '@suite-common/suite-types';
+
 import { type TransactionReviewOutputElementProps } from './TransactionReviewOutputElement';
 
 type GetTransactionReviewStateParams = {
     index: number; // index is either the current output index or the total number of outputs
     currentStep: number;
     hasSignedTx: boolean;
-    lastButtonRequestCode?: string | null;
+    lastButtonRequestCode?: ButtonRequest['code'] | null;
 };
 
 export const getTransactionReviewState = ({

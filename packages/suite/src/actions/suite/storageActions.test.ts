@@ -19,17 +19,26 @@ import { prepareReceiveReducer } from '@suite-common/receive';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type WithSuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     createTestCompositionRoot,
     testMocks,
     wireEnabledNetworksMock,
 } from '@suite-common/test-utils';
+import { prepareTradingReducer, tradingActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ChangeCoinVisibilityThunkState,
     blockchainInitialState,
     changeCoinVisibilityThunk,
+    prepareAccountsReducer,
+    prepareDiscoveryReducer,
+    prepareEarnOnboardingReducer,
+    prepareFiatRatesReducer,
+    prepareSendFormReducer,
+    prepareTransactionsReducer,
+    prepareWalletSettingsReducer,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
@@ -40,28 +49,17 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
-import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import { SETTINGS } from 'src/config/suite';
+import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
+import { prepareSuiteSyncQuotaManagerReducer } from '#src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
+import SETTINGS from '#src/config/suite/settings';
 import {
     type StorageMiddlewareState,
     prepareStorageMiddleware,
-} from 'src/middlewares/wallet/storageMiddleware';
-import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import {
-    accountsReducer,
-    discoveryReducer,
-    earnOnboardingReducer,
-    fiatRatesReducer,
-    sendFormReducer,
-    transactionsReducer,
-    walletSettingsReducer,
-} from 'src/reducers/wallet';
-import graphReducer from 'src/reducers/wallet/graphReducer';
-import { type Db, type DbDep } from 'src/storage/createDb';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { type PreloadStore, createPreloadStore } from 'src/support/suite/createPreloadStore';
-import { type AcquiredDevice } from 'src/types/suite';
+} from '#src/middlewares/wallet/storageMiddleware';
+import suiteReducer, { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
+import graphReducer from '#src/reducers/wallet/graphReducer';
+import { type Db, type DbDep } from '#src/storage/Db';
+import { type PreloadStore, createPreloadStore } from '#src/support/suite/createPreloadStore';
 
 import * as storageActions from './storageActions';
 import {
@@ -72,6 +70,16 @@ import {
     type SaveWalletSettingsThunkState,
 } from './storageActions';
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
+
+const accountsReducer = prepareAccountsReducer(mockExtraDependenciesForReducers);
+const discoveryReducer = prepareDiscoveryReducer({});
+const earnOnboardingReducer = prepareEarnOnboardingReducer(mockExtraDependenciesForReducers);
+const fiatRatesReducer = prepareFiatRatesReducer(mockExtraDependenciesForReducers);
+const sendFormReducer = prepareSendFormReducer(mockExtraDependenciesForReducers);
+const tradingReducer = prepareTradingReducer(mockExtraDependenciesForReducers);
+const transactionsReducer = prepareTransactionsReducer(mockExtraDependenciesForReducers);
+const walletSettingsReducer = prepareWalletSettingsReducer(mockExtraDependenciesForReducers);
 
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
@@ -94,9 +102,9 @@ const deviceReducer = prepareDesktopDeviceReducer({
 });
 const flagsReducer = prepareFlagsReducer({
     actionTypes: { storageLoad: storageLoad.type },
-    reducers: { storageLoadFlags: extraDependencies.reducers.storageLoadFlags },
+    reducers: { storageLoadFlags: mockExtraDependenciesForReducers.reducers.storageLoadFlags },
 });
-const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(undefined);
+const quotaManagerSliceReducer = prepareSuiteSyncQuotaManagerReducer(undefined);
 const suiteSyncReducer = prepareSuiteSyncReducer(undefined);
 const receiveReducer = prepareReceiveReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -218,6 +226,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any): State
             prevState?.wallet?.earnOnboarding,
             action || ({ type: 'foo' } as any),
         ),
+        trading: tradingReducer(prevState?.wallet?.trading, action || ({ type: 'foo' } as any)),
         formDrafts: {},
     },
 });
@@ -685,6 +694,51 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
+    });
+
+    it('should load the trade API install salt created by the database migration', async () => {
+        const store = mockStore(db, getInitialState());
+        store.dispatch((await preloadStore())!);
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+
+        const { tradeApiInstallSalt } = store.getState().wallet.trading;
+        expect(tradeApiInstallSalt).toMatch(/^[0-9a-f]{64}$/);
+        expect(reloadedStore.getState().wallet.trading.tradeApiInstallSalt).toBe(
+            tradeApiInstallSalt,
+        );
+    });
+
+    it('should keep the stored API key of a trade when it is saved again without it', async () => {
+        const store = mockStore(db, getInitialState());
+        const trade = {
+            tradeType: 'buy' as const,
+            date: '2026-10-30',
+            key: 'tradeKey',
+            data: { paymentId: 'tradeKey', status: 'LOGIN_REQUEST' as const },
+            selectedAccountKey: undefined,
+            receiveAccountKey: undefined,
+        };
+
+        store.dispatch(tradingActions.saveTrade({ ...trade, apiKey: 'trade-api-key' }));
+        store.dispatch(
+            tradingActions.saveTrade({
+                ...trade,
+                data: { ...trade.data, status: 'SUBMITTED' as const },
+            }),
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+        expect(reloadedStore.getState().wallet.trading.trades).toEqual([
+            {
+                ...trade,
+                data: { ...trade.data, status: 'SUBMITTED' as const },
+                apiKey: 'trade-api-key',
+            },
+        ]);
     });
 
     it('should remove legacy labels migration flag on forgetDevice', async () => {

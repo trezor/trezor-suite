@@ -32,11 +32,11 @@ export const allowedTooltipFrameProps = [
 ] as const satisfies FramePropsKeys[];
 export type AllowedFrameProps = Pick<FrameProps, (typeof allowedTooltipFrameProps)[number]>;
 
-const Content = styled.div<TransientProps<AllowedFrameProps>>`
+const Content = styled.div<TransientProps<AllowedFrameProps> & { $isUnderlined: boolean }>`
     display: flex;
     align-items: center;
     gap: 4px;
-    text-decoration: inherit;
+    text-decoration: ${({ $isUnderlined }) => ($isUnderlined ? 'underline dotted' : 'inherit')};
 
     ${withFrameProps}
 `;
@@ -63,6 +63,7 @@ type TooltipUiProps = {
     placement?: Placement;
     hasArrow?: boolean;
     hasIcon?: boolean;
+    isUnderlined?: boolean;
     appendTo?: HTMLElement | null | MutableRefObject<HTMLElement | null>;
     zIndex?: ZIndexValues;
     disableFlip?: boolean;
@@ -87,6 +88,7 @@ export const Tooltip = ({
     isOpen,
     hasArrow = true,
     hasIcon = false,
+    isUnderlined = false,
     appendTo,
     shift,
     zIndex = zIndices.tooltip,
@@ -117,7 +119,12 @@ export const Tooltip = ({
             disableFlip={disableFlip}
         >
             <TooltipTrigger>
-                <Content as={as} data-component="Tooltip" {...frameProps}>
+                <Content
+                    as={as}
+                    data-component="Tooltip"
+                    $isUnderlined={isUnderlined}
+                    {...frameProps}
+                >
                     {children}
                     {hasIcon && isActive && <Icon as={QuestionIcon} size={16} />}
                 </Content>

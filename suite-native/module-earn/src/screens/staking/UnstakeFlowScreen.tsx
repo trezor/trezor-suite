@@ -21,11 +21,11 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { SolanaUnstakeAmountBoundsAlert } from '../../components/staking/SolanaUnstakeAmountBoundsAlert';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
@@ -92,8 +92,10 @@ export const UnstakeFlowScreen = () => {
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
+        hasFeeEstimationError,
+        isComposingFeeLevels,
+        retryFeeEstimation,
+        isFeeReady,
         updateFeeLevelThunk,
         approximatedInstantEthAmount,
     } = unstakeForm;
@@ -132,10 +134,8 @@ export const UnstakeFlowScreen = () => {
                     <ScreenFooterGradient />
                     <Box paddingBottom="sp16">
                         <Button
-                            isDisabled={
-                                !isValid || isFeeUnavailable || isPrecomposeError || isPending
-                            }
-                            onPress={handleReviewAndSign}
+                            isDisabled={!isValid || !isFeeReady || isPending}
+                            onPress={() => handleReviewAndSign()}
                         >
                             <Translation id="earn.earnFormScreen.reviewAndSign" />
                         </Button>
@@ -144,7 +144,8 @@ export const UnstakeFlowScreen = () => {
             }
             footerHorizontalPadding="sp16"
         >
-            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+            {/* Keep the native parent stable when pointerEvents changes during navigation. */}
+            <Box collapsable={false} pointerEvents={isPending ? 'none' : 'auto'}>
                 <EarnAmountCard
                     accountKey={accountKey}
                     label={<Translation id="earn.earnFormScreen.staked" />}
@@ -165,6 +166,15 @@ export const UnstakeFlowScreen = () => {
                                     }}
                                 />
                             }
+                        />
+                    </Box>
+                )}
+
+                {canClaim && networkSymbol && (
+                    <Box marginTop="sp16">
+                        <UnstakeCanClaimAlert
+                            claimableAmount={claimableAmount}
+                            symbol={networkSymbol}
                         />
                     </Box>
                 )}
@@ -198,23 +208,19 @@ export const UnstakeFlowScreen = () => {
                         />
                     </Box>
                 )}
-                {canClaim && networkSymbol && (
-                    <Box marginTop="sp16">
-                        <UnstakeCanClaimAlert
-                            claimableAmount={claimableAmount}
-                            symbol={networkSymbol}
-                        />
-                    </Box>
-                )}
                 {isValid && (
                     <Box marginTop="sp24">
-                        <FeeSelector
+                        <EarnFeeSection
                             accountKey={accountKey}
-                            updateThunk={updateFeeLevelThunk}
-                            selectedFee={formDraft?.selectedFee ?? 'normal'}
-                            selectedFeePerUnit={formDraft?.feePerUnit}
-                            formDraft={formDraft}
-                            formDraftKey={formDraftKey}
+                            fees={{
+                                hasFeeEstimationError,
+                                isComposingFeeLevels,
+                                retryFeeEstimation,
+                                updateFeeLevelThunk,
+                                selectedFee: formDraft?.selectedFee ?? 'normal',
+                                formDraft,
+                                formDraftKey,
+                            }}
                         />
                     </Box>
                 )}

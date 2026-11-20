@@ -1,21 +1,18 @@
 import { useEffect, useState } from 'react';
 
+import { type AllowanceLimitType } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
-import { type YieldApprovalLimitType } from '../../types';
-
-export const useYieldApprovalLimit = (
-    defaultApprovalLimitType: YieldApprovalLimitType = 'per-deposit',
-) => {
+export const useYieldApprovalLimit = (defaultApprovalLimitType: AllowanceLimitType = 'minimal') => {
     const [approvalLimitType, setApprovalLimitType] =
-        useState<YieldApprovalLimitType>(defaultApprovalLimitType);
+        useState<AllowanceLimitType>(defaultApprovalLimitType);
 
     useEffect(() => {
         setApprovalLimitType(defaultApprovalLimitType);
     }, [defaultApprovalLimitType]);
 
     const approvalLimitTitleId =
-        approvalLimitType === 'per-deposit'
+        approvalLimitType === 'minimal'
             ? 'earn.yieldDepositFlowScreen.perDeposit'
             : 'earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title';
 

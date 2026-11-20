@@ -1,21 +1,18 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import {
-    type Timestamp,
-    type TokenAddress,
-    asBaseCurrencyAmount,
-} from '@suite-common/wallet-types';
+import { type Timestamp, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Column, Row, Text, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FormattedDate } from 'src/components/suite/FormattedDate';
-import { TrendBadge, calculatePercentageDifference } from 'src/components/suite/Ticker/TrendBadge';
-import { useSelector } from 'src/hooks/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FormattedDate } from '#src/components/suite/FormattedDate';
+import { TrendBadge, calculatePercentageDifference } from '#src/components/suite/Ticker/TrendBadge';
+import { useSelector } from '#src/hooks/suite/useSelector';
 // Unit prices are rendered with the same precision as PriceTicker so that
 // low-value assets do not round to zero.
 const UNIT_PRICE_FORMATTER_OPTIONS = {
@@ -28,8 +25,6 @@ type HistoricRateChangeProps = {
     historicRate: number | undefined;
     historicTimestamp: Timestamp;
     tokenAddress?: TokenAddress;
-    // Symbol shown in the tooltip heading; the rate lookup always uses `symbol` + `tokenAddress`.
-    displaySymbol?: NetworkSymbolExtended;
 };
 
 const isValidRate = (rate: number | undefined): rate is number =>
@@ -40,7 +35,6 @@ export const HistoricRateChange = ({
     historicRate,
     historicTimestamp,
     tokenAddress,
-    displaySymbol,
 }: HistoricRateChangeProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, tokenAddress);
@@ -77,7 +71,7 @@ export const HistoricRateChange = ({
                     <Text typographyStyle="body-sm-strong">
                         <FormattedCryptoAmount
                             value="1"
-                            symbol={displaySymbol ?? symbol}
+                            networkSymbol={symbol}
                             contractAddress={tokenAddress}
                         />
                     </Text>

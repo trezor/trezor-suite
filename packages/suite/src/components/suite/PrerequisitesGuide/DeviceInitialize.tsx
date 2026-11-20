@@ -14,8 +14,8 @@ import {
     enableOnboardingReducer,
     resetOnboarding,
     updateAnalytics,
-} from 'src/actions/onboarding/onboardingActions';
-import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+} from '#src/actions/onboarding/onboardingActions';
+import { TroubleshootingTips } from '#src/components/suite/troubleshooting/TroubleshootingTips';
 
 export const DeviceInitialize = () => {
     const { analytics, dispatch, getState } = useServices(

@@ -7,7 +7,7 @@ import { createTypeGuardByType } from '@trezor/type-utils';
 import type { VersionArray } from '@trezor/utils';
 
 import type { DeviceButtonRequest } from './device';
-import type { Device } from '../types/device';
+import type { Device, XPubHashesPerBip43Path } from '../types/device';
 
 export const UI_EVENT = 'UI_EVENT';
 
@@ -58,11 +58,6 @@ export const UI_EVENTS = {
     /** Passphrase is being entered on the device */
     PASSPHRASE_ON_DEVICE: 'ui-event_passphrase_on_device',
 
-    // --- Transaction ---
-
-    /** Account balance is insufficient for the transaction */
-    ACCOUNT_INSUFFICIENT_FUNDS: 'ui-event_account_insufficient_funds',
-
     // --- Generic ---
 
     /** Device is requesting a physical button press confirmation */
@@ -71,19 +66,16 @@ export const UI_EVENTS = {
     BUNDLE_PROGRESS: 'ui-event_bundle_progress',
     /** Result of the entropy check of an account xpub during discoverAccounts */
     DISCOVERY_ENTROPY_CHECK: 'ui-event_discovery_entropy_check',
+    /** Hashes of the xpubs the device committed to in a passed wallet creation entropy check */
+    WALLET_CREATION_ENTROPY_CHECK: 'ui-event_wallet_creation_entropy_check',
     /** Signal to close the UI popup/modal window */
     CLOSE_UI_WINDOW: 'ui-event_close_ui_window',
 } as const;
 
-export type UiEventWithoutPayload =
-    | {
-          type: typeof UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS;
-          payload?: never;
-      }
-    | {
-          type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
-          payload?: never;
-      };
+export type UiEventWithoutPayload = {
+    type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
+    payload?: never;
+};
 
 export type UiEventDeviceAction =
     | {
@@ -147,6 +139,7 @@ export interface UiEventBundleProgress<R> {
         total: number;
         progress: number;
         response: R;
+        /** @deprecated, never sent */
         error?: string;
     };
 }
@@ -157,6 +150,14 @@ export interface UiEventDiscoveryEntropyCheck {
         device: Device;
         success: boolean;
         path: string;
+    };
+}
+
+export interface UiEventWalletCreationEntropyCheck {
+    type: typeof UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK;
+    payload: {
+        device: Device;
+        xpubHashes: XPubHashesPerBip43Path;
     };
 }
 
@@ -217,6 +218,7 @@ export type UiEvent =
     | UiEventUnexpectedDeviceMode
     | UiEventBundleProgress<any>
     | UiEventDiscoveryEntropyCheck
+    | UiEventWalletCreationEntropyCheck
     | UiEventFirmwareProgress
     | UiEventFirmwareProgressUnexpectedDelay
     | UiEventFirmwareTypeChanged

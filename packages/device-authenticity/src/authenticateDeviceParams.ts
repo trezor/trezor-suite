@@ -3,7 +3,7 @@ import { type Static, type TUnsafe, Type } from '@trezor/schema-utils';
 import { DeviceAuthenticityBlacklistConfig } from './config/deviceAuthenticityBlacklistConfigTypes';
 import { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfigTypes';
 
-// [typescript-performace]: Keep these explicit schema aliases to prevent TypeScript from expanding
+// [typescript-performance]: Keep these explicit schema aliases to prevent TypeScript from expanding
 // the nested inferred types in the emitted declaration.
 type DeviceAuthenticityConfigSchema = TUnsafe<Static<typeof DeviceAuthenticityConfig>>;
 type DeviceAuthenticityBlacklistConfigSchema = TUnsafe<

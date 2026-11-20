@@ -79,11 +79,10 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             stakingSection,
             blockbookMock,
         }) => {
-            const stakingAccountItemInLeftSection = walletPage.accountButton({
+            const stakingAccountItemInLeftSection = walletPage.stakingBadge({
                 symbol: adaSymbol,
                 type: 'normal',
                 atIndex: 0,
-                subAccount: 'staking',
             });
 
             await test.step('Verify staked account with rewards', async () => {
@@ -104,6 +103,15 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(stakingSection.cardanoStakedFullBalanceText).toHaveTranslation(
                     'TR_STAKE_FULL_BALANCE',
                 );
+            });
+
+            // Recurring bug: https://github.com/trezor/trezor-suite/issues/31983
+            await test.step('Change delegation composes a fee for the new vote', async () => {
+                await stakingSection.changeDelegateButton.click();
+                await stakingSection.votingPreferenceOption('abstain').click();
+                await expect(feeSection.maxFeeWithSymbol).toBeVisible();
+                await expect(stakingSection.continueButton).toBeEnabled();
+                await page.modalCloseButton.click();
             });
 
             await test.step('Verify warning on too small reward claim', async () => {

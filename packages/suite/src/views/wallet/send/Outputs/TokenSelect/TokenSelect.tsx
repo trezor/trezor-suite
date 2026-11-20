@@ -1,16 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
+import { AssetIcon, AssetName, AssetSymbol } from '@suite/assets';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
-import {
-    type Explorer,
-    getNetwork,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
+import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
@@ -21,15 +19,15 @@ import {
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
-import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { selectSendFormPrefill } from 'src/selectors/suite/suiteSelectors';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
+import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
+import { selectSendFormPrefill } from '#src/selectors/suite/suiteSelectors';
+import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import { SelectTokenAssetModal } from './SelectTokenAssetModal/SelectTokenAssetModal';
 
@@ -98,6 +96,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
         () => account.tokens?.find(token => token.contract === tokenContractAddress),
         [account.tokens, tokenContractAddress],
     );
+    const selectedTokenAddress = selectedToken ? toTokenAddress(selectedToken.contract) : undefined;
 
     const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
     const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
@@ -125,17 +124,15 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
             >
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={12}>
-                        {selectedToken ? (
-                            <TokenIcon
-                                symbol={account.symbol}
-                                contractAddress={selectedToken?.contract}
+                        {selectedTokenAddress ? (
+                            <AssetIcon
+                                networkSymbol={account.symbol}
+                                contractAddress={selectedTokenAddress}
                                 size={24}
-                                placeholder={selectedToken?.symbol || account.symbol}
-                                placeholderWithTooltip={false}
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
+                            <AssetIcon networkSymbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
@@ -144,8 +141,10 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                     typographyStyle="body-md"
                                     data-testid={`@wallet/send/token-name/${outputId}`}
                                 >
-                                    {selectedToken?.name ||
-                                        getNetworkDisplaySymbolName(account.symbol)}
+                                    <AssetName
+                                        networkSymbol={account.symbol}
+                                        contractAddress={selectedTokenAddress}
+                                    />
                                 </Text>
                             </Row>
                             <Row>
@@ -159,9 +158,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             value={
                                                 selectedToken?.balance || account.formattedBalance
                                             }
-                                            symbol={selectedToken?.symbol ?? account.symbol}
-                                            contractAddress={selectedToken?.contract}
-                                            tokenDecimals={selectedToken?.decimals}
+                                            networkSymbol={account.symbol}
+                                            contractAddress={selectedTokenAddress}
                                             isCompact
                                             data-testid={tokenInputName}
                                         />
@@ -241,7 +239,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             <Translation
                                 id="TR_DEFI_YIELD_TOKEN_BANNER_TITLE"
                                 values={{
-                                    token: selectedToken?.symbol ?? account.symbol,
+                                    token: (
+                                        <AssetSymbol
+                                            networkSymbol={account.symbol}
+                                            contractAddress={selectedTokenAddress}
+                                        />
+                                    ),
                                 }}
                             />
                         }

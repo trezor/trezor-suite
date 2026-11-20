@@ -25,7 +25,7 @@ type ConnectEventMap = {
     EventPayloadMap<TransportEvent> &
     EventPayloadMap<BlockchainEvent> &
     EventPayloadMap<UiEvent> &
-    EventPayloadMap<UiRequestEvent, { requestId: string }> &
+    EventPayloadMap<UiRequestEvent, { requestId: string; callId?: string }> &
     EventPayloadMap<PopupEvent>;
 
 export type ConnectEvents = keyof ConnectEventMap;

@@ -20,7 +20,6 @@ describe('loadSellInfoThunk', () => {
     jest.mock('../../tradeApi');
 
     tradeApi.setServersEnvironment = () => {};
-    tradeApi.createApiKey = () => {};
 
     const sellProvider: SellProviderInfo = {
         name: 'test',

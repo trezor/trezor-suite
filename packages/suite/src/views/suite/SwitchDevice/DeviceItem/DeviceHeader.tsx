@@ -1,18 +1,20 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { IconButton, Row, TOOLTIP_DELAY_LONG } from '@trezor/components';
 import { CaretLeftIcon, XIcon } from '@trezor/icons';
 
-import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
-import { type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
+import { DeviceStatus } from '#src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
+import { type ForegroundAppProps } from '#src/types/suite';
 
 type DeviceHeaderProps = {
     device: TrezorDevice;
     onCancel?: ForegroundAppProps['onCancel'];
     onBackButtonClick?: () => void;
     isDeviceStatusVisible?: boolean;
+    forceConnectionInfo?: boolean;
     actions?: ReactNode | null;
 };
 
@@ -21,6 +23,7 @@ export const DeviceHeader = ({
     device,
     onBackButtonClick,
     isDeviceStatusVisible = true,
+    forceConnectionInfo = true,
     actions,
 }: DeviceHeaderProps) => {
     const deviceModelInternal = getDeviceInternalModel(device);
@@ -49,11 +52,11 @@ export const DeviceHeader = ({
                 />
             )}
 
-            {deviceModelInternal && isDeviceStatusVisible && (
+            {isDeviceStatusVisible && (
                 <DeviceStatus
                     deviceModel={deviceModelInternal}
                     device={device}
-                    forceConnectionInfo={true}
+                    forceConnectionInfo={forceConnectionInfo}
                 />
             )}
 

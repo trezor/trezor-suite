@@ -19,18 +19,25 @@ The flow is:
 2. The user handles their request inside the dedicated Trezor UI
 3. Response is returned to your application
 
+### Firefox
+
+Firefox does not support `externally_connectable` for web pages, so Suite Web cannot answer your extension there. In Firefox, Connect uses only Trezor Suite desktop. When Suite desktop is not running, calls fail with `Desktop_ConnectionMissing`, so ask the user to start it.
+
 ## Setup
 
 ### 1) manifest.json
 
-Allow Suite Web origins to message your extension using `externally_connectable`. Without this, the Suite Web flow would not be available.
+Allow Suite Web origins to message your extension using `externally_connectable`, and declare `host_permissions` for the same origin so the service worker can read the URL of the Suite Web tab it sends messages to. Without both, the Suite Web flow would not be available.
 
 ```json
 "externally_connectable": {
   "matches": [
     "https://suite.trezor.io/*"
   ]
-}
+},
+"host_permissions": [
+  "https://suite.trezor.io/*"
+]
 ```
 
 ### 2) Service worker

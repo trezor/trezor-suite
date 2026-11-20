@@ -1,24 +1,36 @@
+import { useSelector } from 'react-redux';
+
 import { useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
-import { Box, type TextProps } from '@suite-native/atoms';
+import { selectIsTokenFiatRateDisallowed } from '@suite-common/wallet-core';
+import { type TextProps } from '@suite-native/atoms';
+import { type TokensRootState } from '@suite-native/tokens';
 
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
-import { type FormatterProps } from '../types';
-import { AmountText } from './AmountText';
+import { type DiscreetMode, type FormatterProps } from '../types';
+import { DiscreetAmountText } from './DiscreetAmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { SignValueFormatter } from './SignValueFormatter';
 
 type TokenToFiatAmountFormatterProps = {
     symbol: NetworkSymbol;
     contract: TokenAddress;
-    isDiscreetText?: boolean;
-    decimals?: number;
+    /**
+     * The value is in whole token units, as in account balances, instead of base units.
+     *
+     * @deprecated A boolean switch does not say which unit a value is in, so every caller has to
+     * know it and branch on it. The unit scale belongs in the value's type: branded types such as
+     * `DecimalTokenAmount` for whole units and a counterpart for base units, converted once at
+     * the data boundary. Unify token amounts on those types and accept only one of them here.
+     */
+    isBalance?: boolean;
+    discreetMode?: DiscreetMode;
     signValue?: SignValue;
     historicRate?: number;
     useHistoricRate?: boolean;
-    isForcedDiscreetMode?: boolean;
 } & FormatterProps<number | string> &
     TextProps;
 
@@ -26,53 +38,47 @@ export const TokenToFiatAmountFormatter = ({
     symbol,
     value,
     contract,
-    isDiscreetText = true,
-    decimals = 0,
+    isBalance = false,
+    discreetMode = 'auto',
     signValue,
     ellipsizeMode,
     numberOfLines,
     historicRate,
     useHistoricRate,
-    isForcedDiscreetMode,
     ...rest
 }: TokenToFiatAmountFormatterProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    const token = useTokenMetadata(symbol, contract);
     const fiatValue = useFiatFromCryptoValue({
         cryptoValue: String(value),
         symbol,
         tokenAddress: contract,
-        tokenDecimals: decimals,
+        tokenDecimals: isBalance ? 0 : (token?.decimals ?? 0),
         historicRate,
         useHistoricRate,
     });
-
-    if (fiatValue === null && !isForcedDiscreetMode) {
-        return <EmptyAmountSkeleton />;
-    }
-
-    const formattedFiatValue = isForcedDiscreetMode
-        ? '$0.00' // in case of isForceDiscreetMode the value is blurred, so the real value does not matter
-        : BaseCurrencyAmountFormatter.format(fiatValue!);
-
-    const amountText = (
-        <AmountText
-            value={formattedFiatValue}
-            isDiscreetText={isDiscreetText}
-            ellipsizeMode={ellipsizeMode}
-            numberOfLines={numberOfLines}
-            isForcedDiscreetMode={isForcedDiscreetMode}
-            {...rest}
-        />
+    const isFiatRateDisallowed = useSelector((state: TokensRootState) =>
+        selectIsTokenFiatRateDisallowed(state, symbol, contract),
     );
 
-    if (!signValue) {
-        return amountText;
+    if (fiatValue === null) {
+        return isFiatRateDisallowed ? null : <EmptyAmountSkeleton />;
     }
 
+    const formattedFiatValue = (
+        <>
+            <SignValueFormatter value={signValue} />
+            <BaseCurrencyAmountFormatter value={fiatValue} />
+        </>
+    );
+
     return (
-        <Box flexDirection="row">
-            {!isForcedDiscreetMode && <SignValueFormatter value={signValue} />}
-            {amountText}
-        </Box>
+        <DiscreetAmountText
+            value={formattedFiatValue}
+            discreetMode={discreetMode}
+            ellipsizeMode={ellipsizeMode}
+            numberOfLines={numberOfLines}
+            {...rest}
+        />
     );
 };

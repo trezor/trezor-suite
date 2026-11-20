@@ -16,9 +16,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { NetworkList } from '#src/components/suite/NetworkList/NetworkList';
+import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
@@ -99,7 +100,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         );
 
         if (toEnable.length > 0) {
-            dispatch(startOrRestartDiscoveryThunk());
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'coin-toggle' }));
         }
 
         onCancel();

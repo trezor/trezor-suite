@@ -4,15 +4,15 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Translation, useTranslation } from '@suite/intl';
 import type { TranslationKey } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { toTokenAddress } from '@suite-common/tokens';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { YieldFlowFormValues } from '@suite-common/wallet-core';
-import { toTokenAddress } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Row, Text, TextButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useSelector } from 'src/hooks/suite';
-import { validateDecimals } from 'src/utils/suite/validation';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { validateDecimals } from '#src/utils/suite/validation';
 
 import { YieldAmountInputAddon } from './YieldAmountInputAddon';
 

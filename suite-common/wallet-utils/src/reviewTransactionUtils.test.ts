@@ -15,7 +15,8 @@ import type { TokenInfo } from '@trezor/connect';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
-import { buildApprovalTransactionData, getPrecomposedTxWithAccountToken } from './ethUtils';
+import { buildApprovalTransactionData } from './allowanceUtils';
+import { getPrecomposedTxWithAccountToken } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
     getIsClearSignedEvmClaimFlow,

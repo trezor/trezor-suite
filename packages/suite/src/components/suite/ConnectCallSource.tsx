@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
-import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { getCallSourceName, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Row, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
 
@@ -17,6 +17,7 @@ export const ConnectCallSource = ({ 'data-testid': dataTestId }: ConnectCallSour
         connectPopupCall?.state !== 'ongoing' &&
         connectPopupCall?.state !== 'call-error' &&
         connectPopupCall?.state !== 'address-confirmation' &&
+        connectPopupCall?.state !== 'select-account' &&
         connectPopupCall?.state !== 'tx-simulation'
     )
         return null;
@@ -40,9 +41,7 @@ export const ConnectCallSource = ({ 'data-testid': dataTestId }: ConnectCallSour
             >
                 <Translation id="TR_CONNECTED_TO" />
                 {': '}
-                <Text intent="neutral">
-                    {connectPopupCall.source?.manifest?.appName || connectPopupCall.source?.origin}
-                </Text>
+                <Text intent="neutral">{getCallSourceName(connectPopupCall.source)}</Text>
             </Text>
         </Row>
     );

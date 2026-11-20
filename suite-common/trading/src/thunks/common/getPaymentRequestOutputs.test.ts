@@ -20,6 +20,14 @@ jest.mock('@trezor/connect', () => ({
     getAddress: jest.fn(),
 }));
 
+const getAssociatedTokenAccountAddressMock = jest.fn();
+
+jest.mock('@trezor/network-solana/runtime', () => ({
+    __esModule: true,
+    default: () =>
+        Promise.resolve({ getAssociatedTokenAccountAddress: getAssociatedTokenAccountAddressMock }),
+}));
+
 const [account] = accounts;
 if (!account) {
     throw new Error('Missing test fixture');
@@ -111,14 +119,14 @@ describe('getPaymentRequestOutputsThunk', () => {
         expect(result.type).toBe(getPaymentRequestOutputsThunk.rejected.type);
         expect(result.payload).toEqual({
             type: 'sign-tx-error',
-            error: { id: 'TR_DEVICE_NOT_CONNECTED' },
+            code: 'device-not-connected',
         });
     });
 
     it('rejects when the change address cannot be resolved', async () => {
         (TrezorConnect.getAddress as jest.Mock).mockResolvedValue({
             success: false,
-            payload: { error: 'Device disconnected' },
+            error: { code: 'Device_Disconnected', message: 'Device disconnected' },
         });
 
         const result = await createMockStore().dispatch(
@@ -128,7 +136,36 @@ describe('getPaymentRequestOutputsThunk', () => {
         expect(result.type).toBe(getPaymentRequestOutputsThunk.rejected.type);
         expect(result.payload).toEqual({
             type: 'sign-tx-error',
-            error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+            code: 'payment-requests-failed',
+            cause: {
+                source: 'connect',
+                code: 'Device_Disconnected',
+                message: 'Device disconnected',
+            },
+        });
+    });
+
+    it('keeps the message of a failed Solana token account lookup as an unexpected cause', async () => {
+        getAssociatedTokenAccountAddressMock.mockRejectedValue(new Error('Invalid mint'));
+        const solanaComposedLevels = {
+            ...composedLevels,
+            outputs: [{ address: paymentAddress, amount: '50000', script_type: 'PAYTOADDRESS' }],
+            token: { contract: 'mint-address', standard: 'SPL' },
+        } as unknown as GeneralPrecomposedTransactionFinal;
+
+        const result = await createMockStore().dispatch(
+            getPaymentRequestOutputsThunk({
+                account,
+                network: getNetwork('sol'),
+                composedLevels: solanaComposedLevels,
+            }),
+        );
+
+        expect(result.type).toBe(getPaymentRequestOutputsThunk.rejected.type);
+        expect(result.payload).toEqual({
+            type: 'sign-tx-error',
+            code: 'payment-requests-failed',
+            cause: { source: 'unexpected', message: 'Invalid mint' },
         });
     });
 });

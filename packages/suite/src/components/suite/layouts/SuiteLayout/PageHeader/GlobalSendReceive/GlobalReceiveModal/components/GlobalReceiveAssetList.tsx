@@ -6,17 +6,15 @@ import { type TradingAssetOption } from '@suite-common/trading';
 import { TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import {
-    AssetGroupLabel,
-    AssetGroupSpace,
-    AssetRowAsset,
-    AssetsList,
-} from 'src/components/suite/asset-picker/components';
+import { AssetGroupLabel } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupLabel';
+import { AssetGroupSpace } from '#src/components/suite/asset-picker/components/AssetRow/AssetGroupSpace';
+import { AssetRowAsset } from '#src/components/suite/asset-picker/components/AssetRow/AssetRowAsset/AssetRowAsset';
+import { AssetsList } from '#src/components/suite/asset-picker/components/AssetsList/AssetsList';
 import {
     ASSET_ROW_GROUP_LABEL_HEIGHT,
     ASSET_ROW_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
-} from 'src/components/suite/asset-picker/constants';
+} from '#src/components/suite/asset-picker/constants';
 
 import { GLOBAL_RECEIVE_LIST_HEIGHT, GLOBAL_RECEIVE_LIST_MIN_HEIGHT } from '../constants';
 

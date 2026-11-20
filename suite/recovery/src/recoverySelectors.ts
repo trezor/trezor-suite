@@ -1,6 +1,6 @@
 import { type RecoveryState } from './recoveryReducer';
 
-type RecoveryRootState = { recovery: RecoveryState };
+export type RecoveryRootState = { recovery: RecoveryState };
 
 export const selectRecovery = (state: RecoveryRootState) => state.recovery;
 export const selectRecoveryInputType = (state: RecoveryRootState) =>

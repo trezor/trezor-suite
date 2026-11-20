@@ -11,6 +11,7 @@ import {
     type SellTradeFinalStatus,
 } from 'invity-api';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Network,
@@ -20,12 +21,7 @@ import {
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
 } from '@suite-common/wallet-config';
-import type {
-    Account,
-    AccountKey,
-    FormStateTrading,
-    TokenAddress,
-} from '@suite-common/wallet-types';
+import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -162,15 +158,15 @@ export const cryptoIdToNetworkSymbol = (
 export const cryptoIdToNetworkSymbolAndContractAddress = (cryptoId: CryptoId | undefined) => {
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(cryptoId);
     if (!network || !cryptoId) {
-        return { symbol: undefined, contractAddress: undefined };
+        return { networkSymbol: undefined, contractAddress: undefined };
     }
-    const { symbol } = network;
+    const networkSymbol = network.symbol;
 
     if (isCryptoIdForNativeToken(cryptoId)) {
-        return { symbol, contractAddress: undefined };
+        return { networkSymbol, contractAddress: undefined };
     }
 
-    return { symbol, contractAddress };
+    return { networkSymbol, contractAddress };
 };
 
 export const toTokenCryptoId = (symbol: NetworkSymbol, contractAddress: string): CryptoId =>

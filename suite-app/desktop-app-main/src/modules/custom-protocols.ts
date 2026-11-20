@@ -1,0 +1,109 @@
+/**
+ * Support custom protocols (for example: `bitcoin:`)
+ */
+import { app } from 'electron';
+
+import type { ModuleInit } from './module';
+import { isValidProtocol } from '../libs/protocol';
+
+export const SERVICE_NAME = 'custom-protocols';
+
+// Opened by the page that moves funds off HID-only Trezor One devices, so that Suite starts the
+// bridge the page talks to them through. Any page can open it, only that one can use the bridge.
+const isHidBridgeRequest = (url: string) => /^trezorsuite:\/\/hid-bridge\/?$/i.test(url);
+
+export const init: ModuleInit = ({ mainWindowProxy, mainThreadEmitter, logger }) => {
+    const protocols = process.env.PROTOCOLS as unknown as string[];
+    protocols.forEach((p: string) => app.setAsDefaultProtocolClient(p));
+
+    const startHidBridgeIfRequested = (url: string) => {
+        if (!isHidBridgeRequest(url)) return false;
+
+        logger.info(SERVICE_NAME, 'HID bridge requested');
+        mainThreadEmitter.emit('module/bridge/start-hid');
+
+        return true;
+    };
+
+    const sendProtocolInfo = (protocol: string) => {
+        if (startHidBridgeIfRequested(protocol)) return;
+
+        if (isValidProtocol(protocol, protocols)) {
+            logger.debug(SERVICE_NAME, `Send custom protocol to browser window: ${protocol}`);
+            mainWindowProxy.getInstance()?.webContents.send('protocol/open', protocol);
+        }
+    };
+
+    // App is running and custom protocol was activated (Linux, Windows)
+    app.on('second-instance', (event, argv) => {
+        if (['win32', 'linux'].includes(process.platform)) {
+            // filter all argvs starting with one of specified custom protocol schemes
+            const urls = ([] as string[]).concat(
+                ...protocols.map(protocol => argv.filter(arg => arg.startsWith(`${protocol}:`))),
+            );
+
+            // if there is custom protocol, then there is just one
+            const protocol = urls[0];
+            if (protocol) {
+                event.preventDefault();
+
+                logger.debug(
+                    SERVICE_NAME,
+                    `App is running and handling '${protocol}' custom protocol (Linux, Windows)`,
+                );
+
+                sendProtocolInfo(protocol);
+            }
+        }
+    });
+
+    // App is running and custom protocol was activated (macOS)
+    app.on('open-url', (event, url) => {
+        event.preventDefault();
+
+        logger.debug(SERVICE_NAME, 'App is running and handling custom protocol (macOS)');
+
+        const mainWindow = mainWindowProxy.getInstance();
+        if (mainWindow?.isMinimized()) {
+            mainWindow?.restore();
+        } else {
+            mainWindow?.focus();
+        }
+
+        sendProtocolInfo(url);
+    });
+
+    // In consequent loads, custom protocol url should be ignored
+    let firstRun = true;
+    const firstRunOnly = (url: string) => () => {
+        if (!firstRun) return;
+        firstRun = false;
+
+        return url;
+    };
+
+    // App is launched via custom protocol (Linux, Windows)
+    if (['win32', 'linux'].includes(process.platform)) {
+        const { argv } = process;
+
+        if (argv[1]) {
+            logger.debug(SERVICE_NAME, 'App is launched via custom protocol (Linux, Windows)');
+
+            if (startHidBridgeIfRequested(argv[1])) return;
+
+            if (isValidProtocol(argv[1], protocols)) {
+                return { onLoad: firstRunOnly(argv[1]) };
+            }
+        }
+    }
+
+    // App is launched via custom protocol (macOS)
+    if (global.customProtocolUrl) {
+        logger.debug(SERVICE_NAME, 'App is initially launched via custom protocol (macOS)');
+        if (startHidBridgeIfRequested(global.customProtocolUrl)) return;
+
+        if (isValidProtocol(global.customProtocolUrl, protocols)) {
+            return { onLoad: firstRunOnly(global.customProtocolUrl) };
+        }
+    }
+};

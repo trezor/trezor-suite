@@ -1,7 +1,7 @@
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet-types';
 
-import { getSupportsAdjustableFees } from 'src/components/wallet/Fees/feeUtils';
+import { getSupportsAdjustableFees } from '#src/components/wallet/Fees/feeUtils';
 
 import { type TradingNetworkFeeInfoItemProps } from './TradingNetworkFeeInfoItem';
 

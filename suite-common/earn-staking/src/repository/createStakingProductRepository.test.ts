@@ -14,11 +14,14 @@ import { mockStakingProductRepository } from '../../mocks';
 
 const ethAdapter = mockStakingProductAdapter();
 const solAdapter = mockStakingProductAdapter({
-    descriptor: mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' }),
+    descriptor: mockStakingProductDescriptor({
+        networkSymbol: asNetworkSymbol('sol'),
+        type: 'native',
+    }),
 });
 const solExternalAdapter = mockStakingProductAdapter({
     descriptor: mockStakingProductDescriptor({
-        symbol: asNetworkSymbol('sol'),
+        networkSymbol: asNetworkSymbol('sol'),
         providerId: stakingProviderIdSchema.parse('external'),
         type: 'native',
         operations: [],
@@ -46,12 +49,13 @@ describe('createStakingProductRepository', () => {
     it('throws for a product id that is not registered', () => {
         const repository = createStakingProductRepository(deps);
         const productId = getStakingProductId({
-            symbol: asNetworkSymbol('ada'),
+            networkSymbol: asNetworkSymbol('ada'),
+            asset: { kind: 'native' },
             providerId: stakingProviderIdSchema.parse('everstake'),
             type: 'native',
         });
 
-        expect(() => repository.get(productId)).toThrow('ada:everstake:native');
+        expect(() => repository.get(productId)).toThrow('ada:ada:everstake:native');
     });
 
     it('lists adapters by symbol', () => {

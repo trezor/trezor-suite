@@ -1,0 +1,77 @@
+import { useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+
+import {
+    Box,
+    Card,
+    Divider,
+    HStack,
+    IconCircle,
+    PressableOpacity,
+    Text,
+    TitledSection,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
+import { selectIsAppConnectionAvailable } from '@suite-native/device';
+import { Icon } from '@suite-native/icons';
+import { Translation } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
+import { WalletConnectPairBottomSheet } from '@suite-native-app/module-connect-popup';
+
+import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
+
+export const ConnectionSettings = () => {
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+
+    const isAppConnectionAvailable = useSelector(selectIsAppConnectionAvailable);
+
+    if (!isAppConnectionAvailable) {
+        return null;
+    }
+
+    return (
+        <TitledSection title={<Translation id="moduleSettings.items.connections.title" />}>
+            <Card noPadding>
+                <AppSettingsCardWithIconLayout
+                    icon="walletConnect"
+                    title={
+                        <Translation id="moduleSettings.items.connections.walletConnect.title" />
+                    }
+                    onPress={() => navigation.navigate(RootStackRoutes.WalletConnectPair)}
+                    testID="@settings/wallet-connect"
+                    borderColor={null}
+                    noShadow
+                />
+                <Divider />
+                <Box paddingHorizontal="sp16" paddingVertical="sp12">
+                    <WalletConnectPairBottomSheet ref={bottomSheetRef} onClose={closeModal} />
+                    <PressableOpacity onPress={openModal} testID="@settings/wallet-connect-add">
+                        <HStack justifyContent="space-between" alignItems="center">
+                            <HStack spacing="sp16" alignItems="center">
+                                <IconCircle name="qrCode" intent="brand" />
+                                <Text color="contentBrand">
+                                    <Translation id="moduleSettings.items.connections.walletConnect.add" />
+                                </Text>
+                            </HStack>
+                            <Icon name="plus" color="contentBrand" />
+                        </HStack>
+                    </PressableOpacity>
+                </Box>
+            </Card>
+
+            <AppSettingsCardWithIconLayout
+                icon="trezorLogo"
+                title={<Translation id="moduleSettings.items.connections.trezorConnect.title" />}
+                onPress={() => navigation.navigate(RootStackRoutes.ConnectPermissions)}
+                testID="@settings/connect-permissions"
+            />
+        </TitledSection>
+    );
+};

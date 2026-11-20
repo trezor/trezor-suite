@@ -2,13 +2,15 @@ import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
 import { type BackupType } from '@suite-common/suite-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TradingAssetOption, type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
+    type AllowanceLimitType,
+    type AllowanceTransactionType,
     type GeneralPrecomposedTransactionFinal,
-    type TokenAddress,
     type XpubAddress,
 } from '@suite-common/wallet-types';
 import { type ExperimentalFeature } from '@suite-native/settings';
@@ -46,7 +48,7 @@ import {
     type RootStackRoutes,
     type SendStackRoutes,
     type SettingsStackRoutes,
-    type SignAndVerifyStackRoutes,
+    type SignVerifyStackRoutes,
     type StellarManageTokenStackRoutes,
     type TradingStackRoutes,
     type TransactionDetailStackRoutes,
@@ -68,6 +70,7 @@ export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
     | 'untrustedReseller'
+    | 'plasticWrap'
     | 'securitySeal'
     | 'packaging';
 
@@ -85,6 +88,11 @@ type AccountDetailParams = {
     closeActionType: CloseActionType;
 } & AccountIdentityParams;
 
+type AssetParams = {
+    networkSymbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
+};
+
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: { networksFilter?: NetworkSymbol[] } | undefined;
 };
@@ -94,16 +102,14 @@ export type AccountDetailStackParamList = {
     [AccountDetailStackRoutes.AccountSettings]: { accountKey: AccountKey };
 };
 
-export type SignAndVerifyStackParamList = {
-    [SignAndVerifyStackRoutes.DeviceConnectionGuard]: undefined;
-    [SignAndVerifyStackRoutes.ContinueOnTrezor]: undefined;
+export type SignVerifyStackParamList = {
+    [SignVerifyStackRoutes.DeviceConnectionGuard]: undefined;
+    [SignVerifyStackRoutes.ContinueOnTrezor]: undefined;
 };
 
 export type AssetsStackParamList = {
-    [AssetsStackRoutes.AssetDetail]: {
-        networkSymbol: NetworkSymbol;
-        tokenContract?: TokenAddress;
-    };
+    [AssetsStackRoutes.AssetDetail]: AssetParams;
+    [AssetsStackRoutes.HiddenTokens]: undefined;
 };
 
 export type EarnStackParamList = {
@@ -142,7 +148,7 @@ export type StakingPendingTxParams = {
 
 type YieldDepositApprovalReviewParams = YieldFlowParams & {
     amount: string;
-    approvalLimitType: 'per-deposit' | 'unlimited';
+    approvalLimitType: AllowanceLimitType;
 };
 
 export type YieldDepositRevokeParams = YieldFlowParams & {
@@ -270,7 +276,7 @@ export type ReceiveAddressVerificationStackParamList = {
 };
 
 export type SendStackParamList = {
-    [SendStackRoutes.SendAccounts]: undefined;
+    [SendStackRoutes.SendAccounts]: { asset?: AssetParams } | undefined;
     [SendStackRoutes.SendOutputs]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
@@ -307,7 +313,7 @@ export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
     [AppTabsRoutes.EarnStack]: NavigatorScreenParams<EarnStackParamList>;
-    [AppTabsRoutes.TradeStack]: NavigatorScreenParams<TradingStackParamList>;
+    [AppTabsRoutes.Trading]: TradingScreenParams | undefined;
     [AppTabsRoutes.Settings]: undefined;
 };
 
@@ -322,13 +328,13 @@ export type DeviceOnboardingStackParamList = {
     [DeviceOnboardingStackRoutes.DeviceDisconnected]: {
         wasDeviceConnectedViaBluetooth: boolean;
     };
-    [DeviceOnboardingStackRoutes.UninitializedDeviceLanding]: {
+    [DeviceOnboardingStackRoutes.DeviceVisualCheck]: {
         deviceModel: DeviceModelInternal;
     };
     [DeviceOnboardingStackRoutes.SuspiciousDevice]: {
         suspicionCause: DeviceSuspicionCause;
     };
-    [DeviceOnboardingStackRoutes.SecurityCheck]: undefined;
+    [DeviceOnboardingStackRoutes.PackagingVisualCheck]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInfo]: undefined;
     [DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate]: undefined;
     [DeviceOnboardingStackRoutes.FirmwareInstallation]: undefined;
@@ -547,8 +553,8 @@ export type RootStackParamList = {
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
-    [RootStackRoutes.SignAndVerify]: { accountKey: AccountKey };
-    [RootStackRoutes.SignAndVerifyStack]: undefined;
+    [RootStackRoutes.SignVerify]: { accountKey: AccountKey };
+    [RootStackRoutes.SignVerifyStack]: undefined;
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;
@@ -586,6 +592,7 @@ export type RootStackParamList = {
         accountKey: AccountKey;
         pendingTransaction?: StakingPendingTxParams;
     };
+    [RootStackRoutes.TradingStack]: NavigatorScreenParams<TradingStackParamList>;
     [RootStackRoutes.StakingClaimReview]: {
         accountKey: AccountKey;
         symbol: NetworkSymbol;
@@ -613,49 +620,6 @@ export type RootStackParamList = {
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
     [RootStackRoutes.FeatureFeedbackModal]: { feature: ExperimentalFeature };
-    [RootStackRoutes.TradingExchangePreview]: {
-        isApproved?: boolean;
-    };
-    [RootStackRoutes.TradingExchangeApproval]: {
-        shouldIncreaseLimit?: boolean;
-        isRevoked?: boolean;
-    };
-    [RootStackRoutes.TradingExchangeRevoke]: {
-        shouldIncreaseLimit?: boolean;
-    };
-    [RootStackRoutes.TradingSellPreview]: undefined;
-    [RootStackRoutes.TradingSellCompletion]: undefined;
-    [RootStackRoutes.TradingSellTransactionReview]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-        orderId: string;
-    };
-    [RootStackRoutes.TradingExchangeTransactionReview]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-        orderId: string;
-        flowType: ExchangeFlowType;
-    };
-    [RootStackRoutes.TradingConfirming]: {
-        flowType: ConfirmingScreenFlowType;
-    };
-    [RootStackRoutes.TradingMyAsset]: {
-        tradingType: Extract<TradingType, 'sell' | 'exchange'>;
-    };
-    [RootStackRoutes.TradingTradeableAsset]: {
-        tradingType: Extract<TradingType, 'buy' | 'exchange'>;
-    };
-    [RootStackRoutes.ReceiveAccounts]: {
-        symbol: NetworkSymbol;
-        tradingType: Exclude<TradingType, 'sell'>;
-    };
-    [RootStackRoutes.TradingReceiveAddress]: {
-        accountKey: AccountKey;
-        tradingType: Exclude<TradingType, 'sell'>;
-    };
-    [RootStackRoutes.TradingHistory]: undefined;
-    [RootStackRoutes.TradingHistoryDetail]: { orderId: string };
-    [RootStackRoutes.TradingBuyPreview]: undefined;
     [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;
 };
 
@@ -677,16 +641,60 @@ export type TransactionDetailStackParamList = {
     };
 };
 
-export type ConfirmingScreenFlowType = 'approve' | 'revoke' | 'revoke-and-approve';
+export type ConfirmingScreenFlowType = AllowanceTransactionType | 'revoke-and-approve';
 export type ExchangeFlowType = 'swap' | 'sign-data' | ConfirmingScreenFlowType;
 
+export type TradingScreenParams = {
+    tradingType?: TradingType;
+    selectedMyAssetAccountKey?: AccountKey;
+    selectedMyAssetCryptoId?: string;
+    selectedTradeableAssetCryptoId?: string;
+};
+
 export type TradingStackParamList = {
-    [TradingStackRoutes.Trading]: {
-        tradingType?: TradingType;
-        selectedMyAssetAccountKey?: AccountKey;
-        selectedMyAssetCryptoId?: string;
-        selectedTradeableAssetCryptoId?: string;
+    [TradingStackRoutes.TradingExchangePreview]: {
+        isApproved?: boolean;
     };
+    [TradingStackRoutes.TradingExchangeApproval]: {
+        shouldIncreaseLimit?: boolean;
+        isRevoked?: boolean;
+    };
+    [TradingStackRoutes.TradingExchangeRevoke]: {
+        shouldIncreaseLimit?: boolean;
+    };
+    [TradingStackRoutes.TradingSellPreview]: undefined;
+    [TradingStackRoutes.TradingSellCompletion]: undefined;
+    [TradingStackRoutes.TradingSellTransactionReview]: {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+    };
+    [TradingStackRoutes.TradingExchangeTransactionReview]: {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+        flowType: ExchangeFlowType;
+    };
+    [TradingStackRoutes.TradingConfirming]: {
+        flowType: ConfirmingScreenFlowType;
+    };
+    [TradingStackRoutes.TradingMyAsset]: {
+        tradingType: Extract<TradingType, 'sell' | 'exchange'>;
+    };
+    [TradingStackRoutes.TradingTradeableAsset]: {
+        tradingType: Extract<TradingType, 'buy' | 'exchange'>;
+    };
+    [TradingStackRoutes.ReceiveAccounts]: {
+        symbol: NetworkSymbol;
+        tradingType: Exclude<TradingType, 'sell'>;
+    };
+    [TradingStackRoutes.TradingReceiveAddress]: {
+        accountKey: AccountKey;
+        tradingType: Exclude<TradingType, 'sell'>;
+    };
+    [TradingStackRoutes.TradingHistory]: undefined;
+    [TradingStackRoutes.TradingHistoryDetail]: { orderId: string };
+    [TradingStackRoutes.TradingBuyPreview]: undefined;
 };
 
 export type StellarManageTokenStackParamList = {

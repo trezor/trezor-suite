@@ -1,0 +1,121 @@
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { getTranslation } from '@suite-native/intl';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import {
+    btcAsset,
+    ethAsset,
+    ethOnBaseAsset,
+    getBtcAccount,
+    getEthAccount,
+    usdcAsset,
+    usdtAsset,
+} from '@suite-native/trading-fixtures';
+
+import {
+    TradeableAssetAccountBalance,
+    type TradeableAssetAccountBalanceProps,
+} from './TradeableAssetAccountBalance';
+
+const tokenMetadataSources = [
+    {
+        networkSymbol: asNetworkSymbol('eth'),
+        tokens: [
+            {
+                contract: toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
+                symbol: 'USDC',
+            },
+            {
+                contract: toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
+                symbol: 'USDT',
+            },
+        ],
+    },
+];
+
+describe('TradeableAssetAccountBalance', () => {
+    const renderTradeableAssetAccountBalance = (
+        props: Partial<TradeableAssetAccountBalanceProps> = {},
+        preloadedState = {},
+    ) =>
+        renderWithStoreProvider(
+            <TradeableAssetAccountBalance
+                asset={undefined}
+                account={undefined}
+                testID="TEST_ID"
+                {...props}
+            />,
+            {
+                preloadedState,
+                wrapper: ({ children }) => (
+                    <TokenMetadataProvider sources={tokenMetadataSources}>
+                        {children}
+                    </TokenMetadataProvider>
+                ),
+            },
+        );
+
+    it('should render nothing without asset selected', async () => {
+        const { toJSON } = await renderTradeableAssetAccountBalance({});
+
+        expect(toJSON()).toBeNull();
+    });
+
+    it.each([
+        [btcAsset, 'BTC'],
+        [ethAsset, 'ETH'],
+        [ethOnBaseAsset, 'ETH'],
+        [usdcAsset, 'USDC'],
+    ])(
+        'should render empty balance when account is not selected, case %#',
+        async (asset, expectedSymbol) => {
+            const { getByText } = await renderTradeableAssetAccountBalance({ asset });
+
+            expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeDefined();
+            expect(getByText(`- ${expectedSymbol}`)).toBeDefined();
+        },
+    );
+
+    it('should use correct TestIDs when no balance is displayed', async () => {
+        const { getByTestId } = await renderTradeableAssetAccountBalance({ asset: btcAsset });
+
+        expect(getByTestId('TEST_ID')).toHaveTextContent('Balance:- BTC');
+        expect(getByTestId('TEST_ID/no-value')).toHaveTextContent('- BTC');
+    });
+
+    it('should render without TestID', async () => {
+        const { getByText } = await renderTradeableAssetAccountBalance({
+            asset: btcAsset,
+            testID: undefined,
+        });
+
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeDefined();
+        expect(getByText('- BTC')).toBeDefined();
+    });
+
+    describe('with ETH account selected', () => {
+        const preloadedState = {
+            wallet: {
+                accounts: [getEthAccount(), getBtcAccount()],
+            },
+        };
+
+        it.each([
+            [ethAsset, '<0.00001 ETH'],
+            [usdcAsset, '1.00 USDC'],
+            [usdtAsset, '0 USDT'],
+        ])('should display correct balance for asset, case %s', async (asset, expectedBalance) => {
+            const { getByText, getByTestId } = await renderTradeableAssetAccountBalance(
+                {
+                    asset,
+                    account: getEthAccount(),
+                },
+                preloadedState,
+            );
+
+            expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeDefined();
+            expect(getByTestId('TEST_ID/value')).toHaveTextContent(expectedBalance);
+        });
+    });
+});

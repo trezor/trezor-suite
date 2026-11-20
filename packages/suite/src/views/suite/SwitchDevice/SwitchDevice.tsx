@@ -1,5 +1,5 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { setConnectionMode, toggleConnectionModal } from '@suite/device';
+import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import { selectDevices } from '@suite-common/device';
@@ -9,8 +9,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { TrezorDevicesIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type ForegroundAppProps } from 'src/types/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { type ForegroundAppProps } from '#src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
@@ -31,7 +31,6 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
 
         if (bluetoothAdapterStatus === 'enabled') {
             dispatch(bluetoothActions.enableAutoConnect());
-            dispatch(setConnectionMode('bluetooth'));
         }
 
         analytics.report({

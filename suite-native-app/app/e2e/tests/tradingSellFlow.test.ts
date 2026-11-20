@@ -1,0 +1,119 @@
+import { MNEMONICS } from '@trezor/trezor-user-env-link';
+
+import { ethCoinEnabled } from '../fixtures/ethCoinEnabled';
+import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
+import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
+import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
+import { onHome } from '../pageObjects/homeActions';
+import { onPassphrase } from '../pageObjects/passphraseModule';
+import { onTabBar } from '../pageObjects/tabBarActions';
+import { sellCompletionActions } from '../pageObjects/trading/sellCompletionActions';
+import { sellPreviewActions } from '../pageObjects/trading/sellPreviewActions';
+import { tradingSellActions } from '../pageObjects/trading/tradingSellActions';
+import { sellTransactionReviewActions } from '../pageObjects/trading/transactionReviewActions';
+import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
+import { waitForVisible } from '../support/utils';
+
+const preloadedStateWithoutTrezor = preparePreloadedReduxState(
+    portfolioTrackerBtcAccountState,
+    onboardingCompletedState,
+);
+
+const preloadedStateWithTrezor = preparePreloadedReduxState(
+    ethCoinEnabled,
+    onboardingCompletedState,
+);
+
+const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
+
+describe('Trade Sell [@androidOnly]', () => {
+    describe('with portfolio tracker [@noDevice]', () => {
+        beforeEach(async () => {
+            await openApp({ args: { preloadedState: preloadedStateWithoutTrezor } });
+            await onTabBar.navigateToTrade();
+            await tradingSellActions.tapTradingSectionHeaderTab();
+        });
+
+        it('should display info card', async () => {
+            await tradingSellActions.expectPortfolioTrackerInfoCard();
+        });
+    });
+
+    describe('with device disconnected [@T3T1]', () => {
+        beforeEach(async () => {
+            if (!passphrase) {
+                throw new Error(
+                    'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
+                );
+            }
+            await prepareTrezorEmulator({
+                seed: MNEMONICS.mnemonic_academic,
+                passphrase_protection: true,
+            });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
+            await onDeviceOnboarding.passInitializedDeviceChecks();
+            await waitForVisible(by.text('Connected'));
+            await onPassphrase.openPassphraseWallet(passphrase);
+            await onHome.waitForScreen();
+            await onHome.waitForDiscoveryComplete();
+            await onDeviceConnecting.stopEmuAndConfirmViewOnlyWarning();
+            await tradingSellActions.openForm();
+        });
+
+        it('should request trezor connect before preview', async () => {
+            await tradingSellActions.selectCountry('Czechi', 'Czechia', 'CZE');
+            await tradingSellActions.selectFiatCurrency('EUR');
+            await tradingSellActions.selectSendAsset('USDC', undefined, 'USD Coin');
+            await tradingSellActions.setSendCryptoAmount('55');
+
+            await tradingSellActions.expectValidSellForm();
+
+            await tradingSellActions.confirmTradingForm();
+            await sellPreviewActions.continueToProvider();
+
+            await sellTransactionReviewActions.expectConnectTrezorInfo();
+            await sellTransactionReviewActions.cancelConnectTrezorInfo();
+
+            await tradingSellActions.waitForTradeDataToLoad();
+        });
+    });
+
+    describe('with device connected [@T3T1]', () => {
+        beforeEach(async () => {
+            if (!passphrase) {
+                throw new Error(
+                    'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
+                );
+            }
+            await prepareTrezorEmulator({
+                seed: MNEMONICS.mnemonic_academic,
+                passphrase_protection: true,
+            });
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
+            await onDeviceOnboarding.passInitializedDeviceChecks();
+            await waitForVisible(by.text('Connected'));
+            await onPassphrase.openPassphraseWallet(passphrase);
+            await tradingSellActions.openForm();
+        });
+
+        it('Basic sell USDC for EUR', async () => {
+            await tradingSellActions.selectCountry('Czechi', 'Czechia', 'CZE');
+            await tradingSellActions.selectFiatCurrency('EUR');
+            await tradingSellActions.selectSendAsset('USDC', undefined, 'USD Coin');
+            await tradingSellActions.setSendCryptoAmount('55');
+
+            await tradingSellActions.expectValidSellForm();
+
+            await tradingSellActions.viewReceiveMethods();
+            await tradingSellActions.viewProviders();
+
+            await tradingSellActions.confirmTradingForm();
+
+            await sellPreviewActions.continueToProvider();
+            await sellCompletionActions.expectBrowserAuthTriggered();
+
+            await sellCompletionActions.expectConfirmationInProgress();
+        });
+    });
+});

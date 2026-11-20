@@ -4,7 +4,6 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
@@ -52,7 +51,6 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
 import { sendFormActions } from './sendFormActions';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
@@ -215,11 +213,11 @@ export const calculate = (
             } as const;
         }
 
-        return {
-            type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
-            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
-        } as const;
+        const error = new BigNumber(amount).isLessThanOrEqualTo(availableBalance)
+            ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
+            : 'AMOUNT_IS_NOT_ENOUGH';
+
+        return { type: 'error', error, errorMessage: { id: error } } as const;
     }
 
     // validate if token balance is not 0 or lower than amount
@@ -280,7 +278,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async (
         { formState, composeContext, isNetworkReserveEnabled = false },
-        { dispatch, rejectWithValue, getState },
+        { rejectWithValue, getState },
     ) => {
         const device = selectSelectedDevice(getState());
 
@@ -359,20 +357,6 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                     ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
                     : ETH_TRANSFER_BACKUP_GAS_LIMIT,
             );
-
-            reportEthereumFeeEstimationFailed({
-                account,
-                formState,
-                tokenInfo,
-                estimateTarget: ethereumEstimateFeeParams.to,
-                error: estimatedFee.error,
-            });
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'estimated-fee-error',
-                }),
-            );
         }
 
         // increase gas limit, this flow is used only for Invity
@@ -440,6 +424,14 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 tx.estimatedFeeLimit = !customFeeLimit.isNaN()
                     ? customFeeLimit.toFixed(0)
                     : undefined;
+            }
+            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+                tx.errorMessage = {
+                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                    values: {
+                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
+                    },
+                };
             }
             if (
                 tx.type === 'error' &&
@@ -515,7 +507,6 @@ export const resolveEthereumNonce = async ({
                 identity: tryGetAccountIdentity(selectedAccount),
                 details: 'basic',
                 confirmedNonce: true,
-                suppressBackupWarning: true,
             });
 
             if (

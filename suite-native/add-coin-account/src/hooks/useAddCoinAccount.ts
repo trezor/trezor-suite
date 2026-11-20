@@ -36,12 +36,14 @@ import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
-import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import {
-    navigateByAccountState,
     navigateByYieldAccountState,
+    useNavigateByAccountState,
     useStablecoinYieldFirmwareUpdateAlert,
-} from '@suite-native/module-earn';
+    useStakingNavigateAnalytics,
+    useYieldEntryNavigationAnalytics,
+} from '@suite-native/earn';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import {
     AccountDetailStackRoutes,
     type AddCoinAccountStackParamList,
@@ -102,6 +104,9 @@ export const accountTypeTranslationKeys: Record<
 const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
+    const reportYieldEntryNavigation = useYieldEntryNavigationAnalytics();
+    const reportStakingNavigate = useStakingNavigateAnalytics();
+    const navigateByAccountState = useNavigateByAccountState();
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const { dispatch } = useServices(injectDispatch);
@@ -121,7 +126,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
 
     const navigation = useNavigation<AddCoinAccountNavigationProps>();
     const isAssetsFirstEnabled = useIsExperimentVariantActive({
-        experimentId: ExperimentId.assetFirstHomeTable,
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
         variant: 'B',
     });
 
@@ -195,20 +200,28 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             case 'staking': {
                 const hasNavigated = navigateByAccountState(account, navigation.navigate);
 
+                if (hasNavigated) reportStakingNavigate(account, 'enable-network-sheet');
+
                 if (!hasNavigated) {
                     resetToEarnTab();
                 }
                 break;
             }
-            case 'yield':
-                navigateByYieldAccountState(
+            case 'yield': {
+                const destination = navigateByYieldAccountState(
                     account,
                     earnFlowParams,
                     navigation.navigate,
                     isFirmwareSupported,
                     showFirmwareUpdateAlert,
                 );
+                reportYieldEntryNavigation({
+                    destination,
+                    item: { networkSymbol: account.symbol, yieldId: earnFlowParams.yieldId },
+                    from: 'enable-network-sheet',
+                });
                 break;
+            }
         }
     };
 
@@ -304,7 +317,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                 screen = AppTabsRoutes.AccountsStack;
                 break;
             case 'trade':
-                screen = AppTabsRoutes.TradeStack;
+                screen = AppTabsRoutes.Trading;
                 break;
             case 'earn':
                 screen = AppTabsRoutes.EarnStack;

@@ -4,43 +4,79 @@ import { select } from './common';
 
 const name = 'signTransaction';
 
+// Account keys m/48'/1'/1'/0', m/48'/1'/2'/0' and m/48'/1'/3'/0' of a 2-of-3 multisig.
+const pubkeys = [
+    {
+        node: 'tpubDF4tYm8PaDydbLMZZRqcquYZ6AvxFmyTv6RhSokPh6YxccaCxP1gF2VABKV9wsinAdUbsbdLx1vcXdJH8qRcQMM9VYd926rWM685CepPUdN',
+        address_n: [0, 0],
+    },
+    {
+        node: 'tpubDEhpbishBroZWzT7sQf9YuXiyCUSdkK6Cur95UkDdTRcyrJUhLtn69GhC8mJwrxmXRLSUitWAgsXcQ3Cb16EaqFyMob4LHPqzohSzyMMmP5',
+        address_n: [0, 0],
+    },
+    {
+        node: 'tpubDFLKt47Wb4BomPVBFW675DKNuhbd9hkx7s1wr2C8GMgQM5Sa5susNc78xKWsjkrkkCQsMT4o7m5RD8ZJqTgh9cjwEQg8pjCxr9Ar77C2wiv',
+        address_n: [0, 0],
+    },
+];
+
 const test = {
     inputs: [
         {
-            address_n: [2147483693, 0, 0, 0],
-            prev_hash: 'b42c658796927fb4d75aa7c5c404be78718c814b4fcd9a22a077a8c876a7240f',
+            address_n: [
+                (48 | 0x80000000) >>> 0,
+                (1 | 0x80000000) >>> 0,
+                (1 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                0,
+                0,
+            ],
+            prev_hash: '6b07c1321b52d9c85743f9695e13eb431b41708cdf4e1585258d51208e5b93fc',
             prev_index: 0,
-            script_sig:
-                '00483045022100f96ce611c1e06e540acadc83d8b74c4e8e38aaedea6c1bae5f6e25ce07d83a2f02201960ad9b78c9f511d75444794a9b975391913f6526cd095de1d7f4edd7ee050c0101ff4cad524c53ff043587cf0000000000000000006109a29836a5adfc1e03c0ec9f9e606109d9392670d8bcabdacdfa7ce9e48ed5028cb7707b6a0b73a27946c044f3d2ea9356e9b163986c07c22e299e93e16d45aa000000004c53ff043587cf02b114b63000000000d499aa3ddd978271b43979d84a38656b296177c08e1babfb4fdc15f59c4bfec4023b7830d36f197844b7203a9fab93afde0d2eb45aa98352e394c750280ec97e950000000052ae',
-            sequence: 4294967293,
+            amount: '1496278',
             script_type: 'SPENDMULTISIG',
             multisig: {
                 m: 2,
-                pubkeys: [
-                    {
-                        node: 'tpubD6NzVbkrYhZ4XJeyzHmeBT7k3caJqz8JJgnFUCPmDv287qWcVm4Sq7av35EpbF5hjHMqwRykp3PYhjnrvqwfmvEzoafLJkjZdw8sP8kRCr3',
-                        address_n: [0, 0],
-                    },
-                    {
-                        node: 'tpubDBSkiQYQ3thN8VgYvtYHBUJR7KUJZvDNzdJXJ45thgnnakd8hUALaBCkxSqoxyL4jxSbdiS2iobo2QzPYGmsJ6VJpcawSXM9XrrgDyzWTpr',
-                        address_n: [0, 0],
-                    },
-                ],
-                signatures: ['', ''],
+                pubkeys,
+                signatures: ['', '', ''],
             },
-            amount: '11099696',
         },
     ],
     outputs: [
         {
-            address: 'n1iozfb1SY9tDj5vwaLtKJWZ6EgZrYpZej',
-            amount: '11089696',
+            address: 'mnY26FLTzfC94mDoUcyDJh1GVE3LuAUMbs',
+            amount: '1486278',
             script_type: 'PAYTOADDRESS',
+        },
+    ],
+    // The referenced transaction is from the retired testnet3, so it can't be fetched from the backend.
+    refTxs: [
+        {
+            hash: '6b07c1321b52d9c85743f9695e13eb431b41708cdf4e1585258d51208e5b93fc',
+            version: 1,
+            lock_time: 0,
+            inputs: [
+                {
+                    prev_hash: '95cff04e6b19210c5fb14e7c7c089a94fdef7e657dc93109658065841a69dd38',
+                    prev_index: 0,
+                    script_sig:
+                        '473044022065bc4c95419d402add2ecf18c2a3381c9c3179e656836e80be375c099afda39102205e4d8ae6b99e3a319d5909a8c6ee9085a3f087e32959b73560b934c56559c37101210344e14b3da8f5fe77a5465d0f8fe089d64ed5517d1f1f989edd00f530938a2c22',
+                    sequence: 4294967295,
+                },
+            ],
+            bin_outputs: [
+                {
+                    amount: 1496278,
+                    script_pubkey: 'a914b8f771de8bbdcfee76e0dbf76f1005f2028bf3e787',
+                },
+            ],
         },
     ],
 };
 
-const examples: Partial<Record<CoinSymbol, { inputs: unknown[]; outputs: unknown[] }>> = {
+const examples: Partial<
+    Record<CoinSymbol, { inputs: unknown[]; outputs: unknown[]; refTxs: unknown[] }>
+> = {
     test,
 };
 
@@ -53,14 +89,18 @@ export default [
                 name: 'coin',
                 type: 'select',
                 value: 'test',
-                affect: ['inputs', 'outputs'],
-                data: select.map(v => {
+                affect: ['inputs', 'outputs', 'refTxs'],
+                data: select.flatMap(v => {
                     const example = examples[v.value];
 
-                    return {
-                        ...v,
-                        affectedValue: example ? [example.inputs, example.outputs] : undefined,
-                    };
+                    return example
+                        ? [
+                              {
+                                  ...v,
+                                  affectedValue: [example.inputs, example.outputs, example.refTxs],
+                              },
+                          ]
+                        : [];
                 }),
             },
             {
@@ -70,6 +110,11 @@ export default [
             },
             {
                 name: 'outputs',
+                type: 'json',
+                value: '',
+            },
+            {
+                name: 'refTxs',
                 type: 'json',
                 value: '',
             },

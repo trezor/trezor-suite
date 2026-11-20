@@ -1,4 +1,5 @@
-import type { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/tokens';
+import type { AccountKey, FeeLevelLabel } from '@suite-common/wallet-types';
 
 export type NativeSupportedPredefinedFeeLevel = Exclude<FeeLevelLabel, 'custom'>;
 export type FeeLevelsMaxAmount = Record<FeeLevelLabel, string | undefined>;

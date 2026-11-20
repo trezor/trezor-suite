@@ -4,7 +4,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
+import { resetSuiteAppThunk } from '#src/actions/suite/suiteThunks';
 
 export const ClearStorage = () => {
     const { dispatch } = useServices(injectDispatch);

@@ -1,0 +1,72 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/networks" },
+        { "path": "../../suite-common/token" },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        { "path": "../../suite-common/tokens" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../../suite-native/accounts" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/config" },
+        {
+            "path": "../../suite-native/discovery"
+        },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/forms" },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/qr-code" },
+        { "path": "../../suite-native/settings" },
+        { "path": "../../suite-native/tokens" },
+        {
+            "path": "../../suite-native/video-assets"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/utxo-lib" },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/requirements" }
+    ],
+    "include": [".", "**/*.json"]
+}

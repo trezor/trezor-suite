@@ -9,10 +9,10 @@ import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
-import { validateDecimals, validateMin } from 'src/utils/suite/validation';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { validateDecimals, validateMin } from '#src/utils/suite/validation';
 
 import { TronCurrencySwitchButton } from '../TronCurrencySwitchButton';
 import { useTronStakeContext } from '../TronStakeContext';
@@ -123,7 +123,7 @@ export const TronUnstakeAmount = () => {
                         <Translation id="TR_EARN_TRON_STAKED" />{' '}
                         <FormattedCryptoAmount
                             value={stakedBalance}
-                            symbol={account.symbol}
+                            networkSymbol={account.symbol}
                             data-testid="@staking/tron-unstake/staked-balance/amount"
                         />
                     </Text>

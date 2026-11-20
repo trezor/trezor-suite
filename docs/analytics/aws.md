@@ -1,6 +1,6 @@
 # AWS Analytics: Info
 
-_For a deeper technical writeup of analytics processes intended for developers, please see [README.md](https://github.com/trezor/trezor-suite/blob/develop/packages/analytics/README.md)._
+_For a deeper technical writeup of analytics processes intended for developers, please see [README.md](https://github.com/trezor/trezor-suite/blob/develop/suite-common/analytics/README.md)._
 
 Trezor Suite can be set to collect real-world data to improve the performance of both web and desktop apps. This anonymous data is only shared by users who have usage data tracking enabled.
 

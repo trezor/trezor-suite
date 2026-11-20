@@ -13,7 +13,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@shopify/flash-list": "2.3.0",
+        "@react-navigation/native": "7.1.31",
+        "@shopify/flash-list": "2.3.2",
         "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/icons": "workspace:*",
@@ -21,7 +22,9 @@
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/token": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -45,9 +48,9 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
-        "react-native-svg": "15.15.5",
+        "react": "19.3.0",
+        "react-native": "0.88.1",
+        "react-native-svg": "15.16.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

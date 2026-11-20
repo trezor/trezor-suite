@@ -65,6 +65,14 @@ export type MMKVStorage = Storage & GetMMKVRaw;
 
 export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 
+export type GetMMKVStorageDep = {
+    getMMKVStorage: () => Promise<MMKV>;
+};
+
+export const injectGetMMKVStorage = (services: GetMMKVStorageDep): GetMMKVStorageDep => ({
+    getMMKVStorage: services.getMMKVStorage,
+});
+
 export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
     let mmkv: MMKV | null = null;
 

@@ -20,6 +20,7 @@ import {
     type TradingTransactionExchange,
     type TradingTransactionSell,
 } from '../../types';
+import { createSaltedTradeApiKey } from '../../utils/tradeApiSaltUtils';
 
 describe('watchTradeThunk', () => {
     jest.mock('../../tradeApi');
@@ -626,6 +627,44 @@ describe('watchTradeThunk', () => {
                 sendAccountKey: 'sendAccountKey',
                 sendTxid: 'sendTxid',
             });
+        });
+    });
+
+    describe('API key', () => {
+        const trade = {
+            date: dateISO,
+            key: 'tradeKey',
+            tradeType: 'buy',
+            data: { status: 'SUBMITTED', paymentId: 'tradeKey' },
+        } as TradingTransactionBuy;
+        const installSalt = 'bb'.repeat(32);
+
+        it.each([
+            {
+                scenario: 'the key the trade was created with',
+                savedTrade: { ...trade, apiKey: 'ef'.repeat(32) },
+                expectedApiKey: 'ef'.repeat(32),
+            },
+            {
+                scenario: 'the account key when the trade has no saved key',
+                savedTrade: trade,
+                expectedApiKey: createSaltedTradeApiKey({
+                    descriptor: account.descriptor,
+                    salt: installSalt,
+                }),
+            },
+        ])('watches the trade with $scenario', async ({ savedTrade, expectedApiKey }) => {
+            const store = getStore({ trades: [savedTrade], tradeApiInstallSalt: installSalt });
+            const watchTradeSpy = jest.spyOn(tradeApi, 'watchTrade').mockResolvedValue({});
+
+            await store.dispatch(watchTradeThunk({ account, trade: savedTrade, refreshCount }));
+
+            expect(watchTradeSpy).toHaveBeenCalledWith(
+                savedTrade.data,
+                'buy',
+                refreshCount,
+                expectedApiKey,
+            );
         });
     });
 });

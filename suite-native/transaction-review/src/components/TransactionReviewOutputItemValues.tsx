@@ -1,12 +1,10 @@
 import { useSelector } from 'react-redux';
 
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type TokenAddress,
-    type TokenInfoBranded,
-} from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CoinToFiatAmountFormatter,
@@ -15,36 +13,33 @@ import {
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 interface TransactionReviewOutputItemCryptoAmountProps {
-    symbol: NetworkSymbol | null;
-    tokenInfo: TokenInfoBranded | null;
+    symbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
     value: string;
 }
 
 const TransactionReviewOutputItemCryptoAmount = ({
     symbol,
-    tokenInfo,
+    tokenContract,
     value,
 }: TransactionReviewOutputItemCryptoAmountProps) => {
-    if (tokenInfo !== null && value !== '') {
+    const token = useTokenMetadata(symbol, tokenContract);
+    if (tokenContract && value !== '') {
         return (
             <ExactTokenAmountFormatter
+                networkSymbol={symbol}
+                contractAddress={tokenContract}
                 variant="body-sm"
                 color="contentSecondary"
-                value={convertTokenValueToDecimal(value, tokenInfo.decimals)}
-                tokenSymbol={tokenInfo.symbol}
-                maxDisplayedDecimals={tokenInfo.decimals}
+                value={convertTokenValueToDecimal(value, token?.decimals ?? 0)}
                 adjustsFontSizeToFit
                 numberOfLines={1}
-                isDiscreetText={false}
+                // The user must be able to verify the token amount before signing.
+                discreetMode="disabled"
             />
         );
-    }
-
-    if (symbol === null) {
-        return null;
     }
 
     return (
@@ -56,7 +51,8 @@ const TransactionReviewOutputItemCryptoAmount = ({
             isBalance={false}
             adjustsFontSizeToFit
             numberOfLines={1}
-            isDiscreetText={false}
+            // The user must be able to verify the crypto amount before signing.
+            discreetMode="disabled"
         />
     );
 };
@@ -77,9 +73,6 @@ export const TransactionReviewOutputItemValues = ({
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const tokenInfo = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
 
     return (
         <HStack>
@@ -98,14 +91,17 @@ export const TransactionReviewOutputItemValues = ({
                     tokenContract={tokenContract}
                     adjustsFontSizeToFit
                     numberOfLines={1}
-                    isDiscreetText={false}
+                    // Show the fiat equivalent so the user can assess the transaction amount.
+                    discreetMode="disabled"
                 />
 
-                <TransactionReviewOutputItemCryptoAmount
-                    symbol={symbol}
-                    tokenInfo={tokenInfo}
-                    value={value}
-                />
+                {symbol && (
+                    <TransactionReviewOutputItemCryptoAmount
+                        symbol={symbol}
+                        tokenContract={tokenContract}
+                        value={value}
+                    />
+                )}
             </VStack>
         </HStack>
     );

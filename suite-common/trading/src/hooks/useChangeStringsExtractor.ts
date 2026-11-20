@@ -1,4 +1,4 @@
-import { useFormatters } from '@suite-common/formatters';
+import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -6,8 +6,13 @@ import { useFormatCryptoValue } from './useFormatCryptoValue';
 import type { TradingTradeType } from '../types';
 import { type TradeOperationData, getTradeOperationData } from '../utils/tradeOperationUtils';
 
+export type UseChangeStringsExtractorParams = {
+    formatStyle?: CryptoAmountFormatterFormatStyle;
+};
+
 export const useChangeStringsExtractor = (
     trade: TradingTradeType | undefined,
+    { formatStyle }: UseChangeStringsExtractorParams = {},
 ): TradeOperationData & {
     fromStringValue: string | undefined;
     toStringValue: string | undefined;
@@ -22,7 +27,7 @@ export const useChangeStringsExtractor = (
     'use no memo';
 
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const formatCryptoValue = useFormatCryptoValue();
+    const formatCryptoValue = useFormatCryptoValue({ formatStyle });
 
     const tradeOperationData = getTradeOperationData(trade);
     const { fromValue, fromCurrency, toValue, toCurrency, isFromCrypto, isToCrypto } =

@@ -1,10 +1,14 @@
-import { useCallback } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
+
+import { useIsFocused } from '@react-navigation/native';
 
 import { type EventInstance, events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type YieldPositionFlowType } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
+import { YieldFlowExitAnalyticsContext } from '../../contexts/YieldFlowExitAnalyticsContext';
 import { useEarnDeviceStatus } from '../earn/useEarnDeviceStatus';
 
 type YieldFlowAnalyticsContext = {
@@ -75,4 +79,29 @@ export const useYieldFlowAnalytics = ({ networkSymbol, vaultId }: YieldFlowAnaly
     );
 
     return { reportDeposit, reportInteraction, reportWithdraw };
+};
+
+type UseYieldFormExitAnalyticsParams = {
+    flowType: YieldPositionFlowType;
+    networkSymbol?: NetworkSymbol;
+    vaultId?: string;
+    isEnabled: boolean;
+    isCompleted?: boolean;
+};
+
+export const useYieldFormExitAnalytics = ({
+    flowType,
+    networkSymbol,
+    vaultId,
+    isEnabled,
+    isCompleted = false,
+}: UseYieldFormExitAnalyticsParams) => {
+    const trackFlow = useContext(YieldFlowExitAnalyticsContext);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isEnabled && (isFocused || isCompleted)) {
+            trackFlow?.({ flowType, networkSymbol, vaultId, isCompleted });
+        }
+    }, [flowType, networkSymbol, vaultId, isCompleted, isEnabled, isFocused, trackFlow]);
 };

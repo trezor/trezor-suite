@@ -15,7 +15,7 @@
         "@suite-native/labeling": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     }
 }

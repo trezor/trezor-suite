@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { IntlProvider } from 'react-intl';
 
@@ -8,12 +9,12 @@ import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type ComposeActionContext, type StakeFormState } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { composeTransaction } from 'src/actions/wallet/stakeActions';
-import { type AppState } from 'src/reducers/store';
+import { composeTransaction } from '#src/actions/wallet/stakeActions';
 
 import { useStakeCompose } from './useStakeCompose';
+import { type MockSuiteState } from '../../../../mocks/mockInitialAppState';
 
-jest.mock('src/actions/wallet/stakeActions', () => ({
+jest.mock('#src/actions/wallet/stakeActions', () => ({
     composeTransaction: jest.fn(),
 }));
 
@@ -32,14 +33,21 @@ const composeActionContext = (): ComposeActionContext => ({
     },
 });
 
-const renderStakeCompose = () => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: {} });
+const renderStakeCompose = (setErrorSpy?: jest.Mock) => {
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: {} });
 
     return renderHookWithStoreProvider(
         () => {
             const methods = useForm<StakeFormState>();
+            const setError: typeof methods.setError = useCallback(
+                (...args) => {
+                    setErrorSpy?.(...args);
+                    methods.setError(...args);
+                },
+                [methods],
+            );
 
-            return useStakeCompose({ ...methods, state: composeActionContext() });
+            return useStakeCompose({ ...methods, setError, state: composeActionContext() });
         },
         {
             services,
@@ -92,5 +100,26 @@ describe('useStakeCompose', () => {
         });
 
         expect(JSON.stringify(jest.mocked(console.warn).mock.calls)).not.toContain(utxoAddress);
+    });
+
+    it('sets a composed error level on the form once', async () => {
+        composeTransactionMock.mockReturnValue(() =>
+            Promise.resolve({
+                normal: {
+                    type: 'error',
+                    error: 'AMOUNT_IS_NOT_ENOUGH',
+                    errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+                },
+            }),
+        );
+        const setErrorSpy = jest.fn();
+
+        const { result } = renderStakeCompose(setErrorSpy);
+
+        await act(async () => {
+            await result.current.composeRequest();
+        });
+
+        expect(setErrorSpy).toHaveBeenCalledTimes(1);
     });
 });

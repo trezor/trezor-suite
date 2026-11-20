@@ -27,26 +27,28 @@ import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mo
 import { mock } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
-import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { type AppState } from 'src/reducers/store';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
-import { TradingBuyFormWrapper } from 'src/views/wallet/trading/buy/TradingBuyFormWrapper';
-import { TradingExchangeFormWrapper } from 'src/views/wallet/trading/exchange/TradingExchangeFormWrapper';
-import { TradingSellFormWrapper } from 'src/views/wallet/trading/sell/TradingSellFormWrapper';
+import { useMessageSystemTrading } from '#src/hooks/suite/useMessageSystemTrading';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
+import { TradingBuyFormWrapper } from '#src/views/wallet/trading/buy/TradingBuyFormWrapper';
+import { TradingExchangeFormWrapper } from '#src/views/wallet/trading/exchange/TradingExchangeFormWrapper';
+import { TradingSellFormWrapper } from '#src/views/wallet/trading/sell/TradingSellFormWrapper';
 
 import { TradingFormEmbed } from './TradingFormEmbed';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
 
-jest.mock('src/hooks/suite/useMessageSystemTrading', () => ({
+jest.mock('#src/hooks/suite/useMessageSystemTrading', () => ({
     useMessageSystemTrading: jest.fn(),
 }));
-jest.mock('src/views/wallet/trading/buy/TradingBuyFormWrapper', () => ({
+jest.mock('#src/views/wallet/trading/buy/TradingBuyFormWrapper', () => ({
     TradingBuyFormWrapper: jest.fn(),
 }));
-jest.mock('src/views/wallet/trading/sell/TradingSellFormWrapper', () => ({
+jest.mock('#src/views/wallet/trading/sell/TradingSellFormWrapper', () => ({
     TradingSellFormWrapper: jest.fn(),
 }));
-jest.mock('src/views/wallet/trading/exchange/TradingExchangeFormWrapper', () => ({
+jest.mock('#src/views/wallet/trading/exchange/TradingExchangeFormWrapper', () => ({
     TradingExchangeFormWrapper: jest.fn(),
 }));
 
@@ -93,15 +95,26 @@ const previousAccountKey = mockAccountKey({ descriptor: 'previousaccount' });
 type RenderEmbedParams = {
     type: TradingType;
     onTypeChange?: (type: TradingType) => void;
-    isFinpromRestricted?: boolean;
+    isRegionRestricted?: boolean;
+    disabledTypes?: TradingType[];
 };
 
-const renderEmbed = ({ type, onTypeChange, isFinpromRestricted = false }: RenderEmbedParams) => {
+const renderEmbed = ({
+    type,
+    onTypeChange,
+    isRegionRestricted = false,
+    disabledTypes = [],
+}: RenderEmbedParams) => {
     const preloadedState = {
         ...mockInitialAppState,
         messageSystem: mockMessageSystemStateWithFeatureFlags(
-            { [Feature.finprom.presenceRestriction]: isFinpromRestricted },
-            { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+            {
+                [Feature.regions.presenceRestriction]: isRegionRestricted,
+                ...Object.fromEntries(
+                    disabledTypes.map(disabledType => [Feature.trading[disabledType], false]),
+                ),
+            },
+            { [Feature.regions.presenceRestriction]: { countries: ['US'] } },
         ),
         wallet: {
             ...mockInitialAppState.wallet,
@@ -125,9 +138,9 @@ const renderEmbed = ({ type, onTypeChange, isFinpromRestricted = false }: Render
                 },
             },
         },
-    } as unknown as AppState;
+    } as unknown as MockSuiteState;
 
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         reducer: (state = preloadedState, action: UnknownAction) => ({
             ...state,
             wallet: { ...state.wallet, trading: tradingReducer(state.wallet.trading, action) },
@@ -169,24 +182,21 @@ describe('TradingFormEmbed', () => {
         },
     );
 
-    it('renders nothing and leaves the trading state untouched while trading is disabled', () => {
-        jest.mocked(useMessageSystemTrading).mockReturnValue({
-            isDisabled: true,
-            content: undefined,
-        });
+    it('shows the disabled card with the type tabs and leaves the trading state untouched while the type is disabled', () => {
         const onTypeChange = mock<(type: TradingType) => void>();
 
-        const store = renderEmbed({ type: 'sell', onTypeChange });
+        const store = renderEmbed({ type: 'sell', onTypeChange, disabledTypes: ['sell'] });
 
         expect(screen.queryByTestId('trading-form-wrapper/sell')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('@trading/menu/wallet-trading-sell')).not.toBeInTheDocument();
+        expect(screen.getByTestId('@trading/type-disabled')).toBeInTheDocument();
+        expect(screen.getByTestId('@trading/menu/wallet-trading-buy')).toBeInTheDocument();
         expect(store.getState().wallet.trading.sell.tradingAccountKey).toBe(previousAccountKey);
         expect(store.getState().wallet.trading.sell.transactionId).toBe('stale-order');
     });
 
     it('renders nothing and leaves the trading state untouched when restricted', () => {
         const onTypeChange = mock<(type: TradingType) => void>();
-        const store = renderEmbed({ type: 'buy', onTypeChange, isFinpromRestricted: true });
+        const store = renderEmbed({ type: 'buy', onTypeChange, isRegionRestricted: true });
 
         expect(screen.queryByTestId('trading-form-wrapper/buy')).not.toBeInTheDocument();
         expect(screen.queryByTestId('@trading/menu/wallet-trading-buy')).not.toBeInTheDocument();

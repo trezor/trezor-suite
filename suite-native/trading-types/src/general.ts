@@ -1,6 +1,7 @@
 import type { CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import type { Formatters } from '@suite-common/formatters';
+import type { TokenAddress, TokenSymbol } from '@suite-common/tokens';
 import type {
     TradingAmountLimitProps,
     TradingCountryOption,
@@ -8,12 +9,7 @@ import type {
     TradingTradeType,
 } from '@suite-common/trading';
 import type { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
-import type {
-    Account,
-    BaseCurrencyAmount,
-    TokenAddress,
-    TokenSymbol,
-} from '@suite-common/wallet-types';
+import type { Account, BaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { Translate } from '@suite-native/intl';
 import type { Address } from '@trezor/blockchain-link-types';
 

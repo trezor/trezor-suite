@@ -38,7 +38,6 @@ describe('confirmBuyTradeThunk', () => {
     jest.mock('../../tradeApi');
 
     tradeApi.setServersEnvironment = () => {};
-    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialBuyState?: Partial<TradingBuyState>) => {
         const { store } = createTestCompositionRoot<void, ConfirmBuyTradeThunkState>({
@@ -270,12 +269,18 @@ describe('confirmBuyTradeThunk', () => {
         const dateString = new Date().toISOString();
         jest.spyOn(Date.prototype, 'toISOString').mockImplementation(() => dateString);
 
-        tradeApi.doBuyTrade = () =>
-            Promise.resolve({
+        const getCurrentApiKey = jest
+            .spyOn(tradeApi, 'getCurrentApiKey')
+            .mockReturnValue('trade-api-key');
+        tradeApi.doBuyTrade = () => {
+            getCurrentApiKey.mockReturnValue('other-api-key');
+
+            return Promise.resolve({
                 trade: {
                     ...MIN_MAX_QUOTES_OK[1],
                 },
             });
+        };
 
         await store.dispatch(
             buyThunks.confirmTradeThunk({
@@ -301,6 +306,7 @@ describe('confirmBuyTradeThunk', () => {
             key: minMaxQuote.paymentId,
             receiveAccountKey: 'xxx',
             selectedAccountKey: account.key,
+            apiKey: 'trade-api-key',
         });
         expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
     });

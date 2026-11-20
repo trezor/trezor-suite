@@ -1,12 +1,32 @@
+import { useSelector } from 'react-redux';
+
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
+import { type NetworksRootState } from '@suite-common/networks';
+import {
+    type TokenDefinitionsRootState,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
+import {
+    type TradingRootState,
+    selectIsTradingBuyAvailableForNetworkSymbol,
+} from '@suite-common/trading';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    selectAnyAccountIsStakingActive,
+    useDisplayBaseCurrency,
+} from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -16,14 +36,11 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    AmountUnitSwitchWrapper,
-    CoinBalance,
-    PriceTicker,
-    TrendTicker,
-} from 'src/components/suite';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useSelector } from 'src/hooks/suite';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
+import { FiatHeader } from '#src/components/wallet/FiatHeader';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
@@ -106,10 +123,18 @@ export const AssetCard = ({
     };
 
     const stakingAccountsForAsset = stakingAccounts.filter(account => account.symbol === symbol);
-    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const coinDefinitions = useSelector((state: TokenDefinitionsRootState) =>
+        selectCoinDefinitions(state, symbol),
+    );
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
+    const isBuyDisabled = useSelector((state: MessageSystemRootState) =>
+        selectIsFeatureDisabled(state, Feature.trading.buy),
+    );
+    const isBuyAvailable = useSelector((state: TradingRootState & NetworksRootState) =>
+        selectIsTradingBuyAvailableForNetworkSymbol(state, symbol),
+    );
 
-    const isStakingActive = useSelector(state =>
+    const isStakingActive = useSelector((state: TransactionsRootState & AccountsRootState) =>
         selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
     );
 
@@ -216,7 +241,7 @@ export const AssetCard = ({
                                     </AssetActionButton>
                                 )}
 
-                                {!isFinpromRestricted && (
+                                {!isRegionRestricted && !isBuyDisabled && isBuyAvailable && (
                                     <AssetActionButton
                                         symbol={symbol}
                                         routeName="wallet-trading-buy"

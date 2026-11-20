@@ -175,6 +175,7 @@ export const submitTronClaimThunk = createThunk<
             }
 
             const { txid } = pushResult.payload;
+            const submittedAmount = getTronStakingRewards(account);
 
             dispatch(
                 addFakePendingTronTxThunk({
@@ -186,7 +187,7 @@ export const submitTronClaimThunk = createThunk<
                     target: {
                         addresses: [account.descriptor],
                         amount: unitsToSubunits({
-                            value: asAmountUnit(new BigNumber(getTronStakingRewards(account))),
+                            value: asAmountUnit(new BigNumber(submittedAmount)),
                             symbol: account.symbol,
                         }).toString(),
                     },
@@ -201,7 +202,14 @@ export const submitTronClaimThunk = createThunk<
             );
 
             dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
-            dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    flow,
+                    txid,
+                    submitted: { amount: submittedAmount },
+                }),
+            );
         } finally {
             onSettled?.();
             dispatch(tronStakeActions.discardTransaction());

@@ -2,14 +2,13 @@ import { act } from '@testing-library/react';
 
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { stakeInitialState } from '@suite-common/wallet-core';
+import { blockchainInitialState, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useCardanoStaking } from './useCardanoStaking';
+import { type MockSuiteState } from '../../../mocks/mockInitialAppState';
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -68,12 +67,13 @@ const mockAccountWithRewardsButNoDrep = (): Account =>
     );
 
 const renderCardanoStaking = (account: Account, selectedAccount: Account = account) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: {
             wallet: {
                 selectedAccount: { account: selectedAccount },
                 stake: stakeInitialState,
                 transactions: { transactions: {} },
+                blockchain: blockchainInitialState,
             },
         },
     });

@@ -143,9 +143,7 @@ describe('getRefundAddress thunk', () => {
             expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
 
             // Verify confirmAddressOnDeviceThunk was not called
@@ -164,9 +162,7 @@ describe('getRefundAddress thunk', () => {
             expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
         });
 
@@ -184,9 +180,8 @@ describe('getRefundAddress thunk', () => {
             expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
+                cause: { source: 'connect', message: 'Device confirmation failed' },
             });
         });
 
@@ -207,9 +202,7 @@ describe('getRefundAddress thunk', () => {
             expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
         });
 
@@ -230,9 +223,7 @@ describe('getRefundAddress thunk', () => {
             expect(result.type).toBe(getRefundAddressThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_VERIFY_ERROR',
-                },
+                code: 'verify-address-failed',
             });
         });
     });

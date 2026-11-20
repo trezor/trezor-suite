@@ -65,11 +65,33 @@ const validateSessionParams: ParamsValidatorHandler<{
     }
 };
 
+/**
+ * RFC 9745 structured field Date: 2026-11-01T00:00:00Z, the month of Suite 26.11, the first release
+ * that sends it (@trezor/transport-bridge 3.3.0). It precedes the release day, so clients read
+ * `bridge` as already deprecated. No `Sunset` header accompanies it: RFC 8594 would require an
+ * HTTP-date and no removal date is being committed to.
+ */
+const DEPRECATION_DATE = '@1793491200';
+const DEPRECATION_LINK =
+    '<https://github.com/trezor/trezor-suite/issues/23794>; rel="deprecation"; type="text/html"';
+
 const validateProtocolMessageBody =
     (withData: boolean): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
     (request, response, next) => {
         try {
             const body = validateProtocolMessage(request.body, withData);
+
+            if (body.protocol === 'bridge') {
+                // Accepted but deprecated, behaviour is otherwise unchanged. To migrate, send
+                // `protocol: 'v1'`, prepend the v1 magic `3f2323` to `data` and strip it from the
+                // `data` that `/call` and `/read` return.
+                response.appendHeader('Deprecation', DEPRECATION_DATE);
+                response.appendHeader('Link', DEPRECATION_LINK);
+                // Neither header is CORS-safelisted. Pages on allowed origins reach this without a
+                // preflight, BridgeTransport posts without a Content-Type (a text/plain simple
+                // request), and without the exposure they would read null from res.headers.get().
+                response.appendHeader('Access-Control-Expose-Headers', 'Deprecation, Link');
+            }
 
             return next({ ...request, body }, response);
         } catch (error) {
@@ -92,7 +114,7 @@ const DEFAULT_ALLOWED_ORIGIN_SUFFIXES = [
 ];
 
 export class TrezordNode {
-    version = '3.2.1';
+    version = '3.3.0';
     bundledVersion?: string;
     serviceName = 'trezord-node';
     /** last known descriptors state */
@@ -105,6 +127,7 @@ export class TrezordNode {
     }[];
     /** pending /call /read and /post sessions. can be aborted via /abort endpoint */
     private abortableSignals: { session: string; abort: () => void }[] = [];
+    private readonly allowedOrigins?: string[];
     private readonly requestedPort: number;
     private port?: number;
     server: HttpServer<never>[] = [];
@@ -119,18 +142,26 @@ export class TrezordNode {
         logger,
         bundledVersion,
         port = 21328,
+        allowedOrigins,
     }: {
-        api: 'legacy' | 'nusb' | 'udp' | AbstractApi;
+        api: 'legacy' | 'nusb' | 'udp' | 'hid' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         bundledVersion?: string;
         port?: number;
+        /**
+         * Hostnames whose pages, including every subdomain, may use this bridge instead of the
+         * default ones. A bridge with its own list also refuses requests without an `Origin`
+         * header, which the default one accepts for its status page.
+         */
+        allowedOrigins?: string[];
     }) {
         this.logger = logger;
         this.descriptors = [];
         this.bundledVersion = bundledVersion;
 
         this.listenSubscriptions = [];
+        this.allowedOrigins = allowedOrigins;
 
         this.core = createCore(api, this.logger);
 
@@ -266,7 +297,11 @@ export class TrezordNode {
         app.use([
             (req, res, next, context) => {
                 // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
+                // A bridge with its own allowlist makes no such exception: any page can send a
+                // request without the header, an image pointing at `/status-data` is enough to
+                // make the bridge enumerate devices.
                 if (
+                    !this.allowedOrigins &&
                     !req.headers.origin &&
                     req.headers.host &&
                     [
@@ -278,7 +313,7 @@ export class TrezordNode {
                 } else {
                     const isOriginAllowed = checkOrigin({
                         request: req,
-                        allowedOrigin: DEFAULT_ALLOWED_ORIGIN_SUFFIXES,
+                        allowedOrigin: this.allowedOrigins ?? DEFAULT_ALLOWED_ORIGIN_SUFFIXES,
                         pathname: req.url,
                         logger: context.logger,
                     });

@@ -1,6 +1,6 @@
 import { type ReactNode, useContext, useEffect } from 'react';
 
-import { LayoutSetterContext } from 'src/support/suite/LayoutContext';
+import { LayoutSetterContext } from '#src/support/suite/LayoutContext';
 
 interface LayoutOptions {
     isContentStatic?: boolean;

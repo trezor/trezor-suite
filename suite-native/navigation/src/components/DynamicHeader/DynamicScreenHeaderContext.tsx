@@ -1,7 +1,5 @@
 import { type ReactNode, createContext, useCallback, useContext, useState } from 'react';
-
-import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
 import { throwError } from '@trezor/utils';
 

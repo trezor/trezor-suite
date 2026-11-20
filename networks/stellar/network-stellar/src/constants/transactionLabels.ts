@@ -1,4 +1,7 @@
-import type { StellarClaimableBalanceOffer, StellarOperationType } from '../types/operations';
+import type {
+    StellarClaimableBalanceOffer,
+    StellarOperationType,
+} from '@trezor/network-stellar-types';
 
 export type StellarOperationLabel =
     | 'accountMerge'

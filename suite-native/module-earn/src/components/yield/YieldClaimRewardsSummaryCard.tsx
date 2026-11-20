@@ -1,6 +1,18 @@
+import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { TokenMetadataProvider } from '@suite-common/token';
+import {
+    type EarnListRootState,
+    selectYieldClaimAccountItems,
+    selectYieldClaimListItems,
+    selectYieldClaimTokens,
+    selectYieldClaimTotalFiatAmount,
+    selectYieldListItems,
+    useYieldClaimRewardsWithFiat,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BannerInline,
@@ -11,28 +23,19 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { useMessageSystemYield, useStablecoinYieldFirmwareUpdateAlert } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
-import {
-    type EarnListRootState,
-    selectYieldClaimAccountItems,
-    selectYieldClaimListItems,
-    selectYieldClaimTokens,
-    selectYieldClaimTotalFiatAmount,
-    selectYieldListItems,
-} from '../../earnScreenSelectors';
-import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
-import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
-import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
+import { yieldClaimAccountItemsToTokenMetadataSources } from '../../utils/yield/yieldClaimAccountItemsToTokenMetadataSources';
 import { EarnClaimTokenIconSet } from '../earn/EarnClaimTokenIconSet';
 
 export const YieldClaimRewardsSummaryCard = () => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const isClaimSelectionPendingRef = useRef(false);
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
@@ -48,7 +51,7 @@ export const YieldClaimRewardsSummaryCard = () => {
         selectYieldListItems(state, yieldOpportunities),
     );
 
-    const { claimRewardsWithFiat, isClaimLoading } = useClaimRewardsWithFiat();
+    const { claimRewardsWithFiat, isClaimLoading } = useYieldClaimRewardsWithFiat();
 
     const claimItems = useSelector((state: EarnListRootState) =>
         selectYieldClaimListItems(state, claimRewardsWithFiat),
@@ -90,10 +93,37 @@ export const YieldClaimRewardsSummaryCard = () => {
             return;
         }
 
+        isClaimSelectionPendingRef.current = true;
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'earn-dashboard',
+                to: 'claim-select-account-modal',
+            },
+        });
         openYieldClaimRewardsSheet();
     };
 
-    return (
+    const onClaimAccountSelect = () => {
+        isClaimSelectionPendingRef.current = false;
+        closeYieldClaimRewardsSheet();
+    };
+
+    const onClaimSelectionDismiss = () => {
+        if (!isClaimSelectionPendingRef.current) return;
+        isClaimSelectionPendingRef.current = false;
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'claim-select-account-modal',
+                to: 'claim-select-account-modal',
+            },
+        });
+    };
+
+    const content = (
         <>
             {positions.length > 0 && <CardDivider horizontalPadding={0} />}
 
@@ -113,18 +143,20 @@ export const YieldClaimRewardsSummaryCard = () => {
 
                         <HStack spacing="sp4" alignItems="center" flexWrap="wrap">
                             {!isClaimLoading && totalClaimableFiatAmount !== null ? (
-                                <Text variant="body-md-strong">
-                                    {'≈\u00A0'}
+                                <HStack spacing="sp1">
+                                    <Text variant="body-md-strong">{'≈\u00A0'}</Text>
+
                                     <BaseCurrencyAmountFormatter
                                         value={totalClaimableFiatAmount}
                                         variant="body-md-strong"
                                     />
-                                </Text>
+                                </HStack>
                             ) : (
                                 <BaseCurrencyAmountFormatter
                                     value={totalClaimableFiatAmount}
                                     variant="body-md-strong"
-                                    isDiscreetText={false}
+                                    // The user needs to see the total rewards they are about to claim.
+                                    discreetMode="disabled"
                                     isLoading={isClaimLoading}
                                 />
                             )}
@@ -174,7 +206,17 @@ export const YieldClaimRewardsSummaryCard = () => {
                 ref={yieldClaimRewardsSheetRef}
                 items={claimAccountItems}
                 onClose={closeYieldClaimRewardsSheet}
+                onAccountSelect={onClaimAccountSelect}
+                onDismiss={onClaimSelectionDismiss}
             />
         </>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={yieldClaimAccountItemsToTokenMetadataSources(claimAccountItems)}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

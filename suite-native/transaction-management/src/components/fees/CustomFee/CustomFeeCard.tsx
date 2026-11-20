@@ -11,7 +11,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CustomFeeLabel } from './CustomFeeLabel';
-import { selectFeeLevels } from '../../../selectors';
+import { selectCustomFeeLevel } from '../../../selectors';
 
 export type CustomFeeCardProps = {
     accountKey: AccountKey;
@@ -26,9 +26,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const feeLevels = useSelector(selectFeeLevels);
-
-    const customFeeTransaction = feeLevels.custom;
+    const customFeeTransaction = useSelector(selectCustomFeeLevel);
 
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -52,7 +50,8 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     value={customFeeTransaction.fee}
                                     symbol={symbol}
                                     variant="body-md"
-                                    isDiscreetText={false}
+                                    // Show the custom fee in fiat so the user can assess its cost.
+                                    discreetMode="disabled"
                                 />
                                 <ExactCryptoAmountFormatter
                                     value={customFeeTransaction?.fee}
@@ -61,7 +60,8 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                                     variant="body-sm"
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
-                                    isDiscreetText={false}
+                                    // Show the exact crypto fee so the user can review the custom fee selection.
+                                    discreetMode="disabled"
                                 />
                             </VStack>
                         </HStack>

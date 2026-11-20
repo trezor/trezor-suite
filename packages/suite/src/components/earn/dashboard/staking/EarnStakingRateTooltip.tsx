@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { Text, Tooltip } from '@trezor/components';
 
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
+import { ApyValue } from '#src/views/wallet/staking/components/ApyValue';
 
 const Abbr = styled.abbr`
     cursor: help;

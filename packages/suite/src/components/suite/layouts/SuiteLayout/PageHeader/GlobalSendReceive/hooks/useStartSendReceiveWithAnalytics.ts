@@ -3,7 +3,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
+import { setSendFormPrefill } from '#src/actions/suite/suiteActions';
 
 import { useGoToWithAnalytics } from '../../useGoToWithAnalytics';
 import { type GlobalSendTarget } from '../types';

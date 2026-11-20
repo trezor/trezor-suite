@@ -4,22 +4,27 @@ import {
     createIsWrappedNativeToken,
     createNetworkIcon,
     createNetworkModuleRepository,
-    createNetworkModulesCompositionRoot,
 } from '@suite-common/networks';
 import { mockNetworkMetadata } from '@suite-common/networks/mocks';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { act, fireEvent, renderWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { mock } from '@trezor/dependency-injection';
 import type { GetTokenLogoIdentifiers } from '@trezor/network-assets-types';
+import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 import { createDeferred } from '@trezor/utils';
 
 import { TokenIcon } from './TokenIcon';
 
 const ethSymbol = asNetworkSymbol('eth');
-const networkModules = createNetworkModulesCompositionRoot({ getTrezorConnect: mock() });
-const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const networkModuleRepository = createNetworkModuleRepository({
+    networkModules: [
+        createBitcoinSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
+        createEthereumSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
+    ],
+});
 const ethereumModule = networkModuleRepository.get(ethSymbol);
 const getTokenLogoIdentifiers = mock<GetTokenLogoIdentifiers>();
 ethereumModule.icon = { ...ethereumModule.icon, getTokenLogoIdentifiers };
@@ -52,7 +57,6 @@ describe('TokenIcon', () => {
             preloadedState: { networks: mockNetworkMetadata },
             services: {
                 networks: {
-                    networkModuleRepository,
                     networkIcon: createNetworkIcon({ networkModuleRepository }),
                     isWrappedNativeToken: createIsWrappedNativeToken({ networkModuleRepository }),
                 },

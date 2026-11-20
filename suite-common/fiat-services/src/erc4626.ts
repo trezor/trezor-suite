@@ -1,5 +1,5 @@
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';

@@ -1,0 +1,29 @@
+{
+    "name": "@suite-app/module-activity-center",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "exports": {
+        ".": "./src/index.ts",
+        "./pages/*": "./src/pages/*.tsx"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite/debug": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    }
+}

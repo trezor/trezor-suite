@@ -15,13 +15,14 @@
     },
     "dependencies": {
         "@react-navigation/native": "7.1.31",
-        "@shopify/flash-list": "2.3.0",
+        "@shopify/flash-list": "2.3.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/feedback": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/mev": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -47,13 +48,13 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-file-system": "~57.0.1",
-        "expo-sharing": "~57.0.6",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
-        "react-native-reanimated": "4.7.0",
-        "react-native-safe-area-context": "~5.7.0",
-        "react-native-svg": "15.15.5",
+        "expo-file-system": "~58.0.13",
+        "expo-sharing": "~58.0.21",
+        "react": "19.3.0",
+        "react-native": "0.88.1",
+        "react-native-reanimated": "4.7.1",
+        "react-native-safe-area-context": "~5.10.1",
+        "react-native-svg": "15.16.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
@@ -64,6 +65,7 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/requirements": "workspace:*",
         "@types/invity-api": "^1.1.23"
     }
 }

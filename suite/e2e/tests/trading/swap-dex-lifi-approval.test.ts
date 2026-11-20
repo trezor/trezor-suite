@@ -1,21 +1,23 @@
 import { AddressFormatter } from '@suite-common/formatters';
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
-import { countDecimalPlaces } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { getAddressProviderName } from '../../support/helpers/ethereumDefinitions';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
+const ethereumChainId = 1;
 
 const approvalAmount = '60';
-// The toast shows the approved amount compactly, and a stablecoin reads money-like.
-const compactApprovalAmount = '60.00';
-const accountLabel = 'Ethereum #3';
-const lifiDiamondAddress = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE';
-const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
+const approvalFees = {
+    gasLimit: '120000',
+    maxFeePerGas: '2.67674454',
+    maxPriorityFeePerGas: '1.375641927',
+};
 
 test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.use({
@@ -43,14 +45,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
     test(
         'User can approve USDC spending for a LI.FI DEX swap',
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
-        async ({
-            tradingPage,
-            devicePrompt,
-            device,
-            tradingMock,
-            toastSection,
-            tradingResponses,
-        }) => {
+        async ({ page, tradingPage, devicePrompt, device, tradingMock, tradingResponses }) => {
             const dexProvider = await tradingResponses.swap.companyName('lifi');
 
             await test.step('Select USDC to ETH LI.FI DEX offer', async () => {
@@ -74,50 +69,49 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                     },
                 });
                 await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);
-                await expect(tradingPage.approveSpendingButton).toHaveTranslation(
-                    'TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON',
-                );
+                await expect(tradingPage.swapBestOfferButton).toHaveTranslation('TR_CONTINUE');
                 await tradingPage.quotes.waitForSync();
             });
 
-            let approvalModalMaximumFee: string;
-
-            await test.step('Review the approval modal details', async () => {
-                await tradingPage.approveSpendingButton.click();
-                await expect(tradingPage.approvalModal.heading).toHaveTranslation(
-                    'TR_APPROVAL_APPROVE_TOKEN_SPENDING',
-                    { values: { displaySymbol: 'USDC' } },
+            await test.step('Continue to the approval steps with approve first and swap locked', async () => {
+                await tradingPage.swapBestOfferButton.click();
+                await expect(tradingPage.approvalSteps.continueButton).toHaveTranslation(
+                    'TR_CONTINUE',
                 );
-
-                await expect(tradingPage.approvalModal.accountValue).toHaveText(accountLabel);
-                await expect(tradingPage.approvalModal.providerValue).toHaveText(dexProvider);
-                await expect(tradingPage.approvalModal.limitValue).toHaveTranslation(
-                    'TR_APPROVAL_VALUE_MINIMAL',
-                    { values: { value: approvalAmount, send: 'USDC' } },
+                await expect(tradingPage.approvalSteps.approvalRequiredBadge).toHaveTranslation(
+                    'TR_APPROVAL_REQUIRED',
+                );
+                await expect(
+                    tradingPage.approvalSteps.approvalStepLabel('approve'),
+                ).toHaveTranslation('TR_STEP_OF_TOTAL', { values: { index: 1, total: 2 } });
+                await expect(tradingPage.approvalSteps.approvalStepLabel('swap')).toHaveTranslation(
+                    'TR_STEP_OF_TOTAL',
+                    { values: { index: 2, total: 2 } },
+                );
+                await expect(tradingPage.approvalSteps.approvalStep('revoke')).toHaveCount(0);
+                await expect(tradingPage.approvalSteps.approvalStep('increase')).toHaveCount(0);
+                await expect(tradingPage.approvalSteps.limitButton).toHaveText(
+                    `${approvalAmount} USDC`,
                 );
             });
 
-            await test.step('Toggle approval limit between infinite and minimal', async () => {
-                await tradingPage.approvalModal.selectLimit('infinite');
-                await expect(tradingPage.approvalModal.limitValue).toHaveTranslation(
+            await test.step('Switch the approval limit to unlimited and back to the swap amount', async () => {
+                await tradingPage.approvalSteps.selectLimit('unlimited');
+                await expect(tradingPage.approvalSteps.limitButton).toHaveTranslation(
                     'TR_APPROVAL_VALUE_INFINITE',
                 );
-
-                await tradingPage.approvalModal.selectLimit('minimal');
-                await expect(tradingPage.approvalModal.limitValue).toHaveTranslation(
-                    'TR_APPROVAL_VALUE_MINIMAL',
-                    { values: { value: approvalAmount, send: 'USDC' } },
+                await tradingPage.approvalSteps.selectLimit('minimal');
+                await expect(tradingPage.approvalSteps.limitButton).toHaveText(
+                    `${approvalAmount} USDC`,
                 );
             });
 
-            await test.step('Read the maximum fee and continue to the device', async () => {
-                await expect(tradingPage.approvalModal.feeAmountWithSymbol).toHaveText(
-                    positiveEthereumAmountPattern,
+            await test.step('Set custom approval fees in the network fee modal', async () => {
+                await tradingPage.fees.setEthereumCustomFeesInNetworkFeeModal(
+                    approvalFees,
+                    tradingPage.approvalSteps.feeButton,
                 );
-                approvalModalMaximumFee =
-                    await tradingPage.approvalModal.feeAmountWithSymbol.innerText();
-
-                await tradingPage.approvalModal.continueButton.click();
+                await tradingPage.approvalSteps.continueButton.click();
             });
 
             await test.step('Review the token approval details on device', async () => {
@@ -131,10 +125,29 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 });
                 await devicePrompt.waitForPromptAndClick();
 
+                const dexTxData = await page.getReduxObject(
+                    'wallet.trading.exchange.selectedQuote.dexTx.data',
+                );
+                const spender = getErc20ApproveSpender(dexTxData);
+                if (!spender) {
+                    throw new Error('The LI.FI approval trade has no approve calldata');
+                }
+
+                const { major_version, minor_version, patch_version } = await page.getReduxObject(
+                    'device.selectedDevice.features',
+                );
+                const spenderProviderName = await getAddressProviderName({
+                    chainId: ethereumChainId,
+                    address: spender,
+                    firmwareVersion: [major_version, minor_version, patch_version],
+                });
+
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Token approval' },
-                        body: [transformAddress(lifiDiamondAddress, 'evmTetragrams')],
+                        body: spenderProviderName
+                            ? [[spenderProviderName]]
+                            : [transformAddress(spender, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                     T3T1: {
@@ -161,26 +174,21 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await device.pressYes();
             });
 
-            await test.step('Verify the device fee matches the modal and sign', async () => {
-                await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
-                    positiveEthereumAmountPattern,
-                );
-                const dexMaximumFee = await devicePrompt
-                    .cryptoAmountWithSymbolOf('fee')
-                    .innerText();
-
-                // Device prompt keeps full fee precision; the approval modal rounds to display.
-                expect(approvalModalMaximumFee).toMatch(/ ETH$/);
-                const approvalModalFeeAmount = approvalModalMaximumFee.replace(/ ETH$/, '');
-                const modalFeeDecimals = countDecimalPlaces(approvalModalFeeAmount);
-                const dexFeeRounded = Number.parseFloat(dexMaximumFee).toFixed(modalFeeDecimals);
-
-                expect(dexFeeRounded).toBe(approvalModalFeeAmount);
+            await test.step('Review the custom approval fee on device and sign', async () => {
+                const { ethereumMaximumFee, errorMessageMaxCalculation } =
+                    tradingPage.fees.calculateEthereumMaxFee(approvalFees);
+                await expect(
+                    devicePrompt.cryptoAmountWithSymbolOf('fee'),
+                    errorMessageMaxCalculation,
+                ).toHaveText(`${ethereumMaximumFee} ETH`);
 
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Token approval' },
-                        body: [['Maximum fee'], device.wrapText(dexMaximumFee, { isAmount: true })],
+                        body: [
+                            ['Maximum fee'],
+                            device.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                        ],
                         actions: { right_button: 'Hold to sign' },
                     },
                     T3T1: {
@@ -192,35 +200,40 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
 
             await test.step('Submit the USDC approval with broadcast blocked by mock', async () => {
                 await devicePrompt.sendButton.click();
-                await expect(toastSection.approvedMessage).toHaveTranslation('TOAST_TX_APPROVED');
-                await expect(toastSection.approvedAmount).toHaveText(
-                    `${compactApprovalAmount}USDC`,
-                );
-                await expect(tradingPage.pendingApprovalTransactionLabel).toHaveTranslation(
+                await expect(tradingPage.approvalSteps.continueButton).toHaveTranslation(
                     'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
                 );
-                await expect(tradingPage.pendingApprovalTransactionIdLabel).toHaveTranslation(
-                    'TR_EXCHANGE_APPROVAL_FORM_TRANSACTION_ID',
-                );
-                // While the approval is confirming, the swap button replaces the approve button and is disabled.
-                await expect(tradingPage.swapButton).toBeDisabled();
+                await expect(tradingPage.approvalSteps.continueButton).toBeDisabled();
 
                 // Pending TXID keeps the full value in its id attribute (text is truncated).
-                await expect(tradingPage.pendingApprovalTransactionId).toHaveAttribute(
+                await expect(tradingPage.approvalSteps.transactionId).toHaveAttribute(
                     'id',
                     tradingMock.lastBroadcastTxid,
                 );
-                await expect(tradingPage.pendingApprovalTransactionId).toHaveText(
+                await expect(tradingPage.approvalSteps.transactionId).toHaveText(
                     AddressFormatter.format(tradingMock.lastBroadcastTxid, {
                         format: 'long',
                         isChunked: false,
                     }),
                 );
-                await tradingPage.pendingApprovalTransactionId.click();
-                await expect(tradingPage.approvalModal.heading).toHaveTranslation(
-                    'TR_TRANSACTION_DETAILS',
-                );
+                await tradingPage.approvalSteps.transactionId.click();
                 await expect(tradingPage.transactionDetailModalTxid).toHaveText(
+                    tradingMock.lastBroadcastTxid,
+                );
+                await page.modalCloseButton.click();
+            });
+
+            await test.step('Returning to the form resumes the pending approval instead of a new one', async () => {
+                await tradingPage.backButton.click();
+                await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);
+                await tradingPage.swapBestOfferButton.click();
+
+                await expect(tradingPage.approvalSteps.continueButton).toHaveTranslation(
+                    'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
+                );
+                await expect(tradingPage.approvalSteps.continueButton).toBeDisabled();
+                await expect(tradingPage.approvalSteps.transactionId).toHaveAttribute(
+                    'id',
                     tradingMock.lastBroadcastTxid,
                 );
             });

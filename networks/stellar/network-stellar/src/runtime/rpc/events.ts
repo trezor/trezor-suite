@@ -1,7 +1,8 @@
-import { Address, nativeToScVal, scValToNative, type xdr } from '@stellar/stellar-sdk';
+import { Address, nativeToScVal, type xdr } from '@stellar/stellar-sdk';
 
 import { arrayChunk } from '@trezor/utils';
 
+import { tryScValToNative } from './decode';
 import type { StellarRpcServer } from '../../types/rpc';
 
 /** One SEP-41 `transfer` event that moved the token to or from the account, as the node still holds it. */
@@ -43,7 +44,7 @@ const readAddress = (topic: xdr.ScVal | undefined) => {
 
 // Since protocol 23 the event value is `{ amount, to_muxed_id }`; older tokens emit the bare i128.
 const readAmount = (value: xdr.ScVal): string | undefined => {
-    const native: unknown = scValToNative(value);
+    const native = tryScValToNative(value);
     const amount =
         typeof native === 'object' && native !== null && 'amount' in native
             ? native.amount

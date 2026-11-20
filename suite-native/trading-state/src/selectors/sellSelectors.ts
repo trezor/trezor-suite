@@ -7,6 +7,8 @@ import {
     getDefaultCountrySubdivision,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
+    selectTradingCoins,
+    selectTradingSellAccountKey,
     selectTradingSellInfo,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
@@ -55,7 +57,7 @@ export const selectSellFormDefaultValues = createMemoizedSelectorWithWalletSetti
         selectTradingSellInfo as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingSellInfo>,
-        ({ wallet }) => wallet.trading.info.coins,
+        selectTradingCoins,
         selectTradingResidenceCountry,
         selectTradingResidenceCountrySubdivision,
         selectBaseCurrency,
@@ -89,7 +91,7 @@ export const selectSellFormDefaultValues = createMemoizedSelectorWithWalletSetti
 );
 
 export const selectSellSelectedSendAccount = (state: TradingRootState & AccountsRootState) => {
-    const { tradingAccountKey } = selectTradingSell(state);
+    const tradingAccountKey = selectTradingSellAccountKey(state);
 
     return selectAccountByKey(state, tradingAccountKey) ?? undefined;
 };

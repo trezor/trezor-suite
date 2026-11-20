@@ -8,6 +8,7 @@
         {
             "path": "../../suite-common/price-chart"
         },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -24,6 +25,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/icons" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]

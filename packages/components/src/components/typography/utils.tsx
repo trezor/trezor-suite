@@ -8,7 +8,13 @@ import { type TransientProps, makePropsTransient } from '../../utils/transientPr
 export const textWraps = ['normal', 'balance', 'pretty', 'nowrap'];
 export type TextWrap = (typeof textWraps)[number];
 
-export const textCase = ['uppercase', 'lowercase', 'titlecase', 'capitalize'] as const;
+export const textCase = [
+    'uppercase',
+    'lowercase',
+    'titlecase',
+    'capitalize',
+    'small-caps',
+] as const;
 export type TextCase = (typeof textCase)[number];
 
 export const wordBreaks = ['normal', 'break-all', 'keep-all', 'inherit', 'unset'] as const;
@@ -38,6 +44,30 @@ export const pickAndPrepareTextProps = (
     makePropsTransient(
         allowedTextProps.reduce((acc, item) => ({ ...acc, [item]: props[item] }), {}),
     );
+
+const getCaseStyles = ($case: TextCase | undefined) => {
+    switch ($case) {
+        case undefined:
+            return undefined;
+        case 'titlecase':
+            return css`
+                text-transform: lowercase;
+
+                &::first-letter {
+                    text-transform: uppercase;
+                }
+            `;
+
+        case 'small-caps':
+            return css`
+                font-variant: all-small-caps;
+            `;
+        default:
+            return css`
+                text-transform: ${$case};
+            `;
+    }
+};
 
 export const withTextProps = ({
     $textWrap,
@@ -96,19 +126,7 @@ export const withTextProps = ({
             -webkit-box-orient: vertical;
         `
     }
-    ${
-        $case && $case === 'titlecase'
-            ? css`
-                  text-transform: lowercase;
-
-                  &::first-letter {
-                      text-transform: uppercase;
-                  }
-              `
-            : css`
-                  text-transform: ${$case};
-              `
-    }
+    ${getCaseStyles($case)}
 `;
 
 const getStorybookType = (key: TextPropsKeys) => {

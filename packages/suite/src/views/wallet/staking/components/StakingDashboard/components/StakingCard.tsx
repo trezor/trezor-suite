@@ -33,9 +33,11 @@ import { CheckIcon, InfoIcon, LockIcon, PlusCircleIcon, SpinnerGapIcon } from '@
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
@@ -207,7 +209,7 @@ export const StakingCard = ({
 
     const openUnstakeModal = () => {
         if (!isUnstakingDisabled && !isDrepDelegationRequired) {
-            dispatch(openModal({ type: 'unstake', account }));
+            dispatch(openModal({ type: 'unstake', accountKey: account.key }));
 
             analytics.report({
                 type: events.stakingUnstakeEvent.name,
@@ -256,7 +258,7 @@ export const StakingCard = ({
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/pending"
                                     value={totalPendingStakeBalance}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             }
                             description={
@@ -294,7 +296,7 @@ export const StakingCard = ({
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/staked"
                                     value={depositedBalance || '0'}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             }
                             description={
@@ -342,7 +344,7 @@ export const StakingCard = ({
                             <FormattedCryptoAmount
                                 data-testid="@account/staking/rewards"
                                 value={totalRewards}
-                                symbol={account.symbol}
+                                networkSymbol={account.symbol}
                             />
                         }
                         description={
@@ -380,7 +382,7 @@ export const StakingCard = ({
                                 <FormattedCryptoAmount
                                     data-testid="@account/staking/unstaking"
                                     value={withdrawTotalAmount}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             }
                             description={
@@ -460,6 +462,7 @@ export const StakingCard = ({
                                 iconLeft={isVotingDisabled ? InfoIcon : undefined}
                                 intent={isDrepDelegationRequired ? 'brand' : 'neutral'}
                                 priority={isDrepDelegationRequired ? 'primary' : 'secondary'}
+                                data-testid="@account/staking/change-delegate-button"
                             >
                                 <Translation id="TR_STAKE_CHANGE_DELEGATE" />
                             </Button>

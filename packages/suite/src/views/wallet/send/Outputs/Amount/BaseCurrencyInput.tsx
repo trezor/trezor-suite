@@ -3,13 +3,13 @@ import { Controller } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { type TokenAddress } from '@suite-common/tokens';
 import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyOption,
     type FiatRatesResult,
     type Output,
     type Timestamp,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     buildCurrencyLongOption,
@@ -30,10 +30,10 @@ import { NumberInput } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { validateDecimals } from 'src/utils/suite/validation';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
+import { validateDecimals } from '#src/utils/suite/validation';
 
 type FiatInputProps = {
     output: Partial<Output>;

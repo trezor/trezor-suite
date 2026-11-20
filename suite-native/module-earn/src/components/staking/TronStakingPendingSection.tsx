@@ -3,20 +3,20 @@ import { useNow } from '@trezor/react-utils';
 
 import { TronStakingUnstakeCard } from './TronStakingUnstakeCard/TronStakingUnstakeCard';
 import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
-
-const UNSTAKING_REFRESH_INTERVAL_MS = 60 * 1000;
+import { TRON_UNLOCKS_REFRESH_INTERVAL_MS } from '../../utils/staking/settleTronUnlocks';
 
 type TronStakingPendingSectionProps = {
     accountKey: AccountKey;
 };
 
+// One clock for both, so an unlock never shows as withdrawable and as unstaking at once.
 export const TronStakingPendingSection = ({ accountKey }: TronStakingPendingSectionProps) => {
-    const nowSeconds = useNow(UNSTAKING_REFRESH_INTERVAL_MS) / 1000;
+    const nowMs = useNow(TRON_UNLOCKS_REFRESH_INTERVAL_MS);
 
     return (
         <>
-            <TronStakingWithdrawBanner accountKey={accountKey} nowSeconds={nowSeconds} />
-            <TronStakingUnstakeCard accountKey={accountKey} nowSeconds={nowSeconds} />
+            <TronStakingWithdrawBanner accountKey={accountKey} nowMs={nowMs} />
+            <TronStakingUnstakeCard accountKey={accountKey} nowMs={nowMs} />
         </>
     );
 };

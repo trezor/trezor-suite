@@ -3,7 +3,7 @@ export type TestProps = {
     ['data-test']?: never;
     ['data-testId']?: never;
     ['data-testID']?: never;
-    ['testID']?: string;
+    readonly ['testID']?: string;
 };
 
 export const SURFACE_ELEVATIONS = ['0', '1'] as const;

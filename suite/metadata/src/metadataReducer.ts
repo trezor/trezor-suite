@@ -8,6 +8,7 @@ import {
     deviceActions,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
+    selectDevices,
     selectSelectedDevice,
 } from '@suite-common/device';
 import {
@@ -17,7 +18,11 @@ import {
     type WalletLabels,
 } from '@suite-common/metadata-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccounts,
+} from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
@@ -240,7 +245,7 @@ export const selectAccountLabelsLegacy = (state: {
 }) => {
     const provider = selectSelectedProviderForLabels(state);
 
-    return state.wallet.accounts.reduce(
+    return selectAccounts(state).reduce(
         (dict, account) => {
             const metadataKeys = account?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION];
             if (!metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
@@ -289,9 +294,8 @@ export const selectLabelingDataForWallet = (
  * @deprecated Legacy Labeling
  */
 export const selectLabelableEntities = (state: MetadataRootState, deviceState: StaticSessionId) => {
-    const { wallet, device } = state;
-    const { devices } = device;
-    const { accounts } = wallet;
+    const devices = selectDevices(state);
+    const accounts = selectAccounts(state);
 
     return [
         ...accounts
@@ -310,25 +314,6 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: S
             })),
     ];
 };
-
-/**
- * @deprecated Legacy Labeling
- */
-const selectLabelableEntityByKey = (
-    state: MetadataRootState,
-    deviceState: StaticSessionId,
-    entityKey: string,
-) =>
-    selectLabelableEntities(state, deviceState).find(e => {
-        if ('key' in e) {
-            return e.key === entityKey;
-        }
-        if ('state' in e) {
-            return e.state?.staticSessionId === entityKey;
-        }
-
-        return false;
-    });
 
 /**
  * @deprecated Legacy Labeling
@@ -373,16 +358,30 @@ export const selectIsLabelingAvailableForEntity = (
     entityKey: string,
     deviceStaticSessionId?: StaticSessionId,
 ): boolean => {
-    const device = deviceStaticSessionId
-        ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
-        : selectSelectedDevice(state);
-    if (!device?.state?.staticSessionId) return false;
-    const entity = selectLabelableEntityByKey(state, device.state.staticSessionId, entityKey);
+    if (!selectIsLabelingAvailable(state)) {
+        return false;
+    }
 
-    return Boolean(
-        selectIsLabelingAvailable(state) &&
-        entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName,
-    );
+    const walletId = deviceStaticSessionId ?? selectSelectedDevice(state)?.state?.staticSessionId;
+    if (!walletId) {
+        return false;
+    }
+
+    const device = selectDeviceByStaticSessionId(state, walletId);
+    if (!device) {
+        return false;
+    }
+
+    const account = selectAccountByKey(state, entityKey as AccountKey);
+    if (account?.deviceState === walletId) {
+        return Boolean(account.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
+    }
+
+    if (entityKey === walletId) {
+        return Boolean(device.metadata[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName);
+    }
+
+    return false;
 };
 
 /**

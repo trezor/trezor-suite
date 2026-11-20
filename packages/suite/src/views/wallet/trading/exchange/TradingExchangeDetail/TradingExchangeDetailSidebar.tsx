@@ -1,24 +1,24 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
+import { cryptoIdToNetwork } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
+import type { Account } from '@suite-common/wallet-types';
 import { Card, Column, Divider } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import type { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import type { Account } from 'src/types/wallet';
-import { TradingDetailAssetRow } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailAssetRow';
-import { TradingDetailSidebarSection } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSidebarSection';
-import { TradingDetailTradeInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';
-import { TradingExchangeMevProtectionInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMevProtectionInfoItem';
-import { TradingExchangeMinimumReceivedInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMinimumReceivedInfoItem';
-import { TradingExchangeRateInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeRateInfoItem';
-import { TradingExchangeSlippageInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeSlippageInfoItem';
-import { TradingUtilsProviderKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProviderKyc';
-import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import type { TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
+import { TradingDetailAssetRow } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailAssetRow';
+import { TradingDetailSidebarSection } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailSidebarSection';
+import { TradingDetailTradeInfo } from '#src/views/wallet/trading/common/TradingDetail/TradingDetailTradeInfo';
+import { TradingExchangeMevProtectionInfoItem } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMevProtectionInfoItem';
+import { TradingExchangeMinimumReceivedInfoItem } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeMinimumReceivedInfoItem';
+import { TradingExchangeRateInfoItem } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeRateInfoItem';
+import { TradingExchangeSlippageInfoItem } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingExchangeSlippageInfoItem';
+import { TradingUtilsProviderKyc } from '#src/views/wallet/trading/common/TradingUtils/TradingUtilsProviderKyc';
+import { formatCryptoAmountAsAmount } from '#src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 type TradingExchangeDetailSidebarProps = {
     providers?: TradingExchangeProvidersInfoProps;
@@ -37,7 +37,6 @@ export const TradingExchangeDetailSidebar = ({
 }: TradingExchangeDetailSidebarProps) => {
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { getAssetDecimals } = useTradingAssetDecimals();
     const sendNetwork = cryptoIdToNetwork(trade.send);
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
@@ -47,8 +46,6 @@ export const TradingExchangeDetailSidebar = ({
 
     const provider = trade.exchange ? providers?.[trade.exchange] : undefined;
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
-    const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
-        cryptoIdToSymbolAndContractAddress(trade.receive);
     const swapSlippage = trade.isDex ? trade.swapSlippage : undefined;
     const { receiveStringAmount } = trade;
     const decimals = getAssetDecimals({ accountKey: receiveAccount?.key, cryptoId: trade.receive });
@@ -115,8 +112,7 @@ export const TradingExchangeDetailSidebar = ({
                         {trade.isDex && !!minimumYouGetAmount && (
                             <TradingExchangeMinimumReceivedInfoItem
                                 minimumYouGetAmount={minimumYouGetAmount}
-                                symbol={receiveCoinSymbol}
-                                contractAddress={receiveContractAddress}
+                                cryptoId={trade.receive}
                             />
                         )}
 

@@ -1,9 +1,15 @@
 import { A } from '@mobily/ts-belt';
 
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import {
+    findToken,
+    hasAccountOrTokenSpendableBalance,
+    isStellarContractToken,
+} from '@suite-common/wallet-utils';
 import { orderedAccountTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
@@ -76,8 +82,30 @@ export const filterAccountsByNetworkSymbols = (
     return A.filter(accounts, account => networkSymbols.includes(account.symbol));
 };
 
-export const filterSendAvailableAccounts = <T extends Account>(accounts: readonly T[]) =>
-    A.filter(accounts, account => Number(account.availableBalance) > 0);
+type HasAccountOrTokenMobileSpendableBalanceParams = {
+    account: Account | null | undefined;
+    tokenContract?: TokenAddress;
+};
+
+export const hasAccountOrTokenMobileSpendableBalance = ({
+    account,
+    tokenContract,
+}: HasAccountOrTokenMobileSpendableBalanceParams): boolean => {
+    if (!hasAccountOrTokenSpendableBalance({ account, tokenContract })) return false;
+    if (tokenContract === undefined) return true;
+
+    const token = findToken(account?.tokens, tokenContract);
+
+    return token !== undefined && !isStellarContractToken(token);
+};
+
+export const filterSendAvailableAccounts = <T extends Account>(
+    accounts: readonly T[],
+    tokenContract?: TokenAddress,
+) =>
+    A.filter(accounts, account =>
+        hasAccountOrTokenMobileSpendableBalance({ account, tokenContract }),
+    );
 
 export const sortAccountsByNetworksAndAccountTypes = <T extends Account>(
     accounts: readonly T[],

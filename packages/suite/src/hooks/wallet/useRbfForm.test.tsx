@@ -12,18 +12,18 @@ import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
-import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
-import { type AppState } from 'src/reducers/store';
+import { ChangeFee } from '#src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
+import { ReplaceTxButton } from '#src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
 import {
     actionSequence,
     findByTestId,
     renderWithProviders,
     waitForLoader,
-} from 'src/support/test-utils/hooksHelper';
+} from '#src/support/test-utils/hooksHelper';
 
 import * as fixtures from './__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from './useRbfForm';
+import { type MockSuiteState } from '../../../mocks/mockInitialAppState';
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -147,7 +147,7 @@ describe('useRbfForm hook', () => {
             const rootReducer = fixtures.getRootReducer(f.store.selectedAccount, f.store.fees);
             const { services } = createTestCompositionRoot<
                 WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
-                AppState
+                MockSuiteState
             >({
                 reducer: rootReducer,
                 preloadedState: initPreloadedState({

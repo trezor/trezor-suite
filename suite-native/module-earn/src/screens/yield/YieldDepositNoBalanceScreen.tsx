@@ -3,7 +3,9 @@ import { useEffect, useRef } from 'react';
 import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { hasYieldDepositableBalance } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { useYieldFlowData } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -23,8 +25,6 @@ import {
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useRefreshWrappedNativeTokenOnFocus } from '../../hooks/yield/useRefreshWrappedNativeTokenOnFocus';
 import { useStartYieldDepositFlow } from '../../hooks/yield/useStartYieldDepositFlow';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
-import { hasYieldDepositableBalance } from '../../utils/earn/contractTokenBalanceUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositNoBalance>;
 

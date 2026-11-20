@@ -72,18 +72,24 @@ ${imports}
 
 type GeneratedFirmwareRelease = Omit<
     FirmwareRelease,
-    'version' | 'bootloader_version' | 'min_firmware_version' | 'min_bootloader_version'
+    | 'version'
+    | 'bootloader_version'
+    | 'min_firmware_version'
+    | 'min_bootloader_version'
+    | 'translations_metadata'
 > & {
     version: number[];
     bootloader_version?: number[];
     min_firmware_version: number[];
     min_bootloader_version: number[];
+    translations_metadata?: Record<string, { status: string }>;
 };
 
 /**
- * The only mismatch with FirmwareRelease is that imported JSON version arrays are inferred as
- * number[] instead of fixed-length VersionArray tuples. This validates the remaining raw shape
- * before the public export narrows those arrays.
+ * The only mismatches with FirmwareRelease are JSON-inferred widenings: version arrays are
+ * inferred as number[] instead of fixed-length VersionArray tuples, and translation metadata
+ * status as string instead of its literal union. This validates the remaining raw shape
+ * before the public export narrows those fields.
  */
 type GeneratedFirmwareAssetsMap = Record<
     string,

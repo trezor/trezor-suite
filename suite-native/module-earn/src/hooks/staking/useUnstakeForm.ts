@@ -1,19 +1,20 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+    formatStakingAmount,
+    isStakingOperationAvailable,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type StakeRootState,
     UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE_MOBILE,
     buildUnstakeData,
     getEthereumStakingAddressByType,
     getStakingLimitsByNetworkSymbol,
     selectAccountByKey,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
-    selectUnstakableBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { fromEther, isPositiveBalance } from '@suite-common/wallet-utils';
@@ -30,21 +31,23 @@ import { useComposeEarnFees } from '../earn/useComposeEarnFees';
 
 export const useUnstakeForm = (accountKey: AccountKey) => {
     const { translate } = useTranslate();
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const unstakableBalance = useSelector((state: StakeRootState) =>
-        selectUnstakableBalanceByAccountKey(state, accountKey),
-    );
-    const canClaim = useSelector((state: StakeRootState) =>
-        selectCanClaimByAccountKey(state, accountKey),
-    );
-    const claimableAmount =
-        useSelector((state: StakeRootState) =>
-            selectClaimableAmountByAccountKey(state, accountKey),
-        ) ?? '0';
+
+    const { position, totals, access } = useStakingAccountPosition(accountKey);
 
     const network = account ? getNetwork(account.symbol) : null;
+
+    // The whole stake can be unstaked; a withdrawal waits for its own flow.
+    const unstakableBalance = account
+        ? formatStakingAmount({ amount: totals.staked, networkSymbol: account.symbol })
+        : '0';
+    const canClaim = isStakingOperationAvailable({ position, access, operation: 'withdraw' });
+    const claimableAmount = account
+        ? formatStakingAmount({ amount: totals.withdrawable, networkSymbol: account.symbol })
+        : '0';
 
     const form = useForm<EarnFormValues>({
         validation: unstakeFormValidationSchema,
@@ -82,12 +85,11 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         );
     }, [account, isValid, amountValue]);
 
-    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
-        useComposeEarnFees({
-            accountKey,
-            formState: unstakeFormState,
-            formDraftPrefix: 'unstake',
-        });
+    const fees = useComposeEarnFees({
+        accountKey,
+        formState: unstakeFormState,
+        formDraftPrefix: 'unstake',
+    });
 
     const approximatedInstantEthAmount = useApproximateInstantUnstakeAmount(
         accountKey,
@@ -114,11 +116,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         canClaim,
         claimableAmount,
         showNetworkFeeWarning,
-        formDraft,
-        formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
-        updateFeeLevelThunk,
+        ...fees,
         approximatedInstantEthAmount,
     };
 };

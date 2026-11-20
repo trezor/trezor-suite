@@ -23,17 +23,17 @@ import { Button, Card, Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useSelector } from 'src/hooks/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useMessageSystemYield } from '#src/hooks/suite/useMessageSystemYield';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EarnYieldClaimRewardsBanner } from './EarnYieldClaimRewardsBanner';
 import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountModal';
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { getYieldOpportunityAnchor } from '../../utils/getYieldOpportunityAnchor';
-import { useMerklRewards } from '../../yield/claim/hooks';
+import { useMerklRewards } from '../../yield/claim/hooks/useMerklRewards';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
 import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
@@ -172,7 +172,7 @@ export const EarnYieldTable = ({ onReady }: EarnYieldTableProps) => {
             <ContextMessage context={Context.getEarnDashboard('yield')} />
 
             <DashboardSection
-                heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
+                heading={<Translation id="TR_EARN_DEFI_YIELD" />}
                 subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
                 actions={<PoweredByBadge provider="morpho" />}
                 areActionsBelowSubheading={isCardLayout}

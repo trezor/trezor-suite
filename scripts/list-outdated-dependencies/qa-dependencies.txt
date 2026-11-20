@@ -23,12 +23,15 @@ fake-indexeddb
 jest
 jest-canvas-mock
 jest-diff
+jest-environment-jsdom
 jest-environment-node
 jest-extended
 jest-junit
 jest-watch-typeahead
+lighthouse
 minimist
 opencode-ai
+puppeteer-core
 react-native-lighthouse
 test-renderer
 ts-jest

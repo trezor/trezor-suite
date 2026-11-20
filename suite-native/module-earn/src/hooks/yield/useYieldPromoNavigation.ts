@@ -1,15 +1,25 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectIsDeviceInViewOnlyMode } from '@suite-common/device';
-import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type YieldPromoListItem,
+    selectVisibleDeviceAccounts,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModalControls } from '@suite-native/atoms';
+import {
+    type YieldEntrySheet,
+    navigateByYieldAccountState,
+    useStablecoinYieldFirmwareUpdateAlert,
+    useYieldEntryNavigationAnalytics,
+} from '@suite-native/earn';
 import {
     AddCoinAccountStackRoutes,
     type RootStackParamList,
@@ -18,13 +28,7 @@ import {
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useStablecoinYieldFirmwareUpdateAlert } from './useStablecoinYieldFirmwareUpdateAlert';
 import { useEarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
-import { type YieldPromoListItem } from '../../types';
-import {
-    type YieldAccountNavigationDestination,
-    navigateByYieldAccountState,
-} from '../../utils/yield/navigateByYieldAccountState';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>;
 
@@ -56,6 +60,9 @@ export const useYieldPromoNavigation = () => {
         null,
     );
 
+    const pendingSheetRef = useRef<{ from: YieldEntrySheet; item: YieldPromoListItem } | null>(
+        null,
+    );
     const pendingEnableSymbol = pendingEnableYieldItem?.networkSymbol ?? null;
 
     const yieldTokenContractAddress = chosenYieldItem?.underlyingTokenContract;
@@ -74,39 +81,7 @@ export const useYieldPromoNavigation = () => {
         [yieldTokenContractAddress, yieldTokenDecimals, yieldTokenSymbol],
     );
 
-    const reportYieldEntryNavigation = useCallback(
-        (
-            destination: YieldAccountNavigationDestination | 'choose-account-sheet',
-            item: YieldPromoListItem,
-            from: 'earn-dashboard' | 'choose-account-sheet',
-        ) => {
-            if (destination === 'firmware-update-alert') {
-                analytics.report({
-                    type: events.yieldDepositEvent.name,
-                    payload: {
-                        action: 'continue',
-                        type: 'firmware-upgrade-needed-modal',
-                        networkSymbol: item.networkSymbol,
-                        vaultId: item.yieldId,
-                    },
-                });
-
-                return;
-            }
-
-            analytics.report({
-                type: events.yieldNavigateEvent.name,
-                payload: {
-                    action: 'continue',
-                    from,
-                    to: destination,
-                    networkSymbol: item.networkSymbol,
-                    vaultId: item.yieldId,
-                },
-            });
-        },
-        [analytics],
-    );
+    const reportYieldEntryNavigation = useYieldEntryNavigationAnalytics();
 
     const onAccountPress = useCallback(
         (account: Account) => {
@@ -114,6 +89,7 @@ export const useYieldPromoNavigation = () => {
                 return;
             }
 
+            pendingSheetRef.current = null;
             closeSelectAccountSheet();
             const destination = navigateByYieldAccountState(
                 account,
@@ -122,7 +98,11 @@ export const useYieldPromoNavigation = () => {
                 isFirmwareSupported,
                 showFirmwareUpdateAlert,
             );
-            reportYieldEntryNavigation(destination, chosenYieldItem, 'choose-account-sheet');
+            reportYieldEntryNavigation({
+                destination,
+                item: chosenYieldItem,
+                from: 'choose-account-sheet',
+            });
         },
         [
             chosenYieldItem,
@@ -147,6 +127,7 @@ export const useYieldPromoNavigation = () => {
             return;
         }
 
+        pendingSheetRef.current = null;
         const { networkSymbol, yieldId, underlyingTokenContract, receiptTokenContract } =
             pendingEnableYieldItem;
 
@@ -171,13 +152,34 @@ export const useYieldPromoNavigation = () => {
         navigation,
     ]);
 
+    const reportSheetDismiss = useCallback(
+        (from: YieldEntrySheet) => {
+            const pending = pendingSheetRef.current;
+            if (pending?.from !== from) return;
+            pendingSheetRef.current = null;
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'cancel',
+                    from,
+                    to: 'earn-dashboard',
+                    networkSymbol: pending.item.networkSymbol,
+                    vaultId: pending.item.yieldId,
+                },
+            });
+        },
+        [analytics],
+    );
+
     const onSelectAccountDismiss = useCallback(() => {
         closeSelectAccountSheet(false);
-    }, [closeSelectAccountSheet]);
+        reportSheetDismiss('choose-account-sheet');
+    }, [closeSelectAccountSheet, reportSheetDismiss]);
 
     const onEnableNetworkDismiss = useCallback(() => {
         closeEnableNetworkSheet(false);
-    }, [closeEnableNetworkSheet]);
+        reportSheetDismiss('enable-network-sheet');
+    }, [closeEnableNetworkSheet, reportSheetDismiss]);
 
     const onPromoItemPress = useCallback(
         (item: YieldPromoListItem) => {
@@ -194,8 +196,14 @@ export const useYieldPromoNavigation = () => {
             );
 
             if (accountsForNetwork.length === 0) {
+                pendingSheetRef.current = { from: 'enable-network-sheet', item };
                 setPendingEnableYieldItem(item);
                 openEnableNetworkSheet();
+                reportYieldEntryNavigation({
+                    destination: 'enable-network-sheet',
+                    item,
+                    from: 'earn-dashboard',
+                });
 
                 return;
             }
@@ -209,15 +217,20 @@ export const useYieldPromoNavigation = () => {
                     isFirmwareSupported,
                     showFirmwareUpdateAlert,
                 );
-                reportYieldEntryNavigation(destination, item, 'earn-dashboard');
+                reportYieldEntryNavigation({ destination, item, from: 'earn-dashboard' });
 
                 return;
             }
 
+            pendingSheetRef.current = { from: 'choose-account-sheet', item };
             setChosenAccounts(accountsForNetwork);
             setChosenYieldItem(item);
             openSelectAccountSheet();
-            reportYieldEntryNavigation('choose-account-sheet', item, 'earn-dashboard');
+            reportYieldEntryNavigation({
+                destination: 'choose-account-sheet',
+                item,
+                from: 'earn-dashboard',
+            });
         },
         [
             store,

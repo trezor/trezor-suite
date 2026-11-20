@@ -18,13 +18,14 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/requirements": "workspace:*",
         "@types/invity-api": "^1.1.23"
     }
 }

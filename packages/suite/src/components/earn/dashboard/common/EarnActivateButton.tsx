@@ -11,7 +11,7 @@ import { Button, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type EarnActivateButtonProps = {
     symbol: NetworkSymbol;
@@ -38,7 +38,7 @@ export const EarnActivateButton = ({ symbol }: EarnActivateButtonProps) => {
         }
 
         if (isNetworkEnabled) {
-            dispatch(startOrRestartDiscoveryThunk());
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
 
             return;
         }

@@ -18,18 +18,19 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
-import type { NotificationRendererProps } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
+import { fillSendForm, resetProtocol } from '#src/actions/suite/protocolActions';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { globalSendReceiveFiltersActions } from '#src/slices/wallet/globalSendReceiveFilters';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
+import type { NotificationRendererProps } from './NotificationRendererProps';
 
 const Row = styled.span`
     display: flex;
 `;
 
-const getIcon = (symbol?: NetworkSymbol) => symbol && <TokenIcon symbol={symbol} size={24} />;
+const getIcon = (symbol?: NetworkSymbol) =>
+    symbol && <TokenIcon networkSymbol={symbol} size={24} />;
 
 export const CoinProtocolRenderer = ({
     render,

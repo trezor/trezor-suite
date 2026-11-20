@@ -1,4 +1,6 @@
 import { type ConnectSettingsTransport, type UiRequestThpPairing } from '@trezor/connect';
+import { protobufManager } from '@trezor/protobuf';
+import * as debugProto from '@trezor/protobuf/src/definitions/messages-debug_pb';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';
 import { BridgeTransport } from '@trezor/transport-common';
@@ -30,6 +32,8 @@ const debugTransport =
 
 export const initDebugLink = async () => {
     if (args['interactive']) return;
+
+    protobufManager.load(debugProto);
 
     console.log('init', debugTransport.name, 'in DebugLink mode');
     await debugTransport.init();
@@ -91,7 +95,17 @@ export const debugLinkState = async (uiEvent: UiRequestThpPairing['payload']) =>
     await debugTransport.release({ ...descriptor, session });
     await debugTransport.enumerate();
 
-    return response;
+    // @ts-expect-error temp bypass, DebugLink messages no longer available in transport return type.
+    if (response.success && response.payload.type !== 'DebugLinkPairingInfo') {
+        throw new Error('DebugLinkPairingInfo missing, received ' + response.payload.type);
+    }
+
+    return response as
+        | Exclude<typeof response, { success: true }>
+        | Promise<{
+              success: true;
+              payload: { type: 'DebugLinkPairingInfo'; message: any };
+          }>;
 };
 
 export const debugLinkDecision = async () => {

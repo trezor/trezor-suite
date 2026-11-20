@@ -1,7 +1,8 @@
 import { useTranslation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { type GeneralPrecomposedTransaction, type TokenAddress } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import {
     type TronFeeBreakdown,
     convertAmountSubunitsToUnits,
@@ -10,8 +11,9 @@ import {
 import { Column, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
 
 type TotalSentFeeContentProps = {
     transactionInfo: GeneralPrecomposedTransaction;
@@ -58,7 +60,7 @@ export function TotalSentFeeContent({
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={tronFees.trxBurned.toString()}
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                     />
                 )}
                 {tronFees?.coveredEnergy.gt(0) && (
@@ -90,7 +92,7 @@ export function TotalSentFeeContent({
                 <FormattedCryptoAmount
                     disableHiddenPlaceholder
                     value={feeAmount}
-                    symbol={networkSymbol}
+                    networkSymbol={networkSymbol}
                 />
                 {totalFiatIncludingFee !== null && (
                     <BaseCurrencyValue

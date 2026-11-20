@@ -1,11 +1,11 @@
 import { type TradingType, selectTradingSendAccount } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { getSelectedCryptoId } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
-import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { getSelectedCryptoId } from '#src/utils/wallet/trading/tradingTypingUtils';
+import { useTradingQuoteAmounts } from '#src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from '#src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
     // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
@@ -39,7 +39,6 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
 
     return {
         quote,
-        quoteAmounts,
         selectedAssetCryptoId,
         isBaseButtonDisabled,
     };

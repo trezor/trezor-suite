@@ -12,8 +12,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "react": "19.2.3",
-        "react-hook-form": "^7.77.0"
+        "react": "19.3.0",
+        "react-hook-form": "^7.91.0"
     },
     "devDependencies": {
         "@testing-library/dom": "^10.4.2",

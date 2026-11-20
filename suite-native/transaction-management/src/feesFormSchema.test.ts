@@ -76,6 +76,56 @@ describe('feesFormValidationSchema', () => {
         },
     );
 
+    it('requires the TRC20 fee limit while its editor retains the Normal selection', async () => {
+        await expect(
+            feesFormValidationSchema.validate(
+                { feeLevel: 'normal', customFeePerUnit: '500000', customFeeLimit: '' },
+                {
+                    context: createContext({ symbol: asNetworkSymbol('trx'), isTrc20: true }),
+                },
+            ),
+        ).rejects.toMatchObject({ path: 'customFeeLimit', message: 'forms.errors.mixed.required' });
+    });
+
+    it('validates the TRC20 cap without applying network rate bounds to its hidden energy price', async () => {
+        await expect(
+            feesFormValidationSchema.validate(
+                {
+                    feeLevel: 'normal',
+                    customFeePerUnit: '100',
+                    customFeeLimit: '8000000',
+                },
+                {
+                    context: createContext({
+                        symbol: asNetworkSymbol('trx'),
+                        isTrc20: true,
+                        minimalFeeLimit: '6428500',
+                        translate: () => 'Invalid network fee rate.',
+                        networkFeeInfo: {
+                            blockHeight: 0,
+                            blockTime: 3,
+                            minFee: 0,
+                            maxFee: 0,
+                            minPriorityFee: 0,
+                            levels: [],
+                        },
+                    }),
+                },
+            ),
+        ).resolves.toBeDefined();
+    });
+
+    it('does not require a fee limit for a non-adjustable native Tron transfer', async () => {
+        await expect(
+            feesFormValidationSchema.validate(
+                { feeLevel: 'normal', customFeePerUnit: '500000', customFeeLimit: '' },
+                {
+                    context: createContext({ symbol: asNetworkSymbol('trx'), isTrc20: false }),
+                },
+            ),
+        ).resolves.toBeDefined();
+    });
+
     it.each(['eth', 'trx'] as const)(
         'requires the active Custom gas/fee limit on %s',
         async symbol => {

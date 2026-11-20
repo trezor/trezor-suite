@@ -1,11 +1,12 @@
-import { type Account, toTokenAddress } from '@suite-common/wallet-types';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
-
-import { type ChooseAccountTokenBalance } from '../../types';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     getAccountTokenByContract,
     getYieldVaultDepositableBalance,
-} from '../earn/contractTokenBalanceUtils';
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+
+import { type ChooseAccountTokenBalance } from '../../types';
 
 export type ChooseAccountBalanceData =
     | {

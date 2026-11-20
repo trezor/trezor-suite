@@ -132,7 +132,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                             priority="secondary"
                         />
                         <Box flex={1}>
-                            <Button onPress={onSubmit}>
+                            <Button onPress={() => onSubmit()}>
                                 <Translation id="moduleConnectDevice.pinScreen.form.submitButton" />
                             </Button>
                         </Box>

@@ -7,7 +7,6 @@ import {
     type AppTabsParamList,
     AppTabsRoutes,
     type TabNavigationProp,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -27,10 +26,7 @@ export const TradingExperiencePromoBanner = () => {
             type: commonAnalyticsEvents.promoDashboardBannerEvent.name,
             payload: { action: 'cta', bannerType: 'trading-experience' },
         });
-        navigation.navigate(AppTabsRoutes.TradeStack, {
-            screen: TradingStackRoutes.Trading,
-            params: { tradingType: 'exchange' },
-        });
+        navigation.navigate(AppTabsRoutes.Trading, { tradingType: 'exchange' });
     };
 
     const handleClose = () => {

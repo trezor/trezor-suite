@@ -1,12 +1,12 @@
-import { selectCoinjoinAccountByKey } from '@suite/coinjoin';
+import { selectSessionByAccountKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
-import { useSelector } from 'src/hooks/suite';
+import { SESSION_PHASE_MESSAGES } from '#src/constants/suite/coinjoin';
+import { useCoinjoinSessionPhase } from '#src/hooks/coinjoin/useCoinjoinSessionPhase';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AutoStopButton } from './AutoStopButton';
 import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';
@@ -18,12 +18,11 @@ type CriticalCoinjoinPhaseModalProps = {
 export const CriticalCoinjoinPhaseModal = ({
     relatedAccountKey,
 }: CriticalCoinjoinPhaseModalProps) => {
-    const relatedCoinjoinAccount = useSelector(state =>
-        selectCoinjoinAccountByKey(state, relatedAccountKey),
+    const coinjoinSession = useSelector(state =>
+        selectSessionByAccountKey(state, relatedAccountKey),
     );
 
-    const session = relatedCoinjoinAccount?.session;
-    const roundPhase = session?.roundPhase;
+    const roundPhase = coinjoinSession?.roundPhase;
     const sessionPhase = useCoinjoinSessionPhase(relatedAccountKey);
 
     if (!roundPhase || !sessionPhase) {
@@ -49,7 +48,7 @@ export const CriticalCoinjoinPhaseModal = ({
                 <Card>
                     <CoinjoinPhaseProgress
                         roundPhase={roundPhase}
-                        phaseDeadline={session?.roundPhaseDeadline}
+                        phaseDeadline={coinjoinSession?.roundPhaseDeadline}
                     />
                     <Divider margin={{ top: 24, bottom: 16 }} />
                     <AutoStopButton relatedAccountKey={relatedAccountKey} />

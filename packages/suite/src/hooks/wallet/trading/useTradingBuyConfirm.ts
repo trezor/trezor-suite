@@ -22,8 +22,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
-import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
+import { submitRequestFormThunk } from '#src/actions/wallet/trading/tradingCommonActions';
+import { createTxLink } from '#src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {
     const { desktopApi, analytics, dispatch } = useServices(

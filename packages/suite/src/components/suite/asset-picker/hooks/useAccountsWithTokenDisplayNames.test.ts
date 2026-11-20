@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
@@ -13,7 +14,7 @@ import {
 } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { type AccountWithTokensOption } from '../types';
 import {
@@ -60,7 +61,7 @@ const createAsset = (
         name: 'Asset Name',
         symbol: 'asset',
         displaySymbol: 'ASSET',
-        contractAddress: '0x1',
+        contractAddress: toTokenAddress('0x1'),
         networkName: 'Ethereum',
         networkSymbol: ethSymbol,
         ...assetOverrides,

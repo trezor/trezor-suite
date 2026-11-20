@@ -28,12 +28,20 @@ export type FlagsState = {
     showDefiYieldDashboardPromoBanner: boolean;
     showETHVaultDashboardPromoBanner: boolean;
     showTradingExperienceDashboardPromoBanner: boolean;
+    showBFH26TS7AccessoryPackDashboardPromoBanner: boolean;
+    showBFH26KeepMetalDashboardPromoBanner: boolean;
+    showBFH26TS3GiftDashboardPromoBanner: boolean;
+    showBFH26TS3BackupDashboardPromoBanner: boolean;
+    showBFH26TS7CompleteKitDashboardPromoBanner: boolean;
+    showBFH26EGiftCardDashboardPromoBanner: boolean;
+    showBFH26TS7UpgradeDashboardPromoBanner: boolean;
     showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
     addAccountNetworksBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
     earnEthBannerClosed: boolean;
+    closedTokenYieldBanners: Partial<Record<string, true>>;
     stakeSolBannerClosed: boolean;
     stakeCardanoBannerClosed: boolean;
     stakeTronBannerClosed: boolean;
@@ -43,6 +51,7 @@ export type FlagsState = {
     showCopyAddressModal: boolean;
     enableAutoupdateOnNextRun: boolean;
     showBluetoothDebugInfo: boolean;
+    isReferAFriendEnabled: boolean;
     stellarLimitedHistoryBannerClosed: boolean;
     solanaLimitedHistoryBannerClosed: boolean;
     hasSeenDisconnectTooltip: boolean;
@@ -73,12 +82,20 @@ export const flagsInitialState: FlagsState = {
     showDefiYieldDashboardPromoBanner: true,
     showETHVaultDashboardPromoBanner: true,
     showTradingExperienceDashboardPromoBanner: true,
+    showBFH26TS7AccessoryPackDashboardPromoBanner: true,
+    showBFH26KeepMetalDashboardPromoBanner: true,
+    showBFH26TS3GiftDashboardPromoBanner: true,
+    showBFH26TS3BackupDashboardPromoBanner: true,
+    showBFH26TS7CompleteKitDashboardPromoBanner: true,
+    showBFH26EGiftCardDashboardPromoBanner: true,
+    showBFH26TS7UpgradeDashboardPromoBanner: true,
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
     addAccountNetworksBannerClosed: false,
     stakeEthBannerClosed: false,
     earnEthBannerClosed: false,
+    closedTokenYieldBanners: {},
     stakeSolBannerClosed: false,
     stakeCardanoBannerClosed: false,
     stakeTronBannerClosed: false,
@@ -88,6 +105,7 @@ export const flagsInitialState: FlagsState = {
     showUnhideTokenModal: true,
     enableAutoupdateOnNextRun: false,
     showBluetoothDebugInfo: false,
+    isReferAFriendEnabled: false,
     stellarLimitedHistoryBannerClosed: false,
     solanaLimitedHistoryBannerClosed: false,
     hasSeenDisconnectTooltip: false,
@@ -109,6 +127,9 @@ const flagsSlice = createSliceWithExtraDeps({
             { payload }: PayloadAction<{ key: BooleanFlagKey; value: boolean }>,
         ) => {
             state[payload.key] = payload.value;
+        },
+        closeTokenYieldBanner: (state: FlagsState, { payload }: PayloadAction<string>) => {
+            state.closedTokenYieldBanners[payload] = true;
         },
         setAssetPriceChartRange: (
             state: FlagsState,
@@ -146,6 +167,7 @@ const flagsSlice = createSliceWithExtraDeps({
 });
 
 export const {
+    closeTokenYieldBanner,
     markNewContentIndicatorAsSeen,
     setAssetPriceChartRange,
     setFlag,
@@ -155,8 +177,12 @@ export const flagsActions = flagsSlice.actions;
 export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
+export const selectIsTokenYieldBannerClosed = (state: FlagsRootState, bannerKey: string) =>
+    state.flags.closedTokenYieldBanners[bannerKey] === true;
 export const selectAssetPriceChartRange = (state: FlagsRootState) =>
     state.flags.assetPriceChartRange;
+export const selectIsReferAFriendEnabled = (state: FlagsRootState) =>
+    state.flags.isReferAFriendEnabled;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>

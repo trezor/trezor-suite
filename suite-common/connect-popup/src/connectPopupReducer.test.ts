@@ -65,6 +65,15 @@ describe('rememberAppPermissions', () => {
                 .permissions,
         ).toEqual([]);
     });
+
+    it.each(['', '   '])(
+        'does not remember permissions for a desktop app whose process path is %p',
+        fullPath => {
+            expect(
+                rememberApps({ ...app, process: { ...appProcess, fullPath } }).permissions,
+            ).toEqual([]);
+        },
+    );
 });
 
 describe('storageLoad', () => {
@@ -86,5 +95,19 @@ describe('storageLoad', () => {
         expect(
             loadApps({ ...app, type: CALL_SOURCE_WALLETCONNECT, process: undefined }).permissions,
         ).toEqual([]);
+    });
+
+    it('does not load permissions remembered for a blank process path by an earlier version', () => {
+        expect(loadApps({ ...app, process: { ...appProcess, fullPath: '' } }).permissions).toEqual(
+            [],
+        );
+    });
+
+    // Nothing schema-validates the persisted grants, so a `process` without a path must be
+    // dropped like any other malformed entry — a throw here would abort the store hydration.
+    it('does not load a permission whose persisted process has no path', () => {
+        const withoutPath = { ...app, process: { name: 'App' } } as unknown;
+
+        expect(loadApps(withoutPath as AppRememberedPermission).permissions).toEqual([]);
     });
 });

@@ -14,6 +14,7 @@ Source code in `packages/e2e-utils/src/llmTestFixer`. A single GitHub Actions wo
 
 ```
 analyze        → downloads ledger.json (S3), harness writes report.json + report.md
+                 (clean nightly runs: empty report.json, agent not started)
 prepare-matrix → builds a job matrix from report.json fixTasks
 build-web, build-desktop
 fix [matrix]   → one job per fix task (parallel):
@@ -48,6 +49,10 @@ Neither file is committed. Each matrix job is self-contained: run agent → `pub
 ---
 
 Prompt: `ANALYSIS_AGENT.md` (self-contained, Steps 1–8). Steps 1–6 diagnose each failure; Step 7 clusters failures by shared root cause into **fix tasks**; Step 8 returns the structured report. The analysis agent has Currents MCP access — the `currents` stdio server is declared inline in `analyze.ts` and passed to `runAgent()` as `mcpServers`; the fix agent gets none.
+
+### Clean nights skip the agent
+
+Before the agent starts, `nightlyRuns.ts` reads the latest web and desktop nightly runs from the Currents API. When no spec outside `suite/e2e/tests/trading-live/` has a failed or pending test in either run, `analyze.ts` writes an empty `report.json` and exits: no fix tasks are created and `update-ledger` writes an empty ledger. A missing or unfinished run, or a Currents API error, falls through to the full analysis.
 
 **Outputs:** `report.md` (written by the agent, Step 6) and `report.json` (harness-captured structured output, Step 8).
 

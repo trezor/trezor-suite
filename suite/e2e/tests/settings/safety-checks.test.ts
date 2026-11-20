@@ -1,6 +1,7 @@
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
+import { safetyChecksDeviceText } from '../../support/pageObjects/settings/settingsPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
@@ -86,6 +87,9 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Apply the change and confirm on the device', async () => {
                 await settingsPage.safetyChecksConfirmButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay(
+                    safetyChecksDeviceText[targetTestId.endsWith('strict') ? 'strict' : 'prompt'],
+                );
                 await device.pressYes();
             });
 

@@ -1,3 +1,4 @@
+import { messages as sourceMessages } from './messages';
 import {
     deleteNestedTranslationKey,
     findTranslationStructureCollisions,
@@ -236,6 +237,14 @@ describe('deleteNestedTranslationKey', () => {
 });
 
 describe(findTranslationStructureCollisions.name, () => {
+    it('keeps receive search keys compatible with the legacy Crowdin placeholder', () => {
+        expect(
+            findTranslationStructureCollisions(Object.keys(flatten(sourceMessages)), [
+                'moduleReceive.search.placeholder',
+            ]),
+        ).toEqual([]);
+    });
+
     it('returns no collisions for a well-formed key set', () => {
         expect(
             findTranslationStructureCollisions(

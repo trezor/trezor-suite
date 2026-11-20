@@ -1,8 +1,8 @@
+import type { TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type {
     RatesByTimestamps,
     Timestamp,
-    TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';

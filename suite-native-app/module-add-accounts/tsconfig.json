@@ -1,0 +1,53 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../../suite-native/accounts" },
+        {
+            "path": "../../suite-native/add-coin-account"
+        },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/coin-enabling"
+        },
+        {
+            "path": "../../suite-native/discovery"
+        },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        {
+            "path": "../../suite-native/passphrase"
+        },
+        { "path": "../../suite-native/search" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/requirements" }
+    ]
+}

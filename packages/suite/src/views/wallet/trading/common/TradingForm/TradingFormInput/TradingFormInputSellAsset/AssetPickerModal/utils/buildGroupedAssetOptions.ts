@@ -15,11 +15,11 @@ import {
     type AssetGroupOption,
     type AssetPickerOption,
     type AssetRowOption,
-} from 'src/components/suite/asset-picker/types';
+} from '#src/components/suite/asset-picker/types';
 import {
     type AssetGroupKey,
     getAssetGroupKey,
-} from 'src/components/suite/asset-picker/utils/assetGroupKey';
+} from '#src/components/suite/asset-picker/utils/assetGroupKey';
 
 const isAssetRowOption = (option: AccountWithTokensOption): option is AssetRowOption =>
     option.type === 'account' || option.type === 'token';
@@ -69,7 +69,6 @@ export const buildGroupedAssetOptions = ({
             baseCurrencyCode,
             rates: fiatRates,
             shouldIncludeTokens: false,
-            shouldIncludeStaking: false,
         });
     };
 

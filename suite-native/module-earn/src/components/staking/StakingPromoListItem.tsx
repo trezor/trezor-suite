@@ -1,16 +1,21 @@
 import { useSelector } from 'react-redux';
 
+import { useStakingRate } from '@suite-common/earn-staking';
+import { type StakingProductDescriptor } from '@suite-common/earn-staking-common';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
+import {
+    type NetworkSymbol,
+    type NetworksRootState,
+    selectNativeTokenName,
+} from '@suite-common/networks';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { useStakingRate } from '../../hooks/staking/useStakingRate';
+import { ApyValue } from '../earn/ApyValue';
 
 const promoItemStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
@@ -30,18 +35,22 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
 }));
 
 type StakingPromoListItemProps = {
-    symbol: NetworkSymbol;
+    descriptor: StakingProductDescriptor;
     onPress: (symbol: NetworkSymbol) => void;
 };
 
-export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemProps) => {
+export const StakingPromoListItem = ({ descriptor, onPress }: StakingPromoListItemProps) => {
+    const { networkSymbol, rateKind } = descriptor;
     const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        selectNativeTokenName(state, networkSymbol),
+    );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { rate } = useStakingRate({ symbol });
+    const { rate, isPending } = useStakingRate({ productId: descriptor.id });
 
-    const onPromoItemPress = () => onPress(symbol);
+    const onPromoItemPress = () => onPress(networkSymbol);
 
     return (
         <PressableOpacity style={applyStyle(promoItemStyle)} onPress={onPromoItemPress}>
@@ -53,13 +62,15 @@ export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemPr
             >
                 <Box flexDirection="row" alignItems="center" flex={1}>
                     <Box marginRight="sp16">
-                        <TokenIcon networkSymbol={symbol} tokenSymbol={symbol} showNetworkIcon />
+                        <TokenIcon
+                            networkSymbol={networkSymbol}
+                            tokenSymbol={networkSymbol}
+                            showNetworkIcon
+                        />
                     </Box>
 
                     <Box style={applyStyle(accountDescriptionStyle)}>
-                        <Text>
-                            <NetworkDisplaySymbolNameFormatter value={symbol} />
-                        </Text>
+                        <Text>{nativeTokenName}</Text>
                     </Box>
                 </Box>
 
@@ -67,19 +78,19 @@ export const StakingPromoListItem = ({ symbol, onPress }: StakingPromoListItemPr
                     <BoxSkeleton width={70} height={20} />
                 ) : (
                     <Box style={applyStyle(valuesContainerStyle)}>
-                        {rate != null && (
+                        {!isPending && (
                             <Text variant="body-md" color="contentPrimary">
-                                {isApyAvailable(rate) ? (
+                                {rate !== null && isApyAvailable(rate) ? (
                                     <Translation
                                         id={
-                                            symbol === 'trx'
+                                            rateKind === 'apr'
                                                 ? 'earn.aprPercentage'
                                                 : 'earn.apyPercentage'
                                         }
                                         values={{ apy: PercentageFormatter.format(rate) }}
                                     />
                                 ) : (
-                                    <Translation id="earn.notAvailableShort" />
+                                    <ApyValue apy={null} withLabel rateType={rateKind} />
                                 )}
                             </Text>
                         )}

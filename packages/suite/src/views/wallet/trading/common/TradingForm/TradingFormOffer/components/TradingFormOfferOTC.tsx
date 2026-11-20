@@ -12,18 +12,20 @@ import {
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { localizeNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
 import {
     isTradingBuyContext,
     isTradingSellContext,
-} from 'src/utils/wallet/trading/tradingTypingUtils';
+} from '#src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
@@ -75,8 +77,17 @@ export const TradingFormOfferOTC = () => {
         ? getOtcProvidersByCountry(otcData, countrySelect || 'unknown')
         : [];
 
+    const { isBtcSatsAmountUnit } = useBitcoinAmountUnit(network?.symbol);
+    const cryptoAmountInUnits =
+        isBtcSatsAmountUnit && cryptoAmount
+            ? subunitsToUnits({
+                  value: asAmountSubunit(new BigNumber(cryptoAmount)),
+                  symbol: asNetworkSymbol('btc'),
+              }).toFixed()
+            : cryptoAmount;
+
     const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
-        amount: cryptoAmount || '0',
+        amount: cryptoAmountInUnits || '0',
         symbol: network?.symbol || asNetworkSymbol('btc'),
         tokenAddress: contractAddress,
         rateType: 'current',

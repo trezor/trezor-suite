@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type StakeRootState,
-    isCardanoStakedWithFiveBinaries,
-    isSupportedAdaStakingNetworkSymbol,
-    selectFirstCardanoAccountStakedWithFiveBinaries,
-} from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+    type StakingDeviceRootState,
+    type StakingPositionEntry,
+    selectDeviceActiveStakingPositionEntriesBySymbol,
+    selectHasStakingAccountWarning,
+} from '@suite-common/earn-staking';
+import { hasStakingPositionWarning } from '@suite-common/earn-staking-common';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { CompoundRoundedIcon } from '@suite-native/atoms';
 import { type IconName, type IconSize } from '@suite-native/icons';
 import { type Color } from '@trezor/theme';
@@ -31,23 +32,23 @@ const WARNING_ICON: CompoundIcon = {
     size: 'small',
 };
 
+const hasOutdatedProvider = ({ position }: StakingPositionEntry) =>
+    hasStakingPositionWarning(position, 'outdated-provider');
+
 type StakingBadgeProps = {
     networkSymbol: NetworkSymbol;
-    account?: Account;
+    accountKey?: AccountKey;
 };
 
-export const StakingBadge = ({ networkSymbol, account }: StakingBadgeProps) => {
-    const firstAccountStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
-        selectFirstCardanoAccountStakedWithFiveBinaries(state),
+export const StakingBadge = ({ networkSymbol, accountKey }: StakingBadgeProps) => {
+    // The badge of an account warns about that account; the badge of a network about any of its accounts.
+    const shouldShowWarningIcon = useSelector((state: StakingDeviceRootState) =>
+        accountKey === undefined
+            ? selectDeviceActiveStakingPositionEntriesBySymbol(state, networkSymbol).some(
+                  hasOutdatedProvider,
+              )
+            : selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
     );
-
-    const shouldShowWarningIcon = useMemo(() => {
-        if (!isSupportedAdaStakingNetworkSymbol(networkSymbol)) return false;
-
-        if (account) return isCardanoStakedWithFiveBinaries(account);
-
-        return !!firstAccountStakedWithFiveBinaries;
-    }, [firstAccountStakedWithFiveBinaries, networkSymbol, account]);
 
     const compoundIcons = useMemo<CompoundIcon[]>(
         () => [BASE_ICON, ...(shouldShowWarningIcon ? [WARNING_ICON] : [])],

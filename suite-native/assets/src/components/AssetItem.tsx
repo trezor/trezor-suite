@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type StakeRootState,
-    selectHasAnyDeviceAccountsWithStaking,
-} from '@suite-common/wallet-core';
+    type StakingDeviceRootState,
+    selectDeviceActiveStakingPositionEntriesBySymbol,
+} from '@suite-common/earn-staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsListItemBase,
     type NativeAccountsRootState,
@@ -51,8 +51,10 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const hasAnyTokens = useSelector((state: TokensRootState) =>
         selectHasDeviceAnyTokensForNetwork(state, cryptoCurrencySymbol),
     );
-    const hasAnyAccountsWithStaking = useSelector((state: StakeRootState) =>
-        selectHasAnyDeviceAccountsWithStaking(state, cryptoCurrencySymbol),
+    const hasAnyAccountsWithStaking = useSelector(
+        (state: StakingDeviceRootState) =>
+            selectDeviceActiveStakingPositionEntriesBySymbol(state, cryptoCurrencySymbol).length >
+            0,
     );
     const hasAnyFailedAccount = useSelector((state: NativeAccountsRootState) =>
         selectHasDeviceAnyFailedAccountForNetworkSymbol(state, cryptoCurrencySymbol),

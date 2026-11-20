@@ -7,6 +7,7 @@ import {
     filterKnownTokens,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -15,7 +16,7 @@ import {
     selectDeviceMainnetAccounts,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';

@@ -6,7 +6,7 @@ import {
     type SolanaStakingLimit,
     estimateSolanaStakingLimit,
     getOutputTxAmount,
-    getSolanaDeactivatedRentReserves,
+    getSolanaDeactivatedAccountCount,
     selectBlockchainUrlBySymbol,
 } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -15,7 +15,7 @@ import { Banner } from '@trezor/components';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface SolanaStakingLimitBannerProps {
     account: Account;
@@ -46,7 +46,7 @@ export const SolanaStakingLimitBanner = ({
 
         estimateSolanaStakingLimit({
             descriptor: account.descriptor,
-            deactivatedRentReserves: getSolanaDeactivatedRentReserves(account),
+            deactivatedAccountCount: getSolanaDeactivatedAccountCount(account),
             blockchainUrl,
             userAgent: `Trezor Suite ${getSuiteVersion()}`,
             type,

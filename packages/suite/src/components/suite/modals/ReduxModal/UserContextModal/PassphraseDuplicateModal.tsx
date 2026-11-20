@@ -1,7 +1,8 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
-    cancelDiscoveryThunk,
+    cancelDiscoveryForRestartThunk,
     startAddWalletDiscoveryThunk,
     switchToDuplicatedWalletThunk,
 } from '@suite-common/wallet-core';
@@ -10,9 +11,8 @@ import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type TrezorDevice } from 'src/types/suite';
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
@@ -33,7 +33,7 @@ export const PassphraseDuplicateModal = ({
     };
 
     const onTryDifferentPassphrase = () => {
-        dispatch(cancelDiscoveryThunk(device));
+        dispatch(cancelDiscoveryForRestartThunk(device));
         dispatch(
             startAddWalletDiscoveryThunk({
                 device,
@@ -44,7 +44,7 @@ export const PassphraseDuplicateModal = ({
     };
 
     const onBack = () => {
-        dispatch(cancelDiscoveryThunk(device));
+        dispatch(cancelDiscoveryForRestartThunk(device));
         dispatch(
             startAddWalletDiscoveryThunk({
                 device,

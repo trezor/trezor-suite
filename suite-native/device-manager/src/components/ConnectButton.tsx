@@ -1,11 +1,11 @@
-import { FadeInUp, FadeOutUp, LinearTransition } from 'react-native-reanimated';
+import { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { AnimatedBox, Box, Button } from '@suite-native/atoms';
+import { AnimatedBox, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
@@ -20,11 +20,6 @@ type ConnectButtonProps = {
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp32,
     paddingHorizontal: utils.spacings.sp16,
-}));
-
-const buttonSurfaceStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.surfaceFillRaised,
-    borderRadius: utils.borders.radii.r12,
 }));
 
 export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
@@ -51,24 +46,17 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
     };
 
     return (
-        <AnimatedBox
-            style={applyStyle(buttonWrapperStyle)}
-            layout={LinearTransition}
-            entering={FadeInUp}
-            exiting={FadeOutUp}
-        >
-            <Box style={applyStyle(buttonSurfaceStyle)}>
-                <Button
-                    iconLeft="trezorDevices"
-                    intent="neutral"
-                    priority="secondary"
-                    isFullWidth
-                    isDisabled={hasDiscovery}
-                    onPress={handleConnectDevice}
-                >
-                    <Translation id="deviceManager.connectButton" />
-                </Button>
-            </Box>
+        <AnimatedBox style={applyStyle(buttonWrapperStyle)} entering={FadeInUp} exiting={FadeOutUp}>
+            <Button
+                iconLeft="trezorDevices"
+                intent="neutral"
+                priority="secondary"
+                isFloating
+                isDisabled={hasDiscovery}
+                onPress={handleConnectDevice}
+            >
+                <Translation id="deviceManager.connectButton" />
+            </Button>
         </AnimatedBox>
     );
 };

@@ -1,10 +1,20 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type Account } from '@suite-common/wallet-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { type DeviceUniquePath } from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { discoveryActions } from './discoveryActions';
-import { type DiscoveryRootState, prepareDiscoveryReducer } from './discoveryReducer';
+import { prepareDiscoveryReducer } from './discoveryReducer';
+import {
+    type UpdateDiscoveryThunkState,
+    deleteDiscoveryThunk,
+    updateDiscoveryThunk,
+} from './discoveryStateThunks';
+import { type DiscoveryRootState } from './discoveryTypes';
 
 const discoveryReducer = prepareDiscoveryReducer(undefined);
 
@@ -13,9 +23,17 @@ type InitStoreArgs = {
 };
 
 const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
-    createTestCompositionRoot<void, DiscoveryRootState>({
-        reducer: { wallet: combineReducers({ discovery: discoveryReducer }) },
-        preloadedState,
+    createTestCompositionRoot<WithServices<AnalyticsDep>, UpdateDiscoveryThunkState>({
+        services: () => ({ analytics: mockAnalytics<AnalyticsSharedEvents>() }),
+        reducer: {
+            wallet: combineReducers({
+                discovery: discoveryReducer,
+                accounts: (state: Account[] = []) => state,
+            }),
+        },
+        preloadedState: preloadedState && {
+            wallet: { ...preloadedState.wallet, accounts: [] },
+        },
     }).services.store;
 
 const TEST_DEVICE_PATH = 'device-id:1' as DeviceUniquePath;
@@ -32,11 +50,14 @@ describe('Discovery Reducer', () => {
         const timestamp = Date.now();
         jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
 
-        store.dispatch(discoveryActions.startDiscovery(TEST_DEVICE_PATH));
+        store.dispatch(
+            discoveryActions.startDiscovery(TEST_DEVICE_PATH, { trigger: 'device-connect' }),
+        );
 
         expect(store.getState().wallet.discovery).toEqual({
             [TEST_DEVICE_PATH]: {
                 status: 'starting',
+                trigger: 'device-connect',
                 isAddingHiddenWallet: undefined,
                 isAddingExistingWallet: undefined,
                 startTimestamp: timestamp,
@@ -54,6 +75,7 @@ describe('Discovery Reducer', () => {
 
         store.dispatch(
             discoveryActions.startDiscovery(TEST_DEVICE_PATH, {
+                trigger: 'add-wallet',
                 isAddingHiddenWallet: true,
                 isAddingExistingWallet: true,
             }),
@@ -62,6 +84,7 @@ describe('Discovery Reducer', () => {
         expect(store.getState().wallet.discovery).toEqual({
             [TEST_DEVICE_PATH]: {
                 status: 'starting',
+                trigger: 'add-wallet',
                 isAddingHiddenWallet: true,
                 isAddingExistingWallet: true,
                 startTimestamp: timestamp,
@@ -89,12 +112,10 @@ describe('Discovery Reducer', () => {
 
         // Update to enter-passphrase status
         store.dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'enter-passphrase',
-                },
-                TEST_DEVICE_PATH,
-            ),
+            updateDiscoveryThunk({
+                status: { status: 'enter-passphrase' },
+                path: TEST_DEVICE_PATH,
+            }),
         );
 
         expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual({
@@ -122,15 +143,15 @@ describe('Discovery Reducer', () => {
 
         // Update to progress status
         store.dispatch(
-            discoveryActions.updateDiscovery(
-                {
+            updateDiscoveryThunk({
+                status: {
                     status: 'progress',
                     total: 10,
                     progress: 5,
                     hasLoadedAnyNonEmptyAccount: true,
                 },
-                TEST_DEVICE_PATH,
-            ),
+                path: TEST_DEVICE_PATH,
+            }),
         );
 
         expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual({
@@ -141,6 +162,36 @@ describe('Discovery Reducer', () => {
             hasLoadedAnyNonEmptyAccount: true,
             passphraseSubmitted: undefined,
         });
+    });
+
+    it('keeps the trigger of the run across status updates', () => {
+        const store = initStore({
+            preloadedState: {
+                wallet: {
+                    discovery: {
+                        [TEST_DEVICE_PATH]: {
+                            status: 'starting',
+                            startTimestamp: 1000,
+                            trigger: 'retry',
+                        },
+                    },
+                },
+            },
+        });
+
+        store.dispatch(
+            updateDiscoveryThunk({
+                status: { status: 'progress', total: 10, progress: 5 },
+                path: TEST_DEVICE_PATH,
+            }),
+        );
+        store.dispatch(
+            updateDiscoveryThunk({ status: { status: 'complete' }, path: TEST_DEVICE_PATH }),
+        );
+
+        expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual(
+            expect.objectContaining({ status: 'complete', trigger: 'retry' }),
+        );
     });
 
     it('should handle updateDiscovery action with passphraseSubmitted flag', () => {
@@ -160,13 +211,10 @@ describe('Discovery Reducer', () => {
 
         // Update with passphraseSubmitted flag
         store.dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'enter-passphrase',
-                    passphraseSubmitted: true,
-                },
-                TEST_DEVICE_PATH,
-            ),
+            updateDiscoveryThunk({
+                status: { status: 'enter-passphrase', passphraseSubmitted: true },
+                path: TEST_DEVICE_PATH,
+            }),
         );
 
         expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual({
@@ -195,15 +243,10 @@ describe('Discovery Reducer', () => {
 
         // Update with status change and passphraseSubmitted flag
         store.dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'progress',
-                    total: 10,
-                    progress: 0,
-                    passphraseSubmitted: true,
-                },
-                TEST_DEVICE_PATH,
-            ),
+            updateDiscoveryThunk({
+                status: { status: 'progress', total: 10, progress: 0, passphraseSubmitted: true },
+                path: TEST_DEVICE_PATH,
+            }),
         );
 
         // When status changes, passphraseSubmitted should be set to the new value
@@ -222,12 +265,10 @@ describe('Discovery Reducer', () => {
 
         // Try to update non-existent discovery
         store.dispatch(
-            discoveryActions.updateDiscovery(
-                {
-                    status: 'enter-passphrase',
-                },
-                TEST_DEVICE_PATH,
-            ),
+            updateDiscoveryThunk({
+                status: { status: 'enter-passphrase' },
+                path: TEST_DEVICE_PATH,
+            }),
         );
 
         // State should remain unchanged
@@ -254,7 +295,7 @@ describe('Discovery Reducer', () => {
         });
 
         // Delete one discovery
-        store.dispatch(discoveryActions.deleteDiscovery(TEST_DEVICE_PATH));
+        store.dispatch(deleteDiscoveryThunk(TEST_DEVICE_PATH));
 
         // Only the specified discovery should be deleted
         expect(store.getState().wallet.discovery).toEqual({
@@ -281,7 +322,7 @@ describe('Discovery Reducer', () => {
         });
 
         // Try to delete non-existent discovery
-        store.dispatch(discoveryActions.deleteDiscovery('non-existent-path' as DeviceUniquePath));
+        store.dispatch(deleteDiscoveryThunk('non-existent-path' as DeviceUniquePath));
 
         // State should remain unchanged
         expect(store.getState().wallet.discovery).toEqual({
@@ -311,14 +352,14 @@ describe('Discovery Reducer', () => {
 
         // Update to failed status with error
         store.dispatch(
-            discoveryActions.updateDiscovery(
-                {
+            updateDiscoveryThunk({
+                status: {
                     status: 'failed',
                     error: 'Connection error',
                     errorCode: 'Method_InvalidParameter',
                 },
-                TEST_DEVICE_PATH,
-            ),
+                path: TEST_DEVICE_PATH,
+            }),
         );
 
         expect(store.getState().wallet.discovery[TEST_DEVICE_PATH]).toEqual({

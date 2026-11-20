@@ -1,0 +1,132 @@
+import { useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+
+import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { Box, Button, HStack } from '@suite-native/atoms';
+import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
+import { Translation } from '@suite-native/intl';
+import {
+    type AccountDetailStackParamList,
+    type AccountDetailStackRoutes,
+    ReceiveStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    SendStackRoutes,
+    type StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
+
+import { selectHasAccountOrTokenSpendableBalance } from '../selectors';
+
+type AccountDetailActionButtonsProps = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+};
+
+type NavigationProp = StackToStackCompositeNavigationProps<
+    AccountDetailStackParamList,
+    AccountDetailStackRoutes.AccountDetail,
+    RootStackParamList
+>;
+
+export const AccountDetailActionButtons = ({
+    accountKey,
+    tokenContract,
+}: AccountDetailActionButtonsProps) => {
+    const { analytics } = useServices(injectNativeAnalytics);
+    const navigation = useNavigation<NavigationProp>();
+
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
+    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
+        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
+    );
+    const hasSelectedAssetSpendableBalance = useSelector(
+        (state: AccountsRootState & TokensRootState) =>
+            selectHasAccountOrTokenSpendableBalance(state, accountKey, tokenContract),
+    );
+
+    if (networkSymbol === null) return null;
+
+    const handleReceive = () => {
+        analytics.report({
+            type: events.receiveFlowEnteredEvent.name,
+            payload: {
+                location: 'accountDetail',
+                assetSymbol: networkSymbol,
+                tokenSymbol: token?.symbol,
+                tokenContract,
+            },
+        });
+        navigation.navigate(RootStackRoutes.ReceiveStack, {
+            screen: ReceiveStackRoutes.ReceiveAddress,
+            params: {
+                accountKey,
+                tokenContract,
+                closeActionType: 'close',
+            },
+        });
+    };
+
+    const handleSend = () => {
+        analytics.report({
+            type: events.sendFlowEnteredEvent.name,
+            payload: {
+                location: 'accountDetail',
+                assetSymbol: networkSymbol,
+                tokenSymbol: token?.symbol,
+                tokenContract,
+            },
+        });
+        navigation.navigate(RootStackRoutes.SendStack, {
+            screen: SendStackRoutes.SendOutputs,
+            params: {
+                accountKey,
+                tokenContract,
+            },
+        });
+    };
+
+    const isReceiveButtonDisplayed = !hasFirmwareAuthenticityCheckHardFailed;
+    const isSendButtonDisplayed = !isPortfolioTrackerDevice && hasSelectedAssetSpendableBalance;
+
+    if (!isReceiveButtonDisplayed && !isSendButtonDisplayed) return null;
+
+    return (
+        <HStack flex={1} spacing="sp12">
+            {isReceiveButtonDisplayed && (
+                <Box flex={1}>
+                    <Button
+                        iconLeft="arrowLineDown"
+                        onPress={handleReceive}
+                        testID="@account-detail/receive-button"
+                    >
+                        <Translation id="transactions.receive" />
+                    </Button>
+                </Box>
+            )}
+            {isSendButtonDisplayed && (
+                <Box flex={1}>
+                    <Button
+                        iconLeft="arrowLineUp"
+                        onPress={handleSend}
+                        testID="@account-detail/send-button"
+                    >
+                        <Translation id="transactions.send" />
+                    </Button>
+                </Box>
+            )}
+        </HStack>
+    );
+};

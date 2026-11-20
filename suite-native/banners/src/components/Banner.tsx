@@ -1,5 +1,5 @@
-import { type ReactNode } from 'react';
-import { type ImageSourcePropType, TouchableOpacity } from 'react-native';
+import { type ComponentProps, type ReactNode } from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { Card, HStack, Image, Text, TextButton, VStack } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
@@ -34,7 +34,7 @@ const cardBackgroundStyle = prepareNativeStyle(utils => ({
 export type BannerProps = {
     title: ReactNode;
     ctaText: ReactNode;
-    imageSource: ImageSourcePropType;
+    imageSource: ComponentProps<typeof Image>['source'];
     onPress: () => void;
     ctaIcon?: IconName;
     onClose?: () => void;

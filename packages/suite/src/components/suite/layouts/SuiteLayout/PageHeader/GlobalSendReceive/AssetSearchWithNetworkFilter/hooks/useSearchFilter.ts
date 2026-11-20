@@ -8,7 +8,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import {
     globalSendReceiveFiltersActions,
     globalSendReceiveFiltersSelectors,
-} from 'src/slices/wallet/globalSendReceiveFilters';
+} from '#src/slices/wallet/globalSendReceiveFilters';
 
 export function useSearchFilter() {
     const defaultSearch = useSelector(globalSendReceiveFiltersSelectors.selectSearch);

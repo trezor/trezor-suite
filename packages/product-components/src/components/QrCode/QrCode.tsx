@@ -1,34 +1,51 @@
-import { type ReactNode } from 'react';
-
-import { QRCodeSVG } from 'qrcode.react';
-import styled, { useTheme } from 'styled-components';
+import {
+    type ComponentType,
+    type LazyExoticComponent,
+    type ReactNode,
+    Suspense,
+    lazy,
+    useEffect,
+    useState,
+} from 'react';
 
 import { Flex } from '@trezor/components';
 import { type Color } from '@trezor/theme';
 
-// The center icon must stay within the error-correction budget so it never damages the encoded
-// data. Capped at 25% of the QR width (~6% of its area), well below level H's ~30% recovery budget.
-const QR_CENTER_ICON_MAX_RATIO = '25%';
+import { type QrCodeInnerProps } from './QrCodeInner';
 
-// `translate(-50%, -50%)` centers the badge on the QR regardless of its own size, while the inner
-// flex centering keeps the icon centered so the max-ratio clip stays symmetric (a plain max-width +
-// overflow would clip the bottom-right and push the icon off-center).
-const CenterIconWrapper = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: ${QR_CENTER_ICON_MAX_RATIO};
-    max-height: ${QR_CENTER_ICON_MAX_RATIO};
-    padding: 4px;
-    overflow: hidden;
-    line-height: 0;
-    border-radius: calc(infinity * 1px);
-    background: ${({ theme }) => theme.surfaceFillRaised};
-    transform: translate(-50%, -50%);
-`;
+/**
+ * qrcode.react loads with the first rendered QR code, not with the app.
+ * The box keeps its size meanwhile, and a failed download leaves it empty instead of crashing the app.
+ * Each QR code keeps the component it mounted with, so its re-renders never download again, and the
+ * empty box re-arms the loader once it has committed, so the next mounted QR code tries once more.
+ */
+let QrCodeInner: LazyExoticComponent<ComponentType<QrCodeInnerProps>>;
+
+const loadQrCodeInner = (): Promise<{ default: ComponentType<QrCodeInnerProps> }> =>
+    import('./QrCodeInner').then(
+        module => ({ default: module.QrCodeInner }),
+        () => {
+            const failedQrCodeInner = QrCodeInner;
+
+            const QrCodeLoadFailed = () => {
+                /**
+                 * Re-armed after the commit, not in the loader: React renders a tree that has not
+                 * committed yet again once the load settles, and a fresh lazy there downloads again.
+                 */
+                useEffect(() => {
+                    if (QrCodeInner === failedQrCodeInner) {
+                        QrCodeInner = lazy(loadQrCodeInner);
+                    }
+                }, []);
+
+                return null;
+            };
+
+            return { default: QrCodeLoadFailed };
+        },
+    );
+
+QrCodeInner = lazy(loadQrCodeInner);
 
 export type QrCodeProps = {
     value: string;
@@ -43,18 +60,13 @@ export const QrCode = ({
     centerIcon,
     'data-testid': dataTestId,
 }: QrCodeProps) => {
-    const theme = useTheme();
+    const [MountedQrCodeInner] = useState(() => QrCodeInner);
 
     return (
         <Flex position={{ type: 'relative' }} width="100%" height="100%" data-testid={dataTestId}>
-            <QRCodeSVG
-                fgColor={theme[color]}
-                bgColor="transparent"
-                level={centerIcon ? 'H' : 'Q'}
-                value={value}
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            />
-            {centerIcon && <CenterIconWrapper>{centerIcon}</CenterIconWrapper>}
+            <Suspense fallback={null}>
+                <MountedQrCodeInner value={value} color={color} centerIcon={centerIcon} />
+            </Suspense>
         </Flex>
     );
 };

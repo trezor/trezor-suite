@@ -1,3 +1,6 @@
+import { type LazyLoadingError } from '@trezor/lazy-loading';
+import { type Result } from '@trezor/type-utils';
+
 import { type SuiteSyncTable } from './SuiteSyncTable';
 import { type SuiteSyncSchema } from './data/SuiteSyncSchema';
 import { type SuiteSyncOwner } from './owner/suiteSyncOwner';
@@ -33,7 +36,9 @@ type SuiteStorageCreatorParams = {
  * has its own Storage. Currently only Evolu storage is implemented, but in theory,
  * you can have different one as well.
  */
-export type CreateSuiteStorage = (params: SuiteStorageCreatorParams) => Promise<SuiteSyncStorage>;
+export type CreateSuiteStorage = (
+    params: SuiteStorageCreatorParams,
+) => Promise<Result<SuiteSyncStorage, LazyLoadingError>>;
 
 export type CreateSuiteStorageDep = {
     createSuiteStorage: CreateSuiteStorage;

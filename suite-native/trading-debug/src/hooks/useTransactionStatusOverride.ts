@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import type { TransactionStatus } from '@suite-common/trading';
+import type { AllowanceTransactionStatus } from '@suite-common/wallet-core';
 
 import { useTradingDebugModeFlag } from './useTradingDebugModeFlag';
 
@@ -8,14 +8,14 @@ type TransactionStatusOverrideType =
     'none' | 'isConfirmed' | 'isFailed' | 'isPending' | 'no-override';
 
 export type TransactionStatusWithOverride = {
-    status: TransactionStatus;
+    status: AllowanceTransactionStatus;
     forceStatus: (forcedStatus: TransactionStatusOverrideType) => void;
 };
 
 const noop = () => {};
 
 export const useTransactionStatusOverride = (
-    status: TransactionStatus,
+    status: AllowanceTransactionStatus,
 ): TransactionStatusWithOverride => {
     const isDebugMode = useTradingDebugModeFlag();
     const [forcedStatus, forceStatus] = useState<TransactionStatusOverrideType>('no-override');
@@ -33,7 +33,7 @@ export const useTransactionStatusOverride = (
             isPending: forcedStatus === 'isPending',
             isFailed: forcedStatus === 'isFailed',
             isConfirmed: forcedStatus === 'isConfirmed',
-        } as TransactionStatus,
+        } as AllowanceTransactionStatus,
         forceStatus,
     };
 };

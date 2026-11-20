@@ -90,7 +90,7 @@ Result with only one public key
         serializedPath: string,
         publicKey: string,             // raw 32-byte public key in hex
         xpub: string,                  // Cardano extended public key
-        displayablePublicKey: string,  // canonical user-facing form (= xpub)
+        displayablePublicKey: string,  // what the device shows (= xpub; = publicKey on firmware older than 2.6.1)
         node: HDPubNode,
     }
 }
@@ -112,7 +112,7 @@ Result with a bundle of public keys
 > **Breaking change (version 10):** the `publicKey` field is now the raw 32-byte
 > public key in hex (consistent with other coins). The Cardano extended public
 > key previously returned in `publicKey` is exposed via the new explicit `xpub`
-> field. Use `displayablePublicKey` if you want the canonical user-facing form
+> field. Use `displayablePublicKey` if you want the string the device shows,
 > without per-coin branching.
 
 Error

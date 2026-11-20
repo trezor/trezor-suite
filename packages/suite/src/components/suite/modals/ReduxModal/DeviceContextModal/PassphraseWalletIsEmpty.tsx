@@ -9,10 +9,10 @@ import { PlusIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useSelector } from 'src/hooks/suite';
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 type PassphraseWalletIsEmptyProps = {
     onRetry: () => void;
@@ -92,7 +92,7 @@ const PassphraseWalletIsEmptyContent = ({
                             </Paragraph>
                             <Row gap={4} flexWrap="wrap">
                                 {enabledNetworks.map(network => (
-                                    <TokenIcon key={network} symbol={network} size={16} />
+                                    <TokenIcon key={network} networkSymbol={network} size={16} />
                                 ))}
                             </Row>
                             {onCancel && (

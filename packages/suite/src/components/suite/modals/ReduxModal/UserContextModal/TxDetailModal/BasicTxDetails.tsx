@@ -4,6 +4,7 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     type PendingEvmNonceStatus,
     fromWei,
@@ -13,6 +14,7 @@ import {
     isPending,
 } from '@suite-common/wallet-utils';
 import {
+    BlurUrls,
     Card,
     Divider,
     Grid,
@@ -43,13 +45,11 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
-import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { type WalletAccountTransaction } from 'src/types/wallet';
-import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
+import { FormattedDateWithBullet } from '#src/components/suite/FormattedDateWithBullet';
+import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
+import { TransactionHeader } from '#src/components/wallet/TransactionItem/TransactionHeader';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { getTransactionIcon } from '#src/utils/wallet/transactionIconUtils';
 
 const IconWrapper = styled.div`
     display: flex;
@@ -119,7 +119,7 @@ export const BasicTxDetails = ({
         <Card>
             <Row gap={12}>
                 <IconWrapper>
-                    <TokenIcon symbol={tx.symbol} size={48} showNetworkIcon />
+                    <TokenIcon networkSymbol={tx.symbol} size={48} showNetworkIcon />
                     <NestedIconWrapper>
                         <Icon
                             size={14}
@@ -325,13 +325,19 @@ export const BasicTxDetails = ({
 
                 {tx.stellarSpecific?.memo && (
                     <Item label={<Translation id="MEMO" />} icon={TagIcon}>
-                        <TokenUrlBlur text={tx.stellarSpecific.memo} />
+                        <BlurUrls
+                            tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
+                            text={tx.stellarSpecific.memo}
+                        />
                     </Item>
                 )}
 
                 {tx.solanaSpecific?.memo && (
                     <Item label={<Translation id="MEMO" />} icon={TagIcon}>
-                        <TokenUrlBlur text={tx.solanaSpecific.memo} />
+                        <BlurUrls
+                            tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
+                            text={tx.solanaSpecific.memo}
+                        />
                     </Item>
                 )}
 

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useDevice } from '@suite/device';
-import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { type DeviceRootState } from '@suite-common/device';
 import {
@@ -11,33 +10,36 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
-    isSendRejectedError,
-    isSilentSendRejection,
+    isTradingError,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeSelectedQuote,
+    selectTradingExchangeSelectedQuoteTimestamp,
     selectTradingIsSlip24Allowed,
+    tradingExchangeActions,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
-import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type TradingExchangeConfirmTradeProps } from 'src/types/trading/tradingForm';
+import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingExchangeTradeRequest } from '#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
+import { useTradingFormAccount } from '#src/hooks/wallet/trading/form/useTradingFormAccount';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { type TradingExchangeConfirmTradeProps } from '#src/types/trading/tradingForm';
+
+import { useTradingErrorToast } from './useTradingErrorToast';
 
 export const useTradingExchangeTradeActions = () => {
     const { dispatch } = useServices(injectDispatch);
-    const { translationString } = useTranslation();
+    const { showTradingErrorToast } = useTradingErrorToast();
     const { device } = useDevice();
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const selectedQuoteTimestamp = useSelector(selectTradingExchangeSelectedQuoteTimestamp);
     const trade = useSelector(selectTradingExchangeActiveTrade);
 
     const { account: formAccount } = useTradingFormAccount('exchange');
@@ -148,18 +150,11 @@ export const useTradingExchangeTradeActions = () => {
 
             return true;
         } catch (e) {
-            if (!isSendRejectedError<TranslationKey>(e)) {
+            if (!isTradingError(e)) {
                 return false;
             }
 
-            if (!isSilentSendRejection(e.type)) {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: e.type,
-                        error: translationString(e.error.id, e.error.values),
-                    }),
-                );
-            }
+            showTradingErrorToast(e);
 
             return false;
         }
@@ -191,9 +186,62 @@ export const useTradingExchangeTradeActions = () => {
         );
     };
 
+    const refreshSelectedQuote = async () => {
+        const receiveAddress = selectedQuote?.receiveAddress;
+
+        if (!account || !selectedQuote || !receiveAddress) {
+            return false;
+        }
+
+        let isConfirmed = false;
+        try {
+            const freshQuote = await dispatch(
+                exchangeThunks.fetchSelectedProviderQuoteThunk(),
+            ).unwrap();
+            const commonFunctions = await getTradeRequestParams(freshQuote);
+
+            if (!commonFunctions) {
+                return false;
+            }
+
+            const { returnUrl, processResponseData, nextStep } = commonFunctions;
+            const confirmedTrade = await dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade: {
+                        ...freshQuote,
+                        swapSlippage: selectedQuote.swapSlippage ?? freshQuote.swapSlippage,
+                    },
+                    // The confirmation was already reported when the offer was chosen.
+                    triggerAnalyticsTradeConfirmation: () => {},
+                    processResponseData,
+                    nextStep,
+                }),
+            ).unwrap();
+
+            isConfirmed = !!confirmedTrade;
+        } catch (e) {
+            if (isTradingError(e)) {
+                showTradingErrorToast(e);
+            }
+        }
+
+        if (!isConfirmed) {
+            dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
+            if (selectedQuoteTimestamp !== undefined) {
+                dispatch(tradingExchangeActions.setSelectedQuoteTimestamp(selectedQuoteTimestamp));
+            }
+        }
+
+        return isConfirmed;
+    };
+
     return {
         account,
         confirmTrade,
+        refreshSelectedQuote,
         sendTransaction,
         signDataAndConfirm,
     };

@@ -13,6 +13,7 @@ const { enforceNamedParameterTypesRule } = require('./named-parameter-types/rule
 const { noOverrideDsComponentRule } = require('./no-override-ds-component/rule');
 const { noPackageDeepImportsRule } = require('./no-package-deep-imports/rule');
 const { noSuiteImportsInSuiteCommonRule } = require('./no-suite-imports-in-suite-common/rule');
+const { noUnlimitedDisableRule } = require('./no-unlimited-disable/rule');
 const { noUnusedIntersectionMembersRule } = require('./no-unused-intersection-members/rule');
 const { enforceThunkNamesRule } = require('./thunk-names/rule');
 
@@ -26,5 +27,6 @@ module.exports = {
     'no-override-ds-component': noOverrideDsComponentRule,
     'no-package-deep-imports': noPackageDeepImportsRule,
     'no-suite-imports-in-suite-common': noSuiteImportsInSuiteCommonRule,
+    'no-unlimited-disable': noUnlimitedDisableRule,
     'no-unused-intersection-members': noUnusedIntersectionMembersRule,
 };

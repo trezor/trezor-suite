@@ -13,13 +13,30 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/analytics": "workspace:*",
+        "@suite-common/device": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
-        "zod": "4.6.7"
+        "@trezor/react-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
+        "react": "19.3.0",
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@trezor/analytics-uploader": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }
 }

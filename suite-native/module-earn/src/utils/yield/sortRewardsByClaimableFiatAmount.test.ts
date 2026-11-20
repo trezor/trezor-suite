@@ -1,5 +1,6 @@
+import { type StablecoinYieldAccountRewards } from '@suite-common/wallet-core';
+
 import { sortRewardsByClaimableFiatAmount } from './sortRewardsByClaimableFiatAmount';
-import type { StablecoinYieldAccountRewards } from './stablecoinYieldClaimSummaryUtils';
 
 type Reward = StablecoinYieldAccountRewards['rewards'][number];
 

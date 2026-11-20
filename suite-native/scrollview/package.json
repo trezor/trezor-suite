@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "react": "19.2.3",
-        "react-native": "0.86.3"
+        "react": "19.3.0",
+        "react-native": "0.88.1"
     }
 }

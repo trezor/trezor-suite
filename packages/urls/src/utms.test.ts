@@ -1,4 +1,35 @@
-import { withPlatformUtm, withUtmParams } from './utms';
+import { withHolidayDealsUtm, withPlatformUtm, withUtmParams } from './utms';
+
+describe('holiday campaign tracking', () => {
+    it.each(['desktop', 'web', 'mobile'] as const)('builds the %s campaign URL', platform => {
+        const originalEnvironment = process.env;
+        process.env = { ...originalEnvironment };
+        delete process.env.SUITE_TYPE;
+        delete process.env.EXPO_PUBLIC_ENVIRONMENT;
+        if (platform === 'mobile') {
+            process.env.EXPO_PUBLIC_ENVIRONMENT = 'test';
+        } else {
+            process.env.SUITE_TYPE = platform;
+        }
+
+        try {
+            const url = new URL(
+                withHolidayDealsUtm('https://trezor.io/holiday-deals', 'bfh26-keep-metal'),
+            );
+
+            expect(url.origin).toBe('https://trezor.io');
+            expect(url.pathname).toBe('/holiday-deals');
+            expect(Object.fromEntries(url.searchParams)).toEqual({
+                utm_source: 'trezor-suite',
+                utm_medium: platform,
+                utm_campaign: 'holiday-2026',
+                utm_content: 'bfh26-keep-metal',
+            });
+        } finally {
+            process.env = originalEnvironment;
+        }
+    });
+});
 
 describe(withPlatformUtm.name, () => {
     test('adds utm_medium=mobile for trezor.io urls', () => {

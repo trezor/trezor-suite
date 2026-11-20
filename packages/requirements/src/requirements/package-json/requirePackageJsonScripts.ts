@@ -44,12 +44,17 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
     },
     'lint:js': {
         command: "yarn g:eslint '**/*.{ts,tsx,js}'",
-        ignoredPackages: ['@trezor/eslint', '@suite-common/earn-stablecoin-api'],
+        ignoredPackages: [
+            '@trezor/eslint',
+            '@suite-common/earn-stablecoin-api',
+            // also lints its .mdx documentation pages
+            '@trezor/connect-explorer',
+        ],
     },
     'type-check': {
         command: /^yarn g:tsc --build.*$/,
         ignoredPackages: [
-            '@suite/desktop-app',
+            '@suite-app/desktop-app',
             'connect-example-electron-main',
             'connect-mobile-example',
             'connect-example-node',

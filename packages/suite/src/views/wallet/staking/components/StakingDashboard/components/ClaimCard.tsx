@@ -14,9 +14,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type ClaimCardProps = {
     account: Account;
@@ -59,7 +60,7 @@ export const ClaimCard = ({ account }: ClaimCardProps) => {
                 <FormattedCryptoAmount
                     data-testid="@staking/can-claim"
                     value={claimableAmount}
-                    symbol={account.symbol}
+                    networkSymbol={account.symbol}
                 />
             </Paragraph>
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">

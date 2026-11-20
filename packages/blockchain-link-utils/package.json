@@ -34,9 +34,7 @@
     "dependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/network-ripple": "workspace:*",
         "@trezor/network-solana": "workspace:*",
-        "@trezor/network-stellar": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
@@ -45,5 +43,9 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    }
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "author": "Trezor <info@trezor.io>"
 }

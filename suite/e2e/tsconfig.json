@@ -17,6 +17,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/e2e-evolu-client"
@@ -60,7 +61,6 @@
         },
         { "path": "../analytics" },
         { "path": "../debug" },
-        { "path": "../desktop-app" },
         { "path": "../flags" },
         { "path": "../intl" },
         { "path": "../labeling" },
@@ -70,18 +70,43 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/connect-web" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/e2e-utils" },
         { "path": "../../packages/eslint" },
         {
+            "path": "../../networks/bitcoin/network-bitcoin-suite-common"
+        },
+        {
+            "path": "../../networks/cardano/network-cardano-suite-common"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
+        },
+        {
             "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
+        {
+            "path": "../../networks/ripple/network-ripple-suite-common"
         },
         {
             "path": "../../networks/solana/network-solana"
         },
+        {
+            "path": "../../networks/solana/network-solana-suite-common"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar-suite-common"
+        },
+        {
+            "path": "../../networks/tron/network-tron-suite-common"
+        },
         { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },
+        { "path": "../../packages/protocol" },
         { "path": "../../packages/suite" },
         { "path": "../../packages/theme" },
         {

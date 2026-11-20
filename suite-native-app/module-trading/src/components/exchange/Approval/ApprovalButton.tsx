@@ -1,0 +1,86 @@
+import { FadeInDown } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+
+import { type TokenAddress } from '@suite-common/tokens';
+import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { AnimatedView, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
+import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { type TradingStackNavigationProp } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const footerStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.sp16,
+    paddingBottom: utils.spacings.sp16,
+}));
+
+export type ApprovalButtonProps = {
+    isReady: boolean;
+    isDisabled?: boolean;
+    flowType: Exclude<ExchangeFlowType, 'swap'>;
+};
+
+export const APPROVAL_CONTINUE_BUTTON_TEST_ID = '@trading/exchange-approval/continue-button';
+export const REVOKE_CONTINUE_BUTTON_TEST_ID = '@trading/exchange-revoke/continue-button';
+
+const getApprovalButtonTestID = (flowType: ApprovalButtonProps['flowType']) => {
+    if (flowType === 'approve') {
+        return APPROVAL_CONTINUE_BUTTON_TEST_ID;
+    }
+
+    return REVOKE_CONTINUE_BUTTON_TEST_ID;
+};
+
+export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
+    const navigation =
+        useNavigation<TradingStackNavigationProp<TradingStackRoutes.TradingExchangeApproval>>();
+
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
+    const fromAccount = useSelector(selectExchangeSelectedSendAccount);
+    const { applyStyle } = useNativeStyles();
+    const reportToAnalytics = useExchangeAnalyticsStepReport(
+        flowType === 'approve' ? 'approval-preview' : 'revoke-preview',
+    );
+
+    if (!quote) {
+        return null;
+    }
+
+    const handleContinue = () => {
+        const tokenContract = quote.send
+            ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
+            : undefined;
+        if (!fromAccount || !tokenContract) {
+            console.warn('account or tokenContract is not defined');
+
+            return;
+        }
+        reportToAnalytics('continue');
+        navigation.navigate(TradingStackRoutes.TradingExchangeTransactionReview, {
+            accountKey: fromAccount.key,
+            tokenContract,
+            orderId: quote.orderId ?? '',
+            flowType,
+        });
+    };
+
+    return (
+        <AnimatedView entering={FadeInDown}>
+            <ScreenFooterGradient />
+            <Box style={applyStyle(footerStyle)}>
+                <Button
+                    onPress={handleContinue}
+                    isDisabled={isDisabled}
+                    isLoading={!isReady && !isDisabled}
+                    testID={getApprovalButtonTestID(flowType)}
+                >
+                    <Translation id="generic.buttons.continue" />
+                </Button>
+            </Box>
+        </AnimatedView>
+    );
+};

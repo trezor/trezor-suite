@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { selectAccountTokens, selectBaseCurrency } from '@suite-common/wallet-core';
@@ -10,9 +11,9 @@ import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type WalletConnectAccountOptionProps = {
     account: Account;
@@ -32,7 +33,7 @@ const WalletConnectAccountOptionComponent = ({ account }: WalletConnectAccountOp
     return (
         <Row gap={16} justifyContent="space-between" width="100%">
             <Row gap={12} flex="1" minWidth={0} overflow="hidden">
-                <TokenIcon symbol={account.symbol} size={24} />
+                <TokenIcon networkSymbol={account.symbol} size={24} />
                 <Column alignItems="flex-start" minWidth={0} overflow="hidden" width="100%">
                     <Row gap={8} minWidth={0} width="100%">
                         <AccountLabel

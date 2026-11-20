@@ -1,10 +1,6 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type RatesByKey,
-    asTimestamp,
-    toTokenAddress,
-} from '@suite-common/wallet-types';
+import { type Account, type RatesByKey, asTimestamp } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 

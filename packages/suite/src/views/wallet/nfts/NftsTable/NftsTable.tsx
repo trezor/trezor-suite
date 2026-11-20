@@ -5,7 +5,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Card, Column, Table } from '@trezor/components';
 
-import { type GetTokensOutputType } from 'src/utils/wallet/tokenUtils';
+import { type GetTokensOutputType } from '#src/utils/wallet/tokenUtils';
 
 import NftsRow from './NftsRow';
 import { DropdownRow } from '../../tokens/DropdownRow';

@@ -1,8 +1,4 @@
-import type {
-    AccountAddresses,
-    AccountInfo as AccountInfoBase,
-    Utxo as AccountUtxo,
-} from '@trezor/blockchain-link';
+import type { AccountInfo as AccountInfoBase, Utxo as AccountUtxo } from '@trezor/blockchain-link';
 
 export type {
     AccountAddresses,
@@ -19,15 +15,4 @@ export interface AccountInfo extends AccountInfoBase {
     utxo?: AccountUtxo[]; // bitcoin utxo
     descriptorChecksum?: string;
     outputDescriptorBip380?: string; // Optional bitcoin only
-}
-
-export interface DiscoveryAccount {
-    type: DiscoveryAccountType;
-    label: string;
-    descriptor: string;
-    address_n: number[];
-    empty?: boolean;
-    balance?: string;
-    addresses?: AccountAddresses;
-    descriptorChecksum?: string;
 }

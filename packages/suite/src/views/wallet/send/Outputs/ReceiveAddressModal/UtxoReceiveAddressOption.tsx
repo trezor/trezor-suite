@@ -9,9 +9,9 @@ import { CardList, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { CoinBalance } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface UtxoReceiveAddressOptionProps {
     account: Account;
@@ -44,7 +44,7 @@ export const UtxoReceiveAddressOption = ({
         <CardList.Item onClick={() => onAddressSelect(address.address)}>
             <Row width="100%" gap={12} justifyContent="space-between">
                 <Row gap={12}>
-                    <TokenIcon size={24} symbol={account.symbol} />
+                    <TokenIcon size={24} networkSymbol={account.symbol} />
 
                     <Column alignItems="flex-start">
                         <Address isTruncated value={address.address} />

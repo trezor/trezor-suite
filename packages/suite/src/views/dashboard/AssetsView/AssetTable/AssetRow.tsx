@@ -1,13 +1,32 @@
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureDisabled,
+} from '@suite-common/message-system';
+import { type NetworksRootState } from '@suite-common/networks';
+import {
+    type TokenDefinitionsRootState,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
+import {
+    type TradingRootState,
+    selectIsTradingBuyAvailableForNetworkSymbol,
+} from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    selectAnyAccountIsStakingActive,
+    useDisplayBaseCurrency,
+} from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
@@ -16,15 +35,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import {
-    AmountUnitSwitchWrapper,
-    BaseCurrencyValue,
-    CoinBalance,
-    PriceTicker,
-    TrendTicker,
-} from 'src/components/suite';
-import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
-import { useSelector } from 'src/hooks/suite';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
+import { TokenIconSetWrapper } from '#src/components/wallet/TokenIconSetWrapper';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';
@@ -76,13 +92,21 @@ export const AssetRow = memo(
                 }),
             );
         };
-        const coinDefinitions = useSelector(state => selectCoinDefinitions(state, network.symbol));
-        const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+        const coinDefinitions = useSelector((state: TokenDefinitionsRootState) =>
+            selectCoinDefinitions(state, network.symbol),
+        );
+        const isRegionRestricted = useSelector(selectIsRegionRestricted);
+        const isBuyDisabled = useSelector((state: MessageSystemRootState) =>
+            selectIsFeatureDisabled(state, Feature.trading.buy),
+        );
+        const isBuyAvailable = useSelector((state: TradingRootState & NetworksRootState) =>
+            selectIsTradingBuyAvailableForNetworkSymbol(state, symbol),
+        );
         const stakingAccountsForAsset = stakingAccounts.filter(
             account => account.symbol === network.symbol,
         );
 
-        const isStakingActive = useSelector(state =>
+        const isStakingActive = useSelector((state: TransactionsRootState & AccountsRootState) =>
             selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
         );
 
@@ -200,16 +224,19 @@ export const AssetRow = memo(
                                 </AssetActionButton>
                             )}
 
-                            {!isTestnet(symbol) && !isFinpromRestricted && (
-                                <AssetActionButton
-                                    symbol={symbol}
-                                    routeName="wallet-trading-buy"
-                                    data-testid={`@dashboard/asset/${symbol}/buy-button`}
-                                    onClick={onBuyButtonClick}
-                                >
-                                    <Translation id="TR_BUY_BUY" />
-                                </AssetActionButton>
-                            )}
+                            {!isTestnet(symbol) &&
+                                !isRegionRestricted &&
+                                !isBuyDisabled &&
+                                isBuyAvailable && (
+                                    <AssetActionButton
+                                        symbol={symbol}
+                                        routeName="wallet-trading-buy"
+                                        data-testid={`@dashboard/asset/${symbol}/buy-button`}
+                                        onClick={onBuyButtonClick}
+                                    >
+                                        <Translation id="TR_BUY_BUY" />
+                                    </AssetActionButton>
+                                )}
                             <IconButton
                                 icon={ArrowRightIcon}
                                 intent="neutral"

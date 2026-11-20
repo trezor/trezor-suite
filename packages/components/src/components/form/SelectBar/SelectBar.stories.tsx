@@ -78,7 +78,7 @@ export default meta;
 
 export const SelectBar: StoryObj<typeof SelectBarComponent> = {
     render: ({ ...args }) => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [_, updateArgs] = useArgs<SelectBarProps<string>>();
         const setOption = (selectedOption: string) => updateArgs({ selectedOption });
 

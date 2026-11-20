@@ -68,51 +68,93 @@ const test = {
     inputs: [
         {
             address_n: [
-                (44 | 0x80000000) >>> 0,
+                (84 | 0x80000000) >>> 0,
+                (1 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                0,
+                0,
+            ],
+            prev_hash: 'bb0f9ece9adbca11c7e5a69351c8c4aa7548591f2c06defa690baaa110ad3f44',
+            prev_index: 1,
+            amount: '1000000',
+            script_type: 'SPENDWITNESS',
+        },
+    ],
+    outputs: [
+        {
+            address: 'tb1qw9xp9ac9r224dj7847xn84ffh806hr7ax7d6pp',
+            amount: '100000',
+            script_type: 'PAYTOADDRESS',
+        },
+        {
+            address_n: [
+                (84 | 0x80000000) >>> 0,
                 (1 | 0x80000000) >>> 0,
                 (0 | 0x80000000) >>> 0,
                 1,
                 0,
             ],
-            amount: '123456789',
-            prev_index: 0,
-            prev_hash: '20912f98ea3ed849042efed0fdac8cb4fc301961c5988cba56902d8ffb61c337',
-        },
-    ],
-    outputs: [
-        {
-            address: '1MJ2tj2ThBE62zXbBYA5ZaN3fdve5CPAz1',
-            amount: '12300000',
-            script_type: 'PAYTOADDRESS',
-        },
-        {
-            address_n: [
-                (49 | 0x80000000) >>> 0,
-                (1 | 0x80000000) >>> 0,
-                (0 | 0x80000000) >>> 0,
-                2,
-                0,
-            ],
-            script_type: 'PAYTOADDRESS',
-            amount: Number(123456789 - 11000 - 12300000).toString(),
+            amount: '899000',
+            script_type: 'PAYTOWITNESS',
         },
     ],
 };
 
-// version 3
-const zec = {
+const ltc = {
     inputs: [
         {
-            address_n: [2147483692, 2147483781, 2147483648, 0, 2],
-            prev_hash: '6df53ccdc6fa17e1cd248f7ec57e86178d6f96f2736bdf978602992b5850ac79',
-            prev_index: 1,
-            amount: '200000',
+            address_n: [
+                (84 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                0,
+                0,
+            ],
+            prev_hash: '52d7706c7283d1f3f335fb5662892072582d5ec83c10aed91028b111b84faebb',
+            prev_index: 0,
+            amount: '44060696',
+            script_type: 'SPENDWITNESS',
         },
     ],
     outputs: [
         {
-            address: 't1N5zTV5PjJqRgSPmszHopk88Nc6mvMBSD7',
-            amount: '100000',
+            address: 'ltc1qk45vxl7a4mhkduv2cdfsm3vfedewtzedxh82h0',
+            amount: '1000000',
+            script_type: 'PAYTOADDRESS',
+        },
+        {
+            address_n: [
+                (84 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                1,
+                0,
+            ],
+            amount: '43059696',
+            script_type: 'PAYTOWITNESS',
+        },
+    ],
+};
+
+const zec = {
+    inputs: [
+        {
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (133 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                0,
+                3,
+            ],
+            prev_hash: '0e544e2ef857d4ad5076946d221ceb764af5f0d5ec14a6072c223a13c27d1ba3',
+            prev_index: 0,
+            amount: '232096',
+        },
+    ],
+    outputs: [
+        {
+            address: 't1a4gB4zwx5WCTzabBMTttFqLiBrDFeUfTC',
+            amount: '222096',
             script_type: 'PAYTOADDRESS',
         },
     ],
@@ -125,18 +167,18 @@ const doge = {
                 (44 | 0x80000000) >>> 0,
                 (3 | 0x80000000) >>> 0,
                 (0 | 0x80000000) >>> 0,
-                1,
                 0,
+                2,
             ],
-            prev_index: 12,
-            prev_hash: '0a4cb7d5c27455333701f0e53812e4be56a0272ad7f168279acfed7b065ee118',
-            amount: '622200000000',
+            prev_hash: '70b174184879f098c33e71bacd0eaa48a33831f9506fe672426bb39f7d226224',
+            prev_index: 0,
+            amount: '1000000000',
         },
     ],
     outputs: [
         {
-            address: 'D9vbBhmwXgRegm5kVAcx8j6H2GDM87D58T',
-            amount: '1351855234633976',
+            address: 'DJZza1gV4SCZpDn961H9TpBh4APfgFMxWz',
+            amount: '500000000',
             script_type: 'PAYTOADDRESS',
         },
         {
@@ -147,7 +189,7 @@ const doge = {
                 1,
                 0,
             ],
-            amount: '10000000000000000',
+            amount: '499000000',
             script_type: 'PAYTOADDRESS',
         },
     ],
@@ -157,6 +199,7 @@ const examples: Partial<Record<CoinSymbol, { inputs: unknown[]; outputs: unknown
     btc,
     bch,
     test,
+    ltc,
     zec,
     doge,
 };

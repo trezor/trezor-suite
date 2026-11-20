@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { selectDesktopUpdate } from '@suite/desktop-update';
+import { selectDesktopUpdateEnabled } from '@suite/desktop-update';
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
@@ -28,9 +28,9 @@ import {
 import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
-import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { useSelector } from 'src/hooks/suite';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { SettingsLayout } from '#src/components/settings/SettingsLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 import { AddressDisplay } from './AddressDisplay';
 import { Analytics } from './Analytics';
@@ -70,7 +70,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
     );
 
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const desktopUpdate = useSelector(selectDesktopUpdate);
+    const isDesktopUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
     const hasContentBelowMobileWidth = useIsContentBelowBreakpoint(breakpoints.mobile);
@@ -160,7 +160,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
                 title={<Translation id="TR_SETTINGS_ADVANCED" />}
                 icon={ShieldWarningIcon}
             >
-                {desktopUpdate.enabled && <EarlyAccess />}
+                {isDesktopUpdateEnabled && <EarlyAccess />}
                 <AddressDisplay />
                 {isNetworkReserveSettingsVisible && <NetworkReserve />}
                 <TestnetNetworks />

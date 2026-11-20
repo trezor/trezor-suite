@@ -1,12 +1,12 @@
 import { isRecoveryInProgress } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
+import type { TrezorDevice } from '@suite-common/suite-types';
 
-import type { TransportState } from 'src/reducers/suite/suiteReducer';
-import type { AppState, TrezorDevice } from 'src/types/suite';
+import type { TransportState } from '#src/reducers/suite/suiteReducer';
 
 type GetPrerequisiteNameParams = {
-    router: AppState['router'];
+    router: RouterState;
     device?: TrezorDevice;
     transport?: TransportState;
 };
@@ -133,6 +133,10 @@ export const isPrerequisiteGloballyExcluded = ({
 
     // Activity (notifications) page does not depend on a connected device
     if (router.app === 'notifications') {
+        return true;
+    }
+
+    if (router.app === 'refer-a-friend') {
         return true;
     }
 

@@ -6,18 +6,22 @@ import {
     TRADING_EXCHANGE_FORM,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
+    TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     type TradingFormAccountRootState,
+    getExchangeFromAddress,
     hasEip712SignDataType,
+    requiresTokenApproval,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeFormValues,
-    selectTradingExchangeInfo,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
+    selectTradingSelectedQuoteByFormValues,
     selectTradingSendAccount,
     selectTradingVerifiedAddress,
     tradingExchangeActions,
@@ -28,15 +32,15 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
-import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
-import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
-import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
-import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeFormDefaultValues';
-import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
-import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
+import { useSolanaSubscribeBlocks } from '#src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import { useTradingAmountUnitSync } from '#src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
+import { useTradingComposeTransaction } from '#src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
+import { useTradingFiatValues } from '#src/hooks/wallet/trading/form/common/useTradingFiatValues';
+import { useTradingExchangeFormDefaultValues } from '#src/hooks/wallet/trading/form/exchange/useTradingExchangeFormDefaultValues';
+import { useServerEnvironment } from '#src/hooks/wallet/trading/useServerEnviroment';
+import { useTradingExchangeTradeActions } from '#src/hooks/wallet/trading/useTradingExchangeTradeActions';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { type TradingExchangeFormContextProps } from '#src/types/trading/tradingForm';
 
 import { useExchangeApproval } from './useExchangeApproval';
 import { useExchangeDexQuote } from './useExchangeDexQuote';
@@ -63,7 +67,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
-    const exchangeInfo = useSelector(selectTradingExchangeInfo);
+    const exchangeProviders = useSelector(selectTradingExchangeProviders);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
@@ -72,7 +76,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     );
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
-    const [isApproval, setIsApproval] = useState<boolean>(false);
     const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
 
@@ -106,12 +109,16 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
             ],
         });
 
+    const provider = useWatch({ control, name: TRADING_FORM_PROVIDER_SELECT });
+    const formQuote = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSelectedQuoteByFormValues(state, 'exchange', { provider, exchangeType }),
+    );
+
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'exchange',
         cryptoId: receiveCryptoSelect?.id,
         nonSuiteAccount: false,
     });
-    const { receiveAddress } = tradingReceiveAddress;
     const isReceiveAddressFormValid =
         Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
 
@@ -124,8 +131,8 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = !!outputAmount && !!receiveCryptoSelect && !!sendCryptoSelect;
     const isAmountEmpty = outputAmount === '';
-    const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
-    const isInitialDataLoading = !exchangeInfo?.providerInfos;
+    const noProviders = Object.keys(exchangeProviders ?? {}).length === 0;
+    const isInitialDataLoading = !exchangeProviders;
 
     const setAmountLimits = useCallback(
         (limits: TradingExchangeAmountLimitProps | undefined) => {
@@ -148,6 +155,11 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         methods,
         setShowReserveBanner,
         shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
+        isComposeErrorPending:
+            !!formQuote &&
+            requiresTokenApproval(formQuote) &&
+            !!tradingReceiveAddress.receiveAddress &&
+            !selectedQuote,
     });
 
     const isFormLoadingBase = isInitialDataLoading || formState.isSubmitting || isLoading;
@@ -163,6 +175,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         methods,
         network,
         shouldSendInSats,
+        fromAddress: getExchangeFromAddress(account),
         receiveAddress: tradingReceiveAddress.receiveAddress,
         receiveAccountKey: tradingReceiveAddress.selectedAccount?.key,
         receiveAccountSymbol: tradingReceiveAddress.selectedAccount?.symbol,
@@ -199,11 +212,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         composeRequest,
     });
 
-    const { verifyAddress, confirmApproval, approveTransaction, revokeApproval } =
-        useExchangeApproval({
-            account,
-            receiveAddress,
-        });
+    const { verifyAddress } = useExchangeApproval({ account });
 
     const { confirmTrade } = useTradingExchangeTradeActions();
 
@@ -214,7 +223,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
-        isInfoReady: !!exchangeInfo?.providerInfos,
+        isInfoReady: !!exchangeProviders,
         reset,
         defaultValues: initialValues,
     });
@@ -260,17 +269,12 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         setAmountLimits,
         verifyAddress,
         confirmTrade,
-        approveTransaction,
-        revokeApproval,
-        confirmApproval,
         refreshQuotes,
         isScheduledQuotesRefresh,
         fetchFeesAndCompose,
         tradingReceiveAddress,
         isLoadingQuote,
         setIsLoadingQuote,
-        isApproval,
-        setIsApproval,
         showReserveBanner,
         setShowReserveBanner,
     };

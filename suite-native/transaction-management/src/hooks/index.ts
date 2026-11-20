@@ -10,3 +10,5 @@ export * from './fees';
 export * from './usePrecomposedTransactionError';
 export * from './useIsNetworkReserveBannerVisible';
 export * from './useTxValidityTimer';
+
+export type { CustomFeeLevelBuilder } from './fees/useCustomFee';

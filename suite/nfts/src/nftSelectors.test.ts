@@ -1,6 +1,7 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { explorerInitialState, getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
@@ -100,11 +101,19 @@ const createState = ({
     } as unknown as NftState;
 };
 
-const punksOnEth = getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: PUNKS });
-const apesOnEth = getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: APES });
+const punksOnEth = getWalletAssetKey({
+    deviceState: ALICE,
+    networkSymbol: ETH,
+    contractAddress: PUNKS,
+});
+const apesOnEth = getWalletAssetKey({
+    deviceState: ALICE,
+    networkSymbol: ETH,
+    contractAddress: APES,
+});
 const scamOnEth = getWalletAssetKey({
     deviceState: ALICE,
-    symbol: ETH,
+    networkSymbol: ETH,
     contractAddress: SCAM_DROP,
 });
 
@@ -240,7 +249,11 @@ describe('the collections the section hides', () => {
         });
 
         expect(selectShownNftCollectionKeys(state)).toEqual([
-            getWalletAssetKey({ deviceState: ALICE, symbol: SEPOLIA, contractAddress: SCAM_DROP }),
+            getWalletAssetKey({
+                deviceState: ALICE,
+                networkSymbol: SEPOLIA,
+                contractAddress: SCAM_DROP,
+            }),
         ]);
         expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
     });

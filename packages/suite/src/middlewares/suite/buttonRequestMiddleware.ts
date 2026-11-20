@@ -1,10 +1,30 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
-import { PAYMENT_REQUEST_BUTTON_NAMES, selectAccountByKey } from '@suite-common/wallet-core';
-import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import { type SelectedAccountRootState, selectSelectedAccount } from '@suite/account';
+import { type RouterRootState, selectRouteName } from '@suite/router';
+import {
+    type ConnectPopupStateRootState,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
+import {
+    type AccountsRootState,
+    PAYMENT_REQUEST_BUTTON_NAMES,
+    type SendRootState,
+    type TronStakeRootState,
+    type YieldRootState,
+    selectAccountByKey,
+    selectSendFormAccountKey,
+} from '@suite-common/wallet-core';
+import { type DeviceButtonRequestCode, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
-import { type AppState } from 'src/types/suite';
+type ButtonRequestMiddlewareState = SelectedAccountRootState &
+    RouterRootState &
+    ConnectPopupStateRootState &
+    AccountsRootState &
+    SendRootState &
+    YieldRootState &
+    TronStakeRootState;
 
 const SIGN_TX_NETWORK_TYPES = ['cardano', 'ethereum', 'stellar', 'tron'] as const;
 
@@ -13,6 +33,7 @@ const SIGN_TX_ROUTES = [
     'wallet-staking',
     'wallet-index',
     'wallet-trading-exchange-confirm',
+    'wallet-trading-exchange-approval',
     'wallet-trading-sell-confirm',
     'earn-yield-deposit',
     'earn-yield-withdraw',
@@ -35,8 +56,8 @@ const SIGN_TX_CONNECT_METHODS = [
     'stellarSignTransaction',
 ] as const;
 
-const getAccountForButtonRequest = (state: AppState) => {
-    const { account } = state.wallet.selectedAccount;
+const getAccountForButtonRequest = (state: ButtonRequestMiddlewareState) => {
+    const account = selectSelectedAccount(state);
     if (account) return account;
 
     const yieldAccountKey = state.wallet.stablecoinYield.txReview.accountKey;
@@ -45,16 +66,16 @@ const getAccountForButtonRequest = (state: AppState) => {
     const tronStakeAccountKey = state.wallet.tronStake.txReview.accountKey;
     if (tronStakeAccountKey) return selectAccountByKey(state, tronStakeAccountKey);
 
-    const sendAccountKey = state.wallet.send.accountKey;
+    const sendAccountKey = selectSendFormAccountKey(state);
     if (sendAccountKey) return selectAccountByKey(state, sendAccountKey);
 
     return undefined;
 };
 
 const shouldRemapToSignTx = (
-    code: string | undefined,
+    code: DeviceButtonRequestCode,
     name: string | undefined,
-    state: AppState,
+    state: ButtonRequestMiddlewareState,
 ): boolean => {
     if (
         name === 'confirm_ethereum_approve' &&
@@ -73,11 +94,11 @@ const shouldRemapToSignTx = (
     }
 
     const account = getAccountForButtonRequest(state);
-    const { activeCall } = state.connectPopup;
+    const activeCall = selectConnectPopupCall(state);
 
     const isInSuite =
         SIGN_TX_NETWORK_TYPES.some(type => type === account?.networkType) &&
-        SIGN_TX_ROUTES.some(route => route === state.router.route?.name);
+        SIGN_TX_ROUTES.some(route => route === selectRouteName(state));
 
     const isInConnectCall =
         activeCall?.state === 'ongoing' &&
@@ -87,7 +108,7 @@ const shouldRemapToSignTx = (
 };
 
 const buttonRequest =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, ButtonRequestMiddlewareState>) =>
     (next: Dispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35
@@ -105,7 +126,7 @@ const buttonRequest =
             }
 
             if (action.payload.code === 'ButtonRequest_Address') {
-                const { activeCall } = api.getState().connectPopup;
+                const activeCall = selectConnectPopupCall(api.getState());
                 // Skip if address confirmation modal open
                 if (activeCall?.state === 'address-confirmation') {
                     return action;

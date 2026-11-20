@@ -3,15 +3,18 @@ import {
     selectDevicePath,
     selectIsDeviceInitialized,
     selectSelectedDevice,
-    selectSimulatedEntropyCheckFail,
 } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
-import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { type BackupType } from '@suite-common/suite-types';
+import {
+    type ResetDeviceWithEntropyCheckThunkDeps,
+    resetDeviceWithEntropyCheckThunk,
+} from '@suite-common/wallet-core';
 import {
     deviceAccessMutex,
     requestDeviceAccess,
@@ -19,7 +22,7 @@ import {
 } from '@suite-native/device-mutex';
 import TrezorConnect, { type OkWithDevice, PROTO, type Response } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type WithServices, createThunk } from '@trezor/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { type Err, exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';
@@ -47,7 +50,7 @@ const getResetDeviceConfig = (walletBackupType: BackupType): PROTO.ResetDevice =
 
 type CreateAndBackupWalletThunkState = DeviceRootState & MessageSystemRootState;
 
-type CreateAndBackupWalletThunkDeps = WithServices<ReportSecurityCheckDep>;
+type CreateAndBackupWalletThunkDeps = ResetDeviceWithEntropyCheckThunkDeps;
 
 export const createAndBackupWalletThunk = createThunk<
     Err<SerializedError> | OkWithDevice<PROTO.Success>,
@@ -68,8 +71,6 @@ export const createAndBackupWalletThunk = createThunk<
             Feature.entropyCheckMobile,
             true,
         );
-        // Used only in tests! See deviceReducer for the property definition.
-        const simulatedFailResult = selectSimulatedEntropyCheckFail(getState());
 
         if (!device?.features || !devicePath) {
             return rejectWithValue('Device not found');
@@ -101,29 +102,22 @@ export const createAndBackupWalletThunk = createThunk<
         }
 
         const deviceResponse = await requestPrioritizedDeviceAccess(() =>
-            TrezorConnect.resetDevice({
-                device: { path: devicePath },
-                skip_backup: false,
-                ...getResetDeviceConfig(walletBackupType),
-                //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
-                entropy_check: isEntropyCheckEnabled,
-            }),
+            dispatch(
+                resetDeviceWithEntropyCheckThunk({
+                    device,
+                    params: {
+                        device: { path: devicePath },
+                        skip_backup: false,
+                        ...getResetDeviceConfig(walletBackupType),
+                    },
+                    isEntropyCheckEnabled,
+                }),
+            ).unwrap(),
         );
         // error from device-mutex
         if (!deviceResponse.success) return rejectWithValue(deviceResponse.error);
 
-        // full response from connect, which is either success or error
-        const result = deviceResponse.payload;
-        if (isEntropyCheckEnabled) {
-            if (simulatedFailResult) {
-                dispatch(processEntropyCheckResultThunk({ device, result: simulatedFailResult }));
-
-                return fulfillWithValue(simulatedFailResult);
-            }
-            dispatch(processEntropyCheckResultThunk({ device, result }));
-        }
-
-        return fulfillWithValue(result);
+        return fulfillWithValue(deviceResponse.payload);
     },
 );
 
@@ -133,7 +127,8 @@ export const recoverWalletThunk = createThunk<
     Response<PROTO.Success>,
     void,
     { state: RecoverWalletThunkState }
->(`${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`, async (_, { getState }) => {
+>(`${NATIVE_DEVICE_MODULE_PREFIX}/recoverWalletThunk`, async (_, { getState, dispatch }) => {
+    const device = selectSelectedDevice(getState());
     const devicePath = selectDevicePath(getState());
 
     const deviceResponse = await requestPrioritizedDeviceAccess(() =>
@@ -142,6 +137,13 @@ export const recoverWalletThunk = createThunk<
 
     if (!deviceResponse.success) {
         throw new Error(deviceResponse.error);
+    }
+
+    // The recovered seed replaces any seed whose xpub hashes were stored by the wallet creation entropy check
+    // (e.g. if the device was disconnected during backup, the seed was never stored).
+    // Must happen before fulfilled, because that triggers discovery.
+    if (deviceResponse.payload.success && device?.id) {
+        dispatch(persistentDeviceDataActions.clearEntropyCheckXPubHashes({ deviceId: device.id }));
     }
 
     return deviceResponse.payload;

@@ -16,11 +16,14 @@ runs:
   steps:
     - name: Post Currents link
       uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+      env:
+        CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
+        PROJECT: ${{ inputs.project }}
       with:
         github-token: ${{ inputs.github_token }}
         script: |
-          const projectId = '${{ inputs.currents-project-id }}';
-          const project = '${{ inputs.project }}';
+          const projectId = process.env.CURRENTS_PROJECT_ID;
+          const project = process.env.PROJECT;
           const branch = context.payload.pull_request.head.ref;
           const currentsUrl = `https://app.currents.dev/projects/${projectId}/runs?branch=${branch}&lookback=7`;
           const linkLine = `🔍 **Suite ${project} test results:** [View in Currents](${currentsUrl})`;

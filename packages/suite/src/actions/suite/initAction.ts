@@ -57,9 +57,9 @@ import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
-import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
+import * as bioAuthThunks from '#src/actions/suite/bioAuthThunks';
+import { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
+import { selectSuiteLifecycleStatus } from '#src/selectors/suite/suiteSelectors';
 
 import { setSuiteError } from './suiteActions';
 

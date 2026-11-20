@@ -3,10 +3,11 @@ import { type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import type { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { Column, motionAnimation } from '@trezor/components';
 
-import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import type { ForegroundAppProps } from '#src/types/suite';
 
 import { DeviceHeader } from './DeviceItem/DeviceHeader';
 import { NeedsAttentionBanner } from './NeedsAttentionBanner';
@@ -25,6 +26,7 @@ type CardWithDeviceProps = {
     device: TrezorDevice;
     onBackButtonClick?: () => void;
     isDeviceStatusVisible?: boolean;
+    forceConnectionInfo?: boolean;
 };
 
 export const CardWithDevice = ({
@@ -34,6 +36,7 @@ export const CardWithDevice = ({
     device,
     onBackButtonClick,
     isDeviceStatusVisible,
+    forceConnectionInfo,
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
 
@@ -48,6 +51,7 @@ export const CardWithDevice = ({
                     device={device}
                     onBackButtonClick={onBackButtonClick}
                     isDeviceStatusVisible={isDeviceStatusVisible}
+                    forceConnectionInfo={forceConnectionInfo}
                     actions={actions}
                 />
 

@@ -76,17 +76,17 @@ describe('enhancePrecomposedTransactionThunk', () => {
         [
             'development',
             [2, 13, 0],
-            `https://dev.firmware.sldev.cz/definitions/unsigned/v2/eth/${TOKEN_FILE}`,
+            `https://dev.firmware.sldev.cz/unsigned/v2/definitions/eth/${TOKEN_FILE}`,
         ],
         [
             'development',
             [1, 14, 1],
-            `https://dev.firmware.sldev.cz/definitions/unsigned/v1/eth/${TOKEN_FILE}`,
+            `https://dev.firmware.sldev.cz/unsigned/v1/definitions/eth/${TOKEN_FILE}`,
         ],
         [
             'signed',
             [2, 13, 0],
-            `https://dev.firmware.sldev.cz/definitions/signed/v2/eth/${TOKEN_FILE}`,
+            `https://dev.firmware.sldev.cz/signed/v2/definitions/eth/${TOKEN_FILE}`,
         ],
     ])(
         'checks the token definition on the %s channel for firmware %j',
@@ -96,4 +96,28 @@ describe('enhancePrecomposedTransactionThunk', () => {
             expect(fetchMock).toHaveBeenCalledWith(url, { method: 'HEAD' });
         },
     );
+
+    it('rejects with a typed send form error when no device is selected', async () => {
+        const { store } = createTestCompositionRoot<
+            EnhancePrecomposedTransactionThunkDeps,
+            EnhancePrecomposedTransactionThunkState
+        >({
+            preloadedState: {
+                device: { selectedDevice: undefined },
+            } as EnhancePrecomposedTransactionThunkState,
+            services: () => ({ getDebugSettings: asGetter(() => ({})) }),
+        }).services;
+
+        await expect(
+            store
+                .dispatch(
+                    enhancePrecomposedTransactionThunk({
+                        transactionFormValues: formState,
+                        precomposedTransaction,
+                        selectedAccount: account,
+                    }),
+                )
+                .unwrap(),
+        ).rejects.toEqual({ error: 'enhance-transaction-failed', message: 'Device not found' });
+    });
 });

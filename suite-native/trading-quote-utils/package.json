@@ -21,13 +21,14 @@
         "@suite-native/atoms": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
+        "react": "19.3.0",
+        "react-native": "0.88.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/requirements": "workspace:*",
         "@types/invity-api": "^1.1.23"
     }
 }

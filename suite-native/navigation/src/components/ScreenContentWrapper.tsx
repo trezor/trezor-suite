@@ -1,12 +1,13 @@
 import React, { type ReactNode, useRef } from 'react';
-import { type ScrollViewProps } from 'react-native';
+import {
+    type NativeScrollEvent,
+    type NativeSyntheticEvent,
+    type ScrollViewProps,
+} from 'react-native';
 import {
     KeyboardAwareScrollView,
     type KeyboardAwareScrollViewRef,
 } from 'react-native-keyboard-controller';
-
-import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 import { useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { ScrollViewContext } from '@suite-native/scrollview';

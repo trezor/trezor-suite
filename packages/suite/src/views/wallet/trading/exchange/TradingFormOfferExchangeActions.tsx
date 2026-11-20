@@ -1,31 +1,35 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import type { CryptoId } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
 import {
+    type TradingFormAccountRootState,
+    type TradingRootState,
+    getApprovalFlowSteps,
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
     selectTradingExchangeQuoteToEstimate,
     selectTradingSendAccount,
     tradingExchangeActions,
+    useTradingExchangeAllowance,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
-import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingApproveModal } from 'src/views/wallet/trading/common/TradingForm/TradingApproveModal';
-import { TradingFormApproval } from 'src/views/wallet/trading/common/TradingForm/TradingFormApproval';
-import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
-import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/TradingRevokeModal';
-import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { selectExchangeQuoteThunk } from '#src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingExchangeCryptoAndProviderInfo } from '#src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
+import { useTradingStellarActivation } from '#src/hooks/wallet/trading/useTradingStellarActivation';
+import { getTradingFirstOutput } from '#src/utils/wallet/trading/tradingUtils';
+import { TradingFormApproval } from '#src/views/wallet/trading/common/TradingForm/TradingFormApproval';
+import { TradingFormOfferConfirmButton } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { useTradingFormOfferCommon } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
+import { useReceiveAddressModalControls } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -39,21 +43,26 @@ export const TradingFormOfferExchangeActions = () => {
         setIsLoadingQuote,
         confirmTrade,
         isComposing,
+        refreshQuotes,
         form: { state, helpers },
     } = context;
-    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
+    const account = useSelector((reduxState: TradingFormAccountRootState) =>
+        selectTradingSendAccount(reduxState, 'exchange'),
+    );
 
     const modalControls = useReceiveAddressModalControls();
+    const { chainAllowance } = useTradingExchangeAllowance({ account });
+    const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType, provider } =
         watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
-    const { quote, quoteAmounts, selectedAssetCryptoId, isBaseButtonDisabled } =
+    const { quote, selectedAssetCryptoId, isBaseButtonDisabled } =
         useTradingFormOfferCommon<'exchange'>();
 
-    const isNetworkFeeMissing = useSelector(reduxState =>
+    const isNetworkFeeMissing = useSelector((reduxState: TradingRootState) =>
         selectIsTradingNetworkFeeMissing(
             reduxState,
             selectTradingExchangeQuoteToEstimate(reduxState, {
@@ -124,6 +133,33 @@ export const TradingFormOfferExchangeActions = () => {
         isQuoteForSelectedReceive,
     ]);
 
+    const selectQuote = (trade: ExchangeTrade) => {
+        dispatch(tradingExchangeActions.saveFormValues(getValues()));
+        dispatch(
+            selectExchangeQuoteThunk({
+                quote: trade,
+                exchangeType,
+                rateType,
+                fractionButton: helpers.fractionButton,
+            }),
+        );
+    };
+
+    const startApprovalFlow = (trade: ExchangeTrade) => {
+        dispatch(tradingExchangeActions.saveFormValues(getValues()));
+        dispatch(
+            tradingExchangeActions.startApprovalFlow(getApprovalFlowSteps(trade, chainAllowance)),
+        );
+        dispatch(gotoThunk({ routeName: 'wallet-trading-exchange-approval' }));
+    };
+
+    const onManageApproval = () => {
+        dispatch(tradingExchangeActions.saveFormValues(getValues()));
+        dispatch(
+            gotoThunk({ routeName: 'wallet-trading-exchange-allowance', preserveParams: true }),
+        );
+    };
+
     const onSelectQuote = async () => {
         if (!quote || !tradingReceiveAddress.receiveAddress) return;
 
@@ -133,15 +169,7 @@ export const TradingFormOfferExchangeActions = () => {
 
             if (!newTrade) return;
 
-            dispatch(tradingExchangeActions.saveFormValues(getValues()));
-            dispatch(
-                selectExchangeQuoteThunk({
-                    quote: newTrade,
-                    exchangeType,
-                    rateType,
-                    fractionButton: helpers.fractionButton,
-                }),
-            );
+            selectQuote(newTrade);
         } catch {
             // error already logged by confirmTrade thunk
         }
@@ -167,7 +195,17 @@ export const TradingFormOfferExchangeActions = () => {
         }
 
         if (shouldShowApprovalStep && quote && !isLoading) {
-            return <TradingFormApproval />;
+            return (
+                <TradingFormApproval
+                    isComposing={isComposing}
+                    isFormInvalid={state.isFormInvalid}
+                    refreshQuotes={refreshQuotes}
+                    onStartApprovalFlow={startApprovalFlow}
+                    onManageApproval={onManageApproval}
+                    onSwap={selectQuote}
+                    getCryptoInfo={getCryptoInfo}
+                />
+            );
         }
 
         if (stellarActivateButton) {
@@ -190,17 +228,6 @@ export const TradingFormOfferExchangeActions = () => {
     return (
         <>
             {renderActionButton()}
-
-            {quoteAmounts?.sendCurrency && (
-                <TradingApproveModal
-                    amount={amount}
-                    cryptoId={quoteAmounts.sendCurrency as CryptoId}
-                />
-            )}
-
-            {quoteAmounts?.sendCurrency && (
-                <TradingRevokeModal cryptoId={quoteAmounts.sendCurrency as CryptoId} />
-            )}
 
             {stellarActivateModal}
         </>

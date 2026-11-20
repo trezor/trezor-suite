@@ -12,9 +12,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
+import { type MockSuiteState } from '../../../../../mocks/mockInitialAppState';
 
 const xrpSymbol = asNetworkSymbol('xrp');
 const xlmSymbol = asNetworkSymbol('xlm');
@@ -55,7 +54,7 @@ const renderReceiveAddress = async ({
 }: RenderReceiveAddressOptions = {}) => {
     const { services } = createTestCompositionRoot<
         WithServices<{ networks: AddressValidatorDep }>,
-        AppState
+        MockSuiteState
     >({
         preloadedState: {
             debug: { showDebugMenu: false },

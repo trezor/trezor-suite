@@ -43,11 +43,18 @@ const createEvoluDouble = () => {
     return { calls, useOwner, evolu };
 };
 
-const createStorage = (evolu: ReturnType<typeof createEvoluDouble>['evolu']) =>
-    createEvoluStorageFactory({
+const createStorage = async (evolu: ReturnType<typeof createEvoluDouble>['evolu']) => {
+    const storageResult = await createEvoluStorageFactory({
         evoluInstanceFactory: () => Promise.resolve(evolu as never),
         createOwnerWebSocketTransport,
     })({ suiteSyncOwner });
+
+    if (!storageResult.success) {
+        throw new Error(storageResult.error.message);
+    }
+
+    return storageResult.payload;
+};
 
 describe('evolu storage relay subscription', () => {
     it('does not subscribe before a relay is known', async () => {

@@ -62,6 +62,12 @@ import {
 /** @see {@link file://./../../../../suite-common/wallet-core/src/staking/shared/stakingConstants.ts}  */
 const WALLET_SDK_SOURCE = '1';
 
+class InsufficientActiveStakeError extends Error {
+    constructor() {
+        super('Active stake less than requested');
+    }
+}
+
 export const getSolanaStakingData = async (
     rpc: RpcMainnet<SolanaRpcApiMainnet> | Rpc<SolanaRpcApiMainnet>,
     descriptor: string,
@@ -195,10 +201,15 @@ export const unstake = async ({
                 return false;
             }
 
-            const isActive = !(
-                isLockupInForce(acc.data, epoch, BigInt(tm)) ||
-                stakeAccountState(acc.data, epoch) !== StakeState.Active
+            const isEverstake = EVERSTAKE_VOTER_PUBKEYS.includes(
+                acc.data.state.fields[1].delegation.voterPubkey,
             );
+            const isActive =
+                isEverstake &&
+                !(
+                    isLockupInForce(acc.data, epoch, BigInt(tm)) ||
+                    stakeAccountState(acc.data, epoch) !== StakeState.Active
+                );
 
             if (isActive) {
                 totalActiveStake = totalActiveStake + acc.data.state.fields[1].delegation.stake;
@@ -207,7 +218,7 @@ export const unstake = async ({
             return isActive;
         });
 
-        if (totalActiveStake < lamports) throw new Error('Active stake less than requested');
+        if (totalActiveStake < lamports) throw new InsufficientActiveStakeError();
 
         // ASC sort if num of accounts less than threshold otherwise DESC sorting
         activeStakeAccounts.sort((a, b): number => {
@@ -456,6 +467,7 @@ export const prepareStakeSolTx = async ({
 
         return {
             success: false,
+            errorCode: 'UNKNOWN',
             errorMessage: e.message,
         };
     }
@@ -486,10 +498,21 @@ export const prepareUnstakeSolTx = async ({
             solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
+        if (e.cause instanceof InsufficientActiveStakeError) {
+            console.warn(e.message);
+
+            return {
+                success: false,
+                errorCode: 'INSUFFICIENT_ACTIVE_STAKE',
+                errorMessage: e.message,
+            };
+        }
+
         console.error(e);
 
         return {
             success: false,
+            errorCode: 'UNKNOWN',
             errorMessage: e.message,
         };
     }
@@ -519,6 +542,7 @@ export const prepareClaimSolTx = async ({
 
         return {
             success: false,
+            errorCode: 'UNKNOWN',
             errorMessage: e.message,
         };
     }

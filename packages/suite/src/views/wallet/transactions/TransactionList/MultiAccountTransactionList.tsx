@@ -9,6 +9,7 @@ import {
     isPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     selectActiveDustPhishingThreshold,
@@ -16,11 +17,7 @@ import {
     selectIsHideSuspiciousTransactions,
     selectPhishingTransactions,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type TokenAddress,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getDirectRpcHistoryState,
     getOlderHistoryFrom,
@@ -30,9 +27,9 @@ import { Button, Card, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { Pagination } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { Pagination } from '#src/components/wallet/Pagination';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { LoadOlderHistory } from './LoadOlderHistory';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
@@ -83,6 +80,7 @@ type MultiAccountTransactionListProps = {
     isBumpFeeAllowed?: boolean;
     isExportable?: boolean;
     knownTotal?: number;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
     'data-testid'?: string;
 };
 
@@ -95,6 +93,7 @@ export const MultiAccountTransactionList = ({
     isBumpFeeAllowed = false,
     isExportable = false,
     knownTotal,
+    onTransactionDetailOpen,
     'data-testid': dataTestId = '@transactions/multi-account',
 }: MultiAccountTransactionListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -283,6 +282,7 @@ export const MultiAccountTransactionList = ({
                     customNoTransactions={getCustomNoTransactions()}
                     isAccountShown={isAccountShown}
                     isBumpFeeAllowed={isBumpFeeAllowed}
+                    onTransactionDetailOpen={onTransactionDetailOpen}
                 />
                 {isFailed && <LoadFailedMessage onRetry={retry} />}
                 <LoadOlderHistory accounts={accounts} />

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { cryptoIdToNetworkSymbol, parseCryptoId } from '@suite-common/trading';
 import { TokenIcon } from '@trezor/product-components';
 
-import { type TradingCoinLogoProps } from 'src/types/trading/trading';
+import { type TradingCoinLogoProps } from '#src/types/trading/trading';
 
 const Wrapper = styled.div``;
 
@@ -22,7 +22,7 @@ export const TradingCoinLogo = ({
     return (
         <Wrapper className={className}>
             <TokenIcon
-                symbol={networkSymbol}
+                networkSymbol={networkSymbol}
                 contractAddress={contractAddress}
                 size={size}
                 placeholder={networkId.toUpperCase()}

@@ -31,7 +31,7 @@ export const CreateWalletBackupModal = ({ onCancel }: CreateWalletBackupModalPro
     const { dispatch } = useServices(injectDispatch);
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
 
-    const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.N1W1 : PROTO.BackupMethod.Display;
+    const backupMethod = isN4w1BackupEnabled ? PROTO.BackupMethod.K1N1 : PROTO.BackupMethod.Display;
 
     const isInBackupMode =
         device?.features !== undefined && isAdditionalShamirBackupInProgress(device.features);

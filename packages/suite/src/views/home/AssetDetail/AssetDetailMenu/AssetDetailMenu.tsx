@@ -1,13 +1,17 @@
 import { type ReactElement, useRef, useState } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetAccountCount,
     selectWalletAssetContractAddress,
+    selectWalletAssetExplorerUrl,
     selectWalletAssetHiddenReason,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
+    selectWalletAssetSignVerifyAccounts,
+    selectWalletAssetTokenInfo,
 } from '@suite-common/assets';
 import {
     DefinitionType,
@@ -17,6 +21,7 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type AddressType } from '@suite-common/wallet-types';
+import { isWalletConnectSupportedNetwork } from '@suite-common/walletconnect';
 import {
     Column,
     Divider,
@@ -39,19 +44,14 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
-import { UnhideAssetModal } from 'src/views/dashboard/HiddenTokens/UnhideAssetModal';
-import { AssetDetailAccountsModal } from 'src/views/home/AssetDetail/AssetDetailModals/AssetDetailAccountsModal';
-import { AssetDetailSignVerifyModal } from 'src/views/home/AssetDetail/AssetDetailModals/AssetDetailSignVerifyModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
+import { UnhideAssetModal } from '#src/views/dashboard/HiddenTokens/UnhideAssetModal';
+import { AssetDetailAccountsModal } from '#src/views/home/AssetDetail/AssetDetailModals/AssetDetailAccountsModal';
+import { AssetDetailSignVerifyModal } from '#src/views/home/AssetDetail/AssetDetailModals/AssetDetailSignVerifyModal';
 
 import { AssetDetailMenuAddressField } from './AssetDetailMenuAddressField';
 import { AssetDetailMenuNetworkRow } from './AssetDetailMenuNetworkRow';
-import {
-    selectWalletAssetExplorerUrl,
-    selectWalletAssetSignVerifyAccounts,
-    selectWalletAssetTokenInfo,
-} from './assetDetailMenuSelectors';
 import { getAssetAddressFields } from './getAssetAddressFields';
 
 type AssetDetailMenuProps = {
@@ -59,8 +59,8 @@ type AssetDetailMenuProps = {
 };
 
 export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
-    const { dispatch } = useServices(injectDispatch);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const accountCount = useSelector(state => selectWalletAssetAccountCount(state, assetKey));
     const tokenInfo = useSelector(state => selectWalletAssetTokenInfo(state, assetKey));
@@ -76,14 +76,31 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
     const [isAccountsModalOpen, setIsAccountsModalOpen] = useState(false);
     const [isSignVerifyModalOpen, setIsSignVerifyModalOpen] = useState(false);
 
-    if (symbol === undefined) {
+    if (networkSymbol === undefined) {
         return null;
     }
 
     const closeMenu = () => dropdownRef.current?.close();
 
+    const reportMenuOpen = (isOpen: boolean) => {
+        if (!isOpen) {
+            return;
+        }
+
+        analytics.report({
+            type: events.assetsActionsEvent.name,
+            payload: {
+                action: 'more-menu',
+                networkSymbol,
+                ...(contractAddress ? { contractAddress } : {}),
+            },
+        });
+    };
+
     const addressFieldLabels: Record<AddressType, ReactElement> = {
-        contract: <Translation id={getTokenAddressTranslationId(getNetwork(symbol).networkType)} />,
+        contract: (
+            <Translation id={getTokenAddressTranslationId(getNetwork(networkSymbol).networkType)} />
+        ),
         fingerprint: <Translation id="TR_CARDANO_FINGERPRINT_HEADLINE" />,
         policyId: <Translation id="TR_ASSET_DETAIL_POLICY_ID" />,
     };
@@ -123,12 +140,24 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
 
         dispatch(
             tokenDefinitionsActions.setTokenStatus({
-                symbol,
+                symbol: networkSymbol,
                 contractAddress,
                 status,
                 type: DefinitionType.COIN,
             }),
         );
+    };
+
+    const hideToken = () => {
+        if (contractAddress === undefined) {
+            return;
+        }
+
+        analytics.report({
+            type: events.assetsActionsEvent.name,
+            payload: { action: 'hide-token', networkSymbol, contractAddress },
+        });
+        setTokenStatus(TokenManagementAction.HIDE);
     };
 
     const showToken = () => {
@@ -141,7 +170,13 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
         setTokenStatus(TokenManagementAction.SHOW);
     };
 
-    const openExplorer = () => window.open(explorerUrl, '_blank');
+    const openExplorer = () => {
+        analytics.report({
+            type: events.appExternalLinkEvent.name,
+            payload: { from: 'asset-detail', type: 'viewInExplorer' },
+        });
+        window.open(explorerUrl, '_blank');
+    };
 
     const addressFields = getAssetAddressFields(tokenInfo);
 
@@ -171,13 +206,13 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
             label: <Translation id="TR_WALLETCONNECT" />,
             icon: LinkIcon,
             onClick: goToConnectedApps,
-            isHidden: getNetwork(symbol).caipId === undefined,
+            isHidden: !isWalletConnectSupportedNetwork(networkSymbol),
             'data-testid': '@asset-detail/menu/walletconnect',
         },
         {
             label: <Translation id="TR_HIDE_TOKEN" />,
             icon: EyeSlashIcon,
-            onClick: () => setTokenStatus(TokenManagementAction.HIDE),
+            onClick: hideToken,
             isHidden: contractAddress === undefined || hiddenReason !== undefined,
             'data-testid': '@asset-detail/menu/hide-token',
         },
@@ -205,9 +240,10 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
                 placement={{ position: 'bottom', alignment: 'end' }}
                 tooltip={{ content: <Translation id="TR_SHOW_MORE" /> }}
                 minWidth={280}
+                onOpenChange={reportMenuOpen}
                 content={
                     <Column alignItems="stretch">
-                        <AssetDetailMenuNetworkRow symbol={symbol} />
+                        <AssetDetailMenuNetworkRow symbol={networkSymbol} />
                         <Divider margin={{ top: 8, bottom: 0 }} />
                         {addressFields.length > 0 && (
                             <>
@@ -229,7 +265,7 @@ export const AssetDetailMenu = ({ assetKey }: AssetDetailMenuProps) => {
             />
             {isSignVerifyModalOpen && (
                 <AssetDetailSignVerifyModal
-                    symbol={symbol}
+                    symbol={networkSymbol}
                     accounts={signVerifyAccounts}
                     onAccountClick={goToSignVerify}
                     onClose={() => setIsSignVerifyModalOpen(false)}

@@ -9,16 +9,16 @@ import { networkConfigBySymbol as tronConfigs } from '@trezor/network-tron-suite
 
 import type { Network, Networks } from './types';
 
-type LegacyNetworkConfig<TSymbol extends string, TConfig extends SuiteCommonNetworkConfig> = Omit<
-    Network,
-    'settlementLayer'
-> &
-    Omit<TConfig, 'yieldXyzId'> & { symbol: TSymbol; yieldXyzId: Network['yieldXyzId'] };
+type LegacyNetworkConfig<
+    TNetworkSymbol extends string,
+    TConfig extends SuiteCommonNetworkConfig,
+> = Omit<Network, 'settlementLayer'> &
+    Omit<TConfig, 'yieldXyzId'> & { symbol: TNetworkSymbol; yieldXyzId: Network['yieldXyzId'] };
 
-const withSymbol = <TSymbol extends string, TConfig extends SuiteCommonNetworkConfig>(
-    symbol: TSymbol,
+const withSymbol = <TNetworkSymbol extends string, TConfig extends SuiteCommonNetworkConfig>(
+    symbol: TNetworkSymbol,
     config: TConfig,
-): LegacyNetworkConfig<TSymbol, TConfig> => ({
+): LegacyNetworkConfig<TNetworkSymbol, TConfig> => ({
     ...config,
     symbol,
     yieldXyzId: config.yieldXyzId as Network['yieldXyzId'],

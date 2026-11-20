@@ -10,7 +10,7 @@ import {
     isValidImageHeight,
     isValidImageSize,
     isValidImageWidth,
-} from 'src/utils/suite/homescreen';
+} from '#src/utils/suite/homescreen';
 
 import * as fixtures from './__fixtures__/homescreen';
 

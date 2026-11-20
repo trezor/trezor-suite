@@ -14,10 +14,12 @@ runs:
   steps:
     - name: Post Suite Web preview link
       uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+      env:
+        DEV_SERVER_URL: ${{ inputs.dev-server-url }}
       with:
         github-token: ${{ inputs.github_token }}
         script: |
-          const devServerUrl = '${{ inputs.dev-server-url }}';
+          const devServerUrl = process.env.DEV_SERVER_URL;
           const branch = context.payload.pull_request.head.ref;
           const previewUrl = `${devServerUrl}/suite-web/${branch}/web/`;
           const linkLine = `🌐 **Suite Web preview:** [${previewUrl}](${previewUrl})`;

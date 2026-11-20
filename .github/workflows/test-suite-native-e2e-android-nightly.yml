@@ -1,9 +1,7 @@
 name: "[Test] suite-native Android E2E Nightly"
 
 permissions:
-  id-token: write # for fetching the OIDC token (needed for aws s3 actions)
-  contents: read # read attached artifacts from tests
-  actions: write # upload/download artifacts
+  contents: read
 
 on:
   schedule:
@@ -16,6 +14,9 @@ concurrency:
 
 jobs:
   prepare_android_test_app:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
     secrets:
@@ -46,9 +47,9 @@ jobs:
       cancel-in-progress: false
     uses: ./.github/workflows/template-publish-performance-history.yml
     with:
-      workspace: "@suite-native/app"
+      workspace: "@suite-native-app/app"
       artifact-pattern: android-perf-report-*
-      publish-command: yarn workspace @suite-native/app exec tsx e2e/support/performance/publish.ts
+      publish-command: yarn workspace @suite-native-app/app exec tsx e2e/support/performance/publish.ts
 
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest

@@ -34,21 +34,21 @@ import {
     type WalletSettingsRootState,
 } from '@suite-common/wallet-core';
 import {
+    type Account,
     type FeeInfo,
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
-import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
+import { type useTradingReceiveAddress } from '#src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import {
     type TradingGetCryptoQuoteAmountProps,
     type TradingGetProvidersInfoProps,
     type TradingTradeSellExchangeType,
-} from 'src/types/trading/trading';
-import type { Account } from 'src/types/wallet';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
-import { type AmountLimitProps, type CryptoAmountLimitProps } from 'src/utils/suite/validation';
+} from '#src/types/trading/trading';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
+import { type AmountLimitProps, type CryptoAmountLimitProps } from '#src/utils/suite/validation';
 
 export interface TradingBuyFormDefaultValuesProps {
     defaultValues: TradingBuyFormProps;
@@ -166,15 +166,6 @@ export interface TradingExchangeFormContextProps
         trade,
     }: TradingExchangeConfirmTradeProps) => Promise<ExchangeTrade | undefined>;
     verifyAddress: TradingVerifyAccountProps;
-    approveTransaction: (trade: ExchangeTrade) => Promise<boolean>;
-    revokeApproval: (trade: ExchangeTrade) => Promise<boolean>;
-    confirmApproval: ({
-        trade,
-        receiveAddress,
-    }: {
-        trade?: ExchangeTrade;
-        receiveAddress: string;
-    }) => Promise<ExchangeTrade | undefined>;
     refreshQuotes: () => Promise<void>;
     isScheduledQuotesRefresh: boolean;
     fetchFeesAndCompose: () => Promise<void>;
@@ -182,8 +173,6 @@ export interface TradingExchangeFormContextProps
 
     isLoadingQuote: boolean;
     setIsLoadingQuote: (isLoadingQuote: boolean) => void;
-    isApproval: boolean;
-    setIsApproval: (isApproval: boolean) => void;
     methods: UseFormReturn<TradingExchangeFormProps>;
 
     showReserveBanner: boolean;
@@ -242,6 +231,7 @@ export interface TradingUseComposeTransactionProps<T extends TradingSellExchange
     methods: UseFormReturn<T>;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
     shouldSuppressComposeErrors?: boolean;
+    isComposeErrorPending?: boolean;
 }
 
 export interface TradingUseComposeTransactionStateProps {

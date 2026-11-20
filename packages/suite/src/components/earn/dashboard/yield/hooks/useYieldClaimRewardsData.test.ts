@@ -72,6 +72,7 @@ const createAccountRewards = (
             new BigNumber(0),
         ),
     ),
+    isTotalClaimableFiatAmountComplete: true,
 });
 
 const createRewardsQuery = (accountsRewards: AccountsRewards) =>

@@ -1,5 +1,6 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import TrezorConnect, { PROTO, type RecoveryDevice } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
@@ -118,6 +119,12 @@ export const recoverDeviceThunk = createThunk<void, void, { state: RecoverDevice
 
         if (!response.success) {
             dispatch(recoveryActions.setError(response.error.message));
+        } else if (params.type === 'NormalRecovery') {
+            // The recovered seed replaces any seed whose xpub hashes were stored by the wallet creation
+            // entropy check (e.g. if the device was disconnected during backup, the seed was never stored).
+            dispatch(
+                persistentDeviceDataActions.clearEntropyCheckXPubHashes({ deviceId: device.id }),
+            );
         }
 
         dispatch(recoveryActions.setStatus('finished'));

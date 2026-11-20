@@ -1,9 +1,14 @@
 import { shallowEqual } from 'react-redux';
 
-import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { type DeviceRootState } from '@suite-common/device';
+import {
+    type TokenDefinitionsRootState,
+    selectTokenDefinitions,
+} from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AssetAccountsRootState,
+    type AccountsRootState,
     type ExplorerState,
     type WalletAssetKey,
     type WalletSettingsRootState,
@@ -13,13 +18,17 @@ import {
     selectExplorer,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import { type MultiTokenValue, type TokenInfo } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-export type NftState = AssetAccountsRootState & WalletSettingsRootState & ExplorerState;
+export type NftState = AccountsRootState &
+    DeviceRootState &
+    TokenDefinitionsRootState &
+    WalletSettingsRootState &
+    ExplorerState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NftState>();
 
@@ -43,7 +52,7 @@ const toNftHolding = ({ deviceState, symbol, token }: ToNftHoldingParams): NftHo
     const contractAddress = token.contract as TokenAddress;
 
     return {
-        assetKey: getWalletAssetKey({ deviceState, symbol, contractAddress }),
+        assetKey: getWalletAssetKey({ deviceState, networkSymbol: symbol, contractAddress }),
         symbol,
         contractAddress,
         token,

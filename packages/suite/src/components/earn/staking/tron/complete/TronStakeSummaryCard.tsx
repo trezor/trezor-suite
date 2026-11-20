@@ -5,8 +5,8 @@ import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
@@ -50,7 +50,7 @@ export const TronStakeSummaryCard = () => {
                         <Divider color="borderNeutral" margin={0} />
                         <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_SUPPLIED" />}>
                             <Row alignItems="center" gap={8}>
-                                <TokenIcon symbol={account.symbol} size={24} />
+                                <TokenIcon networkSymbol={account.symbol} size={24} />
                                 <Column gap={2} alignItems="flex-end">
                                     <Text
                                         typographyStyle="body-md-strong"
@@ -58,7 +58,7 @@ export const TronStakeSummaryCard = () => {
                                     >
                                         <FormattedCryptoAmount
                                             value={freeze.amount}
-                                            symbol={account.symbol}
+                                            networkSymbol={account.symbol}
                                         />
                                     </Text>
                                     <Text

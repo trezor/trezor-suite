@@ -1,5 +1,8 @@
 name: "[Release] connect bump versions"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -14,7 +17,7 @@ on:
           - prerelease
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -27,6 +30,9 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
@@ -58,5 +64,6 @@ jobs:
       - name: Check dependencies to update
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          SEMVER: ${{ github.event.inputs.semver }}
         run: |
-          yarn tsx ./scripts/ci/connect-bump-versions.ts ${{ github.event.inputs.semver }}
+          yarn tsx ./scripts/ci/connect-bump-versions.ts "$SEMVER"

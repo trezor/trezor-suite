@@ -1,6 +1,6 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
 
-import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { areTypeAwareRulesConfigured } from './ruleSets.mjs';
 import { allRoots } from './workspaceRoots.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
@@ -58,19 +58,27 @@ export const localRulesConfig = [
                 'error',
                 { packageNames: ['@trezor/components', '@trezor/product-components'] },
             ],
+            'local-rules/no-unlimited-disable': 'error',
         },
     },
     {
-        files: [allRoots.suite, allRoots.suiteCli, allRoots.suiteNative, allRoots.suiteCommon].map(
-            root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
-        ),
+        files: [
+            allRoots.suite,
+            allRoots.suiteApp,
+            allRoots.suiteCli,
+            allRoots.suiteNative,
+            allRoots.suiteNativeApp,
+            allRoots.suiteCommon,
+        ].map(root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`),
         rules: {
             'local-rules/no-package-deep-imports': [
                 'error',
                 {
                     packageScopes: [
                         '@suite-native',
+                        '@suite-native-app',
                         '@suite',
+                        '@suite-app',
                         '@suite-cli',
                         '@suite-common',
                         '@trezor',
@@ -83,7 +91,7 @@ export const localRulesConfig = [
                         // Packages expose reusable test mocks (`/mocks`) and platform-specific React
                         // bindings (`/react` for web and desktop, `/react-native` for native) through
                         // dedicated public entry points.
-                        /^@(?:suite-native|suite|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
+                        /^@(?:suite-native|suite-native-app|suite|suite-app|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
                         // Node CLI services have a dedicated public entry point.
                         /^@suite-common\/icons\/scripts$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
@@ -91,9 +99,6 @@ export const localRulesConfig = [
                         // `@suite/intl` ships the translation catalogs as files next to its sources;
                         // e2e tests import a catalog by path to assert translated text.
                         /^@suite\/intl\/translations\/[\w-]+\.json$/,
-                        // The applications import the Webpack pieces they share from this
-                        // build-only entry point; it is never part of an application bundle.
-                        /^@trezor\/suite\/webpack\/[\w/-]+$/,
                     ],
                 },
             ],
@@ -111,6 +116,7 @@ export const localRulesConfig = [
             allRoots.networks,
             `${allRoots.packages}/suite`,
             allRoots.suite,
+            allRoots.suiteApp,
             allRoots.suiteCli,
             allRoots.suiteCommon,
         ].map(root => `${root}/**/*.{ts,tsx}`),
@@ -127,7 +133,7 @@ export const localRulesConfig = [
             'local-rules/enforce-thunk-names': 'error',
         },
     },
-    ...(areExpensiveChecksEnabled
+    ...(areTypeAwareRulesConfigured
         ? [
               {
                   files: Object.values(allRoots).map(root => `${root}/**/src/**/*.{ts,tsx}`),

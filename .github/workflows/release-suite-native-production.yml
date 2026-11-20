@@ -14,11 +14,10 @@ on:
         required: true
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ inputs.PLATFORM }}
   cancel-in-progress: true
 
 jobs:
@@ -50,7 +49,7 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
       - name: Build on EAS iOS
         run: eas build
           --platform ios
@@ -58,7 +57,7 @@ jobs:
           --non-interactive
           --auto-submit
           --message ${{ github.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
       - name: Build on EAS iOS simulator
         # Archive of production builds installable to iOS Simulator
         run: eas build
@@ -67,7 +66,7 @@ jobs:
           --non-interactive
           --no-wait
           --message ${{ github.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
   android:
     if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'iOS & Android' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build and submit Android
@@ -96,7 +95,7 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
       - name: Build on EAS Android
         run: eas build
           --platform android
@@ -104,8 +103,11 @@ jobs:
           --non-interactive
           --auto-submit
           --message ${{ github.sha }}
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
   androidAPK:
+    permissions:
+      id-token: write
+      contents: read
     if: ${{ github.event.inputs.PLATFORM == 'Android APK' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build standalone Android APK and release to S3
     environment: production-suite-native
@@ -139,16 +141,16 @@ jobs:
           config-file: .github/pmg-config.yml
       - name: Install libs
         run: |
-          yarn workspaces focus @suite-native/app
+          yarn workspaces focus @suite-native-app/app
 
       - name: Get Suite version
         id: get_version
         run: |
-          APP_VERSION=$(jq -r '.suiteNativeVersion' suite-native/app/package.json)
+          APP_VERSION=$(jq -r '.suiteNativeVersion' suite-native-app/app/package.json)
           echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Build on EAS Android
-        working-directory: suite-native/app
+        working-directory: suite-native-app/app
         id: eas_build
         run: |
           BUILD_ID=$(eas build --platform android --profile productionAPK --non-interactive --message ${{ github.sha }} --wait --json | jq -r '.[0].id')
@@ -178,6 +180,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-contents: write
 
       - name: Prepare release notes
         run: |
@@ -186,7 +189,8 @@ jobs:
       - name: Create GitHub draft release
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          APP_VERSION: ${{ steps.get_version.outputs.app_version }}
         run: |
           gh config set prompt disabled
-          TAG="v${{ steps.get_version.outputs.app_version }}@mobile"
-          gh release create --repo trezor/trezor-suite --draft ${TAG}  --title ${TAG} --latest=false --target ${{ github.ref_name }} --notes-file release-notes.md "./Trezor-Suite-${{ steps.get_version.outputs.app_version }}.apk"
+          TAG="v${APP_VERSION}@mobile"
+          gh release create --repo trezor/trezor-suite --draft ${TAG}  --title ${TAG} --latest=false --target "$GITHUB_REF_NAME" --notes-file release-notes.md "./Trezor-Suite-${APP_VERSION}.apk"

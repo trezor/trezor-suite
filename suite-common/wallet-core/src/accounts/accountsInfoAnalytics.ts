@@ -1,3 +1,4 @@
+import { type EventInstance, type events } from '@suite-common/analytics';
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountsWithSomeTransactionHistory } from '@suite-common/wallet-utils';
@@ -15,7 +16,7 @@ export const getAccountInfoAnalyticsPayload = (
     account: Account,
     tokenDefinitions: TokenDefinition | undefined,
     hasTraded: boolean,
-) => ({
+): EventInstance<typeof events.accountsInfoEvent>['payload'] => ({
     network: account.symbol,
     accountType: account.accountType,
     index: account.index,

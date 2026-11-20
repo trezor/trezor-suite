@@ -102,9 +102,7 @@ describe('getNonce thunk', () => {
             expect(result.type).toBe(getNonceThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_DEVICE_NOT_CONNECTED',
-                },
+                code: 'device-not-connected',
             });
 
             // Verify TrezorConnect.getNonce was not called
@@ -120,9 +118,7 @@ describe('getNonce thunk', () => {
             expect(result.type).toBe(getNonceThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_DEVICE_NOT_CONNECTED',
-                },
+                code: 'device-not-connected',
             });
         });
 
@@ -139,9 +135,8 @@ describe('getNonce thunk', () => {
             expect(result.type).toBe(getNonceThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: {
-                    id: 'TR_NONCE_ERROR',
-                },
+                code: 'nonce-failed',
+                cause: { source: 'connect', message: 'Device communication failed' },
             });
 
             // Verify TrezorConnect.getNonce was called

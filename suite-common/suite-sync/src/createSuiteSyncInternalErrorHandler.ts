@@ -1,5 +1,5 @@
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { DeviceError, isTrezorDeviceWithState } from '@suite-common/device';
+import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type AllocateOwnerQuotaDep } from '@suite-common/suite-sync-quota-manager';
 import {
     type Errors,
@@ -7,6 +7,7 @@ import {
     type SuiteSyncStorageRepositoryDep,
 } from '@suite-common/suite-sync-types';
 import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { DeviceError } from '@trezor/device';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 

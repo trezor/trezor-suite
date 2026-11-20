@@ -1,6 +1,6 @@
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 
-import { type Db } from './createDb';
+import { type Db } from './Db';
 
 export const loadStoragePayload = async (db: Db) => {
     // Load state from database in parallel using Promise.all
@@ -12,6 +12,7 @@ export const loadStoragePayload = async (db: Db) => {
         accounts,
         walletSettings,
         tradingTrades,
+        tradeApiInstallSalt,
         historicRates,
         graph,
         analytics,
@@ -40,6 +41,7 @@ export const loadStoragePayload = async (db: Db) => {
         discreetMode,
         debug,
         earnOnboarding,
+        referAFriend,
     ] = await Promise.all([
         db.getItemByPK('suiteSettings', 'suite'),
         db.getItemsExtended('devices'),
@@ -48,6 +50,7 @@ export const loadStoragePayload = async (db: Db) => {
         db.getItemsExtended('accounts'),
         db.getItemByPK('walletSettings', 'wallet'),
         db.getItemsExtended('tradingTrades'),
+        db.getItemByPK('tradeApiInstallSalt', 'tradeApiInstallSalt'),
         db.getItemsWithKeys('historicRates'),
         db.getItemsExtended('graph'),
         db.getItemByPK('analytics', 'suite'),
@@ -76,6 +79,7 @@ export const loadStoragePayload = async (db: Db) => {
         db.getItemByPK('discreetMode', 'discreetMode'),
         db.getItemByPK('debug', 'debug'),
         db.getItemsWithKeys('earnOnboarding'),
+        db.getItemByPK('referAFriend', 'referAFriend'),
     ]);
 
     return {
@@ -93,6 +97,7 @@ export const loadStoragePayload = async (db: Db) => {
         phishingMetadata,
         graph,
         tradingTrades,
+        tradeApiInstallSalt,
         historicRates,
         sendFormDrafts,
         receive,
@@ -117,5 +122,6 @@ export const loadStoragePayload = async (db: Db) => {
         discreetMode,
         debug,
         earnOnboarding,
+        referAFriend,
     } as const;
 };

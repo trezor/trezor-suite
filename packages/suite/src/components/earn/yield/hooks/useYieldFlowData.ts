@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type GetResolvedYieldFlowDataProps,
     type ResolvedYieldFlowData,
@@ -7,9 +8,9 @@ import {
     selectBaseCurrency,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
-import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
+import { type TickerId } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const useYieldFlowData = ({
     account,

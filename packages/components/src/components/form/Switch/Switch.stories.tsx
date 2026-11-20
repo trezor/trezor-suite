@@ -12,7 +12,7 @@ export default meta;
 
 export const Switch: StoryObj<typeof meta> = {
     render: () => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [{ isChecked, ...rest }, updateArgs] = useArgs();
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 

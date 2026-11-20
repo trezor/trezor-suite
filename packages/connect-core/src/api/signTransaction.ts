@@ -16,10 +16,10 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
 import {
+    applyZcashSignTxDefaultsIfZcash,
     assertRefTransactions,
     createPendingTransaction,
     deriveOutputScript,
-    enhanceSignTx,
     signTx,
     transformRawTransactions,
     validateTrezorInputs,
@@ -175,7 +175,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             paymentRequests,
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
-            options: enhanceSignTx(
+            options: applyZcashSignTxDefaultsIfZcash(
                 {
                     lock_time: payload.locktime,
                     timestamp: payload.timestamp,

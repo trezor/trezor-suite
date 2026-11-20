@@ -3,8 +3,8 @@ import { useEffect, useRef } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { openModal } from '@suite/modal';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -15,11 +15,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
-import { toggleViewThunk as toggleGuideView } from 'src/actions/suite/guideActions';
-import { useSelector } from 'src/hooks/suite';
-import { selectIsBioAuthEnabled } from 'src/reducers/bioAuth';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { bioAuthActions } from '#src/actions/suite/bioAuthActions';
+import { toggleViewThunk as toggleGuideView } from '#src/actions/suite/guideActions';
+import { selectIsBioAuthEnabled } from '#src/reducers/bioAuth/bioAuthReducer';
+import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
+
+import { useSelector } from './useSelector';
 
 type ListedAccount = ReturnType<typeof selectAllAccountsToList>[number];
 
@@ -45,14 +46,14 @@ export const useAppShortcuts = () => {
     const autodetectTheme = useSelector(selectAutodetectTheme);
 
     const isBioAuthEnabled = useSelector(selectIsBioAuthEnabled);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
     const toggleDebugMode = useToggleDebugMode();
 
     const handleKeyDown = (e: KeyboardEvent) => {
         const { altKey, metaKey, ctrlKey, shiftKey } = e;
         const isDeviceSelected = selectedDevice !== undefined;
-        const isTradingShortcutAllowed = isDeviceSelected && !isFinpromRestricted;
+        const isTradingShortcutAllowed = isDeviceSelected && !isRegionRestricted;
         const cmdOrCtrl = metaKey || ctrlKey;
         // Most shortcuts use ALT alone; exclude the other modifiers to avoid clashes.
         const altOnly = altKey && !shiftKey && !cmdOrCtrl;
@@ -89,6 +90,7 @@ export const useAppShortcuts = () => {
             dispatch(
                 startDiscoveryThunk({
                     device: selectedDevice,
+                    trigger: 'add-wallet',
                     isAddingHiddenWallet: true,
                     isAddingExistingWallet: true,
                 }),

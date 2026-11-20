@@ -1,6 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type SelectedAccountRootState } from '@suite/account';
+import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { metadataActions } from '@suite/metadata';
 import {
     type RouterRootState,
@@ -16,18 +16,19 @@ import {
     type WalletSettingsRootState,
     accountsActions,
     blockchainActions,
-    discoveryActions,
     feesActions,
+    selectAccounts,
     selectDeviceAccounts,
     selectDiscoveryForSelectedDevice,
     selectEnabledNetworks,
+    updateDiscoveryMatcher,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { type AccountSearchState } from 'src/reducers/wallet/accountSearchReducer';
-import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
+import { accountSearchActions } from '#src/reducers/wallet/accountSearchReducer';
+import { type AccountSearchState } from '#src/reducers/wallet/accountSearchReducer';
+import { getSelectedAccount } from '#src/utils/wallet/accountUtils';
 
 type SelectedAccountState = DeviceRootState &
     DiscoveryRootState &
@@ -113,7 +114,7 @@ const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => 
     }
 
     // get selected account
-    const account = getSelectedAccount(device.state.staticSessionId, state.wallet.accounts, params);
+    const account = getSelectedAccount(device.state.staticSessionId, selectAccounts(state), params);
     // account does exist
     if (account?.visible) {
         if (account.backendType === 'coinjoin') {
@@ -191,7 +192,7 @@ const actions = new Set<UnknownAction['type']>([
     blockchainActions.setBackend.type,
     blockchainActions.synced.type,
     blockchainActions.connected.type,
-    discoveryActions.updateDiscovery.type,
+    updateDiscoveryMatcher.type,
     feesActions.updateMultipleFees.type,
 ]);
 
@@ -228,7 +229,7 @@ export const syncSelectedAccountThunk =
         if (!newState) return;
 
         // find differences
-        const stateChanged = isChanged(state.wallet.selectedAccount, newState, {
+        const stateChanged = isChanged(selectFullSelectedAccount(state), newState, {
             account: [
                 'descriptor',
                 'availableBalance',

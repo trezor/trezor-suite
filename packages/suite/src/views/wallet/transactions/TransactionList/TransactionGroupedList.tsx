@@ -1,15 +1,16 @@
+import { TransactionTokenMetadataProvider } from '@suite-common/token';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     type GroupedTransactionsByDate,
     getTransactionWithLowestNonce,
     groupJointTransactions,
 } from '@suite-common/wallet-utils';
 
-import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
-import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
-import { useSelector } from 'src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
+import { CoinjoinBatchItem } from '#src/components/wallet/TransactionItem/CoinjoinBatchItem';
+import { TransactionItem } from '#src/components/wallet/TransactionItem/TransactionItem';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 import { findTransactionAccount } from './findTransactionAccount';
@@ -22,6 +23,7 @@ interface TransactionGroupedListProps {
     /** Rows of several accounts, or of one asset's transfers, each name their account. */
     isAccountShown?: boolean;
     isBumpFeeAllowed?: boolean;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
 }
 
 export const TransactionGroupedList = ({
@@ -31,6 +33,7 @@ export const TransactionGroupedList = ({
     isPending,
     isAccountShown = false,
     isBumpFeeAllowed = true,
+    onTransactionDetailOpen,
 }: TransactionGroupedListProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = getNetwork(symbol);
@@ -56,6 +59,7 @@ export const TransactionGroupedList = ({
                             key={item.rounds[0]?.txid}
                             transactions={item.rounds}
                             isPending={isPending}
+                            onTransactionDetailOpen={onTransactionDetailOpen}
                         />
                     );
                 }
@@ -64,22 +68,27 @@ export const TransactionGroupedList = ({
 
                 return (
                     account && (
-                        <TransactionItem
+                        <TransactionTokenMetadataProvider
                             key={`${account.key}/${item.tx.txid}`}
                             transaction={item.tx}
-                            isPending={isPending}
-                            accountKey={account.key}
-                            network={network}
-                            accountType={account.accountType}
-                            index={index}
-                            isAccountShown={isAccountShown}
-                            disableBumpFee={
-                                !isBumpFeeAllowed ||
-                                (network.networkType === 'ethereum'
-                                    ? item.tx.txid !== transactionWithLowestNonce?.txid
-                                    : item.tx.type === 'joint')
-                            }
-                        />
+                        >
+                            <TransactionItem
+                                transaction={item.tx}
+                                isPending={isPending}
+                                accountKey={account.key}
+                                network={network}
+                                accountType={account.accountType}
+                                index={index}
+                                isAccountShown={isAccountShown}
+                                onTransactionDetailOpen={onTransactionDetailOpen}
+                                disableBumpFee={
+                                    !isBumpFeeAllowed ||
+                                    (network.networkType === 'ethereum'
+                                        ? item.tx.txid !== transactionWithLowestNonce?.txid
+                                        : item.tx.type === 'joint')
+                                }
+                            />
+                        </TransactionTokenMetadataProvider>
                     )
                 );
             })}

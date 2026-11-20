@@ -20,8 +20,8 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/config": "workspace:*",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
+        "react": "19.3.0",
+        "react-native": "0.88.1",
         "react-native-lighthouse": "1.0.0",
         "react-redux": "9.3.0"
     }

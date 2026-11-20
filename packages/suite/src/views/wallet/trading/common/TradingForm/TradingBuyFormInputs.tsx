@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_COUNTRY_SELECT,
@@ -16,7 +17,6 @@ import {
     selectTradingBuySupportedCryptoIds,
     tradingActions,
 } from '@suite-common/trading';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
@@ -24,15 +24,15 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
-import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
-import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
-import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
-import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { TradingFormInputCountry } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
+import { TradingFormInputCurrency } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { TradingFormInputBaseCurrencyAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
+import { TradingFormInputCryptoAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { TradingFormInputFiat } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
+import { TradingFormInputPaymentMethod } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormSection } from './TradingFormSection';

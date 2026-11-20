@@ -1,7 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { BundledParams, Params, Response } from '../../params';
+import type { BundleableMethod } from '../../params';
 import { DerivationPath } from '../../params';
 
 export type CipherKeyValue = Static<typeof CipherKeyValue>;
@@ -19,7 +19,4 @@ export interface CipheredValue {
     value: string;
 }
 
-export declare function cipherKeyValue(params: Params<CipherKeyValue>): Response<CipheredValue>;
-export declare function cipherKeyValue(
-    params: BundledParams<CipherKeyValue>,
-): Response<CipheredValue[]>;
+export declare const cipherKeyValue: BundleableMethod<CipherKeyValue, CipheredValue>;

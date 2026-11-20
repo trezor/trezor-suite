@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
@@ -8,7 +7,7 @@ import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { bip39EnglishWordlist } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const options = bip39EnglishWordlist.map(item => ({ label: item, value: item }));
 
@@ -40,11 +39,9 @@ export const WordInput = memo(() => {
                 ref?.clearValue();
             }}
             options={options}
-            filterOption={createFilter({
-                ignoreCase: true,
-                trim: true,
-                matchFrom: 'start',
-            })}
+            filterOption={(option, inputValue) =>
+                option.label.startsWith(inputValue.trim().toLowerCase())
+            }
             data-testid="@word-input-select"
         />
     );

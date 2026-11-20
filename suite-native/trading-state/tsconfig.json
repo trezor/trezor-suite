@@ -16,6 +16,7 @@
         {
             "path": "../../suite-common/token-definitions"
         },
+        { "path": "../../suite-common/tokens" },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/wallet-config"
@@ -32,9 +33,9 @@
         { "path": "../accounts" },
         { "path": "../config" },
         { "path": "../feature-flags" },
-        { "path": "../finprom" },
         { "path": "../intl" },
         { "path": "../labeling" },
+        { "path": "../regions" },
         { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../tokens" },
@@ -45,7 +46,8 @@
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../trading-fixtures" }
+        { "path": "../trading-fixtures" },
+        { "path": "../../packages/requirements" }
     ],
     "include": [".", "**/*.json"]
 }

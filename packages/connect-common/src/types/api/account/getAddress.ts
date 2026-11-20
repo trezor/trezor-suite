@@ -3,7 +3,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { CoinSymbolParam } from '../../coinInfo';
-import type { Address as AddressShared, BundledParams, Params, Response } from '../../params';
+import type { Address as AddressShared, BundleableMethod } from '../../params';
 import { GetAddress as GetAddressShared } from '../../params';
 
 export type GetAddress = Static<typeof GetAddress>;
@@ -20,5 +20,4 @@ export const GetAddress = Type.Composite([
 
 type Address = AddressShared & PROTO.Address;
 
-export declare function getAddress(params: Params<GetAddress>): Response<Address>;
-export declare function getAddress(params: BundledParams<GetAddress>): Response<Address[]>;
+export declare const getAddress: BundleableMethod<GetAddress, Address>;

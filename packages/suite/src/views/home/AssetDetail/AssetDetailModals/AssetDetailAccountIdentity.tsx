@@ -18,7 +18,7 @@ export const AssetDetailAccountIdentity = ({
 
     return (
         <Row gap={12} alignItems="center" overflow="hidden" flex="1" data-testid={dataTestId}>
-            <TokenIcon symbol={account.symbol} size={24} />
+            <TokenIcon networkSymbol={account.symbol} size={24} />
             <Column overflow="hidden" alignItems="flex-start">
                 <Text typographyStyle="body-md" as="div" maxWidth="100%">
                     <AccountLabel

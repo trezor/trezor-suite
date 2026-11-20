@@ -22,6 +22,7 @@
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -30,9 +31,9 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
-        "@suite-native/finprom": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
+        "@suite-native/regions": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/tokens": "workspace:*",
@@ -43,10 +44,11 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.86.3"
+        "react-native": "0.88.1"
     },
     "devDependencies": {
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/requirements": "workspace:*",
         "@types/invity-api": "^1.1.23"
     }
 }

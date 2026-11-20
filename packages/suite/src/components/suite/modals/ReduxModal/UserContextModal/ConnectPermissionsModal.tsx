@@ -15,11 +15,11 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
-import { useSelector } from 'src/hooks/suite';
-import { GroupedPermissionsList } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
+import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
+import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
+import { ConnectProcessLabel } from '#src/components/suite/ConnectProcessLabel';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { GroupedPermissionsList } from '#src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -107,19 +107,27 @@ export const ConnectPermissionsModal = () => {
                                 }
                             />
 
-                            <Column gap={4}>
-                                <Row gap={12}>
+                            <Column gap={4} flex="1" minWidth={0}>
+                                <Row columnGap={12} rowGap={2} flexWrap="wrap">
                                     {source.manifest?.appName ? (
                                         <>
-                                            <Text data-testid="@connect-permissions-modal/app-name">
+                                            <Text
+                                                data-testid="@connect-permissions-modal/app-name"
+                                                ellipsisLineCount={2}
+                                                overflowWrap="anywhere"
+                                            >
                                                 {source.manifest.appName}
                                             </Text>
-                                            <Text intent="neutral" priority="secondary">
+                                            <Text
+                                                intent="neutral"
+                                                priority="secondary"
+                                                overflowWrap="anywhere"
+                                            >
                                                 {source.origin}
                                             </Text>
                                         </>
                                     ) : (
-                                        <Text>{source.origin}</Text>
+                                        <Text overflowWrap="anywhere">{source.origin}</Text>
                                     )}
                                 </Row>
                                 <Row>

@@ -261,7 +261,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
             }
         }
 
-        const toAddress = firstOutput.address;
+        const toAddress = firstOutput.address || (tokenInfo ? '' : account.descriptor);
         const serializedTx = formState.transactionData;
         const tokenTransferInfo = await getTokenTransferInfo(
             account,

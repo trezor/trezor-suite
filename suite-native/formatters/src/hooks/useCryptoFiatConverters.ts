@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
@@ -9,11 +10,7 @@ import {
     selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import {
-    type BaseCurrencyAmount,
-    type TokenAddress,
-    asBaseCurrencyAmount,
-} from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     asAmountUnit,

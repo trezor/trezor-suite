@@ -1,12 +1,12 @@
-import { type ReactNode, forwardRef, useEffect, useState } from 'react';
+import { type ReactNode, type Ref, useEffect, useState } from 'react';
 import {
     type NativeSyntheticEvent,
     Platform,
     type TargetedEvent,
     TextInput,
+    type TextInputInstance,
     type TextInputProps,
 } from 'react-native';
-import { type TextInput as GHTextInput } from 'react-native-gesture-handler';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- The raw Animated.Text label animates its font size; the styled Text atom would also set font size.
 import Animated, {
     Easing,
@@ -35,6 +35,7 @@ type InputBaseProps = {
     hasWarning?: boolean;
     rightIcon?: IconName | ReactNode;
     asBottomSheetInput?: boolean;
+    ref?: Ref<TextInputInstance>;
 };
 
 export type TextInputType = 'innerLabel' | 'outsideLabel' | 'noLabel';
@@ -47,7 +48,7 @@ export type InputLabelVariantProps =
 
 export type InputProps = TextInputProps & InputBaseProps & InputLabelVariantProps;
 
-export type InputType = TextInput | GHTextInput;
+export type InputType = TextInputInstance;
 
 const INPUT_VERTICAL_PADDING =
     Platform.OS == 'android' ? nativeSpacings.sp16 - 2 : nativeSpacings.sp16;
@@ -89,7 +90,6 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             : utils.colors.elementBorderField,
         borderWidth: utils.borders.widths.small,
         borderRadius: utils.borders.radii.r12,
-        margin: utils.borders.widths.small,
         paddingHorizontal: INPUT_WRAPPER_PADDING_HORIZONTAL,
         justifyContent: 'flex-end',
         extend: [
@@ -97,8 +97,6 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
                 condition: isFocused,
                 style: {
                     borderColor: utils.colors.elementBorderFieldFocused,
-                    borderWidth: utils.borders.widths.large,
-                    margin: 0,
                 },
             },
             {
@@ -141,6 +139,14 @@ const inputStyle = prepareNativeStyle<InputStyleProps>(
             // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
             paddingTop,
             paddingBottom,
+            extend: {
+                // On iOS, when the default lineHeight is used, input value seems to be vertically misaligned.
+                // Line height of 21 is empirically the closest value to the default that makes it work correctly.
+                condition: Platform.OS === 'ios',
+                style: {
+                    lineHeight: 21,
+                },
+            },
         };
     },
 );
@@ -241,115 +247,111 @@ const usePlaceholderAnimatedStyle = (isPlaceholderVisible: boolean) => {
     return useAnimatedStyle(() => ({ opacity: opacity.value }));
 };
 
-export const Input = forwardRef<TextInput, InputProps>(
-    (
-        {
-            value,
-            onFocus,
-            onBlur,
-            label,
-            placeholder,
-            rightIcon,
-            style,
-            editable,
-            labelType = 'innerLabel',
-            hasError = false,
-            hasWarning = false,
-            asBottomSheetInput = false,
-            ...props
-        }: InputProps,
-        ref,
-    ) => {
-        const [isFocused, setIsFocused] = useState<boolean>(false);
-        const isInnerLabelDisplayed = labelType === 'innerLabel' && !!label;
-        const isLabelMinimized = isFocused || !!value?.length;
-        const isRightIconDisplayed = !!rightIcon;
-        const isDisabled = G.isBoolean(editable) && !editable;
+export const Input = ({
+    value,
+    onFocus,
+    onBlur,
+    label,
+    placeholder,
+    rightIcon,
+    style,
+    editable,
+    labelType = 'innerLabel',
+    hasError = false,
+    hasWarning = false,
+    asBottomSheetInput = false,
+    ref,
+    ...props
+}: InputProps) => {
+    const [isFocused, setIsFocused] = useState<boolean>(false);
+    const isInnerLabelDisplayed = labelType === 'innerLabel' && !!label;
+    const isLabelMinimized = isFocused || !!value?.length;
+    const isRightIconDisplayed = !!rightIcon;
+    const isDisabled = G.isBoolean(editable) && !editable;
 
-        const { applyStyle } = useNativeStyles();
-        const { animatedInputLabelStyle } = useInputLabelAnimationStyles({
-            isLabelMinimized,
-        });
-        // BottomSheetTextInput allows to avoid keyboard by expanding BottomSheet
-        const InputComponent = asBottomSheetInput ? BottomSheetTextInput : TextInput;
+    const { applyStyle } = useNativeStyles();
+    const { animatedInputLabelStyle } = useInputLabelAnimationStyles({
+        isLabelMinimized,
+    });
+    // BottomSheetTextInput allows to avoid keyboard by expanding BottomSheet
+    const InputComponent = asBottomSheetInput ? BottomSheetTextInput : TextInput;
 
-        const handleOnFocus = (event: NativeSyntheticEvent<TargetedEvent>) => {
-            setIsFocused(true);
-            onFocus?.(event);
-        };
+    const handleOnFocus = (event: NativeSyntheticEvent<TargetedEvent>) => {
+        setIsFocused(true);
+        onFocus?.(event);
+    };
 
-        const handleOnBlur = (event: NativeSyntheticEvent<TargetedEvent>) => {
-            setIsFocused(false);
-            onBlur?.(event);
-        };
+    const handleOnBlur = (event: NativeSyntheticEvent<TargetedEvent>) => {
+        setIsFocused(false);
+        onBlur?.(event);
+    };
 
-        const shouldShowPlaceholder = !!placeholder && S.isEmpty(value);
-        const animatedPlaceholderStyle = usePlaceholderAnimatedStyle(shouldShowPlaceholder);
+    const shouldShowPlaceholder = !!placeholder && S.isEmpty(value);
+    const animatedPlaceholderStyle = usePlaceholderAnimatedStyle(shouldShowPlaceholder);
 
-        return (
-            <>
-                <Box
-                    style={applyStyle(inputWrapperStyle, {
-                        hasError,
-                        hasWarning,
-                        isLabelMinimized,
-                        isDisabled,
-                        isFocused,
-                    })}
-                >
-                    {isInnerLabelDisplayed && (
-                        <Animated.Text
-                            style={[
-                                /*
-                            fontSize has to be defined by the animation style itself.
-                            Otherwise, it re-renders and blinks when the size is defined
-                            in both places (native and animated style).
-                            */
-                                animatedInputLabelStyle,
-                                applyStyle(labelStyle, {
-                                    isLabelMinimized,
-                                }),
-                            ]}
-                            numberOfLines={1}
-                        >
-                            {label}
-                        </Animated.Text>
-                    )}
-                    {!!placeholder && (
-                        <AnimatedBox
-                            aria-hidden={!shouldShowPlaceholder}
-                            pointerEvents="none"
-                            style={[applyStyle(placeholderStyle), animatedPlaceholderStyle]}
-                        >
-                            <Text color="contentSecondary">{placeholder}</Text>
-                        </AnimatedBox>
-                    )}
-                    <Box flexDirection="row" alignItems="center">
-                        <InputComponent
-                            ref={ref as any}
-                            style={[
-                                applyStyle(inputStyle, {
-                                    isInnerLabelDisplayed,
-                                    isRightIconDisplayed,
-                                    isDisabled,
-                                }),
-                                style,
-                            ]}
-                            onFocus={handleOnFocus}
-                            onBlur={handleOnBlur}
-                            hitSlop={inputHitSlop}
-                            value={value}
-                            editable={editable}
-                            {...props}
-                        />
-                    </Box>
-                    {!!rightIcon && (
-                        <Box style={[applyStyle(iconStyle), applyStyle(rightIconStyle)]}>
-                            {isIconName(rightIcon) ? <Icon name={rightIcon} /> : rightIcon}
-                        </Box>
-                    )}
+    return (
+        <>
+            <Box
+                style={applyStyle(inputWrapperStyle, {
+                    hasError,
+                    hasWarning,
+                    isLabelMinimized,
+                    isDisabled,
+                    isFocused,
+                })}
+            >
+                {isInnerLabelDisplayed && (
+                    <Animated.Text
+                        style={[
+                            /*
+                        fontSize has to be defined by the animation style itself.
+                        Otherwise, it re-renders and blinks when the size is defined
+                        in both places (native and animated style).
+                        */
+                            animatedInputLabelStyle,
+                            applyStyle(labelStyle, {
+                                isLabelMinimized,
+                            }),
+                        ]}
+                        numberOfLines={1}
+                    >
+                        {label}
+                    </Animated.Text>
+                )}
+                {!!placeholder && (
+                    <AnimatedBox
+                        aria-hidden={!shouldShowPlaceholder}
+                        pointerEvents="none"
+                        style={[applyStyle(placeholderStyle), animatedPlaceholderStyle]}
+                    >
+                        <Text color="contentSecondary">{placeholder}</Text>
+                    </AnimatedBox>
+                )}
+                <Box flexDirection="row" alignItems="center">
+                    <InputComponent
+                        ref={ref as any}
+                        style={[
+                            applyStyle(inputStyle, {
+                                isInnerLabelDisplayed,
+                                isRightIconDisplayed,
+                                isDisabled,
+                            }),
+                            style,
+                        ]}
+                        onFocus={handleOnFocus}
+                        onBlur={handleOnBlur}
+                        hitSlop={inputHitSlop}
+                        value={value}
+                        editable={editable}
+                        {...props}
+                    />
                 </Box>
-            </>
-        );
-    },
-);
+                {!!rightIcon && (
+                    <Box style={[applyStyle(iconStyle), applyStyle(rightIconStyle)]}>
+                        {isIconName(rightIcon) ? <Icon name={rightIcon} /> : rightIcon}
+                    </Box>
+                )}
+            </Box>
+        </>
+    );
+};

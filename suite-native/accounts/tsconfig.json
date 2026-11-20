@@ -5,6 +5,12 @@
         { "path": "../../suite-common/address" },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
+            "path": "../../suite-common/earn-staking-common"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
@@ -20,9 +26,11 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"
         },

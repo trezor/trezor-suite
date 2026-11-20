@@ -1,6 +1,6 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events, redactRouterUrl } from '@suite/analytics';
 import {
     type RouterRootState,
     anchorChange,
@@ -29,13 +29,12 @@ import {
 } from '@trezor/device-utils';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
-import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { type SuiteRootState } from '#src/reducers/suite/suiteReducer';
 import {
     type GetSuiteReadyPayloadState,
     getSuiteReadyPayload,
     redactAnchor,
-    redactRouterUrl,
-} from 'src/utils/suite/analytics';
+} from '#src/utils/suite/analytics';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:

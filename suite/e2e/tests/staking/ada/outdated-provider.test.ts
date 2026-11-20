@@ -1,3 +1,4 @@
+import { messages } from '@suite/intl';
 import type { StakingBatch } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -94,13 +95,10 @@ test.describe(
                     ).toHaveTranslation('TR_STAKING_MODAL_OUTDATED_BUTTON');
                 });
 
-                await test.step('Verify "No rewards" label in account menu', async () => {
+                await test.step('Verify outdated staking warning in account menu', async () => {
                     await expect(
-                        walletPage.stakingRewardsReducedLabel({
-                            symbol: adaSymbol,
-                            subAccount: 'staking',
-                        }),
-                    ).toHaveTranslation('TR_STAKING_REWARDS_REDUCED');
+                        walletPage.stakingBadge({ symbol: adaSymbol }),
+                    ).toHaveAccessibleName(messages.TR_STAKING_REWARDS_REDUCED.defaultMessage);
                 });
 
                 await test.step('Verify outdated provider card on Staking tab', async () => {

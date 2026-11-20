@@ -226,22 +226,22 @@ describe('residenceSelectors', () => {
 
     describe('selectIsTradingResidenceSelectionAvailable', () => {
         it.each<[string, boolean, boolean, boolean]>([
-            ['true when residence check enabled and FinProm not restricted', true, false, true],
+            ['true when residence check enabled and region not restricted', true, false, true],
             ['false when residence check disabled', false, false, false],
-            ['false when FinProm restricted', true, true, false],
-            ['false when residence check disabled and FinProm restricted', false, true, false],
+            ['false when region restricted', true, true, false],
+            ['false when residence check disabled and region restricted', false, true, false],
         ])(
             'should return %s',
-            (_description, isResidenceWhitelistRequired, isFinpromRestricted, expected) => {
+            (_description, isResidenceWhitelistRequired, isRegionRestricted, expected) => {
                 const state = {
                     messageSystem: mockMessageSystemStateWithFeatureFlags(
                         {
                             [residenceDomain]: isResidenceWhitelistRequired,
-                            [Feature.finprom.presenceRestriction]: isFinpromRestricted,
+                            [Feature.regions.presenceRestriction]: isRegionRestricted,
                         },
                         {
                             [residenceDomain]: whitelistPayload,
-                            [Feature.finprom.presenceRestriction]: { countries: ['US'] },
+                            [Feature.regions.presenceRestriction]: { countries: ['US'] },
                         },
                     ),
                     ...localeRootState,
@@ -293,14 +293,14 @@ describe('residenceSelectors', () => {
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(true);
         });
 
-        it('should return false when FinProm is restricted (residence check enabled)', () => {
+        it('should return false when the region is restricted (residence check enabled)', () => {
             const state = {
                 ...getRootResidenceState(tradingInitialState.residence),
                 messageSystem: mockMessageSystemStateWithFeatureFlags(
-                    { [residenceDomain]: true, [Feature.finprom.presenceRestriction]: true },
+                    { [residenceDomain]: true, [Feature.regions.presenceRestriction]: true },
                     {
                         [residenceDomain]: whitelistPayload,
-                        [Feature.finprom.presenceRestriction]: { countries: ['US'] },
+                        [Feature.regions.presenceRestriction]: { countries: ['US'] },
                     },
                 ),
                 ...localeRootState,

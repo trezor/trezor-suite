@@ -20,12 +20,12 @@ export default [
                             (133 | 0x80000000) >>> 0,
                             (0 | 0x80000000) >>> 0,
                             0,
-                            0,
+                            1,
                         ],
                         prev_hash:
-                            '4264f5f339c9fd498976dabb6d7b8819e112d25a0c1770a0f3ee81de525de8f8',
+                            '1d96b1cbb9f7ba15a2e6c5950c6c508fe413b8b3aab279f2a27ebfabf0af98e9',
                         prev_index: 0,
-                        amount: '118540',
+                        amount: '16651',
                     },
                 ],
             },
@@ -34,8 +34,8 @@ export default [
                 type: 'json',
                 value: [
                     {
-                        address: 't1fT6Zv1LcPwSwausNAuYGdewv2Mke3nrYo',
-                        amount: '118000',
+                        address: 't1a4gB4zwx5WCTzabBMTttFqLiBrDFeUfTC',
+                        amount: '6651',
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
@@ -48,12 +48,12 @@ export default [
             {
                 name: 'version',
                 type: 'number',
-                value: '4',
+                value: 5,
             },
             {
                 name: 'versionGroupId',
                 type: 'number',
-                value: '0x892f2085',
+                value: 0x26a7270a,
             },
             {
                 name: 'push',

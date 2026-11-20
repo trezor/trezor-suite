@@ -1,4 +1,3 @@
-import type { Address, BundledParams, GetAddress, Params, Response } from '../../params';
+import type { Address, BundleableMethod, GetAddress } from '../../params';
 
-export declare function stellarGetAddress(params: Params<GetAddress>): Response<Address>;
-export declare function stellarGetAddress(params: BundledParams<GetAddress>): Response<Address[]>;
+export declare const stellarGetAddress: BundleableMethod<GetAddress, Address>;

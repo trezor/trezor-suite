@@ -67,6 +67,8 @@ import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_BALANCE_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
+    MIN_THOD_AMOUNT_FOR_STAKING,
+    MIN_THOD_BALANCE_FOR_STAKING,
     UNSTAKING_ETH_PERIOD,
 } from '../ethereum/ethereumStakingConstants';
 import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
@@ -105,7 +107,6 @@ export const getStakingLimitsByNetworkSymbol = (
     if (!symbol || !isStakingSymbol(symbol)) return null;
 
     switch (symbol) {
-        case 'thod':
         case 'eth':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_ETH_AMOUNT_FOR_STAKING,
@@ -114,6 +115,16 @@ export const getStakingLimitsByNetworkSymbol = (
                 MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
                 MIN_BALANCE_FOR_FEE_BUFFER: MIN_ETH_BALANCE_FOR_FEE_BUFFER,
                 MIN_BALANCE_FOR_STAKING: MIN_ETH_BALANCE_FOR_STAKING,
+            };
+
+        case 'thod':
+            return {
+                MIN_AMOUNT_FOR_STAKING: MIN_THOD_AMOUNT_FOR_STAKING,
+                MIN_AMOUNT_FOR_STAKING_DASHBOARD: MIN_THOD_AMOUNT_FOR_STAKING,
+                MAX_AMOUNT_FOR_STAKING: MAX_ETH_AMOUNT_FOR_STAKING,
+                MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
+                MIN_BALANCE_FOR_FEE_BUFFER: MIN_ETH_BALANCE_FOR_FEE_BUFFER,
+                MIN_BALANCE_FOR_STAKING: MIN_THOD_BALANCE_FOR_STAKING,
             };
 
         case 'dsol':

@@ -1,15 +1,18 @@
 import type { StakingAccount } from './stakingAccount';
 import type { StakingAmount } from './stakingAmount';
+import type { StakingCustomFee, StakingFeeLevelLabel } from './stakingFeeLevels';
 import type { StakingOperation, StakingOperationOptions } from './stakingOperation';
 import type {
     ComposedStakingStep,
     SignedStakingStep,
+    StakingBroadcastResult,
     StakingPlan,
     StakingStep,
 } from './stakingPlan';
 import type { StakingPosition } from './stakingPosition';
 import type { StakingProductDescriptor } from './stakingProductDescriptor';
 import type { StakingProductInfo } from './stakingProductInfo';
+import { type StakingTransaction } from './stakingTransaction';
 
 export type FetchProductInfoParams = {
     abortSignal?: AbortSignal;
@@ -18,8 +21,13 @@ export type FetchProductInfoParams = {
 export type GetPositionParams = {
     account: StakingAccount;
     productInfo: StakingProductInfo | null;
+    transactions: readonly StakingTransaction[];
 };
 
+/**
+ * Both bounds are inclusive: an amount is valid when `min <= amount <= max`.
+ * When `min > max`, no amount is valid, for example a balance below the minimum stake.
+ */
 export type StakingAmountBounds = {
     min: StakingAmount;
     max: StakingAmount;
@@ -36,18 +44,22 @@ export type PlanOperationParams = GetAmountBoundsParams & {
     amount: StakingAmount | null;
 };
 
-export type ComposeStepParams = {
+export type StakingStepParams = {
     account: StakingAccount;
     plan: StakingPlan;
     step: StakingStep;
 };
 
-export type SignStepParams = ComposeStepParams & {
-    composedStep: ComposedStakingStep;
-    feeLevel: string;
+export type ComposeStepParams = StakingStepParams & {
+    customFee: StakingCustomFee | null;
 };
 
-export type BroadcastStepParams = ComposeStepParams & {
+export type SignStepParams = StakingStepParams & {
+    composedStep: ComposedStakingStep;
+    feeLevel: StakingFeeLevelLabel;
+};
+
+export type BroadcastStepParams = StakingStepParams & {
     signedStep: SignedStakingStep;
 };
 
@@ -60,5 +72,5 @@ export type StakingProductAdapter = {
     planOperation: (params: PlanOperationParams) => Promise<StakingPlan>;
     composeStep: (params: ComposeStepParams) => Promise<ComposedStakingStep>;
     signStep: (params: SignStepParams) => Promise<SignedStakingStep>;
-    broadcastStep: (params: BroadcastStepParams) => Promise<{ txid: string }>;
+    broadcastStep: (params: BroadcastStepParams) => Promise<StakingBroadcastResult>;
 };

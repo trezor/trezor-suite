@@ -6,6 +6,7 @@
 export const ANALYTICS_ALLOWED_DOMAINS = [
     'accounts',
     'app',
+    'assets',
     'coin',
     'dashboard',
     'device',
@@ -13,6 +14,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'firmware',
     'guide',
     'menu',
+    'navigate',
     'onboarding',
     'passphrase',
     'promo',

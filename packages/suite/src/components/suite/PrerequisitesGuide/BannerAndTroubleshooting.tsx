@@ -1,6 +1,6 @@
 import { Box } from '@trezor/components';
 
-import { type PrerequisiteType } from 'src/utils/suite/prerequisites';
+import { type PrerequisiteType } from '#src/utils/suite/prerequisites';
 
 import { DeviceAcquire } from './DeviceAcquire';
 import { DeviceBootloader } from './DeviceBootloader';

@@ -239,8 +239,13 @@ export const getFiatRatesForTimestamps = (
 
                     if (!result.success) return null;
 
+                    const requestedTickers = result.payload.tickers.map((tick, index) => ({
+                        ...tick,
+                        ts: timestamps[index] ?? tick.ts,
+                    }));
+
                     // in case blockbook does not know fiat rate, it returns -1
-                    const validTickers = result.payload.tickers.filter(
+                    const validTickers = requestedTickers.filter(
                         tick => tick.rates[baseCurrencyCode] && tick.rates[baseCurrencyCode] >= 0,
                     );
 

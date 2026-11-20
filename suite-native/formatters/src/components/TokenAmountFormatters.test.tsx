@@ -1,5 +1,7 @@
-import { type TokenSymbol } from '@suite-common/wallet-types';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { type TokenMetadata, TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import {
     CompactTokenAmountFormatter,
@@ -11,66 +13,77 @@ import {
 } from './ExactTokenAmountFormatter';
 import { asDecimalTokenAmount } from '../utils';
 
-jest.mock('@suite-common/discreet-mode', () => ({
-    useDiscreetMode: () => ({
-        isDiscreetMode: false,
-    }),
-}));
+const networkSymbol = asNetworkSymbol('eth');
+const contractAddress = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const token: TokenMetadata = { contract: contractAddress, symbol: 'USDC', decimals: 18 };
 
 // Both formatters expect `value` in human-readable units; base-unit amounts must be converted
 // by the caller.
 describe('ExactTokenAmountFormatter', () => {
-    const renderExactTokenAmountFormatter = (props: Partial<ExactTokenAmountFormatterProps>) =>
-        renderWithBasicProvider(
-            <ExactTokenAmountFormatter
-                tokenSymbol={'USDC' as TokenSymbol}
-                value={asDecimalTokenAmount('1234.56')}
-                {...props}
-            />,
+    const renderExactTokenAmountFormatter = (
+        props: Partial<ExactTokenAmountFormatterProps>,
+        metadata: TokenMetadata = token,
+    ) =>
+        renderWithStoreProvider(
+            <TokenMetadataProvider sources={[{ networkSymbol, tokens: [metadata] }]}>
+                <ExactTokenAmountFormatter
+                    networkSymbol={networkSymbol}
+                    contractAddress={contractAddress}
+                    value={asDecimalTokenAmount('1234.56')}
+                    {...props}
+                />
+            </TokenMetadataProvider>,
         );
 
     it('should render formatted value', async () => {
-        const { getByTestId } = await renderExactTokenAmountFormatter({});
+        const { getByText } = await renderExactTokenAmountFormatter({});
 
-        expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 USDC');
+        expect(getByText('1,234.56 USDC')).toBeVisible();
     });
 
-    it('should cap displayed decimals to the token precision', async () => {
-        const { getByTestId } = await renderExactTokenAmountFormatter({
+    it('preserves the requested token precision', async () => {
+        const { getByText } = await renderExactTokenAmountFormatter({
             value: asDecimalTokenAmount('0.000000000000000001'),
             maxDisplayedDecimals: 18,
         });
 
-        expect(getByTestId('plain-text')).toHaveTextContent('0.000000000000000001 USDC');
+        expect(getByText('0.000000000000000001 USDC')).toBeVisible();
     });
 
-    it('should render phishing transaction with empty value as discreet text', async () => {
-        const { getByTestId } = await renderExactTokenAmountFormatter({
+    it('renders an empty token amount as zero without forcing privacy mode', async () => {
+        const { getByText } = await renderExactTokenAmountFormatter({
             value: asDecimalTokenAmount(''),
-            isPhishingTransaction: true,
         });
 
-        expect(getByTestId('discreet-text')).toHaveTextContent('0 USDC');
+        expect(getByText('0 USDC')).toBeVisible();
     });
 });
 
 describe('CompactTokenAmountFormatter', () => {
-    const renderCompactTokenAmountFormatter = (props: Partial<CompactTokenAmountFormatterProps>) =>
-        renderWithBasicProvider(
-            <CompactTokenAmountFormatter
-                tokenSymbol={'USDC' as TokenSymbol}
-                value={asDecimalTokenAmount('1234.56')}
-                {...props}
-            />,
+    const renderCompactTokenAmountFormatter = (
+        props: Partial<CompactTokenAmountFormatterProps>,
+        metadata: TokenMetadata = token,
+    ) =>
+        renderWithStoreProvider(
+            <TokenMetadataProvider sources={[{ networkSymbol, tokens: [metadata] }]}>
+                <CompactTokenAmountFormatter
+                    networkSymbol={networkSymbol}
+                    contractAddress={contractAddress}
+                    value={asDecimalTokenAmount('1234.56')}
+                    {...props}
+                />
+            </TokenMetadataProvider>,
         );
 
     it.each(['arb', 'eth', 'btc'])('keeps %s tokens in decimal token units', async symbol => {
-        const { getByTestId } = await renderCompactTokenAmountFormatter({
-            tokenSymbol: symbol as TokenSymbol,
-            value: asDecimalTokenAmount('20'),
-        });
+        const { getByText } = await renderCompactTokenAmountFormatter(
+            {
+                value: asDecimalTokenAmount('20'),
+            },
+            { ...token, symbol },
+        );
 
-        expect(getByTestId('plain-text')).toHaveTextContent(`20.00 ${symbol}`);
+        expect(getByText(`20.00 ${symbol.toUpperCase()}`)).toBeVisible();
     });
 
     it.each([
@@ -78,53 +91,36 @@ describe('CompactTokenAmountFormatter', () => {
         ['negative', '-20.00 ARB'],
         [undefined, '20.00 ARB'],
     ] as const)('renders a token amount with %s direction', async (signValue, expected) => {
-        const { getByTestId } = await renderCompactTokenAmountFormatter({
-            tokenSymbol: 'ARB' as TokenSymbol,
-            value: asDecimalTokenAmount('20'),
-            signValue,
-        });
+        const { getByText } = await renderCompactTokenAmountFormatter(
+            {
+                value: asDecimalTokenAmount('20'),
+                signValue,
+            },
+            { ...token, symbol: 'ARB' },
+        );
 
-        expect(getByTestId('plain-text')).toHaveTextContent(expected);
+        expect(getByText(expected)).toBeVisible();
     });
 
-    it('should render compact formatted value', async () => {
-        const { getByTestId } = await renderCompactTokenAmountFormatter({});
+    it('renders a compact token dust threshold with its symbol', async () => {
+        const { getByText } = await renderCompactTokenAmountFormatter(
+            {
+                value: asDecimalTokenAmount('0.009'),
+            },
+            { ...token, decimals: 6 },
+        );
 
-        expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 USDC');
-    });
-
-    it('should render compact formatted dust value', async () => {
-        const { getByTestId } = await renderCompactTokenAmountFormatter({
-            value: asDecimalTokenAmount('0.000009'),
-        });
-
-        expect(getByTestId('plain-text')).toHaveTextContent('<0.00001 USDC');
+        expect(getByText('<0.01 USDC')).toBeVisible();
     });
 
     it('should format a 6-decimal token balance money-like (two decimals)', async () => {
-        const { getByTestId } = await renderCompactTokenAmountFormatter({
-            tokenDecimals: 6,
-            value: asDecimalTokenAmount('23.910287'),
-        });
+        const { getByText } = await renderCompactTokenAmountFormatter(
+            {
+                value: asDecimalTokenAmount('23.910287'),
+            },
+            { ...token, decimals: 6 },
+        );
 
-        expect(getByTestId('plain-text')).toHaveTextContent('23.91 USDC');
-    });
-
-    it('should apply the money dust threshold for 6-decimal tokens', async () => {
-        const { getByTestId } = await renderCompactTokenAmountFormatter({
-            tokenDecimals: 6,
-            value: asDecimalTokenAmount('0.009'),
-        });
-
-        expect(getByTestId('plain-text')).toHaveTextContent('<0.01 USDC');
-    });
-
-    it('should not apply money formatting to non-6-decimal tokens', async () => {
-        const { getByTestId } = await renderCompactTokenAmountFormatter({
-            tokenDecimals: 18,
-            value: asDecimalTokenAmount('0.009'),
-        });
-
-        expect(getByTestId('plain-text')).toHaveTextContent('0.009 USDC');
+        expect(getByText('23.91 USDC')).toBeVisible();
     });
 });

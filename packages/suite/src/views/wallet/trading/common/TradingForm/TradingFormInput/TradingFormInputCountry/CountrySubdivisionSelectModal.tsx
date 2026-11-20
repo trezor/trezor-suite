@@ -10,9 +10,9 @@ import {
 import { CardList, Column, Icon, Input, Modal, Paragraph, Text } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
-import { type TradingBuySellFormProps } from 'src/types/trading/tradingForm';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { type TradingTradeBuySellType } from '#src/types/trading/trading';
+import { type TradingBuySellFormProps } from '#src/types/trading/tradingForm';
 
 interface CountrySubdivisionSelectModalProps {
     onClose: () => void;

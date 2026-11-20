@@ -21,9 +21,9 @@ import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
 
@@ -79,6 +79,11 @@ const IdentityMeta = styled.div`
 const MetaValue = styled.div`
     min-width: 0;
     overflow: hidden;
+`;
+
+const BalanceValue = styled.div`
+    flex-shrink: 0;
+    white-space: nowrap;
 `;
 
 const Actions = styled.div`
@@ -160,7 +165,7 @@ export const YieldPageHeader = ({
                 <IdentityIcon>
                     <TokenIcon
                         placeholder={vault?.token?.symbol || vault?.token?.name || ''}
-                        symbol={networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={vault?.token?.address}
                         showNetworkIcon
                         size={32}
@@ -174,7 +179,7 @@ export const YieldPageHeader = ({
         if (!hasVaultIdentity && routeParams?.symbol) {
             return (
                 <IdentityIcon>
-                    <TokenIcon symbol={routeParams.symbol} size={32} isBordered={false} />
+                    <TokenIcon networkSymbol={routeParams.symbol} size={32} isBordered={false} />
                 </IdentityIcon>
             );
         }
@@ -201,6 +206,7 @@ export const YieldPageHeader = ({
 
                 <IdentityTitle>
                     <Text
+                        as="div"
                         typographyStyle="body-md-strong"
                         ellipsisLineCount={isBelowMobile ? 2 : 1}
                     >
@@ -226,20 +232,20 @@ export const YieldPageHeader = ({
                                     •
                                 </Text>
                             )}
-                            <MetaValue>
+                            <BalanceValue>
                                 <Text
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
-                                    ellipsisLineCount={1}
                                 >
                                     <FormattedCryptoAmount
                                         value={account.formattedBalance}
-                                        symbol={account.symbol}
+                                        networkSymbol={account.symbol}
+                                        isCompact
                                         data-testid="@yield/page-header/balance"
                                     />
                                 </Text>
-                            </MetaValue>
+                            </BalanceValue>
                         </Row>
                     </IdentityMeta>
                 )}

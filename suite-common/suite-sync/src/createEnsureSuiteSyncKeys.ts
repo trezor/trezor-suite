@@ -78,6 +78,7 @@ export const createEnsureSuiteSyncKeys =
                 case 'DeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceNotConnectedError':
+                case 'LazyLoadingError':
                     return err(result.error);
 
                 // Those errors are most likely due to Bug in the code or data corruption

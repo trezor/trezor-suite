@@ -1,7 +1,7 @@
 import { type ExchangeKYCType } from 'invity-api';
 
-import { KYC_DEX, KYC_REQUIRED } from 'src/constants/wallet/trading/kyc';
-import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import { KYC_DEX, KYC_REQUIRED } from '#src/constants/wallet/trading/kyc';
+import { type TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
 
 import { TradingUtilsKyc } from './TradingUtilsKyc';
 

@@ -1,0 +1,27 @@
+{
+    "required": false,
+    "version": [2, 13, 0],
+    "min_bootloader_version": [2, 1, 13],
+    "min_firmware_version": [2, 9, 3],
+    "bootloader_version": [2, 1, 17],
+    "firmware_revision": "037e506db454691bda188df2803df2fc26c75f36",
+    "url": "firmware/t3w1/trezor-t3w1-2.13.0-bitcoinonly.bin",
+    "fingerprint": "ba48a31cd9b366a173c887e14c9d1cca0882919a814c58f93011e4e6fd374207",
+    "changelog": "* Enable Tropic firmware update.\n* Increase maximum passphrase length to 128 bytes.\n* Allow going back and changing previous selections during multishare backup creation, and remove the option to interrupt the flow from the checklist and number input screens.\n* Disable downgrading firmware to lower versions.\n* Don't warn about unknown derivation path when exporting valid xpubs.\n* Allow signing messages with multisig keys and exportable account nodes.\n* Check the correctness of thresholds in Advanced Shamir backup to prevent unfinished backup state.\n* Fix future timestamp formatting.",
+    "translations": {
+        "cs-CZ": "firmware/translations/t3w1/translation-T3W1-cs-CZ-2.13.0.bin",
+        "de-DE": "firmware/translations/t3w1/translation-T3W1-de-DE-2.13.0.bin",
+        "es-ES": "firmware/translations/t3w1/translation-T3W1-es-ES-2.13.0.bin",
+        "fr-FR": "firmware/translations/t3w1/translation-T3W1-fr-FR-2.13.0.bin",
+        "id-ID": "firmware/translations/t3w1/translation-T3W1-id-ID-2.13.0.bin",
+        "pt-BR": "firmware/translations/t3w1/translation-T3W1-pt-BR-2.13.0.bin"
+    },
+    "translations_metadata": {
+        "cs-CZ": { "status": "production" },
+        "de-DE": { "status": "beta" },
+        "es-ES": { "status": "beta" },
+        "fr-FR": { "status": "beta" },
+        "id-ID": { "status": "beta" },
+        "pt-BR": { "status": "beta" }
+    }
+}

@@ -1,10 +1,11 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { useEffect, useState } from 'react';
+import { type PropsWithChildren, useEffect, useState } from 'react';
 import { type DeepPartial } from 'react-hook-form';
 
 import { waitFor } from '@testing-library/react';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { debugInitialState } from '@suite/debug';
@@ -49,8 +50,7 @@ import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
+import { type ProtocolState } from '#src/reducers/suite/protocolState';
 import {
     type UserAction,
     actionSequence,
@@ -58,12 +58,22 @@ import {
     renderHookWithProviders,
     renderWithProviders,
     waitForLoader,
-} from 'src/support/test-utils/hooksHelper';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
-import SendIndex from 'src/views/wallet/send';
+} from '#src/support/test-utils/hooksHelper';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 import * as fixtures from './__fixtures__/useSendForm';
 import { useSendForm, useSendFormContext } from './useSendForm';
+import { type MockSuiteState } from '../../../mocks/mockInitialAppState';
+import { SendForm } from '../../views/wallet/send/SendForm';
+import { useSelector } from '../suite/useSelector';
+
+const SendFormWrapper = ({ children }: PropsWithChildren) => {
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+
+    if (selectedAccount.status !== 'loaded') return null;
+
+    return <SendForm selectedAccount={selectedAccount}>{children}</SendForm>;
+};
 
 const networkIcon = mockNetworkIcon();
 
@@ -134,7 +144,7 @@ const extraActions: OnModalCancelDep = { onModalCancel: closeModal };
 
 type SendFormTestDeps = WithServices<SendFormTestServices> & { actions: OnModalCancelDep };
 
-type SendFormTestState = AppState & { wallet: { selectedAccount: SelectedAccountLoaded } };
+type SendFormTestState = MockSuiteState & { wallet: { selectedAccount: SelectedAccountLoaded } };
 
 const createTestServices = ({
     send,
@@ -179,7 +189,7 @@ interface TestCallback {
 }
 type ComponentProps = { callback: TestCallback };
 
-// component rendered inside of SendIndex
+// component rendered inside of SendFormWrapper
 // callback prop is an object passed from single test case
 // getContextValues returns actual state of SendFormContext
 const Component = ({ callback }: ComponentProps) => {
@@ -363,9 +373,9 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     { ...services, networks: { ...services.networks, networkIcon } },
-                    <SendIndex>
+                    <SendFormWrapper>
                         <Component callback={callback} />
-                    </SendIndex>,
+                    </SendFormWrapper>,
                 );
                 // wait for first render
                 await waitForLoader();
@@ -404,9 +414,9 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     { ...services, networks: { ...services.networks, networkIcon } },
-                    <SendIndex>
+                    <SendFormWrapper>
                         <Component callback={callback} />
-                    </SendIndex>,
+                    </SendFormWrapper>,
                 );
                 console.log('renderWithProviders');
                 // wait for first render
@@ -444,9 +454,9 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     { ...services, networks: { ...services.networks, networkIcon } },
-                    <SendIndex>
+                    <SendFormWrapper>
                         <Component callback={callback} />
-                    </SendIndex>,
+                    </SendFormWrapper>,
                 );
                 await waitFor(() => findByTestId(/outputs\.[0-9]+\.address/));
                 // execute user actions sequence
@@ -473,9 +483,9 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     { ...services, networks: { ...services.networks, networkIcon } },
-                    <SendIndex>
+                    <SendFormWrapper>
                         <Component callback={callback} />
-                    </SendIndex>,
+                    </SendFormWrapper>,
                 );
 
                 // wait for first render
@@ -519,9 +529,9 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     { ...services, networks: { ...services.networks, networkIcon } },
-                    <SendIndex>
+                    <SendFormWrapper>
                         <Component callback={callback} />
-                    </SendIndex>,
+                    </SendFormWrapper>,
                 );
 
                 // wait for first render
@@ -550,9 +560,9 @@ describe('useSendForm hook', () => {
 
                 const { unmount } = renderWithProviders(
                     { ...services, networks: { ...services.networks, networkIcon } },
-                    <SendIndex>
+                    <SendFormWrapper>
                         <Component callback={callback} />
-                    </SendIndex>,
+                    </SendFormWrapper>,
                 );
 
                 // wait for first render

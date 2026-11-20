@@ -4,13 +4,13 @@ import { produce } from 'immer';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { type BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
 
-import { updateBreakpoints, updateWindowVisibility } from 'src/actions/suite/windowActions';
+import { updateBreakpoints, updateWindowVisibility } from '#src/actions/suite/windowActions';
 
 export interface WindowState extends BreakpointFlags {
     isVisible: boolean;
 }
 
-interface WindowRootState {
+export interface WindowRootState {
     window: WindowState;
 }
 

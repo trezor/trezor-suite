@@ -55,37 +55,35 @@ export const useYieldDepositFees = ({
                 return { type: 'error' };
             }
 
-            try {
-                const result = await dispatch(
-                    composeYieldDepositTransactionThunk({ amount: composeAmount, flowData }),
-                ).unwrap();
+            const result = await dispatch(
+                composeYieldDepositTransactionThunk({ amount: composeAmount, flowData }),
+            ).unwrap();
 
-                if (result.type === 'error') {
-                    return { type: 'error', reason: result.reason };
-                }
-
-                if (result.type !== 'action-ready') {
-                    return { type: 'not-ready' };
-                }
-
-                return {
-                    type: 'ready',
-                    transaction: {
-                        receiptAmount: result.receiptAmount,
-                        symbol: flowData.account.symbol,
-                        token: flowData.token,
-                        unsignedTransaction: result.unsignedTransaction,
-                    },
-                };
-            } catch {
-                return { type: 'error', reason: 'fee-estimation-failed' };
+            if (result.type === 'error') {
+                return { type: 'error', reason: result.reason };
             }
+
+            if (result.type !== 'action-ready') {
+                return { type: 'not-ready' };
+            }
+
+            return {
+                type: 'ready',
+                transaction: {
+                    receiptAmount: result.receiptAmount,
+                    symbol: flowData.account.symbol,
+                    token: flowData.token,
+                    unsignedTransaction: result.unsignedTransaction,
+                },
+            };
         },
         [dispatch, flowData],
     );
 
     const fees = usePreparedTxFees({
+        analyticsFlow: 'yield-deposit',
         amount,
+        availableBalance: flowData?.account.availableBalance,
         composeTransaction,
         formDraftKey,
         hasInvalidContext,
@@ -110,9 +108,11 @@ export const useYieldDepositFees = ({
 
     return {
         feePreview: preparedAction?.feePreview ?? null,
+        getCustomFeeLevel: fees.getCustomFeeLevel,
         formDraft: fees.formDraft,
         formDraftKey: fees.formDraftKey,
         hasFeeEstimationError: fees.hasFeeEstimationError,
+        isComposingFeeLevels: fees.isFeePreparing,
         isDepositFeeReady: fees.isFeeReady,
         isFeeUnavailable: fees.isFeeUnavailable,
         isPreparingDepositFee: fees.isFeePreparing,

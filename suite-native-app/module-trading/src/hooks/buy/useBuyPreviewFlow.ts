@@ -1,0 +1,111 @@
+import { useSelector } from 'react-redux';
+
+import type { BuyTradeResponse } from 'invity-api';
+
+import {
+    type TradingRootState,
+    buyThunks,
+    selectTradingBuyIsLoading,
+    selectTradingBuyReceiveAccountKey,
+    selectTradingBuyReceiveAddress,
+    selectTradingBuySelectedQuote,
+    selectTradingCoinInfoByCryptoId,
+    tradingBuyActions,
+} from '@suite-common/trading';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
+import { tradingActions } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+
+import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
+import { useCloseTradingFlow } from '../general/useCloseTradingFlow';
+
+export const useBuyPreviewFlow = () => {
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
+    const closeTradingFlow = useCloseTradingFlow();
+
+    const selectedQuote = useSelector(selectTradingBuySelectedQuote);
+    const receiveAccountKey = useSelector(selectTradingBuyReceiveAccountKey);
+    const receiveAddress = useSelector(selectTradingBuyReceiveAddress);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
+    const receiveAccount = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, receiveAccountKey),
+    );
+    const coinInfo = useSelector((state: TradingRootState) =>
+        selectTradingCoinInfoByCryptoId(state, selectedQuote?.receiveCurrency),
+    );
+    const quoteAnalyticsData = getAnalyticsTradingBuyPayload({
+        quote: selectedQuote,
+        coinInfo,
+    });
+
+    const { openBrowserForFormData } = useBrowserAuth('buy');
+
+    const canProceed = !isLoading && !!selectedQuote && !!receiveAccount && !!receiveAddress;
+
+    const reportTradeConfirmation = () => {
+        analytics.report({
+            type: events.tradingConfirmTradeEvent.name,
+            payload: {
+                type: 'buy',
+            },
+        });
+    };
+
+    const handleTradeResponse = async (response: BuyTradeResponse, returnUrl: string) => {
+        if (response.trade.paymentId) {
+            dispatch(tradingBuyActions.saveTransactionId(response.trade.paymentId));
+        }
+
+        if (response.tradeForm) {
+            await openBrowserForFormData(response.tradeForm.form, returnUrl);
+        }
+
+        dispatch(tradingActions.requestTradingFormReset('buy'));
+        closeTradingFlow();
+        dispatch(tradingBuyActions.clearQuotesAndParams());
+
+        if (response.trade.orderId) {
+            dispatch(tradingActions.setTradeOrderIdToBeOpened(response.trade.orderId));
+        }
+    };
+
+    const confirmTrade = async () => {
+        if (!canProceed || !selectedQuote || !receiveAccount || !receiveAddress) {
+            return;
+        }
+
+        analytics.report({
+            type: events.tradingBuyEvent.name,
+            payload: {
+                step: 'buy-preview',
+                action: 'continue',
+                ...quoteAnalyticsData,
+            },
+        });
+
+        const returnUrl = buildTradingUrl({
+            actionType: 'trade',
+            tradeType: 'buy',
+            orderId: selectedQuote.orderId,
+        });
+
+        await dispatch(
+            buyThunks.confirmTradeThunk({
+                address: receiveAddress,
+                returnUrl,
+                account: receiveAccount,
+                processResponseData: response => handleTradeResponse(response, returnUrl),
+                triggerAnalyticsTradeConfirmation: reportTradeConfirmation,
+            }),
+        );
+    };
+
+    return {
+        canProceed,
+        isLoading,
+        confirmTrade,
+    };
+};

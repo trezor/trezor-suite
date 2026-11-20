@@ -13,7 +13,7 @@ import {
     useDisplayBaseCurrency,
     useEvmNonceInfo,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getPendingEvmNonceStatus,
@@ -28,9 +28,8 @@ import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { OutlineHighlight } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { SUBPAGE_NAV_HEIGHT } from '#src/constants/suite/layout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
 import { TransactionAccountBadge } from './TransactionAccountBadge';
@@ -60,6 +59,7 @@ type TransactionItemProps = {
     disableBumpFee?: boolean;
     index: number;
     isAccountShown?: boolean;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
 };
 
 export const TransactionItem = memo(
@@ -73,6 +73,7 @@ export const TransactionItem = memo(
         disableBumpFee,
         index,
         isAccountShown = false,
+        onTransactionDetailOpen,
     }: TransactionItemProps) => {
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
@@ -142,6 +143,9 @@ export const TransactionItem = memo(
 
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
+            if (flow === 'detail') {
+                onTransactionDetailOpen?.(transaction);
+            }
             dispatch(
                 openModal({
                     type: 'transaction-detail',

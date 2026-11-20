@@ -1,3 +1,4 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Rate,
@@ -6,7 +7,6 @@ import {
     asBaseCurrencyAmount,
     asCryptoBaseCurrencyCode,
     asTimestamp,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -75,6 +75,16 @@ describe(getEarnPositionFiatAmount.name, () => {
             getEarnPositionFiatAmount(adaPosition, createRates([[adaPosition, undefined]])),
         ).toBeNull();
         expect(getEarnPositionFiatAmount(adaPosition, undefined)).toBeNull();
+    });
+
+    it('values testnet positions at zero instead of reporting a missing rate', () => {
+        const hoodiPosition: EarnFiatPosition = {
+            tickerId: { symbol: asNetworkSymbol('thod') },
+            fiatRateKey: asCryptoBaseCurrencyCode('thod-usd'),
+            balance: '32',
+        };
+
+        expect(getEarnPositionFiatAmount(hoodiPosition, undefined)?.toFixed()).toBe('0');
     });
 
     it('looks up token positions by their token rate key', () => {

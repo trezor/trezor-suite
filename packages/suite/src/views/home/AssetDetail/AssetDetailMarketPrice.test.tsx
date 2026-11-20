@@ -2,7 +2,10 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { fireEvent, screen } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { setAssetPriceChartRange } from '@suite/flags';
+import { messages } from '@suite/intl';
 import {
     AssetPriceChartRange,
     type AssetPricePoint,
@@ -10,14 +13,15 @@ import {
     useAssetPriceHistoryQuery,
 } from '@suite-common/price-chart';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
-import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { ETH, type PendingRateStatus, getEthAssetState } from './assetDetailTestState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/price-chart', () => ({
     ...jest.requireActual('@suite-common/price-chart'),
@@ -29,8 +33,8 @@ const mockUseAssetPriceHistoryQuery = jest.mocked(useAssetPriceHistoryQuery);
 const historyQuery = (data: AssetPricePoint[] | null | undefined, isLoading = false) =>
     ({ data, isLoading }) as ReturnType<typeof useAssetPriceHistoryQuery>;
 
-const failedHistoryQuery = () =>
-    ({ data: undefined, isLoading: false, isError: true }) as ReturnType<
+const failedHistoryQuery = (data?: AssetPricePoint[], isFetching = false) =>
+    ({ data, isLoading: false, isError: true, isFetching }) as ReturnType<
         typeof useAssetPriceHistoryQuery
     >;
 
@@ -50,32 +54,56 @@ type InitialStateParams = {
     ethRate?: number;
     /** What it cost a week ago. */
     ethWeekAgoRate?: number;
+    /** Where the price stands while there is no `ethRate`; no entry at all when left out. */
+    ethRateStatus?: PendingRateStatus;
     chartRange?: AssetPriceChartRange;
+    /** Tokens with a known definition, the only ones whose price is ever fetched. */
+    knownTokens?: TokenAddress[];
 };
 
 const getInitialState = ({
     ethRate,
     ethWeekAgoRate,
+    ethRateStatus,
     chartRange = INITIAL_ASSET_PRICE_CHART_RANGE,
-}: InitialStateParams): AppState => ({
+    knownTokens = [],
+}: InitialStateParams): MockSuiteState => ({
     ...getEthAssetState({
         accounts: [mockWalletAccount({ symbol: ETH, formattedBalance: '2' })],
         ethRate,
         ethWeekAgoRate,
+        ethRateStatus,
     }),
+    tokenDefinitions: {
+        [ETH]: {
+            coin: { data: knownTokens, error: false, isLoading: false, hide: [], show: [] },
+        },
+    },
     flags: { ...mockInitialAppState.flags, assetPriceChartRange: chartRange },
 });
 
-const renderMarketPrice = (state: AppState) => {
-    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
+const mockReport = jest.fn();
 
-    renderWithProviders(services, <AssetDetailMarketPrice assetKey={ETH_ASSET_KEY} />);
+const renderMarketPrice = (state: MockSuiteState, contractAddress?: TokenAddress) => {
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
+        preloadedState: state,
+        services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
+    });
+
+    renderWithProviders(
+        services,
+        <AssetDetailMarketPrice symbol={ETH} contractAddress={contractAddress} />,
+    );
 
     return services;
 };
 
 describe('the market price on the asset screen', () => {
     beforeEach(() => {
+        mockReport.mockClear();
         mockUseAssetPriceHistoryQuery.mockReset();
         mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(PRICE_HISTORY));
     });
@@ -134,9 +162,149 @@ describe('the market price on the asset screen', () => {
     });
 
     it('is left out for an asset the market does not price, leaving the balance card alone', () => {
-        renderMarketPrice(getInitialState({}));
+        mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(null));
+
+        renderMarketPrice(getInitialState({ ethRateStatus: 'failed' }));
 
         expect(screen.queryByTestId('@asset-detail/market-price')).not.toBeInTheDocument();
+    });
+
+    it('holds the place of the price and the chart with skeletons while both load', () => {
+        mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(undefined, true));
+
+        renderMarketPrice(getInitialState({ ethRateStatus: 'loading' }));
+
+        expect(screen.getByTestId('@asset-detail/market-price/skeleton')).toBeInTheDocument();
+        expect(screen.getByTestId('@price-chart/skeleton')).toBeInTheDocument();
+    });
+
+    it('keeps the chart skeleton while a failed history loads again, without a price', () => {
+        mockUseAssetPriceHistoryQuery.mockReturnValue(failedHistoryQuery(undefined, true));
+
+        renderMarketPrice(getInitialState({ ethRateStatus: 'loading' }));
+
+        expect(screen.getByTestId('@price-chart/skeleton')).toBeInTheDocument();
+    });
+
+    describe('is left out when the price failed, rather than showing a card without a price or a chart', () => {
+        it.each([
+            { title: 'while the history loads', query: historyQuery(undefined, true) },
+            { title: 'when the history failed', query: failedHistoryQuery() },
+            { title: 'when there is no history for the period', query: historyQuery([]) },
+        ])('$title', ({ query }) => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(query);
+
+            renderMarketPrice(getInitialState({ ethRateStatus: 'failed' }));
+
+            expect(screen.queryByTestId('@asset-detail/market-price')).not.toBeInTheDocument();
+        });
+    });
+
+    it('keeps the chart with an earlier history when loading it again failed, even without a price', () => {
+        mockUseAssetPriceHistoryQuery.mockReturnValue(failedHistoryQuery(PRICE_HISTORY));
+
+        renderMarketPrice(getInitialState({ ethRateStatus: 'failed' }));
+
+        expect(screen.getByTestId('@price-chart/error')).toBeInTheDocument();
+        expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
+    });
+
+    describe.each<{ title: string; ethRateStatus?: PendingRateStatus }>([
+        { title: 'while the price is loading', ethRateStatus: 'loading' },
+        // Rates load a few tickers at a time, so most tokens wait without an entry at all.
+        { title: 'while the price has not been asked for yet', ethRateStatus: undefined },
+    ])('$title', ({ ethRateStatus }) => {
+        it('holds the place of the price with a skeleton', () => {
+            renderMarketPrice(getInitialState({ ethRateStatus }));
+
+            expect(screen.getByTestId('@asset-detail/market-price/skeleton')).toBeInTheDocument();
+            expect(
+                screen.queryByTestId('@asset-detail/market-price/fiat-amount'),
+            ).not.toBeInTheDocument();
+        });
+
+        it('draws the price history without waiting for the price', async () => {
+            renderMarketPrice(getInitialState({ ethRateStatus }));
+
+            expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
+        });
+    });
+
+    describe('for a token', () => {
+        const TOKEN = '0x1000000000000000000000000000000000000001' as TokenAddress;
+
+        it('holds the place of the price with a skeleton while a known token waits for its price', () => {
+            renderMarketPrice(getInitialState({ knownTokens: [TOKEN] }), TOKEN);
+
+            expect(screen.getByTestId('@asset-detail/market-price/skeleton')).toBeInTheDocument();
+        });
+
+        it('draws the price history of a token whose price is never fetched, without a price skeleton', async () => {
+            renderMarketPrice(getInitialState({}), TOKEN);
+
+            expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(
+                screen.queryByTestId('@asset-detail/market-price/skeleton'),
+            ).not.toBeInTheDocument();
+            expect(
+                screen.queryByTestId('@asset-detail/market-price/fiat-amount'),
+            ).not.toBeInTheDocument();
+        });
+
+        it.each([
+            { title: 'while the history loads', query: historyQuery(undefined, true) },
+            { title: 'when there is no price history', query: historyQuery(null) },
+        ])('is left out for a token whose price is never fetched $title', ({ query }) => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(query);
+
+            renderMarketPrice(getInitialState({}), TOKEN);
+
+            expect(screen.queryByTestId('@asset-detail/market-price')).not.toBeInTheDocument();
+        });
+    });
+
+    it('draws the price history of an asset whose price failed to load, without a price', async () => {
+        renderMarketPrice(getInitialState({ ethRateStatus: 'failed' }));
+
+        expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
+        expect(
+            screen.queryByTestId('@asset-detail/market-price/fiat-amount'),
+        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('@asset-detail/market-price/skeleton')).not.toBeInTheDocument();
+    });
+
+    describe('says the price is not available, as the asset list does', () => {
+        it('when the price failed to load', async () => {
+            renderMarketPrice(getInitialState({ ethRateStatus: 'failed' }));
+
+            expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(screen.getByTestId('@asset-detail/market-price')).toHaveTextContent(
+                messages.TR_FIAT_RATES_NOT_AVAILABLE.defaultMessage,
+            );
+        });
+
+        it('for a token whose price is never fetched', async () => {
+            const TOKEN = '0x1000000000000000000000000000000000000001' as TokenAddress;
+
+            renderMarketPrice(getInitialState({}), TOKEN);
+
+            expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(screen.getByTestId('@asset-detail/market-price')).toHaveTextContent(
+                messages.TR_FIAT_RATES_NOT_AVAILABLE.defaultMessage,
+            );
+        });
+
+        it.each<{ title: string; params: InitialStateParams }>([
+            { title: 'not while the price is loading', params: { ethRateStatus: 'loading' } },
+            { title: 'not when there is a price', params: { ethRate: 3000 } },
+        ])('$title', ({ params }) => {
+            renderMarketPrice(getInitialState(params));
+
+            expect(screen.getByTestId('@asset-detail/market-price')).not.toHaveTextContent(
+                messages.TR_FIAT_RATES_NOT_AVAILABLE.defaultMessage,
+            );
+        });
     });
 
     describe('the price chart in it', () => {
@@ -169,6 +337,10 @@ describe('the market price on the asset screen', () => {
             expect(store.getActions()).toContainEqual(
                 setAssetPriceChartRange(AssetPriceChartRange.Month),
             );
+            expect(mockReport).toHaveBeenCalledWith({
+                type: events.assetsTimeframeChangeEvent.name,
+                payload: { timeframe: AssetPriceChartRange.Month, networkSymbol: ETH },
+            });
         });
 
         it('holds its place with a skeleton while the history loads', () => {
@@ -181,14 +353,27 @@ describe('the market price on the asset screen', () => {
             expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
         });
 
-        it('says the history failed to load and keeps the range picker, so another range can be picked', () => {
+        it('says the history failed to load, offers to refresh it and keeps the range picker, so another range can be picked', () => {
             mockUseAssetPriceHistoryQuery.mockReturnValue(failedHistoryQuery());
 
             renderMarketPrice(getInitialState({ ethRate: 3000 }));
 
             expect(screen.getByTestId('@price-chart/error')).toBeInTheDocument();
+            expect(screen.getByTestId('@price-chart/refresh')).toHaveTextContent(
+                messages.REFRESH.defaultMessage,
+            );
             expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
             expect(screen.getByTestId('@price-chart/range')).toBeInTheDocument();
+        });
+
+        it('holds its place with a skeleton while a failed range loads again, even when an earlier history is kept', () => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(failedHistoryQuery(PRICE_HISTORY, true));
+
+            renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            expect(screen.getByTestId('@price-chart/skeleton')).toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/error')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
         });
 
         it('says there is no history for the period and keeps the range picker, so another range can be picked', () => {

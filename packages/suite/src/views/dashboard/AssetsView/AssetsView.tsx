@@ -1,10 +1,19 @@
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { type AssetFiatBalance } from '@suite-common/assets';
+import {
+    selectTradingActiveSection,
+    selectTradingBuyLoadingTimestampAndStatus,
+    tradingThunks,
+} from '@suite-common/trading';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -20,7 +29,7 @@ import {
     selectCurrentFiatRates,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { type RatesByKey } from '@suite-common/wallet-types';
+import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
     BASE_CURRENCY_ZERO,
@@ -46,11 +55,11 @@ import { typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useDiscovery, useLayoutSize, useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { useNetworkSupport } from '#src/hooks/settings/useNetworkSupport';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AssetCard, AssetCardSkeleton } from './AssetCard/AssetCard';
 import { type AssetData } from './AssetData';
@@ -103,6 +112,25 @@ export const AssetsView = () => {
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
+    const tradingActiveSection = useSelector(selectTradingActiveSection);
+    const { isFullyLoaded: isBuyCatalogLoaded } = useSelector(
+        selectTradingBuyLoadingTimestampAndStatus,
+    );
+
+    useEffect(() => {
+        if (isRegionRestricted) return;
+
+        // A failed catalog request leaves an empty provider list in the cache and the Buy buttons
+        // would stay hidden until it expires, so reload it on every visit until it is usable.
+        dispatch(
+            tradingThunks.loadInitialDataThunk({
+                activeSection: tradingActiveSection,
+                forceReload: !isBuyCatalogLoaded,
+            }),
+        );
+    }, [dispatch, isBuyCatalogLoaded, isRegionRestricted, tradingActiveSection]);
+
     const hasMainnetNetworksToEnable = supportedMainnets.some(
         network => !enabledNetworks.includes(network.symbol),
     );

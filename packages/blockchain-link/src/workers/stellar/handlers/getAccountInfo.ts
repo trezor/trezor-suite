@@ -1,10 +1,10 @@
 import type { AccountInfo, MessageTypes, TokenInfo } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import {
     STELLAR_BASE_RESERVE,
     STELLAR_CONTRACT_TOKENS,
     STELLAR_DECIMALS,
+    transformStellarTransaction,
 } from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { BigNumber } from '@trezor/utils';
@@ -251,7 +251,7 @@ export const getAccountInfo = async (
                 // Resolved from the joined response, so this does not hit the network.
                 const rawTx = await operations[0].transaction();
 
-                return utils.transformTransaction(
+                return transformStellarTransaction(
                     describeTransaction(operations, rawTx, effects),
                     payload.descriptor,
                     tokenMetadata,
@@ -260,7 +260,7 @@ export const getAccountInfo = async (
                 // A dropped record would shorten the page, which reads as the end of the history.
                 console.warn('Stellar: failed to parse a transaction record', error);
 
-                return utils.transformTransaction(
+                return transformStellarTransaction(
                     describeUnparseableOperation(operations[0]),
                     payload.descriptor,
                     tokenMetadata,

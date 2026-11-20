@@ -1,13 +1,9 @@
 import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { type FeesRootState, selectNetworkFeeLevel } from '@suite-common/wallet-core';
-import type {
-    AccountKey,
-    FeeLevelLabel,
-    FormState,
-    TokenAddress,
-} from '@suite-common/wallet-types';
+import type { AccountKey, FeeLevelLabel, FormState } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
@@ -80,9 +76,11 @@ export const useFeeSelector = ({
     const { translate } = useTranslate();
     const networkType = account?.networkType;
     const isTrc20 = networkType === 'tron' && !!tokenContract;
-    const confirmedFeeLevel = feeLevels[selectedFee ?? selectedFeeLevel];
+    const confirmedSelection = selectedFee ?? selectedFeeLevel;
+    const confirmedFeeLevel = feeLevels[confirmedSelection];
+    const referenceFeeLevel = getReferenceFeeLevel(feeLevels);
     const networkFeeLevel = useSelector((state: FeesRootState) =>
-        selectNetworkFeeLevel(state, symbol, selectedFee ?? selectedFeeLevel),
+        selectNetworkFeeLevel(state, symbol, confirmedSelection),
     );
     const estimatedFee =
         account &&
@@ -90,8 +88,17 @@ export const useFeeSelector = ({
         isPrecomposedTransactionError(confirmedFeeLevel.error)
             ? estimateFee({
                   networkType: account.networkType,
-                  feePerUnit: networkFeeLevel?.maxFeePerGas ?? networkFeeLevel?.feePerUnit,
-                  referenceFeeLevel: getReferenceFeeLevel(feeLevels),
+                  feePerUnit:
+                      confirmedSelection === 'custom'
+                          ? formDraft?.maxFeePerGas || formDraft?.feePerUnit
+                          : (networkFeeLevel?.maxFeePerGas ?? networkFeeLevel?.feePerUnit),
+                  feeLimit:
+                      confirmedSelection === 'custom'
+                          ? formDraft?.feeLimit
+                          : referenceFeeLevel?.feeLimit ||
+                            formDraft?.estimatedFeeLimit ||
+                            formDraft?.feeLimit,
+                  referenceFeeLevel,
               })
             : null;
     const fee = isFinalPrecomposedTransaction(confirmedFeeLevel)
@@ -99,7 +106,7 @@ export const useFeeSelector = ({
         : estimatedFee;
     const { isFeeUnavailable, feeError } = getFeeAvailability({
         feeLevels,
-        selectedFee: selectedFee ?? selectedFeeLevel,
+        selectedFee: confirmedSelection,
         isLoading: areFeesLoading,
     });
     const precomposedErrorTitle = usePrecomposedTransactionError({
@@ -133,7 +140,9 @@ export const useFeeSelector = ({
                     return;
                 }
 
-                if (isTrc20 && customParams.customFeeLimit) {
+                if (isTrc20) {
+                    if (!customParams.customFeeLimit) return;
+
                     await dispatch(
                         updateFeeLimitThunk({
                             accountKey,

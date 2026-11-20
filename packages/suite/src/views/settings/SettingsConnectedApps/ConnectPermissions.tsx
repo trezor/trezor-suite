@@ -51,9 +51,12 @@ import {
 import { NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
-import { useSelector } from 'src/hooks/suite';
+import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
+import { ConnectProcessLabel } from '#src/components/suite/ConnectProcessLabel';
+import { useSelector } from '#src/hooks/suite/useSelector';
+
+import { ConnectAppName } from './ConnectAppName';
+
 // The remove button sits next to the permission text and is only revealed when
 // the row is hovered or a child receives keyboard focus, to reduce clutter.
 // Mirrors the reveal styling of EditableText's ActionsContainer.
@@ -310,18 +313,12 @@ export const ConnectPermissions = () => {
                     >
                         <ConnectAppIcon src={app.manifest?.appIcon} />
 
-                        <Column flex="1">
+                        <Column flex="1" minWidth={0}>
                             <Row columnGap={12} rowGap={2} flexWrap="wrap">
-                                {app.manifest?.appName ? (
-                                    <>
-                                        <Text>{app.manifest.appName}</Text>
-                                        <Text intent="neutral" priority="secondary">
-                                            {app.origin}
-                                        </Text>
-                                    </>
-                                ) : (
-                                    <Text>{app.origin}</Text>
-                                )}
+                                <ConnectAppName
+                                    appName={app.manifest?.appName}
+                                    origin={app.origin}
+                                />
 
                                 {app.process && <ConnectProcessLabel process={app.process} />}
                             </Row>

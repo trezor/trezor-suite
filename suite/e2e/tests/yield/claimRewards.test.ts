@@ -218,7 +218,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await page.clock.fastForward('01:01');
                 await yieldFlowSection.backToOverviewButton.click();
 
-                await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD_TITLE');
+                await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD');
                 await expect(yieldSection.claimRewardsAmount).toHaveText('$0.00');
                 await expect(yieldSection.claimRewardsButton).toBeDisabled();
             });

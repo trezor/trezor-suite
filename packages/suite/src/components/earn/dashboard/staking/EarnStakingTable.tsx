@@ -8,8 +8,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import { EarnStakingActivateRow } from './EarnStakingActivateRow';
@@ -51,7 +51,7 @@ export const EarnStakingTable = ({ onReady }: EarnStakingTableProps) => {
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>
                 <DashboardSection
-                    heading={<Translation id="TR_EARN_STAKING_DASHBOARD_TITLE" />}
+                    heading={<Translation id="TR_EARN_STAKING" />}
                     subheading={<Translation id="TR_EARN_STAKING_DASHBOARD_TEXT" />}
                     actions={
                         <Column margin={isCardLayout ? { top: 8 } : undefined}>

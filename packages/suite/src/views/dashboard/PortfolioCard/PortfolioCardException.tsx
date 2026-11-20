@@ -21,8 +21,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
-import { type DiscoveryStatusType } from 'src/types/wallet';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
+import { type DiscoveryStatusType } from '#src/types/wallet/wallet';
 
 interface CTA {
     label?: TranslationKey;
@@ -177,7 +177,7 @@ export const PortfolioCardException = ({
                         />
                     }
                     cta={{
-                        action: () => dispatch(startOrRestartDiscoveryThunk()),
+                        action: () => dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' })),
                         icon: RepeatIcon,
                     }}
                     dataTestBase={exception.type}
@@ -201,7 +201,7 @@ export const PortfolioCardException = ({
                             );
                             if (!result?.success) return;
                             // restart discovery
-                            dispatch(startOrRestartDiscoveryThunk());
+                            dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                         icon: PlusIcon,

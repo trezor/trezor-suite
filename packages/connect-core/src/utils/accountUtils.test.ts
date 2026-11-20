@@ -1,14 +1,7 @@
 import * as fixtures from './__fixtures__/accountUtils';
-import { getAccountLabel, isUtxoBased } from './accountUtils';
+import { isUtxoBased } from './accountUtils';
 
 describe('utils/accountUtils', () => {
-    describe('getAccountLabel', () => {
-        fixtures.getAccountLabelFixtures.forEach(f => {
-            it(f.description, () => {
-                expect(getAccountLabel(...f.input)).toEqual(f.output);
-            });
-        });
-    });
     describe('isUtxoBased', () => {
         fixtures.isUtxoBasedFixtures.forEach(f => {
             it(f.description, () => {
@@ -18,6 +11,5 @@ describe('utils/accountUtils', () => {
     });
 
     // todo:
-    describe.skip('getAccountAddressN', () => {});
     describe.skip('getPublicKeyLabel', () => {});
 });

@@ -1,7 +1,7 @@
 import { Linking } from 'react-native';
 
 import { getTranslation } from '@suite-native/intl';
-import { AppTabsRoutes, RootStackRoutes, TradingStackRoutes } from '@suite-native/navigation';
+import { AppTabsRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { userEvent, waitFor } from '@suite-native/test-utils-store';
 import {
     exchangeMercuryo,
@@ -117,11 +117,8 @@ describe('TradingHistoryDetailStatusAction', () => {
             await userEvent.press(getByTestId(startNewTradeTestID));
 
             expect(mockPopTo).toHaveBeenCalledWith(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.TradeStack,
-                params: {
-                    screen: TradingStackRoutes.Trading,
-                    params: { tradingType },
-                },
+                screen: AppTabsRoutes.Trading,
+                params: { tradingType },
             });
         },
     );

@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import {
+    type StakingRootState,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type EarnOnboardingRootState,
@@ -22,10 +26,10 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
 import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
@@ -59,6 +63,16 @@ export const StakingFormScreen = () => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        networkSymbol ? selectNativeTokenName(state, networkSymbol) : undefined,
+    );
+    const stakingLimits = useSelector((state: StakingRootState) =>
+        networkSymbol
+            ? (selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol)?.limits ??
+              null)
+            : null,
+    );
+
     const { analytics } = useServices(injectNativeAnalytics);
     const deviceStatus = useEarnDeviceStatus();
     const [currency, setCurrency] = useState<'crypto' | 'fiat'>('crypto');
@@ -88,15 +102,23 @@ export const StakingFormScreen = () => {
         account,
         formDraft,
         formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
+        hasFeeEstimationError,
+        isComposingFeeLevels,
+        retryFeeEstimation,
+        isFeeReady,
         updateFeeLevelThunk,
     } = stakingForm;
     const {
         formState: { isValid },
     } = form;
 
-    if (isBalanceBelowStakingMinimum(account)) {
+    if (
+        !pendingTransaction &&
+        isBalanceBelowStakingMinimum({
+            availableBalance: account.availableBalance,
+            limits: stakingLimits,
+        })
+    ) {
         return <StakingNoBalanceContent accountKey={accountKey} />;
     }
 
@@ -135,7 +157,7 @@ export const StakingFormScreen = () => {
                     title={
                         <Translation
                             id="earn.earnFormScreen.title"
-                            values={{ assetName: getNetworkDisplaySymbolName(account.symbol) }}
+                            values={{ assetName: nativeTokenName }}
                         />
                     }
                 />
@@ -144,13 +166,14 @@ export const StakingFormScreen = () => {
                 <StakingFormScreenFooter
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isDisabled={!isValid || isFeeUnavailable || isPrecomposeError || isPending}
+                    isDisabled={!isValid || !isFeeReady || isPending}
                     onPress={() => handleSubmit()}
                 />
             }
             footerHorizontalPadding="sp16"
         >
-            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+            {/* Keep the native parent stable when pointerEvents changes during navigation. */}
+            <Box collapsable={false} pointerEvents={isPending ? 'none' : 'auto'}>
                 <EarnAmountCard accountKey={accountKey} />
                 <Box marginTop="sp16">
                     <Form form={form}>
@@ -162,13 +185,17 @@ export const StakingFormScreen = () => {
                 </Box>
                 {isValid && (
                     <Box marginTop="sp24">
-                        <FeeSelector
+                        <EarnFeeSection
                             accountKey={accountKey}
-                            updateThunk={updateFeeLevelThunk}
-                            selectedFee={formDraft?.selectedFee ?? 'normal'}
-                            selectedFeePerUnit={formDraft?.feePerUnit}
-                            formDraft={formDraft}
-                            formDraftKey={formDraftKey}
+                            fees={{
+                                hasFeeEstimationError,
+                                isComposingFeeLevels,
+                                retryFeeEstimation,
+                                updateFeeLevelThunk,
+                                selectedFee: formDraft?.selectedFee ?? 'normal',
+                                formDraft,
+                                formDraftKey,
+                            }}
                         />
                     </Box>
                 )}

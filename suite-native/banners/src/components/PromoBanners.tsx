@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type VisiblePromoBannerKey, selectVisiblePromoBanners } from '../selectors';
+import { BlackFridayHolidayPromoBanner } from './BlackFridayHolidayPromoBanner';
 import { DefiYieldPromoBanner } from './DefiYieldPromoBanner';
 import { EthVaultPromoBanner } from './EthVaultPromoBanner';
 import { PromoBannerCarousel } from './PromoBannerCarousel';
@@ -24,6 +25,15 @@ const carouselWrapperStyle = prepareNativeStyle<CarouselWrapperStyleProps>(
 );
 
 const BANNER_COMPONENTS: Record<VisiblePromoBannerKey, React.ReactElement> = {
+    'bfh26-ts7-accessory-pack': (
+        <BlackFridayHolidayPromoBanner bannerType="bfh26-ts7-accessory-pack" />
+    ),
+    'bfh26-keep-metal': <BlackFridayHolidayPromoBanner bannerType="bfh26-keep-metal" />,
+    'bfh26-ts3-gift': <BlackFridayHolidayPromoBanner bannerType="bfh26-ts3-gift" />,
+    'bfh26-ts3-backup': <BlackFridayHolidayPromoBanner bannerType="bfh26-ts3-backup" />,
+    'bfh26-ts7-complete-kit': <BlackFridayHolidayPromoBanner bannerType="bfh26-ts7-complete-kit" />,
+    'bfh26-egift-card': <BlackFridayHolidayPromoBanner bannerType="bfh26-egift-card" />,
+    'bfh26-ts7-upgrade': <BlackFridayHolidayPromoBanner bannerType="bfh26-ts7-upgrade" />,
     ts7: <TrezorSafe7PromoBanner />,
     'defi-yield': <DefiYieldPromoBanner />,
     'eth-vault': <EthVaultPromoBanner />,

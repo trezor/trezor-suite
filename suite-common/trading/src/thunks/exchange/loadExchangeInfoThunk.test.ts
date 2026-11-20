@@ -20,7 +20,6 @@ describe('loadExchangeInfoThunk', () => {
     jest.mock('../../tradeApi');
 
     tradeApi.setServersEnvironment = () => {};
-    tradeApi.createApiKey = () => {};
 
     const { store } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({

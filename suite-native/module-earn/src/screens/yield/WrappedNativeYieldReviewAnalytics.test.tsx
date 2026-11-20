@@ -1,4 +1,4 @@
-import { type ComponentProps, type PropsWithChildren } from 'react';
+import { type ComponentProps } from 'react';
 
 import { mockResolvedYieldFlowData } from '@suite-common/wallet-core/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -35,12 +35,12 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectYieldSessionByFlowKey: () => mockSessions[mockStep],
 }));
-jest.mock('../../hooks/yield/useYieldFlowData', () => ({ useYieldFlowData: () => mockData }));
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useYieldFlowData: () => mockData,
+}));
 jest.mock('../../hooks/earn/useWrappedNativeReviewPreview', () => ({
     useWrappedNativeReviewPreview: () => ({ preview: {}, spentToken: mockData.token }),
-}));
-jest.mock('../../components/earn/EarnDeviceConnectionGuard', () => ({
-    EarnDeviceConnectionGuard: ({ children }: PropsWithChildren) => children,
 }));
 jest.mock('../../components/earn/WrappedNativeTokenReviewContent', () => ({
     WrappedNativeTokenReviewContent: (

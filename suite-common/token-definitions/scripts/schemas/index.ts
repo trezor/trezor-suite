@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@trezor/zod';
 
 // CoinGecko returns platforms as { [platform]: contractAddress }, where the contract can be an
 // empty string or null. Normalize to only the entries that have both, so the rest of the pipeline

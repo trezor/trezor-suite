@@ -14,7 +14,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingCryptoAssetChange } from './useTradingCryptoAssetChange';
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
     useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
 }));
 

@@ -1,4 +1,14 @@
+import { UINT256_MAX } from '@suite-common/suite-constants';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { Calldata } from '@trezor/network-ethereum-suite-common';
+import { BigNumber } from '@trezor/utils';
+
 import {
+    buildApprovalTransactionData,
+    getAllowanceAction,
+    getAllowanceAmount,
+    getAllowanceAmountForLimit,
+    getAllowanceTransactionType,
     isAllowanceUnlimited,
     shouldShowRevokeAllowanceBanner,
     tokenSupportsIncreasingAllowance,
@@ -98,5 +108,202 @@ describe('shouldShowRevokeAllowanceBanner', () => {
 
     it('hides the banner when the follow-up approval amount is unknown', () => {
         expect(shouldShowRevokeAllowanceBanner({ ...base, approveAmount: undefined })).toBe(false);
+    });
+});
+
+describe('buildApprovalTransactionData', () => {
+    const VALID_SPENDER = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+
+    it('builds correct calldata for a valid approval', () => {
+        const result = buildApprovalTransactionData({
+            amount: '1000000000000000000',
+            spender: VALID_SPENDER,
+        });
+
+        expect(result).toBe(
+            '0x095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
+                '0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        );
+    });
+
+    it('builds correct calldata for zero amount (revoke)', () => {
+        const result = buildApprovalTransactionData({
+            amount: '0',
+            spender: VALID_SPENDER,
+        });
+
+        expect(result).toBe(
+            '0x095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
+                '0000000000000000000000000000000000000000000000000000000000000000',
+        );
+    });
+
+    it('builds correct calldata for max uint256 (infinite approval)', () => {
+        const maxUint256Decimal = new BigNumber(UINT256_MAX).toString(10);
+        const result = buildApprovalTransactionData({
+            amount: maxUint256Decimal,
+            spender: VALID_SPENDER,
+        });
+
+        expect(result).toBe(
+            '0x095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
+                'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+        );
+    });
+
+    it.each([
+        ['wrong length', '0x742d35cc6634c0532925a3b844bc454e4438f44'],
+        ['non-hex characters', '0xZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'],
+        ['empty string', ''],
+    ])('throws for invalid spender address (%s)', (_, spender) => {
+        expect(() => buildApprovalTransactionData({ amount: '1000', spender })).toThrow();
+    });
+
+    it.each([
+        ['negative', '-1'],
+        ['non-numeric', 'abc'],
+        ['decimal', '1.5'],
+        ['exceeds uint256 max', new BigNumber(UINT256_MAX).plus(1).toString(10)],
+    ])('throws for invalid amount (%s)', (_, amount) => {
+        expect(() => buildApprovalTransactionData({ amount, spender: VALID_SPENDER })).toThrow();
+    });
+
+    it('produces calldata that the calldata decoder can decode', () => {
+        const amount = '1000000000000000000';
+        const calldata = buildApprovalTransactionData({
+            amount,
+            spender: VALID_SPENDER,
+        });
+
+        const decoded = Calldata.evm.erc20.approve.decode(calldata);
+
+        expect(decoded).not.toBeNull();
+        expect(decoded?.spender).toBe(VALID_SPENDER.toLowerCase());
+        expect(decoded?.amount.toString()).toBe(amount);
+    });
+});
+
+describe('getAllowanceAmount', () => {
+    const token: TokenInfo = { standard: 'ERC20', contract: USDC, symbol: 'usdc', decimals: 6 };
+
+    it('converts the requested amount to subunits for an exact approval', () => {
+        expect(getAllowanceAmount({ rawAmount: '1.5', approvalType: 'MINIMAL', token })).toEqual({
+            inputAmount: new BigNumber('1500000'),
+            allowanceAmount: '1500000',
+        });
+    });
+
+    it('uses the maximum uint256 for an unlimited approval', () => {
+        const { allowanceAmount } = getAllowanceAmount({
+            rawAmount: '1.5',
+            approvalType: 'INFINITE',
+            token,
+        });
+
+        expect(allowanceAmount).toBe(new BigNumber(UINT256_MAX).toString(10));
+        expect(
+            isAllowanceUnlimited({ amount: allowanceAmount, decimals: 6, isSubunit: true }),
+        ).toBe(true);
+    });
+
+    it('uses zero for a revoke', () => {
+        expect(
+            getAllowanceAmount({ rawAmount: '1.5', approvalType: 'ZERO', token }).allowanceAmount,
+        ).toBe('0');
+    });
+});
+
+describe('getAllowanceAmountForLimit', () => {
+    const token: TokenInfo = { standard: 'ERC20', contract: USDC, symbol: 'usdc', decimals: 6 };
+
+    it('approves exactly the requested amount for the minimal limit', () => {
+        expect(getAllowanceAmountForLimit({ amount: '1.5', limitType: 'minimal', token })).toEqual(
+            getAllowanceAmount({ rawAmount: '1.5', approvalType: 'MINIMAL', token }),
+        );
+    });
+
+    it('approves the maximum uint256 for the unlimited limit', () => {
+        const { allowanceAmount } = getAllowanceAmountForLimit({
+            amount: '1.5',
+            limitType: 'unlimited',
+            token,
+        });
+
+        expect(
+            isAllowanceUnlimited({ amount: allowanceAmount, decimals: 6, isSubunit: true }),
+        ).toBe(true);
+    });
+});
+
+describe('getAllowanceTransactionType', () => {
+    it('ends an approval or an increase in an approve transaction', () => {
+        expect(getAllowanceTransactionType('approve')).toBe('approve');
+        expect(getAllowanceTransactionType('increase')).toBe('approve');
+    });
+
+    it('ends a revoke in a revoke transaction', () => {
+        expect(getAllowanceTransactionType('revoke')).toBe('revoke');
+    });
+
+    it('needs no transaction to continue with a sufficient allowance', () => {
+        expect(getAllowanceTransactionType('continue')).toBeUndefined();
+    });
+});
+
+describe('getAllowanceAction', () => {
+    const base = {
+        requestedAmount: '100',
+        currentAllowanceAmount: '50',
+        shouldConsiderAllowance: true,
+        isRevokeRequired: false,
+        tokenContractAddress: USDC,
+    };
+
+    it('asks for an approval when the existing allowance is not to be considered', () => {
+        expect(getAllowanceAction({ ...base, shouldConsiderAllowance: false })).toBe('approve');
+        expect(
+            getAllowanceAction({
+                ...base,
+                shouldConsiderAllowance: false,
+                currentAllowanceAmount: '1000',
+            }),
+        ).toBe('approve');
+    });
+
+    it('asks for an approval when there is no allowance yet', () => {
+        expect(getAllowanceAction({ ...base, currentAllowanceAmount: '0' })).toBe('approve');
+        expect(getAllowanceAction({ ...base, currentAllowanceAmount: null })).toBe('approve');
+        expect(getAllowanceAction({ ...base, currentAllowanceAmount: undefined })).toBe('approve');
+    });
+
+    it('continues when the allowance covers the requested amount', () => {
+        expect(getAllowanceAction({ ...base, currentAllowanceAmount: '100' })).toBe('continue');
+        expect(getAllowanceAction({ ...base, currentAllowanceAmount: '250' })).toBe('continue');
+    });
+
+    it('continues when no amount has been entered yet and an allowance exists', () => {
+        expect(getAllowanceAction({ ...base, requestedAmount: '' })).toBe('continue');
+    });
+
+    it('asks for an increase when the allowance is too low and the token can grow it', () => {
+        expect(getAllowanceAction(base)).toBe('increase');
+    });
+
+    it('asks for a revoke when the allowance is too low and the token requires a reset', () => {
+        expect(getAllowanceAction({ ...base, tokenContractAddress: USDT })).toBe('revoke');
+    });
+
+    it('asks for an increase when the token contract is unknown', () => {
+        expect(getAllowanceAction({ ...base, tokenContractAddress: undefined })).toBe('increase');
+    });
+
+    it('asks for a revoke whenever a revoke was explicitly required', () => {
+        expect(getAllowanceAction({ ...base, isRevokeRequired: true })).toBe('revoke');
+        expect(
+            getAllowanceAction({ ...base, isRevokeRequired: true, currentAllowanceAmount: '0' }),
+        ).toBe('revoke');
     });
 });

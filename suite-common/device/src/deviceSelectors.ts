@@ -24,10 +24,12 @@ import {
 import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
+    type WalletDescriptor,
     getFirmwareRevision,
     getFirmwareVersion,
     getFirmwareVersionArray,
     hasBitcoinOnlyFirmware,
+    parseStaticSessionId,
 } from '@trezor/device-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -305,6 +307,28 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
+/**
+ * Selects a discovered standard wallet session, or null if it doesn't exist / exists without `staticSessionId`.
+ */
+export const selectStandardWalletByDeviceId = createMemoizedSelector(
+    [selectDevices, (_state, deviceId: string | undefined) => deviceId],
+    (devices, deviceId): TrezorDeviceWithState | null =>
+        devices.find(
+            (instance): instance is TrezorDeviceWithState =>
+                instance.id === deviceId &&
+                instance.useEmptyPassphrase === true &&
+                isTrezorDeviceWithState(instance),
+        ) ?? null,
+);
+
+export const selectStandardWalletDescriptorByDeviceId = createMemoizedSelector(
+    [selectStandardWalletByDeviceId],
+    (standardWallet): WalletDescriptor | null =>
+        standardWallet === null
+            ? null
+            : parseStaticSessionId(standardWallet.state.staticSessionId).walletDescriptor,
+);
+
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(
     [
         (_state, deviceId: TrezorDevice['id']) => deviceId,
@@ -410,6 +434,19 @@ export const selectPhysicalDeviceWallets = createMemoizedSelector([selectDevices
     ),
 );
 
+export const selectHasSetUpTrezorWallet = createMemoizedSelector(
+    [selectPhysicalDeviceWallets],
+    devices =>
+        devices.some(
+            device =>
+                !!device.state &&
+                getIsDeviceInitialized({
+                    deviceMode: device.mode,
+                    deviceFeatures: device.features,
+                }),
+        ),
+);
+
 export const selectIsNoPhysicalDeviceConnected = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
     devices => devices.every(device => !device.connected),
@@ -428,6 +465,11 @@ export const selectHasOnlyPortfolioDevice = createMemoizedSelector(
 export const selectHasDeviceFirmwareInstalled = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device && device.firmware !== 'none',
+);
+
+export const selectIsFirmwareUpdateRequired = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device && device.firmware === 'required',
 );
 
 export const selectIsDeviceRemembered = createMemoizedSelector(

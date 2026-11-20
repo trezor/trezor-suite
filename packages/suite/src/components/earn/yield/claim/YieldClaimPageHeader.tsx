@@ -5,9 +5,9 @@ import { IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
+import { BasicName } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
 
@@ -39,7 +39,7 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
                         flex="1"
                         overflow="hidden"
                     >
-                        <TokenIcon symbol={account.symbol} size={isBelowMobile ? 24 : 32} />
+                        <TokenIcon networkSymbol={account.symbol} size={isBelowMobile ? 24 : 32} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge

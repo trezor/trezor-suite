@@ -18,16 +18,25 @@ import { useYieldDepositApprovalController } from './useYieldDepositApprovalCont
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { mockYieldFlowScreenBaseResult } from '../../../../mocks/mockYieldFlowScreenBaseResult';
 import { mockYieldPendingTransactionResult } from '../../../../mocks/mockYieldPendingTransactionResult';
+import { YieldFlowExitAnalyticsProvider } from '../../../components/yield/YieldFlowExitAnalyticsProvider';
 import { useYieldApprovalFees } from '../useYieldApprovalFees';
 import { useYieldDepositForm } from '../useYieldDepositForm';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 
 let mockNavigationRoutes: unknown[];
+const mockBeforeRemove = jest.fn(
+    (_name: string, _listener: (event: { data: { action: { type: string } } }) => void) => () =>
+        undefined,
+);
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
+    useFocusEffect: jest.fn(),
     useNavigation: () => ({
+        addListener: mockBeforeRemove,
+        getParent: () => ({ addListener: mockBeforeRemove }),
+        isFocused: () => true,
         navigate: jest.fn(),
         getState: () => ({ routes: mockNavigationRoutes }),
     }),
@@ -111,6 +120,7 @@ const renderApprovalController = () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
 
     return renderHookWithStoreProvider(useYieldDepositApprovalController, {
+        wrapper: YieldFlowExitAnalyticsProvider,
         services: { ...services, store },
     }).then(view => ({ ...view, services, dispatchSpy }));
 };
@@ -135,6 +145,8 @@ describe('useYieldDepositApprovalController', () => {
         useYieldApprovalFeesMock.mockReturnValue({
             formDraft: null,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: true,
             selectedFee: undefined,
             updateFeeLevelThunk: jest.fn(),
@@ -147,6 +159,52 @@ describe('useYieldDepositApprovalController', () => {
         const { result } = await renderApprovalController();
 
         expect(result.current.status).toBe('ready');
+    });
+
+    it('pauses approval estimates while another screen owns the fee levels', async () => {
+        useYieldFlowScreenBaseMock.mockReturnValue(buildScreenBase({ isFocused: false }));
+
+        await renderApprovalController();
+
+        expect(useYieldApprovalFeesMock).toHaveBeenLastCalledWith(
+            expect.objectContaining({ isEnabled: false }),
+        );
+    });
+
+    it('pauses approval estimates while the approval is pending', async () => {
+        useYieldPendingTransactionMock.mockReturnValue(
+            mockYieldPendingTransactionResult({
+                pendingTransaction: { type: 'approve', txid: '0xpending', amount: '5' },
+            }),
+        );
+
+        await renderApprovalController();
+
+        expect(useYieldApprovalFeesMock).toHaveBeenLastCalledWith(
+            expect.objectContaining({ isEnabled: false }),
+        );
+    });
+
+    it('reports leaving the approval flow while its transaction is pending', async () => {
+        useYieldPendingTransactionMock.mockReturnValue(
+            mockYieldPendingTransactionResult({
+                pendingTransaction: { type: 'approve', txid: '0xpending', amount: '5' },
+            }),
+        );
+        const { services } = await renderApprovalController();
+        const listener = mockBeforeRemove.mock.calls.at(-1)?.[1];
+        if (!listener) throw new Error('Missing exit listener');
+        await act(() => listener({ data: { action: { type: 'POP_TO_TOP' } } }));
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: 'yield/navigate',
+            payload: {
+                action: 'cancel',
+                from: 'deposit-form',
+                to: 'earn-dashboard',
+                networkSymbol: 'eth',
+                vaultId: 'vault-id',
+            },
+        });
     });
 
     it('offers the skip only while the approve step shows an approved amount', async () => {
@@ -173,6 +231,8 @@ describe('useYieldDepositApprovalController', () => {
         useYieldApprovalFeesMock.mockReturnValue({
             formDraft: null,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: false,
             selectedFee: undefined,
             updateFeeLevelThunk: jest.fn(),

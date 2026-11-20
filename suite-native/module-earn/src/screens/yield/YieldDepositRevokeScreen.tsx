@@ -1,11 +1,13 @@
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerInline, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldDepositRevokeDetailsCard } from '../../components/yield/YieldDepositRevokeDetailsCard';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { useYieldDepositRevokeScreen } from '../../hooks/yield/useYieldDepositRevokeScreen';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositRevokeScreen = () => {
     const revokeScreen = useYieldDepositRevokeScreen();
@@ -18,7 +20,7 @@ export const YieldDepositRevokeScreen = () => {
         account,
         accountLabel,
         approvedAmount,
-        feeSelectorProps,
+        feeSection,
         handleReviewAndSign,
         isApprovedAmountUnlimited,
         isSubmitDisabled,
@@ -27,7 +29,6 @@ export const YieldDepositRevokeScreen = () => {
         pendingModal,
         providerName,
         shouldShowLowLimitWarning,
-        tokenDecimals,
         tokenContract,
         tokenSymbol,
         vaultTokenName,
@@ -39,7 +40,7 @@ export const YieldDepositRevokeScreen = () => {
         pendingModal?.amount
     );
 
-    return (
+    const content = (
         <Screen
             header={
                 <DynamicScreenHeader
@@ -93,12 +94,16 @@ export const YieldDepositRevokeScreen = () => {
                         approvedAmount={approvedAmount}
                         isApprovedAmountUnlimited={isApprovedAmountUnlimited}
                         providerName={providerName}
-                        tokenDecimals={tokenDecimals}
                         tokenContract={tokenContract}
-                        tokenSymbol={tokenSymbol}
                     />
 
-                    {feeSelectorProps && <FeeSelector {...feeSelectorProps} />}
+                    {feeSection && (
+                        <EarnFeeSection
+                            accountKey={account.key}
+                            tokenContract={tokenContract}
+                            fees={feeSection}
+                        />
+                    )}
                 </VStack>
             </Box>
 
@@ -110,7 +115,7 @@ export const YieldDepositRevokeScreen = () => {
                     amount={pendingModalAmount}
                     amountLabel={<Translation id="earn.yieldDepositFlowScreen.approvedAmount" />}
                     amountTokenContract={tokenContract}
-                    amountTokenSymbol={pendingModal.amountTokenSymbol}
+                    withAmountSymbol={!isApprovedAmountUnlimited}
                     fee={pendingModal.fee}
                     isExploreDisabled={pendingModal.isExploreDisabled}
                     onExplorePress={pendingModal.onExplorePress}
@@ -122,5 +127,13 @@ export const YieldDepositRevokeScreen = () => {
                 />
             )}
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider
+            sources={yieldFlowDataToTokenMetadataSources(revokeScreen.yieldFlowData)}
+        >
+            {content}
+        </TokenMetadataProvider>
     );
 };

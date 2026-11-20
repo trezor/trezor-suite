@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { AssetIcon } from '@suite/assets';
+import { TokenName } from '@suite/token';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -7,29 +9,26 @@ import {
     type TokenManagementAction,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, toTokenAddress } from '@suite-common/tokens';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import {
     removeStellarContractTokenThunk,
     selectIsStellarContractTokenWatched,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
-import {
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    PriceTicker,
-    TrendTicker,
-} from 'src/components/suite';
-import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
-import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
-import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useSelector } from 'src/hooks/suite';
+import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
+import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
+import { StellarManageTokenModal } from '#src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TokenRowActions } from './TokenRowActions';
 import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';
@@ -111,14 +110,16 @@ export const TokenRow = ({
                             contractAddress={toTokenAddress(token.contract)}
                             gap={8}
                         >
-                            <TokenIcon
-                                placeholder={token.name || token.symbol || 'token'}
-                                symbol={account.symbol}
-                                contractAddress={token.contract}
+                            <AssetIcon
+                                networkSymbol={account.symbol}
+                                contractAddress={toTokenAddress(token.contract)}
                                 size={24}
                                 shouldTryToFetch={isTokenKnown}
                             />
-                            {isTokenKnown ? token.name : <TokenUrlBlur text={token.name} />}
+                            <TokenName
+                                networkSymbol={account.symbol}
+                                tokenContract={toTokenAddress(token.contract)}
+                            />
                         </AssetDetailLink>
                         {yieldBadge && (
                             <YieldBadge
@@ -149,10 +150,9 @@ export const TokenRow = ({
                             <FormattedCryptoAmount
                                 data-testid={`@token-row/${token.name}/crypto-amount`}
                                 value={token.balance}
-                                symbol={token.symbol}
-                                contractAddress={token.contract}
+                                networkSymbol={account.symbol}
+                                contractAddress={toTokenAddress(token.contract)}
                                 isCompact
-                                tokenDecimals={token.decimals}
                             />
                         </Text>
                     </Column>

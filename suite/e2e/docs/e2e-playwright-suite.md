@@ -1,4 +1,4 @@
-# @suite/desktop-app and @suite/web-app e2e tests
+# @suite-app/desktop-app and @suite-app/web-app e2e tests
 
 @suite/e2e uses [Playwright](https://playwright.dev/) to run e2e tests. It also uses [trezor-user-env](https://github.com/trezor/trezor-user-env) which is [daily built](https://ghcr.io/trezor/trezor-user-env) into a docker image providing all the necessary instrumentation required to run tests (bridge and emulators).
 
@@ -26,14 +26,14 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 ### Desktop
 
-1. `TEST_BUILD=true yarn workspace @suite/desktop-app build:ui`
+1. `TEST_BUILD=true yarn workspace @suite-app/desktop-app build:ui`
 
     Produces `desktop-app/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
     TEST_BUILD env variable serves to mock bundled message-system config .
 
     _Note: This step needs to be repeated on each change in `suite` or `desktop-app-renderer` package._
 
-1. `yarn workspace @suite/desktop-app build:app`
+1. `yarn workspace @suite-app/desktop-app build:app`
 
     Produces `desktop-app/dist` directory with javascript bundles & assets in production mode for the electron-main process.
 
@@ -67,7 +67,7 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
 
-1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @suite/desktop-app git:bisect <last_good_commit> <desktop|web> <test_file>`
+1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @suite-app/desktop-app git:bisect <last_good_commit> <desktop|web> <test_file>`
 
 ## Contribution
 
@@ -95,18 +95,19 @@ At the moment, there are these additional tags:
 #### Device coverage on PR
 
 Most E2E tests are specified to cover T3T1 and T3W1, the two flagship models.
-But to save Currents quota, T3T1 is skipped on PR test runs, and only T3W1 is covered, unless the test is exclusive (T3T1-only) test. Meanwhile, nightly tests provide full coverage, i.e. they run both flagship models. This is configured entirely in the Playwright project configs.
+But to save Currents quota, T3T1 is skipped on PR test runs, and only T3W1 is covered, unless the test is exclusive (T3T1-only) test or the PR edits the test file itself. Meanwhile, nightly tests provide full coverage, i.e. they run both flagship models. This is configured entirely in the Playwright project configs.
 To summarize:
 
 - in PR run, if a test specifies T3T1 alongside any other models, T3T1 is skipped, and only other models are covered (usually just T3W1)
 - in PR run, if a test specifies T3T1 as its only model, it is covered
+- in PR run, if the PR edits the test file, all models specified in the test are covered
 - in nightly run, all models specified in the test are covered
 
 #### @desktopOnly or @webOnly
 
 Some tests are only applicable for Desktop app or Web and you can use this tag to notify the runner, that the test should be ignored when running against opposite Suite. This negative filtering is done on playwright-config level.
 
-Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in Web PR workflow definition. Meaning, Web PR runs execute only tests with @WebOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000.
+Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in the Web PR Playwright config. Meaning, Web PR runs execute only tests with @webOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000. Test files the PR edits are the exception: they run on web even without @webOnly.
 
 #### @skipOnPR
 
@@ -124,14 +125,14 @@ Some tests must run on specific Firmware version. That version is setup and defi
 
 Results contains traces, metadata, logs, screenshots, videos and various useful information for debugging.
 Traces contain electron logs of our desktop suit app. Both in CI, currents and local env (`suite/e2e/test-results`).
-CI runs have artifact with logs from `trezor-user-env`. They exist per group. Log are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
+CI runs attach the test environment logs to the Currents run, one `test-env-logs-<machine>.zip` per group on the run's Attachments tab. Wallet passphrases supplied by CI are replaced with `<redacted>` by [redact-test-env-logs.ts](../../../scripts/ci/redact-test-env-logs.ts), including their escaped and hex representations. Public test mnemonics, PINs, device identifiers and other protocol fields remain available for debugging. Logs of `trezor-user-env` are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
 
-- electrum-regtest.txt
+The upload action reads `TEST_ENV_LOG_PASSPHRASE` and `TEST_ENV_LOG_PASSPHRASE_LIVE`, wired to the same secrets as the tests. A caller using a private mnemonic must also supply `TEST_ENV_LOG_MNEMONIC`; its words are redacted individually for backup/recovery output. New private credentials or log encodings must be added to this configuration and its regression tests before uploading logs. Upload is skipped if redaction fails.
+
 - trezor-user-env-debugging.log
 - tenv-emulator-bridge-debugging.log
-- trezor-user-env-version.txt
-- quota-db.txt
-- suite-sync.txt
+- trezor-user-env-tropic_model.log
+- `<service>.log` for every Docker Compose service, e.g. electrum-regtest.log, quota-db.log, suite-sync.log
 
 ### Local Relay Server
 

@@ -1,6 +1,6 @@
 import { Card, Column } from '@trezor/components';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
+import { Fees } from '#src/components/wallet/Fees/Fees';
 
 import { useTronStakeContext } from './TronStakeContext';
 

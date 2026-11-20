@@ -7,7 +7,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { isWeb } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
+import { useLocalNetworkAccessPermission } from '#src/hooks/suite/useLocalNetworkAccessPermission';
 
 const LEGACY_BRIDGE_URL = 'http://127.0.0.1:21325/';
 const LEGACY_BRIDGE_PROBE_TIMEOUT_MS = 5_000;

@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import { readJson } from '@trezor/node-utils';
+
 import { error, log, output } from '../logger';
 
 interface ClaudeAnalysis {
@@ -259,7 +261,7 @@ const analyzeTestFile = async (filePath: string, apiKey?: string): Promise<TestA
 const readCache = (cacheFile: string): Record<string, TestAnalysis> => {
     if (!fs.existsSync(cacheFile)) return {};
     try {
-        return JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+        return readJson<Record<string, TestAnalysis>>(cacheFile);
     } catch {
         return {};
     }

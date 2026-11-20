@@ -3,20 +3,15 @@ import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
 
 export const TronClaimSummaryCard = () => {
-    // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
-    // render-time read of it freezes on the first render. Remove once these reads move to
-    // `useWatch` or out of render.
-    'use no memo';
-
-    const { account, form } = useTronStakeContext();
-    const { amount } = form.methods.getValues();
+    const { account, actions } = useTronStakeContext();
+    const amount = actions.submitted?.amount ?? '';
 
     return (
         <Card type="contrast" paddingType="none" data-testid="@staking/tron-complete/summary-card">
@@ -34,13 +29,16 @@ export const TronClaimSummaryCard = () => {
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_CLAIMED" />}>
                     <Row alignItems="center" gap={8}>
-                        <TokenIcon symbol={account.symbol} size={24} />
+                        <TokenIcon networkSymbol={account.symbol} size={24} />
                         <Column gap={2} alignItems="flex-end">
                             <Text
                                 typographyStyle="body-md-strong"
                                 data-testid="@staking/tron-complete/claimed-amount"
                             >
-                                <FormattedCryptoAmount value={amount} symbol={account.symbol} />
+                                <FormattedCryptoAmount
+                                    value={amount}
+                                    networkSymbol={account.symbol}
+                                />
                             </Text>
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <BaseCurrencyValue

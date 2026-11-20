@@ -5,6 +5,12 @@
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
+            "path": "../../suite-common/earn-staking-common"
+        },
+        {
             "path": "../../suite-common/fiat-services"
         },
         {
@@ -15,8 +21,13 @@
             "path": "../../suite-common/react-query"
         },
         {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../../suite-common/token" },
+        {
             "path": "../../suite-common/token-definitions"
         },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -32,13 +43,20 @@
         { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../discovery" },
+        { "path": "../earn" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../tokens" },
+        { "path": "../transactions" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/utils" },
         { "path": "../test-utils-store" }
     ]

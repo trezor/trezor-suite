@@ -41,7 +41,6 @@ describe('handleSellTradeThunk', () => {
     jest.mock('../../tradeApi');
 
     tradeApi.setServersEnvironment = () => {};
-    tradeApi.createApiKey = () => {};
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
         const { store } = createTestCompositionRoot<void, HandleSellTradeThunkState>({

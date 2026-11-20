@@ -13,12 +13,11 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
+import { useTradingExchangeTradeRequest } from '#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 
-interface UseExchangeApprovalProps {
+type UseExchangeApprovalProps = {
     account: Account | undefined;
-    receiveAddress?: string;
-}
+};
 
 type VerifyAddressThunkState = ConfirmAddressOnDeviceThunkState &
     TradingRootState &
@@ -34,7 +33,7 @@ type VerifyAddressThunkDispatch = ThunkDispatch<
  * Device-touching exchange trade actions that are not quote-refresh: address
  * verification and the DEX approval flow (confirm / approve / revoke).
  */
-export const useExchangeApproval = ({ account, receiveAddress }: UseExchangeApprovalProps) => {
+export const useExchangeApproval = ({ account }: UseExchangeApprovalProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { getTradeRequestParams } = useTradingExchangeTradeRequest(account);
 
@@ -79,8 +78,38 @@ export const useExchangeApproval = ({ account, receiveAddress }: UseExchangeAppr
         ).unwrap();
     };
 
+    type ConfirmPendingApprovalParams = {
+        trade: ExchangeTrade;
+        txid: string;
+        approvalType: DexApprovalType | undefined;
+    };
+
+    const confirmPendingApproval = async ({
+        trade,
+        txid,
+        approvalType,
+    }: ConfirmPendingApprovalParams) => {
+        const pendingTrade: ExchangeTrade = {
+            ...trade,
+            status: 'APPROVAL_PENDING',
+            approvalSendTxHash: txid,
+            approvalType,
+        };
+
+        dispatch(tradingExchangeActions.saveSelectedQuote(pendingTrade));
+
+        if (!trade.receiveAddress) {
+            return;
+        }
+
+        await confirmApproval({ trade: pendingTrade, receiveAddress: trade.receiveAddress });
+    };
+
     const approveTransaction = async (exchangeTrade: ExchangeTrade) => {
-        if (!receiveAddress) return false;
+        const { receiveAddress } = exchangeTrade;
+        if (!receiveAddress) {
+            return false;
+        }
 
         const newTrade = await confirmApproval({
             trade: { ...exchangeTrade, status: 'CONFIRM' },
@@ -93,6 +122,7 @@ export const useExchangeApproval = ({ account, receiveAddress }: UseExchangeAppr
     };
 
     const revokeApproval = async (exchangeTrade: ExchangeTrade) => {
+        const { receiveAddress } = exchangeTrade;
         if (!receiveAddress || !account) {
             return false;
         }
@@ -119,6 +149,7 @@ export const useExchangeApproval = ({ account, receiveAddress }: UseExchangeAppr
     return {
         verifyAddress,
         confirmApproval,
+        confirmPendingApproval,
         approveTransaction,
         revokeApproval,
     };

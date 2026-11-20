@@ -3,26 +3,19 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    formatTronApr,
-    getTronVotedApr,
-    useTronStakingStats,
-} from '@suite-common/earn-staking-api';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { CARDANO_EPOCH_DAYS } from '@suite-common/wallet-constants';
+    type StakingRootState,
+    formatStakingAmount,
+    selectHasStakingAccountWarning,
+    useNetworkStakingRate,
+    useStakingAccountPosition,
+    useStakingDaysUntil,
+    useStakingPeriods,
+} from '@suite-common/earn-staking';
 import {
-    type AccountsRootState,
-    type StakeRootState,
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    isSupportedTronStakingNetworkSymbol,
-    selectApy,
-    selectEthereumNextRewardPayout,
-    selectIsCardanoStakedWithFiveBinaries,
-    selectStakedBalanceByAccountKey,
-    selectTronVotesByAccountKey,
-    selectUnstakableBalanceByAccountKey,
-} from '@suite-common/wallet-core';
+    getStakingPositionPrincipal,
+    stakingAmountSchema,
+} from '@suite-common/earn-staking-common';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -37,6 +30,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { useStakingOperationMessage } from '@suite-native/earn';
 import {
     CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -48,14 +42,11 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
-import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { CardanoAutoStakedModal } from './CardanoAutoStakedModal';
-import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 import { useStakingTotalRewards } from '../../hooks/staking/useStakingTotalRewards';
-import { getMobileStakingSupport } from '../../utils/staking/mobileStakingSupport';
 import { ApyValue } from '../earn/ApyValue';
 import { useEarnPortfolioTrackerGuard } from '../earn/EarnPortfolioTrackerGuard';
 
@@ -86,6 +77,8 @@ const buttonsRowStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.sp12,
 }));
 
+const ZERO_STAKING_AMOUNT = stakingAmountSchema.parse('0');
+
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
 
 export const StakingManagementStakedCard = ({
@@ -99,12 +92,44 @@ export const StakingManagementStakedCard = ({
     const { bottomSheetRef: autoStakedModalRef, openModal: openAutoStakedModal } =
         useBottomSheetModal();
 
-    const isEthereumStaking = isSupportedEthStakingNetworkSymbol(networkSymbol);
-    const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
-    const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(networkSymbol);
-    const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
-    const areStakeActionsShown = getMobileStakingSupport(networkSymbol) === 'manage';
-    const areRewardsAutoRestaked = isEthereumStaking || isSolanaStaking;
+    const networkType = getNetworkType(networkSymbol);
+    const isCardanoStaking = networkType === 'cardano';
+    const isSolanaStaking = networkType === 'solana';
+
+    const {
+        productId,
+        descriptor: productDescriptor,
+        position,
+        totals,
+        access,
+    } = useStakingAccountPosition(accountKey);
+
+    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
+        selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
+    );
+    const stakeMessage = useStakingOperationMessage(productId, 'stake');
+    const unstakeMessage = useStakingOperationMessage(productId, 'unstake');
+    const { rate, rateKind } = useNetworkStakingRate({ networkSymbol, accountKey });
+    const { rewardPeriodDays, nextRewardAt } = useStakingPeriods(productId);
+    const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
+    const nextRewardInDays = useStakingDaysUntil(nextRewardAt);
+
+    const principal =
+        position === null || productDescriptor === null
+            ? ZERO_STAKING_AMOUNT
+            : getStakingPositionPrincipal(position, productDescriptor.rewardsKind);
+
+    const stakedBalance = formatStakingAmount({ amount: principal, networkSymbol });
+    const hasStakedBalance = new BigNumber(principal).gt(0);
+    const hasUnstakableBalance = new BigNumber(totals.staked).gt(0);
+
+    const areStakeActionsShown = access.access === 'manage';
+    const isStakeDisabled = access.disabled.stake !== undefined;
+    const isUnstakeDisabled = access.disabled.unstake !== undefined;
+
+    // Rewards that cannot be claimed on their own stay in the stake.
+    const areRewardsAutoRestaked =
+        productDescriptor !== null && !productDescriptor.operations.includes('claim');
 
     const handleStake = () => {
         if (isPortfolioTrackerDevice) {
@@ -144,51 +169,6 @@ export const StakingManagementStakedCard = ({
         });
         navigation.navigate(RootStackRoutes.UnstakeFlow, { accountKey });
     };
-
-    const stakedBalance = useSelector((state: StakeRootState) =>
-        selectStakedBalanceByAccountKey(state, accountKey),
-    );
-    const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);
-    const unstakableBalance = useSelector((state: StakeRootState) =>
-        selectUnstakableBalanceByAccountKey(state, accountKey),
-    );
-    const hasUnstakableBalance = new BigNumber(unstakableBalance ?? '0').gt(0);
-    const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
-
-    const apy = useSelector((state: StakeRootState) =>
-        selectApy(state, { accountKey, networkSymbol }),
-    );
-    const { stats: tronStats, formattedMaxApr: tronMaxApr } = useTronStakingStats({
-        enabled: isTronStaking,
-    });
-    const tronVotes = useSelector((state: AccountsRootState) =>
-        selectTronVotesByAccountKey(state, accountKey),
-    );
-    const tronApr = formatTronApr(
-        getTronVotedApr(
-            tronStats.data,
-            tronVotes.map(({ address }) => address),
-        ) ?? tronMaxApr,
-    );
-    const isAdaStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, accountKey),
-    );
-    const nextRewardPayout = useSelector(selectEthereumNextRewardPayout);
-    const isNotEarning = isCardanoStaking && isAdaStakedWithFiveBinaries;
-
-    let rewardsFrequencyInDays = null;
-    if (isCardanoStaking) {
-        rewardsFrequencyInDays = CARDANO_EPOCH_DAYS;
-    } else if (isSolanaStaking) {
-        rewardsFrequencyInDays = SOLANA_EPOCH_DAYS;
-    }
-
-    const {
-        isStakingDisabled,
-        isUnstakingDisabled,
-        stakingMessageContent,
-        unstakingMessageContent,
-    } = useMessageSystemStaking(networkSymbol);
 
     return (
         <>
@@ -290,31 +270,27 @@ export const StakingManagementStakedCard = ({
                     })}
                 >
                     <Text variant="body-sm">
-                        {isTronStaking ? (
-                            <ApyValue apy={tronApr} withLabel={tronApr != null} rateType="apr" />
-                        ) : (
-                            <ApyValue
-                                apy={apy}
-                                isNotEarning={isNotEarning}
-                                withLabel={isCardanoStaking || apy != null}
-                            />
-                        )}
+                        <ApyValue
+                            apy={rate}
+                            isNotEarning={hasOutdatedProvider}
+                            withLabel
+                            rateType={rateKind ?? 'apy'}
+                        />
                     </Text>
 
-                    {rewardsFrequencyInDays !== null ? (
+                    {rewardPeriodDays !== null ? (
                         <Text variant="body-sm">
                             <Translation
                                 id="earn.stakingManagementScreen.rewardsFrequencyLabel"
-                                values={{ value: rewardsFrequencyInDays }}
+                                values={{ value: rewardPeriodDays }}
                             />
                         </Text>
                     ) : (
-                        isEthereumStaking &&
-                        nextRewardPayout != null && (
+                        nextRewardInDays !== null && (
                             <Text variant="body-sm">
                                 <Translation
                                     id="earn.stakingManagementScreen.nextRewardLabel"
-                                    values={{ value: nextRewardPayout }}
+                                    values={{ value: nextRewardInDays }}
                                 />
                             </Text>
                         )
@@ -323,12 +299,12 @@ export const StakingManagementStakedCard = ({
 
                 {areStakeActionsShown && (
                     <VStack style={applyStyle(buttonsRowStyle)}>
-                        {isUnstakingDisabled && unstakingMessageContent && (
-                            <BannerInline intent="warning" title={unstakingMessageContent} />
+                        {isUnstakeDisabled && unstakeMessage !== null && (
+                            <BannerInline intent="warning" title={unstakeMessage} />
                         )}
 
-                        {isStakingDisabled && stakingMessageContent && (
-                            <BannerInline intent="warning" title={stakingMessageContent} />
+                        {isStakeDisabled && stakeMessage !== null && (
+                            <BannerInline intent="warning" title={stakeMessage} />
                         )}
 
                         <HStack spacing="sp12">
@@ -336,7 +312,7 @@ export const StakingManagementStakedCard = ({
                                 flex={1}
                                 priority="secondary"
                                 onPress={handleStake}
-                                isDisabled={isStakingDisabled}
+                                isDisabled={isStakeDisabled}
                             >
                                 <Translation
                                     id={
@@ -352,7 +328,7 @@ export const StakingManagementStakedCard = ({
                                     flex={1}
                                     priority="secondary"
                                     onPress={handleUnstake}
-                                    isDisabled={isUnstakingDisabled}
+                                    isDisabled={isUnstakeDisabled}
                                 >
                                     <Translation id="earn.stakingManagementScreen.unstakeButton" />
                                 </Button>

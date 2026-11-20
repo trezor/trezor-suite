@@ -1,16 +1,15 @@
 import { type ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { calculateRewards } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type EarnEstimatedRewardsProps = {
     accountKey?: AccountKey;
@@ -22,7 +21,6 @@ type EarnEstimatedRewardsProps = {
 };
 
 export const EarnEstimatedRewards = ({
-    accountKey,
     amountValue,
     apy,
     label,
@@ -30,9 +28,6 @@ export const EarnEstimatedRewards = ({
     tokenContract,
 }: EarnEstimatedRewardsProps) => {
     const rewards = calculateRewards(amountValue, apy);
-    const tokenInfo = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
 
     return (
         <VStack spacing="sp4" paddingHorizontal="sp16">
@@ -41,9 +36,9 @@ export const EarnEstimatedRewards = ({
             </Text>
             {tokenContract ? (
                 <CompactTokenAmountFormatter
+                    networkSymbol={symbol}
+                    contractAddress={tokenContract}
                     value={asDecimalTokenAmount(rewards)}
-                    tokenSymbol={tokenInfo?.symbol ?? null}
-                    tokenDecimals={tokenInfo?.decimals}
                     numberOfLines={1}
                     adjustsFontSizeToFit
                     variant="headline-sm"

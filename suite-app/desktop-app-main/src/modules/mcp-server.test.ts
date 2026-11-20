@@ -1,0 +1,831 @@
+import * as net from 'net';
+
+// Store IPC handlers registered by the module
+const ipcHandlers: Record<string, (...args: any[]) => any> = {};
+
+/** Find a free port by briefly binding to port 0 */
+const getFreePort = (): Promise<number> =>
+    new Promise((resolve, reject) => {
+        const srv = net.createServer();
+        srv.listen(0, '127.0.0.1', () => {
+            const addr = srv.address() as net.AddressInfo;
+            srv.close(() => resolve(addr.port));
+        });
+        srv.on('error', reject);
+    });
+
+jest.mock('../ipcMain', () => ({
+    ipcMain: {
+        handle: (channel: string, handler: (...args: any[]) => any) => {
+            ipcHandlers[channel] = handler;
+        },
+    },
+}));
+
+jest.mock('@trezor/ipc-proxy', () => ({
+    validateIpcMessage: jest.fn(),
+}));
+
+jest.mock('@trezor/node-utils', () => ({
+    findProcessFromIncomingPort: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../libs/connect-popup-messages', () => ({
+    addMessage: jest.fn().mockImplementation(() => {
+        let resolve: (value: unknown) => void;
+        const promise = new Promise<unknown>(r => {
+            resolve = r;
+        });
+
+        return { promise, resolve: resolve! };
+    }),
+}));
+
+jest.mock('../libs/process-icon', () => ({
+    getProcessIcon: jest.fn().mockResolvedValue(undefined),
+}));
+
+import { CALL_SOURCE_MCP, UNKNOWN_PROCESS } from '@suite-common/connect-popup';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
+
+import { init } from './mcp-server';
+import { addMessage } from '../libs/connect-popup-messages';
+
+const TEST_TOKEN = 'test-token-abc123';
+
+const createMockStore = (overrides?: Partial<McpSettings>) => {
+    const settings = {
+        enabled: true,
+        port: 0, // OS assigns free port
+        token: TEST_TOKEN as string | undefined,
+        ...overrides,
+    };
+
+    return {
+        getMcpSettings: jest.fn(() => settings),
+        setMcpSettings: jest.fn((partial: Partial<McpSettings>) => {
+            Object.assign(settings, partial);
+        }),
+    };
+};
+
+const createMockMainWindowProxy = (hasWindow = true) => {
+    // One window for the whole proxy, so a test can see what was sent to the renderer.
+    const mainWindow = {
+        webContents: { send: jest.fn() },
+        isDestroyed: () => false,
+    };
+
+    return {
+        mainWindow,
+        getInstance: jest.fn(() => (hasWindow ? mainWindow : undefined)),
+    };
+};
+
+/** The payload of the `connect-popup/call` sent to the renderer, once it arrives. */
+const sentPopupCall = async (send: jest.Mock) => {
+    for (let attempt = 0; attempt < 100; attempt++) {
+        const call = send.mock.calls.find(([channel]) => channel === 'connect-popup/call');
+        if (call) {
+            return call[1];
+        }
+        await new Promise(resolve => {
+            setTimeout(resolve, 10);
+        });
+    }
+
+    throw new Error('Nothing was sent to the renderer');
+};
+
+/**
+ * Start an MCP server on a free port and return the port + cleanup function.
+ */
+const startMcpServer = async (overrides?: {
+    storeOverrides?: Partial<McpSettings>;
+    hasWindow?: boolean;
+}) => {
+    // Clear previously registered handlers so each test is independent
+    Object.keys(ipcHandlers).forEach(key => delete ipcHandlers[key]);
+
+    const port = await getFreePort();
+    const store = createMockStore({ port, ...overrides?.storeOverrides });
+    const mainWindowProxy = createMockMainWindowProxy(overrides?.hasWindow ?? true);
+
+    const result = init({
+        mainWindowProxy,
+        store,
+        interceptor: {} as any,
+        mainThreadEmitter: {} as any,
+        cspNonce: 'test-nonce',
+        logger: {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn(),
+        },
+    } as any);
+
+    result!.onLoad({} as any);
+
+    // Wait for the server to start listening
+    await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Server did not start in time')), 3000);
+        const check = () => {
+            const getSettings = ipcHandlers['mcp/get-settings'];
+            if (getSettings) {
+                const settings = getSettings({});
+                if (settings?.running) {
+                    clearTimeout(timeout);
+                    resolve();
+
+                    return;
+                }
+            }
+            setTimeout(check, 10);
+        };
+        setTimeout(check, 20);
+    });
+
+    return {
+        port,
+        store,
+        mainWindowProxy,
+        cleanup: () => result?.onQuit?.(),
+    };
+};
+
+const mcpFetch = (
+    port: number,
+    body?: Record<string, unknown> | string | null,
+    options: {
+        token?: string | null;
+        sessionId?: string | null;
+        method?: string;
+        path?: string;
+    } = {},
+) => {
+    const { token = TEST_TOKEN, sessionId, method = 'POST', path = '/mcp' } = options;
+
+    const headers: Record<string, string> = {};
+    if (token !== null) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    if (sessionId !== null && sessionId !== undefined) {
+        headers['Mcp-Session-Id'] = sessionId;
+    }
+    if (body !== null && body !== undefined) {
+        headers['Content-Type'] = 'application/json';
+    }
+
+    const fetchOptions: RequestInit = { method, headers };
+    if (body !== null && body !== undefined && method !== 'GET' && method !== 'DELETE') {
+        fetchOptions.body = typeof body === 'string' ? body : JSON.stringify(body);
+    }
+
+    return fetch(`http://127.0.0.1:${port}${path}`, fetchOptions);
+};
+
+const jsonRpc = (method: string, params?: Record<string, unknown>, id: string | number = 1) => ({
+    jsonrpc: '2.0',
+    id,
+    method,
+    params,
+});
+
+const jsonRpcNotification = (method: string, params?: Record<string, unknown>) => ({
+    jsonrpc: '2.0',
+    method,
+    params,
+});
+
+/** Makes a tool call in the given session and returns the payload of the popup call it makes. */
+const callPopup = async (
+    server: Awaited<ReturnType<typeof startMcpServer>>,
+    sessionId?: string | null,
+) => {
+    const call = mcpFetch(
+        server.port,
+        jsonRpc(
+            'tools/call',
+            { name: 'trezor_get_account_info', arguments: { coin: 'btc', path: "m/84'/0'/0'" } },
+            2,
+        ),
+        { sessionId },
+    );
+
+    const popupCall = await sentPopupCall(server.mainWindowProxy.mainWindow.webContents.send);
+    // Answer the forwarded call, so that the request completes with the server.
+    (addMessage as jest.Mock).mock.results.at(-1)?.value.resolve({
+        success: false,
+        error: 'Not needed by this test',
+    });
+    await call;
+
+    return popupCall;
+};
+
+/** Initializes a session and returns the payload of the first popup call it makes. */
+const initializeAndCallPopup = async (
+    server: Awaited<ReturnType<typeof startMcpServer>>,
+    initializeParams?: Record<string, unknown>,
+) => {
+    const initRes = await mcpFetch(server.port, jsonRpc('initialize', initializeParams));
+
+    return callPopup(server, initRes.headers.get('mcp-session-id'));
+};
+
+describe('MCP server', () => {
+    let cleanup: (() => void) | undefined;
+
+    afterEach(() => {
+        cleanup?.();
+        cleanup = undefined;
+    });
+
+    describe('authentication', () => {
+        it('rejects requests without Authorization header with 401', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), { token: null });
+
+            expect(res.status).toBe(401);
+            const body = await res.json();
+            expect(body.error).toContain('Unauthorized');
+        });
+
+        it('rejects requests with wrong token with 401', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), {
+                token: 'wrong-token',
+            });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('accepts requests with correct Bearer token', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'));
+
+            expect(res.status).toBe(200);
+        });
+
+        it('accepts requests with token in query parameter', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), {
+                token: null,
+                path: `/mcp?token=${TEST_TOKEN}`,
+            });
+
+            expect(res.status).toBe(200);
+        });
+
+        it('rejects requests with wrong query parameter token', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), {
+                token: null,
+                path: '/mcp?token=wrong-token',
+            });
+
+            expect(res.status).toBe(401);
+        });
+
+        it('returns 500 when store returns empty token at request time', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            // Override getMcpSettings to return no token after server has started
+            server.store.getMcpSettings.mockReturnValue({
+                enabled: true,
+                port: server.port,
+                token: '',
+            });
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), { token: null });
+
+            expect(res.status).toBe(500);
+            const body = await res.json();
+            expect(body.error).toContain('no auth token');
+        });
+    });
+
+    describe('request routing', () => {
+        it('OPTIONS /mcp returns 405', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, null, { method: 'OPTIONS' });
+
+            expect(res.status).toBe(405);
+        });
+
+        it('GET /mcp returns 405', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, null, { method: 'GET' });
+
+            expect(res.status).toBe(405);
+        });
+
+        it('DELETE /mcp returns 200 and clears session', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, null, { method: 'DELETE' });
+
+            expect(res.status).toBe(200);
+        });
+
+        it('POST /other returns 404', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'), { path: '/other' });
+
+            expect(res.status).toBe(404);
+            const body = await res.json();
+            expect(body.error).toContain('Not found');
+        });
+
+        it('PUT /mcp returns 404', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, null, { method: 'PUT' });
+
+            expect(res.status).toBe(404);
+        });
+    });
+
+    describe('body parsing and size limit', () => {
+        it('parses valid JSON body', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'));
+
+            expect(res.status).toBe(200);
+            const body = await res.json();
+            expect(body.result).toBeDefined();
+        });
+
+        it('rejects body larger than 1MB with 413', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const largeBody = JSON.stringify({ data: 'x'.repeat(1024 * 1024 + 1) });
+
+            const res = await mcpFetch(server.port, largeBody);
+
+            expect(res.status).toBe(413);
+            const body = await res.json();
+            expect(body.error.code).toBe(-32600);
+            expect(body.error.message).toBe('Payload too large');
+        });
+
+        it('rejects invalid JSON with 400', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, '{invalid json!!!');
+
+            expect(res.status).toBe(400);
+            const body = await res.json();
+            expect(body.error.code).toBe(-32700);
+            expect(body.error.message).toBe('Parse error');
+        });
+
+        it('treats empty body as empty object', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await fetch(`http://127.0.0.1:${server.port}/mcp`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${TEST_TOKEN}` },
+            });
+
+            // Empty body → {} → method is undefined → 202 (notification, no id)
+            expect(res.status).toBe(202);
+        });
+    });
+
+    describe('session management', () => {
+        it('initialize returns Mcp-Session-Id header', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'));
+
+            expect(res.status).toBe(200);
+            const sessionId = res.headers.get('mcp-session-id');
+            expect(sessionId).toBeTruthy();
+            expect(typeof sessionId).toBe('string');
+        });
+
+        it('accepts subsequent request with correct session ID', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await mcpFetch(server.port, jsonRpc('tools/list', undefined, 2), {
+                sessionId,
+            });
+
+            expect(res.status).toBe(200);
+        });
+
+        it('rejects request with wrong session ID with 404', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            await mcpFetch(server.port, jsonRpc('initialize'));
+
+            const res = await mcpFetch(server.port, jsonRpc('tools/list', undefined, 2), {
+                sessionId: 'wrong-session-id',
+            });
+
+            expect(res.status).toBe(404);
+            const body = await res.json();
+            expect(body.error).toBe('Session not found');
+        });
+
+        it('rejects non-initialize request without session ID with 404', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            await mcpFetch(server.port, jsonRpc('initialize'));
+
+            const res = await mcpFetch(server.port, jsonRpc('tools/list', undefined, 2));
+
+            expect(res.status).toBe(404);
+        });
+
+        it('allows re-initialization without session ID (new client connecting)', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            await mcpFetch(server.port, jsonRpc('initialize'));
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize', undefined, 2));
+
+            expect(res.status).toBe(200);
+        });
+
+        it('does not key the client by the name it declared when its process was not found', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Claude Code' },
+            });
+
+            // `fullPath` is what permissions are remembered by, and the declared name is not a
+            // path the client can be identified by, so it is forwarded as the name only.
+            expect(popupCall).toEqual(
+                expect.objectContaining({
+                    sourceType: CALL_SOURCE_MCP,
+                    process: { name: 'Claude Code', fullPath: '', warning: true },
+                }),
+            );
+        });
+
+        it('ignores a declared name that is not a string', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, { clientInfo: { name: {} } });
+
+            // The name is a React child in the consent prompt, where an object would throw.
+            expect(popupCall.process).toEqual(UNKNOWN_PROCESS);
+            expect(popupCall.manifest.appName).toBe('MCP Agent');
+        });
+
+        it('labels a tool call made without a session as a caller Suite could not identify', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            // Nothing makes a client initialize first, and `DELETE` drops the session it had.
+            const popupCall = await callPopup(server);
+
+            expect(popupCall.process).toEqual(UNKNOWN_PROCESS);
+        });
+
+        it('names the client by its declared name when its process has no path', async () => {
+            // The Linux lookup reports an empty path when it cannot read /proc/<pid>/exe, or when
+            // the process runs from an AppImage mountpoint.
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+                warning: true,
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Claude Code' },
+            });
+
+            expect(popupCall.process).toEqual({ name: 'Claude Code', fullPath: '', warning: true });
+            expect(popupCall.manifest.appName).toBe('Claude Code');
+        });
+
+        it('keeps the pathless process name when the client declared none, with a warning', async () => {
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server);
+
+            expect(popupCall.process).toEqual({ name: 'node', fullPath: '', warning: true });
+        });
+
+        it('reduces a declared name with control and format characters to a single line', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: '  Claude\n\tCo\u00ADde\u202E ' },
+            });
+
+            // The name labels the caller in the consent prompt, so it may not break its layout
+            // or reorder the text around it, and an invisible character does not split a word.
+            expect(popupCall.process).toEqual({
+                name: 'Claude Code',
+                fullPath: '',
+                warning: true,
+            });
+            expect(popupCall.manifest.appName).toBe('Claude Code');
+        });
+
+        it('does not end a capped declared name with the space the cut landed on', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: `${'a'.repeat(99)} ${'b'.repeat(10)}` },
+            });
+
+            expect(popupCall.manifest.appName).toBe('a'.repeat(99));
+        });
+
+        it('does not cut a capped declared name in the middle of a character', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: `${'a'.repeat(99)}\u{1F600}b` },
+            });
+
+            expect(popupCall.manifest.appName).toBe(`${'a'.repeat(99)}\u{1F600}`);
+        });
+
+        it('does not let a new session inherit the identity of the one it replaces', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'Trusted',
+                fullPath: '/usr/bin/trusted',
+            });
+            const identified = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Trusted' },
+            });
+            expect(identified.process).toEqual(
+                expect.objectContaining({ fullPath: '/usr/bin/trusted' }),
+            );
+
+            // A client is not required to send DELETE, so a second one just initializes again.
+            server.mainWindowProxy.mainWindow.webContents.send.mockClear();
+            (addMessage as jest.Mock).mockClear();
+            const unidentified = await initializeAndCallPopup(server);
+
+            // Permissions are remembered by `process.fullPath`, so inheriting the previous
+            // process would let this client pass for the identified one.
+            expect(unidentified.process).toEqual(UNKNOWN_PROCESS);
+            expect(unidentified.manifest.appName).toBe('MCP Agent');
+        });
+
+        it('allows re-initialization after DELETE', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            await mcpFetch(server.port, jsonRpc('initialize'));
+
+            const deleteRes = await mcpFetch(server.port, null, { method: 'DELETE' });
+            expect(deleteRes.status).toBe(200);
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'));
+            expect(res.status).toBe(200);
+
+            const newSessionId = res.headers.get('mcp-session-id');
+            expect(newSessionId).toBeTruthy();
+        });
+    });
+
+    describe('JSON-RPC method handling', () => {
+        it('initialize returns protocol version, server info, and capabilities', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'));
+            const body = await res.json();
+
+            expect(body.jsonrpc).toBe('2.0');
+            expect(body.id).toBe(1);
+            expect(body.result.protocolVersion).toBe('2025-03-26');
+            expect(body.result.serverInfo.name).toBe('trezor-suite-mcp-server');
+            expect(body.result.serverInfo.version).toBe('1.0.0');
+            expect(body.result.capabilities).toEqual({ tools: {} });
+        });
+
+        it('tools/list returns array of tool definitions', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await mcpFetch(server.port, jsonRpc('tools/list', undefined, 2), {
+                sessionId,
+            });
+            const body = await res.json();
+
+            expect(Array.isArray(body.result.tools)).toBe(true);
+            expect(body.result.tools.length).toBeGreaterThan(0);
+
+            const tool = body.result.tools[0];
+            expect(tool).toHaveProperty('name');
+            expect(tool).toHaveProperty('description');
+            expect(tool).toHaveProperty('inputSchema');
+            expect(tool).toHaveProperty('annotations');
+
+            const toolNames = body.result.tools.map((t: { name: string }) => t.name);
+            expect(toolNames).toContain('trezor_get_address');
+            expect(toolNames).toContain('trezor_send_transaction');
+            expect(toolNames).toContain('trezor_get_account_info');
+        });
+
+        it('tools/call with unknown tool returns -32602', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await mcpFetch(
+                server.port,
+                jsonRpc('tools/call', { name: 'nonexistent_tool', arguments: {} }, 2),
+                { sessionId },
+            );
+            const body = await res.json();
+
+            expect(body.error.code).toBe(-32602);
+            expect(body.error.message).toContain('Unknown tool');
+        });
+
+        it('unknown method returns -32601', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await mcpFetch(server.port, jsonRpc('unknown/method', undefined, 2), {
+                sessionId,
+            });
+            const body = await res.json();
+
+            expect(body.error.code).toBe(-32601);
+            expect(body.error.message).toContain('Method not found');
+        });
+
+        it('notification (no id) returns 202 with no body', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await mcpFetch(
+                server.port,
+                jsonRpcNotification('notifications/initialized'),
+                { sessionId },
+            );
+
+            expect(res.status).toBe(202);
+            const text = await res.text();
+            expect(text).toBe('');
+        });
+    });
+
+    describe('ERC-20 token transfer validation', () => {
+        const callSendTransaction = (
+            port: number,
+            sessionId: string,
+            args: Record<string, unknown>,
+        ) =>
+            mcpFetch(
+                port,
+                jsonRpc('tools/call', {
+                    name: 'trezor_send_transaction',
+                    arguments: args,
+                }),
+                { sessionId },
+            );
+
+        it('rejects ERC-20 transfer with missing tokenDecimals', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                value: '10',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('tokenDecimals');
+        });
+
+        it('rejects ERC-20 transfer with invalid recipient address', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: 'not-an-address',
+                value: '10',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                tokenDecimals: 6,
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('valid EVM address');
+        });
+
+        it('rejects ERC-20 transfer with non-numeric value', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                value: 'abc',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                tokenDecimals: 6,
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('non-negative decimal');
+        });
+
+        it('rejects ERC-20 transfer with too many fractional digits', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize'));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+
+            const res = await callSendTransaction(server.port, sessionId, {
+                coin: 'eth',
+                to: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+                value: '1.1234567',
+                tokenContract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+                tokenDecimals: 6,
+            });
+
+            const body = await res.json();
+            expect(body.result.isError).toBe(true);
+            expect(body.result.content[0].text).toContain('too many fractional digits');
+        });
+    });
+});

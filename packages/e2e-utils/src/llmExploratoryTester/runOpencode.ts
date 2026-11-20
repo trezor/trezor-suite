@@ -24,8 +24,10 @@ const VERDICT_FORMAT: OutputFormat = {
 };
 
 const VERDICT_PROMPT =
-    'Testing is over. Do not call tools. Emit the structured verdict for the WHOLE run: ' +
-    'result, summary, unfinished, issues — every pass and every issue found so far.';
+    'Testing over; no tools. Emit result, summary, unfinished, issues for the whole run. ' +
+    'Apply Finding quality: proven defects only, deduplicated; setup/tool/timing limits ' +
+    '(including repeated slow-review Solana expiry) go in unfinished. Lead with PR coverage, ' +
+    'label unrelated findings, claim regressions only with baseline evidence.';
 
 type RunOpencodeOptions = {
     prompt: string;

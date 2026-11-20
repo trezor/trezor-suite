@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
-import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
-import { type FormatterProps } from '../types';
+import { type DiscreetMode, type FormatterProps } from '../types';
 import { CryptoToFiatAmountFormatter } from './CryptoToFiatAmountFormatter';
 import { TokenToFiatAmountFormatter } from './TokenToFiatAmountFormatter';
 
@@ -14,37 +14,29 @@ type CoinToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         isBalance?: boolean;
-        isDiscreetText?: boolean;
-        isForcedDiscreetMode?: boolean;
-        decimals?: number;
+        discreetMode?: DiscreetMode;
     };
 
 export const CoinToFiatAmountFormatter = ({
     value,
     accountKey,
     tokenContract,
-    decimals,
     ...restProps
 }: CoinToFiatAmountFormatterProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const tokenInfo = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
-
     if (!symbol) {
         return null;
     }
 
-    if (tokenInfo && value) {
+    if (tokenContract && value) {
         return (
             <TokenToFiatAmountFormatter
                 value={value}
-                contract={tokenInfo.contract}
+                contract={tokenContract}
                 symbol={symbol}
-                decimals={decimals ?? tokenInfo.decimals}
                 {...restProps}
             />
         );

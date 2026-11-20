@@ -3,13 +3,12 @@ import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
+import { useMessageSystemWrappedNative, useYieldFlowData } from '@suite-native/earn';
 import { YieldStackRoutes } from '@suite-native/navigation';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useYieldWithdrawUnwrapController } from './useYieldWithdrawUnwrapController';
 import { mockYieldWrappedNativeStepResult } from '../../../../mocks/mockYieldWrappedNativeStepResult';
-import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
-import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
 
 const mockReplace = jest.fn();
@@ -25,9 +24,12 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: () => ({ navigate: jest.fn(), replace: mockReplace }),
     useRoute: () => ({ params: mockRouteParams }),
 }));
-jest.mock('../useYieldFlowData');
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useMessageSystemWrappedNative: jest.fn(),
+    useYieldFlowData: jest.fn(),
+}));
 jest.mock('../useYieldWrappedNativeStep');
-jest.mock('../../earn/useMessageSystemWrappedNative');
 
 const useYieldFlowDataMock = jest.mocked(useYieldFlowData);
 const useYieldWrappedNativeStepMock = jest.mocked(useYieldWrappedNativeStep);

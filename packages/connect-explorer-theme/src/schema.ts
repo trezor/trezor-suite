@@ -3,9 +3,9 @@ import type { FC, ReactNode } from 'react';
 
 import type { NextSeoProps } from 'next-seo';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
-import { z } from 'zod';
 
 import type { DeepPartial } from '@trezor/type-utils';
+import { z } from '@trezor/zod';
 
 import type { TOCProps } from './types';
 

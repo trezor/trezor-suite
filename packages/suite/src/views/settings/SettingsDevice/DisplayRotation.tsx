@@ -12,7 +12,7 @@ import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from '@trez
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
 
 type Rotation = { label: JSX.Element; value: DisplayRotationType };
 

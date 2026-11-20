@@ -47,7 +47,7 @@ export const TokenIconSet = ({
                     {token.contract ? (
                         <TokenIcon
                             size={size}
-                            symbol={tokenNetworkSymbol}
+                            networkSymbol={tokenNetworkSymbol}
                             contractAddress={token.contract ?? null}
                             placeholder={token.symbol ?? ''}
                             placeholderWithTooltip={false}
@@ -56,7 +56,7 @@ export const TokenIconSet = ({
                             isTransparent={isTransparent}
                         />
                     ) : (
-                        <TokenIcon size={size} symbol={nativeCoinSymbol} />
+                        <TokenIcon size={size} networkSymbol={nativeCoinSymbol} />
                     )}
                 </IconWrapper>
             );

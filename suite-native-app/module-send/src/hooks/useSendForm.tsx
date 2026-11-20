@@ -1,0 +1,653 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
+import { Keyboard } from 'react-native';
+import { useSelector } from 'react-redux';
+
+import { D, pipe } from '@mobily/ts-belt';
+import { useNavigation } from '@react-navigation/native';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+
+import { selectIsDeviceRemembered } from '@suite-common/device';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
+import { type TokenAddress } from '@suite-common/tokens';
+import { getExcludedUtxos } from '@suite-common/transaction-search';
+import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    type FeesRootState,
+    type SendRootState,
+    type WalletSettingsRootState,
+    composeSendFormTransactionFeeLevelsThunk,
+    selectAccountByKey,
+    selectConvertedNetworkFeeInfo,
+    selectIsAmountInSats,
+    selectIsNetworkReserveEnabled,
+    selectSendFormDraftByKey,
+    sendFormActions,
+    updateFeeInfoThunk,
+    useResolveNamedAddress,
+} from '@suite-common/wallet-core';
+import {
+    type Account,
+    type AccountKey,
+    type FeeLevelLabel,
+    type GeneralPrecomposedTransactionFinal,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
+import {
+    convertAmountUnitsToSubunits,
+    formatNetworkAmount,
+    getNetworkReserve,
+} from '@suite-common/wallet-utils';
+import { useAlert } from '@suite-native/alerts';
+import { type UseFormReturn, useForm } from '@suite-native/forms';
+import { Translation, useTranslate } from '@suite-native/intl';
+import {
+    AccountDetailStackRoutes,
+    AssetsStackRoutes,
+    AuthorizeDeviceStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type SendStackParamList,
+    SendStackRoutes,
+    type StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import { signTransactionNativeThunk } from '@suite-native/send';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    type FeeLevelsMaxAmount,
+    type NativeSendRootState,
+    calculateFeeLevelsMaxAmountThunk,
+    selectFeeLevels,
+    transactionManagementActions,
+    useSubscribeForSolanaBlockUpdates,
+} from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
+import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
+import { TRANSPORT_ERROR } from '@trezor/transport-common';
+
+import { createSendAmountConversion } from '../createSendAmountConversion';
+import { selectDestinationTagFromDraft } from '../selectors';
+import {
+    type SendOutputsFormValues,
+    sendOutputsFormValidationSchema,
+} from '../sendOutputsFormSchema';
+import { constructFormDraft, getSendFeeStatus, getSendMaxAmount } from '../utils';
+import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
+import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
+import { useUtxoSelection } from './useUtxoSelection';
+
+const getDefaultValues = ({
+    tokenContract,
+    isDestinationTagEnabled,
+}: {
+    tokenContract?: TokenAddress;
+    isDestinationTagEnabled: boolean;
+}): Readonly<SendOutputsFormValues> =>
+    ({
+        isDestinationTagEnabled,
+        outputs: [
+            {
+                amount: '',
+                address: '',
+                fiat: '',
+                token: tokenContract ?? null,
+            },
+        ],
+    }) as const;
+
+const getRippleReserve = (account: Account, networkType: NetworkType) => {
+    const reserve =
+        account.misc && 'reserve' in account.misc && account.misc.reserve
+            ? account.misc.reserve
+            : undefined;
+
+    if (networkType !== 'ripple' || !reserve) return undefined;
+
+    return formatNetworkAmount(reserve, account.symbol);
+};
+
+type SendFormNavigationProp = StackToStackCompositeNavigationProps<
+    SendStackParamList,
+    SendStackRoutes.SendOutputs,
+    RootStackParamList
+>;
+
+export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
+    const debounce = useDebounce();
+    const navigation = useNavigation<SendFormNavigationProp>();
+    const isAssetsFirstEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTableMobile,
+        variant: 'B',
+    });
+    const { translate } = useTranslate();
+    const { addressValidator, getNamedAddressSupport, dispatch, getState } = useServices(
+        injectAddressValidator,
+        injectGetNamedAddressSupport,
+        injectDispatch,
+        injectGetState,
+    );
+
+    const { selectedUtxos } = useUtxoSelection(accountKey);
+
+    const [maxSendAmountByFeeLevel, setMaxSendAmountByFeeLevel] = useState<FeeLevelsMaxAmount>();
+
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+
+    const tokenInfo = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, accountKey, tokenContract),
+    );
+
+    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
+        selectIsAmountInSats(state, account?.symbol),
+    );
+    const isNetworkReserveEnabled = useSelector((state: WalletSettingsRootState) =>
+        selectIsNetworkReserveEnabled(state),
+    );
+    const networkFeeInfo = useSelector((state: FeesRootState) =>
+        selectConvertedNetworkFeeInfo(state, account?.symbol),
+    );
+    const sendFormDraft = useSelector((state: SendRootState) =>
+        selectSendFormDraftByKey(state, accountKey, tokenContract),
+    );
+
+    const networkFeeLevels = networkFeeInfo?.levels;
+
+    const excludedUtxos = useMemo(
+        () =>
+            getExcludedUtxos({
+                utxos: account?.utxo ?? [],
+                anonymitySet: account?.addresses?.anonymitySet,
+                dustLimit: networkFeeInfo?.dustLimit,
+            }),
+        [account?.utxo, account?.addresses?.anonymitySet, networkFeeInfo?.dustLimit],
+    );
+
+    useSubscribeForSolanaBlockUpdates(account);
+
+    const network = account ? getNetwork(account.symbol) : null;
+
+    const namedAddress = getNamedAddressSupport(account?.symbol);
+
+    const networkReserve = account
+        ? getNetworkReserve({
+              symbol: account.symbol,
+              contractAddress: tokenContract,
+              isEnabled: isNetworkReserveEnabled,
+          })
+        : undefined;
+
+    const rippleReserve =
+        account && network ? getRippleReserve(account, network.networkType) : undefined;
+
+    const form = useForm<SendOutputsFormValues>({
+        validation: sendOutputsFormValidationSchema,
+        // If the form is prefilled with the draft values, we want to revalidate the draft on every change.
+        mode: sendFormDraft ? 'onChange' : 'onTouched',
+        context: {
+            addressValidator,
+            networkFeeInfo,
+            accountDescriptor: account?.descriptor,
+            symbol: account?.symbol,
+            availableBalance: tokenInfo?.balance ?? account?.availableBalance,
+            isTokenFlow: !!tokenContract,
+            isValueInSats: isAmountInSats,
+            maxSendAmountByFeeLevel,
+            decimals: tokenInfo?.decimals ?? network?.decimals,
+            nativeCurrencyAvailableBalance: account?.availableBalance,
+            networkReserve,
+            rippleReserve,
+            namedAddress,
+        },
+        defaultValues: getDefaultValues({
+            tokenContract,
+            isDestinationTagEnabled:
+                network?.networkType === 'ripple' || network?.networkType === 'stellar',
+        }),
+    });
+
+    const amountConversion = createSendAmountConversion({ form, getState }, accountKey);
+    const { handleSubmit, control, getValues, trigger, setError } = form;
+    const watchedFormValues = useWatch({ control });
+    const watchedAddress = useWatch({ name: 'outputs.0.address', control });
+
+    const { mode: namedAddressMode, isResolving } = useResolveNamedAddress(
+        watchedAddress ?? '',
+        account?.symbol,
+    );
+    // Submitting before a name resolves would compose against the name itself. Reverse lookups
+    // run on an already-valid address, so they do not block.
+    const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
+
+    const updateFormState = useCallback(async () => {
+        const formValues = getValues();
+        // Unlike other networks, Cardano composes outputs without an amount, and the validation
+        // triggered below would flag the fields the user has not filled in yet. Token sends still
+        // compose such an output to show the minimum ADA it requires.
+        const isIncompleteCardanoOutput =
+            network?.networkType === 'cardano' &&
+            formValues.setMaxOutputId === undefined &&
+            !formValues.outputs.some(output => !!output.amount);
+
+        if (
+            account &&
+            network &&
+            networkFeeInfo?.levels.length &&
+            (!isIncompleteCardanoOutput || tokenContract)
+        ) {
+            const response = await dispatch(
+                composeSendFormTransactionFeeLevelsThunk({
+                    formState: constructFormDraft({
+                        formValues: getValues(),
+                        tokenContract,
+                        selectedUtxos,
+                    }),
+                    composeContext: {
+                        account,
+                        network,
+                        feeInfo: networkFeeInfo,
+                        excludedUtxos,
+                    },
+                }),
+            );
+
+            if (isFulfilled(response) && isIncompleteCardanoOutput) {
+                dispatch(
+                    transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }),
+                );
+            } else if (isFulfilled(response)) {
+                const isReserveError = pipe(
+                    response.payload,
+                    D.filter(
+                        feeLevel =>
+                            feeLevel.type === 'error' &&
+                            feeLevel.error === 'AMOUNT_IS_LESS_THAN_RESERVE',
+                    ),
+                    D.isNotEmpty,
+                );
+
+                if (isReserveError) {
+                    setError('outputs.0.amount', {
+                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
+                    });
+                }
+
+                const missingTrustline = Object.values(response.payload).find(
+                    feeLevel =>
+                        feeLevel.type === 'error' &&
+                        feeLevel.error === 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+                );
+                if (missingTrustline?.type === 'error') {
+                    setError('outputs.0.amount', {
+                        message: translate(
+                            'moduleSend.outputs.recipients.stellar.missingTrustline',
+                            {
+                                symbol: missingTrustline.errorMessage?.values?.symbol ?? '',
+                            },
+                        ),
+                    });
+                }
+
+                const normalFeeLevel = networkFeeInfo?.levels.find(
+                    level => level.label === 'normal',
+                );
+
+                dispatch(
+                    sendFormActions.storeDraft({
+                        accountKey,
+                        tokenContract,
+                        formState: constructFormDraft({
+                            formValues: getValues(),
+                            tokenContract,
+                            feeLevel: normalFeeLevel,
+                            selectedUtxos,
+                        }),
+                    }),
+                );
+
+                dispatch(
+                    transactionManagementActions.storeFeeLevels({
+                        feeLevels: response.payload,
+                    }),
+                );
+
+                trigger();
+            }
+        }
+    }, [
+        accountKey,
+        translate,
+        dispatch,
+        getValues,
+        tokenContract,
+        account,
+        network,
+        networkFeeInfo,
+        setError,
+        excludedUtxos,
+        selectedUtxos,
+        trigger,
+    ]);
+
+    useEffect(() => {
+        dispatch(transactionManagementActions.clearFeeLevels());
+    }, [accountKey, dispatch, tokenContract]);
+
+    useEffect(() => {
+        const prefillValuesFromStoredDraft = () => {
+            if (sendFormDraft?.outputs) {
+                form.reset({
+                    ...getDefaultValues({
+                        tokenContract,
+                        isDestinationTagEnabled:
+                            network?.networkType === 'ripple' || network?.networkType === 'stellar',
+                    }),
+                    ...sendFormDraft,
+                });
+
+                // We need to wait for the context to hydrate before validating the form with the draft values.
+                setTimeout(() => {
+                    trigger();
+                }, 0);
+            }
+        };
+
+        prefillValuesFromStoredDraft();
+        // this effect should be triggered only for the first render to fill the form with the stored draft on entry.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Triggered for every change of watchedFormValues.
+    useEffect(() => {
+        debounce(updateFormState);
+    }, [updateFormState, watchedFormValues, debounce, selectedUtxos, isNetworkReserveEnabled]);
+
+    useEffect(() => {
+        setMaxSendAmountByFeeLevel(undefined);
+
+        // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
+        if (tokenContract || !networkFeeLevels?.length) return;
+
+        const controller = new AbortController();
+
+        const calculateMaxSendAmountByFeeLevel = async () => {
+            const response = await dispatch(
+                calculateFeeLevelsMaxAmountThunk(
+                    {
+                        formState: constructFormDraft({
+                            formValues: getValues(),
+                            selectedUtxos,
+                        }),
+                        accountKey,
+                    },
+                    { signal: controller.signal },
+                ),
+            );
+
+            if (!controller.signal.aborted && isFulfilled(response)) {
+                setMaxSendAmountByFeeLevel(response.payload);
+            }
+        };
+
+        calculateMaxSendAmountByFeeLevel();
+
+        return () => {
+            controller.abort();
+        };
+    }, [
+        accountKey,
+        dispatch,
+        getValues,
+        isNetworkReserveEnabled,
+        networkFeeLevels,
+        selectedUtxos,
+        tokenContract,
+        watchedAddress,
+    ]);
+
+    useEffect(() => {
+        if (getValues('outputs.0.amount')) trigger('outputs.0.amount');
+    }, [maxSendAmountByFeeLevel, getValues, trigger]);
+
+    // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
+    useEffect(() => {
+        if (account) dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
+    }, [account, dispatch]);
+
+    const destinationTag = useSelector((state: NativeSendRootState) =>
+        selectDestinationTagFromDraft(state, accountKey, tokenContract),
+    );
+    const isViewOnlyDevice = useSelector(selectIsDeviceRemembered);
+    const { showAlert } = useAlert();
+    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
+
+    const requestDelayedNavigationToOutputsReview = useRequestDelayedNavigationToOutputsReview({
+        accountKey,
+        tokenContract,
+    });
+
+    const feeLevels = useSelector(selectFeeLevels);
+
+    const navigateToAddressReview = useCallback(
+        ({ transaction }: { transaction: GeneralPrecomposedTransactionFinal }) => {
+            navigation.navigate(SendStackRoutes.SendAddressReview, {
+                accountKey,
+                tokenContract,
+                transaction,
+            });
+        },
+        [accountKey, tokenContract, navigation],
+    );
+
+    const navigateToDestinationTagReview = useCallback(
+        (params: { destinationTag: string; transaction: GeneralPrecomposedTransactionFinal }) => {
+            navigation.navigate(SendStackRoutes.SendDestinationTagReview, {
+                destinationTag: params.destinationTag,
+                accountKey,
+                tokenContract,
+                transaction: params.transaction,
+            });
+        },
+        [accountKey, navigation, tokenContract],
+    );
+
+    const startStellarSigningFlow = useCallback(
+        ({ transaction }: { transaction: GeneralPrecomposedTransactionFinal }) => {
+            // The first review entry of Stellar is neither a destination address nor a destination tag.
+            // We need to wait for device button requests before navigating to the review screen.
+            dispatch(
+                signTransactionNativeThunk({
+                    accountKey,
+                    tokenContract,
+                    feeLevel: transaction,
+                }),
+            ).then(signingResponse => {
+                if (isRejected(signingResponse)) {
+                    const errorCode = signingResponse.payload?.errorCode;
+                    const message = signingResponse.payload?.message;
+
+                    if (
+                        errorCode === 'Failure_PinCancelled' || // User cancelled the pin entry on device
+                        errorCode === 'Method_Cancel' || // User canceled the pin entry in the app UI.
+                        errorCode === 'Failure_ActionCancelled' // User canceled the review on device OR device got locked before the review was finished.
+                    ) {
+                        navigation.popTo(SendStackRoutes.SendOutputs, {
+                            accountKey,
+                            tokenContract,
+                        });
+
+                        return;
+                    }
+
+                    if (
+                        errorCode === 'Device_InvalidState' || // Incorrect Passphrase submitted.
+                        errorCode === 'Method_Interrupted' // Passphrase modal closed.
+                    ) {
+                        showAlert({
+                            title: <Translation id="modulePassphrase.featureAuthorizationError" />,
+                            pictogramVariant: 'critical',
+                            primaryButtonTitle: <Translation id="generic.buttons.close" />,
+                            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+                        });
+
+                        return;
+                    }
+
+                    // Device disconnected during the review.
+                    if (
+                        message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
+                        message === TRANSPORT_ERROR.UNEXPECTED_ERROR
+                    ) {
+                        if (isViewOnlyDevice) {
+                            navigation.popTo(SendStackRoutes.SendOutputs, {
+                                accountKey,
+                                tokenContract,
+                                postNavigationAction: 'deviceDisconnectedAlert',
+                            });
+                        } else {
+                            showDeviceDisconnectedAlert();
+                        }
+
+                        return;
+                    }
+
+                    dispatch(sendFormActions.discardTransaction());
+                    if (isAssetsFirstEnabled && account) {
+                        navigation.navigate(RootStackRoutes.AssetsStack, {
+                            screen: AssetsStackRoutes.AssetDetail,
+                            params: { networkSymbol: account.symbol, tokenContract },
+                        });
+                    } else {
+                        navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                            screen: AccountDetailStackRoutes.AccountDetail,
+                            params: {
+                                accountKey,
+                                tokenContract,
+                                closeActionType: 'back',
+                            },
+                        });
+                    }
+                }
+            });
+
+            requestDelayedNavigationToOutputsReview();
+        },
+        [
+            dispatch,
+            account,
+            accountKey,
+            tokenContract,
+            requestDelayedNavigationToOutputsReview,
+            navigation,
+            isAssetsFirstEnabled,
+            showAlert,
+            isViewOnlyDevice,
+            showDeviceDisconnectedAlert,
+        ],
+    );
+
+    if (!account || !networkFeeInfo) return null;
+
+    const feeStatusParams = {
+        symbol: account.symbol,
+        availableBalance: account.availableBalance,
+        // React Compiler otherwise treats this as a mutable alias of the network config.
+        networkReserve: networkReserve === undefined ? undefined : String(networkReserve),
+    };
+    const { isFeeReady, maxAmountForReserve } = getSendFeeStatus({
+        ...feeStatusParams,
+        feeLevel: feeLevels[sendFormDraft?.selectedFee ?? 'normal'],
+        amount: watchedFormValues.outputs?.[0]?.amount ?? '',
+    });
+
+    const handleSubmitSendForm = handleSubmit(formValues => {
+        Keyboard.dismiss();
+
+        if (!network) return;
+
+        const selectedFee: FeeLevelLabel = sendFormDraft?.selectedFee ?? 'normal';
+        const selectedFeeLevelTransaction = feeLevels[selectedFee];
+        if (!isFinalPrecomposedTransaction(selectedFeeLevelTransaction)) {
+            return;
+        }
+        if (
+            !getSendFeeStatus({
+                ...feeStatusParams,
+                feeLevel: selectedFeeLevelTransaction,
+                amount: formValues.outputs[0]?.amount ?? '',
+            }).isFeeReady
+        ) {
+            return;
+        }
+
+        const { networkType } = network;
+
+        switch (networkType) {
+            case 'ripple': {
+                if (destinationTag) {
+                    navigateToDestinationTagReview({
+                        destinationTag,
+                        transaction: selectedFeeLevelTransaction,
+                    });
+                } else {
+                    navigateToAddressReview({ transaction: selectedFeeLevelTransaction });
+                }
+
+                break;
+            }
+            case 'stellar': {
+                startStellarSigningFlow({ transaction: selectedFeeLevelTransaction });
+
+                break;
+            }
+            default: {
+                navigateToAddressReview({ transaction: selectedFeeLevelTransaction });
+
+                break;
+            }
+        }
+
+        // In case that view only device is not connected, show connect screen first.
+        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+            screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+            params: {
+                onCancelNavigationTarget: {
+                    name: RootStackRoutes.SendStack,
+                    params: {
+                        screen: SendStackRoutes.SendOutputs,
+                        params: { accountKey, tokenContract },
+                    },
+                },
+            },
+        });
+    });
+
+    const amount = isAmountInSats
+        ? getValues('outputs.0.amount')
+        : convertAmountUnitsToSubunits(getValues('outputs.0.amount'), network?.decimals ?? 0);
+    const maxSpendableAmount = getSendMaxAmount({
+        isTokenFlow: !!tokenContract,
+        tokenBalance: tokenInfo?.balance,
+        normalFeeLevelMaxAmount: maxSendAmountByFeeLevel?.normal,
+    });
+
+    const sendForm: UseFormReturn<SendOutputsFormValues> & typeof amountConversion = {
+        ...form,
+        ...amountConversion,
+    };
+
+    return {
+        handleSubmitSendForm,
+        form: sendForm,
+        network,
+        amount,
+        maxSpendableAmount,
+        maxAmountForReserve,
+        isFeeReady,
+        isResolvingNamedAddress,
+    };
+};

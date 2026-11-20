@@ -7,6 +7,7 @@ import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
 import { selectDeviceThunk } from '@suite-common/device';
+import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
     getAccountsByDeviceState,
     selectAccounts,
@@ -32,12 +33,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
 import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
-import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useSelector } from 'src/hooks/suite';
-import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
-import { type AcquiredDevice, type ForegroundAppProps } from 'src/types/suite';
+import { redirectAfterWalletSelectedThunk } from '#src/actions/wallet/addWalletThunk';
+import { WalletLabeling } from '#src/components/suite/labeling/WalletLabeling';
+import { FiatHeader } from '#src/components/wallet/FiatHeader';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTotalFiatBalance } from '#src/hooks/wallet/useTotalFiatBalance';
+import { type ForegroundAppProps } from '#src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 

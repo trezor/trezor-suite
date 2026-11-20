@@ -9,8 +9,8 @@ import {
     selectTradingProviderCompanyName,
     selectTradingSellActiveTrade,
     selectTradingSellFormStep,
-    selectTradingSellInfo,
     selectTradingSellIsLoading,
+    selectTradingSellProviders,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
     sellUtils,
@@ -23,15 +23,15 @@ import { useServices } from '@trezor/dependency-injection';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { useTradingSellBankAccountSelection } from 'src/hooks/wallet/trading/useTradingSellBankAccountSelection';
-import { useTradingSellConfirmFees } from 'src/hooks/wallet/trading/useTradingSellConfirmFees';
-import { useTradingSellTradeActions } from 'src/hooks/wallet/trading/useTradingSellTradeActions';
-import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { type TradingOfferSellProps } from 'src/types/trading/tradingForm';
-import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { useTradingSellBankAccountSelection } from '#src/hooks/wallet/trading/useTradingSellBankAccountSelection';
+import { useTradingSellConfirmFees } from '#src/hooks/wallet/trading/useTradingSellConfirmFees';
+import { useTradingSellTradeActions } from '#src/hooks/wallet/trading/useTradingSellTradeActions';
+import { useTradingWatchTrade } from '#src/hooks/wallet/trading/useTradingWatchTrade';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
+import { type TradingOfferSellProps } from '#src/types/trading/tradingForm';
+import { TradingFormOfferConfirmButton } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingKYCWarning } from '#src/views/wallet/trading/common/TradingKYCWarning';
+import { TradingSelectedOfferInfo } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 
 import { TradingOfferSellSendButton } from './TradingOfferSellSendButton';
 import { TradingOfferSellWaitingForProvider } from './TradingOfferSellWaitingForProvider';
@@ -51,7 +51,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const formStep = useSelector(selectTradingSellFormStep);
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const trade = useSelector(selectTradingSellActiveTrade);
-    const sellInfo = useSelector(selectTradingSellInfo);
+    const providers = useSelector(selectTradingSellProviders);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
     const isLoading = useSelector(selectTradingSellIsLoading);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -82,7 +82,9 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const isBankAccountStep = formStep === 'BANK_ACCOUNT';
     const isSendStep = formStep === 'SEND_TRANSACTION';
     const isPartnerReadyToReceive = sellUtils.isReadyToSendCrypto(selectedTrade);
-    const isSendDisabled = isLoading || !device?.connected || isDiscoveryRunning || isSending;
+    const isProviderLoaded = !!selectedTrade.exchange && !!providers?.[selectedTrade.exchange];
+    const isSendDisabled =
+        isLoading || !isProviderLoaded || !device?.connected || isDiscoveryRunning || isSending;
 
     const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
         selectedTrade.cryptoCurrency,
@@ -163,7 +165,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                     <TradingSelectedOfferInfo
                         type="sell"
                         selectedQuote={selectedTrade}
-                        providers={sellInfo?.providerInfos}
+                        providers={providers}
                         quoteAmounts={quoteAmounts}
                         paymentMethod={selectedTrade.paymentMethod}
                         paymentMethodName={selectedTrade.paymentMethodName}

@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { findToken } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';

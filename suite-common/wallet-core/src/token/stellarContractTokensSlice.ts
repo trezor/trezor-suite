@@ -25,7 +25,7 @@ const STELLAR_CONTRACT_TOKENS = '@common/wallet-core/stellar-contract-tokens';
 
 type ContractTokenPayload = { accountKey: AccountKey; contract: string };
 
-type StellarContractTokensDeps = ActionTypesDep<'storageLoad'> &
+export type StellarContractTokensDeps = ActionTypesDep<'storageLoad'> &
     ReducersDep<'storageLoadStellarContractTokens'>;
 
 const stellarContractTokensSlice = createSliceWithExtraDeps({

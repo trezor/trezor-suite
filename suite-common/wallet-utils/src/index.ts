@@ -22,6 +22,7 @@ export * from './reviewTransactionUtils';
 export * from './clearSignedSwapUtils';
 export * from './sendFormUtils';
 export * from './settingsUtils';
+export * from './spendableBalanceUtils';
 export * from './stakingUtils';
 export * from './tokenUtils';
 export * from './pollingUtils';

@@ -19,7 +19,7 @@ export const events = (api: TrezorConnect) => {
         if (event.type === 'button') {
             const { payload } = event;
             payload.device.type.toLowerCase();
-            payload.code?.toLowerCase();
+            payload.code.toLowerCase();
             payload.pages?.toFixed();
 
             return;
@@ -186,6 +186,7 @@ export const events = (api: TrezorConnect) => {
     });
     api.on(UI_REQUESTS.REQUEST_PASSPHRASE, event => {
         event.requestId.toLowerCase();
+        event.callId?.toLowerCase();
         event.device.path.toLowerCase();
     });
     api.off(UI_EVENT, () => {});

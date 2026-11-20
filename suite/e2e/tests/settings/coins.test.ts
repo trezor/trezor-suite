@@ -30,7 +30,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 ethSymbol,
                 asNetworkSymbol('etc'),
                 asNetworkSymbol('xrp'),
-                // 'xlm', add when removed from experimental features
+                asNetworkSymbol('xlm'),
                 asNetworkSymbol('bch'),
                 asNetworkSymbol('doge'),
                 asNetworkSymbol('zec'),
@@ -43,7 +43,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 asNetworkSymbol('tsep'),
                 asNetworkSymbol('thod'),
                 asNetworkSymbol('txrp'),
-                // 'txlm', add when removed from experimental features
+                asNetworkSymbol('txlm'),
                 asNetworkSymbol('dsol'),
             ];
             const defaultUnchecked: NetworkSymbol[] = [

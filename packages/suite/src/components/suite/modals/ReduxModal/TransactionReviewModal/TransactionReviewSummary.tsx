@@ -1,11 +1,12 @@
-import { AccountLabel } from '@suite/account';
+import { AccountLabel, selectSelectedAccountKey } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
-import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import { selectRawNetworkFeeInfo, selectSendFormDrafts } from '@suite-common/wallet-core';
 import {
+    type Account,
     type FeeInfo,
     type GeneralPrecomposedTransactionFinal,
     type SendFormDraftKey,
@@ -17,11 +18,10 @@ import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } fr
 import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';
-import { type AppState } from 'src/types/suite';
-import { type Account } from 'src/types/wallet';
+import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
+import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
+import { useConnectedDateFnsLocale } from '#src/hooks/suite/useConnectedDateFnsLocale';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TransactionReviewEthereumNotes } from './TransactionReviewEthereumNotes';
 import { TransactionReviewTronFeeNotes } from './TransactionReviewTronFeeNotes';
@@ -41,9 +41,6 @@ const getEstimatedTime = (
     return matchedFeeLevel.blocks * feeInfo.blockTime * 60;
 };
 
-const selectSendFormDrafts = (state: AppState) => state.wallet.send.drafts;
-const selectCurrentAccountKey = (state: AppState) => state.wallet.selectedAccount.account?.key;
-
 type TransactionReviewSummaryProps = {
     tx: GeneralPrecomposedTransactionFinal;
     account: Account;
@@ -51,6 +48,7 @@ type TransactionReviewSummaryProps = {
     onDetailsClick: () => void;
     stakeType?: StakeType | null;
     timer?: React.JSX.Element;
+    formFeeLimit: string | undefined;
 };
 
 export const TransactionReviewSummary = ({
@@ -60,9 +58,10 @@ export const TransactionReviewSummary = ({
     onDetailsClick,
     stakeType,
     timer,
+    formFeeLimit,
 }: TransactionReviewSummaryProps) => {
     const drafts = useSelector(selectSendFormDrafts);
-    const currentAccountKey = useSelector(selectCurrentAccountKey) as string;
+    const currentAccountKey = useSelector(selectSelectedAccountKey) as string;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const locale = useConnectedDateFnsLocale();
     const { symbol, networkType } = account;
@@ -80,10 +79,10 @@ export const TransactionReviewSummary = ({
 
     return (
         <>
-            <Row justifyContent="space-between">
-                <Row columnGap={16} rowGap={4} flexWrap="wrap">
-                    <Row gap={4}>
-                        <TokenIcon size={16} symbol={symbol} />
+            <Row justifyContent="space-between" gap={8}>
+                <Row columnGap={16} rowGap={4} flexWrap="wrap" flex="1" minWidth={0}>
+                    <Row gap={4} minWidth={0} maxWidth="100%">
+                        <TokenIcon size={16} networkSymbol={symbol} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge
@@ -112,7 +111,11 @@ export const TransactionReviewSummary = ({
                     )}
 
                     {networkType === 'tron' && (
-                        <TransactionReviewTronFeeNotes tx={tx} account={account} />
+                        <TransactionReviewTronFeeNotes
+                            tx={tx}
+                            account={account}
+                            formFeeLimit={formFeeLimit}
+                        />
                     )}
 
                     {isComposedFeeRateDifferent && network.networkType === 'bitcoin' && (

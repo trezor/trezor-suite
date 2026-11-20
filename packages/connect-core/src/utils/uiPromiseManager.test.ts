@@ -74,4 +74,27 @@ describe('utils/uiPromiseManager', () => {
             expect(p1.requestId).not.toBe(p3.requestId);
         });
     });
+
+    describe('clear', () => {
+        it('clears only the promises of the given device', () => {
+            const manager = createUiPromiseManager();
+            const device = createMockDevice('path-1');
+            manager.create(UI_RESPONSE.RECEIVE_PIN, device);
+            manager.create(UI_RESPONSE.RECEIVE_PASSPHRASE, createMockDevice('path-2'));
+
+            manager.clear(device);
+
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PIN)).toBe(false);
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PASSPHRASE)).toBe(true);
+        });
+
+        it('clears all the promises without a device', () => {
+            const manager = createUiPromiseManager();
+            manager.create(UI_RESPONSE.RECEIVE_PIN, createMockDevice('path-1'));
+
+            manager.clear();
+
+            expect(manager.exists(UI_RESPONSE.RECEIVE_PIN)).toBe(false);
+        });
+    });
 });

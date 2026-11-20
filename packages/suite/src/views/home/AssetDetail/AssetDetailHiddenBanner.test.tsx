@@ -10,17 +10,17 @@ import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { type AppState } from 'src/reducers/store';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailHiddenBanner } from './AssetDetailHiddenBanner';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+import { mockExtraDependenciesForReducers } from '../../../../mocks/mockExtraDependenciesForReducers';
+import { type MockSuiteState, mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -34,7 +34,7 @@ const UNKNOWN_TOKEN = '0x1111111111111111111111111111111111111111' as TokenAddre
 const SUSPICIOUS_BANNER = '@asset-detail/suspicious-token-banner';
 const HIDDEN_BANNER = '@asset-detail/hidden-token-banner';
 
-const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
+const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(mockExtraDependenciesForReducers);
 
 const ethereumAccount = mockWalletAccount({
     symbol: ETH,
@@ -50,7 +50,7 @@ const ethereumAccount = mockWalletAccount({
     ],
 });
 
-const getInitialState = (hiddenTokens: TokenAddress[]): AppState => ({
+const getInitialState = (hiddenTokens: TokenAddress[]): MockSuiteState => ({
     ...mockInitialAppState,
     networks: mockNetworksState([ETH]),
     device: {
@@ -87,11 +87,11 @@ type RenderBannerParams = {
 
 const renderBanner = ({ symbol, contractAddress, hiddenTokens = [] }: RenderBannerParams) => {
     const initialState = getInitialState(hiddenTokens);
-    const reducer: Reducer<AppState> = (state = initialState, action) => ({
+    const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({
         ...state,
         tokenDefinitions: tokenDefinitionsReducer(state.tokenDefinitions, action),
     });
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState: initialState,
         reducer,
     });

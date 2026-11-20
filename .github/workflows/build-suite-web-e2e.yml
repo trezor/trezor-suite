@@ -22,6 +22,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
+      - name: Pull Cardano Serialization Lib asm.js from LFS
+        shell: bash
+        run: git lfs pull --include "networks/cardano/network-cardano/generated/csl-asmjs/*"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
         with:
@@ -62,7 +66,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets @suite-common/message-system
+        run: yarn workspaces focus @suite-app/web-app @trezor/suite @suite/app-assets @suite-common/message-system
 
       - name: Build Suite Web
         shell: bash
@@ -73,11 +77,11 @@ jobs:
         run: |
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
-          yarn workspace @suite/web-app build
+          yarn workspace @suite-app/web-app build
 
       - name: Upload Suite Web to S3
         shell: bash
         env:
           DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ env.branch }}
         run: |
-          aws s3 sync --delete ./suite/web-app/build ${DEPLOY_PATH}/web
+          aws s3 sync --delete ./suite-app/web-app/build ${DEPLOY_PATH}/web

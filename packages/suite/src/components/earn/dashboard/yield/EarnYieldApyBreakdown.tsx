@@ -145,7 +145,7 @@ export const EarnYieldApyBreakdown = ({
                         <RewardRow key={index}>
                             <TokenIcon
                                 placeholder={displaySymbol || reward.token.name || 'token'}
-                                symbol={networkSymbol}
+                                networkSymbol={networkSymbol}
                                 contractAddress={reward.token.address}
                                 showNetworkIcon
                                 wrappedTokenIcon="network"

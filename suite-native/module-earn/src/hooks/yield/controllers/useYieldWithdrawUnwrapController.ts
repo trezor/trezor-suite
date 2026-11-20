@@ -2,13 +2,14 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWrapErrorReason,
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { useMessageSystemWrappedNative, useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -16,10 +17,8 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
-import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
-import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldWithdrawUnwrap>;
@@ -206,7 +205,6 @@ export const useYieldWithdrawUnwrapController = () => {
             defaultAmount: withdrawnAmount,
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: reportMaxSelected,
-            tokenDecimals: resolvedToken.decimals,
         },
         receivingCard: {
             isVisible: step.isAmountReady,

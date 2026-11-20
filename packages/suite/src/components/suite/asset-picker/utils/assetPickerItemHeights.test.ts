@@ -1,14 +1,14 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, asAccountDescriptor, toTokenAddress } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { getAssetPickerItemHeight } from './assetPickerItemHeights';
 import { type AssetGroupOption, type AssetGroupsOption, type AssetRowOption } from '../types';
-
-import { createAccountOption, createHiddenTokensOption, createTokenOption } from './index';
+import { createAccountOption, createHiddenTokensOption, createTokenOption } from './assetOptions';
 
 const account: Account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),

@@ -1,7 +1,7 @@
 import { type UnknownAction } from 'redux';
 
-import { type ConnectPopupState } from '@suite-common/connect-popup';
-import { type TradingState } from '@suite-common/trading';
+import { type ConnectPopupState, selectConnectPopupCall } from '@suite-common/connect-popup';
+import { type TradingState, selectTradingModalAccountKey } from '@suite-common/trading';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -10,6 +10,7 @@ import {
     type YieldState,
     accountsActions,
     selectAccountByKey,
+    selectSendFormAccountKey,
     selectStakeAccount,
 } from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -88,17 +89,17 @@ export const selectAccountIncludingChosenInTrading = (
         return stakeAccount;
     }
 
-    const sendAccountKey = state.wallet.send.accountKey;
+    const sendAccountKey = selectSendFormAccountKey(state);
     if (sendAccountKey) {
         return selectAccountByKey(state, sendAccountKey) ?? undefined;
     }
 
-    const { modalAccountKey } = state.wallet.trading;
+    const modalAccountKey = selectTradingModalAccountKey(state);
     if (modalAccountKey) {
         return selectAccountByKey(state, modalAccountKey) ?? undefined;
     }
 
-    const { activeCall } = state.connectPopup;
+    const activeCall = selectConnectPopupCall(state);
     if (activeCall?.state === 'ongoing') {
         return selectAccountByKey(state, activeCall.selectedAccountKey) ?? undefined;
     }

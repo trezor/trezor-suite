@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { Box, Button, Card, Column, H3, Row, Text } from '@trezor/components';
 
 import { TroubleshootingTipsList } from '../troubleshooting/TroubleshootingTipsList';
-import { TROUBLESHOOTING_ALL_BLUETOOTH_TIPS } from '../troubleshooting/tips';
+import { TROUBLESHOOTING_ALL_BLUETOOTH_TIPS } from '../troubleshooting/tips/troubleshootingTipItems';
 
 type BluetoothTipsProps = {
     onReScanClick: () => void;

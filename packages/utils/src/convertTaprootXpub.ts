@@ -49,3 +49,15 @@ export type CanonicalDescriptor = string & Branded<'CanonicalDescriptor'>;
 export const toCanonicalDescriptor = (descriptor: string): CanonicalDescriptor =>
     (convertTaprootXpub({ xpub: descriptor, direction: 'h-to-apostrophe' }) ??
         descriptor) as CanonicalDescriptor;
+
+export type FirmwareDescriptor = string & Branded<'FirmwareDescriptor'>;
+
+/** Firmware's display form of a descriptor: `h` instead of `'`, with an optional `#<checksum>`. */
+export const toFirmwareDescriptor = (descriptor: string, checksum?: string): FirmwareDescriptor => {
+    const firmwareDescriptor =
+        convertTaprootXpub({ xpub: descriptor, direction: 'apostrophe-to-h' }) ?? descriptor;
+
+    return (
+        checksum === undefined ? firmwareDescriptor : `${firmwareDescriptor}#${checksum}`
+    ) as FirmwareDescriptor;
+};

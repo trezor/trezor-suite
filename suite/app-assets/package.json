@@ -45,6 +45,7 @@
     "nx": {
         "targets": {
             "build:lib": {
+                "dependsOn": [],
                 "outputs": [
                     "{projectRoot}/tmp",
                     "{projectRoot}/files/browser-detection",

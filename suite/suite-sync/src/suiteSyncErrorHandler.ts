@@ -78,6 +78,8 @@ export const suiteSyncErrorHandler = ({
             // and will retry once the device reconnects, so we stay silent.
             return;
 
+        // A failed download is technical and expected on a bad network: a toast, no Sentry report.
+        case 'LazyLoadingError':
         case 'DeviceCancelled':
         case 'DeviceError':
             dispatch(

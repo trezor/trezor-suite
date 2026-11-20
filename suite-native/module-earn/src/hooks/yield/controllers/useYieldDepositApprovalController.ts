@@ -3,12 +3,8 @@ import { useCallback } from 'react';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    getYieldApprovalAction,
-    getYieldNativeFeeStatus,
-    yieldActions,
-} from '@suite-common/wallet-core';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { getYieldNativeFeeStatus, yieldActions } from '@suite-common/wallet-core';
+import { getAllowanceAction, isPositiveBalance } from '@suite-common/wallet-utils';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
     type StackNavigationProps,
@@ -30,7 +26,7 @@ import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalyt
 import { useYieldDepositApprovalSubmit } from '../useYieldDepositApprovalSubmit';
 import { useYieldDepositForm } from '../useYieldDepositForm';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
-import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
+import { useYieldFlowAnalytics, useYieldFormExitAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
@@ -69,7 +65,7 @@ export const useYieldDepositApprovalController = () => {
         vaultId: yieldFlowData.vault?.id,
     });
     const isAllowanceAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
-    const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'per-deposit';
+    const defaultApprovalLimitType = isAllowanceAmountUnlimited ? 'unlimited' : 'minimal';
     const { approvalLimitTitle, approvalLimitType, setApprovalLimitType } =
         useYieldApprovalLimit(defaultApprovalLimitType);
     const allowanceAmount = session?.approval.allowanceAmount;
@@ -112,9 +108,9 @@ export const useYieldDepositApprovalController = () => {
     } = form;
     const footerApprovalAction =
         allowanceStatus === 'loaded'
-            ? getYieldApprovalAction({
-                  liveAmount: amountValue ?? '',
-                  allowanceAmount,
+            ? getAllowanceAction({
+                  requestedAmount: amountValue ?? '',
+                  currentAllowanceAmount: allowanceAmount,
                   shouldConsiderAllowance: hasApprovedAmount,
                   isRevokeRequired: session?.approval.isRevokeRequired ?? false,
                   tokenContractAddress: token?.contractAddress,
@@ -124,7 +120,7 @@ export const useYieldDepositApprovalController = () => {
         amount: amountValue,
         approvalLimitType,
         flowKey,
-        isEnabled: isValid,
+        isEnabled: isValid && isFocused && !isApprovalPending,
         flowData,
         tokenContract: route.params.tokenContract,
     });
@@ -147,6 +143,14 @@ export const useYieldDepositApprovalController = () => {
         reserve: gasReserve,
         isWrapStep: false,
         isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
+    });
+
+    useYieldFormExitAnalytics({
+        flowType: 'deposit',
+        networkSymbol: account?.symbol,
+        vaultId: yieldFlowData.vault?.id,
+        isEnabled: yieldFlowData.resolutionStatus === 'resolved',
+        isCompleted: session?.step === 'complete',
     });
 
     const isApprovalSessionReady = session?.step === 'approve';
@@ -304,6 +308,9 @@ export const useYieldDepositApprovalController = () => {
         feeReserveAlert: getYieldFeeReserveAlert({ nativeFeeStatus, gasReserve }),
         feeSection: {
             isVisible: isValid && !!amountValue,
+            hasFeeEstimationError: approvalFees.hasFeeEstimationError,
+            isComposingFeeLevels: approvalFees.isComposingFeeLevels,
+            retryFeeEstimation: approvalFees.retryFeeEstimation,
             formDraft: approvalFees.formDraft,
             formDraftKey: approvalFees.formDraftKey,
             selectedFee: approvalFees.selectedFee,

@@ -1,31 +1,32 @@
+import { useSelector } from 'react-redux';
+
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
 import { Switch, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;
 }
 
 export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
-    const { device } = useDevice();
+    const isDeviceProtectedByPassphrase = useSelector(selectIsDeviceProtectedByPassphrase);
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const passphraseProtection = !!device?.features?.passphrase_protection;
 
     const handleChange = () => {
-        dispatch(applySettingsThunk({ use_passphrase: !passphraseProtection }));
+        dispatch(applySettingsThunk({ use_passphrase: !isDeviceProtectedByPassphrase }));
         analytics.report({
             type: events.settingsDeviceChangePassphraseProtectionEvent.name,
             payload: {
-                use_passphrase: !passphraseProtection,
+                use_passphrase: !isDeviceProtectedByPassphrase,
             },
         });
     };
@@ -48,7 +49,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                             }
                         >
                             <Switch
-                                isChecked={passphraseProtection}
+                                isChecked={isDeviceProtectedByPassphrase}
                                 onChange={handleChange}
                                 data-testid="@settings/device/passphrase-switch"
                                 isDisabled={isDeviceLocked}

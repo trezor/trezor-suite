@@ -8,7 +8,9 @@ import { supportedSolanaNetworks } from '@trezor/network-solana-types';
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
-export const createSolanaSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+export type SolanaSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+
+export const createSolanaSuiteCommonNetworkModule = (): SolanaSuiteCommonNetworkModule =>
     createNetworkModule(supportedSolanaNetworks, {
         icon: solanaAssets,
         addressValidator: solanaValidator,

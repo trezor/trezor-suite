@@ -1,0 +1,39 @@
+import { Account } from '@suite-common/wallet-types';
+import { PreloadedState } from '@suite-native-app/state';
+
+export const PRELOADED_BTC_ACCOUNT_LABEL = 'BTC SegWit';
+
+/**
+ * State fragment that inserts BTC account to a portfolio tracker wallet.
+ */
+export const portfolioTrackerBtcAccountState: PreloadedState = {
+    wallet: {
+        accounts: [
+            {
+                accountLabel: PRELOADED_BTC_ACCOUNT_LABEL,
+                accountType: 'normal',
+                addresses: { change: [], used: [], unused: [] },
+                availableBalance: '0',
+                balance: '0',
+                descriptor:
+                    'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
+                empty: false,
+                formattedBalance: '0',
+                history: [],
+                imported: true,
+                index: 0,
+                key: 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT-btc-state@hiddenDeviceWithImportedAccounts:1',
+                metadata: [],
+                networkType: 'bitcoin',
+                page: [],
+                path: '',
+                symbol: 'btc',
+                tokens: [],
+                ts: 1753692438941,
+                utxo: [],
+                visible: true,
+            } as unknown as Account, // to omit unnecessary fields,
+        ],
+    },
+};

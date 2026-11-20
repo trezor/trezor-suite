@@ -1,10 +1,14 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
+    type CurrentRate,
+    type RatesByKey,
     type WalletAccountTransaction,
     asAccountDescriptor,
+    asTimestamp,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -16,6 +20,8 @@ import {
     findAccountDevice,
     findAccountsByAddress,
     findTransactionSenderAccount,
+    getAccountBalanceWithStaking,
+    getAccountFiatBalance,
     getAccountIdentifier,
     getAccountSpecific,
     getAccountTypeDesc,
@@ -23,9 +29,11 @@ import {
     getAccountTypeTech,
     getBip43Type,
     getDirectRpcHistoryState,
+    getFirmwareDescriptor,
     getHistoryCoveredSince,
     getNetworkAccountFeatures,
     getOlderHistoryFrom,
+    getTotalFiatBalance,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
@@ -43,6 +51,7 @@ import {
     formatNetworkAmount,
     networkAmountToSmallestUnit,
 } from './amountUtils';
+import { getFiatRateKey } from './fiatRatesUtils';
 
 const supportedNetworks = mockGetSupportedNetworks();
 
@@ -730,5 +739,101 @@ describe(convertAmountUnitsToSubunits.name, () => {
 describe(convertAmountSubunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
         expect(convertAmountSubunitsToUnits('1', 8)).toEqual('0.00000001');
+    });
+});
+
+describe(getFirmwareDescriptor.name, () => {
+    it('appends the checksum only when asked for and when the account has one', () => {
+        const descriptor = asAccountDescriptor("tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)");
+        const firmwareDescriptor = 'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)';
+        const account = { descriptor, descriptorChecksum: 'gvfjd7ak' };
+
+        expect(getFirmwareDescriptor(account)).toEqual(firmwareDescriptor);
+        expect(getFirmwareDescriptor(account, { withChecksum: true })).toEqual(
+            `${firmwareDescriptor}#gvfjd7ak`,
+        );
+        expect(getFirmwareDescriptor({ descriptor }, { withChecksum: true })).toEqual(
+            firmwareDescriptor,
+        );
+    });
+});
+
+describe(getAccountBalanceWithStaking.name, () => {
+    it('adds the staking balance in the smallest unit to the formatted balance', () => {
+        expect(
+            getAccountBalanceWithStaking({
+                account: { symbol: ethSymbol, formattedBalance: '1.5' },
+                stakingBalance: '2050000000000000000',
+            }),
+        ).toBe('3.55');
+    });
+
+    it('keeps the formatted balance as it is without staking, its reserve included', () => {
+        expect(
+            getAccountBalanceWithStaking({
+                account: { symbol: asNetworkSymbol('xrp'), formattedBalance: '3.11' },
+                stakingBalance: '0',
+            }),
+        ).toBe('3.11');
+    });
+});
+
+describe(getAccountFiatBalance.name, () => {
+    const usdt = '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress;
+    const account = mockWalletAccount({
+        symbol: ethSymbol,
+        formattedBalance: '1.5',
+        tokens: [mockAccountToken({ contract: usdt, balance: '250' })],
+    });
+    const createRate = (rate: number): CurrentRate => ({
+        ticker: { symbol: ethSymbol },
+        rate,
+        usdRate: rate,
+        lastTickerTimestamp: asTimestamp(0),
+        lastSuccessfulFetchTimestamp: asTimestamp(0),
+        isLoading: false,
+        error: null,
+    });
+    const rates: RatesByKey = {
+        [getFiatRateKey(ethSymbol, 'usd')]: createRate(2000),
+        [getFiatRateKey(ethSymbol, 'usd', usdt)]: createRate(1),
+    };
+
+    it('adds the native token, its tokens and the staking balance it is given', () => {
+        expect(
+            getAccountFiatBalance({
+                account,
+                baseCurrencyCode: 'usd',
+                rates,
+                stakingBalance: '2050000000000000000',
+            })?.toFixed(),
+        ).toBe('7350');
+    });
+
+    it('leaves staking out when no staking balance is given', () => {
+        expect(getAccountFiatBalance({ account, baseCurrencyCode: 'usd', rates })?.toFixed()).toBe(
+            '3250',
+        );
+    });
+
+    it('is null without the native token rate', () => {
+        expect(getAccountFiatBalance({ account, baseCurrencyCode: 'usd', rates: {} })).toBeNull();
+    });
+
+    it('gives each account of a total its own staking balance by key', () => {
+        const other = mockWalletAccount({
+            symbol: ethSymbol,
+            descriptor: asAccountDescriptor('other'),
+            formattedBalance: '1',
+        });
+
+        expect(
+            getTotalFiatBalance({
+                deviceAccounts: [account, other],
+                baseCurrencyCode: 'usd',
+                rates,
+                stakingBalances: { [other.key]: '1000000000000000000' },
+            }).toFixed(),
+        ).toBe('7250');
     });
 });

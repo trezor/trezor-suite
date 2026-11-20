@@ -1,9 +1,9 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
     selectWalletAssetHiddenReason,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import {
     DefinitionType,
@@ -16,7 +16,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { EyeIcon, EyeSlashIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetDetailHiddenBannerProps = {
     assetKey: WalletAssetKey;
@@ -25,11 +25,14 @@ type AssetDetailHiddenBannerProps = {
 export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerProps) => {
     const { dispatch } = useServices(injectDispatch);
     const hiddenReason = useSelector(state => selectWalletAssetHiddenReason(state, assetKey));
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
 
-    if (symbol === undefined || contractAddress === undefined || hiddenReason === undefined) {
+    if (
+        networkSymbol === undefined ||
+        contractAddress === undefined ||
+        hiddenReason === undefined
+    ) {
         return null;
     }
 
@@ -48,7 +51,7 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
     const showToken = () =>
         dispatch(
             tokenDefinitionsActions.setTokenStatus({
-                symbol,
+                symbol: networkSymbol,
                 contractAddress,
                 status: TokenManagementAction.SHOW,
                 type: DefinitionType.COIN,
@@ -63,7 +66,15 @@ export const AssetDetailHiddenBanner = ({ assetKey }: AssetDetailHiddenBannerPro
             description={
                 <Translation
                     id="TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION"
-                    values={{ asset: displaySymbol }}
+                    values={{
+                        asset: (
+                            <AssetSymbol
+                                networkSymbol={networkSymbol}
+                                contractAddress={contractAddress}
+                                isTruncated
+                            />
+                        ),
+                    }}
                 />
             }
             rightContent={

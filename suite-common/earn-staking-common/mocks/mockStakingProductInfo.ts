@@ -6,6 +6,7 @@ export const mockStakingProductInfo = (
     rate: 3.08,
     entryPeriodDays: 1,
     exitPeriodDays: 5,
+    rewardPeriodDays: null,
     nextRewardAt: 1_777_000_000_000,
     targets: [
         {
@@ -13,6 +14,7 @@ export const mockStakingProductInfo = (
             providerId: stakingProviderIdSchema.parse('everstake'),
             name: 'EVE6',
             rate: 2.4,
+            saturation: 80.77,
         },
     ],
     ...overrides,

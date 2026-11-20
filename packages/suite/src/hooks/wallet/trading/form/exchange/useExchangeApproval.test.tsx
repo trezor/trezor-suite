@@ -17,7 +17,7 @@ const mockConfirmApproval = jest.fn((_payload: unknown) => () => ({
     unwrap: () => Promise.resolve(RESULT_TRADE),
 }));
 
-jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
+jest.mock('#src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest', () => ({
     useTradingExchangeTradeRequest: () => ({ getTradeRequestParams: mockGetTradeRequestParams }),
 }));
 
@@ -35,15 +35,18 @@ jest.mock('@suite-common/trading', () => {
 
 const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBalance: '2' });
 
-const TRADE: ExchangeTrade = { exchange: 'provider-1', status: 'CONFIRM' };
+const TRADE: ExchangeTrade = {
+    exchange: 'provider-1',
+    status: 'CONFIRM',
+    receiveAddress: '0xreceive',
+};
 
-const renderExchangeApproval = (receiveAddress?: string) => {
+const renderExchangeApproval = () => {
     const { services } = createTestCompositionRoot<void, unknown>({});
 
-    const utils = renderHookWithStoreProvider(
-        () => useExchangeApproval({ account: ACCOUNT, receiveAddress }),
-        { services },
-    );
+    const utils = renderHookWithStoreProvider(() => useExchangeApproval({ account: ACCOUNT }), {
+        services,
+    });
 
     const { getActions } = services.store;
 
@@ -57,7 +60,7 @@ describe('useExchangeApproval', () => {
     });
 
     it('approveTransaction confirms the trade with a CONFIRM status', async () => {
-        const { result } = renderExchangeApproval('0xreceive');
+        const { result } = renderExchangeApproval();
 
         let outcome: boolean | undefined;
         await act(async () => {
@@ -74,11 +77,14 @@ describe('useExchangeApproval', () => {
     });
 
     it('approveTransaction is a no-op without a receive address', async () => {
-        const { result } = renderExchangeApproval(undefined);
+        const { result } = renderExchangeApproval();
 
         let outcome: boolean | undefined;
         await act(async () => {
-            outcome = await result.current.approveTransaction(TRADE);
+            outcome = await result.current.approveTransaction({
+                ...TRADE,
+                receiveAddress: undefined,
+            });
         });
 
         expect(outcome).toBe(false);
@@ -86,7 +92,7 @@ describe('useExchangeApproval', () => {
     });
 
     it('revokeApproval saves a ZERO-approval quote before confirming', async () => {
-        const { result, getActions } = renderExchangeApproval('0xreceive');
+        const { result, getActions } = renderExchangeApproval();
 
         let outcome: boolean | undefined;
         await act(async () => {
@@ -104,11 +110,34 @@ describe('useExchangeApproval', () => {
         );
     });
 
+    it('confirmPendingApproval saves the pending quote and reports the tx hash to the provider', async () => {
+        const { result, getActions } = renderExchangeApproval();
+        const pendingTrade: ExchangeTrade = {
+            ...TRADE,
+            status: 'APPROVAL_PENDING',
+            approvalSendTxHash: '0xtxid',
+            approvalType: 'ZERO',
+        };
+
+        await act(async () => {
+            await result.current.confirmPendingApproval({
+                trade: TRADE,
+                txid: '0xtxid',
+                approvalType: 'ZERO',
+            });
+        });
+
+        expect(getActions()).toContainEqual(tradingExchangeActions.saveSelectedQuote(pendingTrade));
+        expect(mockConfirmApproval).toHaveBeenCalledWith(
+            expect.objectContaining({ trade: pendingTrade, receiveAddress: '0xreceive' }),
+        );
+    });
+
     it('confirmApproval early-returns when the trade request params are unavailable', async () => {
         mockGetTradeRequestParams.mockResolvedValueOnce(
             undefined as unknown as { processResponseData: jest.Mock },
         );
-        const { result } = renderExchangeApproval('0xreceive');
+        const { result } = renderExchangeApproval();
 
         let outcome: ExchangeTrade | undefined;
         await act(async () => {

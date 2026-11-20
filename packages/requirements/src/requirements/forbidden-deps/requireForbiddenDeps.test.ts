@@ -54,6 +54,62 @@ describe(requireForbiddenDeps.name, () => {
         rmSync(context.repoRoot, { recursive: true, force: true });
     });
 
+    it.each([false, true])(
+        'reports an invalid inherited consumer pattern without importers (local policy: %s)',
+        async hasLocalPolicy => {
+            writeConfig(join(context.repoRoot, 'networks'), {
+                'forbidden-in': { packageNamePattern: '[', reason: 'Invalid inherited policy.' },
+            });
+            if (hasLocalPolicy) {
+                writeConfig(context.workspaceDir, {
+                    'forbidden-in': {
+                        packageNamePattern: '^@suite-native/',
+                        reason: 'Local policy.',
+                    },
+                });
+            }
+
+            expect(await requireForbiddenDeps.verify(context)).toEqual([
+                '@trezor/network-example: "[" in "forbidden-in" is not a valid packageNamePattern regular expression.',
+            ]);
+        },
+    );
+
+    it('enforces the app directory boundary even when the package has a local policy', async () => {
+        const appDirectory = join(context.repoRoot, 'suite-app');
+        const appWorkspace = join(appDirectory, 'future-page');
+        mkdirSync(appWorkspace, { recursive: true });
+        writeConfig(appDirectory, {
+            'forbidden-in': {
+                packageNamePattern: '^(?!@suite-app/)',
+                reason: 'Application assembly is not reusable.',
+            },
+        });
+        writeConfig(appWorkspace, {
+            'forbidden-in': {
+                packageNamePattern: '^@suite-native/',
+                reason: 'Local policy.',
+            },
+        });
+        writeFileSync(
+            join(context.workspaceDir, 'package.json'),
+            JSON.stringify({
+                name: context.workspaceName,
+                dependencies: { '@suite-app/future-page': 'workspace:*' },
+            }),
+        );
+        jest.mocked(getWorkspaceDirectoryMap).mockReturnValue(
+            new Map([
+                [context.workspaceName, context.workspaceDir],
+                ['@suite-app/future-page', appWorkspace],
+            ]),
+        );
+
+        expect(await requireForbiddenDeps.verify(context)).toEqual([
+            '@trezor/network-example: "@suite-app/future-page" is forbidden in dependencies by its "forbidden-in" rule. Reason: Application assembly is not reusable.',
+        ]);
+    });
+
     it('inherits a parent policy without a workspace config and preserves exceptions', async () => {
         writeConfig(join(context.repoRoot, 'networks'), {
             'forbidden-deps': [
@@ -275,6 +331,57 @@ describe(getDependencyConsumerErrors.name, () => {
             ]);
         },
     );
+
+    it.each([
+        'dependencies',
+        'devDependencies',
+        'peerDependencies',
+        'optionalDependencies',
+    ] as const)('inherits the app boundary for %s', async field => {
+        const errors = await getDependencyConsumerErrors({
+            dependencyOccurrences: [{ field, name: '@suite-app/future-page' }],
+            workspaceName: '@suite/address',
+            repoRoot: '/repo',
+            getWorkspaceDirByName: () => '/repo/suite-app/future-page',
+            loadConfig: directory =>
+                Promise.resolve(
+                    directory === '/repo/suite-app'
+                        ? {
+                              'forbidden-in': {
+                                  packageNamePattern: '^(?!@suite-app/)',
+                                  reason: 'Application assembly is not reusable.',
+                              },
+                          }
+                        : undefined,
+                ),
+        });
+
+        expect(errors).toEqual([
+            `@suite/address: "@suite-app/future-page" is forbidden in ${field} by its "forbidden-in" rule. Reason: Application assembly is not reusable.`,
+        ]);
+    });
+
+    it('allows app composition to import another app package', async () => {
+        const errors = await getDependencyConsumerErrors({
+            dependencyOccurrences: [{ field: 'dependencies', name: '@suite-app/future-page' }],
+            workspaceName: '@suite-app/web-app',
+            repoRoot: '/repo',
+            getWorkspaceDirByName: () => '/repo/suite-app/future-page',
+            loadConfig: directory =>
+                Promise.resolve(
+                    directory === '/repo/suite-app'
+                        ? {
+                              'forbidden-in': {
+                                  packageNamePattern: '^(?!@suite-app/)',
+                                  reason: 'Application assembly is not reusable.',
+                              },
+                          }
+                        : undefined,
+                ),
+        });
+
+        expect(errors).toEqual([]);
+    });
 
     it('allows applications to depend on Connect', async () => {
         const errors = await getDependencyConsumerErrors({

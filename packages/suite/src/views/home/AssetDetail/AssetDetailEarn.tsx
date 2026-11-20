@@ -1,12 +1,13 @@
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetAmount,
     selectWalletAssetAvailableAmount,
     selectWalletAssetContractAddress,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
-    selectWalletAssetSymbol,
 } from '@suite-common/assets';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
@@ -17,10 +18,10 @@ import { ArrowRightIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Color } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useSelector } from 'src/hooks/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { useStakingRate } from '#src/hooks/earn/useStakingRate';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailEarnLegendSquare } from './AssetDetailEarnLegendSquare';
 
@@ -33,21 +34,21 @@ type AssetDetailEarnProps = {
 };
 
 export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
-    const { dispatch } = useServices(injectDispatch);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const amount = useSelector(state => selectWalletAssetAmount(state, assetKey));
     const availableAmount = useSelector(state => selectWalletAssetAvailableAmount(state, assetKey));
     const stakingAmount = useSelector(state => selectWalletAssetStakingAmount(state, assetKey));
     const stakingRatio = useSelector(state => selectWalletAssetStakingRatio(state, assetKey)) ?? 0;
     // The rate staking pays on the network, Tron's included, as the trade box and Earn show it.
-    const { rate: apy } = useStakingRate({ symbol });
+    const { rate: apy } = useStakingRate({ symbol: networkSymbol });
     const formatApy = useFormatApy();
 
     if (
-        symbol === undefined ||
+        networkSymbol === undefined ||
         contractAddress !== undefined ||
-        !isSupportedStakingNetworkSymbol(symbol) ||
+        !isSupportedStakingNetworkSymbol(networkSymbol) ||
         amount === undefined ||
         !isPositiveBalance(amount) ||
         availableAmount === undefined
@@ -57,7 +58,7 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
 
     // A Cardano delegation leaves the whole balance spendable, so the rest is unstaked, not the
     // only part available.
-    const isCardano = getNetworkType(symbol) === 'cardano';
+    const isCardano = getNetworkType(networkSymbol) === 'cardano';
     const unstakedColor = isCardano ? UNSTAKED_COLOR : AVAILABLE_COLOR;
 
     return (
@@ -72,7 +73,18 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                             <TextButton
                                 size="small"
                                 iconRight={ArrowRightIcon}
-                                onClick={() => dispatch(gotoThunk({ routeName: 'suite-earn' }))}
+                                onClick={() => {
+                                    analytics.report({
+                                        type: events.navigateFlowEvent.name,
+                                        payload: {
+                                            action: 'navigate',
+                                            type: 'earn',
+                                            from: 'asset',
+                                            networkSymbol,
+                                        },
+                                    });
+                                    dispatch(gotoThunk({ routeName: 'suite-earn' }));
+                                }}
                                 data-testid="@asset-detail/earn/view-all"
                             >
                                 <Translation id="TR_VIEW_ALL" />
@@ -102,7 +114,10 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                                 </Text>
                             </Row>
                             <Text typographyStyle="body-md-strong">
-                                <BaseCurrencyValue amount={availableAmount} symbol={symbol} />
+                                <BaseCurrencyValue
+                                    amount={availableAmount}
+                                    symbol={networkSymbol}
+                                />
                             </Text>
                         </Row>
                         <Row justifyContent="space-between" alignItems="center">
@@ -120,7 +135,7 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                                 {apy != null && apy > 0 && (
                                     <Text typographyStyle="body-sm" intent="brand">
                                         {/* Tron pays its rate as an APR, as its Earn modal says. */}
-                                        {getNetworkType(symbol) === 'tron' ? (
+                                        {getNetworkType(networkSymbol) === 'tron' ? (
                                             <Translation
                                                 id="TR_EARN_APR_APPROX"
                                                 values={{ aprPercent: formatApy(apy) }}
@@ -134,7 +149,10 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                                     </Text>
                                 )}
                                 <Text typographyStyle="body-md-strong">
-                                    <BaseCurrencyValue amount={stakingAmount} symbol={symbol} />
+                                    <BaseCurrencyValue
+                                        amount={stakingAmount}
+                                        symbol={networkSymbol}
+                                    />
                                 </Text>
                             </Row>
                         </Row>

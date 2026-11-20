@@ -11,7 +11,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type TradingUseWatchTradeProps } from 'src/types/trading/trading';
+import { type TradingUseWatchTradeProps } from '#src/types/trading/trading';
 
 const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
     trade?.data.status !== undefined && !isFinalStatus(trade.tradeType, trade.data.status);

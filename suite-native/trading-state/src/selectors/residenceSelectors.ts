@@ -5,8 +5,8 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { type TradingCountryCode, isCountrySubdivisionEmpty } from '@suite-common/trading';
-import { selectIsFinpromRestricted } from '@suite-native/finprom';
 import { type LocaleSliceRootState } from '@suite-native/intl';
+import { selectIsRegionRestricted } from '@suite-native/regions';
 import { type TradingResidenceRootState } from '@suite-native/trading-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
@@ -65,7 +65,7 @@ export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
 
 export const selectIsTradingResidenceSelectionAvailable = (
     state: MessageSystemRootState & LocaleSliceRootState,
-) => selectIsTradingResidenceWhitelistRequired(state) && !selectIsFinpromRestricted(state);
+) => selectIsTradingResidenceWhitelistRequired(state) && !selectIsRegionRestricted(state);
 
 export const selectShouldDisplayTradingResidenceOnboarding = (
     state: TradingResidenceRootState & MessageSystemRootState & LocaleSliceRootState,

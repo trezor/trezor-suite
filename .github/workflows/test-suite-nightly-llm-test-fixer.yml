@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
@@ -15,6 +14,9 @@ concurrency:
 
 jobs:
   analyze:
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
     steps:
@@ -22,14 +24,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           fetch-depth: 1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
 
       - name: Cache node_modules
         id: node-modules-cache
@@ -39,7 +33,10 @@ jobs:
           key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          focus: "@trezor/e2e-utils"
+          safedep: "false"
 
       - name: Install Playwright trace skill
         # Must run from the repo root — the skill installs to <cwd>/.claude/skills and the agent's cwd is the root
@@ -125,13 +122,9 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
+      - name: Pull Cardano Serialization Lib asm.js from LFS
+        shell: bash
+        run: git lfs pull --include "networks/cardano/network-cardano/generated/csl-asmjs/*"
 
       - name: Cache node_modules
         id: node-modules-cache
@@ -141,7 +134,10 @@ jobs:
           key: node_modules-suite-web-e2e-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
-        run: yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          focus: "@suite-app/web-app @trezor/suite @suite/app-assets"
+          safedep: "false"
 
       - name: Build message system config
         run: yarn message-system-sign-config 1>/dev/null
@@ -150,10 +146,10 @@ jobs:
         run: yarn workspace @suite/app-assets build:lib
 
       - name: Build suite-web
-        run: yarn workspace @suite/web-app build
+        run: yarn workspace @suite-app/web-app build
 
       - name: Compress web build
-        run: tar -czf web-build.tar.gz -C suite/web-app build
+        run: tar -czf web-build.tar.gz -C suite-app/web-app build
 
       - name: Upload web build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -184,14 +180,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
       - name: Cache node_modules
         id: node-modules-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
@@ -200,8 +188,11 @@ jobs:
           key: node_modules-llm-test-fixer-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
-        # Union of test deps and web and desktop build toolchains
-        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @suite/web-app @suite/desktop-app @suite/desktop-app-main @suite/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          # Union of test deps and web and desktop build toolchains
+          focus: "@trezor/suite-e2e @trezor/e2e-utils @suite-app/web-app @suite-app/desktop-app @suite-app/desktop-app-main @suite-app/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system"
+          safedep: "false"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6
@@ -231,7 +222,7 @@ jobs:
           path: artifact-download
 
       - name: Extract desktop artifact
-        run: tar -xzf artifact-download/app-build.tar.gz -C suite/desktop-app
+        run: tar -xzf artifact-download/app-build.tar.gz -C suite-app/desktop-app
 
       - name: Download web artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -240,10 +231,10 @@ jobs:
           path: artifact-download
 
       - name: Extract web artifact
-        run: tar -xzf artifact-download/web-build.tar.gz -C suite/web-app
+        run: tar -xzf artifact-download/web-build.tar.gz -C suite-app/web-app
 
       - name: Start web preview server
-        run: nohup yarn workspace @suite/web-app preview > /tmp/web-preview.log 2>&1 &
+        run: nohup yarn workspace @suite-app/web-app preview > /tmp/web-preview.log 2>&1 &
 
       - name: Download report
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -295,6 +286,9 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-organization-projects: write
 
       - name: Publish PR
         if: ${{ !cancelled() && steps.run-llm-test-fixer.outcome != 'skipped' }}
@@ -333,14 +327,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
       - name: Cache node_modules
         id: node-modules-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
@@ -349,7 +335,10 @@ jobs:
           key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          focus: "@trezor/e2e-utils"
+          safedep: "false"
 
       - name: Download report artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -403,14 +392,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
       - name: Cache node_modules
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
@@ -419,7 +400,10 @@ jobs:
           restore-keys: node_modules-
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/e2e-utils
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          focus: "@trezor/e2e-utils"
+          safedep: "false"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6

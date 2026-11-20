@@ -54,7 +54,15 @@ export function usePopover({
     const [descriptionId, setDescriptionId] = React.useState<string | undefined>();
 
     const open = controlledOpen ?? uncontrolledOpen;
-    const setOpen = setControlledOpen ?? setUncontrolledOpen;
+    const setOpen = React.useCallback(
+        (nextOpen: boolean) => {
+            if (controlledOpen === undefined) {
+                setUncontrolledOpen(nextOpen);
+            }
+            setControlledOpen?.(nextOpen);
+        },
+        [controlledOpen, setControlledOpen],
+    );
 
     const calculatedPlacement = convertPopoverPlacement(placement);
 

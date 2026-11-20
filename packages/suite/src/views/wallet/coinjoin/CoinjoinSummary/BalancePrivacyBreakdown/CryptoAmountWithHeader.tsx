@@ -6,8 +6,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 const Container = styled.div`
     display: flex;
@@ -55,7 +55,11 @@ export const CryptoAmountWithHeader = ({
             {headerIcon && headerIcon} {header}
         </Header>
 
-        <CryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} $color={color} />
+        <CryptoAmount
+            value={formatNetworkAmount(value, symbol)}
+            networkSymbol={symbol}
+            $color={color}
+        />
         <BaseCurrencyValue
             amount={formatNetworkAmount(value, symbol)}
             symbol={symbol}

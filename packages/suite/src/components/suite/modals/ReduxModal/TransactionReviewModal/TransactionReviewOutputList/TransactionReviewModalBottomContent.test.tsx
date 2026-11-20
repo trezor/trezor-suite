@@ -16,11 +16,13 @@ import { mock } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
 
-import { type AppState } from 'src/reducers/store';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewModalBottomContent';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 type RenderReviewParams = {
     txType?: 'yield';
@@ -52,7 +54,10 @@ const renderReview = ({ txType, tokenSymbol, outputs }: RenderReviewParams) => {
         selectedUtxos: [],
     };
     const analytics = mockDesktopAnalytics(mock<DesktopAnalyticsDep['analytics']['report']>());
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -76,6 +81,8 @@ const renderReview = ({ txType, tokenSymbol, outputs }: RenderReviewParams) => {
             txInfoState={{ precomposedTx, serializedTx: { tx: 'private-signed-tx', symbol } }}
             actionTranslation={{ id: 'SEND_TRANSACTION' }}
             hasTxReviewExpired={false}
+            deadline={0}
+            shouldCheckTxTimeValidity={false}
             account={mockWalletAccount({ symbol })}
             precomposedForm={precomposedForm}
             outputs={outputs}

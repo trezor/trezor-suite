@@ -22,11 +22,11 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "zod": "4.6.7"
+        "@trezor/zod": "workspace:*"
     },
     "devDependencies": {
         "@suite-common/wallet-config": "workspace:*",
-        "orval": "8.41.0",
+        "orval": "8.46.0",
         "prettier": "^3.9.9"
     }
 }

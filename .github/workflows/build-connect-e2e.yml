@@ -1,0 +1,33 @@
+name: "Reusable Build Connect for E2E tests"
+on:
+  workflow_call:
+
+jobs:
+  build-connect:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Extract branch name
+        id: branch
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          ref: ${{ steps.branch.outputs.branch }}
+
+      - name: Release connect to dev environment
+        uses: ./.github/actions/release-connect
+        with:
+          awsRoleToAssume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          awsRegion: eu-central-1
+          serverHostname: dev.suite.sldev.cz
+          serverPath: connect/${{ steps.branch.outputs.branch }}
+          uploadArtifacts: "true"
+          explorerRetentionDays: "1"
+          buildArtifacts: "true"
+          nodeEnv: development
+          connectPopupUrl: https://dev.suite.sldev.cz/suite-web/${{ steps.branch.outputs.branch }}/web/connect-popup
+          suiteWebUrl: https://dev.suite.sldev.cz/suite-web/${{ steps.branch.outputs.branch }}/web

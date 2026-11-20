@@ -21,7 +21,7 @@ With Connect 10, the self-hosted iframe + popup that Connect served from `connec
 Connect detects how to reach Suite and routes each call to it. Suite owns the core and the entire user-facing experience. This works with or without a local install:
 
 - **Desktop** — when Trezor Suite (desktop) is running, Connect talks to it automatically over a local (loopback) WebSocket connection — no popup window, no iframe. Suite identifies the calling application (name, origin, icon) in a single permission-approval prompt, then handles the request against the currently active, already-unlocked device.
-- **Web** — when Suite desktop is not running, Connect opens Suite Web as the approval surface (production: `https://suite.trezor.io/web/connect-popup`), giving the same flow with nothing to install. This is a first-class path, not a degraded mode.
+- **Web** — when Suite desktop is not running, Connect opens Suite Web as the approval surface (production: `https://suite.trezor.io/web/connect-popup`), giving the same flow with nothing to install. This is a first-class path, not a degraded mode. From a web page (`@trezor/connect-web`), Suite Web needs Chrome 125 or newer or Opera 111 or newer; Firefox, Safari, many in-app WebViews and some other Chromium-based browsers cannot use it.
 - **Mobile** — `@trezor/connect-mobile` routes calls to the Trezor Suite mobile app via a deep link.
 
 The permission prompt displays the application's name, origin URL, and icon, along with the process that initiated the request. In this example the request was initiated by Arc Browser, so the browser's name and icon are shown. This prevents a malicious process from impersonating the application.
@@ -58,6 +58,8 @@ The web flow relies on a bootstrap iframe + popup to exchange messages with Suit
 <Callout type="warning">
     Missing or over-strict headers surface as a handshake timeout when the popup opens.
 </Callout>
+
+For the desktop path, if your page's Content-Security-Policy restricts `connect-src` (or `default-src`), it must also allow `ws://127.0.0.1:21335`, which Connect uses to reach Suite desktop.
 
 ## Manifest
 

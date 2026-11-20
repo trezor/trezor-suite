@@ -13,6 +13,7 @@ import {
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/tokens';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     type TradingTransaction,
@@ -39,12 +40,7 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type AccountKey,
-    type TokenAddress,
-    type TokenSymbol,
-} from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getAccountFiatBalance,
     getFiatRateKey,
@@ -53,9 +49,9 @@ import {
 } from '@suite-common/wallet-utils';
 import { selectAccountLabel, sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { selectIsFinpromRestricted } from '@suite-native/finprom';
 import { type LocaleSliceRootState } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
+import { selectIsRegionRestricted } from '@suite-native/regions';
 import {
     type SettingsSliceRootState,
     selectIsExperimentalFeatureEnabled,
@@ -154,7 +150,7 @@ export const selectIsTradingSlip24Enabled = (
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState & LocaleSliceRootState,
 ) => {
-    if (selectIsFinpromRestricted(state) || !selectIsTradingEnabledForCountry(state)) {
+    if (selectIsRegionRestricted(state) || !selectIsTradingEnabledForCountry(state)) {
         return false;
     }
 
@@ -206,7 +202,7 @@ export const selectTradeToBeOpened = (state: TradingRootState) => {
     const orderId = state.wallet.trading.tradeOrderIdToBeOpened;
     if (!orderId) return undefined;
 
-    return state.wallet.trading.trades.find(trade => trade.data.orderId === orderId);
+    return selectTradingTradeByOrderId(state, orderId);
 };
 
 export const selectTradingFormResetRequestedFor = (state: TradingRootState) =>
@@ -345,7 +341,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                             account,
                             baseCurrencyCode: localCurrency,
                             rates: fiatRates,
-                            shouldIncludeStaking: false,
                             shouldIncludeTokens: false,
                         }),
                         cryptoId,

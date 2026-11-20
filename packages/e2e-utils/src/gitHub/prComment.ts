@@ -1,5 +1,7 @@
 import * as fs from 'node:fs';
 
+import { readJson } from '@trezor/node-utils';
+
 type PullRequestEvent = { pull_request?: { number?: number }; number?: number };
 
 export const resolvePullRequestNumber = (): number | null => {
@@ -9,7 +11,7 @@ export const resolvePullRequestNumber = (): number | null => {
     }
 
     try {
-        const event = JSON.parse(fs.readFileSync(eventPath, 'utf8')) as PullRequestEvent;
+        const event = readJson<PullRequestEvent>(eventPath);
         const number = event.pull_request?.number ?? event.number;
 
         return typeof number === 'number' ? number : null;

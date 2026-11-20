@@ -59,7 +59,7 @@ const bitcoinRequestThunk = createThunk<
     const popupCallCommonParams = {
         source: {
             type: 'walletconnect' as const,
-            origin: session.peer.metadata.url,
+            origin: event.verifyContext.verified.origin,
             manifest: {
                 appName: session.peer.metadata.name,
                 appIcon: session.peer.metadata.icons?.[0],

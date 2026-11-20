@@ -1,0 +1,12 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../network-bitcoin-suite-common"
+        },
+        {
+            "path": "../../network-module/suite/suite-types"
+        }
+    ]
+}

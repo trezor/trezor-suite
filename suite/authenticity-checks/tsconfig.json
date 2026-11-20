@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/device-authenticity"
-        },
-        {
             "path": "../../suite-common/firmware-authenticity"
         },
         {

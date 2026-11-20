@@ -45,9 +45,12 @@ jobs:
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Install dependencies
-        run: yarn workspaces focus ${{ inputs.workspace }}
+        env:
+          WORKSPACE: ${{ inputs.workspace }}
+        run: yarn workspaces focus "$WORKSPACE"
 
       - name: Download performance artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -63,7 +66,8 @@ jobs:
           PERF_COMMIT_ID: ${{ github.event.pull_request.head.sha || github.sha }}
           PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           PERF_SEAL_BASELINE: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/develop' }}
-        run: ${{ inputs.publish-command }}
+          PUBLISH_COMMAND: ${{ inputs.publish-command }}
+        run: eval "$PUBLISH_COMMAND"
 
       - name: Configure AWS credentials
         if: ${{ hashFiles('perf-upload/**') != '' }}

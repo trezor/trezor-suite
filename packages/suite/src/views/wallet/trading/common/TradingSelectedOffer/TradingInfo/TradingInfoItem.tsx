@@ -4,17 +4,21 @@ import { type CryptoId } from 'invity-api';
 
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
+import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useFormatters } from '@suite-common/formatters';
+import {
+    type NetworksRootState,
+    selectIsNativeTokenNetworkNameRedundant,
+} from '@suite-common/networks';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite';
-import { type TradingPayGetLabelType } from 'src/types/trading/trading';
-import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { type TradingPayGetLabelType } from '#src/types/trading/trading';
+import { TradingCryptoAmount } from '#src/views/wallet/trading/common/TradingCryptoAmount';
 
 type TradingInfoItemProps = {
     account?: Account;
@@ -47,20 +51,15 @@ export const TradingInfoItem = ({
     const isExternalAddress = !account && !!receiveAddress;
     const testIdPrefix = `@trading/detail/${isReceive ? 'receive' : 'send'}`;
 
-    const {
-        id,
-        isNativeToken,
-        networkSymbol,
-        name,
-        displaySymbol,
-        networkName,
-        contractAddress,
-        symbol,
-    } = createAssetOptionFromCryptoId(currency);
+    const { id, isNativeToken, networkSymbol, contractAddress } =
+        createAssetOptionFromCryptoId(currency);
 
-    const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
-
-    const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
+    const { NetworkNameFormatter } = useFormatters();
+    const isNetworkNameRedundant = useSelector((state: NetworksRootState) =>
+        selectIsNativeTokenNetworkNameRedundant(state, networkSymbol),
+    );
+    const tokenContract = isNativeToken ? undefined : contractAddress;
+    const showNetwork = !isNativeToken || !isNetworkNameRedundant;
 
     if (!amount || !currency) return null;
 
@@ -112,20 +111,18 @@ export const TradingInfoItem = ({
                 <Card type="contrast" paddingType="none">
                     <Row padding={16} gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
-                            {isNativeToken ? (
-                                <TokenIcon size={40} symbol={symbol} showNetworkIcon />
-                            ) : (
-                                <TokenIcon
-                                    size={40}
-                                    symbol={networkSymbol}
-                                    contractAddress={contractAddress}
-                                    placeholder={displaySymbol}
-                                    showNetworkIcon={showNetwork}
-                                />
-                            )}
+                            <AssetIcon
+                                size={40}
+                                networkSymbol={networkSymbol}
+                                contractAddress={tokenContract}
+                                showNetworkIcon={showNetwork}
+                            />
                             <Column alignItems="start">
                                 <Text data-testid={`${testIdPrefix}-asset-name`}>
-                                    {displayName}
+                                    <AssetName
+                                        networkSymbol={networkSymbol}
+                                        contractAddress={tokenContract}
+                                    />
                                 </Text>
                                 {showNetwork && (
                                     <Text
@@ -134,7 +131,7 @@ export const TradingInfoItem = ({
                                         typographyStyle="body-sm"
                                         data-testid={`${testIdPrefix}-network-name`}
                                     >
-                                        {networkName}
+                                        <NetworkNameFormatter value={networkSymbol} />
                                     </Text>
                                 )}
                             </Column>
@@ -146,7 +143,7 @@ export const TradingInfoItem = ({
                                 data-testid={`${testIdPrefix}-amount-skeleton`}
                             >
                                 <Skeleton width={110} animate={shouldAnimateSkeleton} />
-                                {currencyInfo?.symbol && (
+                                {currencyInfo?.networkSymbol && (
                                     <Skeleton
                                         width={70}
                                         height={16}
@@ -158,7 +155,7 @@ export const TradingInfoItem = ({
                             <Column alignItems="flex-end">
                                 <TradingCryptoAmount amount={amount} cryptoId={currency} />
 
-                                {currencyInfo?.symbol && (
+                                {currencyInfo?.networkSymbol && (
                                     <Text
                                         intent="neutral"
                                         priority="secondary"
@@ -166,7 +163,7 @@ export const TradingInfoItem = ({
                                     >
                                         <BaseCurrencyValue
                                             amount={amount}
-                                            symbol={currencyInfo.symbol}
+                                            symbol={currencyInfo.networkSymbol}
                                             rateType="current"
                                             tokenAddress={currencyInfo.contractAddress}
                                             showApproximationIndicator

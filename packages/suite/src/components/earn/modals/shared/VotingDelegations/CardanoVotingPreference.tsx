@@ -3,7 +3,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useSeededCardanoVotingDelegation } from 'src/hooks/earn/useCardanoAccountVotingDelegation';
+import { useSeededCardanoVotingDelegation } from '#src/hooks/earn/useCardanoAccountVotingDelegation';
 
 import {
     BASE_VOTING_PREFERENCE_OPTIONS,

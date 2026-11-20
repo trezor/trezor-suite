@@ -1,6 +1,8 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
 import { mockNetworkMetadata, mockNetworksServices } from '@suite-common/networks/mocks';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -21,6 +23,26 @@ describe('TradingAsset', () => {
             {
                 preloadedState: { networks: mockNetworkMetadata },
                 services: { networks: mockNetworksServices() },
+                wrapper: ({ children }) => (
+                    <TokenMetadataProvider
+                        sources={[
+                            {
+                                networkSymbol: asNetworkSymbol('eth'),
+                                tokens: [
+                                    {
+                                        contract: toTokenAddress(
+                                            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                                        ),
+                                        name: 'USD Coin',
+                                        symbol: 'USDC',
+                                    },
+                                ],
+                            },
+                        ]}
+                    >
+                        {children}
+                    </TokenMetadataProvider>
+                ),
             },
         );
 

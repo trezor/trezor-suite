@@ -6,7 +6,7 @@ import { type AccountType, type Network } from '@suite-common/wallet-config';
 import { type ChainedTransactions, createAccountKey } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
-import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
+import { TransactionItem } from '#src/components/wallet/TransactionItem/TransactionItem';
 
 import { AffectedTransactionItem } from './AffectedTransactions/AffectedTransactionItem';
 

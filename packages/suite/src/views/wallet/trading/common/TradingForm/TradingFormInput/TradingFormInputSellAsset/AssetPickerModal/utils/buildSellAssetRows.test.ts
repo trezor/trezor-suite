@@ -1,4 +1,5 @@
 import { DefinitionType, type TokenDefinitionsState } from '@suite-common/token-definitions';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
@@ -6,7 +7,6 @@ import {
     type RatesByKey,
     asAccountDescriptor,
     asTimestamp,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';

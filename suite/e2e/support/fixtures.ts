@@ -8,6 +8,12 @@ import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
 import { databaseTabFixture } from './databaseTabFixture';
+import {
+    LIGHTHOUSE_FIXTURE_TIMEOUT,
+    LighthouseMode,
+    getLighthouseMode,
+} from '../performance/lighthouseConfig';
+import { type LighthouseFlow, startLighthouseFlow } from '../performance/lighthouseTimespan';
 import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
@@ -28,6 +34,7 @@ import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
 import { EarnNutshellModal } from './pageObjects/earnNutshellModal';
 import { GuidePanel } from './pageObjects/guidePanel';
+import { HomeAssetsSection } from './pageObjects/homeAssetsSection';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { PaginationControl } from './pageObjects/pagination';
@@ -61,6 +68,7 @@ type Fixtures = {
     tradingPage: TradingPage;
     feeSection: FeeSection;
     assetsSection: AssetsSection;
+    homeAssetsSection: HomeAssetsSection;
     metadataPage: MetadataPage;
     trezorInput: TrezorInput;
     analytics: AnalyticsFixture;
@@ -100,6 +108,7 @@ type Fixtures = {
         ) => Promise<PerfMetrics | null>;
     };
     promoBanner: PromoBanner;
+    lighthouseFlow: LighthouseFlow;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -135,6 +144,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     feeSection: async ({ page }, use) => {
         await use(new FeeSection(page));
+    },
+    homeAssetsSection: async ({ page }, use) => {
+        await use(new HomeAssetsSection(page));
     },
     assetsSection: async ({ page }, use) => {
         await use(new AssetsSection(page));
@@ -249,15 +261,32 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(evoluClient);
         await evoluClient.dispose();
     },
-    perf: async ({ page }, use, testInfo) => {
+    // The timespan must wrap measurePerformance, or opening it lands inside the measured time.
+    perf: async ({ page, electronConf, lighthouseFlow }, use, testInfo) => {
+        if (!electronConf.measurePerf) {
+            throw new Error(
+                'perf.measure requires test.use({ electronConf: { measurePerf: true } }).',
+            );
+        }
         await use({
             measure: (scenario, interaction) =>
-                measurePerformance(page, testInfo, scenario, interaction),
+                lighthouseFlow.recordStep(scenario, () =>
+                    measurePerformance(page, testInfo, scenario, interaction),
+                ),
         });
     },
     promoBanner: async ({ page }, use) => {
         await use(new PromoBanner(page));
     },
+    lighthouseFlow: [
+        async ({ page, electronApp }, use, testInfo) => {
+            const flow = await startLighthouseFlow({ page, electronApp, testInfo });
+            await flow.recordWholeTest(() => use(flow));
+            await flow.finish();
+        },
+        // Attaching and auditing must not eat into the test's own timeout.
+        { auto: getLighthouseMode() === LighthouseMode.Test, timeout: LIGHTHOUSE_FIXTURE_TIMEOUT },
+    ],
 });
 
 export { test };

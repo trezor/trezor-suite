@@ -31,10 +31,7 @@ export const isPassphraseButtonRequestCode = (
 export const isPassphraseRequest = (action: UnknownAction): action is UiRequestDeviceAction =>
     action.type === UI_REQUESTS.REQUEST_PASSPHRASE;
 
-type ButtonRequestPattern = {
-    code: NonNullable<DeviceButtonRequestPayload['code']>;
-    name?: DeviceButtonRequestPayload['name'];
-};
+type ButtonRequestPattern = Pick<DeviceButtonRequestPayload, 'code' | 'name'>;
 
 export const flowEndingButtonRequests: readonly ButtonRequestPattern[] = [
     { code: 'ButtonRequest_ConfirmOutput' },

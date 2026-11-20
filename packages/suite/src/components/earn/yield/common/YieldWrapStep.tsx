@@ -8,7 +8,7 @@ import type {
 import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import { TruncatedAmount } from './TruncatedAmount';
 import { YieldAmountCard, type YieldAmountCardFiatToggleProps } from './YieldAmountCard';
@@ -62,7 +62,7 @@ export const YieldWrapStep = ({
                 value: (
                     <FormattedCryptoAmount
                         value={availableAmount}
-                        symbol={nativeSymbol}
+                        networkSymbol={nativeSymbol}
                         tokenDecimals={token.decimals}
                     />
                 ),
@@ -81,7 +81,7 @@ export const YieldWrapStep = ({
                     <Row alignItems="center" gap={8} minWidth={0}>
                         <TokenIcon
                             size={20}
-                            symbol={token.networkSymbol}
+                            networkSymbol={token.networkSymbol}
                             contractAddress={token.contractAddress ?? null}
                             placeholder={token.symbol}
                             showNetworkIcon
@@ -95,7 +95,7 @@ export const YieldWrapStep = ({
                                 <Text typographyStyle="body-md" ellipsisLineCount={1}>
                                     <FormattedCryptoAmount
                                         value={receivingAmount}
-                                        symbol={token.symbol}
+                                        networkSymbol={token.symbol}
                                     />
                                 </Text>
                             </TruncatedAmount>

@@ -1,0 +1,522 @@
+import { WebSocketServer } from 'ws';
+
+import {
+    CORE_CALL,
+    CORE_CALL_CANCEL,
+    type CoreCallCancelMessage,
+    type CoreCallMessage,
+    type Manifest,
+    POPUP,
+    type PermissionRequest,
+    type PopupClosedMessage,
+    type PopupHandshake,
+} from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common';
+import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
+import { isLinux } from '@trezor/env-utils';
+import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
+import { createDeferred, resolveAfter } from '@trezor/utils';
+
+import { addMessage, deleteMessage, rejectMessage, setAppInit } from './connect-popup-messages';
+import { type createHttpReceiver } from './http-receiver';
+import { getProcessIcon } from './process-icon';
+import { type Dependencies } from '../modules';
+
+const LOG_PREFIX = 'connect-ws';
+export const HANDSHAKE_TIMEOUT_MS = 10000;
+// Deadline of the process lookup run by the handshake. It is not the client's budget for the
+// handshake itself: connect-web abandons that after 3 s, so a lookup slower than 3 s has already
+// failed the call. This deadline only guarantees that the idle timeout is re-armed and that the
+// child process of an abandoned lookup is killed.
+export const PROCESS_LOOKUP_TIMEOUT_MS = 10000;
+export const IDLE_CONNECTION_TIMEOUT_MS = 60000;
+export const MAX_CONCURRENT_CONNECTIONS = 50;
+export const MAX_CONNECTIONS_PER_ORIGIN = 5;
+const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+
+// A failed call that the main process answers on its own, in the shape the renderer answers with:
+// Connect 10 clients read `error`, Connect 9 clients show `payload.error` and decide about their
+// fallback by `payload.code`.
+const stringifyCallFailure = (id: string, code: ERRORS.ErrorCode, message: string) => {
+    const error = ERRORS.serializeError(ERRORS.TypedError(code, message));
+
+    return JSON.stringify({ id, success: false, error, payload: { ...error, error: message } });
+};
+
+// Per-connection id used to namespace the process-global response store. Each client numbers
+// its requests on its own, so two connections can have a call with the same id in flight.
+let connectionCounter = 0;
+
+/**
+ * allowed message from connect-in-suite-desktop implementation
+ */
+type IncomingMessage =
+    | (CoreCallMessage & { id: string })
+    | (PopupHandshake & { id: string })
+    | (PopupClosedMessage & { id: string })
+    | (CoreCallCancelMessage & { id: string })
+    | { type: 'ping'; id: string };
+
+const validateIncomingMessage = (message: any): message is IncomingMessage => {
+    if (typeof message !== 'object' || typeof message.type !== 'string') {
+        return false;
+    }
+
+    // message.id is a string parsable as int
+    if (typeof message.id !== 'string' || isNaN(Number(message.id))) {
+        return false;
+    }
+
+    if (message.type === 'ping') {
+        return true;
+    }
+
+    if (message.type === POPUP.HANDSHAKE && message.payload?.settings) {
+        return true;
+    }
+
+    if (message.type === CORE_CALL_CANCEL) {
+        return true;
+    }
+
+    // We need to handle `POPUP.CLOSED` for backward compatibility, for connect10 with older clients.
+    if (message.type === POPUP.CLOSED) {
+        return true;
+    }
+
+    // todo: this is incomplete validation
+    if (message.type === CORE_CALL && message.payload?.method) {
+        return true;
+    }
+
+    return false;
+};
+
+type ExposeConnectWsParams = {
+    mainThreadEmitter: Dependencies['mainThreadEmitter'];
+    mainWindowProxy: Dependencies['mainWindowProxy'];
+    httpReceiver: ReturnType<typeof createHttpReceiver>;
+    store: Dependencies['store'];
+    logger: Dependencies['logger'];
+};
+
+export const exposeConnectWs = ({
+    mainThreadEmitter,
+    mainWindowProxy,
+    httpReceiver,
+    store,
+    logger,
+}: ExposeConnectWsParams) => {
+    const connectionsByOrigin = new Map<string, number>();
+    const getActiveConnections = () =>
+        Array.from(connectionsByOrigin.values()).reduce((acc, val) => acc + val, 0);
+
+    const wss = new WebSocketServer({
+        noServer: true,
+        maxPayload: MAX_MESSAGE_SIZE,
+    });
+
+    wss.on('listening', () => {
+        logger.info(LOG_PREFIX, 'Websocket server is listening');
+    });
+
+    wss.on('connection', (ws, req) => {
+        ws.on('error', err => {
+            logger.error(LOG_PREFIX, err.message);
+        });
+
+        const connectionId = `ws-${++connectionCounter}`;
+        // Namespaces a caller-supplied request id to this connection. Internal to the main
+        // process; the original id is still echoed back to the client on the wire.
+        const getStoreId = (id: string) => `${connectionId}:${id}`;
+        // Namespaced store keys of this connection's in-flight calls.
+        const connectionPendingMessages = new Set<string>();
+        const ip = req.socket.remoteAddress;
+        const port = req.socket.remotePort;
+        if (!port) {
+            // Unreachable: the upgrade handler rejects sockets without a remote port.
+            ws.terminate();
+
+            return;
+        }
+
+        const { origin } = req.headers;
+        const originKey = origin || 'unknown';
+        const originConnections = connectionsByOrigin.get(originKey) ?? 0;
+        const activeConnections = getActiveConnections();
+        connectionsByOrigin.set(originKey, originConnections + 1);
+
+        logger.info(
+            LOG_PREFIX,
+            `new connection from ${ip}:${port} (${activeConnections + 1}/${MAX_CONCURRENT_CONNECTIONS})`,
+        );
+
+        let processOnPort: ProcessInfo | undefined;
+
+        let manifest: Manifest | undefined;
+        let version: string | undefined;
+        let requestedPermissions: PermissionRequest[] | undefined;
+        let isHandshakeDone = false;
+        let idleTimeout: ReturnType<typeof setTimeout> | undefined;
+
+        // Releases the slot of a client that has stopped making calls. Pings do not restart it:
+        // the client pings on its own, so the connection would never expire.
+        const startIdleTimeout = () => {
+            clearTimeout(idleTimeout);
+            if (req.socket.destroyed) return;
+            idleTimeout = setTimeout(() => {
+                logger.info(LOG_PREFIX, `connection closed: idle timeout from ${ip}:${port}`);
+                // A close frame rather than a destroyed socket: an idle expiry is routine and must
+                // not reach the client as an abnormal closure. The client reconnects on its next
+                // call; only a call that starts while this frame is in flight fails its handshake
+                // and is served by the web popup.
+                ws.close(1000, 'idle timeout');
+            }, IDLE_CONNECTION_TIMEOUT_MS);
+        };
+
+        // Close connection if handshake is not received within timeout
+        const handshakeTimeout = setTimeout(() => {
+            if (!isHandshakeDone) {
+                logger.warn(LOG_PREFIX, `connection closed: handshake timeout from ${ip}:${port}`);
+                req.socket.destroy();
+            }
+        }, HANDSHAKE_TIMEOUT_MS);
+
+        logger.info(LOG_PREFIX, `origin: ${origin}`);
+
+        ws.on('message', async data => {
+            const dataString = data.toString();
+            logger.debug(LOG_PREFIX, dataString);
+            let message;
+            try {
+                message = JSON.parse(dataString);
+            } catch {
+                logger.error(LOG_PREFIX, 'message is not valid JSON');
+
+                return;
+            }
+
+            if (!validateIncomingMessage(message)) {
+                logger.error(LOG_PREFIX, 'incoming message in invalid format');
+
+                return;
+            }
+
+            if (message.type === 'ping') {
+                ws.send(JSON.stringify({ id: message.id, type: 'pong' }));
+
+                return;
+            }
+
+            if (!isHandshakeDone && message.type !== POPUP.HANDSHAKE) {
+                logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                return;
+            }
+            if (message.type === POPUP.HANDSHAKE) {
+                // A call without a valid manifest is dropped without a response, so acknowledging
+                // the handshake would leave the client waiting and hold the connection slot.
+                const handshakeManifest = parseManifest(message.payload.settings.manifest);
+                if (!handshakeManifest) {
+                    logger.warn(
+                        LOG_PREFIX,
+                        `connection closed: invalid handshake manifest from ${ip}:${port} (origin: ${originKey})`,
+                    );
+                    req.socket.destroy();
+
+                    return;
+                }
+
+                const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
+                // The client handshakes before every call, so expiring the connection during the
+                // lookup would fail that call and make the client fall back to the web popup.
+                clearTimeout(idleTimeout);
+                const lookupDeadline = new AbortController();
+                processOnPort = await Promise.race([
+                    findProcessFromIncomingPort(port, filterSelf, req.socket, lookupDeadline.signal)
+                        .catch(error => {
+                            // An abort is reported by the deadline branch below.
+                            if (!lookupDeadline.signal.aborted) {
+                                logger.error(
+                                    LOG_PREFIX,
+                                    `findProcessFromIncomingPort failed: ${error}`,
+                                );
+                            }
+
+                            return undefined;
+                        })
+                        .finally(() => lookupDeadline.abort()),
+                    // The lookup spawns a child process and has no deadline of its own. Without
+                    // this bound a hung spawn would leave the idle timeout disarmed for good,
+                    // because the handshake timeout is already cleared on an established
+                    // connection, and the connection would hold its slot forever.
+                    resolveAfter<ProcessInfo | undefined>(
+                        PROCESS_LOOKUP_TIMEOUT_MS,
+                        lookupDeadline.signal,
+                    ).then(
+                        value => {
+                            logger.error(LOG_PREFIX, 'findProcessFromIncomingPort timed out');
+                            // Kills the child of the abandoned lookup, which would otherwise
+                            // survive together with the promise and the closure it captures.
+                            lookupDeadline.abort();
+
+                            return value;
+                        },
+                        () => undefined, // aborted: the lookup won, nothing to report
+                    ),
+                ]);
+                manifest = handshakeManifest;
+                version = parseVersion(message.payload.settings.version);
+                requestedPermissions = message.payload.settings.requestedPermissions;
+                isHandshakeDone = true;
+                clearTimeout(handshakeTimeout);
+                ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
+                if (connectionPendingMessages.size === 0) {
+                    startIdleTimeout();
+                }
+            } else if (message.type === POPUP.CLOSED) {
+                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                    error: message.payload?.error,
+                    callId: message.payload?.callId,
+                    // the renderer acts only on this connection's own calls
+                    connectionId,
+                });
+            } else if (message.type === CORE_CALL_CANCEL) {
+                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                    error: message.payload?.reason,
+                    callId: message.payload?.callId,
+                    // the renderer acts only on this connection's own calls
+                    connectionId,
+                });
+            } else if (message.type === CORE_CALL) {
+                if (!processOnPort) {
+                    // The lookup can legitimately miss, so log both endpoints of the connection:
+                    // it tells an lsof or netstat format difference apart from a lookup that
+                    // could not run at all.
+                    logger.error(
+                        LOG_PREFIX,
+                        `processOnPort result not found for ${ip}:${port} -> ${req.socket.localAddress}:${req.socket.localPort}`,
+                    );
+
+                    if (!isLinux()) {
+                        // we ignore missing process on linux because of AppImage/Flatpak sandboxing
+                        ws.send(
+                            stringifyCallFailure(
+                                message.id,
+                                'Method_NotAllowed',
+                                'Calling process could not be identified',
+                            ),
+                        );
+
+                        return;
+                    }
+                }
+                if (!manifest?.appName) {
+                    // ts check, should be set - if not set, error should be returned client-side
+                    logger.error(LOG_PREFIX, 'settings.manifest.appName not found');
+
+                    return;
+                }
+                if (!origin) {
+                    // ts check, should be set
+                    logger.error(LOG_PREFIX, 'origin not found');
+
+                    return;
+                }
+
+                store.setConnectSettings({
+                    hasUsedConnectWs: true,
+                });
+
+                const { method, ...rest } = message.payload;
+
+                const storeId = getStoreId(message.id);
+                // Reject a request id that this connection already has in flight instead of
+                // overwriting its deferred (which would leave the first call without a response).
+                if (connectionPendingMessages.has(storeId)) {
+                    logger.error(LOG_PREFIX, `duplicate in-flight id ${message.id}`);
+                    ws.send(
+                        stringifyCallFailure(
+                            message.id,
+                            'Method_InvalidParameter',
+                            'Duplicate in-flight request id',
+                        ),
+                    );
+
+                    return;
+                }
+                const deferred = addMessage(storeId);
+                connectionPendingMessages.add(storeId);
+                // The user can take longer than the idle timeout to confirm a pending call.
+                clearTimeout(idleTimeout);
+
+                try {
+                    // check window exists, if not wait for it to be created
+                    if (!mainWindowProxy.getInstance()) {
+                        mainThreadEmitter.emit('app/show');
+                        logger.info(LOG_PREFIX, 'waiting for window to start');
+                        const appInitDeferred = createDeferred<void>();
+                        setAppInit(appInitDeferred);
+                        // todo: do we actually need to clean this timeout?
+                        const appInitTimeout = resolveAfter(10000);
+                        await Promise.race([appInitDeferred.promise, appInitTimeout]);
+                        setAppInit(undefined);
+                    }
+
+                    const mainWindow = mainWindowProxy.getInstance();
+                    if (!mainWindow) {
+                        logger.error(
+                            LOG_PREFIX,
+                            'Main window not available after initialization timeout',
+                        );
+                        deleteMessage(storeId);
+                        connectionPendingMessages.delete(storeId);
+                        ws.send(
+                            stringifyCallFailure(
+                                message.id,
+                                'Failure_UnknownCode',
+                                'Main window not available',
+                            ),
+                        );
+
+                        return;
+                    }
+
+                    // Send call to renderer. It echoes the namespaced `id` back on the response,
+                    // which resolves this connection's deferred; `connectionId` marks the owner so
+                    // that a cancel from another connection leaves the call alone.
+                    mainWindow.webContents.send('connect-popup/call', {
+                        id: storeId,
+                        connectionId,
+                        method,
+                        payload: rest,
+                        origin,
+                        process: processOnPort
+                            ? {
+                                  name: processOnPort.name,
+                                  fullPath: processOnPort.fullPath,
+                                  warning: !!processOnPort.warning,
+                                  icon: await getProcessIcon({
+                                      path: processOnPort.fullPath,
+                                      logger,
+                                  }),
+                              }
+                            : undefined,
+                        manifest: {
+                            appName: manifest.appName,
+                            appIcon: manifest.appIcon,
+                            appUrl: manifest.appUrl,
+                            email: manifest.email,
+                            npmVersion: version,
+                        },
+                        requestedPermissions,
+                    });
+
+                    // wait for response
+                    const response = await deferred.promise;
+
+                    // Echo back the original (client-facing) id, not the namespaced store id.
+                    ws.send(
+                        JSON.stringify({
+                            ...response,
+                            id: message.id,
+                        }),
+                    );
+                } catch (e) {
+                    logger.error(LOG_PREFIX, 'error handling call: ' + e);
+                } finally {
+                    connectionPendingMessages.delete(storeId);
+                    if (connectionPendingMessages.size === 0) {
+                        startIdleTimeout();
+                    }
+                }
+            }
+        });
+        ws.on('close', () => {
+            clearTimeout(handshakeTimeout);
+            clearTimeout(idleTimeout);
+            const currentOriginCount = connectionsByOrigin.get(originKey) ?? 1;
+            if (currentOriginCount <= 1) {
+                connectionsByOrigin.delete(originKey);
+            } else {
+                connectionsByOrigin.set(originKey, currentOriginCount - 1);
+            }
+            logger.info(
+                LOG_PREFIX,
+                `Connection closed (${getActiveConnections()}/${MAX_CONCURRENT_CONNECTIONS})`,
+            );
+
+            if (connectionPendingMessages.size > 0) {
+                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                    error: 'Connection closed',
+                    // the renderer acts only on the closed connection's own calls
+                    connectionId,
+                });
+
+                for (const id of connectionPendingMessages) {
+                    // Reject (not just delete) so the awaiting message handler unblocks and
+                    // releases its closure instead of waiting on a deferred nothing settles.
+                    rejectMessage(id, new Error('Connection closed'));
+                }
+                connectionPendingMessages.clear();
+            }
+        });
+    });
+    wss.on('close', () => {
+        logger.info(LOG_PREFIX, 'Websocket server closed');
+    });
+
+    httpReceiver.server.on('upgrade', (request, socket, head) => {
+        if (!request?.url) {
+            socket.destroy();
+
+            return;
+        }
+
+        // `new URL()` would throw for some request targets that node's http parser accepts.
+        const pathname = request.url.split('?')[0];
+        if (pathname !== '/connect-ws') {
+            socket.destroy();
+
+            return;
+        }
+
+        // Checked before `handleUpgrade()`, so a rejected socket gets no `101` and no frame parser.
+        const ip = request.socket.remoteAddress;
+        const port = request.socket.remotePort;
+        if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
+            logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
+            socket.destroy();
+
+            return;
+        }
+
+        const originKey = request.headers.origin || 'unknown';
+
+        // Enforce per-origin connection limit to prevent single client monopolization
+        if ((connectionsByOrigin.get(originKey) ?? 0) + 1 > MAX_CONNECTIONS_PER_ORIGIN) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit per origin (${MAX_CONNECTIONS_PER_ORIGIN}) exceeded for ${originKey}`,
+            );
+            socket.destroy();
+
+            return;
+        }
+
+        // Enforce global connection limit to prevent resource exhaustion
+        if (getActiveConnections() + 1 > MAX_CONCURRENT_CONNECTIONS) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
+            );
+            socket.destroy();
+
+            return;
+        }
+
+        wss.handleUpgrade(request, socket, head, ws => {
+            wss.emit('connection', ws, request);
+        });
+    });
+};

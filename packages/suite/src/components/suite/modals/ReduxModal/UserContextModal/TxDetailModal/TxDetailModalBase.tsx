@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { TransactionTokenMetadataProvider } from '@suite-common/token';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
@@ -15,14 +16,14 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { useSelector } from 'src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { BasicTxDetails } from './BasicTxDetails';
 
@@ -191,7 +192,9 @@ export const TxDetailModalBase = ({
                     />
                 )}
 
-                {children}
+                <TransactionTokenMetadataProvider transaction={tx}>
+                    {children}
+                </TransactionTokenMetadataProvider>
             </Column>
         </Modal>
     );

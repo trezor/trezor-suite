@@ -8,7 +8,7 @@ import { persistentDeviceDataInitialState } from '@suite-common/persistent-devic
 import { mockReportSecurityCheck, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, filterThunkActionTypes } from '@suite-common/test-utils';
 import { type ForgetDevicePersistentDataThunkState } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { UI_EVENTS, type UiEventWalletCreationEntropyCheck } from '@trezor/connect';
 
 import fixtures, {
     type DeviceSettingsActionsTestDeps,
@@ -49,6 +49,9 @@ const mockStore = (preloadedState: State) =>
         services: () => ({ reportSecurityCheck: mockReportSecurityCheck() }),
     }).services.store;
 
+type EntropyCheckXpubHashesListener =
+    ((payload: UiEventWalletCreationEntropyCheck['payload']) => void) | undefined;
+
 describe('DeviceSettings Actions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
@@ -66,7 +69,23 @@ describe('DeviceSettings Actions', () => {
             jest.spyOn(TrezorConnect, 'applySettings').mockImplementation(mock);
             jest.spyOn(TrezorConnect, 'wipeDevice').mockImplementation(mock);
             jest.spyOn(TrezorConnect, 'changePin').mockImplementation(mock);
-            jest.spyOn(TrezorConnect, 'resetDevice').mockImplementation(mock);
+            const onSpy = jest.spyOn(TrezorConnect, 'on');
+            jest.spyOn(TrezorConnect, 'resetDevice').mockImplementation(() => {
+                const { xpubHashes } = f;
+                const { selectedDevice } = store.getState().device;
+                if (xpubHashes && selectedDevice) {
+                    const listener = onSpy.mock.calls
+                        .filter(([event]) => event === UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK)
+                        .at(-1)?.[1] as EntropyCheckXpubHashesListener;
+                    if (!listener) {
+                        throw `Expected to emit ${UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK}, got nothing.`;
+                    }
+
+                    listener({ device: selectedDevice, xpubHashes });
+                }
+
+                return mock();
+            });
 
             await store.dispatch(f.action());
 

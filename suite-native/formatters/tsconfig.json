@@ -3,11 +3,16 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite-common/token" },
+        { "path": "../../suite-common/tokens" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -23,6 +28,9 @@
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../tokens" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         { "path": "../../packages/protobuf" },
         {
             "path": "../../packages/styles-native"

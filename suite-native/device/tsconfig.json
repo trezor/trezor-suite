@@ -13,6 +13,10 @@
             "path": "../../suite-common/device-authenticity"
         },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        { "path": "../../suite-common/firmware" },
+        {
             "path": "../../suite-common/firmware-authenticity"
         },
         {
@@ -64,9 +68,6 @@
         { "path": "../toasts" },
         {
             "path": "../../packages/analytics-uploader"
-        },
-        {
-            "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
         {

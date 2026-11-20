@@ -1,14 +1,19 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
+    type FetchAndUpdateAccountThunkDeps,
+    type FetchAndUpdateAccountThunkState,
     type WalletSettingsRootState,
     applySolanaStakingSignature,
     composeSolanaStakingTransaction,
+    fetchAndUpdateAccountThunk,
     getSolanaStakingUserAgent,
+    hasStakedBalanceChangedError,
     isEarnSigningCancelled,
     isSupportedSolStakingNetworkSymbol,
     prepareSolanaStakeTxData,
@@ -25,23 +30,38 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-type ComposeTransactionThunkState = BlockchainRootState;
+export type ComposeTransactionThunkState = BlockchainRootState & FetchAndUpdateAccountThunkState;
+
+export type ComposeTransactionThunkDeps = FetchAndUpdateAccountThunkDeps;
 
 export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
-    async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
+    async (
+        dispatch: ThunkDispatch<
+            ComposeTransactionThunkState,
+            ComposeTransactionThunkDeps,
+            UnknownAction
+        >,
+        getState: () => ComposeTransactionThunkState,
+    ) => {
         const { account } = formState;
         if (account.networkType !== 'solana') return;
 
         const blockchainUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
         if (!blockchainUrl) return;
 
-        return await composeSolanaStakingTransaction({
+        const composedLevels = await composeSolanaStakingTransaction({
             formValues,
             composeContext: formState,
             blockchainUrl,
             userAgent: getSolanaStakingUserAgent(),
         });
+
+        if (hasStakedBalanceChangedError(composedLevels)) {
+            dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+        }
+
+        return composedLevels;
     };
 
 type SignTransactionThunkState = BlockchainRootState & DeviceRootState & WalletSettingsRootState;

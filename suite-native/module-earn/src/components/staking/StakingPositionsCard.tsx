@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { selectDeviceStakingPositionEntries } from '@suite-common/earn-staking';
 import {
     Box,
     Card,
@@ -14,14 +15,13 @@ import { Translation } from '@suite-native/intl';
 
 import { StakingPositionsBottomSheet } from './StakingPositionsBottomSheet';
 import { StakingPositionsIcons } from './StakingPositionsIcons';
-import { selectStakingListItems } from '../../earnScreenSelectors';
 
 export const StakingPositionsCard = () => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const positions = useSelector(selectStakingListItems);
+    const positionEntries = useSelector(selectDeviceStakingPositionEntries);
 
-    if (positions.length === 0) return null;
+    if (positionEntries.length === 0) return null;
 
     return (
         <>
@@ -51,7 +51,7 @@ export const StakingPositionsCard = () => {
 
             <StakingPositionsBottomSheet
                 ref={bottomSheetRef}
-                positions={positions}
+                positionEntries={positionEntries}
                 onClose={closeModal}
             />
         </>

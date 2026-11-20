@@ -17,7 +17,7 @@ import { feesActions } from './feesActions';
 import { type FeesRootState, selectFees, selectRawNetworkFeeInfo } from './feesSelectors';
 import { updateFeeInfoThunk } from './feesThunks';
 
-export { type FeesRootState, selectFees, selectRawNetworkFeeInfo } from './feesSelectors';
+export { selectFees, selectRawNetworkFeeInfo, type FeesRootState } from './feesSelectors';
 
 export const feesInitialState: FeesState = {};
 

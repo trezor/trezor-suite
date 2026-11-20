@@ -9,7 +9,7 @@ import {
     formDraftInitialState,
 } from '@suite-common/wallet-core';
 
-import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
+import { storageLoad } from '#src/actions/suite/storageLifecycleActions';
 
 export const FORM_DRAFT = 'formDraft';
 

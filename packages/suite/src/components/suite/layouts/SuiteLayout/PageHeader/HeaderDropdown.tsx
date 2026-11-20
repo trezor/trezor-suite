@@ -2,13 +2,13 @@ import { type JSX } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { getNetwork } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { isWalletConnectSupportedNetwork } from '@suite-common/walletconnect';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
-import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useSelector } from 'src/hooks/suite';
+import { AppNavigationTooltip } from '#src/components/suite/AppNavigation/AppNavigationTooltip';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 
@@ -23,14 +23,14 @@ type ActionItem = {
 
 type HeaderDropdownProps = {
     isDisabled?: boolean;
-    showSignAndVerify?: boolean;
+    showSignVerify?: boolean;
 };
-export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
+export const HeaderDropdown = ({ isDisabled, showSignVerify }: HeaderDropdownProps) => {
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
 
     const additionalActions: ActionItem[] = [
-        ...(showSignAndVerify
+        ...(showSignVerify
             ? [
                   {
                       id: 'wallet-sign-verify',
@@ -56,8 +56,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             },
             title: <Translation id="TR_WALLETCONNECT" />,
             icon: WalletConnectIcon,
-            // caipId marks networks with a WalletConnect adapter (see suite-common/walletconnect)
-            isHidden: account ? !getNetwork(account.symbol).caipId : true,
+            isHidden: account ? !isWalletConnectSupportedNetwork(account.symbol) : true,
         },
     ];
 

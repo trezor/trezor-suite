@@ -1,18 +1,19 @@
 import { type NetworksDep } from '@suite-common/networks';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { type YieldListItem } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { YieldPositionCard } from './YieldPositionCard';
-import { type YieldListItem } from '../../types';
 
 const mockNavigateToYieldDetail = jest.fn();
 
-jest.mock('../../hooks/yield/useYieldDetailNavigation', () => ({
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
     useYieldDetailNavigation: () => ({ navigateToYieldDetail: mockNavigateToYieldDetail }),
 }));
 

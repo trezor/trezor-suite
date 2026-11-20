@@ -92,7 +92,7 @@ export const eth1NormalAccount = mockWalletAccount({
             standard: 'ERC20',
             name: 'USDC',
             contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            symbol: 'usdc',
+            symbol: 'USDC',
             decimals: 6,
             balance: '1',
         },

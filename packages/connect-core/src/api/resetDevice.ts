@@ -1,5 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
-import { type PermissionRequest, UI_EVENTS } from '@trezor/connect-common';
+import { type PermissionRequest, UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TransportError } from '@trezor/connect-common/src/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
@@ -7,7 +7,7 @@ import { Assert } from '@trezor/schema-utils';
 import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
-import type { MethodMessage } from '../core/AbstractMethod';
+import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validatePath } from '../utils/pathUtils';
 import { calculateXPubHashes } from './firmware/calculateXPubHash';
@@ -55,7 +55,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
     }
 
     // https://github.com/trezor/trezor-firmware/blob/57868ad48f4c462bb1f4fa57572067e89a039a60/docs/common/message-workflows.md#entropy-check-workflow
-    private async entropyCheckWorkflow(): Promise<XPubsPerBip43Path> {
+    private async entropyCheckWorkflow(sendCoreMessage: MethodContext['sendCoreMessage']) {
         const cmd = this.getDevice().getCommands();
         const paths = ["m/84'/0'/0'", "m/44'/60'/0'"] as const;
         const parsedPaths = paths.map(path => ({ path, address_n: validatePath(path) }));
@@ -118,27 +118,33 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
             await cmd.typedCall('EntropyAck', 'EntropyCheckReady', { entropy }).catch(handleErr);
         }
+        // The final seed is never revealed; its xpubs are trusted because all previous rounds passed
+        // and the device couldn't know which round is the last one.
         const finalXPubs = await getXPubs();
+
+        // Report the hashes before step 7, so that they reach Suite even if the call fails afterwards.
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK, {
+                device: this.getDevice().toMessageObject(),
+                xpubHashes: calculateXPubHashes(finalXPubs),
+            }),
+        );
 
         // step 7 EntropyCheckContinue > Success
         // wallet backup flow may follow after successful entropy check, so don't consider errors thrown there as entropy check failure
         await cmd.typedCall('EntropyCheckContinue', 'Success', { finish: true });
-
-        // Entropy check success, so the xpubs are considered genuine
-        return finalXPubs;
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         if (this.params.entropy_check && this.getDevice().unavailableCapabilities['entropyCheck']) {
             // entropy check requested but not supported by the firmware
             this.params.entropy_check = false;
         }
 
         if (this.params.entropy_check) {
-            const xpubs = await this.entropyCheckWorkflow();
-            const xpubHashes = calculateXPubHashes(xpubs);
+            await this.entropyCheckWorkflow(sendCoreMessage);
 
-            return { message: 'Success', xpubHashes };
+            return { message: 'Success' };
         }
 
         await this.resetDeviceWorkflow();

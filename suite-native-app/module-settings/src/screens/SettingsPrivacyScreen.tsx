@@ -1,0 +1,114 @@
+import { Platform } from 'react-native';
+import { useSelector } from 'react-redux';
+
+import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
+import { DISCREET_PLACEHOLDER, useDiscreetMode } from '@suite-common/discreet-mode';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import {
+    Box,
+    Discreet,
+    Text,
+    TouchableSwitchRow,
+    TouchableSwitchRowDescription,
+    VStack,
+} from '@suite-native/atoms';
+import { selectIsBiometricsEnabled, useBiometricsSettings } from '@suite-native/biometrics';
+import { Translation } from '@suite-native/intl';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+
+const DiscreetTextExample = () => (
+    <Discreet isForcedDiscreetMode>
+        <Text variant="body-sm" color="contentSecondary">
+            {DISCREET_PLACEHOLDER}
+        </Text>
+    </Discreet>
+);
+
+const DiscreetModeSwitchRow = () => {
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
+    const { analytics } = useServices(injectNativeAnalytics);
+    const handleSetDiscreetMode = (value: boolean) => {
+        setIsDiscreetMode(value);
+        analytics.report({
+            type: events.settingsDiscreetToggleEvent.name,
+            payload: { discreetMode: value },
+        });
+    };
+
+    return (
+        <TouchableSwitchRow
+            testID="@settings/privacy-and-security/discreet-mode-toggle"
+            text={<Translation id="moduleSettings.privacyAndSecurity.discreetMode" />}
+            accessibilityLabel="discreet-mode"
+            description={
+                <Box flexDirection="row" alignItems="center">
+                    <TouchableSwitchRowDescription>{`$100 -> `}</TouchableSwitchRowDescription>
+                    <DiscreetTextExample />
+                </Box>
+            }
+            icon="eyeSlash"
+            isChecked={isDiscreetMode}
+            onChange={handleSetDiscreetMode}
+        />
+    );
+};
+
+const AnalyticsSwitchRow = () => {
+    const { analytics } = useServices(injectNativeAnalytics);
+    const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
+
+    const handleAnalyticsChange = (isEnabled: boolean) => {
+        if (isEnabled) {
+            analytics.enable();
+
+            return;
+        }
+        analytics.disable();
+    };
+
+    return (
+        <TouchableSwitchRow
+            text={<Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.title" />}
+            icon="database"
+            accessibilityLabel="analytics"
+            description={
+                <Translation id="moduleSettings.privacyAndSecurity.analyticsSwitch.subtitle" />
+            }
+            isChecked={isAnalyticsEnabled}
+            onChange={handleAnalyticsChange}
+        />
+    );
+};
+
+const BiometricsSwitchRow = () => {
+    const isBiometricsEnabled = useSelector(selectIsBiometricsEnabled);
+    const { toggleBiometricsOption } = useBiometricsSettings();
+
+    return (
+        <TouchableSwitchRow
+            isChecked={isBiometricsEnabled}
+            onChange={toggleBiometricsOption}
+            accessibilityLabel="biometrics"
+            text={<Translation id="moduleSettings.privacyAndSecurity.biometrics.title" />}
+            icon={Platform.OS === 'ios' ? 'fingerprintSimple' : 'fingerprint'}
+            description={<Translation id="moduleSettings.privacyAndSecurity.biometrics.subtitle" />}
+        />
+    );
+};
+
+export const SettingsPrivacyScreen = () => (
+    <Screen
+        header={
+            <DynamicScreenHeader
+                title={<Translation id="moduleSettings.privacyAndSecurity.title" />}
+            />
+        }
+    >
+        <VStack spacing="sp16">
+            <BiometricsSwitchRow />
+            <DiscreetModeSwitchRow />
+            <AnalyticsSwitchRow />
+        </VStack>
+    </Screen>
+);

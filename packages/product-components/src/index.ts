@@ -16,6 +16,8 @@ export {
     type EmojiRatingSelectorProps,
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
 export { FeeRate } from './components/FeeRate/FeeRate';
+export { FlowStep, type FlowStepProps, type FlowStepState } from './components/FlowStep/FlowStep';
+export { FlowStepList } from './components/FlowStep/FlowStepList';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export * from './components/JsonlReader/JsonlReader';
 export { LastUpdateTooltip } from './components/LastUpdateTooltip/LastUpdateTooltip';

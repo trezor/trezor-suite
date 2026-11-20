@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react';
 import { type ButtonRequest } from '@suite-common/suite-types';
 import TrezorConnect, { UI_EVENTS, UI_RESPONSE } from '@trezor/connect';
 
-const NEW_PIN_REQUEST_TYPES = ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'];
-const NEW_WIPE_CODE_REQUEST_TYPES = [
+const NEW_PIN_REQUEST_TYPES: ButtonRequest['code'][] = [
+    'PinMatrixRequestType_NewFirst',
+    'PinMatrixRequestType_NewSecond',
+];
+const NEW_WIPE_CODE_REQUEST_TYPES: ButtonRequest['code'][] = [
     'PinMatrixRequestType_WipeCodeFirst',
     'PinMatrixRequestType_WipeCodeSecond',
 ];
@@ -13,11 +16,10 @@ export const usePin = (buttonRequests: ButtonRequest[], requestId?: string) => {
     const [pin, setPin] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
-    const pinRequestType = buttonRequests[buttonRequests.length - 1];
+    const pinRequestCode = buttonRequests[buttonRequests.length - 1]?.code;
     const isSettingNewWipeCode =
-        pinRequestType?.code && NEW_WIPE_CODE_REQUEST_TYPES.includes(pinRequestType?.code);
-    const isSettingNewPin =
-        pinRequestType?.code && NEW_PIN_REQUEST_TYPES.includes(pinRequestType.code);
+        pinRequestCode && NEW_WIPE_CODE_REQUEST_TYPES.includes(pinRequestCode);
+    const isSettingNewPin = pinRequestCode && NEW_PIN_REQUEST_TYPES.includes(pinRequestCode);
 
     const cancel = () =>
         isSettingNewWipeCode

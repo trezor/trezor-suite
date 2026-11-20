@@ -75,52 +75,28 @@ describe('data/connectSettings', () => {
             });
         });
 
-        it('trims leading whitespace from appName', () => {
-            expect(parseManifest({ ...baseManifest, appName: '  Test App' })?.appName).toBe(
-                'Test App',
-            );
-        });
-
-        it('trims trailing whitespace from appName', () => {
-            expect(parseManifest({ ...baseManifest, appName: 'Test App  ' })?.appName).toBe(
-                'Test App',
-            );
-        });
-
-        it('collapses multiple spaces in the middle of appName', () => {
-            expect(parseManifest({ ...baseManifest, appName: 'Test   App' })?.appName).toBe(
-                'Test App',
-            );
-        });
-
-        it('handles combined leading, trailing, and multiple middle spaces in appName', () => {
+        it('sanitizes appName', () => {
             expect(parseManifest({ ...baseManifest, appName: '  Test   App  ' })?.appName).toBe(
                 'Test App',
             );
         });
 
-        it('returns undefined when appName is an empty string', () => {
-            expect(parseManifest({ ...baseManifest, appName: '' })).toBeUndefined();
-        });
-
-        it('returns undefined when appName is only whitespace', () => {
+        it('returns undefined when appName sanitizes to nothing', () => {
             expect(parseManifest({ ...baseManifest, appName: '   ' })).toBeUndefined();
         });
+    });
 
-        it('strips control characters from appName', () => {
-            expect(parseManifest({ ...baseManifest, appName: 'Test\x00App\x1F' })?.appName).toBe(
-                'TestApp',
-            );
+    it('gives the manifest and THP the same appName', () => {
+        const settings = parseConnectSettings({
+            manifest: {
+                email: 'test@test.com',
+                appUrl: 'https://test.com',
+                appName: ` ${'A'.repeat(200)} `,
+            },
         });
 
-        it('returns undefined when appName is only control characters', () => {
-            expect(parseManifest({ ...baseManifest, appName: '\x00\x1F\x7F' })).toBeUndefined();
-        });
-
-        it('accepts long appName without length limit', () => {
-            const longName = 'A'.repeat(200);
-            expect(parseManifest({ ...baseManifest, appName: longName })?.appName).toBe(longName);
-        });
+        expect(settings.manifest?.appName).toBe('A'.repeat(100));
+        expect(settings.thp?.appName).toBe(settings.manifest?.appName);
     });
 
     it('corsValidator', () => {

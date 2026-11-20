@@ -2,12 +2,10 @@ import { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    type StakeRootState,
-    getTronPendingUnstakingBatches,
-    selectAccountNetworkSymbol,
-    selectTronPendingUnstakeBalanceByAccountKey,
-    selectTronUnstakingBatchesByAccountKey,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakingAccountPositionEntry,
+} from '@suite-common/earn-staking';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AnimatedChevron,
@@ -22,41 +20,45 @@ import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 import { TronStakingUnstakeRow } from './TronStakingUnstakeRow';
+import { settleTronUnlocks } from '../../../utils/staking/settleTronUnlocks';
 import { EarnApproximateFiatAmount } from '../../earn/EarnApproximateFiatAmount';
 
 type TronStakingUnstakeCardProps = {
     accountKey: AccountKey;
-    nowSeconds: number;
+    nowMs: number;
 };
 
-export const TronStakingUnstakeCard = ({ accountKey, nowSeconds }: TronStakingUnstakeCardProps) => {
-    const symbol = useSelector((state: StakeRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
-    const batches = useSelector((state: StakeRootState) =>
-        selectTronUnstakingBatchesByAccountKey(state, accountKey),
-    );
-    const pendingBalance = useSelector((state: StakeRootState) =>
-        selectTronPendingUnstakeBalanceByAccountKey(state, accountKey, nowSeconds),
-    );
-
+export const TronStakingUnstakeCard = ({ accountKey, nowMs }: TronStakingUnstakeCardProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
+
+    const positionEntry = useSelector((state: StakingRootState) =>
+        selectStakingAccountPositionEntry(state, accountKey),
+    );
 
     const handleToggle = () => {
         setIsExpanded(!isExpanded);
     };
 
-    if (!symbol) return null;
+    if (positionEntry === null) {
+        return null;
+    }
 
-    const pendingBatches = getTronPendingUnstakingBatches({ batches, symbol, nowSeconds });
+    const { unlocks, unstaking } = settleTronUnlocks({ position: positionEntry.position, nowMs });
 
-    if (pendingBatches.length === 0) return null;
+    if (unlocks.length === 0) {
+        return null;
+    }
+
+    const { networkSymbol: symbol } = positionEntry.descriptor;
+
+    const pendingBalance = formatStakingAmount({ amount: unstaking, networkSymbol: symbol });
 
     return (
         <VStack spacing="sp12">
             <Text variant="headline-sm">
                 <Translation id="earn.stakingManagementScreen.pendingActions" />
             </Text>
+
             <Card noPadding testID="@staking/tron-unstaking-card/container">
                 <PressableOpacity
                     onPress={handleToggle}
@@ -74,6 +76,7 @@ export const TronStakingUnstakeCard = ({ accountKey, nowSeconds }: TronStakingUn
                         <Text variant="body-sm-strong">
                             <Translation id="earn.tron.unstakingCard.title" />
                         </Text>
+
                         <HStack alignItems="center" spacing="sp12">
                             <VStack spacing="sp4" alignItems="flex-end">
                                 <ExactCryptoAmountFormatter
@@ -82,24 +85,28 @@ export const TronStakingUnstakeCard = ({ accountKey, nowSeconds }: TronStakingUn
                                     variant="body-md-strong"
                                     color="contentPrimary"
                                 />
+
                                 <EarnApproximateFiatAmount
                                     amount={pendingBalance}
                                     symbol={symbol}
                                 />
                             </VStack>
+
                             <AnimatedChevron isExpanded={isExpanded} />
                         </HStack>
                     </HStack>
                 </PressableOpacity>
+
                 {isExpanded &&
-                    pendingBatches.map(({ amount, expireTime }, index) => (
-                        <Fragment key={`${expireTime}-${index}`}>
+                    unlocks.map(({ amount, availableAt }, index) => (
+                        <Fragment key={`${availableAt}-${index}`}>
                             <CardDivider horizontalPadding={0} />
+
                             <TronStakingUnstakeRow
                                 index={index}
-                                amount={amount}
-                                expireTime={expireTime}
-                                nowSeconds={nowSeconds}
+                                amount={formatStakingAmount({ amount, networkSymbol: symbol })}
+                                availableAt={availableAt}
+                                nowMs={nowMs}
                                 symbol={symbol}
                             />
                         </Fragment>

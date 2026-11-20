@@ -1,25 +1,18 @@
 import { useEffect, useRef } from 'react';
 import { SlideInDown } from 'react-native-reanimated';
 
-import { AnimatedBox, Button, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ScrollToEndOnMount } from '@suite-native/scrollview';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useTransactionReview } from '../hooks/useTransactionReview';
-
-const containerStyle = prepareNativeStyle<{ bottomInset: number }>((_, { bottomInset }) => ({
-    paddingBottom: bottomInset,
-}));
 
 interface TransactionReviewFooterProps {
     isSendButtonDisabled?: boolean;
 }
 
 export const TransactionReviewFooter = ({ isSendButtonDisabled }: TransactionReviewFooterProps) => {
-    const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const insets = useBannerAwareSafeAreaInsets();
 
     const review = useTransactionReview();
 
@@ -63,11 +56,7 @@ export const TransactionReviewFooter = ({ isSendButtonDisabled }: TransactionRev
     };
 
     return (
-        <AnimatedBox
-            entering={SlideInDown}
-            style={applyStyle(containerStyle, { bottomInset: insets.bottom })}
-            testID={review.footerTestId}
-        >
+        <AnimatedBox entering={SlideInDown} testID={review.footerTestId}>
             <ScrollToEndOnMount>
                 <Button
                     isLoading={review.isSendButtonLoading ?? review.isSending}

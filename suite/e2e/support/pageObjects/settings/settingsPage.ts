@@ -37,6 +37,11 @@ const backgroundImageButton = {
     nyancat: '@modal/gallery/bw_64x128/nyancat',
 };
 
+export const safetyChecksDeviceText = {
+    strict: 'Do you really want to enforce strict safety checks',
+    prompt: 'Trezor will temporarily allow you to approve some actions which might be unsafe.',
+};
+
 export type NetworkToEnable =
     NetworkSymbol | { symbol: NetworkSymbol; backend: { type: BackendType; url: string } };
 
@@ -233,6 +238,7 @@ export class SettingsPage {
         await this.deviceLabelInput.fill(newDeviceName);
         await this.deviceLabelSubmit.click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
+        await this.device.expectValuesOnDisplay(`Change device name to ${newDeviceName}?`);
         await this.device.pressYes();
         await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
         await expect(this.notificationSuccessToast).toBeVisible();
@@ -246,6 +252,9 @@ export class SettingsPage {
             await expect(imageButton).toHaveLoadedImage();
             await imageButton.click();
             await expect(this.confirmOnDevicePrompt).toBeVisible();
+            if (this.device.hasReadableDisplay) {
+                await this.device.expectToContainOnDisplay('Change wallpaper');
+            }
             await this.device.pressYes();
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
             await expect(this.notificationSuccessToast).toBeVisible();
@@ -259,6 +268,7 @@ export class SettingsPage {
         await this.safetyChecksRadioButton(level).click();
         await this.safetyChecksConfirmButton.click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
+        await this.device.expectToContainOnDisplay(safetyChecksDeviceText[level]);
         await this.device.pressYes();
     }
 
@@ -307,11 +317,7 @@ export class SettingsPage {
         if (options.skipDiscovery) return;
         await this.page.discoveryShouldFinish();
 
-        // Temporarily exclude SOL from discovery success verification until issues are resolved.
-        const symbolsWithoutSol = options.enableNetworks
-            .map(getNetworkSymbol)
-            .filter(symbol => symbol !== 'sol');
-        await this.expectDiscoverySuccessForNetworks(symbolsWithoutSol);
+        await this.expectDiscoverySuccessForNetworks(options.enableNetworks.map(getNetworkSymbol));
     }
 
     /**

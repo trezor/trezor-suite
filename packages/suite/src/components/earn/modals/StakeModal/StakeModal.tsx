@@ -7,9 +7,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
-import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { StakeFormContext, useStakeForm } from 'src/hooks/earn/useStakeForm';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { earnFlowToEventTypeMap } from '#src/constants/suite/staking';
+import { StakeFormContext, useStakeForm } from '#src/hooks/earn/useStakeForm';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { StakeButton } from './StakeForm/StakeButton';
 import { StakeForm } from './StakeForm/StakeForm';

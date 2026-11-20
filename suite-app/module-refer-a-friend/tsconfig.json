@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": [".", "**/*.json"],
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/refer-a-friend"
+        },
+        { "path": "../../suite/intl" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/requirements" }
+    ]
+}

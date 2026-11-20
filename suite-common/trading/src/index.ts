@@ -15,17 +15,12 @@ export * from './hooks/useTradingRequestedAmountShortfall';
 export * from './hooks/useTradingRequestedSide';
 export * from './hooks/useFormatCryptoValue';
 export * from './hooks/useChangeStringsExtractor';
-export * from './hooks/useApprovalStep';
 export * from './hooks/useTradingExchangeWatchApproval';
+export * from './hooks/useTradingExchangeAllowance';
 export * from './hooks/useTradingRefetchScheduler';
 export * from './hooks/useDexExchangeTxSimulation';
 export * from './hooks/usePreferredCurrencyUsdThreshold';
 export * from './hooks/useBoundTradingAccount';
-export {
-    type TransactionStatus,
-    type UseAllowanceTxTrackingParams,
-    useAllowanceTxTracking,
-} from './hooks/useAllowanceTxTracking';
 export * from './tradeApi';
 export * from './reducers/buyReducer';
 export * from './reducers/exchangeReducer';
@@ -42,12 +37,18 @@ export * from './thunks/common/buildTradingComposeFormState';
 export * from './thunks/exchange/buildExchangeComposeInputs';
 export * from './selectors/tradingSelectors';
 export * from './selectors/tradeableAssetBalancesSelectors';
+export { TradingTokenMetadataProvider } from './components/TradingTokenMetadataProvider';
 export * from './hooks/useTradingDetail';
 export type * from './types/tradingDetail';
 export type * from './types';
 export * from './utils';
 export { createAssetOption } from './utils/createAssetOption';
 export * from './utils/apiKeyUtils';
+export {
+    createInstallTradeApiKey,
+    createSaltedTradeApiKey,
+    generateTradeApiInstallSalt,
+} from './utils/tradeApiSaltUtils';
 export * from './utils/tradingAccountUtils';
 export * from './utils/buy/buyUtils';
 export * from './utils/receiveAccountUtils';
@@ -56,8 +57,10 @@ export * from './utils/tradeableAssetGroupUtils';
 export * from './utils/tradeableAssetListUtils';
 export * from './utils/tradeOperationUtils';
 export * from './utils/tradeHistoryExportUtils';
+export * from './utils/exchange/approvalFlowUtils';
 export * from './utils/exchange/canSwitchExchangeAssets';
 export * from './utils/exchange/composeDexTxSimulationAction';
+export * from './utils/exchange/exchangeAllowanceUtils';
 export * from './utils/exchange/exchangeUtils';
 export * from './utils/exchange/getExchangeIssue';
 export * from './utils/exchange/getSimulatedReceiveAmount';
@@ -68,6 +71,7 @@ export * from './utils/exchange/signDataUtils';
 export * from './utils/sell/sellUtils';
 export * from './utils/signature/signatureUtils';
 export * from './utils/countryUtils';
+export * from './utils/tradingErrorUtils';
 export * from './utils/typeGuards';
 export * from './utils/slippageFormValidationSchema';
 export * from './utils/formatSlippagePercent';

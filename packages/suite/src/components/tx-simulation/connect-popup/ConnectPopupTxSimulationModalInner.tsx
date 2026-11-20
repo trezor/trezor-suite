@@ -24,9 +24,9 @@ import { ERRORS } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Fees } from 'src/components/wallet/Fees/Fees';
+import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
+import { Fees } from '#src/components/wallet/Fees/Fees';
 
 import { TxSimulationDisclaimer } from '../common/components/TxSimulationDisclaimer';
 import { TxSimulationErrorBoundary } from '../common/components/TxSimulationErrorBoundary';

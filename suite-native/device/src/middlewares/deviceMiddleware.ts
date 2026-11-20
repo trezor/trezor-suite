@@ -1,12 +1,20 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { deviceActions, isTrezorDeviceWithState } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    deviceActions,
+    isTrezorDeviceWithState,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import { firmwareActions } from '@suite-common/firmware';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
     accountsActions,
+    endUnfinishedDiscoveryThunk,
     forgetDisconnectedDevicesThunk,
     handleDeviceDisconnectThunk,
     observeSelectedDeviceThunk,
@@ -44,7 +52,10 @@ const isActionDeviceRelated = (action: UnknownAction): boolean => {
 };
 
 type DeviceMiddlewareDeps = WithServices<SuiteSyncDep & NativeAnalyticsDep>;
-type DeviceMiddlewareState = AccountsRootState & DiscoveryRootState & NativeBluetoothRootState;
+type DeviceMiddlewareState = AccountsRootState &
+    DiscoveryRootState &
+    NativeBluetoothRootState &
+    DeviceRootState;
 
 export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
     DeviceMiddlewareDeps,
@@ -52,6 +63,17 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
     DeviceMiddlewareState
 >((action, { dispatch, next, getState, extra }) => {
     if (deviceActions.deviceDisconnect.match(action)) {
+        // Forgetting an unremembered device below deletes its discovery, so its outcome is recorded first.
+        dispatch(
+            endUnfinishedDiscoveryThunk({
+                devicePath: action.payload.path,
+                status: {
+                    status: 'failed',
+                    error: 'Device disconnected',
+                    errorCode: 'Device_Disconnected',
+                },
+            }),
+        );
         dispatch(
             forgetDisconnectedDevicesThunk({
                 device: action.payload,
@@ -81,6 +103,17 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
                 deviceStaticSessionId: device.state.staticSessionId,
             });
         }
+    }
+
+    if (firmwareActions.setStatus.match(action) && action.payload === 'done') {
+        // Having just installed FW, we can mark the device as known, so that Device Visual Check is not seen again.
+        // A device without FW has no id, so the check confirmed before the installation couldn't be persisted then.
+        // `firmware.cachedDevice` is unusable: it's a snapshot from before the installation, so its id is outdated
+        // and its path changes with the reconnection during the installation. The selected device is used instead,
+        // relying on the UI not allowing to select a different device while the installation is underway.
+        // The logic is duplicated in packages/suite/src/middlewares/onboarding/onboardingMiddleware.ts for desktop/web.
+        const deviceId = selectSelectedDevice(getState())?.id;
+        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
     }
 
     if (deviceActions.connectDevice.match(action)) {

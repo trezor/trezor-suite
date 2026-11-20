@@ -1,6 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { openModal } from '@suite/modal';
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
@@ -125,10 +126,10 @@ const createStakeFlow = () => {
     return { ...mockDispatch, getState, extra };
 };
 
-const signStakeTransaction = async () => {
+const signStakeTransaction = async (stakeForm = formValues) => {
     const flow = createStakeFlow();
 
-    await signTransactionThunk({ accountKey: account.key, formValues, transactionInfo })(
+    await signTransactionThunk({ accountKey: account.key, formValues: stakeForm, transactionInfo })(
         flow.dispatch,
         flow.getState,
         flow.extra,
@@ -171,6 +172,7 @@ describe('signTransactionThunk', () => {
             tx: SIGNED_TX,
             coin: 'ada',
             identity: undefined,
+            disableAlternativeRPC: false,
         });
         expect(mockNotifyEarnTransactionBroadcastThunk).toHaveBeenCalledWith(
             expect.objectContaining({ account, txid: TXID, flow: 'stake' }),
@@ -184,6 +186,18 @@ describe('signTransactionThunk', () => {
         expect(selectStake(getState()).precomposedTx).toBeUndefined();
     });
 
+    it('forgets the review account when signing is cancelled on the device', async () => {
+        mockCardanoSignTransactionThunk.mockReturnValue(() =>
+            Promise.resolve({ success: false, error: { message: 'Failure_ActionCancelled' } }),
+        );
+
+        const { getState } = await signStakeTransaction();
+
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+        expect(selectStakeAccountKey(getState())).toBeUndefined();
+        expect(selectStake(getState()).precomposedTx).toBeUndefined();
+    });
+
     it('keeps the review account for a retry when signing times out', async () => {
         mockCardanoSignTransactionThunk.mockReturnValue(() =>
             Promise.resolve({ success: false, error: { message: 'tx-timeout' } }),
@@ -193,5 +207,23 @@ describe('signTransactionThunk', () => {
 
         expect(pushTransactionMock).not.toHaveBeenCalled();
         expect(selectStakeAccountKey(getState())).toBe(account.key);
+    });
+
+    it('reopens unstake for the same account after signing is cancelled', async () => {
+        mockCardanoSignTransactionThunk.mockReturnValue(() =>
+            Promise.resolve({ success: false, error: { message: 'Failure_ActionCancelled' } }),
+        );
+
+        const { actions } = await signStakeTransaction({ ...formValues, stakeType: 'unstake' });
+
+        expect(actions).toContainEqual(openModal({ type: 'unstake', accountKey: account.key }));
+    });
+
+    it('reopens unstake for the same account after a broadcast failure', async () => {
+        pushTransactionMock.mockResolvedValue({ success: false, error: { message: 'Rejected' } });
+
+        const { actions } = await signStakeTransaction({ ...formValues, stakeType: 'unstake' });
+
+        expect(actions).toContainEqual(openModal({ type: 'unstake', accountKey: account.key }));
     });
 });

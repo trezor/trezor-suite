@@ -4,6 +4,7 @@ import {
     hasPendingStakeTypeTransaction,
     isCardanoWithdrawalBlockedByMissingDrep,
     selectCardanoPoolsInfo,
+    selectCardanoProtocolParameters,
     selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
 import {
@@ -17,8 +18,8 @@ import { type PrecomposedTransactionCardano } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { prepareTxPlan } from 'src/actions/wallet/stake/stakeFormCardanoActions';
-import { useSelector } from 'src/hooks/suite';
+import { prepareTxPlan } from '#src/actions/wallet/stake/stakeFormCardanoActions';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const COMPOSE_ERROR_REASONS = [
     'UTXO_BALANCE_INSUFFICIENT',
@@ -50,6 +51,9 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
 
     const cardanoPools = useSelector(selectCardanoPoolsInfo);
     const votingDelegation = useSelector(selectStakeVotingDelegation);
+    const protocolParameters = useSelector(state =>
+        selectCardanoProtocolParameters(state, account.symbol),
+    );
     const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
 
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
@@ -90,6 +94,7 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
                     action,
                     cardanoPools,
                     votingDelegation,
+                    protocolParameters,
                 });
                 if (composeRes?.txPlan) {
                     if (composeRes.txPlan.type !== 'error') {
@@ -113,7 +118,7 @@ export const useCardanoStaking = ({ account }: UseCardanoStakingParams): Cardano
 
             setLoading(false);
         },
-        [account, cardanoPools, votingDelegation],
+        [account, cardanoPools, votingDelegation, protocolParameters],
     );
 
     // TODO: improve this hook for non-cardano accounts

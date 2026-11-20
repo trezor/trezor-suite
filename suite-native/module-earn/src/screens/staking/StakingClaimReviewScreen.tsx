@@ -3,22 +3,21 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import {
+    formatStakingAmount,
+    isStakingOperationAvailable,
+    useStakingAccountPosition,
+} from '@suite-common/earn-staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    type StakeRootState,
     buildClaimWithdrawRequestData,
     getStakingContractAddress,
-    getStakingLimitsByNetworkSymbol,
-    isSupportedEthStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
-    selectCanClaimByAccountKey,
-    selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { BannerFull, BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -27,12 +26,11 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
-import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
 import { useComposeEarnFees } from '../../hooks/earn/useComposeEarnFees';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
@@ -56,24 +54,21 @@ export const StakingClaimReviewScreen = () => {
         stakeType: 'claim',
     });
 
-    const canClaimInstantly = useSelector((state: StakeRootState) =>
-        selectCanClaimByAccountKey(state, accountKey),
-    );
-    const claimableAmount = useSelector((state: StakeRootState) =>
-        selectClaimableAmountByAccountKey(state, accountKey),
-    );
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const availableBalance = account?.availableBalance ?? '0';
 
-    const feeBuffer = getStakingLimitsByNetworkSymbol(symbol)?.MIN_BALANCE_FOR_FEE_BUFFER;
-    const availableBalanceInUnits = subunitsToUnits({
-        value: asAmountSubunit(new BigNumber(availableBalance)),
-        symbol,
+    const { position, totals, access } = useStakingAccountPosition(accountKey);
+
+    const canClaimInstantly = isStakingOperationAvailable({
+        position,
+        access,
+        operation: 'withdraw',
     });
-    const isInsufficientFeeBalance = !!feeBuffer && availableBalanceInUnits.lt(feeBuffer);
-    const formattedAvailableBalance = `${availableBalanceInUnits.toString()} ${displaySymbol}`;
+    const claimableAmount = formatStakingAmount({
+        amount: totals.withdrawable,
+        networkSymbol: symbol,
+    });
 
     const claimFormState = useMemo(() => {
         if (!account) return undefined;
@@ -86,18 +81,27 @@ export const StakingClaimReviewScreen = () => {
         }
 
         if (account.networkType === 'solana') {
-            return buildEarnComposeFormState(contractAddress, claimableAmount ?? '0', '');
+            if (!isPositiveBalance(claimableAmount)) return undefined;
+
+            return buildEarnComposeFormState(contractAddress, claimableAmount, '');
         }
 
         return buildEarnComposeFormState(contractAddress, '0', '');
     }, [account, claimableAmount]);
 
-    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
-        useComposeEarnFees({
-            accountKey,
-            formState: claimFormState,
-            formDraftPrefix: 'claim',
-        });
+    const {
+        formDraft,
+        formDraftKey,
+        hasFeeEstimationError,
+        isComposingFeeLevels,
+        retryFeeEstimation,
+        isFeeReady,
+        updateFeeLevelThunk,
+    } = useComposeEarnFees({
+        accountKey,
+        formState: claimFormState,
+        formDraftPrefix: 'claim',
+    });
 
     const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: claimableLimitAmount } =
         useSolanaStakingLimit({ accountKey, type: 'claim', amount: claimableAmount });
@@ -155,16 +159,7 @@ export const StakingClaimReviewScreen = () => {
                     <Button
                         onPress={handleReviewAndSign}
                         isDisabled={
-                            isPending ||
-                            !claimFormState ||
-                            !canClaimInstantly ||
-                            isInsufficientFeeBalance ||
-                            isFeeUnavailable ||
-                            isPrecomposeError ||
-                            !(
-                                isSupportedEthStakingNetworkSymbol(symbol) ||
-                                isSupportedSolStakingNetworkSymbol(symbol)
-                            )
+                            isPending || !claimFormState || !canClaimInstantly || !isFeeReady
                         }
                     >
                         <Translation id="earn.claimReviewScreen.reviewAndSignButton" />
@@ -172,40 +167,27 @@ export const StakingClaimReviewScreen = () => {
                 </Box>
             }
         >
-            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+            {/* Keep the native parent stable when pointerEvents changes during navigation. */}
+            <Box collapsable={false} pointerEvents={isPending ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
                     <EarnAmountCard
                         accountKey={accountKey}
                         label={<Translation id="earn.claimReviewScreen.amountLabel" />}
                         cryptoAmount={claimableAmount}
                     />
-                    <FeeSelector
+                    <EarnFeeSection
                         accountKey={accountKey}
-                        updateThunk={updateFeeLevelThunk}
-                        selectedFee={formDraft?.selectedFee ?? 'normal'}
-                        selectedFeePerUnit={formDraft?.feePerUnit}
-                        formDraft={formDraft}
-                        formDraftKey={formDraftKey}
+                        fees={{
+                            hasFeeEstimationError,
+                            isComposingFeeLevels,
+                            retryFeeEstimation,
+                            updateFeeLevelThunk,
+                            selectedFee: formDraft?.selectedFee ?? 'normal',
+                            formDraft,
+                            formDraftKey,
+                        }}
                     />
-                    {isInsufficientFeeBalance && (
-                        <BannerFull
-                            intent="critical"
-                            iconName="warningCircle"
-                            title={
-                                <Translation
-                                    id="earn.claimReviewScreen.insufficientFeeBalance.title"
-                                    values={{ displaySymbol }}
-                                />
-                            }
-                            description={
-                                <Translation
-                                    id="earn.claimReviewScreen.insufficientFeeBalance.description"
-                                    values={{ amount: formattedAvailableBalance }}
-                                />
-                            }
-                        />
-                    )}
-                    {canClaimInstantly && !isInsufficientFeeBalance && (
+                    {canClaimInstantly && isFeeReady && (
                         <BannerInline
                             intent="brand"
                             title={

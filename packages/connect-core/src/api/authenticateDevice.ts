@@ -1,15 +1,7 @@
 import { UI_EVENTS } from '@trezor/connect-common';
 import type { PermissionRequest } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
-import {
-    AuthenticateDeviceParams,
-    deviceAuthenticityBlacklistConfig,
-    deviceAuthenticityConfig,
-    getRandomChallenge,
-    prepareDeviceAuthenticityData,
-    validateSerialNumbers,
-    verifyAuthenticityProof,
-} from '@trezor/device-authenticity';
+import { AuthenticateDeviceParams } from '@trezor/device-authenticity';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -149,6 +141,20 @@ export default class AuthenticateDevice extends AbstractMethod<
     }
 
     async run() {
+        /**
+         * Loaded on demand, before talking to the device:
+         * the verification code and its post-quantum crypto stay out of the initial bundle.
+         * A failed load rejects the call like any other error.
+         */
+        const {
+            deviceAuthenticityBlacklistConfig,
+            deviceAuthenticityConfig,
+            getRandomChallenge,
+            prepareDeviceAuthenticityData,
+            validateSerialNumbers,
+            verifyAuthenticityProof,
+        } = await import('@trezor/device-authenticity');
+
         const challenge = getRandomChallenge();
         const { unavailableCapabilities } = this.getDevice();
 

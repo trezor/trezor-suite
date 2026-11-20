@@ -19,7 +19,6 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { YieldClaimReviewContent } from '../../components/yield/YieldClaimReviewContent';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
 
@@ -85,9 +84,5 @@ export const YieldClaimReviewScreen = () => {
         return null;
     }
 
-    return (
-        <EarnDeviceConnectionGuard>
-            <YieldClaimReviewContent account={account} flowKey={account.key} preview={preview} />
-        </EarnDeviceConnectionGuard>
-    );
+    return <YieldClaimReviewContent account={account} flowKey={account.key} preview={preview} />;
 };

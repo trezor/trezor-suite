@@ -2,7 +2,21 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../earn-staking-api" },
         { "path": "../earn-staking-common" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" },
+        { "path": "../wallet-types" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/requirements" }
     ]
 }

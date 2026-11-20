@@ -1,6 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus, type DiscoveryTrigger } from '@suite-common/wallet-types';
 import { type Device, asDeviceUniquePath } from '@trezor/connect';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
@@ -11,9 +11,14 @@ type ForgetDisconnectedDevicesParams = {
     forceForget?: boolean;
 };
 
-const mockCancelDiscovery = jest.fn<void, [TrezorDevice]>();
+type StartDiscoveryParams = {
+    device: TrezorDevice;
+    trigger: DiscoveryTrigger;
+};
+
+const mockCancelDiscoveryForRestart = jest.fn<void, [TrezorDevice]>();
 const mockForgetDisconnectedDevices = jest.fn<void, [ForgetDisconnectedDevicesParams]>();
-const mockStartDiscovery = jest.fn<void, [{ device: TrezorDevice }]>();
+const mockStartDiscovery = jest.fn<void, [StartDiscoveryParams]>();
 
 jest.mock('./discoveryThunks', () => {
     const actualModule = jest.requireActual('./discoveryThunks');
@@ -21,12 +26,12 @@ jest.mock('./discoveryThunks', () => {
 
     return {
         ...actualModule,
-        cancelDiscoveryThunk: createThunk('@test/cancelDiscovery', (device: TrezorDevice) =>
-            mockCancelDiscovery(device),
+        cancelDiscoveryForRestartThunk: createThunk(
+            '@test/cancelDiscoveryForRestart',
+            (device: TrezorDevice) => mockCancelDiscoveryForRestart(device),
         ),
-        startDiscoveryThunk: createThunk(
-            '@test/startDiscovery',
-            (params: { device: TrezorDevice }) => mockStartDiscovery(params),
+        startDiscoveryThunk: createThunk('@test/startDiscovery', (params: StartDiscoveryParams) =>
+            mockStartDiscovery(params),
         ),
     };
 });
@@ -78,13 +83,13 @@ describe(ejectAllWalletsThunk.name, () => {
         const discoveryStatus = 'complete';
         await runThunk(createState(discoveryStatus));
 
-        expect(mockCancelDiscovery).not.toHaveBeenCalled();
+        expect(mockCancelDiscoveryForRestart).not.toHaveBeenCalled();
         expect(mockForgetDisconnectedDevices).toHaveBeenCalledWith({ device, forceForget: true });
-        expect(mockStartDiscovery).toHaveBeenCalledWith({ device });
+        expect(mockStartDiscovery).toHaveBeenCalledWith({ device, trigger: 'device-check' });
     });
 
     it('cancels a running discovery before forgetting all wallets, then starts discovery', async () => {
-        mockCancelDiscovery.mockImplementation(() => {
+        mockCancelDiscoveryForRestart.mockImplementation(() => {
             expect(mockForgetDisconnectedDevices).not.toHaveBeenCalled();
         });
         mockForgetDisconnectedDevices.mockImplementation(() => {
@@ -94,8 +99,8 @@ describe(ejectAllWalletsThunk.name, () => {
         const discoveryStatus = 'progress';
         await runThunk(createState(discoveryStatus));
 
-        expect(mockCancelDiscovery).toHaveBeenCalledWith(device);
+        expect(mockCancelDiscoveryForRestart).toHaveBeenCalledWith(device);
         expect(mockForgetDisconnectedDevices).toHaveBeenCalledWith({ device, forceForget: true });
-        expect(mockStartDiscovery).toHaveBeenCalledWith({ device });
+        expect(mockStartDiscovery).toHaveBeenCalledWith({ device, trigger: 'device-check' });
     });
 });

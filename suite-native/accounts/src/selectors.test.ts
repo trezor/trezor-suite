@@ -1,15 +1,33 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { stakingAmountSchema } from '@suite-common/earn-staking-common';
+import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { type TokenInfoBranded, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
+import { fiatRatesInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
+import { mockStakeRootState } from '@suite-common/wallet-core/mocks';
 import {
     type Account,
-    type TokenInfoBranded,
+    type CurrentRate,
+    type Timestamp,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import {
+    mockAccountKey,
+    mockAccountToken,
+    mockEthereumStakingAccount,
+    mockWalletAccount,
+} from '@suite-common/wallet-types/mocks';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import {
+    type NativeAccountsRootState,
     getAccountListSections,
+    selectAccountCryptoBalanceWithStaking,
+    selectAccountFiatBalance,
+    selectAccountListSectionsWithZeroBalanceGroup,
+    selectAccountVisibleTokensCount,
     selectFreshAccountAddress,
     selectHasDeviceAnyFailedAccountForNetworkSymbol,
     selectIsAccountDiscoveryFailed,
@@ -20,13 +38,6 @@ const supportedNetworks = mockGetSupportedNetworks();
 
 const btcSymbol = asNetworkSymbol('btc');
 const solSymbol = asNetworkSymbol('sol');
-
-let mockStakingBalance = '0';
-
-jest.mock('@suite-common/wallet-utils', () => ({
-    ...jest.requireActual('@suite-common/wallet-utils'),
-    getAccountTotalStakingBalance: (_: Account) => mockStakingBalance,
-}));
 
 describe('isFilterValueMatchingAccountLabelOrNetworkName', () => {
     const account = {
@@ -284,15 +295,25 @@ describe('getAccountListSections', () => {
         networkType: 'ethereum',
     } as any as Account;
 
-    const mockTokenDefinitions = ['0x1', '0x2', '0x3'];
+    const mockTokenDefinitions = {
+        data: ['0x1', '0x2', '0x3'],
+        hide: [],
+        show: [],
+        error: false,
+        isLoading: false,
+    };
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should include only tokens with positive balance', () => {
-        mockStakingBalance = '0';
+    const idleStaking = { isStakingActive: false, stakingCryptoBalance: '0' };
 
-        const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
+    it('should include only tokens with positive balance', () => {
+        const sections = getAccountListSections({
+            account: mockAccount,
+            tokenDefinitions: mockTokenDefinitions,
+            ...idleStaking,
+        });
 
         // Should have account section and two token sections (for Token1 and Token3)
         expect(sections).toHaveLength(3);
@@ -311,7 +332,11 @@ describe('getAccountListSections', () => {
             tokens: [],
         };
 
-        const sections = getAccountListSections(accountWithoutTokens, mockTokenDefinitions);
+        const sections = getAccountListSections({
+            account: accountWithoutTokens,
+            tokenDefinitions: mockTokenDefinitions,
+            ...idleStaking,
+        });
 
         // Should only have account section
         expect(sections).toHaveLength(1);
@@ -319,8 +344,6 @@ describe('getAccountListSections', () => {
     });
 
     it('should handle account with only zero balance tokens', () => {
-        mockStakingBalance = '0';
-
         const accountWithZeroBalanceTokens: Account = {
             ...mockAccount,
             tokens: [
@@ -341,24 +364,159 @@ describe('getAccountListSections', () => {
             ] as TokenInfoBranded[],
         };
 
-        const sections = getAccountListSections(accountWithZeroBalanceTokens, mockTokenDefinitions);
+        const sections = getAccountListSections({
+            account: accountWithZeroBalanceTokens,
+            tokenDefinitions: mockTokenDefinitions,
+            ...idleStaking,
+        });
 
         // Should only have account section
         expect(sections).toHaveLength(1);
         expect(sections[0]?.type).toBe('account');
     });
 
-    it('should handle account with staking balance', () => {
-        mockStakingBalance = '100';
-
-        const sections = getAccountListSections(mockAccount, mockTokenDefinitions);
+    it('should handle an account with active staking', () => {
+        const sections = getAccountListSections({
+            account: mockAccount,
+            tokenDefinitions: mockTokenDefinitions,
+            isStakingActive: true,
+            stakingCryptoBalance: '100',
+        });
 
         // Should have account section, staking section, and two token sections
         expect(sections).toHaveLength(4);
         expect(sections[0]?.type).toBe('account');
-        expect(sections[1]?.type).toBe('staking');
+        expect(sections[1]).toMatchObject({ type: 'staking', stakingCryptoBalance: '100' });
         expect(sections[2]?.type).toBe('token');
         expect(sections[3]?.type).toBe('token');
+    });
+});
+
+describe('selectAccountListSectionsWithZeroBalanceGroup', () => {
+    const stakingAccount = mockEthereumStakingAccount('active');
+    const idleAccount = mockEthereumStakingAccount('none');
+    const createState = (): NativeAccountsRootState => {
+        const state = mockStakeRootState({ accounts: [stakingAccount, idleAccount] });
+
+        return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+                fiat: fiatRatesInitialState,
+            },
+            earn: {
+                staking: mockStakingState({
+                    positions: {
+                        [stakingAccount.key]: [
+                            mockStakingPosition({
+                                balances: {
+                                    staked: stakingAmountSchema.parse('2050000000000000000'),
+                                    pending: stakingAmountSchema.parse('0'),
+                                    unstaking: stakingAmountSchema.parse('0'),
+                                    withdrawable: stakingAmountSchema.parse('0'),
+                                    rewards: stakingAmountSchema.parse('0'),
+                                },
+                                unlocks: [],
+                            }),
+                        ],
+                    },
+                }),
+            },
+            suiteSyncData: { wallets: {} },
+            tokenDefinitions: {},
+        };
+    };
+
+    it('adds a staking section with the position amount of an active account', () => {
+        const sections = selectAccountListSectionsWithZeroBalanceGroup(
+            createState(),
+            stakingAccount.key,
+        );
+
+        expect(sections.map(section => section.type)).toEqual(['account', 'staking']);
+        expect(sections[1]).toMatchObject({ type: 'staking', stakingCryptoBalance: '2.05' });
+    });
+
+    it('lists only the account section without a position', () => {
+        const sections = selectAccountListSectionsWithZeroBalanceGroup(
+            createState(),
+            idleAccount.key,
+        );
+
+        expect(sections.map(section => section.type)).toEqual(['account']);
+    });
+
+    it('keeps the sections reference while the state is unchanged', () => {
+        const state = createState();
+
+        expect(selectAccountListSectionsWithZeroBalanceGroup(state, stakingAccount.key)).toBe(
+            selectAccountListSectionsWithZeroBalanceGroup(state, stakingAccount.key),
+        );
+    });
+});
+
+describe('selectAccountCryptoBalanceWithStaking', () => {
+    const stakingAccount = mockEthereumStakingAccount('active');
+    // The 1.2 XRP reserve sits in the formatted balance and outside the available one.
+    const rippleAccount = mockWalletAccount({
+        symbol: asNetworkSymbol('xrp'),
+        balance: '3110000',
+        availableBalance: '1910000',
+        formattedBalance: '3.11',
+    });
+    const createState = (): NativeAccountsRootState => {
+        const state = mockStakeRootState({ accounts: [stakingAccount, rippleAccount] });
+
+        return {
+            ...state,
+            wallet: {
+                ...state.wallet,
+                settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+                fiat: fiatRatesInitialState,
+            },
+            earn: {
+                staking: mockStakingState({
+                    positions: {
+                        [stakingAccount.key]: [
+                            mockStakingPosition({
+                                balances: {
+                                    staked: stakingAmountSchema.parse('2050000000000000000'),
+                                    pending: stakingAmountSchema.parse('0'),
+                                    unstaking: stakingAmountSchema.parse('0'),
+                                    withdrawable: stakingAmountSchema.parse('0'),
+                                    rewards: stakingAmountSchema.parse('0'),
+                                },
+                                unlocks: [],
+                            }),
+                        ],
+                    },
+                }),
+            },
+            suiteSyncData: { wallets: {} },
+            tokenDefinitions: {},
+        };
+    };
+
+    it('adds the amount outside the balance to the formatted balance', () => {
+        expect(selectAccountCryptoBalanceWithStaking(createState(), stakingAccount.key)).toBe(
+            '3.55',
+        );
+    });
+
+    it('keeps the reserve of a Ripple account without a position', () => {
+        expect(selectAccountCryptoBalanceWithStaking(createState(), rippleAccount.key)).toBe(
+            '3.11',
+        );
+    });
+
+    it('is zero without the account', () => {
+        const missingAccount = mockWalletAccount({
+            symbol: btcSymbol,
+            descriptor: asAccountDescriptor('missing'),
+        });
+
+        expect(selectAccountCryptoBalanceWithStaking(createState(), missingAccount.key)).toBe('0');
     });
 });
 
@@ -438,5 +596,283 @@ describe('selectIsAccountDiscoveryFailed', () => {
                 ),
             ).toBe(false);
         });
+    });
+});
+
+describe.each(['xlm', 'txlm'])('activated Stellar tokens on %s', networkSymbol => {
+    const symbol = asNetworkSymbol(networkSymbol);
+    const visibleToken = mockAccountToken({
+        contract: 'USDC-GIssuer',
+        standard: 'STELLAR-CLASSIC',
+        balance: '5',
+    });
+    const hiddenToken = { ...visibleToken, contract: 'HIDDEN-GIssuer', balance: '900' };
+    const zeroBalanceToken = { ...visibleToken, contract: 'ZERO-GIssuer', balance: '0' };
+    const account = mockWalletAccount({
+        symbol,
+        balance: '100000000',
+        formattedBalance: '10',
+        tokens: [visibleToken, hiddenToken, zeroBalanceToken],
+    });
+    const createRate = (rate: number): CurrentRate => ({
+        ticker: { symbol },
+        rate,
+        usdRate: rate,
+        lastTickerTimestamp: 1700000000000 as Timestamp,
+        lastSuccessfulFetchTimestamp: 1700000000000 as Timestamp,
+        isLoading: false,
+        error: null,
+    });
+    const createState = (hide = [hiddenToken.contract]): NativeAccountsRootState => {
+        const state = mockStakeRootState({ accounts: [account] });
+
+        return {
+            ...state,
+            earn: { staking: mockStakingState() },
+            wallet: {
+                ...state.wallet,
+                settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+                fiat: {
+                    ...fiatRatesInitialState,
+                    current: {
+                        [getFiatRateKey(symbol, 'usd')]: createRate(2),
+                        [getFiatRateKey(symbol, 'usd', toTokenAddress(visibleToken.contract))]:
+                            createRate(3),
+                        [getFiatRateKey(symbol, 'usd', toTokenAddress(hiddenToken.contract))]:
+                            createRate(1),
+                    },
+                },
+            },
+            suiteSyncData: { wallets: {} },
+            tokenDefinitions: {
+                [symbol]: {
+                    coin: { data: [], hide, show: [], error: false, isLoading: false },
+                },
+            },
+        };
+    };
+
+    it('keeps trustlines outside token definitions in the active list, count and total', () => {
+        const state = createState();
+        const sections = selectAccountListSectionsWithZeroBalanceGroup(state, account.key);
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(1);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('35');
+        expect(
+            sections.filter(section => section.type === 'token').map(section => section.token),
+        ).toEqual([visibleToken]);
+        expect(sections.find(section => section.type === 'zeroBalance')?.tokens).toEqual([
+            zeroBalanceToken,
+        ]);
+    });
+
+    it('excludes a manually hidden trustline from the active list, count and total', () => {
+        const state = createState([visibleToken.contract, hiddenToken.contract]);
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(0);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('20');
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key).filter(
+                section => section.type === 'token',
+            ),
+        ).toHaveLength(0);
+    });
+});
+
+describe('selectAccountFiatBalance', () => {
+    const symbol = asNetworkSymbol('eth');
+    const visibleContract = toTokenAddress('0x' + 'a'.repeat(40));
+    const hiddenContract = toTokenAddress('0x' + 'b'.repeat(40));
+    const unverifiedContract = toTokenAddress('0x' + 'c'.repeat(40));
+    const nftContract = toTokenAddress('0x' + 'd'.repeat(40));
+    const zeroBalanceContract = toTokenAddress('0x' + 'e'.repeat(40));
+    const account = mockEthereumStakingAccount('active', {
+        tokens: [
+            mockAccountToken({ contract: visibleContract, balance: '250' }),
+            mockAccountToken({ contract: hiddenContract, balance: '900' }),
+            mockAccountToken({ contract: unverifiedContract, balance: '100' }),
+            mockAccountToken({ contract: nftContract, standard: 'ERC721', balance: '1' }),
+            mockAccountToken({ contract: zeroBalanceContract, balance: '0' }),
+        ],
+    });
+    const createRate = (rate: number): CurrentRate => ({
+        ticker: { symbol },
+        rate,
+        usdRate: rate,
+        lastTickerTimestamp: 1700000000000 as Timestamp,
+        lastSuccessfulFetchTimestamp: 1700000000000 as Timestamp,
+        isLoading: false,
+        error: null,
+    });
+    const createState = (hide = [hiddenContract], show: string[] = []): NativeAccountsRootState => {
+        const state = mockStakeRootState({ accounts: [account] });
+
+        return {
+            ...state,
+            earn: {
+                staking: mockStakingState({
+                    positions: {
+                        [account.key]: [
+                            mockStakingPosition({
+                                balances: {
+                                    staked: stakingAmountSchema.parse('2050000000000000000'),
+                                    pending: stakingAmountSchema.parse('0'),
+                                    unstaking: stakingAmountSchema.parse('0'),
+                                    withdrawable: stakingAmountSchema.parse('0'),
+                                    rewards: stakingAmountSchema.parse('0'),
+                                },
+                                unlocks: [],
+                            }),
+                        ],
+                    },
+                }),
+            },
+            wallet: {
+                ...state.wallet,
+                settings: { ...initialWalletSettingsState, localCurrency: 'usd' },
+                fiat: {
+                    ...fiatRatesInitialState,
+                    current: {
+                        [getFiatRateKey(symbol, 'usd')]: createRate(2000),
+                        ...Object.fromEntries(
+                            [visibleContract, hiddenContract, unverifiedContract].map(contract => [
+                                getFiatRateKey(symbol, 'usd', contract),
+                                createRate(1),
+                            ]),
+                        ),
+                    },
+                },
+            },
+            suiteSyncData: { wallets: {} },
+            tokenDefinitions: {
+                [symbol]: {
+                    coin: {
+                        data: [visibleContract, hiddenContract, nftContract, zeroBalanceContract],
+                        hide,
+                        show,
+                        error: false,
+                        isLoading: false,
+                    },
+                },
+            },
+        };
+    };
+
+    it('includes staking and visible tokens, excluding hidden and unverified tokens', () => {
+        expect(selectAccountFiatBalance(createState(), account.key).toString()).toBe('7350');
+    });
+
+    it('uses the same visible fungible tokens for the total, token count and list', () => {
+        const state = createState();
+        const sections = selectAccountListSectionsWithZeroBalanceGroup(state, account.key);
+
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('7350');
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(1);
+        expect(
+            sections
+                .filter(section => section.type === 'token')
+                .map(section => section.token.contract),
+        ).toEqual([visibleContract]);
+        expect(
+            sections
+                .find(section => section.type === 'zeroBalance')
+                ?.tokens.map(token => token.contract),
+        ).toEqual([zeroBalanceContract]);
+    });
+
+    it('gives a manually shown token the same priority as desktop over the hidden list', () => {
+        const state = createState([visibleContract, hiddenContract], [visibleContract]);
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(1);
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key)
+                .filter(section => section.type === 'token')
+                .map(section => section.token.contract),
+        ).toEqual([visibleContract]);
+    });
+
+    it('keeps a checksummed hidden token out of the count, list and total', () => {
+        const state = createState();
+        state.wallet.accounts = [
+            {
+                ...account,
+                tokens: account.tokens?.map(token =>
+                    token.contract === hiddenContract
+                        ? { ...token, contract: toTokenAddress('0x' + 'B'.repeat(40)) }
+                        : token,
+                ),
+            },
+        ];
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(1);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('7350');
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key)
+                .filter(section => section.type === 'token')
+                .map(section => section.token.contract),
+        ).toEqual([visibleContract]);
+    });
+
+    it('includes a manually shown token regardless of EVM contract casing', () => {
+        const state = createState([hiddenContract], ['0x' + 'C'.repeat(40)]);
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(2);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('7450');
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key)
+                .filter(section => section.type === 'token')
+                .map(section => section.token.contract),
+        ).toEqual([visibleContract, unverifiedContract]);
+    });
+
+    it('counts a visible DeFi token once without duplicating it in the regular token list', () => {
+        const state = createState();
+        state.wallet.accounts = [
+            {
+                ...account,
+                tokens: account.tokens?.map(token =>
+                    token.contract === visibleContract
+                        ? { ...token, protocols: ['erc4626'] }
+                        : token,
+                ),
+            },
+        ];
+
+        expect(selectAccountVisibleTokensCount(state, account.key)).toBe(1);
+        expect(selectAccountFiatBalance(state, account.key).toString()).toBe('7350');
+        expect(
+            selectAccountListSectionsWithZeroBalanceGroup(state, account.key).filter(
+                section => section.type === 'token',
+            ),
+        ).toHaveLength(0);
+    });
+
+    it('updates the total when a token is hidden or shown', () => {
+        const shown = selectAccountFiatBalance(createState([]), account.key);
+        const hidden = selectAccountFiatBalance(
+            createState([visibleContract, hiddenContract]),
+            account.key,
+        );
+
+        expect(shown.toString()).toBe('8250');
+        expect(hidden.toString()).toBe('7100');
+    });
+
+    it('includes an unverified token after it is manually shown', () => {
+        expect(
+            selectAccountFiatBalance(
+                createState([hiddenContract], [unverifiedContract]),
+                account.key,
+            ).toString(),
+        ).toBe('7450');
+    });
+
+    it('preserves the option to exclude tokens', () => {
+        expect(selectAccountFiatBalance(createState(), account.key, false).toString()).toBe('7100');
+    });
+
+    it('returns zero for an unknown account', () => {
+        expect(selectAccountFiatBalance(createState(), mockAccountKey()).toString()).toBe('0');
+        expect(selectAccountVisibleTokensCount(createState(), mockAccountKey())).toBe(0);
     });
 });

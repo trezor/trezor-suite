@@ -1,5 +1,5 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
@@ -20,6 +20,11 @@ export const selectNetworkTokenDefinitions = (
 
 export const selectCoinDefinitions = (state: TokenDefinitionsRootState, symbol: NetworkSymbol) =>
     state.tokenDefinitions?.[symbol]?.coin;
+
+export const selectAreCoinDefinitionsLoaded = (
+    state: TokenDefinitionsRootState,
+    symbol: NetworkSymbol,
+) => selectCoinDefinitions(state, symbol)?.data !== undefined;
 
 export const selectNftDefinitions = (state: TokenDefinitionsRootState, symbol: NetworkSymbol) =>
     state.tokenDefinitions?.[symbol]?.nft;

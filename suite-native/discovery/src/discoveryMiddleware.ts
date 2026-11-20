@@ -1,33 +1,33 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { selectIsAnyDeviceCheckRequired } from '@suite-common/device-authenticity';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type WalletCoreCompoundRootState,
-    accountsActions,
     changeCoinVisibilityThunk,
     changeNetworks,
-    discoveryActions,
+    deleteDiscoveryThunk,
     selectDiscoveryForSelectedDevice,
     selectIsAnyNetworkEnabled,
     selectIsBitcoinEnabled,
     selectShouldRediscover,
     startOrRestartDiscoveryThunk,
+    updateDiscoveryMatcher,
 } from '@suite-common/wallet-core';
 import {
     type NativeDeviceRootState,
-    createAndBackupWalletThunk,
-    recoverWalletThunk,
     selectCompromisedDeviceFailedCheck,
-    selectIsDeviceFirmwareSupported,
+    selectIsFirmwareUpdateRequiredInApp,
 } from '@suite-native/device';
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
-import { DEVICE } from '@trezor/connect';
+import { selectDeviceAuthenticityCheckSettings } from '@suite-native/settings';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
+import { getDiscoveryTrigger } from './getDiscoveryTrigger';
 import {
     type PendingCoinVisibilityRootState,
     addPendingCoinVisibility,
@@ -45,7 +45,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     DiscoveryMiddlewareState
 >((action, { dispatch, next, getState }) => {
     if (deviceActions.forgetDevice.match(action) && action.payload.device.state?.staticSessionId) {
-        dispatch(discoveryActions.deleteDiscovery(action.payload.device.path));
+        dispatch(deleteDiscoveryThunk(action.payload.device.path));
     }
 
     // We need to wait until `authorizeDeviceThunk` action is fulfilled, because we need
@@ -54,7 +54,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     const device = selectSelectedDevice(getState());
     if (!device) return action;
 
-    const isDeviceFirmwareVersionSupported = selectIsDeviceFirmwareSupported(getState());
+    const isFirmwareUpdateRequired = selectIsFirmwareUpdateRequiredInApp(getState());
     const isAnyNetworkEnabled = selectIsAnyNetworkEnabled(getState());
     const isBitcoinEnabled = selectIsBitcoinEnabled(getState());
 
@@ -64,7 +64,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     if (failedCheck !== null) return action;
 
     // Clear pending coins on discovery success, revert on passphrase failure
-    if (discoveryActions.updateDiscovery.match(action)) {
+    if (updateDiscoveryMatcher.match(action)) {
         const discoveryStatus = action.payload?.status;
 
         if (discoveryStatus?.status === 'complete') {
@@ -90,6 +90,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
                     changeCoinVisibilityThunk({
                         symbol: asNetworkSymbol('btc'),
                         shouldBeVisible: true,
+                        discoveryTrigger: 'device-connect',
                     }),
                 );
             }
@@ -101,22 +102,22 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
         dispatch(periodicCheckTokenDefinitionsThunk());
     }
 
-    if (
-        action.type === DEVICE.CONNECT ||
-        deviceActions.selectDevice.match(action) ||
-        changeCoinVisibilityThunk.fulfilled.match(action) ||
-        deviceActions.dismissFirmwareAuthenticityCheck.match(action) || // may no longer be device compromised
-        // dismissDiscoveryEntropyCheck is intentionally not a trigger, the dismissing component ejects all wallets
-        accountsActions.updateAccount.match(action) || // empty account can become nonempty
-        accountsActions.changeAccountVisibility.match(action) ||
-        createAndBackupWalletThunk.fulfilled.match(action) ||
-        recoverWalletThunk.fulfilled.match(action)
-    ) {
+    const trigger = getDiscoveryTrigger(action);
+
+    if (trigger !== undefined) {
+        // Discovery is delayed while interactive device checks are pending (device onboarding flow is displayed).
+        const isAnyDeviceCheckRequired = selectIsAnyDeviceCheckRequired(
+            getState(),
+            device,
+            selectDeviceAuthenticityCheckSettings(getState()),
+        );
+
         if (
             isAnyNetworkEnabled &&
-            isDeviceFirmwareVersionSupported &&
+            !isFirmwareUpdateRequired &&
             device.connected &&
-            isDeviceAcquired(device)
+            isDeviceAcquired(device) &&
+            !isAnyDeviceCheckRequired
         ) {
             // Track every enabled coin for revert on passphrase failure
             if (
@@ -135,7 +136,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
 
             const shouldRediscover = selectShouldRediscover(getState(), device);
             if (shouldRediscover && !isRevertingAfterPassphraseFailure) {
-                dispatch(startOrRestartDiscoveryThunk());
+                dispatch(startOrRestartDiscoveryThunk({ trigger }));
             }
         }
     }

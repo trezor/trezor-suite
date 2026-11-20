@@ -1,0 +1,58 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/connect-popup"
+        },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/wallet-constants"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/walletconnect"
+        },
+        { "path": "../../suite-native/accounts" },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/config" },
+        {
+            "path": "../../suite-native/confirm-on-trezor"
+        },
+        {
+            "path": "../../suite-native/device-manager"
+        },
+        {
+            "path": "../../suite-native/formatters"
+        },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/qr-code" },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../suite-native/tx-simulation"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/requirements" }
+    ]
+}

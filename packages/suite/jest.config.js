@@ -1,10 +1,9 @@
-const version = require('./package.json').suiteVersion;
+const suiteSourceConfig = require('./jest.sourceConfig');
 const baseConfig = require('../../jest.config.base.swc');
 
 // all tests have same UTC timezone
 process.env.TZ = 'UTC';
 process.env.LANG = 'en-US';
-process.env.VERSION = version;
 
 const swcConfig = {
     jsc: {
@@ -32,20 +31,15 @@ const swcConfig = {
 module.exports = {
     roots: [
         '<rootDir>/src',
-        '<rootDir>/webpack',
         '<rootDir>/__mocks__',
         '<rootDir>/../../suite-common/test-utils/__mocks__',
     ],
-    setupFiles: [
-        'jest-canvas-mock', // for lottie-react
-    ],
-    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+    setupFiles: suiteSourceConfig.setupFiles,
+    setupFilesAfterEnv: suiteSourceConfig.setupFilesAfterEnv,
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
         '^@trezor/(?!network-)(.+)': '<rootDir>/../$1',
-        '^src/(.+)': '<rootDir>/src/$1',
-        '\\.(mp4)$': '<rootDir>/__mocks__/import-mp4.js',
-        '\\.(svg|webp)$': '<rootDir>/__mocks__/import-svg.js',
+        ...suiteSourceConfig.moduleNameMapper,
         ...baseConfig.moduleNameMapper,
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
@@ -85,7 +79,7 @@ module.exports = {
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
-    testEnvironment: 'jsdom',
+    testEnvironment: suiteSourceConfig.testEnvironment,
     fakeTimers: {
         enableGlobally: false,
         // https://jestjs.io/docs/28.x/upgrading-to-jest28#faketimers

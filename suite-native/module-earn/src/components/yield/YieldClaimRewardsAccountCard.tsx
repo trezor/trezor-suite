@@ -3,9 +3,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
+import { useFormatters } from '@suite-common/formatters';
+import { toTokenAddress } from '@suite-common/tokens';
+import {
+    type AccountsRootState,
+    type YieldClaimAccountItem,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { AccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
@@ -14,17 +18,16 @@ import {
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon, TokenIcon } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import {
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { type YieldClaimAccountItem } from '../../types';
 
 const rowStyle = prepareNativeStyle(utils => ({
     minHeight: 80,
@@ -61,6 +64,7 @@ export const YieldClaimRewardsAccountCard = ({
     onClose,
 }: YieldClaimRewardsAccountCardProps) => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const { NetworkNameFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
 
@@ -75,7 +79,7 @@ export const YieldClaimRewardsAccountCard = ({
             type: events.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
-                from: 'earn-dashboard',
+                from: 'claim-select-account-modal',
                 to: 'claim-form',
                 networkSymbol: item.summary.networkSymbol,
             },
@@ -93,11 +97,7 @@ export const YieldClaimRewardsAccountCard = ({
     return (
         <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
             <Box marginRight="sp12">
-                <TokenIcon
-                    tokenSymbol={item.summary.networkSymbol}
-                    networkSymbol={item.summary.networkSymbol}
-                    size="small"
-                />
+                <TokenIcon networkSymbol={item.summary.networkSymbol} size="small" />
             </Box>
 
             <VStack spacing="sp4" style={applyStyle(contentStyle)}>
@@ -110,24 +110,22 @@ export const YieldClaimRewardsAccountCard = ({
                     />
                 ) : (
                     <Text variant="body-md-strong" numberOfLines={1}>
-                        {getNetworkDisplaySymbolName(item.summary.networkSymbol)}
+                        <NetworkNameFormatter value={item.summary.networkSymbol} />
                     </Text>
                 )}
 
                 <VStack spacing="sp1">
                     {item.summary.tokens.map(token => (
-                        <Text
+                        <CompactTokenAmountFormatter
+                            networkSymbol={item.summary.networkSymbol}
+                            contractAddress={toTokenAddress(token.contractAddress)}
                             key={`${token.symbol}:${token.contractAddress}`}
+                            value={asDecimalTokenAmount(token.claimableAmount)}
+                            numberOfLines={2}
                             variant="body-xs"
                             color="contentSecondary"
                             style={applyStyle(tokenAmountsStyle)}
-                        >
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(token.claimableAmount)}
-                                tokenSymbol={toTokenSymbol(token.symbol)}
-                                numberOfLines={2}
-                            />
-                        </Text>
+                        />
                     ))}
                 </VStack>
             </VStack>

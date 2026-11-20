@@ -7,6 +7,10 @@ permissions:
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 env:
   CONNECT_CLOUDFRONT_DISTRIBUTION_ID: E3LVNAOGT94E37
 

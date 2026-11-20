@@ -1,6 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
+import { getStellarTokenMetadata } from '@trezor/network-stellar/constants';
 
 import {
     getStellarInactiveTokens,
@@ -10,12 +10,12 @@ import {
 
 const xlmSymbol = asNetworkSymbol('xlm');
 
-jest.mock('@trezor/blockchain-link-utils/src/stellar', () => ({
-    STELLAR_DECIMALS: 7,
-    getTokenMetadata: jest.fn(),
+jest.mock('@trezor/network-stellar/constants', () => ({
+    ...jest.requireActual('@trezor/network-stellar/constants'),
+    getStellarTokenMetadata: jest.fn(),
 }));
 
-const mockedGetTokenMetadata = jest.mocked(getTokenMetadata);
+const mockedGetTokenMetadata = jest.mocked(getStellarTokenMetadata);
 
 describe(getStellarInactiveTokens.name, () => {
     beforeEach(() => {

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type Coins, type CryptoId, type Platforms } from 'invity-api';
 
 import { selectNetworkConfigs, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { toTokenAddress } from '@suite-common/tokens';
 import {
     type Network,
     type NetworkConfigWithoutTestnets,
@@ -152,7 +153,7 @@ export function createAssetTokenOption<
 
         isNativeToken: false,
 
-        contractAddress: token.contract,
+        contractAddress: toTokenAddress(token.contract),
         symbol: token.symbol!,
         name: token.name!,
         displaySymbol: getDisplaySymbol(token.symbol!, token.contract),

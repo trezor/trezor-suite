@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
     connectPopupVerifyAddressThunk,
+    getCallSourceName,
     getPermissionDeferred,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
@@ -17,10 +18,10 @@ import { CheckCircleIcon, CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
-import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
-import { useSelector } from 'src/hooks/suite';
+import { ConnectCallSource } from '#src/components/suite/ConnectCallSource';
+import { ConnectModalBackdrop } from '#src/components/suite/ConnectModalBackdrop';
+import { WalletLabeling } from '#src/components/suite/labeling/WalletLabeling';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();
@@ -123,12 +124,7 @@ export const ConnectAddressConfirmation = () => {
                                     : 'TR_CONNECT_EXPORT_ACCOUNTS_DESCRIPTION'
                             }
                             values={{
-                                thirdParty: (
-                                    <b>
-                                        {popupCall.source.manifest?.appName ??
-                                            popupCall.source.origin}
-                                    </b>
-                                ),
+                                thirdParty: <b>{getCallSourceName(popupCall.source)}</b>,
                                 passphraseWalletLabel: device && (
                                     <b>
                                         <WalletLabeling device={device} />
@@ -158,7 +154,10 @@ export const ConnectAddressConfirmation = () => {
                                     gap={12}
                                 >
                                     <Row gap={12} alignItems="center" flex="1" minWidth={0}>
-                                        <Paragraph overflowWrap="anywhere">
+                                        <Paragraph
+                                            overflowWrap="anywhere"
+                                            data-testid={`@connect-address-confirmation/address/${index}`}
+                                        >
                                             {address.address}
                                         </Paragraph>
                                         {address.validated === 'valid' && (

@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Column, Row, Text } from '@trezor/components';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationSection } from './TronVoteAllocationSection';
 import { TronVoteRemainingVotes } from './TronVoteRemainingVotes';
@@ -26,7 +26,7 @@ export const TronVoteForm = () => {
         <Form form={form.methods} formState={formState}>
             <Column gap={16}>
                 <Row gap={8} width="100%" justifyContent="space-between" alignItems="flex-end">
-                    <Text typographyStyle="headline-md">
+                    <Text typographyStyle="headline-md" data-testid="@staking/tron-vote/title">
                         <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVE" />
                     </Text>
 

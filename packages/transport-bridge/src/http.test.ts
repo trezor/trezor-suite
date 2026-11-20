@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import http from 'http';
 
 import { getFreePort } from '@trezor/node-utils';
 import { UdpApi } from '@trezor/transport/src/api/udp';
@@ -381,6 +382,116 @@ describe('http', () => {
 
             await trezordNode.stop();
         });
+
+        it('protocol bridge responses carry the deprecation headers', async () => {
+            const { trezordNode, url } = await setupTrezordNode();
+
+            // bridgeApiCall discards response headers, so talk to the server directly.
+            // http.request rather than fetch: fetch's connection pool keeps jest from exiting.
+            const post = (
+                endpoint: string,
+                body: Record<string, unknown>,
+                headers: Record<string, string> = {},
+            ) =>
+                new Promise<{
+                    status?: number;
+                    headers: http.IncomingHttpHeaders;
+                    body: string;
+                }>((resolve, reject) => {
+                    const req = http.request(
+                        `${url}${endpoint}/1`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Connection: 'close',
+                                ...headers,
+                            },
+                        },
+                        res => {
+                            let responseBody = '';
+                            res.setEncoding('utf-8');
+                            res.on('data', chunk => (responseBody += chunk));
+                            res.on('end', () =>
+                                resolve({
+                                    status: res.statusCode,
+                                    headers: res.headers,
+                                    body: responseBody,
+                                }),
+                            );
+                        },
+                    );
+                    req.on('error', reject);
+                    req.end(JSON.stringify(body));
+                });
+
+            const DEPRECATION = '@1793491200';
+            const LINK =
+                '<https://github.com/trezor/trezor-suite/issues/23794>; rel="deprecation"; type="text/html"';
+
+            const deprecated = [
+                await post('call', { protocol: 'bridge', data: GET_FEATURES }),
+                await post('post', { protocol: 'bridge', data: GET_FEATURES }),
+                await post('read', { protocol: 'bridge' }),
+            ];
+            deprecated.forEach(res => {
+                // behaviour is unchanged, the request still succeeds
+                expect(res.status).toBe(200);
+                expect(res.headers.deprecation).toBe(DEPRECATION);
+                expect(res.headers.link).toBe(LINK);
+            });
+
+            // the requests above carry no Origin, a browser-origin client additionally needs
+            // both header names in Access-Control-Expose-Headers to be able to read them
+            const fromBrowserOrigin = await post(
+                'call',
+                { protocol: 'bridge', data: GET_FEATURES },
+                { Origin: 'https://trezor.io' },
+            );
+            expect(fromBrowserOrigin.headers.deprecation).toBe(DEPRECATION);
+            expect(fromBrowserOrigin.headers.link).toBe(LINK);
+            expect(fromBrowserOrigin.headers['access-control-expose-headers']).toBe(
+                'Deprecation, Link',
+            );
+
+            const supportedV1 = [
+                await post('call', { protocol: 'v1', data: '3f2323' + GET_FEATURES }),
+                await post('post', { protocol: 'v1', data: '3f2323' + GET_FEATURES }),
+                await post('read', { protocol: 'v1' }),
+            ];
+            expect(supportedV1.map(res => res.status)).toEqual([200, 200, 200]);
+
+            // the exposure is scoped to the deprecated path too, a supported protocol gets
+            // the same response it got before the deprecation
+            const supportedFromBrowserOrigin = await post(
+                'call',
+                { protocol: 'v1', data: '3f2323' + GET_FEATURES },
+                { Origin: 'https://trezor.io' },
+            );
+            expect(supportedFromBrowserOrigin.headers['access-control-expose-headers']).toBe(
+                undefined,
+            );
+
+            // `0412380000` is the v2 header fixture from protocol-v2.test.ts. Core rejects it for
+            // the missing `thpState` this test does not set up, so v2 passed validation and
+            // reached the deprecation check: the no-header assertions below are not vacuous
+            const supportedV2 = await post('post', { protocol: 'v2', data: '0412380000' });
+            expect(supportedV2.status).toBe(400);
+            expect(supportedV2.body).toContain('ThpStateMissing');
+
+            const supported = [...supportedV1, supportedFromBrowserOrigin, supportedV2];
+            supported.forEach(res => {
+                expect(res.headers.deprecation).toBe(undefined);
+                expect(res.headers.link).toBe(undefined);
+            });
+
+            // RFC 8594 would require a removal date; none is being committed to
+            [...deprecated, ...supported].forEach(res => {
+                expect(res.headers.sunset).toBe(undefined);
+            });
+
+            await trezordNode.stop();
+        });
     });
 
     describe('endpoints', () => {
@@ -469,6 +580,33 @@ describe('http', () => {
                 // legacy field used by released Suite clients to choose wire format; see http.ts
                 protocolMessages: true,
             });
+            await trezordNode.stop();
+        });
+
+        it('admits only pages on allowedOrigins, not even a request without an Origin header', async () => {
+            const enumerate = jest.fn(() => Promise.resolve({ success: true, payload: [] }));
+            const trezordNode = new TrezordNode({
+                port: (await getFreePort())[0],
+                api: createTransportApi({ enumerate }),
+                // @ts-expect-error
+                logger: muteLogger,
+                allowedOrigins: ['trezor.io'],
+            });
+            await trezordNode.start();
+            const url = trezordNode.server[0]!.getRouteAddress('/')!;
+            const getEnumerateStatus = async (origin: string) =>
+                (await fetch(`${url}enumerate`, { method: 'POST', headers: { Origin: origin } }))
+                    .status;
+
+            // Any page can make a browser send this one, e.g. through an image.
+            expect((await fetch(`${url}status-data`)).status).toBe(404);
+            expect(enumerate).not.toHaveBeenCalled();
+
+            // Both allowed by the default allowlist.
+            expect(await getEnumerateStatus('http://localhost:5181')).toBe(403);
+            expect(await getEnumerateStatus('https://suite.sldev.cz')).toBe(403);
+            expect(await getEnumerateStatus('https://old-trezors.trezor.io')).toBe(200);
+
             await trezordNode.stop();
         });
 

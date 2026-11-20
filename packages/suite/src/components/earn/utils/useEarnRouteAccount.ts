@@ -1,10 +1,10 @@
 import { parseEarnParams, selectRouterParams } from '@suite/router';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { selectDeviceAccounts } from '@suite-common/wallet-core';
 import type { Account, WalletParams } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
-import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { getSelectedAccount } from '#src/utils/wallet/accountUtils';
 
 export type UseEarnRouteAccountResult = {
     account?: Account;
@@ -13,7 +13,7 @@ export type UseEarnRouteAccountResult = {
 
 export const useEarnRouteAccount = (): UseEarnRouteAccountResult => {
     const routeParams = parseEarnParams(useSelector(selectRouterParams));
-    const selectedDevice = useSelector(selectSelectedDevice);
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
     const accounts = useSelector(selectDeviceAccounts);
     const accountParams: WalletParams = routeParams
         ? {
@@ -23,11 +23,7 @@ export const useEarnRouteAccount = (): UseEarnRouteAccountResult => {
           }
         : undefined;
 
-    const account = getSelectedAccount(
-        selectedDevice?.state?.staticSessionId,
-        accounts,
-        accountParams,
-    );
+    const account = getSelectedAccount(deviceStaticSessionId ?? undefined, accounts, accountParams);
 
     return {
         routeParams,

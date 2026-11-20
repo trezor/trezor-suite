@@ -1,14 +1,15 @@
 import { useSelector } from 'react-redux';
 
-import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
-    type StakeRootState,
-    getStakingLimitsByNetworkSymbol,
-    selectAccountByKey,
-    selectApy,
-} from '@suite-common/wallet-core';
+    type StakingRootState,
+    formatStakingAmount,
+    selectStakeableStakingProductDescriptorBySymbol,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
+import { useFormatters } from '@suite-common/formatters';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -27,9 +28,18 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const apy = useSelector((state: StakeRootState) =>
-        selectApy(state, { networkSymbol: account?.symbol, accountKey }),
+    const networkSymbol = account?.symbol ?? null;
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        networkSymbol === null ? undefined : selectNativeTokenName(state, networkSymbol),
     );
+    const stakingLimits = useSelector((state: StakingRootState) =>
+        networkSymbol === null
+            ? null
+            : (selectStakeableStakingProductDescriptorBySymbol(state, networkSymbol)?.limits ??
+              null),
+    );
+
+    const { rate } = useNetworkStakingRate({ networkSymbol, accountKey });
 
     const { handleBuyPress, handleReceivePress } = useEarnNoBalanceActions({ accountKey });
     const { CryptoAmountFormatter } = useFormatters();
@@ -39,7 +49,6 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
     }
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-    const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
     return (
         <Screen
@@ -48,7 +57,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                     title={
                         <Translation
                             id="earn.earnFormScreen.title"
-                            values={{ assetName: getNetworkDisplaySymbolName(account.symbol) }}
+                            values={{ assetName: nativeTokenName }}
                         />
                     }
                 />
@@ -64,7 +73,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
             <EarnAmountCard accountKey={accountKey} />
             <Box marginTop="sp16">
                 <EarnNoBalanceCard
-                    apy={apy}
+                    apy={rate}
                     title={
                         <Translation id="earn.noBalance.staking.title" values={{ displaySymbol }} />
                     }
@@ -74,7 +83,10 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                                 id="earn.noBalance.staking.subtitle"
                                 values={{
                                     minAmount: CryptoAmountFormatter.format(
-                                        stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
+                                        formatStakingAmount({
+                                            amount: stakingLimits.minStakeAmount,
+                                            networkSymbol: account.symbol,
+                                        }),
                                         {
                                             symbol: account.symbol,
                                             isBalance: true,

@@ -1,0 +1,66 @@
+import { useSelector } from 'react-redux';
+
+import { selectSmallBalanceSummary } from '@suite-common/assets';
+import { selectAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { HStack, Switch, Text, VStack } from '@suite-native/atoms';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
+
+import { PortfolioAssetsViewOptionsItem } from './PortfolioAssetsViewOptionsItem';
+
+type PortfolioAssetsSmallBalancesSwitchProps = {
+    onChange: (areShown: boolean) => void;
+};
+
+export const PortfolioAssetsSmallBalancesSwitch = ({
+    onChange,
+}: PortfolioAssetsSmallBalancesSwitchProps) => {
+    const smallBalances = useSelector(selectSmallBalanceSummary);
+    const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesShown);
+    const { analytics } = useServices(injectNativeAnalytics);
+
+    if (smallBalances === undefined) {
+        return null;
+    }
+
+    const toggle = () => {
+        analytics.report({
+            type: events.dashboardAssetListMenuEvent.name,
+            payload: { type: 'show-small-balances', value: !areSmallBalancesShown },
+        });
+        onChange(!areSmallBalancesShown);
+    };
+
+    return (
+        <PortfolioAssetsViewOptionsItem
+            onPress={toggle}
+            accessibilityRole="switch"
+            accessibilityState={{ checked: areSmallBalancesShown }}
+            testID="@home/portfolio-assets/view-options/small-balances"
+        >
+            <VStack flex={1} spacing="sp2">
+                <Text variant="body-sm">
+                    <Translation id="moduleHome.assets.viewOptionsSheet.showSmallBalances" />
+                </Text>
+                <HStack alignItems="center" spacing={0}>
+                    <Text variant="body-xs" color="contentSecondary">
+                        <Translation
+                            id="moduleHome.assets.viewOptionsSheet.smallBalancesSummary"
+                            values={{ count: smallBalances.assetCount }}
+                        />
+                        {' · '}
+                    </Text>
+                    <BaseCurrencyAmountFormatter
+                        value={asBaseCurrencyAmount(smallBalances.fiatValue)}
+                        variant="body-xs"
+                        color="contentSecondary"
+                    />
+                </HStack>
+            </VStack>
+            <Switch isChecked={areSmallBalancesShown} onChange={toggle} />
+        </PortfolioAssetsViewOptionsItem>
+    );
+};

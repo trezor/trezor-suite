@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -7,15 +8,17 @@ import {
     asAccountDescriptor,
     asBaseCurrencyAmount,
     asTimestamp,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
-import { getAssetGroupKey } from 'src/components/suite/asset-picker/utils/assetGroupKey';
-import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { getAssetGroupKey } from '#src/components/suite/asset-picker/utils/assetGroupKey';
+import {
+    createAccountOption,
+    createTokenOption,
+} from '#src/components/suite/asset-picker/utils/assetOptions';
+import { type TokensWithRates } from '#src/utils/wallet/tokenUtils';
 
 import { buildGroupedAssetOptions } from './buildGroupedAssetOptions';
 

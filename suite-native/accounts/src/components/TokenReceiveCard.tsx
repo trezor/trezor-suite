@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux';
 
 import { type SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
     selectFormattedAccountType,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
 import {
@@ -15,9 +16,13 @@ import {
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    TokenIcon,
+    TokenName,
+    type TokensRootState,
+    selectAccountTokenInfo,
+} from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -69,8 +74,6 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
         );
     }
 
-    const tokenName = getTokenName(token.name);
-
     return (
         <VStack>
             <Box flexDirection="row" justifyContent="space-between" alignItems="center">
@@ -79,12 +82,11 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                         <TokenIcon
                             networkSymbol={symbol}
                             contractAddress={contract}
-                            tokenSymbol={token.symbol || token.name}
                             showNetworkIcon
                         />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
-                        <Text>{tokenName}</Text>
+                        <TokenName networkSymbol={symbol} contractAddress={contract} />
 
                         <HStack alignItems="center" spacing="sp4">
                             <Text
@@ -105,13 +107,14 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                 <Box style={applyStyle(valuesContainerStyle)}>
                     <TokenToFiatAmountFormatter
                         value={token.balance ?? '0'}
+                        isBalance
                         contract={contract}
                         symbol={symbol}
                     />
                     <ExactTokenAmountFormatter
                         value={asDecimalTokenAmount(token.balance ?? '0')}
-                        tokenSymbol={token.symbol}
-                        maxDisplayedDecimals={token.decimals}
+                        networkSymbol={symbol}
+                        contractAddress={contract}
                     />
                 </Box>
             </Box>

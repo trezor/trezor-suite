@@ -3,7 +3,7 @@ import { type IDBPDatabase, openDB } from 'idb';
 import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 import migration from './26.8.0';
 

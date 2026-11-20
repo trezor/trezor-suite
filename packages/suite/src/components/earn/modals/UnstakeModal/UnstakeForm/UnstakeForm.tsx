@@ -10,12 +10,12 @@ import {
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
-import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/earn/earnFormFields';
-import { ApproximateInstantEthAmount } from 'src/views/wallet/staking/components/EthStakingDashboard/ApproximateInstantEthAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { SolanaStakingLimitBanner } from '#src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
+import { Fees } from '#src/components/wallet/Fees/Fees';
+import { useWithdrawalFormContext } from '#src/hooks/earn/useWithdrawalForm';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '#src/types/earn/earnFormFields';
+import { ApproximateInstantEthAmount } from '#src/views/wallet/staking/components/EthStakingDashboard/ApproximateInstantEthAmount';
 
 import { UnstakeInputs } from './UnstakeInputs';
 import { EarnAvailableBalance } from '../../StakeModal/StakeForm/EarnAvailableBalance';

@@ -10,6 +10,7 @@ export default [
             'src/device/deviceSelectors.ts',
             'src/device/deviceThunks.test.ts',
             'src/device/deviceThunks.ts',
+            'src/device/entropyCheckThunks.test.ts',
             'src/device/entropyCheckThunks.ts',
             'src/device/preparePushNotificationMiddleware.ts',
             'src/device/publicKeyActions.ts',

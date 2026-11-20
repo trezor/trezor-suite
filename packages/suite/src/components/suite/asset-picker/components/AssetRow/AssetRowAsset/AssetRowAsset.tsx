@@ -1,8 +1,9 @@
+import { AssetIcon } from '@suite/assets';
 import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
-import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
+import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetails } from '../AssetDetails';
 import { AssetAmount } from '../AssetRowToken/AssetAmount';
@@ -27,6 +28,8 @@ export function AssetRowAsset({
         selectShouldShowNetworkIcon(state, asset.networkSymbol, asset.contractAddress),
     );
 
+    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
+
     return (
         <ItemClickableContainer
             isDisabled={isDisabled}
@@ -35,29 +38,20 @@ export function AssetRowAsset({
             }}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
-                {asset.isNativeToken ? (
-                    <TokenIcon size={40} symbol={asset.symbol} showNetworkIcon />
-                ) : (
-                    <TokenIcon
-                        size={40}
-                        symbol={asset.networkSymbol}
-                        contractAddress={asset.contractAddress}
-                        placeholder={asset.displaySymbol}
-                        showNetworkIcon={showNetworkIcon}
-                    />
-                )}
-                <AssetDetails
-                    name={asset.displaySymbolName ?? asset.name}
-                    displaySymbol={asset.displaySymbol}
-                    networkName={asset.networkName}
+                <AssetIcon
+                    size={40}
+                    networkSymbol={asset.networkSymbol}
+                    contractAddress={tokenContract}
+                    showNetworkIcon={!tokenContract || showNetworkIcon}
                 />
+                <AssetDetails networkSymbol={asset.networkSymbol} contractAddress={tokenContract} />
             </Row>
             {balance && (
                 <Row flex="0 0 auto">
                     <AssetAmount
-                        symbol={asset.displaySymbol}
+                        networkSymbol={asset.networkSymbol}
+                        contractAddress={tokenContract}
                         amount={balance.cryptoAmount}
-                        contractAddress={asset.contractAddress}
                         fiatAmount={balance.fiatAmount ?? undefined}
                         isFiatPrimary
                     />

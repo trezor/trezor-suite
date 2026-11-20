@@ -75,11 +75,10 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             earnNutshellModal,
             blockbookMock,
         }) => {
-            const stakingAccountItemInLeftSection = walletPage.accountButton({
+            const stakingAccountItemInLeftSection = walletPage.stakingBadge({
                 symbol: adaSymbol,
                 type: 'normal',
                 atIndex: 0,
-                subAccount: 'staking',
             });
 
             await test.step('Verify inactive staking account', async () => {

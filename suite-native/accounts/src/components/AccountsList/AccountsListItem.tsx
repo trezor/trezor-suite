@@ -2,13 +2,12 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    type AccountsRootState,
-    type StakeRootState,
-    selectAccountHasStaking,
-    selectFormattedAccountType,
-    selectIsCardanoStakedWithFiveBinaries,
-} from '@suite-common/wallet-core';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+    type StakingRootState,
+    selectHasStakingAccountWarning,
+    selectIsStakingAccountActive,
+} from '@suite-common/earn-staking';
+import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import { Badge } from '@suite-native/atoms';
 import {
@@ -19,16 +18,17 @@ import {
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 import {
     type NativeAccountsRootState,
+    selectAccountCryptoBalanceWithStaking,
     selectAccountFiatBalance,
-    selectActiveAndDefiTokensCount,
+    selectAccountHasAnyKnownTokens,
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 import { AccountLabel } from '../AccountLabel';
+import { AccountListTokenBadge } from './AccountListTokenBadge';
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
 import { ZeroApyBadge } from './ZeroApyBadge';
@@ -44,20 +44,9 @@ type AccountListItemProps = {
     showDivider?: boolean;
     badges?: React.ReactNode;
     shouldShowExactAmount?: boolean;
+    shouldAlwaysShowCryptoAmount?: boolean;
+    shouldLimitFiatToNativeBalance?: boolean;
 };
-
-const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
-    const numberOfTokens = useSelector((state: NativeAccountsRootState) =>
-        selectActiveAndDefiTokensCount(state, accountKey),
-    );
-
-    return (
-        <Badge
-            size="small"
-            label={<Translation id="accountList.numberOfTokens" values={{ numberOfTokens }} />}
-        />
-    );
-});
 
 const AccountsListItemComponent = ({
     account,
@@ -70,53 +59,58 @@ const AccountsListItemComponent = ({
     showDivider = false,
     badges,
     shouldShowExactAmount = false,
+    shouldAlwaysShowCryptoAmount = false,
+    shouldLimitFiatToNativeBalance = false,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );
-    const accountHasKnownTokensWithBalance = useSelector(
-        (state: NativeAccountsRootState) => selectActiveAndDefiTokensCount(state, account.key) > 0,
+    const hasAnyKnownTokens = useSelector((state: NativeAccountsRootState) =>
+        selectAccountHasAnyKnownTokens(state, account.key),
     );
 
-    const accountHasStaking = useSelector((state: StakeRootState) =>
-        selectAccountHasStaking(state, account.key),
+    const isStakingActive = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountActive(state, account.key),
     );
 
-    const isStakedWithFiveBinaries = useSelector((state: AccountsRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, account.key),
+    const hasOutdatedProvider = useSelector((state: StakingRootState) =>
+        selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
     );
 
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
-        selectAccountFiatBalance(state, account.key, accountHasStaking),
+        selectAccountFiatBalance(state, account.key),
+    );
+    const cryptoBalanceWithStaking = useSelector((state: NativeAccountsRootState) =>
+        selectAccountCryptoBalanceWithStaking(state, account.key),
     );
 
     const handleOnPress = useCallback(() => {
-        onPress?.({
-            account,
-            hasAnyKnownTokens: accountHasKnownTokensWithBalance,
-        });
-    }, [account, accountHasKnownTokensWithBalance, onPress]);
+        onPress?.({ account, hasAnyKnownTokens });
+    }, [account, hasAnyKnownTokens, onPress]);
 
-    const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
-    const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
-    const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
-    const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
-    const shouldShowZeroApyBadge = isStakedWithFiveBinaries && !isNativeCoinOnly;
-    const fiatBalanceValue =
-        shouldShowTokenBadge && fiatBalance !== undefined ? (
-            <BaseCurrencyAmountFormatter
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                value={fiatBalance}
-            />
-        ) : (
-            <CryptoToFiatAmountFormatter
-                value={account.formattedBalance}
-                isBalance={true}
-                symbol={account.symbol}
-            />
-        );
+    const shouldShowAccountLabel = !isNetworkWithTokens(account.symbol) || !isNativeCoinOnly;
+    const shouldShowTokenBadge = hasAnyKnownTokens && !isNativeCoinOnly;
+    const shouldShowStakingBadge = isStakingActive && !isNativeCoinOnly;
+    const shouldShowZeroApyBadge = hasOutdatedProvider && !isNativeCoinOnly;
+    const shouldShowTotalFiat = shouldShowTokenBadge && !shouldLimitFiatToNativeBalance;
+    const shouldIncludeStakingInFiat = shouldShowStakingBadge && !shouldLimitFiatToNativeBalance;
+    const fiatBalanceValue = shouldShowTotalFiat ? (
+        <BaseCurrencyAmountFormatter
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            symbol={account.symbol}
+            value={fiatBalance}
+        />
+    ) : (
+        <CryptoToFiatAmountFormatter
+            value={shouldIncludeStakingInFiat ? cryptoBalanceWithStaking : account.formattedBalance}
+            isBalance={true}
+            symbol={account.symbol}
+        />
+    );
     const isFailed = isAccountFailed(account);
+    const isCryptoAmountHidden =
+        !shouldAlwaysShowCryptoAmount && (shouldShowTokenBadge || shouldShowStakingBadge);
     const CryptoAmountFormatter = shouldShowExactAmount
         ? ExactCryptoAmountFormatter
         : CompactCryptoAmountFormatter;
@@ -143,21 +137,19 @@ const AccountsListItemComponent = ({
                 />
             }
             title={title}
-            titleBadge={
-                !isNativeCoinOnly && formattedAccountType ? (
-                    <Badge label={formattedAccountType} size="small" />
-                ) : undefined
-            }
             badges={
                 <>
+                    {!isNativeCoinOnly && !!formattedAccountType && (
+                        <Badge label={formattedAccountType} size="small" />
+                    )}
                     {shouldShowZeroApyBadge ? (
                         <ZeroApyBadge />
                     ) : (
                         shouldShowStakingBadge && (
-                            <StakingBadge networkSymbol={account.symbol} account={account} />
+                            <StakingBadge networkSymbol={account.symbol} accountKey={account.key} />
                         )
                     )}
-                    {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
+                    {shouldShowTokenBadge && <AccountListTokenBadge accountKey={account.key} />}
                     {badges}
                 </>
             }
@@ -169,8 +161,9 @@ const AccountsListItemComponent = ({
                 )
             }
             secondaryValue={
-                isFailed ? undefined : (
+                isFailed || isCryptoAmountHidden ? undefined : (
                     <CryptoAmountFormatter
+                        testID="@accountList/item/native-balance"
                         value={account.formattedBalance}
                         symbol={account.symbol}
                         numberOfLines={1}

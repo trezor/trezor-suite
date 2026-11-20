@@ -328,9 +328,46 @@ export const messages = defineMessages({
         defaultMessage:
             "Floating-rate offers may result in slight changes to the final amount due to market fluctuations, but they're typically higher, so you could receive more crypto.",
     },
-    TR_TRADING_DISABLED_DEFAULT: {
-        defaultMessage: '{type} is currently disabled.',
-        id: 'TR_TRADING_DISABLED_DEFAULT',
+    TR_TRADING_DISABLED_TITLE_BUY: {
+        defaultMessage: 'Buy is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_BUY',
+    },
+    TR_TRADING_DISABLED_TITLE_SELL: {
+        defaultMessage: 'Sell is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_SELL',
+    },
+    TR_TRADING_DISABLED_TITLE_EXCHANGE: {
+        defaultMessage: 'Swap is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_EXCHANGE',
+    },
+    TR_TRADING_DISABLED_TITLE_CONCIERGE: {
+        defaultMessage: 'Concierge is temporarily unavailable',
+        id: 'TR_TRADING_DISABLED_TITLE_CONCIERGE',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_BUY: {
+        defaultMessage: "We've paused buying for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_BUY',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_SELL: {
+        defaultMessage: "We've paused selling for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_SELL',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_EXCHANGE: {
+        defaultMessage: "We've paused swapping for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_EXCHANGE',
+    },
+    TR_TRADING_DISABLED_DESCRIPTION_CONCIERGE: {
+        defaultMessage: "We've paused Concierge for now. Please check back later.",
+        id: 'TR_TRADING_DISABLED_DESCRIPTION_CONCIERGE',
+    },
+    TR_TRADING_ALL_DISABLED_TITLE: {
+        defaultMessage: 'Trading is temporarily unavailable',
+        id: 'TR_TRADING_ALL_DISABLED_TITLE',
+    },
+    TR_TRADING_ALL_DISABLED_DESCRIPTION: {
+        defaultMessage:
+            "We've paused buying, selling, and swapping for now. Your funds are safe, so please check back later.",
+        id: 'TR_TRADING_ALL_DISABLED_DESCRIPTION',
     },
     TR_TRADING_RESTRICTED: {
         defaultMessage: 'Trading is not available in your region.',
@@ -549,6 +586,14 @@ export const messages = defineMessages({
         defaultMessage: 'Unable to send transaction, missing data',
         id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
     },
+    TR_TRADING_SIGN_TRANSACTION_FAILED: {
+        defaultMessage: "Your Trezor couldn't sign the transaction",
+        id: 'TR_TRADING_SIGN_TRANSACTION_FAILED',
+    },
+    TR_TRADING_PUSH_TRANSACTION_FAILED: {
+        defaultMessage: "The transaction couldn't be sent to the network",
+        id: 'TR_TRADING_PUSH_TRANSACTION_FAILED',
+    },
     TR_TRADING_INCORRECT_SERIALIZED_DATA: {
         defaultMessage: "Unable to send transaction—the serialized data isn't valid.",
         id: 'TR_TRADING_INCORRECT_SERIALIZED_DATA',
@@ -673,17 +718,9 @@ export const messages = defineMessages({
         defaultMessage: 'Approve {displaySymbol} spending',
         id: 'TR_APPROVAL_APPROVE_TOKEN_SPENDING',
     },
-    TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Approve provider to spend your {displaySymbol} to swap.',
-        id: 'TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING_DESCRIPTION',
-    },
     TR_APPROVAL_REVOKE_TOKEN_SPENDING: {
         defaultMessage: 'Revoke {displaySymbol} spending',
         id: 'TR_APPROVAL_REVOKE_TOKEN_SPENDING',
-    },
-    TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Revoke provider to spend your {displaySymbol} to swap.',
-        id: 'TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING_DESCRIPTION',
     },
     TR_APPROVAL_LIMIT: {
         defaultMessage: 'Limit',
@@ -707,17 +744,75 @@ export const messages = defineMessages({
             'The spending limit is too low. Revoke the current spending limit and approve a higher amount.',
         id: 'TR_APPROVAL_MODAL_REVOKE_BANNER',
     },
-    TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON: {
-        defaultMessage: 'Set & approve spending',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_APPROVE_BUTTON',
-    },
     TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON: {
         defaultMessage: 'Revoke approval',
         id: 'TR_EXCHANGE_APPROVAL_FORM_REVOKE_BUTTON',
     },
-    TR_EXCHANGE_APPROVAL_FORM_INCREASE_BUTTON: {
-        defaultMessage: 'Increase approval',
-        id: 'TR_EXCHANGE_APPROVAL_FORM_INCREASE_BUTTON',
+    TR_EXCHANGE_APPROVAL_FORM_MANAGE_BUTTON: {
+        defaultMessage: 'Manage approval',
+        id: 'TR_EXCHANGE_APPROVAL_FORM_MANAGE_BUTTON',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_UNLIMITED: {
+        defaultMessage: '{provider} has unlimited access to your {displaySymbol}',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_UNLIMITED',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_ENOUGH: {
+        defaultMessage: 'Your approval covers this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_ENOUGH',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_NONE: {
+        defaultMessage: 'No approval yet',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_NONE',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW: {
+        defaultMessage: 'Your approval is too low for this swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_TOO_LOW',
+    },
+    TR_EXCHANGE_ALLOWANCE_HEADING_REVOKED: {
+        defaultMessage: 'Approval revoked',
+        id: 'TR_EXCHANGE_ALLOWANCE_HEADING_REVOKED',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEXT_STEP_SWAP: {
+        defaultMessage: 'Continue to swap. No new approval is needed.',
+        id: 'TR_EXCHANGE_ALLOWANCE_NEXT_STEP_SWAP',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEXT_STEP_APPROVE: {
+        defaultMessage: 'Let the provider access your {displaySymbol} to process your swap.',
+        id: 'TR_EXCHANGE_ALLOWANCE_NEXT_STEP_APPROVE',
+    },
+    TR_EXCHANGE_ALLOWANCE_NEXT_STEP_RESET: {
+        defaultMessage:
+            "{displaySymbol} can't raise an approval. Continue to revoke it first, then approve {needed}.",
+        id: 'TR_EXCHANGE_ALLOWANCE_NEXT_STEP_RESET',
+    },
+    TR_EXCHANGE_ALLOWANCE_UNLIMITED_WARNING: {
+        defaultMessage:
+            "If {provider} is compromised, all your {displaySymbol} may be taken. Revoke the approval when you're done swapping.",
+        id: 'TR_EXCHANGE_ALLOWANCE_UNLIMITED_WARNING',
+    },
+    TR_EXCHANGE_ALLOWANCE_CONTINUE_SWAP: {
+        defaultMessage: 'Continue swap',
+        id: 'TR_EXCHANGE_ALLOWANCE_CONTINUE_SWAP',
+    },
+    TR_EXCHANGE_ALLOWANCE_APPROVED_AMOUNT: {
+        defaultMessage: 'Approved amount',
+        id: 'TR_EXCHANGE_ALLOWANCE_APPROVED_AMOUNT',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE: {
+        defaultMessage: 'Source: {source}',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE_CHAIN: {
+        defaultMessage: 'Blockchain',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE_CHAIN',
+    },
+    TR_EXCHANGE_ALLOWANCE_SOURCE_PROVIDER: {
+        defaultMessage: 'Provider',
+        id: 'TR_EXCHANGE_ALLOWANCE_SOURCE_PROVIDER',
+    },
+    TR_EXCHANGE_ALLOWANCE_CHAIN_ERROR: {
+        defaultMessage: 'Chain error: {message}',
+        id: 'TR_EXCHANGE_ALLOWANCE_CHAIN_ERROR',
     },
     TR_EXCHANGE_APPROVAL_FORM_REFRESH_BUTTON: {
         defaultMessage: 'Refresh',
@@ -761,6 +856,57 @@ export const messages = defineMessages({
     TR_APPROVAL_VALUE_INFINITE_WARNING: {
         defaultMessage: 'If the provider is compromised, all your {send} may be taken.',
         id: 'TR_APPROVAL_VALUE_INFINITE_WARNING',
+    },
+    TR_APPROVAL_STEP_APPROVE_TITLE: {
+        defaultMessage: 'Approve spending',
+        id: 'TR_APPROVAL_STEP_APPROVE_TITLE',
+    },
+    TR_APPROVAL_STEP_APPROVE_DESCRIPTION: {
+        defaultMessage: 'Let the provider use your {symbol} to process your swap.',
+        id: 'TR_APPROVAL_STEP_APPROVE_DESCRIPTION',
+    },
+    TR_APPROVAL_STEP_INCREASE_TITLE: {
+        defaultMessage: 'Increase approved limit',
+        id: 'TR_APPROVAL_STEP_INCREASE_TITLE',
+    },
+    TR_APPROVAL_STEP_INCREASE_DESCRIPTION: {
+        defaultMessage:
+            'Your current limit is too low. Increase it so the provider can process your swap.',
+        id: 'TR_APPROVAL_STEP_INCREASE_DESCRIPTION',
+    },
+    TR_APPROVAL_STEP_REVOKE_TITLE: {
+        defaultMessage: 'Revoke approval spending',
+        id: 'TR_APPROVAL_STEP_REVOKE_TITLE',
+    },
+    TR_APPROVAL_STEP_REVOKE_DESCRIPTION: {
+        defaultMessage:
+            'To swap more {symbol}, first revoke your current approval. {symbol} requires this before approving a higher limit.',
+        id: 'TR_APPROVAL_STEP_REVOKE_DESCRIPTION',
+    },
+    TR_APPROVAL_STEP_DONE_APPROVE: {
+        defaultMessage: 'Approval',
+        id: 'TR_APPROVAL_STEP_DONE_APPROVE',
+    },
+    TR_APPROVAL_STEP_DONE_REVOKE: {
+        defaultMessage: 'Revoke',
+        id: 'TR_APPROVAL_STEP_DONE_REVOKE',
+    },
+    TR_APPROVAL_STEP_PENDING_HINT: {
+        defaultMessage: "Don't leave yet. You'll sign the swap in a few seconds.",
+        id: 'TR_APPROVAL_STEP_PENDING_HINT',
+    },
+    TR_APPROVAL_REQUIRED: {
+        defaultMessage: 'Approval required',
+        id: 'TR_APPROVAL_REQUIRED',
+    },
+    TR_APPROVAL_REQUIRED_TOOLTIP: {
+        defaultMessage:
+            "Approval gives the provider permission to use the {symbol} amount you choose. It's needed because you picked a decentralized exchange, which never holds your funds. Your {symbol} stays in your wallet until the swap.",
+        id: 'TR_APPROVAL_REQUIRED_TOOLTIP',
+    },
+    TR_APPROVAL_LIMIT_MODAL_HEADING: {
+        defaultMessage: 'Choose approval limit',
+        id: 'TR_APPROVAL_LIMIT_MODAL_HEADING',
     },
     TR_APPROVAL_DATA: {
         defaultMessage: 'Approval transaction data',
@@ -848,12 +994,12 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_CENTRALIZED_EXCHANGE',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
-        defaultMessage: 'Fixed-rate CEX',
+        defaultMessage: 'Fixed-rate offers',
         id: 'TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING',
         dynamic: true,
     },
     TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING: {
-        defaultMessage: 'Floating-rate CEX',
+        defaultMessage: 'Floating-rate offers',
         id: 'TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING',
         dynamic: true,
     },
@@ -1202,6 +1348,18 @@ export const messages = defineMessages({
     TR_TRADING_REVIEW_SWAP: {
         defaultMessage: 'Review your swap',
         id: 'TR_TRADING_REVIEW_SWAP',
+    },
+    TR_TRADING_QUOTE_EXPIRED_TITLE: {
+        defaultMessage: 'Quote expired',
+        id: 'TR_TRADING_QUOTE_EXPIRED_TITLE',
+    },
+    TR_TRADING_REFRESH_TRANSACTION: {
+        defaultMessage: 'Refresh transaction',
+        id: 'TR_TRADING_REFRESH_TRANSACTION',
+    },
+    TR_TRADING_REFRESH_TRANSACTION_FAILED: {
+        defaultMessage: 'The transaction could not be refreshed. Go back and get a new quote.',
+        id: 'TR_TRADING_REFRESH_TRANSACTION_FAILED',
     },
     TR_TRADING_SIMULATING: {
         defaultMessage: 'Simulating transaction',
@@ -1853,7 +2011,7 @@ export const messages = defineMessages({
         id: 'TR_ASSET_DETAIL_MARKET_PRICE',
     },
     TR_PRICE_CHART_LOAD_ERROR: {
-        defaultMessage: "Price history couldn't be loaded.",
+        defaultMessage: "We couldn't load the market data. Try again later.",
         id: 'TR_PRICE_CHART_LOAD_ERROR',
     },
     TR_PRICE_CHART_NO_HISTORY: {
@@ -1882,7 +2040,7 @@ export const messages = defineMessages({
     },
     TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION: {
         defaultMessage:
-            'This token arrived unrequested and may be a phishing attempt. Do not interact with its website.',
+            'You received this token without requesting it. It may be a phishing attempt. Do not interact with its website.',
         id: 'TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION',
     },
     TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE: {
@@ -1890,8 +2048,7 @@ export const messages = defineMessages({
         id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE',
     },
     TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION: {
-        defaultMessage:
-            '{asset} does not appear in your asset list. Everything about it still works here.',
+        defaultMessage: '{asset} does not appear in your asset list, but it still works normally.',
         id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION',
     },
     TR_ASSET_DETAIL_POLICY_ID: {
@@ -2549,6 +2706,19 @@ export const messages = defineMessages({
     TR_EVM_ADDRESS_IS_CONTRACT: {
         defaultMessage: "You're sending funds to a contract address.",
         id: 'TR_EVM_ADDRESS_IS_CONTRACT',
+    },
+    TR_ADDRESS_POSSIBLE_POISONING: {
+        defaultMessage:
+            'This address appears in suspected scam transactions or closely resembles an address in your history. Check every character before sending. <a>Learn more</a>',
+        id: 'TR_ADDRESS_POSSIBLE_POISONING',
+    },
+    TR_ADDRESS_NEW_RECIPIENT: {
+        defaultMessage: "You haven't sent to this address before. Double-check it before sending.",
+        id: 'TR_ADDRESS_NEW_RECIPIENT',
+    },
+    TR_ADDRESS_LAST_SENT: {
+        defaultMessage: 'Last sent {relativeTime}',
+        id: 'TR_ADDRESS_LAST_SENT',
     },
     TR_I_UNDERSTAND_THE_RISK: {
         defaultMessage: 'I understand',
@@ -4535,7 +4705,7 @@ export const messages = defineMessages({
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
-        defaultMessage: 'Coinjoin, SLIP25, P2TR, Bech32m',
+        defaultMessage: 'SLIP25, P2TR, Bech32m',
     },
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
@@ -5185,7 +5355,7 @@ export const messages = defineMessages({
     TR_STELLAR_CONTRACT_TOKEN_DETECTED: {
         id: 'TR_STELLAR_CONTRACT_TOKEN_DETECTED',
         defaultMessage:
-            'Soroban contract token. It has no issuer and needs no trustline — its balance is read from the contract.',
+            'Soroban contract token. It has no issuer and needs no trustline. Its balance is read from the contract.',
     },
     TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE: {
         id: 'TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE',
@@ -5199,7 +5369,7 @@ export const messages = defineMessages({
     TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE: {
         id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
         defaultMessage:
-            'The recipient has not added {symbol}. The receiving account has to add this asset before it can receive it.',
+            'The recipient has not added {symbol}. The receiving account must add this asset before it can receive it.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
@@ -6637,10 +6807,6 @@ export const messages = defineMessages({
         id: 'TR_NAV_SIGN_VERIFY',
         defaultMessage: 'Sign & verify messages',
     },
-    TR_NAV_CONCIERGE: {
-        id: 'TR_NAV_CONCIERGE',
-        defaultMessage: 'Concierge',
-    },
     TR_BALANCE: {
         id: 'TR_BALANCE',
         defaultMessage: 'Balance',
@@ -6875,6 +7041,10 @@ export const messages = defineMessages({
         id: 'TR_STAKE_TX_PREPARATION_FAILED',
         defaultMessage:
             'The transaction could not be prepared. Make sure the account is up to date and try again.',
+    },
+    TR_STAKE_SOL_STAKED_BALANCE_CHANGED: {
+        id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+        defaultMessage: 'Your staked balance has changed. Check the updated amount and try again.',
     },
     OP_RETURN: {
         id: 'OP_RETURN',
@@ -7564,10 +7734,10 @@ export const messages = defineMessages({
         id: 'SETTINGS_ADV_COIN_CONN_INFO_VERSION',
         defaultMessage: 'Backend version',
     },
-    SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
-        id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
+    SETTINGS_ADV_COIN_CONN_INFO_NOT_CONNECTED: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_NOT_CONNECTED',
         defaultMessage:
-            'Connection to the backend server failed. Check your internet connection, verify your custom backend address, reconnect your device, and make sure Bitcoin is enabled in Settings.',
+            'Connection to the backend server failed. Check your internet connection, verify your custom backend address, reconnect your device, and make sure {networkName} is enabled in Settings.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
@@ -8758,38 +8928,55 @@ export const messages = defineMessages({
         id: 'TR_CONNECTED_DIFFERENT_DEVICE',
         defaultMessage: 'Connected a different device?',
     },
-    TR_ONBOARDING_DEVICE_CHECK: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK',
-        defaultMessage: 'Device security check',
+    TR_ONBOARDING_SECURITY_CHECK: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK',
+        defaultMessage: 'Security check',
         description:
             'Heading for an onboarding step where we ask the user to verify authenticity of his device',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_SHOP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_SHOP',
+        defaultMessage:
+            'The device was bought from the official <shop>Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_HOLOGRAM: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_HOLOGRAM',
+        defaultMessage: 'The <hologram>hologram</hologram> was intact before you removed it.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_PLASTIC_WRAP',
+        defaultMessage: 'The clear plastic wrap around the box had the Trezor logo printed on it.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_PACKAGE: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_PACKAGE',
+        defaultMessage:
+            'The package was factory sealed and intact, with no signs of tampering before unboxing.',
+    },
+    TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_CONFIRM_TOOLTIP',
+        defaultMessage:
+            'Complete these checks before setup to confirm your Trezor hasn’t been tampered with.',
+        description: 'Tooltip on the disabled setup button until all security checks are confirmed',
     },
     TR_USED_TREZOR_BEFORE: {
         id: 'TR_USED_TREZOR_BEFORE',
         defaultMessage: 'Have you used this Trezor before?',
     },
-    TR_ONBOARDING_DEVICE_CHECK_1: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_1',
-        defaultMessage: 'The <strong>hologram</strong> was intact and untampered with.',
-    },
-    TR_ONBOARDING_DEVICE_CHECK_2: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_2',
-        defaultMessage:
-            'The device was bought from the <shop>official Trezor Shop</shop> or a <reseller>trusted reseller</reseller>.',
-    },
-    TR_ONBOARDING_DEVICE_CHECK_3: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_3',
-        defaultMessage: 'The device package was intact and untampered with.',
-    },
-    TR_ONBOARDING_DEVICE_CHECK_4: {
-        id: 'TR_ONBOARDING_DEVICE_CHECK_4',
+    TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_INSTALLED: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_INSTALLED',
         description: 'Shown only if device has firmware already installed',
-        defaultMessage:
-            'Firmware is already installed on this device. Continue only if you have used this Trezor before.',
+        defaultMessage: 'Firmware is already installed on this device.',
     },
-    TR_I_HAVE_NOT_USED_IT: {
-        id: 'TR_I_HAVE_NOT_USED_IT',
-        defaultMessage: "No, I haven't",
+    TR_ONBOARDING_SECURITY_CHECK_USED_BEFORE: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_USED_BEFORE',
+        description: 'Checkbox shown only if device has firmware already installed',
+        defaultMessage: "Yes, I've used this Trezor before.",
+    },
+    TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_CONFIRM_TOOLTIP: {
+        id: 'TR_ONBOARDING_SECURITY_CHECK_FIRMWARE_CONFIRM_TOOLTIP',
+        description:
+            'Tooltip on the disabled continue button until the user confirms they have used the device with firmware already installed',
+        defaultMessage: 'First confirm you’ve used this Trezor before.',
     },
     TR_I_HAVE_DOUBTS: {
         id: 'TR_I_HAVE_DOUBTS',
@@ -9236,10 +9423,6 @@ export const messages = defineMessages({
         defaultMessage: 'Clear',
         description: 'Button resetting the Sign and Verify form after signing or verifying',
     },
-    TR_NAV_STAKING: {
-        defaultMessage: 'Staking',
-        id: 'TR_NAV_STAKING',
-    },
     TR_ACCOUNT_TYPE_SHELLEY: {
         defaultMessage: 'Shelley',
         id: 'TR_ACCOUNT_TYPE_SHELLEY',
@@ -9306,6 +9489,22 @@ export const messages = defineMessages({
     TR_INSTANT_STAKING: {
         id: 'TR_INSTANT_STAKING',
         defaultMessage: 'Staked instantly',
+    },
+    TR_EARN_EARNING_BALANCE: {
+        id: 'TR_EARN_EARNING_BALANCE',
+        defaultMessage: 'Earning balance',
+    },
+    TR_EARN_NO_POSITIONS: {
+        id: 'TR_EARN_NO_POSITIONS',
+        defaultMessage: 'No positions',
+    },
+    TR_EARN_ACTIVE_POSITIONS: {
+        id: 'TR_EARN_ACTIVE_POSITIONS',
+        defaultMessage: '{count, plural, one {# active position} other {# active positions}}',
+    },
+    TR_EARN_POSITIONS_BREAKDOWN: {
+        id: 'TR_EARN_POSITIONS_BREAKDOWN',
+        defaultMessage: 'Positions breakdown',
     },
     TR_EARN_AMOUNT_STAKED_INSTANTLY: {
         id: 'TR_EARN_AMOUNT_STAKED_INSTANTLY',
@@ -9874,9 +10073,60 @@ export const messages = defineMessages({
         id: 'TR_COINJOIN_DISCOVERY_MEMPOOL_PROGRESS',
         defaultMessage: '{current} out of {total} transactions analyzed',
     },
-    TR_LOADING_FUNDS: {
-        id: 'TR_LOADING_FUNDS',
-        defaultMessage: 'Loading assets...',
+    TR_COINJOIN_DISCOVERY_TITLE: {
+        id: 'TR_COINJOIN_DISCOVERY_TITLE',
+        description: 'Heading of the Privacy account discovery loader',
+        defaultMessage: 'Loading your Privacy account',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_BLOCKS_LOCAL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_BLOCKS_LOCAL',
+        description: 'Discovery loader caption, bold first line, max ~55 characters',
+        defaultMessage: 'Blocks are checked on this computer.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_MEMPOOL_LOCAL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_MEMPOOL_LOCAL',
+        description: 'Discovery loader caption, bold first line, max ~55 characters',
+        defaultMessage: 'Unconfirmed transactions are checked on this computer.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_FILTERS_OVER_TOR: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_FILTERS_OVER_TOR',
+        description:
+            'Discovery loader caption, line under both "…checked on this computer." captions, max ~75 characters',
+        defaultMessage: 'Their filters are downloaded over Tor.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_DISCARD: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_DISCARD',
+        description:
+            'Discovery loader caption, bold first line or a sentence in a paragraph, max ~55 characters',
+        defaultMessage: "Filters that don't match are discarded.",
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_SERVER: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_SERVER',
+        description: 'Discovery loader caption, bold line, max ~55 characters',
+        defaultMessage: "The scan doesn't send your addresses.",
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_FETCH: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_FETCH',
+        description:
+            'Discovery loader caption, second line or a sentence in a paragraph, max ~55 characters',
+        defaultMessage: 'Each match is fetched over one of four Tor circuits.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_KEEP: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_KEEP',
+        description:
+            'Discovery loader caption, second line or a sentence in a paragraph, max ~55 characters',
+        defaultMessage: 'Only your transactions are added to your account.',
+    },
+    TR_COINJOIN_DISCOVERY_LABEL_THIS_COMPUTER: {
+        id: 'TR_COINJOIN_DISCOVERY_LABEL_THIS_COMPUTER',
+        description: 'Label in the discovery illustration, max ~25 characters',
+        defaultMessage: 'This computer',
+    },
+    TR_COINJOIN_DISCOVERY_LABEL_TOR_CIRCUIT_NUMBER: {
+        id: 'TR_COINJOIN_DISCOVERY_LABEL_TOR_CIRCUIT_NUMBER',
+        description:
+            'Label beside the laptop in the discovery illustration, max ~16 characters, {number} is 1 to 5',
+        defaultMessage: 'Tor circuit {number}',
     },
     TR_LOADING_ACCOUNTS: {
         id: 'TR_LOADING_ACCOUNTS',
@@ -9889,157 +10139,6 @@ export const messages = defineMessages({
     TR_MIGRATE: {
         defaultMessage: 'Migrate',
         id: 'TR_MIGRATE',
-    },
-    TR_LOADING_FACT_TITLE: {
-        id: 'TR_LOADING_FACT_TITLE',
-        defaultMessage: 'Did you know?',
-    },
-    TR_LOADING_FACT_0: {
-        id: 'TR_LOADING_FACT_0',
-        description: '140 symbols max',
-        defaultMessage:
-            "Your coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
-    },
-    TR_LOADING_FACT_1: {
-        id: 'TR_LOADING_FACT_1',
-        description: '140 symbols max',
-        defaultMessage:
-            "The Trezor Model One was the world's first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018.",
-    },
-    TR_LOADING_FACT_2: {
-        id: 'TR_LOADING_FACT_2',
-        description: '140 symbols max',
-        defaultMessage:
-            "Your coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
-    },
-    TR_LOADING_FACT_3: {
-        id: 'TR_LOADING_FACT_3',
-        defaultMessage:
-            "Trezor Suite won't remember your coinjoin account in order to protect your privacy, unless you explicitly choose to remember the wallet.",
-    },
-    TR_LOADING_FACT_4: {
-        id: 'TR_LOADING_FACT_4',
-        description: '140 symbols max',
-        defaultMessage:
-            'About 20% of Bitcoin is stuck in wallets by users who have lost access to their private keys. This equates to about 3.67M BTC.',
-    },
-    TR_LOADING_FACT_5: {
-        id: 'TR_LOADING_FACT_5',
-        description: '140 symbols max',
-        defaultMessage:
-            'On October 29th 2013 the first Bitcoin ATM was set up in a coffee shop in Vancouver, Canada. There were over 38,000 Bitcoin ATMs across the globe in 2022.',
-    },
-    TR_LOADING_FACT_6: {
-        id: 'TR_LOADING_FACT_6',
-        description: '140 symbols max',
-        defaultMessage:
-            'Bitcoin was created in the aftermath of the 2008 financial crisis by an anonymous person (or even group of people) known only by the pseudonym Satoshi Nakamoto.',
-    },
-    TR_LOADING_FACT_7: {
-        id: 'TR_LOADING_FACT_7',
-        description: '140 symbols max',
-        defaultMessage: 'One bitcoin is equivalent to 100M satoshis (sats).',
-    },
-    TR_LOADING_FACT_8: {
-        id: 'TR_LOADING_FACT_8',
-        description: '140 symbols max',
-        defaultMessage: 'Less than 2% of the population owned Bitcoin in 2022.',
-    },
-    TR_LOADING_FACT_9: {
-        id: 'TR_LOADING_FACT_9',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is not something that I\'m merely entitled to, it\'s an absolute prerequisite." - Marlon Brando',
-    },
-    TR_LOADING_FACT_11: {
-        id: 'TR_LOADING_FACT_11',
-        description: '140 symbols max',
-        defaultMessage: '"Privacy is not secrecy." - Eric Hughes',
-    },
-    TR_LOADING_FACT_12: {
-        id: 'TR_LOADING_FACT_12',
-        description: '140 symbols max',
-        defaultMessage:
-            "Like cash, you don't keep your entire net worth in your pocket, you keep walking around money for incidental expenses - Satoshi Nakamoto",
-    },
-    TR_LOADING_FACT_13: {
-        id: 'TR_LOADING_FACT_13',
-        description: '140 symbols max',
-        defaultMessage: '"Privacy is not secrecy." - Eric Hughes',
-    },
-    TR_LOADING_FACT_14: {
-        id: 'TR_LOADING_FACT_14',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is the power to selectively reveal oneself to the world." - Eric Hughes',
-    },
-    TR_LOADING_FACT_15: {
-        id: 'TR_LOADING_FACT_15',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is the power to selectively reveal oneself to the world." - Eric Hughes',
-    },
-    TR_LOADING_FACT_16: {
-        id: 'TR_LOADING_FACT_16',
-        description: '140 symbols max',
-        defaultMessage: 'Coinjoin accounts use taproot addresses',
-    },
-    TR_LOADING_FACT_17: {
-        id: 'TR_LOADING_FACT_17',
-        description: '140 symbols max',
-        defaultMessage:
-            'El Salvador became the first nation to accept Bitcoin as legal tender in September 2021',
-    },
-    TR_LOADING_FACT_18: {
-        id: 'TR_LOADING_FACT_18',
-        description: '140 symbols max',
-        defaultMessage:
-            'Laszlo Hanyecz made first commercial BTC transaction. He bought 2 pizzas for 10,000 BTC',
-    },
-    TR_LOADING_FACT_19: {
-        id: 'TR_LOADING_FACT_19',
-        description: '140 symbols max',
-        defaultMessage: 'The last Bitcoin should be mined some time around the year 2140',
-    },
-    TR_LOADING_FACT_20: {
-        id: 'TR_LOADING_FACT_20',
-        description: '140 symbols max',
-        defaultMessage:
-            'Mel B, better known as Scary Spice, was the first mainstream musician to accept Bitcoin payments for a single',
-    },
-    TR_LOADING_FACT_21: {
-        id: 'TR_LOADING_FACT_21',
-        description: '140 symbols max',
-        defaultMessage:
-            'Bitcoin transactions are grouped together in blocks. These blocks are organized in a chronological sequence on the blockchain.',
-    },
-    TR_LOADING_FACT_22: {
-        id: 'TR_LOADING_FACT_22',
-        description: '140 symbols max',
-        defaultMessage:
-            'Halving is the mechanism by which the reward for mining BTC is cut in half every four years. In the beginning, mining one block would earn you 50 BTC, whereas in 2020 it earned you 6.25 BTC',
-    },
-    TR_LOADING_FACT_23: {
-        id: 'TR_LOADING_FACT_23',
-        description: '140 symbols max',
-        defaultMessage: 'Bitcoin has a maximum market cap of 21M coins',
-    },
-    TR_LOADING_FACT_24: {
-        id: 'TR_LOADING_FACT_24',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is not something that I\'m merely entitled to, it\'s an absolute prerequisite." - Marlon Brando',
-    },
-    TR_LOADING_FACT_25: {
-        id: 'TR_LOADING_FACT_25',
-        description: '140 symbols max',
-        defaultMessage: 'Bitcoin first reached parity with the US Dollar in February 2011',
-    },
-    TR_LOADING_FACT_26: {
-        id: 'TR_LOADING_FACT_26',
-        description: '140 symbols max',
-        defaultMessage:
-            'Slush Pool is the oldest Bitcoin mining pool, and also the first to be publicly available. Today it is operated by Braiins Pool',
     },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
@@ -10284,7 +10383,7 @@ export const messages = defineMessages({
     TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER: {
         id: 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER',
         defaultMessage:
-            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing has been received unless you claim it, and claiming locks up a reserve. <a>Learn more</a>',
+            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing is received unless you claim it, which locks up a reserve. <a>Learn more</a>',
     },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
@@ -10381,9 +10480,370 @@ export const messages = defineMessages({
         id: 'TR_DESKTOP_APP_PROMO_GET',
         defaultMessage: 'Get the Trezor Suite desktop app',
     },
+    TR_REFER_A_FRIEND: {
+        id: 'TR_REFER_A_FRIEND',
+        defaultMessage: 'Refer-A-Friend',
+    },
     TR_DASHBOARD_REFERRAL_BUTTON: {
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
         defaultMessage: 'Earn $20 per referral',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_TITLE',
+        defaultMessage: 'Complete your setup',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_ACCESSORY_PACK_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 7 Accessory Pack. Save 33%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_TITLE',
+        defaultMessage: 'Back up your wallet',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_KEEP_METAL_DESCRIPTION',
+        defaultMessage: 'Trezor Keep Metal, in stainless steel. Save 30%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_TITLE',
+        defaultMessage: 'A gift for someone close',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_GIFT_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 3. Save 34%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_TITLE',
+        defaultMessage: 'Get a backup device',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS3_BACKUP_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 3. Save 34% until 5 Jan.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_TITLE',
+        defaultMessage: 'Gift the full setup',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_COMPLETE_KIT_DESCRIPTION',
+        defaultMessage: 'Trezor Safe 7 Complete Kit. Save 35%.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_TITLE',
+        defaultMessage: 'Give a Trezor eGift Card',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_EGIFT_CARD_DESCRIPTION',
+        defaultMessage: 'Delivered by email. Let them choose.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_TITLE',
+        defaultMessage: 'Your next Trezor',
+    },
+    TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_BFH26_TS7_UPGRADE_DESCRIPTION',
+        defaultMessage: 'Upgrade to Trezor Safe 7. Save 28%.',
+    },
+    TR_REFERRAL_OPEN_STANDARD_WALLET: {
+        id: 'TR_REFERRAL_OPEN_STANDARD_WALLET',
+        defaultMessage:
+            'Open your standard wallet (without passphrase) to join Refer a Friend and see your rewards.',
+    },
+    TR_REFERRAL_UNAVAILABLE: {
+        id: 'TR_REFERRAL_UNAVAILABLE',
+        defaultMessage: 'Refer-A-Friend is currently unavailable.',
+    },
+    TR_REFERRAL_LOAD_REWARDS: {
+        id: 'TR_REFERRAL_LOAD_REWARDS',
+        defaultMessage: 'Load rewards',
+    },
+    TR_REFERRAL_LOAD_REWARDS_DESCRIPTION: {
+        id: 'TR_REFERRAL_LOAD_REWARDS_DESCRIPTION',
+        defaultMessage: 'Confirm on your Trezor to load your rewards.',
+    },
+    TR_REFERRAL_ERROR_PROGRAM: {
+        id: 'TR_REFERRAL_ERROR_PROGRAM',
+        defaultMessage: 'Refer-A-Friend couldn’t be loaded.',
+    },
+    TR_REFERRAL_ERROR_REWARDS: {
+        id: 'TR_REFERRAL_ERROR_REWARDS',
+        defaultMessage: 'Your rewards couldn’t be loaded.',
+    },
+    TR_REFERRAL_ERROR_GENERIC: {
+        id: 'TR_REFERRAL_ERROR_GENERIC',
+        defaultMessage: 'Something went wrong. Try again later.',
+    },
+    TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS: {
+        id: 'TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS',
+        defaultMessage: 'Debug and experimental settings',
+    },
+    TR_QUICK_ACTION_UPDATE_STATUS: {
+        id: 'TR_QUICK_ACTION_UPDATE_STATUS',
+        defaultMessage: 'Update status',
+    },
+    TR_REFERRAL_INVITATION_TITLE: {
+        id: 'TR_REFERRAL_INVITATION_TITLE',
+        defaultMessage: 'Invite friends, earn rewards',
+    },
+    TR_REFERRAL_CONNECT_DESCRIPTION: {
+        id: 'TR_REFERRAL_CONNECT_DESCRIPTION',
+        defaultMessage: 'Connect your Trezor to see your rewards.',
+    },
+    TR_REFERRAL_INVITATION_DESCRIPTION: {
+        id: 'TR_REFERRAL_INVITATION_DESCRIPTION',
+        defaultMessage: 'Get {rewardAmount} for each friend you invite.',
+    },
+    TR_REFERRAL_JOIN_PROGRAM: {
+        id: 'TR_REFERRAL_JOIN_PROGRAM',
+        defaultMessage: 'Join program',
+    },
+    TR_REFERRAL_CARD_YOU_GET: {
+        id: 'TR_REFERRAL_CARD_YOU_GET',
+        defaultMessage: 'You get',
+    },
+    TR_REFERRAL_CARD_VOUCHER: {
+        id: 'TR_REFERRAL_CARD_VOUCHER',
+        defaultMessage: '{rewardAmount} voucher',
+    },
+    TR_REFERRAL_CARD_THEY_GET: {
+        id: 'TR_REFERRAL_CARD_THEY_GET',
+        defaultMessage: 'They get',
+    },
+    TR_REFERRAL_CARD_FRIEND_DISCOUNT: {
+        id: 'TR_REFERRAL_CARD_FRIEND_DISCOUNT',
+        defaultMessage: '{friendDiscountPercentage}% off',
+    },
+    TR_REFERRAL_CARD_FRIEND_DISCOUNT_TOOLTIP: {
+        id: 'TR_REFERRAL_CARD_FRIEND_DISCOUNT_TOOLTIP',
+        defaultMessage:
+            'Your friends get {friendDiscountPercentage}% off their orders of {minimumOrderAmount} or more.',
+    },
+    TR_REFERRAL_TERMS: {
+        id: 'TR_REFERRAL_TERMS',
+        defaultMessage:
+            'By joining you agree to the <privacyPolicy>Privacy Policy</privacyPolicy>, the <programTerms>Refer a Friend Program Terms & Conditions</programTerms>, and the <generalTerms>General Terms of Use</generalTerms>.',
+    },
+    TR_REFERRAL_HOW_IT_WORKS: {
+        id: 'TR_REFERRAL_HOW_IT_WORKS',
+        defaultMessage: 'How it works',
+    },
+    TR_REFERRAL_GET_LINK: {
+        id: 'TR_REFERRAL_GET_LINK',
+        defaultMessage: 'Get your link',
+    },
+    TR_REFERRAL_GET_LINK_DESCRIPTION: {
+        id: 'TR_REFERRAL_GET_LINK_DESCRIPTION',
+        defaultMessage: 'Join the program and receive your unique referral link.',
+    },
+    TR_REFERRAL_INVITE_FRIENDS: {
+        id: 'TR_REFERRAL_INVITE_FRIENDS',
+        defaultMessage: 'Invite your friends',
+    },
+    TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION: {
+        id: 'TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION',
+        defaultMessage: 'Share your link in a message, an email, or a post.',
+    },
+    TR_REFERRAL_SPEND_REWARDS: {
+        id: 'TR_REFERRAL_SPEND_REWARDS',
+        defaultMessage: 'Spend on the Trezor Shop',
+    },
+    TR_REFERRAL_SPEND_REWARDS_DESCRIPTION: {
+        id: 'TR_REFERRAL_SPEND_REWARDS_DESCRIPTION',
+        defaultMessage: 'Earn {rewardAmount} vouchers to spend on Trezor products.',
+    },
+    TR_REFERRAL_FAQ_TITLE: {
+        id: 'TR_REFERRAL_FAQ_TITLE',
+        defaultMessage: 'Frequently asked questions',
+    },
+    TR_REFERRAL_FAQ_PROGRAM: {
+        id: 'TR_REFERRAL_FAQ_PROGRAM',
+        defaultMessage: 'What is the Refer a Friend program?',
+    },
+    TR_REFERRAL_FAQ_PROGRAM_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_PROGRAM_ANSWER',
+        defaultMessage:
+            'Invite friends to the Trezor Shop. When a friend places an order of {minimumOrderAmount} or more using your referral link, they get {friendDiscountPercentage}% off and you receive a {rewardAmount} reward in Suite.',
+    },
+    TR_REFERRAL_FAQ_JOIN: {
+        id: 'TR_REFERRAL_FAQ_JOIN',
+        defaultMessage: 'How do I join?',
+    },
+    TR_REFERRAL_FAQ_JOIN_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_JOIN_ANSWER',
+        defaultMessage:
+            'When the program is available, connect and unlock your Trezor in the standard wallet, then select Join program. No email or other personal details are required.',
+    },
+    TR_REFERRAL_FAQ_LEAVE: {
+        id: 'TR_REFERRAL_FAQ_LEAVE',
+        defaultMessage: 'How do I leave the program?',
+    },
+    TR_REFERRAL_FAQ_LEAVE_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_LEAVE_ANSWER',
+        defaultMessage:
+            'If you would like to leave the Refer-A-Friend program <leaveProgram>click here.</leaveProgram>',
+    },
+    TR_REFERRAL_LEAVE_TITLE: {
+        id: 'TR_REFERRAL_LEAVE_TITLE',
+        defaultMessage: 'Leave Refer-A-Friend',
+    },
+    TR_REFERRAL_LEAVE_DESCRIPTION: {
+        id: 'TR_REFERRAL_LEAVE_DESCRIPTION',
+        defaultMessage:
+            "Your referral link will stop working and you'll lose any pending rewards. Your existing vouchers will still work at checkout until they expire, but they won't appear in Trezor Suite.",
+    },
+    TR_REFERRAL_LEAVE_VOUCHER_WARNING: {
+        id: 'TR_REFERRAL_LEAVE_VOUCHER_WARNING',
+        defaultMessage: 'Make a copy of your voucher codes before you leave.',
+    },
+    TR_REFERRAL_LEAVE_PROGRAM: {
+        id: 'TR_REFERRAL_LEAVE_PROGRAM',
+        defaultMessage: 'Leave program',
+    },
+    TR_REFERRAL_SHARE_DESCRIPTION: {
+        id: 'TR_REFERRAL_SHARE_DESCRIPTION',
+        defaultMessage:
+            'Share this link. Your friends get {friendDiscountPercentage}% off orders of {minimumOrderAmount} or more, and you get a {rewardAmount} voucher.',
+    },
+    TR_REFERRAL_LINK: {
+        id: 'TR_REFERRAL_LINK',
+        defaultMessage: 'Referral link',
+    },
+    TR_REFERRAL_COPY_LINK: {
+        id: 'TR_REFERRAL_COPY_LINK',
+        defaultMessage: 'Copy link',
+    },
+    TR_REFERRAL_COPY_FAILED: {
+        id: 'TR_REFERRAL_COPY_FAILED',
+        defaultMessage: "Couldn't copy. Please try again.",
+    },
+    TR_REFERRAL_LIMIT_REACHED: {
+        id: 'TR_REFERRAL_LIMIT_REACHED',
+        defaultMessage:
+            'You’ve reached the limit of {annualReferralLimit} referrals or {annualRewardLimit} in rewards for the last 12 months. Your link will work again on {nextResetDate}. Until then, friends won’t get {friendDiscountPercentage}% off and you won’t earn rewards.',
+    },
+    TR_REFERRAL_YOUR_REWARDS: {
+        id: 'TR_REFERRAL_YOUR_REWARDS',
+        defaultMessage: 'Your rewards',
+    },
+    TR_REFERRAL_CONDITIONS: {
+        id: 'TR_REFERRAL_CONDITIONS',
+        defaultMessage: 'Conditions',
+    },
+    TR_REFERRAL_REWARDS_CONDITIONS: {
+        id: 'TR_REFERRAL_REWARDS_CONDITIONS',
+        defaultMessage:
+            "Vouchers are ready within {rewardWaitingPeriodDays} days of your friend's confirmed order",
+    },
+    TR_REFERRAL_TOTAL_EARNED: {
+        id: 'TR_REFERRAL_TOTAL_EARNED',
+        defaultMessage: 'Total earned',
+    },
+    TR_REFERRAL_VOUCHERS: {
+        id: 'TR_REFERRAL_VOUCHERS',
+        defaultMessage: 'Vouchers',
+    },
+    TR_REFERRAL_REFERRALS: {
+        id: 'TR_REFERRAL_REFERRALS',
+        defaultMessage: 'Referrals',
+    },
+    TR_REFERRAL_NO_REWARDS: {
+        id: 'TR_REFERRAL_NO_REWARDS',
+        defaultMessage: 'No rewards',
+    },
+    TR_REFERRAL_REWARDS_WILL_APPEAR: {
+        id: 'TR_REFERRAL_REWARDS_WILL_APPEAR',
+        defaultMessage: 'Your rewards will appear here',
+    },
+    TR_REFERRAL_VOUCHER_NUMBER: {
+        id: 'TR_REFERRAL_VOUCHER_NUMBER',
+        defaultMessage: 'Voucher #{number}',
+    },
+    TR_REFERRAL_VOUCHER_READY: {
+        id: 'TR_REFERRAL_VOUCHER_READY',
+        defaultMessage: 'Ready',
+    },
+    TR_REFERRAL_VOUCHER_PENDING: {
+        id: 'TR_REFERRAL_VOUCHER_PENDING',
+        defaultMessage: 'Pending',
+    },
+    TR_REFERRAL_VOUCHER_USED: {
+        id: 'TR_REFERRAL_VOUCHER_USED',
+        defaultMessage: 'Used',
+    },
+    TR_REFERRAL_VOUCHER_CANCELED: {
+        id: 'TR_REFERRAL_VOUCHER_CANCELED',
+        defaultMessage: 'Canceled',
+    },
+    TR_REFERRAL_VOUCHER_EXPIRED: {
+        id: 'TR_REFERRAL_VOUCHER_EXPIRED',
+        defaultMessage: 'Expired',
+    },
+    TR_REFERRAL_VOUCHER_AVAILABLE_IN: {
+        id: 'TR_REFERRAL_VOUCHER_AVAILABLE_IN',
+        defaultMessage: 'Available in {days} days',
+    },
+    TR_REFERRAL_VOUCHER_EXPIRATION: {
+        id: 'TR_REFERRAL_VOUCHER_EXPIRATION',
+        defaultMessage: 'Expiration date {date}',
+    },
+    TR_REFERRAL_VOUCHER_EXPIRED_ON: {
+        id: 'TR_REFERRAL_VOUCHER_EXPIRED_ON',
+        defaultMessage: 'Expired on {date}',
+    },
+    TR_REFERRAL_FAQ_SHARE: {
+        id: 'TR_REFERRAL_FAQ_SHARE',
+        defaultMessage: 'How do I refer a friend?',
+    },
+    TR_REFERRAL_FAQ_SHARE_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_SHARE_ANSWER',
+        defaultMessage:
+            'After joining, share your referral link with friends in a message, an email, or a post. You earn a reward when they use your link to place a qualifying order.',
+    },
+    TR_REFERRAL_FAQ_LIMIT: {
+        id: 'TR_REFERRAL_FAQ_LIMIT',
+        defaultMessage: 'Is there a limit to how many friends I can refer?',
+    },
+    TR_REFERRAL_FAQ_LIMIT_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_LIMIT_ANSWER',
+        defaultMessage:
+            'You can make up to {annualReferralLimit} referrals and earn up to {annualRewardLimit} in Trezor Shop vouchers within a 12-month period. Every order placed using your link counts, even if it’s later canceled or returned. Once you reach either limit, your friends won’t get {friendDiscountPercentage}% off and you won’t earn rewards until the date shown on this page.',
+    },
+    TR_REFERRAL_FAQ_REDEEM: {
+        id: 'TR_REFERRAL_FAQ_REDEEM',
+        defaultMessage: 'How can I use my {rewardAmount} reward?',
+    },
+    TR_REFERRAL_FAQ_REDEEM_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_REDEEM_ANSWER',
+        defaultMessage:
+            'Your rewards appear here in Suite. When a reward is ready, use its voucher code at checkout on the Trezor Shop.',
+    },
+    TR_REFERRAL_FAQ_COMBINE: {
+        id: 'TR_REFERRAL_FAQ_COMBINE',
+        defaultMessage:
+            'Can my friend combine the {friendDiscountPercentage}% with other promotions?',
+    },
+    TR_REFERRAL_FAQ_COMBINE_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_COMBINE_ANSWER',
+        defaultMessage:
+            'The referral discount cannot be combined with other promotions or discount codes.',
+    },
+    TR_REFERRAL_FAQ_SUPPORT: {
+        id: 'TR_REFERRAL_FAQ_SUPPORT',
+        defaultMessage: "My reward isn't working. What should I do?",
+    },
+    TR_REFERRAL_FAQ_SUPPORT_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_SUPPORT_ANSWER',
+        defaultMessage:
+            'Check the voucher code and its status in Suite. If the issue persists, contact Trezor Support.',
+    },
+    TR_REFERRAL_FAQ_OLD_PROGRAM: {
+        id: 'TR_REFERRAL_FAQ_OLD_PROGRAM',
+        defaultMessage: 'I was in the old Refer a Friend program. What do I do?',
+    },
+    TR_REFERRAL_FAQ_OLD_PROGRAM_ANSWER: {
+        id: 'TR_REFERRAL_FAQ_OLD_PROGRAM_ANSWER',
+        defaultMessage:
+            'Join again here when the new program is available to receive a new referral link.',
     },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
@@ -10639,8 +11099,12 @@ export const messages = defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
-    TR_EARN_STAKING_DASHBOARD_TITLE: {
-        id: 'TR_EARN_STAKING_DASHBOARD_TITLE',
+    TR_EARN_DEFI_YIELD: {
+        id: 'TR_EARN_DEFI_YIELD',
+        defaultMessage: 'DeFi Yield',
+    },
+    TR_EARN_STAKING: {
+        id: 'TR_EARN_STAKING',
         defaultMessage: 'Staking',
     },
     TR_EARN_STAKING_DASHBOARD_TEXT: {
@@ -10793,7 +11257,8 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE: {
         id: 'TR_EARN_YIELD_APY_SOURCE_PROTOCOL_INCENTIVE',
-        defaultMessage: 'Bonus rewards, claimed separately in the Earn tab.',
+        defaultMessage:
+            'Bonus rewards are offered for a limited time and claimed separately in the Earn tab.',
     },
     TR_EARN_YIELD_APY_TOOLTIP_FOOTER: {
         id: 'TR_EARN_YIELD_APY_TOOLTIP_FOOTER',
@@ -10903,10 +11368,6 @@ export const messages = defineMessages({
     TR_EARN_YIELD_UNWRAP_DISABLED: {
         id: 'TR_EARN_YIELD_UNWRAP_DISABLED',
         defaultMessage: 'Unwrapping is currently disabled.',
-    },
-    TR_EARN_DEFI_YIELD_TITLE: {
-        id: 'TR_EARN_DEFI_YIELD_TITLE',
-        defaultMessage: 'DeFi Yield',
     },
     TR_EARN_YIELD_PENDING_DEPOSIT: {
         id: 'TR_EARN_YIELD_PENDING_DEPOSIT',
@@ -11046,6 +11507,10 @@ export const messages = defineMessages({
         defaultMessage:
             'Your Cardano is no longer earning rewards. Switch to our partner Everstake to earn up to {apy}% APY. Your ADA and past rewards are safe.',
     },
+    TR_STAKING_DIFFERENT_PROVIDER: {
+        id: 'TR_STAKING_DIFFERENT_PROVIDER',
+        defaultMessage: 'Staked with a different provider',
+    },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
         defaultMessage: 'No rewards',
@@ -11138,10 +11603,19 @@ export const messages = defineMessages({
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
         defaultMessage: 'Earn ~{apy}% APY by staking your {displaySymbol}',
     },
+    TR_STAKING_BANNER_DETAIL_TITLE_APR: {
+        id: 'TR_STAKING_BANNER_DETAIL_TITLE_APR',
+        defaultMessage: 'Earn ~{apr}% APR by staking your {displaySymbol}',
+    },
     TR_STAKING_BANNER_DETAIL_TEXT: {
         id: 'TR_STAKING_BANNER_DETAIL_TEXT',
         defaultMessage:
             'Stake your balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY.',
+    },
+    TR_STAKING_BANNER_DETAIL_TEXT_APR: {
+        id: 'TR_STAKING_BANNER_DETAIL_TEXT_APR',
+        defaultMessage:
+            'Stake your balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APR.',
     },
     TR_EARN_APY_WITH_EVERSTAKE: {
         id: 'TR_EARN_APY_WITH_EVERSTAKE',
@@ -11172,6 +11646,10 @@ export const messages = defineMessages({
     TR_STAKING_BANNER_ETH_EARN_BUTTON: {
         id: 'TR_STAKING_BANNER_ETH_EARN_BUTTON',
         defaultMessage: 'Explore',
+    },
+    TR_EARN_TOKEN_YIELD_BANNER_TEXT: {
+        id: 'TR_EARN_TOKEN_YIELD_BANNER_TEXT',
+        defaultMessage: 'Deposit your {displaySymbol} in a yield vault and earn rewards on it.',
     },
     TR_STAKING_CARD_TITLE: {
         id: 'TR_STAKING_CARD_TITLE',
@@ -11458,6 +11936,10 @@ export const messages = defineMessages({
     TR_EARN_NOT_AVAILABLE: {
         id: 'TR_EARN_NOT_AVAILABLE',
         defaultMessage: 'Not available',
+    },
+    TR_EARN_N_A: {
+        id: 'TR_EARN_N_A',
+        defaultMessage: 'N/A',
     },
     TR_EARN_APY_N_A: {
         id: 'TR_EARN_APY_N_A',
@@ -11785,10 +12267,6 @@ export const messages = defineMessages({
     TR_EARN_TRON_WITHDRAW_READY: {
         id: 'TR_EARN_TRON_WITHDRAW_READY',
         defaultMessage: '{amount} unstaked and ready to withdraw',
-    },
-    TR_EARN_TRON_HOW_IT_WORKS: {
-        id: 'TR_EARN_TRON_HOW_IT_WORKS',
-        defaultMessage: 'How staking works',
     },
     TR_EARN_TRON_MY_ENERGY: {
         id: 'TR_EARN_TRON_MY_ENERGY',
@@ -12687,6 +13165,10 @@ export const messages = defineMessages({
         id: 'TR_URL_IN_TOKEN',
         defaultMessage: "Never visit URLs in token names or symbols; they're usually scams.",
     },
+    TR_UNKNOWN_TOKEN: {
+        id: 'TR_UNKNOWN_TOKEN',
+        defaultMessage: 'Unknown token',
+    },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
         defaultMessage: 'This Passphrase wallet is empty',
@@ -12729,7 +13211,7 @@ export const messages = defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION',
         defaultMessage:
-            'Write your passphrase on paper & keep it away from anything digital—no clouds, USB, internet, or phones.',
+            'Write your passphrase on paper & keep it away from anything digital—no cloud storage, USB, internet, or phones.',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION',
@@ -12894,10 +13376,15 @@ export const messages = defineMessages({
         id: 'TR_SHOW_ON_TRAY_DESCRIPTION',
         defaultMessage: 'Monitor when Trezor Suite is running in the background.',
     },
-    TR_CUSTOM_FEE_WARNING: {
-        id: 'TR_CUSTOM_FEE_WARNING',
+    TR_CUSTOM_FEE_TOO_LOW_WARNING: {
+        id: 'TR_CUSTOM_FEE_TOO_LOW_WARNING',
         defaultMessage:
-            'Setting a low fee might cause your transaction to fail or experience significant delays.',
+            'A fee this low may leave your transaction pending for a long time or prevent it from being confirmed.',
+    },
+    TR_CUSTOM_FEE_BELOW_BASE_FEE_WARNING: {
+        id: 'TR_CUSTOM_FEE_BELOW_BASE_FEE_WARNING',
+        defaultMessage:
+            "This is below the current base fee of {baseFee}. Your transaction can't be included until the base fee drops.",
     },
     TR_BUMP_FEE_DISABLED_TOOLTIP: {
         id: 'TR_BUMP_FEE_DISABLED_TOOLTIP',
@@ -12925,6 +13412,10 @@ export const messages = defineMessages({
     TR_CONNECT_MODAL_REMEMBER: {
         id: 'TR_CONNECT_MODAL_REMEMBER',
         defaultMessage: 'Always allow for this app',
+    },
+    TR_CONNECT_PROCESS_UNIDENTIFIED: {
+        id: 'TR_CONNECT_PROCESS_UNIDENTIFIED',
+        defaultMessage: "Suite couldn't identify which app this is.",
     },
     TR_WALLETCONNECT_SERVICE_VERIFIED: {
         id: 'TR_WALLETCONNECT_SERVICE_VERIFIED',
@@ -13169,10 +13660,6 @@ export const messages = defineMessages({
         id: 'TR_CONNECTED_TO',
         defaultMessage: 'Connected to',
     },
-    TR_SELECT_ACCOUNT: {
-        id: 'TR_SELECT_ACCOUNT',
-        defaultMessage: 'Select {networkName} account',
-    },
     TR_ACCOUNT: {
         id: 'TR_ACCOUNT',
         defaultMessage: 'Account',
@@ -13410,6 +13897,11 @@ export const messages = defineMessages({
     TR_SUITE_SYNC_ERROR_UNAVAILABLE: {
         id: 'TR_SUITE_SYNC_ERROR_UNAVAILABLE',
         defaultMessage: 'Suite Sync is unavailable on this device.',
+    },
+    TR_SUITE_SYNC_ERROR_LAZY_LOADING: {
+        id: 'TR_SUITE_SYNC_ERROR_LAZY_LOADING',
+        defaultMessage:
+            'Something went wrong. Try reloading the app, and if it keeps happening, contact Trezor Support.',
     },
     TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
         id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',

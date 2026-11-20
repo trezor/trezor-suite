@@ -1,9 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { View } from 'react-native';
+import { type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
-
-import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

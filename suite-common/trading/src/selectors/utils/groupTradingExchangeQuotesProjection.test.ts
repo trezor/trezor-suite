@@ -2,7 +2,7 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { groupTradingExchangeQuotesProjection } from './groupTradingExchangeQuotesProjection';
 
-describe(groupTradingExchangeQuotesProjection.name, () => {
+describe('groupTradingExchangeQuotesProjection', () => {
     it('groups quotes into dex, fixed and float groups', () => {
         const quotes = [
             {

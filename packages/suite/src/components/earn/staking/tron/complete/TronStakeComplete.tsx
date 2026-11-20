@@ -9,8 +9,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { EarnFlowFeedbackCard } from '#src/components/earn/common/EarnFlowFeedbackCard';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 interface TronStakeCompleteProps {
     account: Account;
@@ -71,7 +71,7 @@ export const TronStakeComplete = ({
             </Button>
 
             <EarnFlowFeedbackCard
-                featureTitleId="TR_EARN_STAKING_DASHBOARD_TITLE"
+                featureTitleId="TR_EARN_STAKING"
                 analyticsCategory="staking"
                 context={`tron-${flow}`}
                 feature="staking"

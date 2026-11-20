@@ -3,7 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 type Attributes = {
-    type: AttributeDef<'approve-modal' | 'exchange-form' | 'revoke-modal'>;
+    type: AttributeDef<'approve-modal' | 'exchange-form' | 'revoke-modal' | 'manage-approval'>;
     action: AttributeDef<
         | 'continue'
         | 'cancel'
@@ -13,6 +13,8 @@ type Attributes = {
         | 'limit-unlimited'
         | 'revoke'
         | 'approve'
+        | 'fee-change'
+        | 'manage'
     >;
 
     sendCryptoLabel?: AttributeDef<string>;
@@ -31,18 +33,33 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
     name: EventType.TradeApproval,
     descriptionTrigger:
         'User interacts with an approve or revoke DEX swap transaction on Ethereum Virtual Machine (EVM) compatible blockchains',
-    changelog: [{ version: '25.9.0', notes: 'added' }],
+    changelog: [
+        { version: '25.9.0', notes: 'added' },
+        { version: '26.12.0', notes: 'added the manage approval page' },
+    ],
 
     attributes: {
         type: {
             description:
-                'The type of approval interaction: `approve-modal` for token approval, `exchange-form` for exchange form action, `revoke-modal` for token revocation',
-            changelog: [{ version: '25.9.0', notes: 'added' }],
+                'The type of approval interaction: `approve-modal` for token approval, `exchange-form` for exchange form action, `revoke-modal` for token revocation, `manage-approval` for the page showing the on-chain approval',
+            changelog: [
+                { version: '25.9.0', notes: 'added' },
+                {
+                    version: '26.12.0',
+                    notes: 'reported from the approval steps; added `manage-approval`',
+                },
+            ],
         },
         action: {
             description:
-                'The user action performed: `continue` to proceed, `cancel` to abort, `refresh` to refresh, `swap` to execute swap, `limit-exact` for minimal token approval amount, `limit-unlimited` for infinite token approval amount, `revoke` to revoke, `approve` to approve',
-            changelog: [{ version: '25.9.0', notes: 'added' }],
+                'The user action performed: `continue` to proceed, `cancel` to abort, `refresh` to refresh, `swap` to execute swap, `limit-exact` for minimal token approval amount, `limit-unlimited` for infinite token approval amount, `revoke` to revoke, `approve` to approve, `fee-change` to change the approval or revoke transaction fee level, `manage` to open the manage approval page',
+            changelog: [
+                { version: '25.9.0', notes: 'added' },
+                {
+                    version: '26.12.0',
+                    notes: 'added `fee-change` and `manage`; `exchange-form` reports `approve` when starting the approval steps',
+                },
+            ],
         },
         sendCryptoLabel: {
             description: 'User-friendly label or name of the cryptocurrency being sent',
@@ -71,8 +88,15 @@ export const tradeApprovalEvent: EventDef<Attributes, EventType.TradeApproval> =
             changelog: [{ version: '25.9.0', notes: 'added' }],
         },
         selectedFee: {
-            description: 'The selected transaction fee level or custom gas price',
-            changelog: [{ version: '25.9.0', notes: 'added' }],
+            description:
+                'The selected fee level; in the approval steps the fee level of the approval or revoke transaction',
+            changelog: [
+                { version: '25.9.0', notes: 'added' },
+                {
+                    version: '26.12.0',
+                    notes: 'approval steps report the approval or revoke transaction fee level',
+                },
+            ],
         },
         exchangeName: {
             description: 'The name of the DEX exchange or trading provider being used',

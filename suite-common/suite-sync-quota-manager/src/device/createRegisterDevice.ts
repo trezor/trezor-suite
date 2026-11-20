@@ -3,14 +3,10 @@ import {
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { DeviceError } from '@suite-common/device';
 import { type QuotaManagerCommunicationFailedErrType } from '@suite-common/suite-sync-types';
-import {
-    type DelegatedIdentityKey,
-    type DeviceErrorType,
-    type TrezorDeviceWithState,
-} from '@suite-common/suite-types';
+import { type DelegatedIdentityKey, type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { DeviceError, type DeviceErrorType } from '@trezor/device';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Dispatch } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
@@ -65,7 +61,11 @@ const getIsEvoluSignRegistrationRequestV2Supported = (device: TrezorDeviceWithSt
 export const createRegisterDevice =
     (deps: RegisterDeviceDeps): RegisterDevice =>
     async ({ device, delegatedKey }) => {
-        const delegatedKeyPublic = getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+        const delegatedKeyPublicResult = await getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+
+        if (!delegatedKeyPublicResult.success) {
+            return delegatedKeyPublicResult;
+        }
 
         const sessionChallenge = await deps.prepareChallengeSessionFetch();
 
@@ -73,7 +73,7 @@ export const createRegisterDevice =
             return err(QuotaManagerCommunicationFailed(sessionChallenge.error));
         }
 
-        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+        const proofOfDelegatedIdentity = await getProofOfDelegatedIdentity({
             delegatedKey,
             header: EVOLU_SIGN_REGISTRATION_REQUEST_HEADER,
             appendMessageBuffer: prepareMessageBufferEvoluSignRegistrationRequest({
@@ -89,6 +89,12 @@ export const createRegisterDevice =
         const registrationRequestResult = await deps
             .getTrezorConnect()
             .evoluSignRegistrationRequest({
+                device: {
+                    path: device.path,
+                    state: device.state,
+                    instance: device.instance ?? 0,
+                    useEmptyPassphrase: device.useEmptyPassphrase ?? false,
+                },
                 challenge_from_server: sessionChallenge.payload.challenge,
                 size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
                 proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
@@ -116,7 +122,7 @@ export const createRegisterDevice =
             proof: registrationRequestResult.payload.signature,
             sessionId: sessionChallenge.payload.sessionId,
             deviceModel: device.features.internal_model,
-            publicKey: delegatedKeyPublic,
+            publicKey: delegatedKeyPublicResult.payload,
             ...(getIsEvoluSignRegistrationRequestV2Supported(device)
                 ? { rotationIndex: rotation_index ?? 0 }
                 : {}),

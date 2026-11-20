@@ -2,6 +2,7 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     type DeviceStatus as ConnectedDeviceStatus,
     type getStatus,
@@ -11,8 +12,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
-import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import { redirectAfterWalletSelectedThunk } from '#src/actions/wallet/addWalletThunk';
+import type { ForegroundAppProps } from '#src/types/suite';
 
 import { getDeviceResolveStatusCTAMessage } from './getDeviceResolveStatusCTAMessage';
 

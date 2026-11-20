@@ -1,8 +1,8 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenSymbol } from '@suite-common/wallet-types';
 import { Text, type TextProps } from '@trezor/components';
 
 type EarnRewardsAmountProps = {

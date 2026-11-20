@@ -2,10 +2,11 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 
-import { fillSendForm } from 'src/actions/suite/protocolActions';
+import { fillSendForm } from '#src/actions/suite/protocolActions';
 
 import fixtures from './__fixtures__/protocolReducer';
-import protocolReducer, { type ProtocolState } from './protocolReducer';
+import protocolReducer from './protocolReducer';
+import { type ProtocolState } from './protocolState';
 
 type FillSendFormCase = {
     description: string;

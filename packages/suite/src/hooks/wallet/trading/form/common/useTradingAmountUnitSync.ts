@@ -14,8 +14,8 @@ import {
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { type TradingAllFormProps } from '#src/types/trading/tradingForm';
 
 const bitcoinSymbol = asNetworkSymbol('btc');
 

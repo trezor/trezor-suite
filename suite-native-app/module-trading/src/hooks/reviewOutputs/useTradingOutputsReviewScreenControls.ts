@@ -1,0 +1,264 @@
+import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+
+import { type TradingType, isSilentTradingError } from '@suite-common/trading';
+import { sendFormActions } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
+import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
+import type {
+    TradingExchangeAnalyticReportCallback,
+    TradingSellAnalyticReportCallback,
+} from '@suite-native/trading-analytics';
+import { tradingActions } from '@suite-native/trading-state';
+import { type TradingOutputsReviewScreenNavigationProp } from '@suite-native/trading-types';
+import {
+    selectIsTransactionAlreadySigned,
+    useOutputsReviewBackInterceptor,
+} from '@suite-native/transaction-management';
+import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+import { exhaustive } from '@trezor/type-utils';
+
+import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
+import { useTradingTxValidityTimer } from './useTradingTxValidityTimer';
+import { useCloseTradingFlow } from '../general/useCloseTradingFlow';
+import type {
+    TradingTransactionSignAndSendProps,
+    UseTradingTransactionReturnProps,
+} from '../general/useTradingTransaction';
+
+export type UseTradingOutputsReviewScreenControlsProps = Pick<
+    UseTradingTransactionReturnProps,
+    'resolveTransactionSendConsent' | 'signAndSendTransaction'
+> & {
+    orderId: string;
+    accountKey: AccountKey;
+    tradingType: Exclude<TradingType, 'buy'>;
+    reportToAnalytics: TradingExchangeAnalyticReportCallback | TradingSellAnalyticReportCallback;
+    isDexExchange?: boolean;
+    exchangeFlowType?: ExchangeFlowType;
+};
+
+export const useTradingOutputsReviewScreenControls = ({
+    orderId,
+    accountKey,
+    tradingType,
+    exchangeFlowType,
+    signAndSendTransaction,
+    resolveTransactionSendConsent,
+    reportToAnalytics,
+    isDexExchange,
+}: UseTradingOutputsReviewScreenControlsProps) => {
+    const signingExecutedRef = useRef(false);
+    const activeSigningAttemptIdRef = useRef(0);
+
+    const [isBroadcasting, setIsBroadcasting] = useState(false);
+
+    const navigation = useNavigation<TradingOutputsReviewScreenNavigationProp>();
+    const closeTradingFlow = useCloseTradingFlow();
+    const { dispatch } = useServices(injectDispatch);
+
+    const { confirmOnTrezorRef, closeSheet, revealConfirmOnTrezorSheet } =
+        useConfirmOnTrezorController();
+    const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert();
+
+    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
+
+    const reportVisit = useEffectEvent(() => {
+        reportToAnalytics('sign-and-send', 'visit');
+    });
+    useEffect(() => {
+        reportVisit();
+    }, []);
+
+    const onReviewCanceled = useCallback(() => {
+        activeSigningAttemptIdRef.current += 1;
+        resolveTransactionSendConsent(false);
+        TrezorConnect.cancel('tx-cancelled');
+        dispatch(tradingActions.requestTradingFormReset(tradingType));
+        closeTradingFlow();
+        reportToAnalytics('sign-and-send', 'cancel');
+    }, [closeTradingFlow, dispatch, reportToAnalytics, resolveTransactionSendConsent, tradingType]);
+
+    useOutputsReviewBackInterceptor(onReviewCanceled);
+
+    const returnToExchangePreview = useCallback(() => {
+        navigation.popTo(TradingStackRoutes.TradingExchangePreview, {}, { merge: true });
+    }, [navigation]);
+
+    const returnToTradePreview = useCallback(() => {
+        reportToAnalytics('sign-and-send', 'cancel');
+        dispatch(sendFormActions.clearSignedTransactionData());
+
+        if (tradingType === 'sell') {
+            navigation.popTo(TradingStackRoutes.TradingSellCompletion);
+
+            return;
+        }
+
+        switch (exchangeFlowType) {
+            case 'approve':
+                navigation.popTo(TradingStackRoutes.TradingExchangeApproval, {}, { merge: true });
+
+                return;
+            case 'revoke':
+            case 'revoke-and-approve':
+                navigation.popTo(TradingStackRoutes.TradingExchangeRevoke, {}, { merge: true });
+
+                return;
+            case 'swap':
+            case 'sign-data':
+            case undefined:
+                returnToExchangePreview();
+
+                return;
+            default:
+                return exhaustive(exchangeFlowType);
+        }
+    }, [
+        dispatch,
+        exchangeFlowType,
+        navigation,
+        reportToAnalytics,
+        returnToExchangePreview,
+        tradingType,
+    ]);
+
+    const nextStep: TradingTransactionSignAndSendProps['nextStep'] = useCallback(() => {
+        dispatch(tradingActions.requestTradingFormReset(tradingType));
+        closeTradingFlow();
+        reportToAnalytics('sign-and-send', 'continue');
+        dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
+    }, [closeTradingFlow, dispatch, orderId, reportToAnalytics, tradingType]);
+
+    const startSigning = useCallback(() => {
+        signingExecutedRef.current = true;
+
+        const runSigningAttempt = () => {
+            const signingAttemptId = activeSigningAttemptIdRef.current + 1;
+            activeSigningAttemptIdRef.current = signingAttemptId;
+
+            const handleSigningError: TradingTransactionSignAndSendProps['onError'] = error => {
+                if (signingAttemptId !== activeSigningAttemptIdRef.current) {
+                    return;
+                }
+
+                setIsBroadcasting(false);
+
+                if (error.type === 'sign-cancelled') {
+                    returnToTradePreview();
+
+                    return;
+                }
+
+                if (isSilentTradingError(error)) {
+                    return;
+                }
+
+                showOutputsReviewErrorAlert(
+                    error,
+                    () => {
+                        reportToAnalytics('sign-and-send', 'retry');
+                        runSigningAttempt();
+                    },
+                    onReviewCanceled,
+                );
+            };
+
+            return signAndSendTransaction({ nextStep, onError: handleSigningError });
+        };
+
+        return runSigningAttempt();
+    }, [
+        nextStep,
+        onReviewCanceled,
+        reportToAnalytics,
+        returnToTradePreview,
+        showOutputsReviewErrorAlert,
+        signAndSendTransaction,
+    ]);
+
+    const startInitialSigning = useEffectEvent(() => {
+        if (!signingExecutedRef.current && !isTransactionAlreadySigned) {
+            startSigning();
+        }
+    });
+
+    useEffect(() => {
+        startInitialSigning();
+
+        return () => {
+            // just in case, we don't want to show alert if user already left the screen
+            activeSigningAttemptIdRef.current += 1;
+        };
+    }, []);
+
+    // TODO: We should handle the close by event callback from the signing process.
+    useEffect(() => {
+        if (isTransactionAlreadySigned) {
+            closeSheet();
+        }
+    }, [closeSheet, isTransactionAlreadySigned]);
+
+    const handleSolanaRetry = useCallback(async () => {
+        activeSigningAttemptIdRef.current += 1;
+        resolveTransactionSendConsent(false);
+        TrezorConnect.cancel('tx-timeout');
+        dispatch(sendFormActions.clearSignedTransactionData());
+        setIsBroadcasting(false);
+
+        if (isDexExchange) {
+            returnToExchangePreview();
+
+            return;
+        }
+
+        revealConfirmOnTrezorSheet();
+
+        await startSigning();
+    }, [
+        dispatch,
+        isDexExchange,
+        returnToExchangePreview,
+        resolveTransactionSendConsent,
+        revealConfirmOnTrezorSheet,
+        startSigning,
+    ]);
+
+    const { isPastDeadline, isRetryDisabled, onRetry, secondsLeft, showTimer } =
+        useTradingTxValidityTimer({
+            isDexExchange,
+            accountKey,
+            isBroadcasting,
+            isTransactionAlreadySigned,
+            onRetry: handleSolanaRetry,
+            onCancel: onReviewCanceled,
+        });
+
+    const handleSendTransaction = useCallback(() => {
+        if (isPastDeadline || isBroadcasting) {
+            return;
+        }
+
+        setIsBroadcasting(true);
+        resolveTransactionSendConsent(true);
+    }, [isBroadcasting, resolveTransactionSendConsent, isPastDeadline]);
+
+    return {
+        isTransactionAlreadySigned,
+        confirmOnTrezorRef,
+        closeSheet,
+        revealConfirmOnTrezorSheet,
+        handleSendTransaction,
+        showTimer,
+        secondsLeft,
+        isPastDeadline,
+        isBroadcasting,
+        onRetry,
+        isRetryDisabled,
+    };
+};

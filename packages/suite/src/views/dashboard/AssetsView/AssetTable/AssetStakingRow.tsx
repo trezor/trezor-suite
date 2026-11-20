@@ -1,9 +1,11 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Table, Text } from '@trezor/components';
 import { PiggyBankFilledIcon } from '@trezor/icons';
 
-import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
 
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 
@@ -28,7 +30,7 @@ export const AssetStakingRow = ({
                 </Section>
             </Table.Cell>
             <Table.Cell padding={{ left: 0 }}>
-                <Translation id="TR_NAV_STAKING" />
+                <Translation id="TR_EARN_STAKING" />
             </Table.Cell>
             <Table.Cell colSpan={4}>
                 {stakingTotalBalance && (

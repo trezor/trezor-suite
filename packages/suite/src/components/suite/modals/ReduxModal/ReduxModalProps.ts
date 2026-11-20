@@ -1,10 +1,5 @@
-import { type MODAL_CONTEXT_NONE } from '@suite/modal';
-
-import type { AppState } from 'src/types/suite';
+import { type MODAL_CONTEXT_NONE, type State as ModalState } from '@suite/modal';
 
 export type ReduxModalProps<
-    T extends AppState['modal']['context'] = Exclude<
-        AppState['modal']['context'],
-        typeof MODAL_CONTEXT_NONE
-    >,
-> = Extract<AppState['modal'], { context: T }>;
+    T extends ModalState['context'] = Exclude<ModalState['context'], typeof MODAL_CONTEXT_NONE>,
+> = Extract<ModalState, { context: T }>;

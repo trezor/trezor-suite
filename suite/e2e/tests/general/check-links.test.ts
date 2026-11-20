@@ -10,6 +10,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const IGNORED_PATTERNS = [
     'github.com/trezor/trezor-suite/releases/tag',
+    'github.com/trezor/trezor-suite/commits/',
     'apps.apple.com/app/id1631884497',
 ];
 
@@ -119,6 +120,7 @@ const SECTIONS = {
         '/hidden-tokens',
         '/asset',
         '/notifications',
+        '/refer-a-friend',
         '/version',
         '/bridge',
         '/bridge-requested',

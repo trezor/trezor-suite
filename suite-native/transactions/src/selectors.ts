@@ -6,6 +6,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type TokenAddress, type TokenSymbol, toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -24,8 +25,6 @@ import {
 import {
     type AccountKey,
     type Timestamp,
-    type TokenAddress,
-    type TokenSymbol,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -104,6 +103,8 @@ export type TransactionTranfer = {
     inputs: TransactionTransferInputOutput[];
     outputs: TransactionTransferInputOutput[];
     symbol: NetworkSymbol | TokenSymbol;
+    networkSymbol?: NetworkSymbol;
+    tokenContract?: TokenAddress;
     decimals?: number;
 };
 
@@ -172,7 +173,9 @@ export const selectTransactionInputAndOutputTransfers = createMemoizedSelector(
                         contract,
                     ),
             ),
-            A.map(({ from, to, amount, symbol, decimals }) => ({
+            A.map(({ from, to, amount, symbol, decimals, contract }) => ({
+                networkSymbol: transaction.symbol,
+                tokenContract: toTokenAddress(contract),
                 inputs: [{ address: from }],
                 outputs: [{ address: to, amount }],
                 symbol: symbol as TokenSymbol,

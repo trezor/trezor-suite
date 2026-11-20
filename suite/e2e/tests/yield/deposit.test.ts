@@ -67,7 +67,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                     .accountLabel({ symbol: asNetworkSymbol('eth'), type: 'normal', atIndex: 0 })
                     .innerText();
 
-                await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD_TITLE');
+                await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD');
 
                 for (const expectedRow of EXPECT_YIELD_DASHBOARD_ROWS) {
                     await expect(yieldSection.accountLabel(expectedRow.id)).toHaveText(

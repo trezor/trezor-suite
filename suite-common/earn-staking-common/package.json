@@ -17,7 +17,8 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
-        "zod": "4.6.7"
+        "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"

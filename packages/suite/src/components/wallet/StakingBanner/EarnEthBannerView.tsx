@@ -3,7 +3,7 @@ import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-confi
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 type EarnEthBannerViewProps = {
     networkSymbol: NetworkSymbol;

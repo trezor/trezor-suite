@@ -4,24 +4,29 @@ import {
     type DeviceRootState,
     selectDeviceStaticSessionId,
     selectHasBitcoinOnlyFirmware,
+    selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
-import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    type AssetAccount,
-    type AssetAccountsRootState,
+    formatStakingAmount,
+    selectCountedStakingPositionEntriesByAccount,
+} from '@suite-common/earn-staking';
+import { getStakingPositionAmount, stakingAmountSchema } from '@suite-common/earn-staking-common';
+import {
+    type NetworksRootState,
+    selectNetworkNamesMap,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
+import { type TokenAddress, type TokenSymbol, toTokenSymbol } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
     type FiatRatesRootState,
-    type HiddenTokenReason,
     type WalletAssetKey,
     type WalletSettingsRootState,
     getWalletAssetKey,
     selectAreHomeAssetSmallBalancesShown,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceAssetAccounts,
     selectEnabledSupportedNetworks,
-    selectHiddenAssetAccountKeySet,
-    selectHiddenTokenReasons,
     selectHomeAssetsTableGrouping,
     selectLastWeekFiatRates,
     selectVisibleDeviceAccounts,
@@ -31,14 +36,11 @@ import {
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type Rate,
-    type TokenAddress,
-    type TokenSymbol,
     asBaseCurrencyAmount,
-    toTokenSymbol,
 } from '@suite-common/wallet-types';
 import {
-    getAccountTotalStakingBalance,
     getFiatRateKey,
+    hasNetworkFeatures,
     isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -46,6 +48,14 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
+import {
+    type AssetAccount,
+    type AssetAccountsRootState,
+    type HiddenTokenReason,
+    selectDeviceAssetAccounts,
+    selectHiddenAssetAccountKeySet,
+    selectHiddenTokenReasons,
+} from './assetAccountsSelectors';
 import { sumAssetAccounts } from './homeAssetTableUtils';
 
 export type HomeAssetTableState = AssetAccountsRootState &
@@ -60,12 +70,10 @@ const ZERO = new BigNumber(0);
 
 type WalletAsset = {
     assetKey: WalletAssetKey;
-    symbol: NetworkSymbol;
+    networkSymbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
     cryptoBalance: BigNumber;
     amount: string;
-    displaySymbol: string;
-    name: string;
     tokenSymbol: TokenSymbol | null;
     tokenDecimals: number | undefined;
     accountCount: number;
@@ -89,21 +97,15 @@ const groupWalletAssets = (
     const assets = new Map<WalletAssetKey, WalletAsset>();
 
     byKey.forEach((held, assetKey) => {
-        const [{ symbol, contractAddress }] = held;
+        const [{ networkSymbol, contractAddress }] = held;
         const { cryptoBalance, tokenInfo } = sumAssetAccounts(held);
 
         assets.set(assetKey, {
             assetKey,
-            symbol,
+            networkSymbol,
             contractAddress,
             cryptoBalance,
             amount: cryptoBalance.toFixed(),
-            displaySymbol: getDisplaySymbol(tokenInfo?.symbol ?? symbol, contractAddress),
-            name: getAssetName({
-                symbol,
-                tokenName: tokenInfo?.name,
-                tokenSymbol: tokenInfo?.symbol,
-            }),
             tokenSymbol: tokenInfo?.symbol === undefined ? null : toTokenSymbol(tokenInfo.symbol),
             tokenDecimals: tokenInfo?.decimals,
             accountCount: held.filter(assetAccount => isPositiveBalance(assetAccount.cryptoBalance))
@@ -152,8 +154,8 @@ const pickRatesBy =
     ): ReadonlyMap<WalletAssetKey, number> => {
         const picked = new Map<WalletAssetKey, number>();
 
-        assets.forEach(({ assetKey, symbol, contractAddress }) => {
-            const entry = rates?.[getFiatRateKey(symbol, baseCurrencyCode, contractAddress)];
+        assets.forEach(({ assetKey, networkSymbol, contractAddress }) => {
+            const entry = rates?.[getFiatRateKey(networkSymbol, baseCurrencyCode, contractAddress)];
             const rate = entry && pickRate(entry);
 
             if (rate !== undefined) {
@@ -254,13 +256,21 @@ const byValue =
         return worth(right).comparedTo(worth(left)) ?? 0;
     };
 
+// Enabled networks are what discovery looks for on a device. The Portfolio Tracker discovers
+// nothing: its accounts are imported one by one, on networks that setting may not hold.
+const selectAllowedNetworkSymbols = (state: HomeAssetTableState): readonly NetworkSymbol[] =>
+    selectIsPortfolioTrackerDevice(state)
+        ? selectSupportedNetworkSymbols(state)
+        : selectEnabledSupportedNetworks(state);
+
 export const selectShownWalletAssetKeys = createMemoizedSelector(
-    [selectWalletAssets, selectWalletAssetValues, selectEnabledSupportedNetworks],
-    (assets, values, enabledNetworks): readonly WalletAssetKey[] =>
+    [selectWalletAssets, selectWalletAssetValues, selectAllowedNetworkSymbols],
+    (assets, values, allowedNetworks): readonly WalletAssetKey[] =>
         returnStableArrayIfEmpty(
             [...assets.values()]
                 .filter(
-                    asset => enabledNetworks.includes(asset.symbol) && asset.cryptoBalance.gt(0),
+                    asset =>
+                        allowedNetworks.includes(asset.networkSymbol) && asset.cryptoBalance.gt(0),
                 )
                 .map(asset => asset.assetKey)
                 .sort(byValue(values)),
@@ -295,7 +305,9 @@ const selectUsdToBaseCurrencyRate = createMemoizedSelector(
             const asset = assets.get(assetKey);
             const entry =
                 asset &&
-                rates?.[getFiatRateKey(asset.symbol, baseCurrencyCode, asset.contractAddress)];
+                rates?.[
+                    getFiatRateKey(asset.networkSymbol, baseCurrencyCode, asset.contractAddress)
+                ];
 
             if (entry?.rate && entry.usdRate) {
                 return entry.rate / entry.usdRate;
@@ -431,16 +443,16 @@ const groupAssetKeysByNetwork = (
     const byNetwork = new Map<NetworkSymbol, WalletAssetKey[]>();
 
     assetKeys.forEach(assetKey => {
-        const symbol = assets.get(assetKey)?.symbol;
+        const networkSymbol = assets.get(assetKey)?.networkSymbol;
 
-        if (symbol === undefined) {
+        if (networkSymbol === undefined) {
             return;
         }
 
-        const grouped = byNetwork.get(symbol) ?? [];
+        const grouped = byNetwork.get(networkSymbol) ?? [];
 
         grouped.push(assetKey);
-        byNetwork.set(symbol, grouped);
+        byNetwork.set(networkSymbol, grouped);
     });
 
     return byNetwork;
@@ -591,33 +603,22 @@ export const selectWalletAssetKey = createMemoizedSelector(
             ? undefined
             : getWalletAssetKey({
                   deviceState,
-                  symbol: networkSymbol,
+                  networkSymbol,
                   contractAddress: tokenContract,
               }),
 );
 
-export const selectWalletAssetSymbol = (
+export const selectWalletAssetNetworkSymbol = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
-) => selectWalletAsset(state, assetKey, isHidden)?.symbol;
+) => selectWalletAsset(state, assetKey, isHidden)?.networkSymbol;
 
 export const selectWalletAssetContractAddress = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.contractAddress;
-
-export const selectWalletAssetDisplaySymbol = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey | undefined,
-    isHidden?: boolean,
-) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
-
-export const selectWalletAssetName = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey | undefined,
-) => selectWalletAsset(state, assetKey)?.name;
 
 export const selectWalletAssetAmount = (
     state: HomeAssetTableState,
@@ -646,32 +647,49 @@ export const selectWalletAssetHoldings = createMemoizedSelector(
         ),
 );
 
-// A Cardano delegation stakes what the account can spend, which a pending send has already
-// reduced, as the asset's amount has; its on-chain balance would count the send too.
-const getAssetStakingBalance = (account: Account) => {
-    if (account.networkType !== 'cardano') {
-        return getAccountTotalStakingBalance(account);
-    }
+export const selectWalletAssetSignVerifyAccounts = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectWalletAssetNetworkSymbol],
+    (accounts, networkSymbol) =>
+        returnStableArrayIfEmpty(
+            accounts.filter(
+                account =>
+                    account.symbol === networkSymbol && hasNetworkFeatures(account, 'sign-verify'),
+            ),
+        ),
+);
 
-    return account.misc?.staking?.isActive ? account.formattedBalance : null;
-};
+const selectHomeAssetTableState = (state: HomeAssetTableState) => state;
+
+const getAccountStakingAmount = (state: HomeAssetTableState, account: Account) =>
+    selectCountedStakingPositionEntriesByAccount(state, account.key).reduce(
+        (total, { position }) => total.plus(getStakingPositionAmount(position)),
+        ZERO,
+    );
 
 export const selectWalletAssetStakingAmount = createMemoizedSelector(
-    [selectVisibleDeviceAccounts, selectWalletAssetSymbol, selectWalletAssetContractAddress],
-    (accounts, networkSymbol, contractAddress) => {
+    [
+        selectHomeAssetTableState,
+        selectVisibleDeviceAccounts,
+        selectWalletAssetNetworkSymbol,
+        selectWalletAssetContractAddress,
+    ],
+    (state, accounts, networkSymbol, contractAddress): string => {
         if (networkSymbol === undefined || contractAddress !== undefined) {
             return '0';
         }
 
-        return accounts
-            .reduce(
-                (total, account) =>
-                    account.symbol === networkSymbol
-                        ? total.plus(getAssetStakingBalance(account) ?? 0)
-                        : total,
-                new BigNumber(0),
-            )
-            .toFixed();
+        const stakingAmount = accounts.reduce(
+            (total, account) =>
+                account.symbol === networkSymbol
+                    ? total.plus(getAccountStakingAmount(state, account))
+                    : total,
+            ZERO,
+        );
+
+        return formatStakingAmount({
+            amount: stakingAmountSchema.parse(stakingAmount.toFixed(0)),
+            networkSymbol,
+        });
     },
 );
 
@@ -734,22 +752,25 @@ const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
         selectHiddenWalletAssets,
         selectHiddenWalletAssetValues,
         selectHiddenTokenReasons,
-        selectEnabledSupportedNetworks,
+        selectAllowedNetworkSymbols,
     ],
     (
         assets,
         values,
         reasons,
-        enabledNetworks,
+        allowedNetworks,
     ): ReadonlyMap<HiddenTokenReason, readonly WalletAssetKey[]> => {
         const byReason = new Map<HiddenTokenReason, WalletAssetKey[]>();
 
         assets.forEach((asset, assetKey) => {
-            if (asset.contractAddress === undefined || !enabledNetworks.includes(asset.symbol)) {
+            if (
+                asset.contractAddress === undefined ||
+                !allowedNetworks.includes(asset.networkSymbol)
+            ) {
                 return;
             }
 
-            const reason = reasons.get(asset.symbol)?.get(asset.contractAddress);
+            const reason = reasons.get(asset.networkSymbol)?.get(asset.contractAddress);
 
             if (reason === undefined) {
                 return;
@@ -779,6 +800,11 @@ export const selectHiddenWalletAssetKeys = createMemoizedSelector(
         returnStableArrayIfEmpty(byReason.get(reason) ?? []),
 );
 
+export const selectHiddenWalletAssetCount = createMemoizedSelector(
+    [selectHiddenWalletAssetKeysByReason],
+    byReason => [...byReason.values()].reduce((count, assetKeys) => count + assetKeys.length, 0),
+);
+
 export const selectHasHiddenWalletAssets = createMemoizedSelector(
     [selectHiddenWalletAssetKeysByReason],
     byReason => byReason.size > 0,
@@ -788,12 +814,12 @@ export const selectWalletAssetHiddenReason = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey | undefined,
 ): HiddenTokenReason | undefined => {
-    const symbol = selectWalletAssetSymbol(state, assetKey);
+    const networkSymbol = selectWalletAssetNetworkSymbol(state, assetKey);
     const contractAddress = selectWalletAssetContractAddress(state, assetKey);
 
-    return symbol === undefined || contractAddress === undefined
+    return networkSymbol === undefined || contractAddress === undefined
         ? undefined
-        : selectHiddenTokenReasons(state).get(symbol)?.get(contractAddress);
+        : selectHiddenTokenReasons(state).get(networkSymbol)?.get(contractAddress);
 };
 
 export const selectWalletAssetFiatValue = createMemoizedSelector(

@@ -1,0 +1,119 @@
+import { useSelector } from 'react-redux';
+
+import { selectDeviceModel } from '@suite-common/device';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import {
+    BottomSheetModal,
+    Box,
+    Button,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
+import { type SetupSupportingDeviceModel } from '@suite-native/device';
+import { Translation } from '@suite-native/intl';
+import { Link, useOpenLink } from '@suite-native/link';
+import { useServices } from '@trezor/dependency-injection';
+import {
+    HELP_CENTER_PACKAGING_T2T1_URL,
+    HELP_CENTER_PACKAGING_T3B1_URL,
+    HELP_CENTER_PACKAGING_T3T1_URL,
+    HELP_CENTER_PACKAGING_T3W1_URL,
+    type Url,
+} from '@trezor/urls';
+
+import { SecuritySealImages } from './SecuritySealImages';
+
+const securitySealUrlMap = {
+    T2T1: HELP_CENTER_PACKAGING_T2T1_URL,
+    // T2B1 and T3B1 are the same product (Safe 3), so they share the URL.
+    T2B1: HELP_CENTER_PACKAGING_T3B1_URL,
+    T3B1: HELP_CENTER_PACKAGING_T3B1_URL,
+    T3T1: HELP_CENTER_PACKAGING_T3T1_URL,
+    T3W1: HELP_CENTER_PACKAGING_T3W1_URL,
+} as const satisfies Record<SetupSupportingDeviceModel, Url>;
+
+export const SecuritySealDescription = () => {
+    const openLink = useOpenLink();
+    const { analytics } = useServices(injectNativeAnalytics);
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const handleLinkPress = () => {
+        openModal();
+        analytics.report({
+            type: events.deviceSetupInfoEvent.name,
+            payload: {
+                location: 'securitySeal',
+            },
+        });
+    };
+
+    const deviceModel = useSelector(selectDeviceModel) as SetupSupportingDeviceModel;
+
+    const knowledgeBaseLink = securitySealUrlMap[deviceModel];
+
+    const handleLearnMoreButtonPress = () => {
+        openLink(knowledgeBaseLink);
+    };
+
+    return (
+        <>
+            <Text variant="body-md-strong">
+                <Translation
+                    id="moduleDeviceOnboarding.securityCheckScreen.securitySeal.description"
+                    values={{
+                        link: linkChunk => (
+                            <Link
+                                onPress={handleLinkPress}
+                                label={linkChunk}
+                                isUnderlined
+                                textVariant="body-md-strong"
+                                textColor="contentBrand"
+                            />
+                        ),
+                    }}
+                />
+            </Text>
+            <Box flex={0}>
+                <BottomSheetModal ref={bottomSheetRef}>
+                    <VStack spacing="sp32" justifyContent="flex-end">
+                        <VStack spacing="sp24">
+                            <SecuritySealImages />
+                            <VStack spacing="sp32">
+                                <VStack>
+                                    <VStack spacing="sp16">
+                                        <Box>
+                                            <Text variant="body-md-strong">
+                                                <Translation id="moduleDeviceOnboarding.securityCheckScreen.securitySeal.modal.title" />
+                                            </Text>
+                                            <Text>
+                                                <Translation id="moduleDeviceOnboarding.securityCheckScreen.securitySeal.modal.paragraph1" />
+                                            </Text>
+                                        </Box>
+                                        <Text>
+                                            <Translation id="moduleDeviceOnboarding.securityCheckScreen.securitySeal.modal.paragraph2" />
+                                        </Text>
+                                    </VStack>
+                                </VStack>
+
+                                <VStack spacing="sp12">
+                                    <Button onPress={closeModal}>
+                                        <Translation id="generic.buttons.gotIt" />
+                                    </Button>
+                                    <Button
+                                        iconLeft="arrowUpRight"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        onPress={handleLearnMoreButtonPress}
+                                    >
+                                        <Translation id="generic.buttons.learnMore" />
+                                    </Button>
+                                </VStack>
+                            </VStack>
+                        </VStack>
+                    </VStack>
+                </BottomSheetModal>
+            </Box>
+        </>
+    );
+};

@@ -1,9 +1,12 @@
 name: "[Bot] Set Release iteration on Close/Merge PR & Issue"
 
+permissions:
+  contents: read
+
 on:
   issues:
     types: [closed]
-  pull_request_target:
+  pull_request:
     types: [closed]
 
 env:
@@ -24,16 +27,23 @@ jobs:
     steps:
       - name: Determine event context
         id: context
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_NODE_ID: ${{ github.event.issue.node_id }}
+          ISSUE_HAS_LABEL: ${{ contains(github.event.issue.labels.*.name, env.CHERRY_PICK_LABEL) }}
+          PR_NODE_ID: ${{ github.event.pull_request.node_id }}
+          PR_HAS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, env.CHERRY_PICK_LABEL) }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
         run: |
-          if [ "${{ github.event_name }}" == "issues" ]; then
-            echo "content_id=${{ github.event.issue.node_id }}" >> $GITHUB_OUTPUT
-            echo "has_cherry_pick=${{ contains(github.event.issue.labels.*.name, env.CHERRY_PICK_LABEL) }}" >> $GITHUB_OUTPUT
+          if [ "$EVENT_NAME" == "issues" ]; then
+            echo "content_id=$ISSUE_NODE_ID" >> $GITHUB_OUTPUT
+            echo "has_cherry_pick=$ISSUE_HAS_LABEL" >> $GITHUB_OUTPUT
             echo "is_merged=false" >> $GITHUB_OUTPUT
             echo "event_type=issue" >> $GITHUB_OUTPUT
           else
-            echo "content_id=${{ github.event.pull_request.node_id }}" >> $GITHUB_OUTPUT
-            echo "has_cherry_pick=${{ contains(github.event.pull_request.labels.*.name, env.CHERRY_PICK_LABEL) }}" >> $GITHUB_OUTPUT
-            echo "is_merged=${{ github.event.pull_request.merged }}" >> $GITHUB_OUTPUT
+            echo "content_id=$PR_NODE_ID" >> $GITHUB_OUTPUT
+            echo "has_cherry_pick=$PR_HAS_LABEL" >> $GITHUB_OUTPUT
+            echo "is_merged=$PR_MERGED" >> $GITHUB_OUTPUT
             echo "event_type=pull_request" >> $GITHUB_OUTPUT
           fi
 
@@ -60,10 +70,13 @@ jobs:
       - name: Generate GitHub App token
         if: steps.guard.outputs.proceed == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
+          permission-issues: read
+          permission-pull-requests: read
 
       - name: Resolve and set Release iteration
         if: steps.guard.outputs.proceed == 'true'
@@ -137,7 +150,7 @@ jobs:
             FILE_PATH="packages/suite/package.json"
             VERSION_KEY="suiteVersion"
           elif [ "$PLATFORM" = "${{ env.PLATFORM_MOBILE_ID }}" ]; then
-            FILE_PATH="suite-native/app/package.json"
+            FILE_PATH="suite-native-app/app/package.json"
             VERSION_KEY="suiteNativeVersion"
           else
             echo "Platform option '$PLATFORM' is not Desktop/Suite/Connect/Mobile — skipping."

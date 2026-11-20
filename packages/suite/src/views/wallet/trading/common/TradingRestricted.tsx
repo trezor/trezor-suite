@@ -4,13 +4,14 @@ import { Feature, selectFeatureMessageContent } from '@suite-common/message-syst
 import { Banner } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayout, useSelector } from 'src/hooks/suite';
+import { PageHeader } from '#src/components/suite/layouts/SuiteLayout/PageHeader/PageHeader';
+import { useLayout } from '#src/hooks/suite/useLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const TradingRestricted = () => {
     const language = useSelector(selectLanguage);
     const content = useSelector(state =>
-        selectFeatureMessageContent(state, Feature.finprom.presenceRestriction, language),
+        selectFeatureMessageContent(state, Feature.regions.presenceRestriction, language),
     );
 
     useLayout('Trezor Suite', <PageHeader />);

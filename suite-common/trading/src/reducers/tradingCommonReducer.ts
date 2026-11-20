@@ -71,6 +71,7 @@ export type TradingState = {
     verifiedAddress: TradingVerifiedAddress;
     currentProviderMetadata?: ProviderMetadata;
     quoteRefetchingState: QuoteRefetchingState;
+    tradeApiInstallSalt: string | undefined;
 };
 
 export type TradingRootState = {
@@ -104,6 +105,7 @@ export const initialState: TradingState = {
         lastFetchTimestamp: undefined,
         status: 'stopped',
     },
+    tradeApiInstallSalt: undefined,
 };
 
 const tradingCommonSlice = createSlice({
@@ -124,8 +126,11 @@ const tradingCommonSlice = createSlice({
 
         saveTrade(state: TradingState, action: PayloadAction<TradingTransaction>) {
             if (action.payload.key) {
+                const apiKey =
+                    state.trades.find(t => t.key === action.payload.key)?.apiKey ??
+                    action.payload.apiKey;
                 const trades = state.trades.filter(t => t.key !== action.payload.key);
-                trades.push(action.payload);
+                trades.push(apiKey ? { ...action.payload, apiKey } : action.payload);
 
                 state.trades = trades;
             }
@@ -202,6 +207,9 @@ const tradingCommonSlice = createSlice({
             state.quoteRefetchingState.status =
                 state.quoteRefetchingState.remainingRefetches <= 0 ? 'stopped' : 'running';
             state.quoteRefetchingState.lastFetchTimestamp = payload;
+        },
+        setTradeApiInstallSalt: (state: TradingState, { payload }: PayloadAction<string>) => {
+            state.tradeApiInstallSalt = payload;
         },
     },
 });

@@ -1,0 +1,34 @@
+import { expect as detoxExpect } from 'detox';
+
+import { waitForVisible } from '../support/utils';
+
+class AccountReceiveActions {
+    async waitForScreen() {
+        await waitForVisible(by.id('@screen/ReceiveAddress'));
+    }
+
+    async verifyReceiveAddress(address: string) {
+        const receiveAddressText = element(by.id('@receive/confirmed-receive-address'));
+
+        await waitForVisible(receiveAddressText);
+        await detoxExpect(receiveAddressText).toHaveText(address);
+    }
+
+    async verifyReceiveAddressLabel(label: string) {
+        const receiveAddressLabel = element(by.id('@receive/address-label/text'));
+
+        await waitForVisible(receiveAddressLabel);
+        await detoxExpect(receiveAddressLabel).toHaveText(label);
+    }
+
+    async verifyHeaderTokenSymbol(symbol: string) {
+        const headerTokenSymbol = element(
+            by.id('@receive/header-token-symbol').withAncestor(by.id('@screen/ReceiveAddress')),
+        );
+
+        await waitForVisible(headerTokenSymbol);
+        await detoxExpect(headerTokenSymbol).toHaveText(symbol);
+    }
+}
+
+export const onAccountReceive = new AccountReceiveActions();

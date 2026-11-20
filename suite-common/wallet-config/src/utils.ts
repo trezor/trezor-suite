@@ -47,11 +47,11 @@ export const getNetworks = () => networks;
  */
 // Accepts both a branded NetworkSymbol and a plain literal: the symbol is open, while the legacy
 // config is still keyed by literals, and a literal caller keeps that config's precise type.
-export const getNetwork = <TSymbol extends string>(
-    symbol: TSymbol,
-): Network & (typeof networks)[TSymbol & keyof typeof networks] =>
+export const getNetwork = <TNetworkSymbol extends string>(
+    symbol: TNetworkSymbol,
+): Network & (typeof networks)[TNetworkSymbol & keyof typeof networks] =>
     networks[symbol as keyof typeof networks] as Network &
-        (typeof networks)[TSymbol & keyof typeof networks];
+        (typeof networks)[TNetworkSymbol & keyof typeof networks];
 
 interface GetMainnetsProps {
     debug?: boolean;
@@ -201,23 +201,6 @@ export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol): string => {
     const network = getNetwork(symbol);
 
     return network.displaySymbolName || network.name;
-};
-
-interface GetAssetNameProps {
-    symbol: NetworkSymbol;
-    tokenName?: string;
-    tokenSymbol?: string;
-}
-
-export const getAssetName = ({ symbol, tokenName, tokenSymbol }: GetAssetNameProps): string => {
-    if (tokenName !== undefined || tokenSymbol !== undefined) {
-        return tokenName ?? tokenSymbol ?? '';
-    }
-
-    // `arb`'s coin is Ethereum's ETH, so the asset is named after the issuing network.
-    const issuingNetwork = getNetworkOptional(getNetworkDisplaySymbol(symbol).toLowerCase());
-
-    return issuingNetwork?.name ?? getNetworkDisplaySymbolName(symbol);
 };
 
 export const getNetworkDecimals = (symbol: NetworkSymbolExtended): number | undefined => {

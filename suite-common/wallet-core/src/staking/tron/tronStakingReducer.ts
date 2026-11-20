@@ -20,12 +20,15 @@ export const TRON_STAKE_PREFIX = '@suite-common/wallet-core/tron-stake';
 
 export type TronStakeFreezeResult = { amount: string; resourceType: TronResourceType };
 
+export type TronStakeSubmittedAmount = { amount: string; resourceType?: TronResourceType };
+
 export type TronStakeState = {
     step: TronStakeStepId;
     isSubmitting: boolean;
     error: TronStakeError | null;
     pendingTxid: string | null;
     freeze: TronStakeFreezeResult | null;
+    submitted: TronStakeSubmittedAmount | null;
 };
 
 export type TronStakeTxReviewState = {
@@ -54,6 +57,7 @@ export const createTronStakeSession = (flow: TronFlow): TronStakeState => ({
     error: null,
     pendingTxid: null,
     freeze: null,
+    submitted: null,
 });
 
 const initialTronStakeSessions = Object.fromEntries(
@@ -89,6 +93,7 @@ type SubmitFinishedPayload = SessionPayload & {
     txid?: string;
     error?: TronStakeError;
     freeze?: TronStakeFreezeResult;
+    submitted?: TronStakeSubmittedAmount;
 };
 type StorePrecomposedTransactionPayload = {
     precomposedTx: PrecomposedTransactionFinal;
@@ -163,7 +168,7 @@ const tronStakeSlice = createSlice({
             });
         },
         submitFinished(state: TronStakeReducerState, action: PayloadAction<SubmitFinishedPayload>) {
-            const { accountKey, flow, txid, error, freeze } = action.payload;
+            const { accountKey, flow, txid, error, freeze, submitted } = action.payload;
             const session = getSession(state, accountKey, flow);
             setSession(state, accountKey, flow, {
                 ...session,
@@ -171,6 +176,7 @@ const tronStakeSlice = createSlice({
                 pendingTxid: txid ?? null,
                 error: error && error.kind !== 'cancelled' ? error : null,
                 freeze: freeze ?? session.freeze,
+                submitted: submitted ?? session.submitted,
             });
         },
         storePrecomposedTransaction(

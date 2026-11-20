@@ -13,6 +13,7 @@ export const SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS: Record<RouterApp, boole
     'firmware-custom': true,
 
     dashboard: false,
+    'refer-a-friend': false,
     earn: false,
     'earn-yield': false,
     'earn-staking': false,

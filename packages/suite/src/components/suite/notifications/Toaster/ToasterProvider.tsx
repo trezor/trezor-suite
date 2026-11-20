@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
-import { HEADER_HEIGHT } from 'src/constants/suite/layout';
+import { HEADER_HEIGHT } from '#src/constants/suite/layout';
 
 import { ReactToastifyStyles } from './ReactToastifyStyles';
 

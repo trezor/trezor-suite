@@ -58,7 +58,7 @@ export default meta;
 
 export const Select: StoryObj<SelectProps> = {
     render: ({ ...args }) => {
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [{ option }, updateArgs] = useArgs();
         const setOption = (option2: Option) => updateArgs({ option: option2 });
 

@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { fetchRankedTokenDefinitions } from '@suite-common/token-definitions';
 import { type TradingAssetOption, selectTradeableAssetBalances } from '@suite-common/trading';
 import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import {
@@ -12,6 +10,7 @@ import {
     selectTransactions,
 } from '@suite-common/wallet-core';
 
+import { useRankedTokenDefinitions } from './useRankedTokenDefinitions';
 import { getGlobalReceiveAssetIdsWithHistory } from '../getGlobalReceiveAssetIdsWithHistory';
 import {
     type GlobalReceiveAssetSections,
@@ -62,12 +61,8 @@ export const useGlobalReceiveAssets = ({
         isError,
         isFetching,
         refetch,
-    } = useQuery({
-        queryKey: desktopQueryKeys.rankedTokenDefinitions(),
-        queryFn: ({ signal }) => fetchRankedTokenDefinitions({ signal }),
-        enabled: !isBitcoinOnlyFirmware,
-        staleTime: Infinity,
-        gcTime: Infinity,
+    } = useRankedTokenDefinitions({
+        isFetchEnabled: true,
     });
 
     const supportedMainnets = useMemo(() => {

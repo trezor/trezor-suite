@@ -1,10 +1,8 @@
-import { deflateRaw } from 'pako';
-
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 
-import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
-import { type TrezorDevice } from 'src/types/suite/index';
+import { HAS_MONOCHROME_SCREEN } from '#src/constants/suite/device';
 
 // TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
 // prior to that version and removing this definition from here
@@ -165,8 +163,9 @@ const toGrayscale = (red: number, green: number, blue: number): number =>
     Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
 
 // TOIG
-const toig = (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
+const toig = async (imageData: ImageData, deviceModelInternal: DeviceModelInternal) => {
     const { width, height } = deviceModelInformation[deviceModelInternal];
+    const { deflateRaw } = await import('pako');
 
     const pixels = range(height)
         .map(row =>

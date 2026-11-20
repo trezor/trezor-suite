@@ -1,4 +1,6 @@
-import { Translation, type TranslationKey } from '@suite/intl';
+import { useSelector } from 'react-redux';
+
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { TorStatus, selectIsTorDisabled, selectTorStatus } from '@suite/tor';
 import { Column, Icon, type IconComponent, type UIIntent } from '@trezor/components';
@@ -14,8 +16,6 @@ import {
 } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Enabled]: 'TR_TOR_ENABLED',
@@ -46,6 +46,7 @@ const torIntentMap: Record<TorStatus, UIIntent> = {
 
 export const Tor = () => {
     const { dispatch } = useServices(injectDispatch);
+    const { translationString } = useTranslation();
 
     const torStatus = useSelector(selectTorStatus);
     const isTorDisabled = useSelector(selectIsTorDisabled);
@@ -56,6 +57,7 @@ export const Tor = () => {
     return (
         isTorIconVisible && (
             <QuickActionButton
+                aria-label={translationString('TR_TOR')}
                 tooltip={{
                     content: (
                         <Column padding={4} alignItems="start">

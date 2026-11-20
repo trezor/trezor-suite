@@ -9,6 +9,7 @@ import {
     gotoThunk,
     routerAppChanged,
     selectCanSwitchDevice,
+    selectRoute,
 } from '@suite/router';
 import { updateOnlineStatus } from '@suite/suite-lifecycle';
 import {
@@ -23,20 +24,24 @@ import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type AccountsRootState,
+    type EndUnfinishedDiscoveryThunkState,
     type WalletSettingsRootState,
+    endUnfinishedDiscoveryThunk,
     forgetDisconnectedDevicesThunk,
     handleDeviceDisconnectThunk,
     observeSelectedDeviceThunk,
+    selectAccounts,
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
-import { handleProtocolRequestThunk } from 'src/actions/suite/protocolActions';
-import { desktopHandshake, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
+import { handleProtocolRequestThunk } from '#src/actions/suite/protocolActions';
+import { desktopHandshake, setRecentlyDisconnectedDevice } from '#src/actions/suite/suiteActions';
 
 type SuiteMiddlewareState = AccountsRootState &
     DeviceRootState &
+    EndUnfinishedDiscoveryThunkState &
     RouterRootState &
     WalletSettingsRootState & {
         flags: Pick<FlagsRootState['flags'], 'hasSeenDisconnectTooltip'>;
@@ -91,6 +96,17 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             // eslint-disable-next-line no-restricted-syntax
             const state = getState();
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(state);
+            // A run that never reached Connect would otherwise never report an outcome.
+            dispatch(
+                endUnfinishedDiscoveryThunk({
+                    devicePath: action.payload.path,
+                    status: {
+                        status: 'failed',
+                        error: 'Device disconnected',
+                        errorCode: 'Device_Disconnected',
+                    },
+                }),
+            );
             dispatch(
                 forgetDisconnectedDevicesThunk({
                     device: action.payload,
@@ -105,13 +121,13 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
 
                 setTimeout(() => {
                     const hasModalContext = state.modal.context !== '@modal/context-none';
-                    const { route } = state.router;
+                    const route = selectRoute(state);
                     const isForegroundApp = !!route?.isForegroundApp;
                     const isModalActive = hasModalContext || isForegroundApp;
 
                     if (
                         !state.flags.hasSeenDisconnectTooltip &&
-                        state.wallet.accounts.length > 0 &&
+                        selectAccounts(state).length > 0 &&
                         !isModalActive
                     ) {
                         dispatch(
@@ -162,7 +178,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             }
         } else if (updateOnlineStatus.match(action) && action.payload) {
             // Restart discovery to reconnect to backends when user goes offline -> online.
-            dispatch(startOrRestartDiscoveryThunk());
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'reconnect' }));
         }
         if (isActionDeviceRelated(action)) {
             // keep suite reducer synchronized with other reducers (selected device)

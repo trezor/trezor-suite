@@ -29,7 +29,6 @@ import * as metadataProviderActions from './metadataProviderThunks';
 import {
     type MetadataRootState,
     selectLabelableEntities,
-    selectMetadata,
     selectMetadataEnabled,
     selectMetadataError,
     selectMetadataInitiating,
@@ -114,7 +113,7 @@ type SetAccountMetadataKeyThunkState = MetadataRootState;
 
 export const setAccountMetadataKeyThunk =
     (account: Account, encryptionVersion = METADATA_LABELING.ENCRYPTION_VERSION) =>
-    (dispatch: Dispatch, getState: () => SetAccountMetadataKeyThunkState) => {
+    (dispatch: Dispatch, getState: () => SetAccountMetadataKeyThunkState): Account => {
         const device = selectDeviceByStaticSessionId(getState(), account.deviceState);
         const deviceMetaKey = device?.metadata[encryptionVersion]?.key;
 
@@ -288,8 +287,8 @@ type FetchAndSaveMetadataForAllDevicesThunkState = MetadataRootState;
 
 export const fetchAndSaveMetadataForAllDevicesThunk =
     () => (dispatch: Dispatch, getState: () => FetchAndSaveMetadataForAllDevicesThunkState) => {
-        const metadata = selectMetadata(getState());
-        if (!metadata.enabled) {
+        const isMetadataEnabled = selectMetadataEnabled(getState());
+        if (!isMetadataEnabled) {
             return;
         }
         const devices = selectDevices(getState());

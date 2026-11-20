@@ -5,8 +5,9 @@ import {
     type CryptoBaseCurrencyPair,
     type RatesByKey,
     type TickerId,
+    asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+import { isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 export type EarnFiatPosition = {
@@ -51,10 +52,12 @@ export const getTokenFiatRate = (
 };
 
 export const getEarnPositionFiatAmount = (
-    { balance, fiatRateKey }: EarnFiatPosition,
+    { balance, fiatRateKey, tickerId }: EarnFiatPosition,
     currentFiatRates: RatesByKey | undefined,
 ): BaseCurrencyAmount | null =>
-    toFiatCurrency({ amount: balance, rate: currentFiatRates?.[fiatRateKey]?.rate });
+    isTestnet(tickerId.symbol)
+        ? asBaseCurrencyAmount(new BigNumber(0))
+        : toFiatCurrency({ amount: balance, rate: currentFiatRates?.[fiatRateKey]?.rate });
 
 export const sumEarnFiatValuations = (valuations: readonly EarnFiatValuation[]): string =>
     valuations

@@ -15,9 +15,10 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type BaseItemProps, VirtualizedList } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useAccountSearch, useSelector } from 'src/hooks/suite';
-import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { useAccountSearch } from '#src/hooks/suite/useAccountSearch';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useResponsiveContext } from '#src/support/suite/ResponsiveContext';
+import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountSection } from './AccountSection';
@@ -26,8 +27,7 @@ import { AccountsMenuNotice } from './AccountsMenuNotice';
 const SECTION_GAP = 4;
 const OVERSCAN_SECTION_COUNT = 8;
 
-// The list is bled into by the negative margins of grouped sections, so it carries the
-// horizontal padding they need to bleed into.
+// Keep the account focus rings inside the scroll viewport.
 const LIST_PADDING = { horizontal: 8, bottom: 20 } as const;
 
 // Every section is measured once it mounts; this is only the starting guess used to size the

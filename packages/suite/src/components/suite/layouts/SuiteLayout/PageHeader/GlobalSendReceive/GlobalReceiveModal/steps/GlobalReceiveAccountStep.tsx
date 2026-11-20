@@ -3,7 +3,7 @@ import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Text } from '@trezor/components';
 
-import { AssetsModal } from 'src/components/suite/asset-picker/components';
+import { AssetsModal } from '#src/components/suite/asset-picker/components/AssetsModal/AssetsModal';
 
 import { GlobalSendReceiveAssetDescription } from '../../components/GlobalSendReceiveAssetDescription';
 import { GlobalReceiveAccountListItem } from '../components/GlobalReceiveAccountListItem';
@@ -42,6 +42,7 @@ export const GlobalReceiveAccountStep = ({
                     <GlobalReceiveAccountListItem
                         key={account.key}
                         account={account}
+                        asset={asset}
                         iconSize={24}
                         onClick={onAccountClick}
                         variant="card"

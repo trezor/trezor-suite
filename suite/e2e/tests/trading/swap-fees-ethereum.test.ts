@@ -5,6 +5,7 @@ import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
@@ -78,6 +79,20 @@ test.describe('Trading - Swap fees', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Continue Swap flow towards Send section', async () => {
                 await tradingPage.confirmation.openConfirmAndSendModal();
                 await expect(devicePrompt.header.accountLabel).toHaveText('Ethereum #3');
+                const recipientAddress = (
+                    await devicePrompt.outputValueOf('address').innerText()
+                ).replace(/\s/g, '');
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [transformAddress(recipientAddress, 'evmTetragrams')],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        header: { title: 'Address', subtitle: 'Recipient' },
+                        body: [transformAddress(recipientAddress, 'evmTetragrams')],
+                    },
+                });
                 await devicePrompt.waitForPromptAndClick();
             });
 

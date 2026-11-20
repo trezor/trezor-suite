@@ -121,6 +121,35 @@ export default {
                 network: 'ada',
                 testnet: false,
                 version: '1.4.0',
+                cardanoProtocolParameters: {
+                    epoch: 656,
+                    minFeeA: '44',
+                    minFeeB: '155381',
+                    maxTxSize: 16384,
+                    maxValueSize: 5000,
+                    keyDeposit: '2000000',
+                    poolDeposit: '500000000',
+                    coinsPerUtxoByte: '4310',
+                },
+            },
+        },
+        {
+            description: 'Success without protocol parameters',
+            serverFixtures: [
+                {
+                    method: 'GET_PROTOCOL_PARAMETERS',
+                    response: { data: { error: { message: 'BlockfrostError Error msg' } } },
+                },
+            ],
+            response: {
+                blockHeight: 1,
+                blockHash: 'test_block_hash-hash',
+                decimals: 6,
+                name: 'BlockfrostMock',
+                shortcut: 'ada',
+                network: 'ada',
+                testnet: false,
+                version: '1.4.0',
             },
         },
         {

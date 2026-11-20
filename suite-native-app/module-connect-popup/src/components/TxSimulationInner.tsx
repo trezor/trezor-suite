@@ -1,0 +1,142 @@
+import {
+    type ConnectCallSource,
+    connectPopupActions,
+    getCallSourceName,
+} from '@suite-common/connect-popup';
+import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
+import { AccountsListItem } from '@suite-native/accounts';
+import { Button, Card, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { EvmTxSimulationReviewContent } from '@suite-native/tx-simulation';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+
+import { ConnectAppIcon } from './ConnectAppIcon';
+
+// Connect reads the gas limit as hex.
+const toHexGasLimit = (value: string) => `0x${BigInt(value).toString(16)}`;
+
+interface TxSimulationInnerProps {
+    action: TxSimulationAction;
+    account: Account;
+    source: ConnectCallSource;
+}
+
+export function TxSimulationInner({ action, account, source }: TxSimulationInnerProps) {
+    const { dispatch } = useServices(injectDispatch);
+
+    // Fees
+    const gasLimit =
+        action.method === 'ethereumSignTransaction'
+            ? action.payload.transaction.gasLimit
+            : toHexGasLimit(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
+    const isSigningTransaction = action.method === 'ethereumSignTransaction';
+
+    const onConfirm = () => {
+        if (isSigningTransaction) {
+            // TODO add fee selection
+            const { maxFeePerGas, maxPriorityFeePerGas, gasPrice } = action.payload.transaction;
+
+            if (maxFeePerGas && maxPriorityFeePerGas) {
+                dispatch(
+                    connectPopupActions.setSelectedFee({
+                        selectedFee: {
+                            gasLimit,
+                            gasPrice: undefined,
+                            maxFeePerGas,
+                            maxPriorityFeePerGas,
+                        },
+                    }),
+                );
+            } else if (gasPrice) {
+                dispatch(
+                    connectPopupActions.setSelectedFee({
+                        selectedFee: {
+                            gasLimit,
+                            gasPrice,
+                            maxFeePerGas: undefined,
+                            maxPriorityFeePerGas: undefined,
+                        },
+                    }),
+                );
+            }
+        }
+        dispatch(connectPopupActions.approvePermissions());
+    };
+    const onCancel = () => {
+        dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
+    };
+
+    return (
+        <VStack testID="@popup/tx-simulation" spacing="sp16" flex={1}>
+            <TitleHeader
+                title={<Translation id="moduleConnectPopup.simulation.reviewTransaction" />}
+            />
+
+            <Card noPadding>
+                <HStack alignItems="center" spacing="sp16" padding="sp12">
+                    <ConnectAppIcon
+                        src={source.manifest?.appIcon}
+                        type="trezorConnect"
+                        size="medium"
+                    />
+                    <VStack flex={1} spacing="sp4">
+                        <Text>{getCallSourceName(source)}</Text>
+                        {source.manifest?.appName && (
+                            <Text color="contentSecondary">{source.origin}</Text>
+                        )}
+                    </VStack>
+                </HStack>
+            </Card>
+
+            <VStack>
+                <Text>
+                    <Translation id="moduleConnectPopup.walletConnect.selectedAccount" />
+                </Text>
+                <Card noPadding>
+                    <AccountsListItem account={account} shouldAlwaysShowCryptoAmount />
+                </Card>
+            </VStack>
+
+            <EvmTxSimulationReviewContent
+                action={action}
+                afterSimulation={
+                    <Text variant="body-sm">
+                        <Translation
+                            id="moduleConnectPopup.simulation.simulationPoweredBy"
+                            values={{ provider: 'Blockaid' }}
+                        />
+                    </Text>
+                }
+                areAssetDividersDisplayed={false}
+                assetVariant="wrap"
+                cancelButton={
+                    <Button
+                        testID="@popup/cancel-simulation"
+                        onPress={onCancel}
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        <Translation id="generic.buttons.cancel" />
+                    </Button>
+                }
+                confirmTestID="@popup/confirm-simulation"
+                gasLimit={gasLimit}
+                insufficientGasWarning={{
+                    transaction: isSigningTransaction ? action.payload.transaction : undefined,
+                    gasLimit,
+                    accountBalance: account.balance,
+                    networkSymbol: account.symbol,
+                }}
+                onConfirm={onConfirm}
+                title={
+                    <Text>
+                        <Translation id="moduleConnectPopup.simulation.simulation" />
+                    </Text>
+                }
+            />
+        </VStack>
+    );
+}

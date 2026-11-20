@@ -26,6 +26,7 @@ type Attributes = {
     rememberedHiddenWallets: AttributeDef<number>;
     enabledNetworks: AttributeDef<NetworkSymbol[]>;
     labeling: AttributeDef<'suite-sync' | 'off'>;
+    experimentVariants: AttributeDef<string[]>;
 };
 
 export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
@@ -46,6 +47,7 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         },
         { version: '26.2.1', notes: 'param `labeling` added' },
         { version: '26.8.1', notes: 'param `loadDuration` removed' },
+        { version: '26.11.1', notes: 'param `experimentVariants` added' },
     ],
 
     attributes: {
@@ -129,6 +131,10 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         labeling: {
             changelog: [{ version: '26.3.1', notes: 'added' }],
             description: 'The labeling method: `suite-sync` or `off`',
+        },
+        experimentVariants: {
+            changelog: [{ version: '26.11.1', notes: 'added' }],
+            description: 'List of active experiment variant identifiers',
         },
     },
 };

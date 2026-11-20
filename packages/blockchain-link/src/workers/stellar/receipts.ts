@@ -1,5 +1,9 @@
 import type { TokenInfo, TokenTransfer, Transaction } from '@trezor/blockchain-link-types';
-import * as utils from '@trezor/blockchain-link-utils/src/stellar';
+import {
+    transformStellarContractTokenReceipt,
+    transformStellarContractTokenTransfer,
+    withStellarContractTokenTransfers,
+} from '@trezor/network-stellar/constants';
 import type { StellarContractTokenTransfer } from '@trezor/network-stellar/types';
 
 /** Where a page stopped reading the tokens' events, alongside Horizon's own paging token. */
@@ -109,7 +113,9 @@ export const mergeContractTokenReceipts = ({
         receipt.transfers.flatMap(transfer => {
             const token = tokenByContract.get(transfer.contract);
 
-            return token ? [utils.transformContractTokenTransfer(transfer, token, descriptor)] : [];
+            return token
+                ? [transformStellarContractTokenTransfer(transfer, token, descriptor)]
+                : [];
         });
 
     // Anything older would sort below rows Horizon still has to hand over on the next page.
@@ -131,11 +137,11 @@ export const mergeContractTokenReceipts = ({
     const rows = horizonTransactions.map(tx => {
         const receipt = byTransaction.get(tx.txid);
 
-        return receipt ? utils.withContractTokenTransfers(tx, receipt.tokens, descriptor) : tx;
+        return receipt ? withStellarContractTokenTransfers(tx, receipt.tokens, descriptor) : tx;
     });
     const received = pending
         .filter(({ txHash }) => !listed.has(txHash))
-        .map(receipt => utils.transformContractTokenReceipt(receipt, receipt.tokens, descriptor));
+        .map(receipt => transformStellarContractTokenReceipt(receipt, receipt.tokens, descriptor));
 
     const transactions = [...rows, ...received]
         .sort((a, b) => (b.blockHeight ?? 0) - (a.blockHeight ?? 0))

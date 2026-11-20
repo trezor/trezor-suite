@@ -1,5 +1,9 @@
 import { SlideInDown } from 'react-native-reanimated';
 
+import { useFormatters } from '@suite-common/formatters';
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { AnimatedBox, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -20,7 +24,8 @@ type YieldWrappedNativeStepFooterProps = {
     isSubmitLoading?: boolean;
     onSkip?: () => void;
     onSubmit: () => void;
-    spentSymbol: string;
+    networkSymbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
 };
 
 export const YieldWrappedNativeStepFooter = ({
@@ -30,8 +35,14 @@ export const YieldWrappedNativeStepFooter = ({
     isSubmitLoading = false,
     onSkip,
     onSubmit,
-    spentSymbol,
+    networkSymbol,
+    tokenContract,
 }: YieldWrappedNativeStepFooterProps) => {
+    const token = useTokenMetadata(networkSymbol, tokenContract);
+    const { DisplaySymbolFormatter } = useFormatters();
+    const spentSymbol = tokenContract
+        ? token?.symbol
+        : DisplaySymbolFormatter.format(networkSymbol);
     const { applyStyle } = useNativeStyles();
     const messages = wrappedNativeFlowMessages[flowType].stepFooter;
     const skipButton = onSkip && (

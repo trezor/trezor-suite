@@ -1,13 +1,14 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import { getNetworkDecimalsWithFallback } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
 
 type TradingBalanceProps = {
     balance: string | undefined;

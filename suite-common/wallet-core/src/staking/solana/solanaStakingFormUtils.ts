@@ -15,12 +15,14 @@ import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
+    SOL_BASE_FEE,
     SOL_STAKING_OPERATION_FEE,
 } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type {
     EstimatedFee,
     Fee,
+    PrepareStakeSolTxErrorCode,
     PrepareStakeSolTxResponse,
     SolanaTxMeta,
 } from '@trezor/network-solana/types';
@@ -35,6 +37,7 @@ import {
 
 // Rent-aware Solana stake fee calc for `composeStakingTransaction` / `calculateStakeFormTransaction`.
 const calculateSolanaStakeTransaction = (
+    rentLamports: string,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -42,6 +45,12 @@ const calculateSolanaStakeTransaction = (
     symbol: NetworkSymbol,
     estimatedFee?: EstimatedFee,
 ): PrecomposedTransaction => {
+    // The prepared transaction proves the rent even when fee estimation fails.
+    const minimumFee = new BigNumber(SOL_BASE_FEE.toString()).plus(rentLamports);
+    if (estimatedFee?.success === false && new BigNumber(availableBalance).lt(minimumFee)) {
+        return { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' };
+    }
+
     const feeInLamports =
         estimatedFee?.payload?.feePerTx ?? new BigNumber(SOL_STAKING_OPERATION_FEE).toString();
 
@@ -198,8 +207,33 @@ const PREPARATION_FAILED_LEVEL: PrecomposedTransactionError = {
     errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
 };
 
-const buildPreparationFailedLevels = (predefinedLevels: FeeLevel[]): PrecomposedLevels =>
-    Object.fromEntries(predefinedLevels.map(level => [level.label, PREPARATION_FAILED_LEVEL]));
+const STAKED_BALANCE_CHANGED_LEVEL: PrecomposedTransactionError = {
+    type: 'error',
+    error: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+    errorMessage: { id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED' },
+};
+
+type BuildPreparationFailedLevelsParams = {
+    predefinedLevels: FeeLevel[];
+    errorCode?: PrepareStakeSolTxErrorCode;
+};
+
+const buildPreparationFailedLevels = ({
+    predefinedLevels,
+    errorCode,
+}: BuildPreparationFailedLevelsParams): PrecomposedLevels => {
+    const failedLevel =
+        errorCode === 'INSUFFICIENT_ACTIVE_STAKE'
+            ? STAKED_BALANCE_CHANGED_LEVEL
+            : PREPARATION_FAILED_LEVEL;
+
+    return Object.fromEntries(predefinedLevels.map(level => [level.label, failedLevel]));
+};
+
+export const hasStakedBalanceChangedError = (composedLevels?: PrecomposedLevels) =>
+    Object.values(composedLevels ?? {}).some(
+        level => level.type === 'error' && level.error === STAKED_BALANCE_CHANGED_LEVEL.error,
+    );
 
 type ComposeSolanaStakingTransactionParams = {
     formValues: StakeFormState;
@@ -240,7 +274,7 @@ export const composeSolanaStakingTransaction = async ({
     });
 
     if (!txData?.success) {
-        return buildPreparationFailedLevels(predefinedLevels);
+        return buildPreparationFailedLevels({ predefinedLevels, errorCode: txData?.errorCode });
     }
 
     const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);
@@ -249,7 +283,7 @@ export const composeSolanaStakingTransaction = async ({
         formValues,
         composeContext,
         predefinedLevels,
-        calculateSolanaStakeTransaction,
+        (...args) => calculateSolanaStakeTransaction(txData.solanaTxMeta.rentLamports, ...args),
         estimatedFee,
         undefined,
     );

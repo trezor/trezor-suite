@@ -37,6 +37,7 @@ export class StakingSection {
     readonly rewardsAmount: Locator;
     readonly unstakingAmount: Locator;
     readonly unstakeToClaimButton: Locator;
+    readonly changeDelegateButton: Locator;
     readonly availableBalanceWithSymbol: Locator;
     readonly cryptoInput: Locator;
     readonly cryptoInputFractionButtons: Locator;
@@ -89,6 +90,8 @@ export class StakingSection {
     readonly stakeModalInfoRowSubheadings: Locator;
     readonly votingPreferenceHeading: Locator;
     readonly votingPreferenceOptionLabels: Locator;
+    readonly votingPreferenceOption = (optionType: 'abstain' | 'everstake' | 'another_drep') =>
+        this.page.getByTestId(`@staking/voting-preference/option/${optionType}`);
     readonly cardanoModalRewardAmount: Locator;
     readonly cardanoStakedFullBalanceText: Locator;
     readonly claimWarningBanner: Locator;
@@ -112,6 +115,9 @@ export class StakingSection {
         this.rewardsAmount = this.page.getByTestId('@account/staking/rewards');
         this.unstakingAmount = this.page.getByTestId('@account/staking/unstaking');
         this.unstakeToClaimButton = this.page.getByTestId('@account/staking/unstake-button');
+        this.changeDelegateButton = this.page.getByTestId(
+            '@account/staking/change-delegate-button',
+        );
         this.availableBalanceWithSymbol = this.page.getByTestId(
             '@staking/available-balance-with-symbol',
         );

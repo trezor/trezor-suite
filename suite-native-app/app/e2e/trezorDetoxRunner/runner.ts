@@ -1,0 +1,67 @@
+/* eslint-disable no-console */
+import { uploadToCurrents } from './currentsUpload';
+import { runProjectSafely } from './detox';
+import { findNewDetoxArtifactsRootDir, listDetoxArtifactsRootDirs } from './detoxArtifacts';
+import { processJUnitReport } from './junitReport';
+import type { Action } from './quarantine';
+import { readTestAttempts } from './testAttempts';
+import type { ProjectConfig } from './types';
+
+/**
+ * Performance metrics are a by-product of the run and must never change its verdict. The module is
+ * loaded lazily so that a broken import in the collection pipeline cannot take the runner down
+ * before a single test has started.
+ */
+const collectPerformanceSafely = async (projects: ProjectConfig[]): Promise<void> => {
+    try {
+        const { collectPerformanceReport } =
+            await import('../support/performance/collectPerformance');
+
+        collectPerformanceReport(projects.map(project => project.target));
+    } catch (error) {
+        console.warn('Failed to collect the performance report, continuing:', error);
+    }
+};
+
+export const runAllProjects = async (
+    projects: ProjectConfig[],
+    headless: boolean,
+    testFiles: string[],
+    quarantinedActions: Action[] = [],
+): Promise<void> => {
+    const failedProjects: string[] = [];
+
+    for (const project of projects) {
+        const previousArtifactsRootDirs = listDetoxArtifactsRootDirs(project.target);
+        const detoxFailed = await runProjectSafely(project, headless, testFiles);
+        const artifactsRootDir = findNewDetoxArtifactsRootDir(
+            project.target,
+            previousArtifactsRootDirs,
+        );
+        const hasRemainingFailures = await processJUnitReport({
+            projectName: project.projectName,
+            detoxFailed,
+            grep: project.grep,
+            quarantinedActions,
+            testAttempts: readTestAttempts(project.projectName),
+            artifactsRootDir,
+        });
+        uploadToCurrents(project.projectName);
+
+        // A project fails only when non-quarantined failures remain,
+        // or when Detox crashed without producing a report at all.
+        if (hasRemainingFailures) {
+            failedProjects.push(project.projectName);
+        }
+    }
+
+    await collectPerformanceSafely(projects);
+
+    if (failedProjects.length > 0) {
+        console.error('\nThe following projects failed:');
+        failedProjects.forEach(name => console.error(`- ${name}`));
+        process.exit(1);
+    } else {
+        console.log('\nAll projects passed successfully');
+    }
+};

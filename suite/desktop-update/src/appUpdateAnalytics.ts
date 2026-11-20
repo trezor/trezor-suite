@@ -1,8 +1,8 @@
-import type { AppUpdateEvent } from '@suite/analytics';
+import type { AppUpdatePayload } from '@suite/analytics';
 import { type UpdateInfo } from '@suite/desktop-app-api';
 
 type GetAppUpdatePayloadParams = {
-    status: AppUpdateEvent['status'];
+    status: AppUpdatePayload['status'];
     earlyAccessProgram: boolean;
     updateInfo?: UpdateInfo;
     isAutoUpdated?: boolean;
@@ -13,7 +13,7 @@ export const getAppUpdatePayload = ({
     earlyAccessProgram,
     updateInfo,
     isAutoUpdated,
-}: GetAppUpdatePayloadParams): AppUpdateEvent => ({
+}: GetAppUpdatePayloadParams): AppUpdatePayload => ({
     fromVersion: process.env.VERSION || '',
     toVersion: updateInfo?.version,
     status,

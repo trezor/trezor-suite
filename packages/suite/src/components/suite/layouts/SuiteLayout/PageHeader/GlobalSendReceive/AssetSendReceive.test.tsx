@@ -15,11 +15,13 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetSendReceive } from './AssetSendReceive';
-import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../../mocks/mockInitialAppState';
 
 const mockStartSend = jest.fn();
 const mockStartReceive = jest.fn();
@@ -40,7 +42,7 @@ jest.mock('./GlobalReceiveModal/GlobalReceiveModal', () => ({
 
 const ethSymbol = asNetworkSymbol('eth');
 const deviceState = '1stTestnetAddress@device_id:0';
-const ethKey = getWalletAssetKey({ deviceState, symbol: ethSymbol });
+const ethKey = getWalletAssetKey({ deviceState, networkSymbol: ethSymbol });
 
 const ethAccount = (index: number) =>
     mockWalletAccount({
@@ -53,7 +55,10 @@ const ethAccount = (index: number) =>
 
 const renderAssetSendReceive = (accounts: Account[]) => {
     const device = mockSuiteDevice({ state: { staticSessionId: deviceState } });
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: {
             ...mockInitialAppState,
             device: { ...mockInitialAppState.device, devices: [device], selectedDevice: device },

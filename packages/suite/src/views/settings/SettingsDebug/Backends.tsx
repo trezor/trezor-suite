@@ -11,9 +11,9 @@ import { SectionItem, TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 
-import { StatusLight } from 'src/components/suite';
-import { useBackendReconnection } from 'src/hooks/settings/backends';
-import { useSelector } from 'src/hooks/suite';
+import { StatusLight } from '#src/components/suite/StatusLight';
+import { useBackendReconnection } from '#src/hooks/settings/backends/useBackendReconnection';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const CoinSection = styled.div`
     display: flex;
@@ -141,7 +141,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
             <CoinSection>
                 <div>
                     <CoinCell>
-                        <TokenIcon symbol={symbol} />
+                        <TokenIcon networkSymbol={symbol} />
                         <Title>{getNetwork(symbol).name}</Title>
                     </CoinCell>
                     <Button size="small" intent="neutral" priority="secondary" onClick={onSettings}>

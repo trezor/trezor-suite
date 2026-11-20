@@ -10,11 +10,12 @@ import {
     getApprovalStatus,
     getDexEstimationData,
     getDisplayNetworkFee,
+    getProviderTransactionDeadline,
     hasEip712SignDataType,
+    hasExpiringProviderTransaction,
     hasFixedPsbtFee,
     requiresErc20Approval,
     requiresTokenApproval,
-    tokenSupportsIncreasingAllowance,
 } from './exchangeUtils';
 
 jest.mock('@trezor/connect', () => ({
@@ -354,39 +355,6 @@ describe('getApprovalStatus', () => {
     });
 });
 
-describe('tokenSupportsIncreasingAllowance', () => {
-    it('should return false for Ethereum USDT contract address (uppercase)', () => {
-        const result = tokenSupportsIncreasingAllowance(
-            '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-        );
-        expect(result).toBe(false);
-    });
-
-    it('should return false for Ethereum USDT contract address (lowercase)', () => {
-        const result = tokenSupportsIncreasingAllowance(
-            '0xdac17f958d2ee523a2206206994597c13d831ec7',
-        );
-        expect(result).toBe(false);
-    });
-
-    it('should return true for other contract addresses', () => {
-        const result = tokenSupportsIncreasingAllowance(
-            '0x1234567890123456789012345678901234567890',
-        );
-        expect(result).toBe(true);
-    });
-
-    it('should return false for undefined contract address', () => {
-        const result = tokenSupportsIncreasingAllowance(undefined);
-        expect(result).toBe(false);
-    });
-
-    it('should return false for empty string', () => {
-        const result = tokenSupportsIncreasingAllowance('');
-        expect(result).toBe(false);
-    });
-});
-
 describe('getDexEstimationData', () => {
     const spender = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
     const approveData = buildApprovalTransactionData({ spender, amount: '9475047' });
@@ -493,6 +461,71 @@ describe('hasFixedPsbtFee', () => {
 
     it('should return false when no quote is provided', () => {
         expect(hasFixedPsbtFee(undefined, 'bitcoin')).toBe(false);
+    });
+});
+
+describe('hasExpiringProviderTransaction', () => {
+    const dexTx = { from: 'from', to: 'to', data: 'AQAAAAAA', value: '0' };
+
+    it('should return true for a solana DEX quote with a serialized transaction', () => {
+        expect(hasExpiringProviderTransaction({ isDex: true, dexTx }, 'solana')).toBe(true);
+    });
+
+    it('should return false for a solana DEX quote that is a plain transfer', () => {
+        expect(
+            hasExpiringProviderTransaction(
+                { isDex: true, dexTx: { from: 'from', to: 'to', data: '', value: '1' } },
+                'solana',
+            ),
+        ).toBe(false);
+    });
+
+    it('should return false for a solana CEX quote', () => {
+        expect(hasExpiringProviderTransaction({ isDex: false }, 'solana')).toBe(false);
+    });
+
+    it('should return false for an EVM DEX quote with transaction data', () => {
+        expect(hasExpiringProviderTransaction({ isDex: true, dexTx }, 'ethereum')).toBe(false);
+    });
+
+    it('should return false without a quote or a network type', () => {
+        expect(hasExpiringProviderTransaction(undefined, 'solana')).toBe(false);
+        expect(hasExpiringProviderTransaction({ isDex: true, dexTx }, undefined)).toBe(false);
+    });
+});
+
+describe('getProviderTransactionDeadline', () => {
+    const quote = { isDex: true, dexTx: { from: 'from', to: 'to', data: 'AQAAAAAA', value: '0' } };
+    const selectedQuoteTimestamp = new Date('2026-10-23T10:00:00Z').getTime();
+
+    it('should count the validity from the trade confirmation for a provider-built solana transaction', () => {
+        expect(
+            getProviderTransactionDeadline({
+                quote,
+                networkType: 'solana',
+                selectedQuoteTimestamp,
+            }),
+        ).toBe(selectedQuoteTimestamp + 30_000);
+    });
+
+    it('should return undefined without a confirmation timestamp', () => {
+        expect(
+            getProviderTransactionDeadline({
+                quote,
+                networkType: 'solana',
+                selectedQuoteTimestamp: undefined,
+            }),
+        ).toBeUndefined();
+    });
+
+    it('should return undefined for a quote without a provider-built transaction', () => {
+        expect(
+            getProviderTransactionDeadline({
+                quote: { isDex: false },
+                networkType: 'solana',
+                selectedQuoteTimestamp,
+            }),
+        ).toBeUndefined();
     });
 });
 
@@ -710,5 +743,56 @@ describe('deriveBitcoinSwapFromAddresses', () => {
         });
 
         expect(result).toBeUndefined();
+    });
+});
+
+describe('getApprovalStatus with the chain allowance', () => {
+    const quote = {
+        orderId: 'test-order',
+        preapprovedStringAmount: '50',
+        isDex: true,
+        send: USDT_CRYPTO_ID,
+        status: 'APPROVAL_REQ' as const,
+    };
+
+    it('needs a plain approval when the chain reports no allowance despite the provider', () => {
+        expect(getApprovalStatus(quote, '0')).toBe('needs_approval');
+    });
+
+    it('needs a revoke when the chain reports an allowance the provider does not know', () => {
+        expect(getApprovalStatus({ ...quote, preapprovedStringAmount: '0' }, '50')).toBe(
+            'needs_revoke',
+        );
+    });
+
+    it('is approved when the chain reports an allowance for a confirmed quote', () => {
+        expect(
+            getApprovalStatus({ ...quote, preapprovedStringAmount: '0', status: 'CONFIRM' }, '50'),
+        ).toBe('approved');
+    });
+});
+
+describe('getDexEstimationData with the chain allowance', () => {
+    const spender = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
+    const approveData = buildApprovalTransactionData({ spender, amount: '1' });
+    const quote = {
+        orderId: 'test-order',
+        preapprovedStringAmount: '0',
+        isDex: true,
+        send: USDT_CRYPTO_ID,
+        status: 'APPROVAL_REQ' as const,
+        dexTx: { from: '0xowner', to: '0xtoken', value: '0', data: approveData },
+    };
+
+    it('estimates a revoke when the chain reports an allowance for a token that cannot increase it', () => {
+        expect(getDexEstimationData(quote, '50')).toBe(
+            buildApprovalTransactionData({ spender, amount: '0' }),
+        );
+    });
+
+    it('estimates the approval when the chain reports no allowance', () => {
+        expect(getDexEstimationData({ ...quote, preapprovedStringAmount: '50' }, '0')).toBe(
+            approveData,
+        );
     });
 });

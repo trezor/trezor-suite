@@ -10,8 +10,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { EarnFlowFeedbackCard } from '#src/components/earn/common/EarnFlowFeedbackCard';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 
 type YieldFlowCompleteProps = {
     type: 'deposit' | 'withdraw' | 'claim';
@@ -97,7 +97,7 @@ export const YieldFlowComplete = ({
 
             {showFeedback && (
                 <EarnFlowFeedbackCard
-                    featureTitleId="TR_EARN_DEFI_YIELD_TITLE"
+                    featureTitleId="TR_EARN_DEFI_YIELD"
                     analyticsCategory="yield"
                     context={type}
                     provider={vaultId}

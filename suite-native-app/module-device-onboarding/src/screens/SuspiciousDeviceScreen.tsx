@@ -1,0 +1,105 @@
+import { useSelector } from 'react-redux';
+
+import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
+import { Button, IconList, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import {
+    AppTabsRoutes,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
+    type DeviceSuspicionCause,
+    HomeStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenHeader,
+    type StackToStackCompositeScreenProps,
+} from '@suite-native/navigation';
+import {
+    TREZOR_SUPPORT_DIFFERENT_PACKAGING,
+    TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
+    TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
+    type Url,
+} from '@trezor/urls';
+
+const causeToLinkMap = {
+    deviceLooksDifferent: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
+    firmwareAlreadyInstalled: TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
+    untrustedReseller: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
+    plasticWrap: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
+    securitySeal: TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
+    packaging: TREZOR_SUPPORT_DIFFERENT_PACKAGING,
+} as const satisfies Record<DeviceSuspicionCause, Url>;
+
+export const SuspiciousDeviceScreen = ({
+    route,
+    navigation,
+}: StackToStackCompositeScreenProps<
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes.SuspiciousDevice,
+    RootStackParamList
+>) => {
+    const { suspicionCause } = route.params;
+    const openLink = useOpenLink();
+    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
+
+    const supportLink = causeToLinkMap[suspicionCause];
+
+    const handleContactSupportButtonPress = () => {
+        openLink(`${supportLink}/#open-chat`);
+    };
+
+    const handleBackButtonPress = () => {
+        if (isNoPhysicalDeviceConnected) {
+            // Exit the onboarding flow if device was disconnected while was user on this screen.
+            navigation.popTo(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
+
+            return;
+        }
+
+        navigation.goBack();
+    };
+
+    return (
+        <Screen header={<ScreenHeader closeAction={handleBackButtonPress} />}>
+            <VStack justifyContent="space-between" flex={1} paddingTop="sp16">
+                <VStack spacing="sp32">
+                    <TitleHeader
+                        titleVariant="headline-md"
+                        title={
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.title" />
+                        }
+                        subtitle={
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.subtitle" />
+                        }
+                    />
+                    <IconList iconIntent="warning" textVariant="body-md-strong">
+                        <IconListTextItem icon="plugs">
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet1" />
+                        </IconListTextItem>
+                        <IconListTextItem icon="handPalm">
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet2" />
+                        </IconListTextItem>
+                        <IconListTextItem icon="chatCircle">
+                            <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.bullet3" />
+                        </IconListTextItem>
+                    </IconList>
+                </VStack>
+                <Button
+                    testID="@deviceOnboarding/SuspiciousDeviceScreen/contactSupportBtn"
+                    intent="warning"
+                    priority="primary"
+                    onPress={handleContactSupportButtonPress}
+                >
+                    <Translation id="moduleDeviceOnboarding.suspiciousDeviceScreen.contactSupportButton" />
+                </Button>
+            </VStack>
+        </Screen>
+    );
+};

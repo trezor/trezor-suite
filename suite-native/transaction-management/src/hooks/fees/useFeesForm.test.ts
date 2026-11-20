@@ -13,6 +13,53 @@ const ethSymbol = asNetworkSymbol('eth');
 const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
 
 describe('useFeesForm', () => {
+    it('allows Custom EIP-1559 inputs when every Standard level failed before a rate was saved', async () => {
+        const wallet = getWalletState();
+        const { result } = await renderHookWithStoreProvider(useFeesForm, {
+            initialProps: { accountKey: FIXTURE_ACCOUNT_KEY, defaultFeeLevel: 'custom' },
+            preloadedState: {
+                wallet: {
+                    ...wallet,
+                    send: {
+                        ...wallet.send,
+                        feeLevels: {
+                            normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                        },
+                    },
+                    fees: {
+                        eth: {
+                            status: 'loaded',
+                            data: {
+                                blockHeight: 100,
+                                blockTime: 12,
+                                minFee: 1,
+                                maxFee: 100,
+                                minPriorityFee: 1,
+                                levels: [
+                                    {
+                                        label: 'normal',
+                                        blocks: 2,
+                                        feePerUnit: '10000000000',
+                                        maxFeePerGas: '20000000000',
+                                        maxPriorityFeePerGas: '2000000000',
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        expect(result.current.getValues('customFeePerUnit')).toBe('20');
+        await act(async () => {
+            result.current.setValue('customFeeLimit', '21000');
+            result.current.setValue('customMaxFeePerGas', '10');
+            result.current.setValue('customMaxPriorityFeePerGas', '2');
+            expect(await result.current.trigger()).toBe(true);
+        });
+    });
+
     const mockProps: UseFeesFormProps = {
         accountKey: ETH_ACCOUNT_KEY,
         defaultFeeLevel: 'normal',
@@ -236,7 +283,7 @@ describe('useFeesForm', () => {
         });
     });
 
-    it('does not use a previous Custom gas limit as a minimum when all standard levels failed', async () => {
+    it('allows a fresh preview without using a previous Custom gas limit as the minimum', async () => {
         const wallet = getWalletState();
         const { result } = await renderHookWithStoreProvider(
             () =>
@@ -265,7 +312,7 @@ describe('useFeesForm', () => {
         );
         await act(async () => {
             result.current.setValue('customFeeLimit', '45000');
-            expect(await result.current.trigger('customFeeLimit')).toBe(false);
+            expect(await result.current.trigger('customFeeLimit')).toBe(true);
         });
     });
     it('uses a composed Custom estimate without trusting its user-entered gas limit', async () => {

@@ -1,3 +1,4 @@
+import { type SelectedAccountState } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
@@ -6,11 +7,11 @@ import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components
 import { InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useSelector } from 'src/hooks/suite';
-import { useAccountHeaderContext } from 'src/support/suite/AccountHeaderProvider';
-import { type AppState } from 'src/types/suite';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FiatHeader } from '#src/components/wallet/FiatHeader';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useAccountHeaderContext } from '#src/support/suite/AccountHeaderProvider';
 
 type AccountOverviewBalanceSkeletonProps = {
     animate?: boolean;
@@ -25,7 +26,7 @@ const AccountOverviewBalanceSkeleton = ({
         <Skeleton width={100} height={50} animate={animate} />
         <Row gap={4}>
             {symbol ? (
-                <TokenIcon size={16} symbol={symbol} />
+                <TokenIcon size={16} networkSymbol={symbol} />
             ) : (
                 <Skeleton type="circle" size={20} />
             )}
@@ -43,7 +44,7 @@ const getBalanceExcludesTranslationId = (hasTokens: boolean, hasStaking: boolean
 };
 
 type AccountOverviewBalanceProps = {
-    selectedAccount: AppState['wallet']['selectedAccount'];
+    selectedAccount: SelectedAccountState;
 };
 
 export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalanceProps) => {
@@ -103,7 +104,7 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
                             <FormattedCryptoAmount
                                 data-testid="@wallet/account/crypto-balance"
                                 value={formattedBalance}
-                                symbol={symbol}
+                                networkSymbol={symbol}
                             />
                         </Text>
                     )}

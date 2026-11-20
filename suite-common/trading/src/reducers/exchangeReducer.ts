@@ -6,15 +6,23 @@ import {
     type ExchangeTradeQuoteRequest,
 } from 'invity-api';
 
-import { type AccountKey } from '@suite-common/wallet-types';
+import { transactionsActions } from '@suite-common/wallet-core';
+import { type AccountKey, type AllowanceStepVariant } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
 import {
+    type TradingExchangeAllowance,
+    type TradingExchangeAllowanceRead,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     type TradingExchangeStepType,
 } from '../types';
+import {
+    type ApprovalFlowState,
+    type ApprovalFlowStepType,
+} from '../utils/exchange/approvalFlowUtils';
+import { isSameExchangeAllowanceKey } from '../utils/exchange/exchangeAllowanceUtils';
 
 export interface ExchangeInfo {
     providerInfos: Record<string, ExchangeProviderInfo>;
@@ -32,6 +40,8 @@ export interface TradingExchangeState {
     receiveAccountKey?: AccountKey;
     receiveAddress?: string;
     selectedQuote: ExchangeTrade | undefined;
+    selectedQuoteTimestamp?: number;
+    approvalFlow: ApprovalFlowState | undefined;
     isFromRedirect: boolean;
     isLoading: boolean;
     dexQuoteApprovalPrefetchLoadingQuoteId: string | undefined;
@@ -39,6 +49,7 @@ export interface TradingExchangeState {
     formStep: TradingExchangeStepType;
     transactionId?: string;
     lastErrorMessage?: string;
+    allowance: TradingExchangeAllowance | undefined;
 }
 
 export const exchangeInitialState: TradingExchangeState = {
@@ -51,11 +62,14 @@ export const exchangeInitialState: TradingExchangeState = {
     receiveAccountKey: undefined,
     receiveAddress: undefined,
     selectedQuote: undefined,
+    selectedQuoteTimestamp: undefined,
+    approvalFlow: undefined,
     isFromRedirect: false,
     isLoading: false,
     dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
     amountLimits: undefined,
     formStep: 'RECEIVING_ADDRESS',
+    allowance: undefined,
 };
 
 const tradingExchangeSlice = createSlice({
@@ -86,12 +100,16 @@ const tradingExchangeSlice = createSlice({
         clearQuotes(state: TradingExchangeState) {
             state.quotes = [];
             state.selectedQuote = undefined;
+            state.selectedQuoteTimestamp = undefined;
+            state.approvalFlow = undefined;
         },
         clearQuotesAndParams(state: TradingExchangeState) {
             state.quotes = [];
             state.quotesRequest = undefined;
             state.formValues = undefined;
             state.selectedQuote = undefined;
+            state.selectedQuoteTimestamp = undefined;
+            state.approvalFlow = undefined;
             state.amountLimits = undefined;
         },
         setTradingAccountKey(
@@ -106,6 +124,8 @@ const tradingExchangeSlice = createSlice({
                 state.quotes = [];
                 state.quotesRequest = undefined;
                 state.selectedQuote = undefined;
+                state.selectedQuoteTimestamp = undefined;
+                state.approvalFlow = undefined;
             }
             state.tradingAccountKey = action.payload;
         },
@@ -122,7 +142,36 @@ const tradingExchangeSlice = createSlice({
             state: TradingExchangeState,
             action: PayloadAction<ExchangeTrade | undefined>,
         ) {
+            const isSameConfirmedTrade =
+                !!action.payload?.orderId &&
+                action.payload.orderId === state.selectedQuote?.orderId;
+
+            if (!isSameConfirmedTrade) {
+                state.selectedQuoteTimestamp = undefined;
+            }
             state.selectedQuote = action.payload;
+        },
+        startApprovalFlow(
+            state: TradingExchangeState,
+            action: PayloadAction<ApprovalFlowStepType[]>,
+        ) {
+            state.approvalFlow = { steps: action.payload, sentTxids: {} };
+        },
+        setApprovalFlowStepTxid(
+            state: TradingExchangeState,
+            action: PayloadAction<{ step: AllowanceStepVariant; txid: string }>,
+        ) {
+            if (!state.approvalFlow) {
+                return;
+            }
+
+            state.approvalFlow.sentTxids[action.payload.step] = action.payload.txid;
+        },
+        clearApprovalFlow(state: TradingExchangeState) {
+            state.approvalFlow = undefined;
+        },
+        setSelectedQuoteTimestamp(state: TradingExchangeState, action: PayloadAction<number>) {
+            state.selectedQuoteTimestamp = action.payload;
         },
         setSelectedQuoteSwapSlippage(state: TradingExchangeState, action: PayloadAction<string>) {
             if (state.selectedQuote?.isDex) {
@@ -156,6 +205,52 @@ const tradingExchangeSlice = createSlice({
         ) {
             state.lastErrorMessage = action.payload;
         },
+        startAllowanceRead(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceRead>,
+        ) {
+            const amount =
+                state.allowance && isSameExchangeAllowanceKey(state.allowance, action.payload)
+                    ? state.allowance.amount
+                    : undefined;
+
+            state.allowance = { ...action.payload, status: 'loading', amount };
+        },
+        setAllowance(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceRead & { amount: string }>,
+        ) {
+            if (state.allowance?.requestId !== action.payload.requestId) {
+                return;
+            }
+
+            state.allowance = { ...action.payload, status: 'loaded' };
+        },
+        setAllowanceError(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeAllowanceRead & { errorMessage: string }>,
+        ) {
+            if (state.allowance?.requestId !== action.payload.requestId) {
+                return;
+            }
+
+            state.allowance = { ...action.payload, status: 'error', amount: undefined };
+        },
+    },
+    extraReducers: builder => {
+        builder.addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
+            const { approvalFlow } = state;
+
+            if (!approvalFlow) {
+                return;
+            }
+
+            approvalFlow.steps.forEach(step => {
+                if (step !== 'swap' && approvalFlow.sentTxids[step] === payload.txid) {
+                    approvalFlow.sentTxids[step] = payload.tx.txid;
+                }
+            });
+        });
     },
 });
 

@@ -1,5 +1,8 @@
 name: "[Test] connect core e2e"
 
+permissions:
+  contents: read
+
 # run only if there are changes in connect or related libs paths
 on:
   schedule:
@@ -8,25 +11,50 @@ on:
   push:
     branches: [release/connect/**]
   pull_request:
+    # `yarn requirements:verify` fails when a package of the connect publish closure is missing here.
     paths:
+      - "networks/cardano/network-cardano/**"
+      - "networks/cardano/network-cardano-coin-selection/**"
+      - "networks/ripple/network-ripple/**"
+      - "networks/solana/network-solana/**"
+      - "networks/solana/network-solana-types/**"
+      - "networks/stellar/network-stellar/**"
+      - "networks/stellar/network-stellar-types/**"
+      - "networks/tron/network-tron/**"
       - "packages/blockchain-link/**"
+      - "packages/blockchain-link-types/**"
+      - "packages/blockchain-link-utils/**"
+      - "packages/connect/**"
       - "packages/connect-common/**"
       - "packages/connect-core/**"
       - "packages/connect-data/**"
+      - "packages/connect-mobile/**"
       - "packages/connect-web/**"
-      - "packages/connect/**"
+      - "packages/connect-webextension/**"
+      - "packages/crypto-utils/**"
+      - "packages/device-authenticity/**"
+      - "packages/device-utils/**"
+      - "packages/env-utils/**"
+      - "packages/logger/**"
       - "packages/protobuf/**"
+      - "packages/protocol/**"
       - "packages/schema-utils/**"
       - "packages/transport/**"
       - "packages/transport-common/**"
       - "packages/transport-web/**"
+      - "packages/type-utils/**"
+      - "packages/utils/**"
       - "packages/utxo-lib/**"
-      - "docker/**"
+      - "packages/websocket-client/**"
+      - "packages/zod/**"
+      # The harness of the connect-core e2e tests, not published with connect.
+      - "packages/trezor-user-env-link/**"
       - "submodules/trezor-common/**"
       - ".github/workflows/test-connect.yml"
       - ".github/workflows/template-connect-test-params.yml"
       - "docker/docker-connect-test.sh"
       - "docker/docker-compose.connect-test.yml"
+      - "scripts/ci/connect-test-matrix-generator.js"
   workflow_dispatch:
 
 concurrency:

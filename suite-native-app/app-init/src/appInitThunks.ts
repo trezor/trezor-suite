@@ -1,0 +1,142 @@
+import {
+    type ConnectInitThunkDeps,
+    type ConnectInitThunkState,
+    connectInitThunk,
+} from '@suite-common/connect-init';
+import {
+    defaultEarnYieldWorkerBaseUrl,
+    earnYieldWorkerBaseUrl,
+} from '@suite-common/earn-stablecoin-api';
+import {
+    defaultEarnStakingWorkerBaseUrl,
+    earnStakingWorkerBaseUrl,
+} from '@suite-common/earn-staking-api';
+import {
+    type MessageSystemRootState,
+    initMessageSystemThunk,
+    prepareCachedEnvData,
+    selectActiveKillswitchMessage,
+} from '@suite-common/message-system';
+import {
+    type InitTokenDefinitionsThunkDeps,
+    type InitTokenDefinitionsThunkState,
+    periodicCheckTokenDefinitionsThunk,
+} from '@suite-common/token-definitions';
+import {
+    type CreateImportedDeviceThunkState,
+    type InitBlockchainThunkDeps,
+    type InitBlockchainThunkState,
+    type PeriodicFetchFiatRatesThunkDeps,
+    type PeriodicFetchFiatRatesThunkState,
+    createImportedDeviceThunk,
+    initBlockchainThunk,
+    initDevicesThunk,
+    periodicFetchFiatRatesThunk,
+    selectBaseCurrency,
+} from '@suite-common/wallet-core';
+import {
+    type WalletConnectInitThunkDeps,
+    type WalletConnectInitThunkState,
+    walletConnectInitThunk,
+} from '@suite-common/walletconnect';
+import {
+    type InitAnalyticsThunkDeps,
+    type InitAnalyticsThunkState,
+    initAnalyticsThunk,
+} from '@suite-native/analytics-redux';
+import {
+    type SettingsSliceRootState,
+    selectEarnStakingWorkerBaseUrl,
+    selectEarnYieldWorkerBaseUrl,
+    selectIsOnboardingFinished,
+} from '@suite-native/settings';
+import { setIsAppReady } from '@suite-native-app/state';
+import { createThunk } from '@trezor/redux-utils';
+
+const ACTION_PREFIX = '@suite-native/app';
+
+type PostOnboardingInitThunkState = ConnectInitThunkState &
+    InitBlockchainThunkState &
+    InitTokenDefinitionsThunkState &
+    PeriodicFetchFiatRatesThunkState &
+    CreateImportedDeviceThunkState &
+    WalletConnectInitThunkState;
+
+type PostOnboardingInitThunkDeps = ConnectInitThunkDeps &
+    InitBlockchainThunkDeps &
+    InitTokenDefinitionsThunkDeps &
+    PeriodicFetchFiatRatesThunkDeps &
+    WalletConnectInitThunkDeps;
+
+export const postOnboardingInitThunk = createThunk<
+    void,
+    void,
+    { state: PostOnboardingInitThunkState; extra: PostOnboardingInitThunkDeps }
+>(`${ACTION_PREFIX}/postOnboardingInit`, async (_, { dispatch, getState }) => {
+    // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
+    const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
+    if (activeKillswitchMessage) return;
+
+    try {
+        await dispatch(connectInitThunk()).unwrap();
+    } catch (error) {
+        console.error(`Connect init error: ${JSON.stringify(error)}`);
+    }
+
+    try {
+        // Needs to be finished before any TrezorConnect.blockchain* calls.
+        await dispatch(initBlockchainThunk()).unwrap();
+    } catch (error) {
+        console.error(`Blockchain init error: ${JSON.stringify(error)}`);
+    }
+
+    dispatch(periodicCheckTokenDefinitionsThunk());
+
+    dispatch(
+        periodicFetchFiatRatesThunk({
+            rateType: 'current',
+            localCurrency: selectBaseCurrency(getState()),
+        }),
+    );
+
+    // Create Portfolio Tracker device if it doesn't exist
+    dispatch(createImportedDeviceThunk());
+
+    dispatch(walletConnectInitThunk());
+});
+
+type ApplicationInitThunkState = SettingsSliceRootState &
+    MessageSystemRootState &
+    InitAnalyticsThunkState &
+    PostOnboardingInitThunkState;
+
+type ApplicationInitThunkDeps = InitAnalyticsThunkDeps & PostOnboardingInitThunkDeps;
+
+export const applicationInitThunk = createThunk<
+    void,
+    void,
+    { state: ApplicationInitThunkState; extra: ApplicationInitThunkDeps }
+>(`${ACTION_PREFIX}/applicationInit`, async (_, { dispatch, getState }) => {
+    await prepareCachedEnvData();
+
+    // Apply the earn worker base URLs from debug settings (or the defaults for this build).
+    earnYieldWorkerBaseUrl.set(
+        selectEarnYieldWorkerBaseUrl(getState()) ?? defaultEarnYieldWorkerBaseUrl,
+    );
+    earnStakingWorkerBaseUrl.set(
+        selectEarnStakingWorkerBaseUrl(getState()) ?? defaultEarnStakingWorkerBaseUrl,
+    );
+
+    dispatch(initAnalyticsThunk());
+    dispatch(initMessageSystemThunk());
+
+    // Select latest remembered device or Portfolio Tracker device.
+    dispatch(initDevicesThunk());
+
+    if (selectIsOnboardingFinished(getState())) {
+        await dispatch(postOnboardingInitThunk());
+    }
+
+    // Tell the application to render
+    dispatch(setIsAppReady(true));
+});

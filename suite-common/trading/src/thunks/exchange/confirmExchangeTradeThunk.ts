@@ -3,6 +3,10 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
+import {
+    type ValidateExchangeReceiveAddressThunkDeps,
+    validateExchangeReceiveAddressThunk,
+} from './validateExchangeReceiveAddressThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
@@ -33,10 +37,12 @@ export type ConfirmExchangeTradeThunkProps = {
 
 export type ConfirmExchangeTradeThunkState = TradingRootState;
 
+export type ConfirmExchangeTradeThunkDeps = ValidateExchangeReceiveAddressThunkDeps;
+
 export const confirmExchangeTradeThunk = createThunk<
     ExchangeTrade | undefined,
     ConfirmExchangeTradeThunkProps,
-    { state: ConfirmExchangeTradeThunkState }
+    { state: ConfirmExchangeTradeThunkState; extra: ConfirmExchangeTradeThunkDeps }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmTrade`,
     async (
@@ -72,6 +78,19 @@ export const confirmExchangeTradeThunk = createThunk<
             return undefined;
         }
 
+        const isReceiveAddressAccepted =
+            isTradeSubmitted ||
+            (await dispatch(
+                validateExchangeReceiveAddressThunk({
+                    receiveAddress,
+                    receiveCryptoId: trade.receive,
+                }),
+            ).unwrap());
+
+        if (!isReceiveAddressAccepted) {
+            return undefined;
+        }
+
         if (trade.isDex) {
             trade = { ...trade, receiveAddress };
 
@@ -83,6 +102,8 @@ export const confirmExchangeTradeThunk = createThunk<
             }
         }
 
+        const confirmRequestTimestamp = Date.now();
+        const apiKey = tradeApi.getCurrentApiKey();
         const rawResponse = await tradeApi.doExchangeTrade(
             {
                 trade,
@@ -104,6 +125,7 @@ export const confirmExchangeTradeThunk = createThunk<
             isDex: rawResponse.isDex ?? trade.isDex,
             receiveTxHash: rawResponse.receiveTxHash ?? trade.receiveTxHash,
             swapSlippage: rawResponse.swapSlippage || trade.swapSlippage,
+            receiveAddress: rawResponse.receiveAddress ?? trade.receiveAddress,
         };
 
         if (!response) {
@@ -137,6 +159,7 @@ export const confirmExchangeTradeThunk = createThunk<
                         data: response,
                         sendAccountKey,
                         receiveAccountKey,
+                        apiKey,
                     }),
                 );
                 dispatch(tradingExchangeActions.saveTransactionId(response.orderId));
@@ -155,6 +178,19 @@ export const confirmExchangeTradeThunk = createThunk<
             return undefined;
         }
 
+        const isResponseAddressAccepted =
+            isTradeSubmitted ||
+            (await dispatch(
+                validateExchangeReceiveAddressThunk({
+                    receiveAddress: response.receiveAddress ?? receiveAddress,
+                    receiveCryptoId: response.receive ?? trade.receive,
+                }),
+            ).unwrap());
+
+        if (!isResponseAddressAccepted) {
+            return undefined;
+        }
+
         if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
@@ -170,6 +206,7 @@ export const confirmExchangeTradeThunk = createThunk<
 
         if (response.status === 'CONFIRM') {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
+            dispatch(tradingExchangeActions.setSelectedQuoteTimestamp(confirmRequestTimestamp));
             dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
 
             return response;
@@ -185,6 +222,7 @@ export const confirmExchangeTradeThunk = createThunk<
                 data: response,
                 sendAccountKey,
                 receiveAccountKey,
+                apiKey,
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(response.orderId));

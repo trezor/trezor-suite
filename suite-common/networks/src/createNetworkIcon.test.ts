@@ -2,6 +2,7 @@ import { createMockDeps } from '@trezor/dependency-injection';
 import type { NetworkAssetsModule } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
+import { createNetworkModuleRepository } from './NetworkModuleRepository';
 import {
     type NetworkIconDeps,
     createNetworkIcon,
@@ -11,10 +12,7 @@ import {
     injectHasNetworkIcon,
     injectNetworkIcon,
 } from './createNetworkIcon';
-import {
-    type NetworksCompositionRootDeps,
-    createNetworksCompositionRoot,
-} from './createNetworksCompositionRoot';
+import { createNetworksCompositionRoot } from './createNetworksCompositionRoot';
 import { mockNetworkModule } from '../mocks/mockNetworkModule';
 
 it.each([
@@ -48,9 +46,10 @@ it.each([
 });
 
 it('exposes the composed icon dependency through its injectors', () => {
-    const networks = createNetworksCompositionRoot(
-        createMockDeps<NetworksCompositionRootDeps>({ getTrezorConnect: null, dispatch: null }),
-    );
+    const networks = createNetworksCompositionRoot({
+        networkModuleRepository: createNetworkModuleRepository({ networkModules: [] }),
+        dispatch: action => action,
+    });
 
     expect(injectNetworkIcon({ networks }).networkIcon).toBe(networks.networkIcon);
     expect(injectGetCryptoIcon({ networks }).getCryptoIcon).toBe(

@@ -10,6 +10,7 @@ import {
 } from '@suite-native/test-utils-store';
 
 import { CustomFee } from './CustomFee';
+import { createFeeLevel } from '../../../__fixtures__/feeLevels';
 import {
     BTC_ACCOUNT_KEY,
     ETH_ACCOUNT_KEY,
@@ -95,8 +96,9 @@ describe('CustomFee', () => {
         // Default mock implementation for useCustomFee
         mockUseCustomFee.mockReturnValue({
             feeValue: '1000',
+            feeLevels: { custom: createFeeLevel({ fee: '1000' }) },
             isFeeLoading: false,
-            isErrorBoxVisible: false,
+            errorMessage: null,
             isSubmittable: true,
         });
     });

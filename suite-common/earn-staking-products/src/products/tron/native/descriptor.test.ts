@@ -1,0 +1,62 @@
+import { stakingProductDescriptorSchema } from '@suite-common/earn-staking-common';
+import { asNetworkSymbol } from '@trezor/network-module-types';
+
+import { createTronNativeProductDescriptor } from './descriptor';
+import { TRON_NATIVE_PRODUCT_LIMITS } from './limits';
+import { TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES } from './messageSystemFeatures';
+
+describe('createTronNativeProductDescriptor', () => {
+    it('builds the trx:trx:curated:native product', () => {
+        const descriptor = createTronNativeProductDescriptor({
+            networkSymbol: asNetworkSymbol('trx'),
+            messageSystemFeatures: TRON_NATIVE_PRODUCT_MESSAGE_SYSTEM_FEATURES,
+        });
+
+        expect(stakingProductDescriptorSchema.safeParse(descriptor).success).toBe(true);
+        expect(descriptor).toEqual({
+            id: 'trx:trx:curated:native',
+            networkSymbol: 'trx',
+            asset: { kind: 'native' },
+            providerId: 'curated',
+            type: 'native',
+            operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
+            exclusivity: 'none',
+            rateKind: 'apr',
+            rewardsKind: 'claimable',
+            limits: TRON_NATIVE_PRODUCT_LIMITS,
+            options: [{ key: 'resource', kind: 'choice' }],
+            consentKey: 'staking:curated',
+            platforms: {
+                desktop: { access: 'manage' },
+                mobile: { access: 'read-only' },
+            },
+            messageSystemFeatures: {
+                stake: 'trx.staking.stake',
+                unstake: 'trx.staking.unstake',
+                withdraw: 'trx.staking.withdraw',
+                claim: 'trx.staking.claim',
+                vote: 'trx.staking.vote',
+            },
+            minFirmware: {
+                stake: '2.12.2',
+                unstake: '2.12.2',
+                withdraw: '2.12.2',
+                claim: '2.12.2',
+                vote: '2.12.2',
+            },
+            isCountedInAccountTotals: true,
+        });
+    });
+
+    it('keeps the legacy limits in sun', () => {
+        expect(TRON_NATIVE_PRODUCT_LIMITS).toEqual({
+            minStakeAmount: '1000000',
+            maxStakeAmount: '1000000000000000',
+            minWithdrawalAmount: '10000',
+            feeBufferBalance: '5000000',
+            minBalanceForStaking: '1010000',
+            minStakeAmountForDashboard: '1000000',
+            registrationDeposit: '0',
+        });
+    });
+});

@@ -39,9 +39,9 @@ export const calculate = [
         },
         result: {
             type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             errorMessage: {
-                id: 'AMOUNT_IS_NOT_ENOUGH',
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             },
         },
     },
@@ -164,9 +164,9 @@ export const calculate = [
         },
         result: {
             type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             errorMessage: {
-                id: 'AMOUNT_IS_NOT_ENOUGH',
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
             },
         },
     },

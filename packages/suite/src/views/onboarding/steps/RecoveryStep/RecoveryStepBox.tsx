@@ -1,23 +1,20 @@
-import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { OnboardingCard, type OnboardingCardProps } from '@suite/onboarding-components';
 import { recoveryActions, selectRecoveryError, selectRecoveryStatus } from '@suite/recovery';
+import { selectDeviceInternalModel } from '@suite-common/device';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBackupIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { goToPreviousStepThunk } from 'src/actions/onboarding/onboardingActions';
-import { useSelector } from 'src/hooks/suite';
+import { goToPreviousStepThunk } from '#src/actions/onboarding/onboardingActions';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const RecoveryStepBox = (props: OnboardingCardProps) => {
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const recoveryError = useSelector(selectRecoveryError);
+    const deviceModelInternal = useSelector(selectDeviceInternalModel);
     const { dispatch } = useServices(injectDispatch);
-
-    const { device } = useDevice();
-
-    const deviceModelInternal = device?.features?.internal_model;
 
     if (!deviceModelInternal) {
         return null;

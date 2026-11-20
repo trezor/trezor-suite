@@ -12,12 +12,11 @@ import { addLog } from '@suite-common/logger';
 import { setAddressDisplayType } from '@suite-common/wallet-core';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { saveCoinProtocol } from 'src/actions/suite/protocolActions';
-import { type AppState } from 'src/types/suite';
-import { redactAnchor } from 'src/utils/suite/analytics';
+import { saveCoinProtocol } from '#src/actions/suite/protocolActions';
+import { redactAnchor } from '#src/utils/suite/analytics';
 
 const log =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
+    (api: MiddlewareAPI<Dispatch<UnknownAction>, unknown>) =>
     (next: Dispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         // IMPORTANT: Actions that are shared between native and desktop app can be found in this file: suite-common/logger/src/logsMiddleware.ts

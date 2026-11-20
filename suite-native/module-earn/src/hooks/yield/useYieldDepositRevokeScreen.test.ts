@@ -2,27 +2,39 @@ import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
+import { useYieldFlowData } from '@suite-native/earn';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useYieldAllowanceFees } from './useYieldAllowanceFees';
 import { useYieldDepositRevokeScreen } from './useYieldDepositRevokeScreen';
-import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldSession } from './useYieldSession';
 import { mockYieldPendingTransactionResult } from '../../../mocks/mockYieldPendingTransactionResult';
-import { updateYieldAllowanceSelectedFeeLevelThunk } from '../../thunks/yield/yieldApprovalThunks';
+import { updateEarnSelectedFeeLevelThunk } from '../earn/useComposeEarnFees';
 
 const resolvedFlow = mockResolvedYieldFlowData();
-const mockNavigation = { navigate: jest.fn() };
+const mockNavigation = {
+    navigate: jest.fn(),
+    isFocused: () => true,
+    addListener: jest.fn(
+        (_name: string, _listener: (event: { data: { action: { type: string } } }) => void) => () =>
+            undefined,
+    ),
+};
 const mockPrepareReview = jest.fn();
+let mockIsFocused = true;
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => mockNavigation,
-    useIsFocused: () => true,
+    useFocusEffect: jest.fn(),
+    useIsFocused: () => mockIsFocused,
     useRoute: () => ({ params: { accountKey: 'account-key', tokenContract: 'token-contract' } }),
 }));
-jest.mock('./useYieldFlowData');
+jest.mock('@suite-native/earn', () => ({
+    ...jest.requireActual('@suite-native/earn'),
+    useYieldFlowData: jest.fn(),
+}));
 jest.mock('./useYieldSession');
 jest.mock('./useYieldAllowanceFees');
 jest.mock('./useYieldPendingTransaction');
@@ -57,6 +69,7 @@ const renderRevoke = async (connected = true) => {
 describe('revoke submit analytics', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockIsFocused = true;
         jest.mocked(useYieldFlowData).mockReturnValue(resolvedFlow);
         jest.mocked(useYieldSession).mockReturnValue(
             mockYieldSessionState({
@@ -78,16 +91,37 @@ describe('revoke submit analytics', () => {
         jest.mocked(useYieldAllowanceFees).mockReturnValue({
             formDraft: undefined,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: true,
-            isComposingAllowanceFee: false,
-            isFeeUnavailable: false,
+            isComposingFeeLevels: false,
             selectedFee: 'normal',
-            updateFeeLevelThunk: updateYieldAllowanceSelectedFeeLevelThunk,
+            updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
         });
         mockPrepareReview.mockResolvedValue({
             type: 'test/prepare/fulfilled',
             meta: { requestStatus: 'fulfilled', requestId: 'test-prepare' },
         });
+    });
+
+    it('does not report leaving the deposit flow when returning to Approval', async () => {
+        const { analytics } = await renderRevoke();
+        await act(() => {
+            for (const [, listener] of mockNavigation.addListener.mock.calls) {
+                listener({ data: { action: { type: 'GO_BACK' } } });
+            }
+        });
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
+
+    it('pauses revoke estimates while another screen owns the fee levels', async () => {
+        mockIsFocused = false;
+
+        await renderRevoke();
+
+        expect(useYieldAllowanceFees).toHaveBeenLastCalledWith(
+            expect.objectContaining({ isEnabled: false }),
+        );
     });
 
     it.each([true, false])('reports once at Continue (connected=%s)', async connected => {
@@ -115,11 +149,12 @@ describe('revoke submit analytics', () => {
         jest.mocked(useYieldAllowanceFees).mockReturnValue({
             formDraft: undefined,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: false,
-            isComposingAllowanceFee: false,
-            isFeeUnavailable: true,
+            isComposingFeeLevels: false,
             selectedFee: 'normal',
-            updateFeeLevelThunk: updateYieldAllowanceSelectedFeeLevelThunk,
+            updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
         });
         const { result, analytics } = await renderRevoke();
 

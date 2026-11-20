@@ -6,12 +6,15 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { NewContentIndicatorId } from './flagsConstants';
 import {
+    closeTokenYieldBanner,
     flagsInitialState,
     markNewContentIndicatorAsSeen,
     prepareFlagsReducer,
     selectAssetPriceChartRange,
     selectFlags,
     selectIsNewContentIndicatorVisible,
+    selectIsReferAFriendEnabled,
+    selectIsTokenYieldBannerClosed,
     setAssetPriceChartRange,
     setFlag,
     setNewContentIndicatorSeen,
@@ -42,6 +45,17 @@ describe('flagsSlice', () => {
         expect(store.getState().flags.initialRun).toBe(false);
     });
 
+    it('keeps Refer-A-Friend off until its debug flag is enabled', () => {
+        const store = initStore();
+        expect(selectIsReferAFriendEnabled(store.getState())).toBe(false);
+
+        store.dispatch(setFlag({ key: 'isReferAFriendEnabled', value: true }));
+        expect(selectIsReferAFriendEnabled(store.getState())).toBe(true);
+
+        store.dispatch(setFlag({ key: 'isReferAFriendEnabled', value: false }));
+        expect(selectIsReferAFriendEnabled(store.getState())).toBe(false);
+    });
+
     it('should set a flag to false', () => {
         const store = initStore();
         store.dispatch(setFlag({ key: 'dashboardAssetsGridMode', value: false }));
@@ -56,6 +70,15 @@ describe('flagsSlice', () => {
         expect(state.taprootBannerClosed).toBe(true);
         expect(state.initialRun).toBe(flagsInitialState.initialRun);
         expect(state.dashboardAssetsGridMode).toBe(flagsInitialState.dashboardAssetsGridMode);
+    });
+
+    it('remembers a closed token yield banner for that token only', () => {
+        const store = initStore();
+
+        store.dispatch(closeTokenYieldBanner('eth-0xusdc'));
+
+        expect(selectIsTokenYieldBannerClosed(store.getState(), 'eth-0xusdc')).toBe(true);
+        expect(selectIsTokenYieldBannerClosed(store.getState(), 'eth-0xusdt')).toBe(false);
     });
 
     it('remembers the range picked for the asset price chart', () => {
@@ -107,6 +130,7 @@ describe('flagsSlice', () => {
         expect(store.getState().flags.seenNewContentIndicators).toEqual({
             [NewContentIndicatorId.Earn26_8]: true,
             [NewContentIndicatorId.Swap26_10]: true,
+            [NewContentIndicatorId.ReferAFriend26_10]: true,
         });
     });
 

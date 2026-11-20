@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import {
+    cancelDiscoveryForRestartThunk,
     cancelDiscoveryThunk,
     runDiscoveryThunk,
     startDiscoveryThunk,
@@ -58,10 +59,11 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                 onPressPrimaryButton: () => {
                     if (!device) return;
 
-                    dispatch(cancelDiscoveryThunk(device));
+                    dispatch(cancelDiscoveryForRestartThunk(device));
                     dispatch(
                         startDiscoveryThunk({
                             device,
+                            trigger: 'add-wallet',
                             isAddingHiddenWallet: true,
                             isAddingExistingWallet: false,
                         }),

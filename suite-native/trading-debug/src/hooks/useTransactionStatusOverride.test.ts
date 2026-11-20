@@ -1,6 +1,6 @@
 import { act } from 'react';
 
-import type { TransactionStatus } from '@suite-common/trading';
+import type { AllowanceTransactionStatus } from '@suite-common/wallet-core';
 import { renderHook } from '@suite-native/test-utils';
 
 import { useTransactionStatusOverride } from './useTransactionStatusOverride';
@@ -11,8 +11,16 @@ jest.mock('./useTradingDebugModeFlag', () => ({
     useTradingDebugModeFlag: () => mockIsDebugMode,
 }));
 
-const noStatus: TransactionStatus = { isPending: false, isConfirmed: false, isFailed: false };
-const pendingStatus: TransactionStatus = { isPending: true, isConfirmed: false, isFailed: false };
+const noStatus: AllowanceTransactionStatus = {
+    isPending: false,
+    isConfirmed: false,
+    isFailed: false,
+};
+const pendingStatus: AllowanceTransactionStatus = {
+    isPending: true,
+    isConfirmed: false,
+    isFailed: false,
+};
 
 describe('useTransactionStatusOverride', () => {
     describe('when debug mode is disabled', () => {

@@ -7,7 +7,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getTronVotes, selectAccountByKey, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface UseStakingRateProps {
     symbol?: NetworkSymbol;
@@ -37,12 +37,7 @@ export const useStakingRate = ({ symbol, accountKey }: UseStakingRateProps): Sta
         return { rate: formatTronApr(maxApr) };
     }
 
-    const votes = getTronVotes(account);
-
-    const votedApr = getTronVotedApr(
-        stats.data,
-        votes.map(({ address }) => address),
-    );
+    const votedApr = getTronVotedApr(stats.data, getTronVotes(account));
 
     const apr = votedApr ?? maxApr;
 

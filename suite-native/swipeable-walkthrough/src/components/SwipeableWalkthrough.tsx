@@ -1,5 +1,5 @@
 import { type ReactNode, useRef } from 'react';
-import { type View } from 'react-native';
+import { type ViewInstance } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { type SharedValue } from 'react-native-reanimated';
 
@@ -20,7 +20,7 @@ export const SwipeableWalkthrough = ({
     currentStepIndex,
     totalSteps,
 }: SwipeableWalkthroughProps) => {
-    const breakpointRef = useRef<View>(null);
+    const breakpointRef = useRef<ViewInstance>(null);
     const { setStepLayoutHeight } = useSwipeableWalkthroughStepHeight();
     const panGesture = Gesture.Pan().onEnd(event => {
         const { translationY } = event;

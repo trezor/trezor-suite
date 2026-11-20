@@ -40,16 +40,16 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     useFetchFees: () => undefined,
 }));
-jest.mock('src/hooks/suite/useMessageSystemWrappedNative', () => ({
+jest.mock('#src/hooks/suite/useMessageSystemWrappedNative', () => ({
     useMessageSystemWrappedNative: () => ({ isDisabled: false }),
 }));
-jest.mock('src/hooks/suite/useMessageSystemYield', () => ({
+jest.mock('#src/hooks/suite/useMessageSystemYield', () => ({
     useMessageSystemYield: () => ({ isDisabled: false }),
 }));
-jest.mock('src/hooks/earn/useEarnDeviceStatus', () => ({
+jest.mock('#src/hooks/earn/useEarnDeviceStatus', () => ({
     useEarnDeviceStatus: () => 'connected',
 }));
-jest.mock('src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled', () => ({
+jest.mock('#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled', () => ({
     useIsFeeRefetchDisabled: () => false,
 }));
 jest.mock('./useYieldDepositContext', () => ({

@@ -27,7 +27,7 @@ test.describe('Device authenticity check', { tag: ['@T3B1', '@T3T1'] }, () => {
         },
         async ({ analyticsSection, onboardingPage }) => {
             await analyticsSection.continueButton.click();
-            await onboardingPage.completeOnboardingButton.click();
+            await onboardingPage.passInitializedDeviceCheck();
             await onboardingPage.passThroughAuthenticityCheck();
             await onboardingPage.page.discoveryShouldFinish();
         },

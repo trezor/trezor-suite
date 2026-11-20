@@ -1,6 +1,6 @@
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
 import {
     Box,
@@ -15,9 +15,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setView } from 'src/actions/suite/guideActions';
-import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { useSelector } from 'src/hooks/suite';
+import { setView } from '#src/actions/suite/guideActions';
+import { useSelector } from '#src/hooks/suite/useSelector';
+
+import { GuideContent } from './GuideContent';
+import { GuideHeader } from './GuideHeader';
+import { GuideViewWrapper } from './GuideViewWrapper';
 
 type ShortcutKeys = ShortcutBadgeProps['shortcut'];
 type TranslationId = Parameters<typeof Translation>[0]['id'];
@@ -225,7 +228,7 @@ const ShortcutSectionBlock = ({ titleId, items }: ShortcutSection) => (
 export const GuideShortcuts = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const isPassphraseProtectionEnabled = useSelector(selectIsDeviceProtectedByPassphrase);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const { dispatch } = useServices(injectDispatch);
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
@@ -246,7 +249,7 @@ export const GuideShortcuts = () => {
                 <Column>
                     <ShortcutSectionBlock {...securitySectionWithLockApp} />
                     <ShortcutSectionBlock {...walletsSectionWithPassphrase} />
-                    <ShortcutSectionBlock {...getNavigationSection(!isFinpromRestricted)} />
+                    <ShortcutSectionBlock {...getNavigationSection(!isRegionRestricted)} />
                     <ShortcutSectionBlock {...generalSection} />
                     <ShortcutSectionBlock {...otherSection} />
                     {isDebugModeActive && <ShortcutSectionBlock {...debugSection} />}

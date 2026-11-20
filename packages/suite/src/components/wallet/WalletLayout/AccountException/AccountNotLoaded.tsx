@@ -5,7 +5,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AccountExceptionLayout } from 'src/components/wallet';
+import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
 
 /**
  * Handler for 'bundle-exception' in discovery
@@ -17,7 +17,7 @@ export const AccountNotLoaded = () => {
     const { dispatch } = useServices(injectDispatch);
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(startOrRestartDiscoveryThunk());
+    const handleClick = () => dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
 
     return (
         <AccountExceptionLayout

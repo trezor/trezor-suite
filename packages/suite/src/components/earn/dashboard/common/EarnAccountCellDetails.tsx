@@ -5,7 +5,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Text } from '@trezor/components';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import { type EarnTokenBalance } from './types';
 
@@ -70,7 +70,7 @@ export const EarnAccountCellDetails = ({
                     {tokenBalance ? (
                         <FormattedCryptoAmount
                             value={tokenBalance.value}
-                            symbol={tokenBalance.symbol}
+                            networkSymbol={tokenBalance.symbol}
                             contractAddress={tokenBalance.contractAddress}
                             tokenDecimals={tokenBalance.decimals}
                             isCompact
@@ -78,7 +78,7 @@ export const EarnAccountCellDetails = ({
                     ) : (
                         <FormattedCryptoAmount
                             value={account.formattedBalance}
-                            symbol={networkSymbol}
+                            networkSymbol={networkSymbol}
                             isCompact
                         />
                     )}

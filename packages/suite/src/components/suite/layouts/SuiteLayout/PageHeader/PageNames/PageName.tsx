@@ -9,7 +9,7 @@ import {
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
@@ -59,6 +59,14 @@ export const PageName = () => {
         return (
             <BasicName>
                 <Translation id="TR_NOTIFICATIONS" />
+            </BasicName>
+        );
+    }
+
+    if (currentRoute === 'suite-refer-a-friend') {
+        return (
+            <BasicName>
+                <Translation id="TR_REFER_A_FRIEND" />
             </BasicName>
         );
     }

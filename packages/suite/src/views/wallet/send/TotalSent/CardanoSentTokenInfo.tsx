@@ -4,16 +4,11 @@ import { useWatch } from 'react-hook-form';
 import { asAmountUnit } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSendFormContext } from 'src/hooks/wallet/useSendForm';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 export const CardanoSentTokenInfo = () => {
-    const {
-        account: { networkType, tokens },
-        getValues,
-        control,
-        composedLevels,
-    } = useSendFormContext();
+    const { account, getValues, control, composedLevels } = useSendFormContext();
 
     const formOutputs = useWatch({ control, name: 'outputs', defaultValue: [] });
     const selectedFee = getValues().selectedFee || 'normal';
@@ -25,23 +20,27 @@ export const CardanoSentTokenInfo = () => {
             (formOutputs ?? []).filter(o => o.token).map(o => [o.token, o.amount]),
         );
 
-        return tokens
+        return account.tokens
             ?.filter(
                 token =>
                     tokenAmountsMap.has(token.contract) &&
                     new BigNumber(tokenAmountsMap.get(token.contract) ?? 0).gt(0),
             )
-            .map(token => [token.symbol, tokenAmountsMap.get(token.contract)]);
-    }, [tokens, formOutputs]);
+            .map(token => ({
+                contract: token.contract,
+                amount: tokenAmountsMap.get(token.contract),
+            }));
+    }, [account.tokens, formOutputs]);
 
-    if (networkType !== 'cardano' || !hasTransactionInfo) return null;
+    if (account.networkType !== 'cardano' || !hasTransactionInfo) return null;
 
-    return sentTokenList?.map(([tokenSymbol, amount]) => (
+    return sentTokenList?.map(({ contract, amount }) => (
         <FormattedCryptoAmount
-            key={tokenSymbol}
+            key={contract}
             disableHiddenPlaceholder
             value={asAmountUnit(new BigNumber(amount ?? 0))}
-            symbol={tokenSymbol}
+            networkSymbol={account.symbol}
+            contractAddress={contract}
         />
     ));
 };

@@ -8,8 +8,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 interface TronWithdrawReadyBannerProps {
     account: Account;
@@ -74,7 +74,7 @@ export const TronWithdrawReadyBanner = ({ account, nowSeconds }: TronWithdrawRea
                             amount: (
                                 <FormattedCryptoAmount
                                     value={withdrawableAmount}
-                                    symbol={account.symbol}
+                                    networkSymbol={account.symbol}
                                 />
                             ),
                         }}

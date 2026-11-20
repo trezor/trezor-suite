@@ -204,7 +204,14 @@ export const submitTronUnstakeThunk = createThunk<
             );
 
             dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
-            dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    flow,
+                    txid,
+                    submitted: { amount, resourceType },
+                }),
+            );
         } finally {
             onSettled?.();
             dispatch(tronStakeActions.discardTransaction());

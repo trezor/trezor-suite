@@ -1,5 +1,7 @@
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+
+import { readJson } from '@trezor/node-utils';
 
 import { log } from '../logger';
 import { BROWSER_STATE_FILE } from './paths';
@@ -40,7 +42,7 @@ async function waitForCdpPortRelease(timeoutMs: number): Promise<void> {
 // at the end of the agent session.
 export async function killHarnessBrowser(): Promise<void> {
     if (existsSync(BROWSER_STATE_FILE)) {
-        const state = JSON.parse(readFileSync(BROWSER_STATE_FILE, 'utf-8')) as BrowserState;
+        const state = readJson<BrowserState>(BROWSER_STATE_FILE);
         rmSync(BROWSER_STATE_FILE, { force: true });
 
         // The pid is the detached playwright runner, which is its process-group

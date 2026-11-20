@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     HOME_ASSET_ROW_LIMIT,
@@ -21,7 +22,8 @@ import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetRowsSkeleton } from './AssetRowsSkeleton';
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';
@@ -36,7 +38,7 @@ import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTable
 const NO_NETWORKS: readonly NetworkSymbol[] = [];
 
 export const HomeAssetTable = () => {
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
     const grouping = useSelector(selectHomeAssetGrouping);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
@@ -118,7 +120,13 @@ export const HomeAssetTable = () => {
                     {isFoldable && (
                         <HomeAssetExpandRow
                             isExpanded={isExpanded}
-                            onToggle={() => setIsExpanded(!isExpanded)}
+                            onToggle={() => {
+                                analytics.report({
+                                    type: events.dashboardAssetTableEvent.name,
+                                    payload: { action: isExpanded ? 'show-less' : 'show-more' },
+                                });
+                                setIsExpanded(!isExpanded);
+                            }}
                         />
                     )}
                 </Table.Body>

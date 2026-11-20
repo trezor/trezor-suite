@@ -1,17 +1,23 @@
+import { useSelector } from 'react-redux';
+
 import { type CryptoId } from 'invity-api';
 
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
+import { AssetIcon, AssetName } from '@suite/assets';
 import { Translation, useTranslation } from '@suite/intl';
+import { useFormatters } from '@suite-common/formatters';
+import {
+    type NetworksRootState,
+    selectIsNativeTokenNetworkNameRedundant,
+} from '@suite-common/networks';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row, Skeleton, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite';
-import { type TradingPayGetLabelType } from 'src/types/trading/trading';
-import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { type TradingPayGetLabelType } from '#src/types/trading/trading';
+import { TradingCryptoAmount } from '#src/views/wallet/trading/common/TradingCryptoAmount';
 
 type TradingDetailAssetRowProps = {
     account?: Account;
@@ -43,20 +49,15 @@ export const TradingDetailAssetRow = ({
     const isExternalAddress = !account && !!receiveAddress;
     const testIdPrefix = `@trading/detail/${isReceive ? 'receive' : 'send'}`;
 
-    const {
-        id,
-        isNativeToken,
-        networkSymbol,
-        name,
-        displaySymbol,
-        networkName,
-        contractAddress,
-        symbol,
-    } = createAssetOptionFromCryptoId(currency);
+    const { id, isNativeToken, networkSymbol, contractAddress } =
+        createAssetOptionFromCryptoId(currency);
 
-    const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
-
-    const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
+    const { NetworkNameFormatter } = useFormatters();
+    const isNetworkNameRedundant = useSelector((state: NetworksRootState) =>
+        selectIsNativeTokenNetworkNameRedundant(state, networkSymbol),
+    );
+    const tokenContract = isNativeToken ? undefined : contractAddress;
+    const showNetwork = !isNativeToken || !isNetworkNameRedundant;
 
     if (!amount || !currency) {
         return null;
@@ -99,19 +100,19 @@ export const TradingDetailAssetRow = ({
             ) : (
                 <Row gap={8} justifyContent="space-between">
                     <Row gap={8} alignItems="center">
-                        {isNativeToken ? (
-                            <TokenIcon size={40} symbol={symbol} showNetworkIcon />
-                        ) : (
-                            <TokenIcon
-                                size={40}
-                                symbol={networkSymbol}
-                                contractAddress={contractAddress}
-                                placeholder={displaySymbol}
-                                showNetworkIcon={showNetwork}
-                            />
-                        )}
+                        <AssetIcon
+                            size={40}
+                            networkSymbol={networkSymbol}
+                            contractAddress={tokenContract}
+                            showNetworkIcon={showNetwork}
+                        />
                         <Column alignItems="start">
-                            <Text data-testid={`${testIdPrefix}-asset-name`}>{displayName}</Text>
+                            <Text data-testid={`${testIdPrefix}-asset-name`}>
+                                <AssetName
+                                    networkSymbol={networkSymbol}
+                                    contractAddress={tokenContract}
+                                />
+                            </Text>
                             {showNetwork && (
                                 <Text
                                     intent="neutral"
@@ -119,7 +120,7 @@ export const TradingDetailAssetRow = ({
                                     typographyStyle="body-sm"
                                     data-testid={`${testIdPrefix}-network-name`}
                                 >
-                                    {networkName}
+                                    <NetworkNameFormatter value={networkSymbol} />
                                 </Text>
                             )}
                         </Column>
@@ -132,11 +133,11 @@ export const TradingDetailAssetRow = ({
                                 testId={cryptoAmountTestId}
                             />
                         </Text>
-                        {currencyInfo?.symbol && (
+                        {currencyInfo?.networkSymbol && (
                             <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                                 <BaseCurrencyValue
                                     amount={amount}
-                                    symbol={currencyInfo.symbol}
+                                    symbol={currencyInfo.networkSymbol}
                                     rateType="current"
                                     tokenAddress={currencyInfo.contractAddress}
                                     showApproximationIndicator

@@ -34,8 +34,9 @@ import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { useSelector } from 'src/hooks/suite';
+import { ConnectAppIcon } from '#src/components/suite/ConnectAppIcon';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { ConnectAppName } from '#src/views/settings/SettingsConnectedApps/ConnectAppName';
 
 import { WalletConnectAccountOption } from './WalletConnectAccountOption';
 
@@ -90,7 +91,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
         selectableAccounts[0] || null,
     );
     const [ignoreWarning, setIgnoreWarning] = useState(false);
-    const dappScanQuery = useDappScan(pendingProposal?.params.proposer.metadata.url);
+    // Scan where the proposal came from, not the url the proposer declared for itself.
+    const dappScanQuery = useDappScan(pendingProposal?.origin);
 
     const handleAccept = () => {
         dispatch(
@@ -175,12 +177,12 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             type="walletConnect"
                         />
 
-                        <Column gap={4}>
-                            <Row gap={12}>
-                                <Text>{pendingProposal.params.proposer.metadata.name}</Text>
-                                <Text intent="neutral" priority="secondary">
-                                    {pendingProposal.params.proposer.metadata.url}
-                                </Text>
+                        <Column gap={4} flex="1" minWidth={0}>
+                            <Row columnGap={12} rowGap={2} flexWrap="wrap">
+                                <ConnectAppName
+                                    appName={pendingProposal.params.proposer.metadata.name}
+                                    origin={pendingProposal.params.proposer.metadata.url}
+                                />
                             </Row>
                             <Row gap={12}>
                                 {!pendingProposal.isScam &&

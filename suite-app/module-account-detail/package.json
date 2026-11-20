@@ -1,0 +1,36 @@
+{
+    "name": "@suite-app/module-account-detail",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "exports": {
+        ".": "./src/index.ts",
+        "./pages/*": "./src/pages/*.tsx"
+    },
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite/account": "workspace:*",
+        "@suite/device": "workspace:*",
+        "@suite/external-links": "workspace:*",
+        "@suite/intl": "workspace:*",
+        "@suite/receive": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/suite": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@trezor/requirements": "workspace:*"
+    }
+}

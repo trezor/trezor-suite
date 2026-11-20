@@ -12,5 +12,5 @@ export const translatedFeedbackFeatures: Record<FeedbackFeatureName, Translation
     'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',
     'suite-sync': 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
-    'stablecoin-yield': 'TR_EARN_DEFI_YIELD_TITLE',
+    'stablecoin-yield': 'TR_EARN_DEFI_YIELD',
 };

@@ -2,7 +2,12 @@ import type { Breadcrumb, ErrorEvent } from '@sentry/core';
 
 import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from '@suite-common/sentry';
 
-import { beforeBreadcrumb, redactCoinjoinData, redactUserPath } from './config';
+import {
+    beforeBreadcrumb,
+    redactCoinjoinData,
+    redactEventUrlParams,
+    redactUserPath,
+} from './config';
 
 describe('redactUserPath', () => {
     it('returns null for null event', () => {
@@ -65,6 +70,50 @@ describe('redactCoinjoinData', () => {
     });
 });
 
+describe('redactEventUrlParams', () => {
+    it('returns null for null event', () => {
+        expect(redactEventUrlParams(null)).toBeNull();
+    });
+
+    it('replaces the query and hash of URLs in the request, tags and electron context', () => {
+        const event: ErrorEvent = {
+            type: undefined,
+            request: { url: 'https://suite.trezor.io/web/?uri=bitcoin:bc1qaddress?amount=0.5' },
+            tags: {
+                routerURL: '/coinmarket-redirect#offers/btc/normal/0/qc/CZ/usd/0.5/btc/card',
+                version: '26.11.0',
+                isTor: false,
+            },
+            contexts: { electron: { crashed_url: 'app:///index.html#/accounts' } },
+        };
+
+        expect(redactEventUrlParams(event)).toEqual({
+            type: undefined,
+            request: { url: 'https://suite.trezor.io/web/?redacted' },
+            tags: {
+                routerURL: '/coinmarket-redirect#redacted',
+                version: '26.11.0',
+                isTor: false,
+            },
+            contexts: { electron: { crashed_url: 'app:///index.html#redacted' } },
+        });
+    });
+
+    it('keeps URLs without a query or hash', () => {
+        const event: ErrorEvent = {
+            type: undefined,
+            request: { url: 'https://suite.trezor.io/web/settings' },
+            tags: { routerURL: '/settings' },
+        };
+
+        expect(redactEventUrlParams(event)).toEqual({
+            type: undefined,
+            request: { url: 'https://suite.trezor.io/web/settings' },
+            tags: { routerURL: '/settings' },
+        });
+    });
+});
+
 describe('beforeBreadcrumb', () => {
     it('filters out analytics requests', () => {
         const breadcrumb: Breadcrumb = {
@@ -88,6 +137,18 @@ describe('beforeBreadcrumb', () => {
         const breadcrumb: Breadcrumb = { category: 'console', message: 'log message' };
 
         expect(beforeBreadcrumb?.(breadcrumb)).toBeNull();
+    });
+
+    it('replaces the hash of navigation and request URLs', () => {
+        const breadcrumb: Breadcrumb = {
+            category: 'navigation',
+            data: { from: '/accounts#/btc/0/normal', to: '/coinmarket-redirect#offers/btc/0.5' },
+        };
+
+        expect(beforeBreadcrumb?.(breadcrumb)).toEqual({
+            category: 'navigation',
+            data: { from: '/accounts#redacted', to: '/coinmarket-redirect#redacted' },
+        });
     });
 
     it('keeps other breadcrumbs', () => {

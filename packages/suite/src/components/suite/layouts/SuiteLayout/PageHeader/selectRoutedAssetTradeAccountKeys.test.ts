@@ -1,13 +1,15 @@
+import { mockStakingState } from '@suite-common/earn-staking/mocks';
+import { type StakingPosition } from '@suite-common/earn-staking-common';
+import { mockStakingPosition } from '@suite-common/earn-staking-common/mocks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/types/suite';
-
 import { selectRoutedAssetTradeAccountKeys } from './selectRoutedAssetTradeAccountKeys';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
@@ -22,8 +24,13 @@ const knownUsdc: TokenDefinitionsState = {
 
 type RoutedAssetParams = { symbol: NetworkSymbol; contractAddress?: string };
 
-const buildState = (accounts: Account[], params: RoutedAssetParams | undefined): AppState =>
+const buildState = (
+    accounts: Account[],
+    params: RoutedAssetParams | undefined,
+    stakingPositions: Partial<Record<AccountKey, readonly StakingPosition[]>> = {},
+): MockSuiteState =>
     ({
+        earn: { staking: mockStakingState({ positions: stakingPositions }) },
         wallet: { accounts },
         device: {
             devices: [],
@@ -34,7 +41,7 @@ const buildState = (accounts: Account[], params: RoutedAssetParams | undefined):
         debug: { showDebugMenu: false },
         tokenDefinitions: knownUsdc,
         router: { params },
-    }) as unknown as AppState;
+    }) as unknown as MockSuiteState;
 
 const account = (symbol: NetworkSymbol, index: number, overrides: Partial<Account> = {}) =>
     mockWalletAccount({
@@ -85,6 +92,22 @@ describe('selectRoutedAssetTradeAccountKeys', () => {
 
         expect(selectRoutedAssetTradeAccountKeys(state)).toEqual({
             buy: empty.key,
+            sell: undefined,
+        });
+    });
+
+    it('sells from no account whose only funds are staked', () => {
+        const stakedOnly = account(ethSymbol, 0);
+        const state = buildState(
+            [stakedOnly],
+            { symbol: ethSymbol },
+            {
+                [stakedOnly.key]: [mockStakingPosition()],
+            },
+        );
+
+        expect(selectRoutedAssetTradeAccountKeys(state)).toEqual({
+            buy: stakedOnly.key,
             sell: undefined,
         });
     });

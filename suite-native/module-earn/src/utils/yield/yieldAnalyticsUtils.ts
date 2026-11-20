@@ -1,7 +1,7 @@
-import { type YieldApprovalLimitType } from '../../types';
+import { type AllowanceLimitType } from '@suite-common/wallet-types';
 
 export const getYieldApprovalAnalyticsType = (
-    approvalLimitType: YieldApprovalLimitType | undefined,
+    approvalLimitType: AllowanceLimitType | undefined,
 ): 'INFINITE' | 'MINIMAL' | undefined => {
     if (approvalLimitType === undefined) {
         return undefined;

@@ -1,6 +1,6 @@
 import { normalizeDexTransactionData } from './normalizeDexTransactionData';
 
-describe(normalizeDexTransactionData.name, () => {
+describe('normalizeDexTransactionData', () => {
     it('converts Solana transaction data from base64 to hex', () => {
         expect(
             normalizeDexTransactionData({

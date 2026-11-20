@@ -67,3 +67,56 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache-develop-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+  save-playwright-cache:
+    name: Save Playwright browser cache
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Install node and yarn
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Read Playwright version
+        id: playwright-version
+        run: |
+          echo "version=$(node -p "require('./suite/e2e/package.json').devDependencies['@playwright/test']")" >> "$GITHUB_OUTPUT"
+
+      - name: Look up existing cache
+        id: lookup
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+          lookup-only: true
+
+      - name: Install SafeDep PMG
+        if: steps.lookup.outputs.cache-hit != 'true'
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
+        continue-on-error: true
+        with:
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
+
+      - name: Restore develop Yarn cache
+        if: steps.lookup.outputs.cache-hit != 'true'
+        uses: ./.github/actions/restore-yarn-cache
+
+      - name: Install dependencies
+        if: steps.lookup.outputs.cache-hit != 'true'
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      - name: Install Playwright browsers
+        if: steps.lookup.outputs.cache-hit != 'true'
+        run: yarn workspace @trezor/suite-e2e exec playwright install
+
+      - name: Save cache
+        if: steps.lookup.outputs.cache-hit != 'true' && github.ref == 'refs/heads/develop'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}

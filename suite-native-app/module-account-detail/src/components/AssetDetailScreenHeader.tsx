@@ -1,0 +1,173 @@
+import { useSelector, useStore } from 'react-redux';
+
+import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { type StakingRootState, selectIsStakingSupportedSymbol } from '@suite-common/earn-staking';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { isAccountFailed } from '@suite-common/wallet-utils';
+import {
+    AccountLabel,
+    type NativeAccountsRootState,
+    selectAccountFiatBalance,
+} from '@suite-native/accounts';
+import { HStack, IconButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { TokenSettingsBottomSheet } from '@suite-native/earn';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
+import { TokenIcon } from '@suite-native/icons';
+import {
+    type AccountDetailStackParamList,
+    AccountDetailStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    ScreenHeader,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
+import { type TokensRootState, isNetworkWithTokens } from '@suite-native/tokens';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { selectAssetTabOfAccountToken } from '../selectors';
+
+type AccountDetailNavigationProps = StackNavigationProps<
+    AccountDetailStackParamList,
+    AccountDetailStackRoutes.AccountDetail
+>;
+
+type AssetDetailScreenHeaderContentProps = {
+    account: Account;
+};
+
+const headerContentStyle = prepareNativeStyle(() => ({ maxWidth: '100%' }));
+
+const AssetDetailScreenHeaderContent = ({ account }: AssetDetailScreenHeaderContentProps) => {
+    const { applyStyle } = useNativeStyles();
+    const fiatBalance = useSelector((state: NativeAccountsRootState) =>
+        selectAccountFiatBalance(state, account.key),
+    );
+
+    return (
+        <HStack alignItems="center" spacing="sp8" style={applyStyle(headerContentStyle)}>
+            <TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} size="small" />
+
+            <VStack spacing={0} flexShrink={1}>
+                <AccountLabel
+                    account={account}
+                    variant="body-md-strong"
+                    numberOfLines={1}
+                    showAccountTypeBadge
+                />
+
+                {!isAccountFailed(account) && (
+                    <BaseCurrencyAmountFormatter
+                        value={fiatBalance}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
+                )}
+            </VStack>
+        </HStack>
+    );
+};
+
+type AssetDetailScreenSettingsButtonProps = {
+    account: Account;
+    tokenContract?: TokenAddress;
+};
+
+const AssetDetailScreenSettingsButton = ({
+    account,
+    tokenContract,
+}: AssetDetailScreenSettingsButtonProps) => {
+    const store = useStore<StakingRootState>();
+    const navigation = useNavigation<AccountDetailNavigationProps>();
+
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+
+    const handleSettingsNavigation = () => {
+        if (
+            !!tokenContract ||
+            isNetworkWithTokens(account.symbol) ||
+            selectIsStakingSupportedSymbol(store.getState(), account.symbol)
+        ) {
+            openModal();
+        } else {
+            navigation.navigate(AccountDetailStackRoutes.AccountSettings, {
+                accountKey: account.key,
+            });
+        }
+    };
+
+    return (
+        <>
+            <IconButton
+                intent="neutral"
+                priority="secondary"
+                size="medium"
+                iconName="gear"
+                onPress={handleSettingsNavigation}
+                testID="@account-detail/settings-button"
+            />
+
+            <TokenSettingsBottomSheet
+                ref={bottomSheetRef}
+                accountKey={account.key}
+                tokenContract={tokenContract}
+                onNavigateAway={closeModal}
+            />
+        </>
+    );
+};
+
+interface AssetDetailScreenHeaderProps {
+    account: Account;
+    tokenContract?: TokenAddress;
+}
+
+export const AssetDetailScreenHeader = ({
+    account,
+    tokenContract,
+}: AssetDetailScreenHeaderProps) => {
+    const navigation = useNavigation<NativeStackNavigationProp<AccountDetailStackParamList>>();
+    const route =
+        useRoute<RouteProp<AccountDetailStackParamList, AccountDetailStackRoutes.AccountDetail>>();
+    const { closeActionType } = route.params;
+
+    const tokenTab = useSelector(
+        (state: TokensRootState & FiatRatesRootState & WalletSettingsRootState) =>
+            tokenContract
+                ? selectAssetTabOfAccountToken(state, account.key, tokenContract)
+                : undefined,
+    );
+
+    const closeAction = () => {
+        const rootNavigation =
+            navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
+        const isAccountOverviewInStack = rootNavigation
+            ?.getState()
+            .routes.some(stackRoute => stackRoute.name === RootStackRoutes.AccountOverview);
+
+        if (rootNavigation && isAccountOverviewInStack) {
+            rootNavigation.popTo(RootStackRoutes.AccountOverview, {
+                accountKey: account.key,
+                tab: tokenTab,
+            });
+
+            return;
+        }
+
+        navigation.goBack();
+    };
+
+    return (
+        <ScreenHeader
+            customContent={<AssetDetailScreenHeaderContent account={account} />}
+            rightIcon={
+                <AssetDetailScreenSettingsButton account={account} tokenContract={tokenContract} />
+            }
+            closeActionType={closeActionType}
+            closeAction={closeAction}
+        />
+    );
+};

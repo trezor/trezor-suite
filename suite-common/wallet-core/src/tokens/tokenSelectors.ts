@@ -2,7 +2,7 @@ import {
     type TokenDefinitionsRootState,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { type TokenAddress, type TokenInfoBranded } from '@suite-common/tokens';
 import { getFiatRateKey, isErc4626, toFiatCurrency } from '@suite-common/wallet-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 

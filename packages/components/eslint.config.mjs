@@ -23,6 +23,7 @@ export default [
                         '@trezor/*/libDev/**',
                         '@suite-common/**',
                         '@suite-native/**',
+                        '@suite-native-app/**',
                     ],
                 },
             ],

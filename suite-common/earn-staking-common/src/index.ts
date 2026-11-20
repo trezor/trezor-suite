@@ -1,7 +1,46 @@
-export { networkSymbolSchema, timestampSchema } from './primitiveSchemas';
+export {
+    firmwareVersionSchema,
+    networkSymbolSchema,
+    timestampSchema,
+    type FirmwareVersion,
+} from './primitiveSchemas';
 export type { StakingAccount } from './stakingAccount';
+export {
+    getStakingSigningErrorCode,
+    isStakingAdapterError,
+    STAKING_OPERATION_ERROR_CODES,
+    STAKING_SIGNING_ERROR_CODES,
+    StakingAdapterError,
+    type StakingConnectFailure,
+    type StakingOperationErrorCode,
+    type StakingSigningErrorCode,
+} from './stakingAdapterError';
 export { stakingAmountSchema, type StakingAmount } from './stakingAmount';
-export { assertStakingPlan, assertStakingPosition } from './stakingAssertions';
+export {
+    assertComposedStakingStep,
+    assertSignedStakingStep,
+    assertStakingPlan,
+    assertStakingPosition,
+} from './utils/stakingAssertionUtils';
+export {
+    STAKING_FEE_LEVEL_LABELS,
+    stakingCustomFeeSchema,
+    stakingErrorFeeLevelSchema,
+    stakingFeeLevelExtrasSchema,
+    stakingFeeLevelLabelSchema,
+    stakingFeeLevelSchema,
+    stakingFeeLevelsSchema,
+    stakingFeeLimitSchema,
+    stakingFeeRateSchema,
+    stakingFinalFeeLevelSchema,
+    type StakingCustomFee,
+    type StakingErrorFeeLevel,
+    type StakingFeeLevel,
+    type StakingFeeLevelExtras,
+    type StakingFeeLevelLabel,
+    type StakingFeeLevels,
+    type StakingFinalFeeLevel,
+} from './stakingFeeLevels';
 export {
     STAKING_OPERATIONS,
     STAKING_STEP_KINDS,
@@ -15,14 +54,20 @@ export {
     type StakingStepKind,
 } from './stakingOperation';
 export {
+    composedStakingStepSchema,
+    signedStakingStepSchema,
     STAKING_STEP_REVIEWS,
+    stakingBroadcastResultSchema,
     stakingPlanSchema,
+    stakingStepOutputSchema,
     stakingStepReviewSchema,
     stakingStepSchema,
     type ComposedStakingStep,
     type SignedStakingStep,
+    type StakingBroadcastResult,
     type StakingPlan,
     type StakingStep,
+    type StakingStepOutput,
     type StakingStepReview,
 } from './stakingPlan';
 export {
@@ -38,18 +83,46 @@ export {
 export {
     STAKING_POSITION_LOCKUPS,
     STAKING_POSITION_STATUSES,
+    stakingPositionActivationSchema,
     stakingPositionBalancesSchema,
+    stakingPositionPendingTransactionSchema,
     stakingPositionSchema,
     stakingPositionTargetSchema,
     stakingPositionUnlockSchema,
     stakingPositionWarningSchema,
     type StakingPosition,
+    type StakingPositionActivation,
     type StakingPositionBalances,
+    type StakingPositionPendingTransaction,
     type StakingPositionTarget,
     type StakingPositionUnlock,
     type StakingPositionWarning,
     type StakingPositionWarningCode,
 } from './stakingPosition';
+export {
+    cardanoDrepSchema,
+    cardanoPoolIdSchema,
+    SOLANA_STAKE_ACCOUNT_STATUSES,
+    solanaStakeAccountSchema,
+    solanaStakeAccountStatusSchema,
+    stakingPositionDetailsSchema,
+    tronResourceAmountsSchema,
+    type CardanoDrep,
+    type SolanaStakeAccount,
+    type SolanaStakeAccountStatus,
+    type StakingPositionDetails,
+    type TronResourceAmounts,
+} from './stakingPositionDetails';
+export {
+    getStakingPositionAmount,
+    getStakingPositionAmountOutsideBalance,
+    getStakingPositionPrincipal,
+    getStakingPositionRate,
+    hasPendingStakingOperation,
+    hasStakingPositionWarning,
+    isStakingPositionActive,
+    type GetStakingPositionRateParams,
+} from './utils/stakingPositionUtils';
 export type {
     BroadcastStepParams,
     ComposeStepParams,
@@ -60,20 +133,35 @@ export type {
     SignStepParams,
     StakingAmountBounds,
     StakingProductAdapter,
+    StakingStepParams,
 } from './stakingProductAdapter';
+export {
+    getStakingAssetSymbol,
+    STAKING_ASSET_SYMBOL_PATTERN,
+    STAKING_PRODUCT_ASSET_KINDS,
+    stakingAssetSymbolSchema,
+    stakingProductAssetSchema,
+    type StakingAssetSymbol,
+    type StakingProductAsset,
+    type StakingProductAssetParams,
+} from './stakingProductAsset';
 export {
     STAKING_OPTION_KINDS,
     STAKING_PRODUCT_EXCLUSIVITIES,
     STAKING_RATE_KINDS,
+    STAKING_REWARDS_KINDS,
     stakingConsentKeySchema,
     stakingOptionFieldSchema,
     stakingProductDescriptorObjectSchema,
     stakingProductDescriptorSchema,
     stakingProductLimitsSchema,
+    stakingRewardsKindSchema,
     type StakingConsentKey,
     type StakingOptionField,
     type StakingProductDescriptor,
     type StakingProductLimits,
+    type StakingRateKind,
+    type StakingRewardsKind,
 } from './stakingProductDescriptor';
 export {
     getStakingProductId,
@@ -82,6 +170,7 @@ export {
     stakingProductIdSchema,
     stakingProductTypeSchema,
     type StakingProductId,
+    type StakingProductIdInput,
     type StakingProductIdParts,
     type StakingProductType,
 } from './stakingProductId';
@@ -100,3 +189,4 @@ export {
     type StakingProviderLinks,
     type StakingProviderStatus,
 } from './stakingProvider';
+export { isPendingStakingTransaction, type StakingTransaction } from './stakingTransaction';

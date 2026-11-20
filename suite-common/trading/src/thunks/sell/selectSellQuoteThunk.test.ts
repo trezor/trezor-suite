@@ -25,7 +25,6 @@ describe('selectSellQuoteThunk', () => {
     jest.mock('../../tradeApi');
 
     tradeApi.setServersEnvironment = () => {};
-    tradeApi.createApiKey = () => {};
 
     const getDataMocks = () => {
         const quote = sellUtilsFixtures.MIN_MAX_QUOTES_LOW[0];

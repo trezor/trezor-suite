@@ -1,6 +1,6 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type YieldApprovalAction } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type AllowanceAction } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
 
@@ -11,7 +11,7 @@ type YieldDepositFlowFooterProps = {
     accountKey: AccountKey;
     amountValue: string | undefined;
     apy: number | null;
-    approvalAction?: YieldApprovalAction;
+    approvalAction?: AllowanceAction;
     isDisabled: boolean;
     isLoading?: boolean;
     isSkipDisabled?: boolean;

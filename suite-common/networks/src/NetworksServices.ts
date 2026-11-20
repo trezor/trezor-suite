@@ -1,5 +1,4 @@
 import type { IsSupportedNetworkDep } from './IsSupportedNetwork';
-import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { AddressValidatorDep } from './createAddressValidator';
 import type { GetAccountSyncIntervalDep } from './createGetAccountSyncInterval';
 import type { GetIconPathsDep } from './createGetIconPaths';
@@ -14,7 +13,6 @@ export type NetworksServices = NetworkIconDep &
     GetIconPathsDep &
     IsSupportedNetworkDep &
     IsWrappedNativeTokenDep &
-    NetworkModuleRepositoryDep &
     AddressValidatorDep &
     GetAccountSyncIntervalDep &
     GetNamedAddressSupportDep &

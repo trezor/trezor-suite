@@ -5,14 +5,14 @@ import { type NativeTypographyStyle } from '@trezor/theme';
 import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { BaseCurrencyAmount, type FormattedBaseCurrencyAmount } from './BaseCurrencyAmount';
+import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 
 type BaseCurrencyAmountHeaderFormatterProps = FormatterProps<BaseCurrencyAmountValue | null> & {
-    isDiscreetText?: boolean;
     variant?: NativeTypographyStyle;
+    isExact?: boolean;
 };
 
 type BaseCurrencyAmountContentProps = FormattedBaseCurrencyAmount & {
-    isDiscreetText: boolean;
     variant: NativeTypographyStyle;
 };
 
@@ -21,18 +21,12 @@ const BaseCurrencyAmountContent = ({
     wholeNumber,
     decimalNumber,
     isCryptoCurrency,
-    isDiscreetText,
     variant,
 }: BaseCurrencyAmountContentProps) => {
     const valueElement = (
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1}>
-            <AmountText value={wholeNumber} variant={variant} isDiscreetText={isDiscreetText} />
-            <AmountText
-                value={decimalNumber}
-                variant={variant}
-                color="contentSecondary"
-                isDiscreetText={isDiscreetText}
-            />
+            <AmountText value={wholeNumber} variant={variant} />
+            <AmountText value={decimalNumber} variant={variant} color="contentSecondary" />
         </Box>
     );
     const currencyElement = (
@@ -56,16 +50,18 @@ const BaseCurrencyAmountContent = ({
 
 export const BaseCurrencyAmountHeaderFormatter = ({
     value,
-    isDiscreetText = true,
     variant = 'headline-md',
-}: BaseCurrencyAmountHeaderFormatterProps) => (
-    <BaseCurrencyAmount value={value}>
-        {formattedAmount => (
-            <BaseCurrencyAmountContent
-                {...formattedAmount}
-                isDiscreetText={isDiscreetText}
-                variant={variant}
-            />
-        )}
-    </BaseCurrencyAmount>
-);
+    isExact,
+}: BaseCurrencyAmountHeaderFormatterProps) => {
+    if (value === null) {
+        return <EmptyAmountSkeleton variant={variant} />;
+    }
+
+    return (
+        <BaseCurrencyAmount value={value} isExact={isExact}>
+            {formattedAmount => (
+                <BaseCurrencyAmountContent {...formattedAmount} variant={variant} />
+            )}
+        </BaseCurrencyAmount>
+    );
+};

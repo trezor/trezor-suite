@@ -1,12 +1,8 @@
 import { type TranslationId } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type GetTokensOutputType, getTokens } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type Rate,
-    type RatesByKey,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type Account, type Rate, type RatesByKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TokenInfo } from '@trezor/connect';

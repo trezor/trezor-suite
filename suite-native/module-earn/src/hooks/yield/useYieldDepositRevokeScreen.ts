@@ -10,6 +10,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -23,7 +24,6 @@ import { useShowYieldAlert } from './useShowYieldAlert';
 import { useShowYieldTransactionFailureAlert } from './useShowYieldTransactionFailureAlert';
 import { type YieldAllowanceFeeTransaction, useYieldAllowanceFees } from './useYieldAllowanceFees';
 import { useYieldFlowAnalytics } from './useYieldFlowAnalytics';
-import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import { useYieldSession } from './useYieldSession';
@@ -97,21 +97,15 @@ export const useYieldDepositRevokeScreen = () => {
             modalState: approvalModalState,
         };
     }, [approvalModalState]);
-    const canComposeRevokeFee = revokePendingTransaction === undefined;
-    const {
-        formDraft: revokeFeeFormDraft,
-        formDraftKey: revokeFeeFormDraftKey,
-        isAllowanceFeeReady,
-        isComposingAllowanceFee,
-        selectedFee: selectedRevokeFee,
-        updateFeeLevelThunk: updateRevokeFeeLevelThunk,
-    } = useYieldAllowanceFees({
+    const canComposeRevokeFee = isFocused && revokePendingTransaction === undefined;
+    const revokeFees = useYieldAllowanceFees({
         flowData,
         flowKey,
         draftTransactionType: 'revoke',
         isEnabled: canComposeRevokeFee,
         transaction: revokeFeeTransaction,
     });
+    const { isAllowanceFeeReady, isComposingFeeLevels } = revokeFees;
     const isRevokeScreenBusy =
         revokePendingTransaction !== undefined || isPreparingReview || isPreparingRevoke;
     const hasPreparedRevokeTransaction = revokeFeeTransaction !== null;
@@ -126,7 +120,7 @@ export const useYieldDepositRevokeScreen = () => {
     const canReviewRevoke =
         hasApprovedAllowanceAmount && isRevokeFeeReadyForReview && !isRevokeScreenBusy;
     const isSubmitDisabled = !canReviewRevoke;
-    const isSubmitLoading = isPreparingReview || isPreparingRevoke || isComposingAllowanceFee;
+    const isSubmitLoading = isPreparingReview || isPreparingRevoke || isComposingFeeLevels;
     useShowYieldTransactionFailureAlert({
         error: session?.error,
         flowKey,
@@ -320,23 +314,11 @@ export const useYieldDepositRevokeScreen = () => {
     }
 
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
-    const feeSelectorProps =
-        revokeFeeTransaction !== null
-            ? {
-                  accountKey: account.key,
-                  tokenContract: route.params.tokenContract,
-                  updateThunk: updateRevokeFeeLevelThunk,
-                  selectedFee: selectedRevokeFee,
-                  selectedFeePerUnit: revokeFeeFormDraft?.feePerUnit,
-                  formDraft: revokeFeeFormDraft,
-                  formDraftKey: revokeFeeFormDraftKey,
-              }
-            : null;
+    const feeSection = revokeFeeTransaction !== null ? revokeFees : null;
     const pendingModal =
         revokePendingTransaction && pendingModalProps
             ? {
                   amount: allowanceAmount ?? revokePendingTransaction.amount,
-                  amountTokenSymbol: isApprovedAmountUnlimited ? undefined : tokenSymbol,
                   fee: pendingModalProps.fee,
                   isExploreDisabled: pendingModalProps.isExploreDisabled,
                   onExplorePress: pendingModalProps.onExplorePress,
@@ -349,7 +331,7 @@ export const useYieldDepositRevokeScreen = () => {
         account,
         accountLabel,
         approvedAmount: isApprovedAmountUnlimited ? null : approvedAllowanceAmount,
-        feeSelectorProps,
+        feeSection,
         handleReviewAndSign,
         isApprovedAmountUnlimited,
         isSubmitDisabled,
@@ -358,9 +340,9 @@ export const useYieldDepositRevokeScreen = () => {
         pendingModal,
         providerName,
         shouldShowLowLimitWarning,
-        tokenDecimals: token.decimals,
         tokenContract: route.params.tokenContract,
         tokenSymbol,
         vaultTokenName,
+        yieldFlowData,
     };
 };

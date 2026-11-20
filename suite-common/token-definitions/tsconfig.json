@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../tokens" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
@@ -20,6 +21,7 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../http-client" },
-        { "path": "../../packages/eslint" }
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/zod" }
     ]
 }

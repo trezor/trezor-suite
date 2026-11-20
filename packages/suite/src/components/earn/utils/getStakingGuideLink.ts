@@ -8,6 +8,8 @@ export const getStakingGuideLink = (networkType?: NetworkType) => {
             return '/earn/staking/solana-sol-staking.md';
         case 'cardano':
             return '/earn/staking/cardano-ada-staking.md';
+        case 'tron':
+            return '/earn/staking/tron-trx-staking.md';
         default:
             return undefined;
     }

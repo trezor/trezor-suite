@@ -11,9 +11,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { isAscii } from '@trezor/utils';
 
-import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
-import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useSelector } from 'src/hooks/suite';
+import { applySettingsThunk } from '#src/actions/settings/deviceSettingsActions';
+import { MAX_LABEL_LENGTH } from '#src/constants/suite/device';
+
+import { useSelector } from './useSelector';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({
@@ -32,15 +33,7 @@ const changeDeviceLabelSchema = (t: TranslationFunction) =>
     });
 
 export const useChangeDeviceLabel = (): {
-    form: UseFormReturn<
-        {
-            deviceLabel: string | undefined;
-        },
-        unknown,
-        {
-            deviceLabel?: string | undefined;
-        }
-    >;
+    form: UseFormReturn<yup.InferType<ReturnType<typeof changeDeviceLabelSchema>>, unknown>;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);

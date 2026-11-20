@@ -11,7 +11,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
-    tx: PushTransactionSchema['tx'];
+    tx: { hex: string; disableAlternativeRPC?: boolean };
     coinInfo: CoinInfo;
     identity?: string;
 };
@@ -27,15 +27,12 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         // validate backend
         assertBackendSupported(coinInfo);
 
-        if (
-            coinInfo.type === 'bitcoin' &&
-            (typeof payload.tx !== 'string' || !/^[0-9A-Fa-f]*$/.test(payload.tx))
-        ) {
+        if (coinInfo.type === 'bitcoin' && !/^[0-9A-Fa-f]*$/.test(payload.tx)) {
             throw ERRORS.TypedError('Method_InvalidParameter', 'Transaction must be hexadecimal');
         }
 
         const params = {
-            tx: payload.tx,
+            tx: { hex: payload.tx, disableAlternativeRPC: payload.disableAlternativeRPC },
             coinInfo,
             identity: payload.identity,
         };
@@ -55,8 +52,6 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         );
         const txid = await backend.pushTransaction(this.params.tx);
 
-        return {
-            txid,
-        };
+        return { txid };
     }
 }

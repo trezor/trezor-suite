@@ -7,6 +7,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -17,12 +18,14 @@ import {
     generateTransactionMonthKey,
     getAccountTransactions,
     getCardanoStakingAmount,
+    getConfirmations,
     getDecreaseOutputId,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
     getEvmNonceStatus,
     getEvmPrivatePendingHint,
     getPendingEvmNonceStatus,
+    getProviderTransactionValidityMs,
     getRbfParams,
     getTargetAmount,
     getTransactionWithLowestNonce,
@@ -215,6 +218,24 @@ describe('transaction utils', () => {
                 const { blockHeight } = transaction;
                 expect(isPending(transaction)).toEqual(!blockHeight || blockHeight < 0);
             });
+        });
+    });
+
+    describe('getConfirmations', () => {
+        it('returns 0 for a pending transaction', () => {
+            expect(getConfirmations(getWalletTransaction({ blockHeight: 0 }), 100)).toBe(0);
+        });
+
+        it('counts blocks from the transaction block to the tip', () => {
+            expect(getConfirmations(getWalletTransaction({ blockHeight: 90 }), 100)).toBe(11);
+        });
+
+        it('returns 1 for a mined transaction when the tip lags behind it', () => {
+            expect(getConfirmations(getWalletTransaction({ blockHeight: 100 }), 90)).toBe(1);
+        });
+
+        it('returns 1 for a mined transaction when the tip is unknown', () => {
+            expect(getConfirmations(getWalletTransaction({ blockHeight: 100 }), 0)).toBe(1);
         });
     });
 
@@ -1266,5 +1287,16 @@ describe('transaction utils', () => {
         it('returns undefined when the form is missing', () => {
             expect(getDecreaseOutputId(buildBumpFeeRbfTx(true), undefined)).toBeUndefined();
         });
+    });
+});
+
+describe('getProviderTransactionValidityMs', () => {
+    it('returns the blockhash validity for solana', () => {
+        expect(getProviderTransactionValidityMs('solana')).toBe(SOLANA_BLOCKHASH_VALIDITY_MS);
+    });
+
+    it('returns undefined where a provider transaction does not expire', () => {
+        expect(getProviderTransactionValidityMs('ethereum')).toBeUndefined();
+        expect(getProviderTransactionValidityMs(undefined)).toBeUndefined();
     });
 });

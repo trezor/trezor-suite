@@ -1,6 +1,86 @@
 import { extractUrlsFromText } from './extractUrlsFromText';
 
 describe('extractUrlsFromText', () => {
+    it.each([
+        { description: 'long run of hyphens', text: '-'.repeat(100_000) },
+        { description: 'long domain label', text: 'a'.repeat(100_000) },
+        { description: 'long invalid dotted domain', text: 'a.'.repeat(50_000) },
+        { description: 'long spaced dotted domain', text: '- . '.repeat(25_000) },
+    ])('scans a $description without repeatedly retrying the same domain', ({ text }) => {
+        const start = performance.now();
+        const result = extractUrlsFromText(text);
+        const elapsed = performance.now() - start;
+
+        expect(result).toEqual({ textParts: [text], urls: [] });
+        expect(elapsed).toBeLessThan(1_000);
+    });
+
+    it.each(['www.example.comᴄ.io', 'https://example.comᴄ.io'])(
+        'preserves the adjacent Unicode URL after %s',
+        text => {
+            const { textParts, urls } = extractUrlsFromText(text);
+
+            expect(textParts).toEqual(['', '']);
+            expect(urls).toEqual([text.slice(0, -4), 'ᴄ.io']);
+        },
+    );
+
+    it('preserves URL extraction after leading dots and spaces', () => {
+        expect(extractUrlsFromText('... trezor.io')).toEqual({
+            textParts: ['... '],
+            urls: ['trezor.io'],
+        });
+    });
+
+    it('preserves a Unicode URL after spaces around a dot following a URL', () => {
+        expect(extractUrlsFromText('https://example.com . ᴄ.io')).toEqual({
+            textParts: ['', ' . '],
+            urls: ['https://example.com', 'ᴄ.io'],
+        });
+    });
+
+    it('preserves a second URL after punctuation and a space', () => {
+        expect(extractUrlsFromText('https://example.com. t.me/reward')).toEqual({
+            textParts: ['', '. '],
+            urls: ['https://example.com', 't.me/reward'],
+        });
+    });
+
+    it('preserves both URLs when the text starts with consecutive URLs', () => {
+        const { textParts, urls } = extractUrlsFromText('trezor.io ledger.com');
+
+        expect(textParts).toEqual(['', ' ']);
+        expect(urls).toEqual(['trezor.io', 'ledger.com']);
+    });
+
+    it.each(['t.me', 'T.ME'])('preserves text order when a name starts with %s', domain => {
+        const { textParts, urls } = extractUrlsFromText(`${domain}/reward - Visit to claim`);
+
+        expect(textParts).toEqual(['', ' - Visit to claim']);
+        expect(urls).toEqual([`${domain}/reward`]);
+    });
+
+    it.each([
+        't.me/S/US_POOL',
+        'T.ME/S/US_POOL',
+        'example.com/claim?token=reward&amount=1#details',
+        'example.com/',
+    ])('includes the complete path, query and fragment in the bare URL %s', url => {
+        const { textParts, urls } = extractUrlsFromText(`Claim at ${url} now`);
+
+        expect(textParts).toEqual(['Claim at ', ' now']);
+        expect(urls).toEqual([url]);
+    });
+
+    it('keeps parentheses and trailing punctuation outside a bare URL with a path', () => {
+        const { textParts, urls } = extractUrlsFromText(
+            'Reward (t.me/S/US_POOL), visit example.com/claim.',
+        );
+
+        expect(textParts).toEqual(['Reward (', '), visit ', '.']);
+        expect(urls).toEqual(['t.me/S/US_POOL', 'example.com/claim']);
+    });
+
     it('should return textParts and urls for text with URLs', () => {
         const text =
             'Go to this page to claim your rewards: http://example.com/url and also check out www.phishing-site.com';
@@ -95,8 +175,8 @@ describe('extractUrlsFromText', () => {
 
         const { textParts, urls } = extractUrlsFromText(text);
 
-        expect(textParts).toEqual(['🎁10K$ gift at [', '/tpepe]']);
-        expect(urls).toEqual(['bit.ly']);
+        expect(textParts).toEqual(['🎁10K$ gift at [', ']']);
+        expect(urls).toEqual(['bit.ly/tpepe']);
     });
 
     it('should not match url in of contract address', () => {

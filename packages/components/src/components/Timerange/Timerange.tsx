@@ -1,25 +1,36 @@
-import { type ReactNode, useState } from 'react';
-import { DateRange } from 'react-date-range';
+import {
+    type ComponentType,
+    type LazyExoticComponent,
+    type ReactNode,
+    Suspense,
+    lazy,
+    useEffect,
+    useState,
+} from 'react';
 
 import type { Locale } from 'date-fns';
 import styled, { css } from 'styled-components';
 
 import { zIndices } from '@trezor/theme';
 
+import type { TimerangeCalendarProps } from './TimerangeCalendar';
+import {
+    DATE_DISPLAY_BORDER_WIDTH,
+    DATE_DISPLAY_HEIGHT,
+    DATE_DISPLAY_PADDING_BOTTOM,
+    MONTH_AND_YEAR_HEIGHT,
+    MONTH_PADDING_BOTTOM,
+    WEEK_DAYS_HEIGHT,
+    WEEK_ROW_HEIGHT,
+    getCalendarHeight,
+} from './utils';
 import { commonFocusStyles } from '../../utils/utils';
 import { Row } from '../Flex/Flex';
 import { DROPDOWN_MENU } from '../Menu/Menu';
 import { Button } from '../buttons/Button/Button';
+import { Spinner } from '../loaders/Spinner/Spinner';
 
-type Selection = {
-    key: string;
-    startDate: Date;
-    endDate: Date;
-};
-
-export type TimerangeSelection = {
-    selection: Selection;
-};
+export type { TimerangeSelection } from './TimerangeCalendar';
 
 const datepickerStyle = css`
     /* stylelint-disable */
@@ -43,7 +54,7 @@ const datepickerStyle = css`
         width: 0;
         text-align: center;
         color: inherit;
-        height: 26px;
+        height: ${DATE_DISPLAY_HEIGHT}px;
     }
 
     .rdrDateDisplayItem + .rdrDateDisplayItem {
@@ -122,7 +133,7 @@ const datepickerStyle = css`
 
     .rdrMonth {
         width: 100%;
-        padding: 0 0 1em 0;
+        padding: 0 0 ${MONTH_PADDING_BOTTOM}px 0;
     }
 
     .rdrWeekDays {
@@ -134,7 +145,7 @@ const datepickerStyle = css`
         flex-basis: calc(100% / 7);
         box-sizing: inherit;
         text-align: center;
-        line-height: 3em;
+        line-height: ${WEEK_DAYS_HEIGHT}px;
     }
 
     .rdrDays {
@@ -173,8 +184,8 @@ const datepickerStyle = css`
         user-select: none;
         border: 0;
         padding: 0;
-        line-height: 3em;
-        height: 3em;
+        line-height: ${WEEK_ROW_HEIGHT}px;
+        height: ${WEEK_ROW_HEIGHT}px;
         text-align: center;
     }
 
@@ -560,14 +571,15 @@ const Calendar = styled.div`
     }
 
     .rdrDateDisplayWrapper {
-        padding-bottom: 12px;
+        padding-bottom: ${DATE_DISPLAY_PADDING_BOTTOM}px;
         background: ${({ theme }) => theme.surfaceFillRaised};
-        border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
+        border-bottom: ${DATE_DISPLAY_BORDER_WIDTH}px solid
+            ${({ theme }) => theme.surfaceBorderRaised};
         border-radius: 4px;
     }
 
     .rdrMonthAndYearWrapper {
-        height: 50px;
+        height: ${MONTH_AND_YEAR_HEIGHT}px;
         padding-top: 0;
     }
 
@@ -595,6 +607,47 @@ const Calendar = styled.div`
 `;
 /* stylelint-enable */
 
+const CalendarPlaceholder = styled.div<{ $height: number }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: ${({ $height }) => $height}px;
+`;
+
+/**
+ * react-date-range (with the date-fns build it uses) loads when a Timerange first opens, not with the app.
+ * A failed download leaves the calendar area empty instead of crashing the app. Each Timerange keeps the
+ * calendar it mounted with, so its re-renders never download again, and the failed calendar re-arms the
+ * loader once it has committed, so the next Timerange tries once more.
+ */
+let TimerangeCalendar: LazyExoticComponent<ComponentType<TimerangeCalendarProps>>;
+
+const loadTimerangeCalendar = (): Promise<{ default: ComponentType<TimerangeCalendarProps> }> =>
+    import('./TimerangeCalendar').then(
+        module => ({ default: module.TimerangeCalendar }),
+        () => {
+            const failedTimerangeCalendar = TimerangeCalendar;
+
+            const TimerangeCalendarLoadFailed = ({ range, locale }: TimerangeCalendarProps) => {
+                /**
+                 * Re-armed after the commit, not in the loader: React renders a tree that has not
+                 * committed yet again once the load settles, and a fresh lazy there downloads again.
+                 */
+                useEffect(() => {
+                    if (TimerangeCalendar === failedTimerangeCalendar) {
+                        TimerangeCalendar = lazy(loadTimerangeCalendar);
+                    }
+                }, []);
+
+                return <CalendarPlaceholder $height={getCalendarHeight(range.startDate, locale)} />;
+            };
+
+            return { default: TimerangeCalendarLoadFailed };
+        },
+    );
+
+TimerangeCalendar = lazy(loadTimerangeCalendar);
+
 export interface TimerangeProps {
     onSubmit: (startDate: Date, endDate: Date) => any;
     onCancel: () => any;
@@ -606,6 +659,7 @@ export interface TimerangeProps {
 }
 
 const Timerange = (props: TimerangeProps) => {
+    const [MountedTimerangeCalendar] = useState(() => TimerangeCalendar);
     const today = new Date();
 
     const [state, setState] = useState({
@@ -627,16 +681,22 @@ const Timerange = (props: TimerangeProps) => {
     return (
         <StyledTimerange data-component="Timerange">
             <Calendar>
-                <DateRange
-                    editableDateInputs
-                    onChange={(item: TimerangeSelection) => setState(item.selection)}
-                    moveRangeOnFirstSelection={false}
-                    maxDate={today}
-                    ranges={[state]}
-                    startDatePlaceholder=""
-                    endDatePlaceholder=""
-                    locale={props.locale}
-                />
+                <Suspense
+                    fallback={
+                        <CalendarPlaceholder
+                            $height={getCalendarHeight(state.startDate, props.locale)}
+                        >
+                            <Spinner size={32} />
+                        </CalendarPlaceholder>
+                    }
+                >
+                    <MountedTimerangeCalendar
+                        range={state}
+                        maxDate={today}
+                        locale={props.locale}
+                        onChange={setState}
+                    />
+                </Suspense>
             </Calendar>
             <Row gap={12} padding={12}>
                 <Button flex="1" intent="neutral" priority="secondary" onClick={onCancel}>

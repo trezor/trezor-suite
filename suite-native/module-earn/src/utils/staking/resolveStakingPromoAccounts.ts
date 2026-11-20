@@ -1,16 +1,17 @@
+import { type StakingProductAccess } from '@suite-common/earn-staking-common';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-import { hasAccountActiveStaking } from './hasAccountActiveStaking';
-import { type MobileStakingSupport, getMobileStakingSupport } from './mobileStakingSupport';
-
 type ResolveStakingPromoAccountsParams = {
     symbol: NetworkSymbol;
+    /** Access to the product the network stakes on; null when it has none. */
+    access: StakingProductAccess | null;
     accounts: Account[];
+    isAccountStakingActive: (account: Account) => boolean;
     isDeviceInViewOnlyMode: boolean;
 };
 
-export type NavigableStakingSupport = Exclude<MobileStakingSupport, 'desktop-only'>;
+export type NavigableStakingSupport = 'manage' | 'read-only';
 
 export type StakingPromoAccountsResolution =
     | { type: 'desktop-only' }
@@ -20,12 +21,12 @@ export type StakingPromoAccountsResolution =
 
 export const resolveStakingPromoAccounts = ({
     symbol,
+    access,
     accounts,
+    isAccountStakingActive,
     isDeviceInViewOnlyMode,
 }: ResolveStakingPromoAccountsParams): StakingPromoAccountsResolution => {
-    const networkSupport = getMobileStakingSupport(symbol);
-
-    if (networkSupport === null) {
+    if (access === null || access === 'hidden') {
         return { type: 'desktop-only' };
     }
 
@@ -35,21 +36,21 @@ export const resolveStakingPromoAccounts = ({
         return { type: 'enable-network' };
     }
 
-    if (networkSupport === 'desktop-only') {
+    if (access === 'listed') {
         return { type: 'desktop-only' };
     }
 
-    const support: NavigableStakingSupport = isDeviceInViewOnlyMode ? 'view' : networkSupport;
+    const support: NavigableStakingSupport = isDeviceInViewOnlyMode ? 'read-only' : access;
 
     if (support === 'manage') {
         return { type: 'navigate', support, navigableAccounts: accountsForSymbol };
     }
 
-    const stakedAccounts = accountsForSymbol.filter(hasAccountActiveStaking);
+    const stakedAccounts = accountsForSymbol.filter(isAccountStakingActive);
 
     if (stakedAccounts.length > 0) {
         return { type: 'navigate', support, navigableAccounts: stakedAccounts };
     }
 
-    return networkSupport === 'manage' ? { type: 'connect-device' } : { type: 'desktop-only' };
+    return access === 'manage' ? { type: 'connect-device' } : { type: 'desktop-only' };
 };

@@ -6,7 +6,7 @@ import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 import { storageLoad } from '../suite/storageLifecycleActions';
 
-export const suiteSyncQuotaManagerSlice = createSliceWithExtraDeps({
+const suiteSyncQuotaManagerSlice = createSliceWithExtraDeps({
     name: 'suiteSyncQuotaManager',
     initialState: quotaManagerInitialState,
     reducers: {},
@@ -25,3 +25,5 @@ export const suiteSyncQuotaManagerSlice = createSliceWithExtraDeps({
             });
     },
 });
+
+export const prepareSuiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer;

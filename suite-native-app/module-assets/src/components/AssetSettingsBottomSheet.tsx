@@ -1,0 +1,90 @@
+import { useSelector } from 'react-redux';
+
+import { type RouteProp, useRoute } from '@react-navigation/native';
+
+import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
+import { AssetSymbol } from '@suite-native/assets';
+import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
+import { type AssetsStackParamList, type AssetsStackRoutes } from '@suite-native/navigation';
+
+import { AssetSettingsAccountsAction } from './AssetSettingsAccountsAction';
+import { AssetSettingsDivider } from './AssetSettingsDivider';
+import { AssetSettingsExplorerAction } from './AssetSettingsExplorerAction';
+import { AssetSettingsHideTokenAction } from './AssetSettingsHideTokenAction';
+import { AssetSettingsNetworkSection } from './AssetSettingsNetworkSection';
+import { AssetSettingsSignVerifyAction } from './AssetSettingsSignVerifyAction';
+import { AssetSettingsTokenDetailsSection } from './AssetSettingsTokenDetailsSection';
+import { AssetSettingsWalletConnectAction } from './AssetSettingsWalletConnectAction';
+
+type AssetSettingsBottomSheetProps = {
+    ref: BottomSheetModalRef;
+    onOpenAccounts: () => void;
+    onOpenSignVerifyAccounts: () => void;
+    onClose: () => void;
+};
+
+export const AssetSettingsBottomSheet = ({
+    ref,
+    onOpenAccounts,
+    onOpenSignVerifyAccounts,
+    onClose,
+}: AssetSettingsBottomSheetProps) => {
+    const { networkSymbol, tokenContract } =
+        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
+    const tokenInfo = useSelector((state: AssetsRootState) =>
+        selectAssetTokenInfo(state, networkSymbol, tokenContract),
+    );
+
+    return (
+        <BottomSheetModal
+            ref={ref}
+            title={
+                <AssetSymbol
+                    isTruncated
+                    networkSymbol={networkSymbol}
+                    contractAddress={tokenContract}
+                    variant="headline-sm"
+                />
+            }
+            isCloseDisplayed
+        >
+            <VStack spacing="sp24" paddingBottom="sp16">
+                <VStack spacing="sp6">
+                    <AssetSettingsNetworkSection networkSymbol={networkSymbol} />
+                    <AssetSettingsDivider />
+                </VStack>
+                {tokenInfo && (
+                    <VStack spacing="sp6">
+                        <AssetSettingsTokenDetailsSection
+                            networkSymbol={networkSymbol}
+                            tokenContract={tokenContract}
+                        />
+                        <AssetSettingsDivider />
+                    </VStack>
+                )}
+                <AssetSettingsAccountsAction
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
+                    onOpenAccounts={onOpenAccounts}
+                />
+                <AssetSettingsSignVerifyAction
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
+                    onOpenSignVerifyAccounts={onOpenSignVerifyAccounts}
+                    onClose={onClose}
+                />
+                <AssetSettingsWalletConnectAction networkSymbol={networkSymbol} onClose={onClose} />
+                <AssetSettingsHideTokenAction
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
+                    onClose={onClose}
+                />
+                <AssetSettingsExplorerAction
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
+                    onClose={onClose}
+                />
+            </VStack>
+        </BottomSheetModal>
+    );
+};

@@ -1,0 +1,228 @@
+import { useCallback, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { ExchangeTrade } from 'invity-api';
+
+import { selectSelectedDevice } from '@suite-common/device';
+import {
+    type TradingError,
+    exchangeThunks,
+    selectTradingExchangeSelectedQuote,
+    toSendTransactionTradingError,
+} from '@suite-common/trading';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { type ExchangeFlowType, TradingStackRoutes } from '@suite-native/navigation';
+import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
+import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { type TradingStackNavigationProp } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+
+import {
+    type TradingTransactionSignAndSendProps,
+    useTradingTransaction,
+} from '../general/useTradingTransaction';
+
+export type TradingExchangeConfirmTradeProps = {
+    receiveAddress: string;
+    trade?: ExchangeTrade;
+    approvalFlow?: boolean;
+    nextStep: () => void;
+};
+
+export type TradingExchangeSignAndSendTransactionProps = {
+    nextStep: () => void;
+    onError: (error: TradingError) => void;
+};
+
+export type UseExchangeFlowProps = {
+    flowType?: ExchangeFlowType;
+};
+
+export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
+    const navigation =
+        useNavigation<
+            TradingStackNavigationProp<
+                | TradingStackRoutes.TradingExchangePreview
+                | TradingStackRoutes.TradingExchangeTransactionReview
+            >
+        >();
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
+    const device = useSelector(selectSelectedDevice);
+    const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+
+    const { openBrowserForFormData } = useBrowserAuth('exchange');
+    const quoteStatus = quote?.status;
+    const isDexExchange = quote?.isDex;
+
+    useFocusEffect(
+        useCallback(() => {
+            if (quoteStatus === 'APPROVAL_PENDING') {
+                // 'swap' and undefined both map to 'approve': the approval tx
+                // is always the first step before a swap, so confirming it means approving.
+                const confirmingFlowType =
+                    flowType === 'revoke' || flowType === 'revoke-and-approve'
+                        ? flowType
+                        : 'approve';
+                navigation.navigate(TradingStackRoutes.TradingConfirming, {
+                    flowType: confirmingFlowType,
+                });
+            }
+        }, [quoteStatus, navigation, flowType]),
+    );
+
+    const getCommonFunctions = useCallback(
+        (trade?: ExchangeTrade) => {
+            const tradeToUse = trade ?? quote;
+
+            if (!tradeToUse) {
+                console.error('Trade or selectedQuote is required to getCommonFunctions');
+
+                return null;
+            }
+
+            const returnUrl = buildTradingUrl({
+                actionType: 'trade',
+                tradeType: 'exchange',
+                orderId: tradeToUse.orderId,
+            });
+
+            const triggerAnalyticsTradeConfirmation = () => {
+                analytics.report({
+                    type: events.tradingConfirmTradeEvent.name,
+                    payload: {
+                        type: 'exchange',
+                    },
+                });
+            };
+
+            const processResponseData = (response: ExchangeTrade) =>
+                openBrowserForFormData(response.tradeForm?.form, returnUrl);
+
+            return {
+                returnUrl,
+                triggerAnalyticsTradeConfirmation,
+                processResponseData,
+            };
+        },
+        [openBrowserForFormData, analytics, quote],
+    );
+
+    const baseCommonFunctions = useMemo(() => getCommonFunctions(), [getCommonFunctions]);
+
+    const {
+        txnErrorString,
+        composeTradingTransaction,
+        signAndSendTransaction,
+        serializedTx,
+        resolveTransactionSendConsent,
+        isTransactionSendConsentRequested,
+    } = useTradingTransaction({
+        tradeType: 'exchange',
+        returnUrl: baseCommonFunctions?.returnUrl,
+        processResponseData: baseCommonFunctions?.processResponseData,
+        triggerAnalyticsTradeConfirmation: baseCommonFunctions?.triggerAnalyticsTradeConfirmation,
+    });
+
+    const inFlightConfirmTradePromiseRef = useRef<{ abort: (reason?: string) => void } | null>(
+        null,
+    );
+
+    // changing trade state and initial confirmation
+    const confirmTrade = useCallback(
+        async ({
+            receiveAddress,
+            trade,
+            approvalFlow,
+            nextStep,
+        }: TradingExchangeConfirmTradeProps): Promise<boolean> => {
+            const commonFunctions = getCommonFunctions(trade);
+
+            if (!trade || !sendAccount || !commonFunctions) {
+                console.error(
+                    'Trade, send account and common functions are required to confirm trade',
+                );
+
+                return false;
+            }
+
+            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData } =
+                commonFunctions;
+
+            const promiseAction = dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account: sendAccount,
+                    trade,
+                    approvalFlow,
+                    triggerAnalyticsTradeConfirmation,
+                    processResponseData,
+                    nextStep,
+                }),
+            );
+            inFlightConfirmTradePromiseRef.current = promiseAction;
+
+            return !!(await promiseAction.unwrap());
+        },
+        [getCommonFunctions, sendAccount, dispatch],
+    );
+
+    const abortConfirmTrade = useCallback(() => {
+        inFlightConfirmTradePromiseRef.current?.abort();
+        inFlightConfirmTradePromiseRef.current = null;
+    }, []);
+
+    // Signs EIP-712 typed data on the Trezor device (used by 1inch Fusion+ orders)
+    // and submits the signature to the exchange API via confirmExchangeTradeThunk.
+    // No on-chain transaction is composed or sent.
+    const signDataAndConfirm = useCallback(
+        async ({ nextStep, onError }: TradingTransactionSignAndSendProps) => {
+            const commonFunctions = getCommonFunctions();
+
+            if (!sendAccount || !device || !commonFunctions) {
+                console.warn('signDataAndConfirm: missing account, device, or common functions');
+
+                return false;
+            }
+
+            const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData } =
+                commonFunctions;
+
+            try {
+                await dispatch(
+                    exchangeThunks.signDataAndConfirmThunk({
+                        account: sendAccount,
+                        device,
+                        returnUrl,
+                        triggerAnalyticsTradeConfirmation,
+                        processResponseData,
+                        nextStep,
+                    }),
+                ).unwrap();
+
+                return true;
+            } catch (e) {
+                onError(toSendTransactionTradingError(e));
+
+                return false;
+            }
+        },
+        [getCommonFunctions, sendAccount, device, dispatch],
+    );
+
+    return {
+        txnErrorString,
+        confirmTrade,
+        abortConfirmTrade,
+        signDataAndConfirm,
+        composeTradingTransaction,
+        signAndSendTransaction,
+        serializedTx,
+        resolveTransactionSendConsent,
+        isTransactionSendConsentRequested,
+        isDexExchange,
+    };
+};

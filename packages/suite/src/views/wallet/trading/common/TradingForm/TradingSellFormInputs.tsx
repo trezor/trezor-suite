@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -14,26 +15,25 @@ import {
     selectTradingSendAccount,
 } from '@suite-common/trading';
 import { useFetchFees } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelector } from 'src/hooks/suite';
-import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
-import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
-import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
-import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
-import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
+import { useIsFeeRefetchDisabled } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { TradingFormInputCountry } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
+import { TradingFormInputCurrency } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { TradingFormInputBaseCurrencyAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
+import { TradingFormInputCryptoAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { TradingFormInputFiat } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
+import { TradingFormInputPaymentMethod } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
-import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
+import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInputBalance';
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
 import {
     TradingFormInputSellAsset,

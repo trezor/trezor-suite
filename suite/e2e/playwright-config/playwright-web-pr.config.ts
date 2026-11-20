@@ -1,6 +1,10 @@
 import { defineConfig } from '@playwright/test';
 
-import { excludedFromFullPrRun, noOtherDevice } from '@trezor/e2e-utils';
+import {
+    excludedFromFullPrRun,
+    notWebOnlyUnlessEdited,
+    sharedWithOtherModelUnlessEdited,
+} from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { baseConfig } from './playwright-base.config';
@@ -17,45 +21,26 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  * its exclusive (T3T1-only) tests on PR. Shared T3W1/T3T1 tests get full T3T1 coverage in nightly instead.
  * Only @webOnly tests run on web.
  * @skipOnPR tests are excluded, and so are @optional tests unless the PR edits their file.
+ * Test files the PR edits run on every tagged model and without the @webOnly limit, as in a spec-list run.
  * Spec-list runs use playwright-web-pr-all.config.ts.
  */
 const target = PlaywrightTarget.Web;
+const excludedFromWebPrRun = (): RegExp[] => [...excludedFromFullPrRun(), notWebOnlyUnlessEdited()];
 const definition: PlaywrightProjectDefinition[] = [
-    {
-        model: Model.T3W1,
-        additionalGrepInvert: excludedFromFullPrRun(),
-        currentsTags: tagsPr,
-        grep: /^(?=.*@T3W1)(?=.*@webOnly)/,
-    },
+    { model: Model.T3W1, additionalGrepInvert: excludedFromWebPrRun(), currentsTags: tagsPr },
     {
         model: Model.T3T1,
-        additionalGrepInvert: excludedFromFullPrRun(),
+        additionalGrepInvert: [...excludedFromWebPrRun(), sharedWithOtherModelUnlessEdited()],
         currentsTags: tagsPr,
-        grep: new RegExp(`^(?=.*@T3T1)(?=.*@webOnly)${noOtherDevice()}`),
     },
-    {
-        model: Model.T3B1,
-        additionalGrepInvert: excludedFromFullPrRun(),
-        currentsTags: tagsPr,
-        grep: /^(?=.*@T3B1)(?=.*@webOnly)/,
-    },
-    {
-        model: Model.T2T1,
-        additionalGrepInvert: excludedFromFullPrRun(),
-        currentsTags: tagsPr,
-        grep: /^(?=.*@T2T1)(?=.*@webOnly)/,
-    },
-    {
-        model: Model.T1B1,
-        additionalGrepInvert: excludedFromFullPrRun(),
-        currentsTags: tagsPr,
-        grep: /^(?=.*@T1B1)(?=.*@webOnly)/,
-    },
+    { model: Model.T3B1, additionalGrepInvert: excludedFromWebPrRun(), currentsTags: tagsPr },
+    { model: Model.T2T1, additionalGrepInvert: excludedFromWebPrRun(), currentsTags: tagsPr },
+    { model: Model.T1B1, additionalGrepInvert: excludedFromWebPrRun(), currentsTags: tagsPr },
     {
         name: 'no_device',
-        additionalGrepInvert: excludedFromFullPrRun(),
+        additionalGrepInvert: excludedFromWebPrRun(),
         currentsTags: tagsPr,
-        grep: /^(?=.*@noDevice)(?=.*@webOnly)/,
+        grep: /^(?=.*@noDevice)/,
     },
 ];
 

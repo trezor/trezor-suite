@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -18,27 +19,27 @@ import {
     selectTradingSendAccount,
 } from '@suite-common/trading';
 import { useFetchFees } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
-import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
-import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
-import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
-import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
+import { useIsFeeRefetchDisabled } from '#src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useSelectedTradingAsset } from '#src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { TradingBalance } from '#src/views/wallet/trading/common/TradingBalance';
+import { TradingFormInputBaseCurrencyAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
+import { TradingFormInputCryptoAmount } from '#src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { useTradingQuoteAmounts } from '#src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from '#src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
+import { TradingExchangeAllowanceDebug } from './TradingExchangeAllowanceDebug';
 import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton';
 import { TradingFormCard } from './TradingFormCard';
+import { TradingFormSection } from './TradingFormSection';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
-import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
+import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInputBalance';
 import { TradingFormInputBuyAsset } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import { TradingFormInputSellAsset } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
-import { TradingFormSection } from './TradingFormSection';
 import { TradingFractionButtons } from './TradingFractionButtons';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import {
@@ -264,6 +265,7 @@ export const TradingExchangeFormInputs = () => {
                 <TradingFormCard>
                     {!isLoading && <TradingReceiveAddress />}
                     <TradingSelectedOfferProvider />
+                    <TradingExchangeAllowanceDebug />
                 </TradingFormCard>
             )}
         </Column>

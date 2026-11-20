@@ -1,6 +1,7 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -13,7 +14,7 @@ import {
     yieldActions,
     yieldReducer,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { asAmountSubunit } from '@suite-common/wallet-utils';
 import { type YieldFlowParams, YieldStackRoutes } from '@suite-native/navigation';
 import {

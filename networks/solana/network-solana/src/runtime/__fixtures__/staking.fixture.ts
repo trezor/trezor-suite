@@ -27,9 +27,15 @@ type MockStakeAccountParams = {
     pubkey: string;
     stake: number;
     deactivationEpoch: number | bigint;
+    voterPubkey?: string;
 };
 
-const mockStakeAccount = ({ pubkey, stake, deactivationEpoch }: MockStakeAccountParams) => ({
+const mockStakeAccount = ({
+    pubkey,
+    stake,
+    deactivationEpoch,
+    voterPubkey = EVERSTAKE_SOLANA_DEVNET_VALIDATOR,
+}: MockStakeAccountParams) => ({
     pubkey,
     account: {
         data: [
@@ -49,7 +55,7 @@ const mockStakeAccount = ({ pubkey, stake, deactivationEpoch }: MockStakeAccount
                             },
                             {
                                 delegation: {
-                                    voterPubkey: address(EVERSTAKE_SOLANA_DEVNET_VALIDATOR),
+                                    voterPubkey: address(voterPubkey),
                                     stake,
                                     activationEpoch: 800,
                                     deactivationEpoch,
@@ -92,6 +98,13 @@ const largerActiveStakeAccount = mockStakeAccount({
     deactivationEpoch: EPOCH_MAX,
 });
 
+const otherValidatorActiveStakeAccount = mockStakeAccount({
+    pubkey: 'Hm9JW7of5i9dnrboS8pCUCSeoQUPh7JsP1rkbJnW7An4',
+    stake: 1_000_000_000,
+    deactivationEpoch: EPOCH_MAX,
+    voterPubkey: 'Vote111111111111111111111111111111111111111',
+});
+
 const deactivatedStakeAccount = mockStakeAccount({
     pubkey: 'LbUiWL3xVV8hTFYBVdbTNrpDo41NKS6o3LHHuDzjfcY',
     stake: 3_000_000_000,
@@ -117,6 +130,17 @@ export const stakeTransactionFixtures = {
         },
         message:
             '80010003060101010101010101010101010101010101010101010101010101010101010101030303030303030303030303030303030303030303030303030303030303030304040404040404040404040404040404040404040404040404040404040404040306466fe5211732ffecadba72c39be7bc8ce5bbc5f7126b2c439b3a4000000006a1d8179137542a983437bdfe2a7ab2557f535c8a78722b68a49dc00000000006a7d51718c774c928566398691d5eb68b5eb8a39b4b6d5c73555b210000000002020202020202020202020202020202020202020202020202020202020202020403000903a08601000000000003000502400d0300040301050004050000000403020500040500000000',
+    },
+    unstakeIgnoringOtherValidators: {
+        rpcResults: {
+            getProgramAccounts: [
+                largerActiveStakeAccount,
+                otherValidatorActiveStakeAccount,
+                activeStakeAccount,
+            ],
+            getEpochInfo: { epoch: MOCK_EPOCH },
+            getLatestBlockhash: latestBlockhashResult,
+        },
     },
     unstakeWithSplit: {
         rpcResults: {

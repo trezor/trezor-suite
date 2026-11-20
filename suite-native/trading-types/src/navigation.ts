@@ -1,17 +1,19 @@
 import type {
-    AppTabsParamList,
     RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-    StackToTabCompositeNavigationProp,
+    StackToStackCompositeNavigationProps,
+    StackToStackCompositeScreenProps,
     TradingStackParamList,
+    TradingStackRoutes,
 } from '@suite-native/navigation';
 
 export type TradingStackNavigationProp<
     T extends keyof TradingStackParamList = keyof TradingStackParamList,
-> = StackToTabCompositeNavigationProp<TradingStackParamList, T, AppTabsParamList>;
+> = StackToStackCompositeNavigationProps<TradingStackParamList, T, RootStackParamList>;
 
-export type TradingOutputsReviewScreenNavigationProp = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.TradingSellTransactionReview | RootStackRoutes.TradingExchangeTransactionReview
+export type TradingStackScreenProps<T extends keyof TradingStackParamList> =
+    StackToStackCompositeScreenProps<TradingStackParamList, T, RootStackParamList>;
+
+export type TradingOutputsReviewScreenNavigationProp = TradingStackNavigationProp<
+    | TradingStackRoutes.TradingSellTransactionReview
+    | TradingStackRoutes.TradingExchangeTransactionReview
 >;

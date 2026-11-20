@@ -5,15 +5,14 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldRootState, selectYieldSessionByFlowKey } from '@suite-common/wallet-core';
+import { useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { YieldDepositReviewContent } from '../../components/yield/YieldDepositReviewContent';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositReview>;
@@ -77,9 +76,5 @@ export const YieldDepositReviewScreen = () => {
         return null;
     }
 
-    return (
-        <EarnDeviceConnectionGuard>
-            <YieldDepositReviewContent flowData={flowData} flowKey={flowKey} preview={preview} />
-        </EarnDeviceConnectionGuard>
-    );
+    return <YieldDepositReviewContent flowData={flowData} flowKey={flowKey} preview={preview} />;
 };

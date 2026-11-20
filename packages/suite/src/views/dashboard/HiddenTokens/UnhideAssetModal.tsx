@@ -1,20 +1,21 @@
+import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
 import {
+    type HiddenTokenReason,
     selectWalletAssetContractAddress,
-    selectWalletAssetDisplaySymbol,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import {
     DefinitionType,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type UnhideAssetModalProps = {
     assetKey: WalletAssetKey;
@@ -24,19 +25,18 @@ type UnhideAssetModalProps = {
 
 export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModalProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, true));
+    const networkSymbol = useSelector(state =>
+        selectWalletAssetNetworkSymbol(state, assetKey, true),
+    );
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, true),
     );
-    const displaySymbol = useSelector(state =>
-        selectWalletAssetDisplaySymbol(state, assetKey, true),
-    );
 
     const handleUnhide = () => {
-        if (symbol !== undefined && contractAddress !== undefined) {
+        if (networkSymbol !== undefined && contractAddress !== undefined) {
             dispatch(
                 tokenDefinitionsActions.setTokenStatus({
-                    symbol,
+                    symbol: networkSymbol,
                     contractAddress,
                     status: TokenManagementAction.SHOW,
                     type: DefinitionType.COIN,
@@ -58,14 +58,30 @@ export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModa
                     >
                         <Translation id="TR_HOME_ASSET_UNHIDE" />
                     </Modal.Button>
-                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onCancel}
+                        data-testid="@hidden-tokens/unhide/cancel"
+                    >
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>
             }
         >
             <H3>
-                <Translation id="TR_HOME_ASSET_UNHIDE_TITLE" values={{ asset: displaySymbol }} />
+                <Translation
+                    id="TR_HOME_ASSET_UNHIDE_TITLE"
+                    values={{
+                        asset: networkSymbol && (
+                            <AssetSymbol
+                                networkSymbol={networkSymbol}
+                                contractAddress={contractAddress}
+                                isTruncated
+                            />
+                        ),
+                    }}
+                />
             </H3>
             <Paragraph intent="neutral" priority="secondary" margin={{ top: 8 }}>
                 <Translation

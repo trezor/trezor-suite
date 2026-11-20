@@ -19,9 +19,9 @@ import {
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useSelector } from 'src/hooks/suite';
-import { type RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { type RbfContextValues, useRbfContext } from '#src/hooks/wallet/useRbfForm';
 
 type AmountRowProps = {
     labelTranslationKey: TranslationKey;
@@ -38,7 +38,7 @@ const AmountItem = ({ labelTranslationKey, shouldSendInSats, amount, symbol }: A
             <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                 <Translation id={labelTranslationKey} />
             </Text>
-            <FormattedCryptoAmount value={value} symbol={symbol} />
+            <FormattedCryptoAmount value={value} networkSymbol={symbol} />
         </Column>
     );
 };

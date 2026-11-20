@@ -1,0 +1,255 @@
+import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import {
+    NewContentIndicatorId,
+    markNewContentIndicatorAsSeen,
+    selectIsNewContentIndicatorVisible,
+} from '@suite/flags';
+import { selectIsRegionRestricted } from '@suite/regions';
+import { type Route, isTradingRoute, selectRouteName } from '@suite/router';
+import { selectIsAppsEmbeddingAvailable } from '@suite-app/apps-embedding-demo';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
+import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { AppWindowIcon, BellIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
+import { useResponsiveContext } from '@trezor/suite';
+
+import { NavigationItem, type NavigationItemProps } from './NavigationItem';
+
+const EARN_ROUTES: Route['name'][] = [
+    'suite-earn',
+    'earn-yield-deposit',
+    'earn-yield-withdraw',
+    'earn-yield-claim',
+    'earn-yield-unwrap',
+    'earn-yield-wrap',
+    'earn-tron',
+    'earn-tron-stake',
+    'earn-tron-vote',
+    'earn-tron-unstake',
+    'earn-tron-withdraw',
+    'earn-tron-claim',
+];
+
+const SWAP_ROUTES: Route['name'][] = [
+    'wallet-trading-exchange',
+    'wallet-trading-exchange-confirm',
+    'wallet-trading-exchange-approval',
+    'wallet-trading-exchange-detail',
+];
+
+type NavigationProps = {
+    children?: React.ReactNode;
+};
+
+const newContentIndicatorIntro = { hasPlayed: false };
+
+export const Navigation = ({ children }: NavigationProps) => {
+    const { isSidebarCollapsed } = useResponsiveContext();
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+
+    const startRoute: Route['name'] = 'suite-index';
+
+    const isHomeTableActive = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
+    const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
+    const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);
+
+    const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
+    const isActivityNewContentIndicatorVisible = useSelector(
+        selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8),
+    );
+    const isEarnNewContentIndicatorVisible = useSelector(
+        selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8),
+    );
+    const isSwapNewContentIndicatorVisible = useSelector(
+        selectIsNewContentIndicatorVisible(NewContentIndicatorId.Swap26_10),
+    );
+    const [shouldAnimateNewContentIndicators] = useState(() => !newContentIndicatorIntro.hasPlayed);
+
+    useEffect(() => {
+        newContentIndicatorIntro.hasPlayed = true;
+    }, []);
+
+    const routeName = useSelector(selectRouteName);
+    const isActivityOpen = routeName === 'notifications-index';
+    const isEarnOpen = routeName !== undefined && EARN_ROUTES.includes(routeName);
+    const isSwapOpen = routeName !== undefined && SWAP_ROUTES.includes(routeName);
+    const isTradingOpen = isTradingRoute(routeName);
+    const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
+
+    useEffect(() => {
+        if (isActivityOpen && isActivityNewContentIndicatorVisible) {
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        }
+    }, [dispatch, isActivityNewContentIndicatorVisible, isActivityOpen]);
+
+    useEffect(() => {
+        if (isEarnOpen && isEarnNewContentIndicatorVisible) {
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Earn26_8));
+        }
+    }, [dispatch, isEarnNewContentIndicatorVisible, isEarnOpen]);
+
+    useEffect(() => {
+        if (isSwapOpen && isSwapNewContentIndicatorVisible) {
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Swap26_10));
+        }
+    }, [dispatch, isSwapNewContentIndicatorVisible, isSwapOpen]);
+
+    const handleSwapNavigation = useCallback(() => {
+        analytics.report({
+            type: events.tradeNavigateEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'exchange',
+                from: 'sidebar',
+            },
+        });
+
+        if (isSwapNewContentIndicatorVisible) {
+            analytics.report({
+                type: events.appNewContentBadgeEvent.name,
+                payload: {
+                    badgeId: NewContentIndicatorId.Swap26_10,
+                    origin: 'nav',
+                },
+            });
+
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Swap26_10));
+        }
+    }, [analytics, dispatch, isSwapNewContentIndicatorVisible]);
+
+    const handleActivityNavigation = useCallback(() => {
+        if (isActivityNewContentIndicatorVisible) {
+            if (!isSidebarCollapsed || !hasActivityIndicator) {
+                analytics.report({
+                    type: events.appNewContentBadgeEvent.name,
+                    payload: {
+                        badgeId: NewContentIndicatorId.Activity26_8,
+                        origin: 'nav',
+                    },
+                });
+            }
+
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        }
+    }, [
+        analytics,
+        dispatch,
+        hasActivityIndicator,
+        isActivityNewContentIndicatorVisible,
+        isSidebarCollapsed,
+    ]);
+
+    const handleEarnNavigation = useCallback(() => {
+        if (isEarnNewContentIndicatorVisible) {
+            analytics.report({
+                type: events.appNewContentBadgeEvent.name,
+                payload: {
+                    badgeId: NewContentIndicatorId.Earn26_8,
+                    origin: 'nav',
+                },
+            });
+
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Earn26_8));
+        }
+    }, [analytics, dispatch, isEarnNewContentIndicatorVisible]);
+
+    const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
+        useMemo(
+            () => [
+                {
+                    nameId: isHomeTableActive ? 'TR_HOME' : 'TR_DASHBOARD',
+                    icon: HouseIcon,
+                    goToRoute: startRoute,
+                    routes: [startRoute],
+                    shortcut: ['MOD', 'ALT', 'KEY_0'],
+                },
+                ...(!isBtcOnly && !isRegionRestricted
+                    ? [
+                          {
+                              nameId: 'TR_TRADING_SWAP',
+                              icon: RepeatIcon,
+                              goToRoute: 'wallet-trading-exchange',
+                              isActive: isTradingOpen,
+                              hasNewContentIndicator: isSwapNewContentIndicatorVisible,
+                              isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
+                              onClick: handleSwapNavigation,
+                              shortcut: ['ALT', 'KEY_X'],
+                          } as NavigationItemProps,
+                      ]
+                    : []),
+                ...(!isBtcOnly
+                    ? [
+                          {
+                              nameId: 'TR_EARN',
+                              icon: PiggyBankIcon,
+                              goToRoute: 'suite-earn',
+                              hasNewContentIndicator: isEarnNewContentIndicatorVisible,
+                              isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
+                              onClick: handleEarnNavigation,
+                              shortcut: ['ALT', 'KEY_E'],
+                              routes: EARN_ROUTES,
+                          } as NavigationItemProps,
+                      ]
+                    : []),
+                ...(isAppsEmbeddingAvailable
+                    ? [
+                          {
+                              nameId: 'TR_APPS_EMBEDDING',
+                              icon: AppWindowIcon,
+                              goToRoute: 'apps-embedding-index',
+                              routes: ['apps-embedding-index'],
+                          } as NavigationItemProps,
+                      ]
+                    : []),
+                {
+                    nameId: 'TR_NOTIFICATIONS',
+                    icon: BellIcon,
+                    goToRoute: 'notifications-index',
+                    routes: ['notifications-index'],
+                    hasIndicator: hasActivityIndicator,
+                    hasNewContentIndicator: isActivityNewContentIndicatorVisible,
+                    isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
+                    onClick: handleActivityNavigation,
+                    'data-testid': '@suite/menu/notifications',
+                    shortcut: ['ALT', 'KEY_I'],
+                },
+            ],
+            [
+                isHomeTableActive,
+                startRoute,
+                isBtcOnly,
+                isRegionRestricted,
+                isAppsEmbeddingAvailable,
+                isTradingOpen,
+                handleSwapNavigation,
+                isSwapNewContentIndicatorVisible,
+                isEarnNewContentIndicatorVisible,
+                shouldAnimateNewContentIndicators,
+                handleEarnNavigation,
+                hasActivityIndicator,
+                isActivityNewContentIndicatorVisible,
+                handleActivityNavigation,
+            ],
+        );
+
+    return (
+        <Column alignItems={isSidebarCollapsed ? 'center' : 'stretch'} gap={4} margin={8} as="nav">
+            {children ?? null}
+            {navItems.map(item => {
+                const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+
+                return <Component key={item.nameId} {...item} />;
+            })}
+        </Column>
+    );
+};

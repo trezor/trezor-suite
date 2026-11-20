@@ -11,8 +11,8 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useStakingRate } from 'src/hooks/earn/useStakingRate';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { useStakingRate } from '#src/hooks/earn/useStakingRate';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 export interface EmptyStakingCardData {
     rate: number | null;

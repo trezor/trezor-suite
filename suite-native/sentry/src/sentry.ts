@@ -40,6 +40,9 @@ export const setSentryUser = (instanceId: string) => {
 };
 
 export const initSentry = () => {
+    // You can put EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true to `.env.development.local` to debug Sentry locally.
+    const isSentryEnabled =
+        !isDebugEnv() || process.env.EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED === 'true';
     const isPerformanceEnabledOnAppStart = getPersistedSentryPerformanceConsent();
     let performanceTracesSampleRate = 0;
 
@@ -73,9 +76,8 @@ export const initSentry = () => {
         beforeSend: event => redactSentryEvent(redactInvalidParameterValue(event)),
         beforeSendTransaction: beforeSendPerformanceTransaction,
         ignoreErrors,
-
-        // You can put EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true to `.env.development.local` to debug Sentry locally.
-        enabled:
-            !isDebugEnv() || process.env.EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED === 'true',
+        enabled: isSentryEnabled,
+        // The Android native SDK ignores `enabled`, so it would still report native crashes.
+        enableNative: isSentryEnabled,
     });
 };

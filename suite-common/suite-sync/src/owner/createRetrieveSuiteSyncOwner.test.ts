@@ -40,7 +40,7 @@ const mockGetTrezorConnect: GetTrezorConnect<'evoluGetNode'> = () => ({
 describe(createRetrieveSuiteSyncOwner.name, () => {
     it('succeeds for valid delegated key', async () => {
         const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
-            createSuiteSyncOwner: () => ok(owner1),
+            createSuiteSyncOwner: () => Promise.resolve(ok(owner1)),
             getTrezorConnect: mockGetTrezorConnect,
         });
 
@@ -52,7 +52,7 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
 
     it('fails for invalid DelegatedIdentityKey', async () => {
         const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
-            createSuiteSyncOwner: () => ok(owner1),
+            createSuiteSyncOwner: () => Promise.resolve(ok(owner1)),
             getTrezorConnect: mockGetTrezorConnect,
         });
 
@@ -67,7 +67,7 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
     it('returns DeviceNotConnectedError without calling Connect when device is not connected', async () => {
         const getTrezorConnect = jest.fn();
         const ensureSuiteSyncOwner = createRetrieveSuiteSyncOwner({
-            createSuiteSyncOwner: () => ok(owner1),
+            createSuiteSyncOwner: () => Promise.resolve(ok(owner1)),
             getTrezorConnect,
         });
 

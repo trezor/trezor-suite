@@ -1,4 +1,8 @@
-import { convertTaprootXpub, toCanonicalDescriptor } from './convertTaprootXpub';
+import {
+    convertTaprootXpub,
+    toCanonicalDescriptor,
+    toFirmwareDescriptor,
+} from './convertTaprootXpub';
 
 describe('convertTaprootXpub', () => {
     // Same descriptor, once with `h` and once with `'` for the hardened path parts.
@@ -63,5 +67,18 @@ describe('toCanonicalDescriptor', () => {
         expect(toCanonicalDescriptor(address)).toEqual(address);
         expect(toCanonicalDescriptor('tpubDCpt6oCoUgcQEPBU')).toEqual('tpubDCpt6oCoUgcQEPBU');
         expect(toCanonicalDescriptor('')).toEqual('');
+    });
+});
+
+describe('toFirmwareDescriptor', () => {
+    it('converts to the firmware form and appends the checksum', () => {
+        const descriptor = "tr([71d98c03/86'/0'/0']xpub6CXYp/<0;1>/*)";
+        expect(toFirmwareDescriptor(descriptor)).toEqual(
+            'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)',
+        );
+        expect(toFirmwareDescriptor(descriptor, 'gvfjd7ak')).toEqual(
+            'tr([71d98c03/86h/0h/0h]xpub6CXYp/<0;1>/*)#gvfjd7ak',
+        );
+        expect(toFirmwareDescriptor('zpub6rFR7y4Q2AijBE')).toEqual('zpub6rFR7y4Q2AijBE');
     });
 });

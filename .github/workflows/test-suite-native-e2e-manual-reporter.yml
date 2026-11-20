@@ -1,6 +1,9 @@
 name: "[Test] Release Suite Native Sanity test publisher"
 # Runs Native reporter, creating manual regressions release suite in GitHub"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -20,6 +23,11 @@ on:
         required: false
         default: "false"
         type: string
+    secrets:
+      TREZOR_BOT_APP_ID:
+        required: true
+      TREZOR_BOT_PRIVATE_KEY:
+        required: true
 
 concurrency:
   group: native-manual-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -37,6 +45,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
 
       - name: Checkout project
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -82,6 +91,7 @@ jobs:
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
           REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
+          TEST_FILTER: ${{ inputs.testFilter }}
         run: |
           echo "Starting Jest Reporter for manual regression suite"
-          yarn workspace @suite-native/app github:report:manual ${{ inputs.testFilter }}
+          yarn workspace @suite-native-app/app github:report:manual $TEST_FILTER

@@ -26,7 +26,7 @@ export const YieldRewardItem = ({
     >
         <Row gap={12} alignItems="center" flex="1" overflow="hidden">
             <TokenIcon
-                symbol={networkSymbol}
+                networkSymbol={networkSymbol}
                 contractAddress={tokenAddress}
                 placeholder={tokenSymbol}
                 size={24}

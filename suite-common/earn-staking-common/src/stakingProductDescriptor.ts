@@ -1,9 +1,11 @@
-import { z } from 'zod';
+import { typedObjectKeys } from '@trezor/utils';
+import { z } from '@trezor/zod';
 
-import { networkSymbolSchema } from './primitiveSchemas';
+import { firmwareVersionSchema, networkSymbolSchema } from './primitiveSchemas';
 import { stakingAmountSchema } from './stakingAmount';
 import { stakingOperationSchema } from './stakingOperation';
 import { stakingProductPlatformsSchema } from './stakingPlatform';
+import { stakingProductAssetSchema } from './stakingProductAsset';
 import { stakingProductIdSchema, stakingProductTypeSchema } from './stakingProductId';
 import { stakingProviderIdSchema } from './stakingProvider';
 
@@ -14,6 +16,7 @@ export const stakingProductLimitsSchema = z.strictObject({
     feeBufferBalance: stakingAmountSchema,
     minBalanceForStaking: stakingAmountSchema,
     minStakeAmountForDashboard: stakingAmountSchema,
+    registrationDeposit: stakingAmountSchema,
 });
 
 export type StakingProductLimits = z.infer<typeof stakingProductLimitsSchema>;
@@ -35,27 +38,78 @@ export const STAKING_PRODUCT_EXCLUSIVITIES = ['none', 'account'] as const;
 
 export const STAKING_RATE_KINDS = ['apy', 'apr'] as const;
 
+export type StakingRateKind = (typeof STAKING_RATE_KINDS)[number];
+
+/**
+ * `compounded`: rewards are part of `balances.staked`, restaked into it or delegated with it as
+ * Cardano's reward balance is; `getStakingPositionPrincipal` takes them out. `claimable`: rewards
+ * accrue apart from the stake and are paid out by `claim`. `expected`: rewards are an estimate,
+ * since the chain pays them into the stake without reporting them. Whether rewards can be claimed
+ * is the `claim` operation, not the kind.
+ */
+export const STAKING_REWARDS_KINDS = ['compounded', 'claimable', 'expected'] as const;
+
+export const stakingRewardsKindSchema = z.enum(STAKING_REWARDS_KINDS);
+
+export type StakingRewardsKind = z.infer<typeof stakingRewardsKindSchema>;
+
 export const stakingProductDescriptorObjectSchema = z.strictObject({
     id: stakingProductIdSchema,
-    symbol: networkSymbolSchema,
+    networkSymbol: networkSymbolSchema,
+    asset: stakingProductAssetSchema,
     providerId: stakingProviderIdSchema,
     type: stakingProductTypeSchema,
     operations: z.array(stakingOperationSchema).readonly(),
     exclusivity: z.enum(STAKING_PRODUCT_EXCLUSIVITIES),
     rateKind: z.enum(STAKING_RATE_KINDS),
+    rewardsKind: stakingRewardsKindSchema,
     limits: stakingProductLimitsSchema,
     options: z.array(stakingOptionFieldSchema).readonly(),
-    consentKey: stakingConsentKeySchema,
+    consentKey: stakingConsentKeySchema.nullable(),
     platforms: stakingProductPlatformsSchema,
     messageSystemFeatures: z.partialRecord(stakingOperationSchema, z.string()),
+    minFirmware: z.partialRecord(stakingOperationSchema, firmwareVersionSchema),
+    isCountedInAccountTotals: z.boolean(),
 });
 
-export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSchema.refine(
-    ({ id, symbol, providerId, type }) => id === `${symbol}:${providerId}:${type}`,
-    {
-        error: 'Expected the product id to match the symbol, provider and type',
-        path: ['id'],
-    },
-);
+export const stakingProductDescriptorSchema = stakingProductDescriptorObjectSchema
+    .refine(
+        ({ id, networkSymbol, asset, providerId, type }) =>
+            id ===
+            `${networkSymbol}:${asset.kind === 'native' ? networkSymbol : asset.symbol}:${providerId}:${type}`,
+        {
+            error: 'Expected the product id to match the network symbol, asset, provider and type',
+            path: ['id'],
+        },
+    )
+    .refine(
+        ({ operations, consentKey }) =>
+            !operations.some(operation => operation === 'stake' || operation === 'redelegate') ||
+            consentKey !== null,
+        {
+            error: 'Expected a consent key on a product that stakes or redelegates',
+            path: ['consentKey'],
+        },
+    )
+    .refine(
+        ({ operations, platforms }) =>
+            Object.values(platforms).every(
+                support =>
+                    support.access !== 'manage' ||
+                    (support.operations ?? []).every(operation => operations.includes(operation)),
+            ),
+        {
+            error: 'Expected the platform operations to be a subset of the product operations',
+            path: ['platforms'],
+        },
+    )
+    .refine(
+        ({ operations, minFirmware }) =>
+            typedObjectKeys(minFirmware).every(operation => operations.includes(operation)),
+        {
+            error: 'Expected a minimum firmware only for operations the product offers',
+            path: ['minFirmware'],
+        },
+    );
 
 export type StakingProductDescriptor = z.infer<typeof stakingProductDescriptorSchema>;

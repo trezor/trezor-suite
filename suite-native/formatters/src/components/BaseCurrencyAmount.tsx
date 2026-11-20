@@ -14,13 +14,15 @@ export type FormattedBaseCurrencyAmount = {
 };
 
 type BaseCurrencyAmountProps = FormatterProps<BaseCurrencyAmountValue | null> & {
+    isExact?: boolean;
     children: (formattedAmount: FormattedBaseCurrencyAmount) => ReactNode;
 };
 
 // Provides consistently formatted base-currency parts to a consumer-owned presentation.
-export const BaseCurrencyAmount = ({ value, children }: BaseCurrencyAmountProps) => {
+export const BaseCurrencyAmount = ({ value, isExact, children }: BaseCurrencyAmountProps) => {
     const { currencySymbol, wholeNumber, decimalNumber } = useFormattedGraphHeaderValues(
         value?.toString(),
+        isExact,
     );
 
     if (!value) return <EmptyAmountText />;

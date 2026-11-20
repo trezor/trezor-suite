@@ -1,7 +1,12 @@
 import { useState } from 'react';
 
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
+import {
+    type AppCopyToClipboardFrom,
+    COPY_TO_CLIPBOARD_TYPE_BY_ADDRESS_TYPE,
+} from '@suite-common/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
@@ -25,12 +30,18 @@ interface CopyAddressModalProps {
     address: string;
     onCancel: () => void;
     addressType: AddressType;
+    copyAnalyticsFrom?: AppCopyToClipboardFrom;
 }
 
-export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddressModalProps) => {
+export const CopyAddressModal = ({
+    address,
+    onCancel,
+    addressType,
+    copyAnalyticsFrom,
+}: CopyAddressModalProps) => {
     const [checked, setChecked] = useState(false);
 
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const onCopyAddress = async () => {
         if (checked) {
@@ -40,6 +51,15 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
         const result = await copyToClipboard(address);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+        }
+        if (copyAnalyticsFrom !== undefined) {
+            analytics.report({
+                type: events.appCopyToClipboardEvent.name,
+                payload: {
+                    from: copyAnalyticsFrom,
+                    type: COPY_TO_CLIPBOARD_TYPE_BY_ADDRESS_TYPE[addressType],
+                },
+            });
         }
         onCancel();
     };

@@ -50,8 +50,15 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 // Wallet creation begins on device, entropy check runs after seed generation.
                 // Reject backup early so pending resetDevice settles.
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay(
+                    "agree to Trezor Company's terms and conditions.",
+                );
                 await device.pressYes();
+                await device.expectToContainOnDisplay('Wallet created successfully.');
                 await device.pressYes();
+                await device.expectToContainOnDisplay(
+                    'Your wallet backup contains 12 words in a specific order.',
+                );
                 await device.pressNo();
             });
 
@@ -96,8 +103,15 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 await onboardingPage.createBackupButton.click();
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay(
+                    "agree to Trezor Company's terms and conditions.",
+                );
                 await device.pressYes();
+                await device.expectToContainOnDisplay('Wallet created successfully.');
                 await device.pressYes();
+                await device.expectToContainOnDisplay(
+                    'Your wallet backup contains 12 words in a specific order.',
+                );
                 await device.pressNo();
             });
 

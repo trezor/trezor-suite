@@ -1,6 +1,6 @@
 import { type RefObject, memo } from 'react';
 
-import { useClearAnchorHighlightOnClick } from 'src/hooks/suite/useClearAnchorHighlightOnClick';
+import { useClearAnchorHighlightOnClick } from '#src/hooks/suite/useClearAnchorHighlightOnClick';
 
 interface AnchorHighlightHandlerProps {
     elementRef: RefObject<HTMLElement | null>;

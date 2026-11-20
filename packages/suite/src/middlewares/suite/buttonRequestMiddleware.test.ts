@@ -32,9 +32,9 @@ import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import { mock } from '@trezor/dependency-injection';
 import { noopCreateLogger } from '@trezor/logger';
 
-import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
-import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
-import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
+import * as deviceSettingsActions from '#src/actions/settings/deviceSettingsActions';
+import buttonRequestMiddleware from '#src/middlewares/suite/buttonRequestMiddleware';
+import { prepareSuiteMiddleware } from '#src/middlewares/suite/suiteMiddleware';
 
 const device = mockSuiteDevice();
 

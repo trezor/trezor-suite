@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWrapErrorReason,
@@ -10,20 +11,21 @@ import {
     getYieldNativeFeeStatus,
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
+import {
+    useMessageSystemWrappedNative,
+    useMessageSystemYield,
+    useYieldFlowData,
+} from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { useMessageSystemWrappedNative } from '../../earn/useMessageSystemWrappedNative';
-import { useMessageSystemYield } from '../useMessageSystemYield';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
-import { useYieldFlowData } from '../useYieldFlowData';
 import { useYieldWrappedNativeStep } from '../useYieldWrappedNativeStep';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositWrap>;

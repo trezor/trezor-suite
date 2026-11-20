@@ -73,12 +73,17 @@ export const createAllocateOwnerQuota =
             return err(QuotaManagerCommunicationFailed(sessionChallenge.error));
         }
 
-        const delegatedPublicKey = getPublicIdentityKeyFromDelegatedKey(delegatedKey);
-        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+        const delegatedKeyPublicResult = await getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+
+        if (!delegatedKeyPublicResult.success) {
+            return delegatedKeyPublicResult;
+        }
+
+        const proofOfDelegatedIdentity = await getProofOfDelegatedIdentity({
             delegatedKey,
             header: EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
             appendMessageBuffer: prepareMessageBufferEvoluAddSpaceToOwner({
-                publicKey: delegatedPublicKey,
+                publicKey: delegatedKeyPublicResult.payload,
                 ownerId,
                 challenge: sessionChallenge.payload.challenge,
                 size: sizeToAllocate,
@@ -92,7 +97,7 @@ export const createAllocateOwnerQuota =
         const transferStorageResult = await deps.transferStorageFetch({
             params: {
                 ownerId,
-                publicKey: delegatedPublicKey,
+                publicKey: delegatedKeyPublicResult.payload,
                 proof: proofOfDelegatedIdentity.payload,
                 size: sizeToAllocate,
                 challenge: sessionChallenge.payload.challenge,

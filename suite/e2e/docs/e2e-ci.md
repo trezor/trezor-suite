@@ -63,7 +63,7 @@ The action also outputs the test files the PR added, modified or renamed (`edite
 
 #### 3. Pick the config
 
-- Empty spec list: `playwright-*-pr.config.ts`. Full run. `@skipOnPR` and `@optional` are excluded, except `@optional` tests in files the PR edited (passed as `E2E_EDITED_SPECS`).
+- Empty spec list: `playwright-*-pr.config.ts`. Full run. `@skipOnPR` and `@optional` are excluded, web runs only `@webOnly` tests and T3T1 only tests no other model shares. Test files the PR edited (passed as `E2E_EDITED_SPECS`) skip every limit but `@skipOnPR`: they run on every tagged model and both targets, `@optional` included.
 - Non-empty spec list: `playwright-*-pr-all.config.ts`. Only the listed files run. `@skipOnPR` is excluded, `@optional` is not.
 
 ## Nightly and FW canary pipelines

@@ -5,21 +5,26 @@ import { escapeRegExp, isEqualWith, isRegExp } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
 import { toChecksumAddress } from '@suite-common/address';
-import {
-    createAddressValidator,
-    createNetworkModuleRepository,
-    createNetworkModulesCompositionRoot,
-} from '@suite-common/networks';
+import { createAddressValidator, createNetworkModuleRepository } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
+import { createBitcoinSuiteCommonNetworkModule } from '@trezor/network-bitcoin-suite-common';
+import { createCardanoSuiteCommonNetworkModule } from '@trezor/network-cardano-suite-common';
+import { createEthereumSuiteCommonNetworkModule } from '@trezor/network-ethereum-suite-common';
 import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
+import { createRippleSuiteCommonNetworkModule } from '@trezor/network-ripple-suite-common';
+import { createSolanaSuiteCommonNetworkModule } from '@trezor/network-solana-suite-common';
+import { createStellarSuiteCommonNetworkModule } from '@trezor/network-stellar-suite-common';
+import { createTronSuiteCommonNetworkModule } from '@trezor/network-tron-suite-common';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { formatAddress, formatEvmAddress, normalizeWhitespace } from '../common';
-import { DeviceFixture } from '../device';
+import { DeviceFixture, type DisplayCheckOptions } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
 import { decodeQrCodes } from '../helpers/qrCodeDecoder';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'cardanoTetragrams' | 'fullLine';
+
+type ToShowReceiveAddressOptions = DisplayCheckOptions & { lineFormat?: LineFormats };
 
 type TranslationPrimitiveValues = Record<string, string | number>;
 type TranslationValues = Record<string, string | number | RegExp>;
@@ -27,10 +32,18 @@ type TranslationValues = Record<string, string | number | RegExp>;
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 
-const networkModules = createNetworkModulesCompositionRoot({
-    getTrezorConnect: mockGetTrezorConnect,
+const networkModuleDeps = { getTrezorConnect: mockGetTrezorConnect };
+const networkModuleRepository = createNetworkModuleRepository({
+    networkModules: [
+        createBitcoinSuiteCommonNetworkModule(networkModuleDeps),
+        createEthereumSuiteCommonNetworkModule(networkModuleDeps),
+        createRippleSuiteCommonNetworkModule(),
+        createCardanoSuiteCommonNetworkModule(networkModuleDeps),
+        createSolanaSuiteCommonNetworkModule(),
+        createStellarSuiteCommonNetworkModule(),
+        createTronSuiteCommonNetworkModule(),
+    ],
 });
-const networkModuleRepository = createNetworkModuleRepository({ networkModules });
 const addressValidator = createAddressValidator({ networkModuleRepository });
 
 const compareTextAndNumber = async (
@@ -58,12 +71,18 @@ const compareDisplayContent = async (
     device: DeviceFixture,
     expectedContent: NormalizedDisplayContent,
     errorMessage: string,
+    timeout: number,
+    options?: DisplayCheckOptions,
 ) => {
-    await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
+    if (device.hasCanaryFirmware && !options?.shouldRunOnCanary) {
+        return {
+            pass: true,
+            message: () =>
+                'Skipping display content check for canary firmware as it is frequently changing and breaking tests.',
+        };
+    }
 
-    const contentRaw = await device.getDisplayContent();
-    const content = normalizeWhitespace(contentRaw);
-    const debugInfo = JSON.stringify(await device.getAnalyzedDisplayContent(), null, 2);
+    await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
 
     const regexAndStringComparator = (expectedValue: any, actualValue: any) => {
         if (expectedValue instanceof RegExp && typeof actualValue === 'string') {
@@ -83,11 +102,20 @@ const compareDisplayContent = async (
         return undefined;
     };
 
-    return {
-        pass: isEqualWith(expectedContent, content, regexAndStringComparator),
-        message: () =>
-            `${errorMessage}. Diff:\n${diff(expectedContent, content)}\n\nAnalysis:\n${debugInfo}`,
-    };
+    let message = '';
+    try {
+        await baseExpect(async () => {
+            const contentRaw = await device.getDisplayContent();
+            const content = normalizeWhitespace(contentRaw);
+            const debugInfo = JSON.stringify(await device.getAnalyzedDisplayContent(), null, 2);
+            message = `${errorMessage}. Diff:\n${diff(expectedContent, content)}\n\nAnalysis:\n${debugInfo}`;
+            baseExpect(isEqualWith(expectedContent, content, regexAndStringComparator)).toBe(true);
+        }).toPass({ timeout });
+
+        return { pass: true, message: () => message };
+    } catch (error) {
+        return { pass: false, message: () => message || `${errorMessage}. ${error}` };
+    }
 };
 
 const hasOnlyPrimitiveValues = (
@@ -171,9 +199,7 @@ export const expect = baseExpect.extend({
     async toShowReceiveAddress(
         device: DeviceFixture,
         expectedAddress: string,
-        options: { lineFormat: LineFormats } = {
-            lineFormat: 'fourTetragrams',
-        },
+        options: ToShowReceiveAddressOptions = {},
     ) {
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
         const expectedContent =
@@ -195,6 +221,8 @@ export const expect = baseExpect.extend({
             device,
             expectedContent,
             'expect Receive address to match',
+            this.timeout,
+            options,
         );
     },
 
@@ -205,14 +233,6 @@ export const expect = baseExpect.extend({
             [Model.T3T1]?: Partial<NormalizedDisplayContent>;
         },
     ) {
-        if (device.hasCanaryFirmware) {
-            return {
-                pass: true,
-                message: () =>
-                    'Skipping display content check for canary firmware as it is frequently changing and breaking tests.',
-            };
-        }
-
         // default T3W1 model
         let expectedContent = expected[Model.T3W1];
 
@@ -239,6 +259,7 @@ export const expect = baseExpect.extend({
             device,
             expectedContent,
             'expect Emulator display to match',
+            this.timeout,
         );
     },
 

@@ -1079,7 +1079,6 @@ export const fetchTransactionsPageThunk = createThunk<
             // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
-            suppressBackupWarning: true,
             // The response replaces `account.tokens` wholesale, which would wipe the watch list.
             stellarContractTokens:
                 account.networkType === 'stellar'

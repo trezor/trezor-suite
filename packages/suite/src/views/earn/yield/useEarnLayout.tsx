@@ -17,10 +17,11 @@ import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { YieldPageHeader } from 'src/components/earn';
-import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
-import { useLayout, useSelector } from 'src/hooks/suite';
-import { type EarnLayoutState } from 'src/types/earn/earnLayout';
+import { useEarnRouteAccount } from '#src/components/earn/utils/useEarnRouteAccount';
+import { YieldPageHeader } from '#src/components/earn/yield/common/YieldPageHeader';
+import { useLayout } from '#src/hooks/suite/useLayout';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { type EarnLayoutState } from '#src/types/earn/earnLayout';
 
 type EarnYieldAnalyticsStep = Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;
 

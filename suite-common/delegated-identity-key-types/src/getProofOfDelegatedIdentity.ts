@@ -1,5 +1,6 @@
 /**
- * This may happen in case of data in Redux are corrupted.
+ * This may happen in case of data in Redux are corrupted,
+ * or when the P-256 curve code fails to load.
  *
  * For example: when we introduced SafeStorage encryption
  * and users (only developers & tested, ATM) have non-encrypted

@@ -5,7 +5,7 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, () => {
+test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@windows'] }, () => {
     test.use({
         setupEmulator: false,
         electronConf: { offlineMode: true },
@@ -47,7 +47,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation(
                 'TR_YOU_WERE_DISCONNECTED_DOT',
             );
-            await onboardingPage.setupDeviceButton.click();
+            await onboardingPage.passDeviceCheck();
 
             await test.step('Device onboarding steps', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
@@ -61,13 +61,18 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
                 await onboardingPage.backup.passThroughShamirBackup({
                     shares: 3,
                     threshold: 2,
-                    deviceConfirmations: 3,
+                    deviceConfirmations: [
+                        "By continuing you agree to Trezor Company's terms and conditions.",
+                        'Wallet created.',
+                        'You should back up your new wallet right now.',
+                    ],
                 });
             });
 
             await test.step('Set PIN', async () => {
                 await onboardingPage.pin.setPinButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay('Turn on PIN protection?');
                 await device.pressYes();
                 await device.inputPin('12');
                 await device.inputPin('12');

@@ -3,11 +3,11 @@ import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Divider, InfoItem, Row, Skeleton, Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useSelector } from 'src/hooks/suite';
-import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useCancelTxContext } from '#src/hooks/wallet/useCancelTxContext';
 
 import { CancelTransactionCard } from './CancelTransactionCard';
 import { CancelTransactionSkeletonRow } from './CancelTransactionSkeletonRow';
@@ -56,7 +56,7 @@ export const CancelTransaction = ({ tx, account }: CancelTransactionProps) => {
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
                         value={amount}
-                        symbol={symbol}
+                        networkSymbol={symbol}
                     />
                 </Row>
                 <Text intent="neutral" priority="secondary" typographyStyle="body-xs">

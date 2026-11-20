@@ -21,14 +21,14 @@ import {
     buildTradingFiatOption,
     getCryptoId,
     getSupportedFiatCurrencyWithFallback,
-    selectTradingInfo,
+    selectTradingCoins,
     useTradingAssets,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type Output } from '@suite-common/wallet-types';
 
-import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
+import { resolveAddressAndToken } from '#src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';
 
@@ -49,7 +49,7 @@ export const useTradingExchangeFormDefaultValues = (
     const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
 
     const { createAssetOptionFromCryptoId } = useTradingAssets();
-    const { coins } = useSelector(selectTradingInfo);
+    const coins = useSelector(selectTradingCoins);
     const hasDefaultReceiveAccount = useSelector(
         (state: Parameters<typeof selectVisibleDeviceAccounts>[0]) =>
             selectVisibleDeviceAccounts(state).some(

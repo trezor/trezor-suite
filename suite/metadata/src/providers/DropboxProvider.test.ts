@@ -5,6 +5,29 @@ import { createDeferred } from '@trezor/utils';
 import { DropboxProvider } from './DropboxProvider';
 import { type OauthDesktopApiDep } from '../oauth';
 
+const mockFilesSearchV2 = jest.fn();
+let mockSDKLoadFailures = 0;
+
+/**
+ * Stands in for the lazily loaded Dropbox SDK chunk.
+ * While `mockSDKLoadFailures` is above zero, each load of the chunk fails instead.
+ */
+jest.mock('dropbox', () => {
+    if (mockSDKLoadFailures > 0) {
+        mockSDKLoadFailures -= 1;
+        throw new Error('Loading chunk failed');
+    }
+
+    return {
+        DropboxAuth: class {
+            setRefreshToken() {}
+        },
+        Dropbox: class {
+            filesSearchV2 = mockFilesSearchV2;
+        },
+    };
+});
+
 const globalContext = globalThis as typeof globalThis & { window?: typeof globalThis };
 if (!globalContext.window) {
     globalContext.window = globalThis as any;
@@ -19,6 +42,16 @@ const emptySearchResult = {
     },
 };
 
+const sdkLoadError = {
+    success: false,
+    code: 'CONNECTIVITY_ERROR',
+    error: 'Failed to load Dropbox SDK',
+};
+
+const failNextDropboxSDKLoad = () => {
+    mockSDKLoadFailures = 1;
+};
+
 const { desktopApi }: OauthDesktopApiDep = {
     desktopApi: {
         available: false,
@@ -31,15 +64,17 @@ const { desktopApi }: OauthDesktopApiDep = {
 describe(DropboxProvider.name, () => {
     afterEach(() => {
         jest.useRealTimers();
-        jest.restoreAllMocks();
+        mockFilesSearchV2.mockReset();
+        mockSDKLoadFailures = 0;
+        // A loaded module stays cached in the registry, so the next test's factory would never run.
+        jest.resetModules();
     });
 
     it('runs scheduled API requests one at a time', async () => {
         const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
         const firstRequest = createDeferred<typeof emptySearchResult>();
         const secondRequest = createDeferred<typeof emptySearchResult>();
-        const filesSearchSpy = jest
-            .spyOn(provider.client, 'filesSearchV2')
+        mockFilesSearchV2
             .mockReturnValueOnce(firstRequest.promise)
             .mockReturnValueOnce(secondRequest.promise);
 
@@ -48,13 +83,13 @@ describe(DropboxProvider.name, () => {
 
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        expect(filesSearchSpy).toHaveBeenCalledTimes(1);
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(1);
 
         firstRequest.resolve(emptySearchResult);
         await firstResult;
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        expect(filesSearchSpy).toHaveBeenCalledTimes(2);
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(2);
 
         secondRequest.resolve(emptySearchResult);
         await secondResult;
@@ -64,8 +99,7 @@ describe(DropboxProvider.name, () => {
         jest.useFakeTimers();
 
         const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
-        const filesSearchSpy = jest
-            .spyOn(provider.client, 'filesSearchV2')
+        mockFilesSearchV2
             .mockRejectedValueOnce({
                 status: 429,
                 headers: {
@@ -78,15 +112,15 @@ describe(DropboxProvider.name, () => {
         const result = provider.getFileContent('file.mtdt');
 
         await jest.advanceTimersByTimeAsync(0);
-        expect(filesSearchSpy).toHaveBeenCalledTimes(1);
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(1);
 
         await jest.advanceTimersByTimeAsync(1999);
-        expect(filesSearchSpy).toHaveBeenCalledTimes(1);
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(1);
 
         await jest.advanceTimersByTimeAsync(1);
         await result;
 
-        expect(filesSearchSpy).toHaveBeenCalledTimes(2);
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(2);
     });
 
     it('applies Retry-After to requests already waiting in the queue', async () => {
@@ -126,8 +160,7 @@ describe(DropboxProvider.name, () => {
         jest.useFakeTimers();
 
         const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
-        const filesSearchSpy = jest
-            .spyOn(provider.client, 'filesSearchV2')
+        mockFilesSearchV2
             .mockRejectedValueOnce({
                 status: 429,
                 headers: {
@@ -140,11 +173,55 @@ describe(DropboxProvider.name, () => {
         const result = provider.getFileContent('file.mtdt');
 
         await jest.advanceTimersByTimeAsync(999);
-        expect(filesSearchSpy).toHaveBeenCalledTimes(1);
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(1);
 
         await jest.advanceTimersByTimeAsync(1);
         await result;
 
-        expect(filesSearchSpy).toHaveBeenCalledTimes(2);
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(2);
+    });
+
+    it('reports a failed Dropbox SDK load and loads it again on the next call', async () => {
+        failNextDropboxSDKLoad();
+
+        const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
+
+        await expect(provider.getFileContent('file.mtdt')).resolves.toEqual(sdkLoadError);
+
+        mockFilesSearchV2.mockResolvedValueOnce(emptySearchResult);
+
+        await expect(provider.getFileContent('file.mtdt')).resolves.toEqual({ success: true });
+        expect(mockFilesSearchV2).toHaveBeenCalledTimes(1);
+    });
+
+    it.each<[string, (provider: DropboxProvider) => Promise<unknown>]>([
+        ['connect', provider => provider.connect()],
+        ['disconnect', provider => provider.disconnect()],
+        ['getProviderDetails', provider => provider.getProviderDetails()],
+        ['getFileContent', provider => provider.getFileContent('file.mtdt')],
+        ['setFileContent', provider => provider.setFileContent('file.mtdt', Buffer.from('labels'))],
+        ['getFilesList', provider => provider.getFilesList()],
+        ['renameFile', provider => provider.renameFile('old.mtdt', 'new.mtdt')],
+    ])(
+        '%s resolves with a connectivity error when the Dropbox SDK fails to load',
+        async (_, call) => {
+            failNextDropboxSDKLoad();
+
+            const provider = new DropboxProvider({
+                desktopApi,
+                token: 'token',
+                clientId: 'client-id',
+            });
+
+            await expect(call(provider)).resolves.toEqual(sdkLoadError);
+        },
+    );
+
+    it('is not connected when the Dropbox SDK fails to load', async () => {
+        failNextDropboxSDKLoad();
+
+        const provider = new DropboxProvider({ desktopApi, token: 'token', clientId: 'client-id' });
+
+        await expect(provider.isConnected()).resolves.toBe(false);
     });
 });

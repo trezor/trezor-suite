@@ -73,8 +73,14 @@ test.describe(
                 await test.step('Start recovery with some device', async () => {
                     await page.getByTestId('@onboarding/recovery/start-button').click();
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay(
+                        "agree to Trezor Company's terms and conditions.",
+                    );
                     await device.pressYes();
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay(
+                        'Select the number of words in your backup.',
+                    );
                     await device.selectNumberOfWords(20);
                     await devicePrompt.confirmOnDevicePromptIsShown();
                     await device.pressYes();
@@ -109,8 +115,14 @@ test.describe(
                 await test.step('Start recovery', async () => {
                     await onboardingPage.startRecoveryButton.click();
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay(
+                        "agree to Trezor Company's terms and conditions.",
+                    );
                     await device.pressYes();
                     await devicePrompt.confirmOnDevicePromptIsShown();
+                    await device.expectToContainOnDisplay(
+                        'Select the number of words in your backup.',
+                    );
                     await device.selectNumberOfWords(20);
                     await devicePrompt.confirmOnDevicePromptIsShown();
                     await device.pressYes();

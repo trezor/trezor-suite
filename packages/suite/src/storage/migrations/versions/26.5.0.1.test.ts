@@ -4,7 +4,7 @@ import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 import migration from './26.5.0.1';
 

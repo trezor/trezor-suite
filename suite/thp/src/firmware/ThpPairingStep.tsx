@@ -2,7 +2,7 @@ import { type ReactNode, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectIsDeviceConnected } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
 import { Column, Image, Modal } from '@trezor/components';
 
@@ -15,14 +15,14 @@ type ThpPairingStepProps = { heading: ReactNode };
 
 // reflection of packages/suite/src/components/onboarding/ThpPairingStep/ThpPairingStep.tsx
 export const ThpPairingStep = ({ heading }: ThpPairingStepProps) => {
-    const device = useSelector(selectSelectedDevice);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const thpStep = useSelector(selectThpStep);
     const prevStepRef = useRef(thpStep);
     if (thpStep) {
         prevStepRef.current = thpStep;
     }
 
-    if (!device?.connected) {
+    if (!isDeviceConnected) {
         return (
             <Modal
                 heading={<Translation id="TR_RECONNECT_HEADER" />}

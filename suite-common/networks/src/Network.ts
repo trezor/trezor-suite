@@ -3,6 +3,12 @@ import type { SuiteCommonNetworkConfig } from '@trezor/network-module-suite-comm
 
 import type { NetworkSymbol } from './NetworkModules';
 
+/**
+ * A specific blockchain network, such as Ethereum mainnet or Sepolia.
+ * Mainnet and testnet are separate networks, each identified by its NetworkSymbol.
+ *
+ * @see https://github.com/trezor/trezor-suite/blob/develop/docs/ubiquitous-language.md
+ */
 export type Network = Omit<
     SuiteCommonNetworkConfig,
     // TODO: Remove these legacy omissions and the Yield API override once configs are modularized.

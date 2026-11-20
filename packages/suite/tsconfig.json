@@ -7,8 +7,7 @@
                 "tags": ["styled", "css", "sty"]
             }
         ],
-        "outDir": "./libDev",
-        "paths": { "src/*": ["./src/*"] }
+        "outDir": "./libDev"
     },
     "include": [".", "e2e", "**/*.json"],
     "references": [
@@ -34,9 +33,6 @@
         {
             "path": "../../suite-common/connect-popup"
         },
-        {
-            "path": "../../suite-common/delegated-identity-key"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
@@ -44,6 +40,7 @@
         {
             "path": "../../suite-common/discreet-mode"
         },
+        { "path": "../../suite-common/earn" },
         {
             "path": "../../suite-common/earn-stablecoin"
         },
@@ -51,10 +48,13 @@
             "path": "../../suite-common/earn-stablecoin-api"
         },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
             "path": "../../suite-common/earn-staking-api"
         },
         {
-            "path": "../../suite-common/extra-dependencies"
+            "path": "../../suite-common/earn-staking-common"
         },
         { "path": "../../suite-common/feedback" },
         {
@@ -94,6 +94,9 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/refer-a-friend"
+        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-config"
@@ -133,9 +136,11 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
+        { "path": "../../suite-common/token" },
         {
             "path": "../../suite-common/token-definitions"
         },
+        { "path": "../../suite-common/tokens" },
         { "path": "../../suite-common/trading" },
         {
             "path": "../../suite-common/transaction-search"
@@ -168,9 +173,7 @@
         { "path": "../../suite/address" },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/app-assets" },
-        {
-            "path": "../../suite/apps-embedding-demo"
-        },
+        { "path": "../../suite/assets" },
         {
             "path": "../../suite/authenticity-checks"
         },
@@ -181,14 +184,12 @@
         { "path": "../../suite/desktop-app-api" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
-        { "path": "../../suite/discovery" },
         { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
         {
             "path": "../../suite/feature-feedback"
         },
-        { "path": "../../suite/finprom" },
         {
             "path": "../../suite/firmware-upgrade"
         },
@@ -215,15 +216,18 @@
             "path": "../../suite/onboarding-components"
         },
         { "path": "../../suite/price-chart" },
-        { "path": "../../suite/receive" },
+        {
+            "path": "../../suite/recipient-history"
+        },
         { "path": "../../suite/recovery" },
+        { "path": "../../suite/regions" },
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },
-        { "path": "../../suite/sign-verify" },
         { "path": "../../suite/suite-lifecycle" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },
+        { "path": "../../suite/token" },
         { "path": "../../suite/tor" },
         { "path": "../../suite/tor-desktop" },
         { "path": "../../suite/tor-web" },
@@ -248,6 +252,9 @@
         { "path": "../env-utils" },
         { "path": "../icons" },
         { "path": "../logger" },
+        {
+            "path": "../../networks/cardano/network-cardano-suite-common"
+        },
         {
             "path": "../../networks/ethereum/network-ethereum"
         },
@@ -278,7 +285,6 @@
         { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },
-        { "path": "../bundler-security" },
         { "path": "../eslint" }
     ]
 }

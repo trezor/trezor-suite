@@ -8,12 +8,14 @@ import { type Result, err, ok } from '@trezor/type-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { selectDiscoveryByDevicePath } from './discoverySelectors';
+import { updateDiscoveryThunk } from './discoveryStateThunks';
 import {
     type RunAdditionalDiscoveryThunkDeps,
     type RunAdditionalDiscoveryThunkState,
     cancelDiscoveryThunk,
     runAdditionalDiscoveryThunk,
 } from './discoveryThunks';
+import { UNKNOWN_ERROR_CODE, getErrorCode, hasDiscoveryEnded } from './discoveryUtils';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
@@ -80,6 +82,7 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
         // this state and would otherwise start a second discovery for the same network.
         dispatch(
             discoveryActions.startDiscovery(devicePath, {
+                trigger: 'add-account',
                 isAddingHiddenWallet: false,
                 isAddingExistingWallet: false,
             }),
@@ -109,9 +112,15 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
 
                 const status: DiscoveryStatus = wasCancelled
                     ? { status: 'cancelled' }
-                    : { status: 'failed', error };
+                    : {
+                          status: 'failed',
+                          error,
+                          errorCode: getErrorCode(
+                              wasActivationRejected ? enableResult.error : undefined,
+                          ),
+                      };
 
-                dispatch(discoveryActions.updateDiscovery(status, devicePath));
+                dispatch(updateDiscoveryThunk({ status, path: devicePath }));
 
                 if (!wasCancelled) {
                     dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
@@ -121,7 +130,9 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
             }
         }
 
-        const discoveryPromise = dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+        const discoveryPromise = dispatch(
+            runAdditionalDiscoveryThunk({ staticSessionId, trigger: 'add-account' }),
+        );
         const abortDiscovery = () => {
             discoveryPromise.abort();
 
@@ -165,23 +176,28 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
         }
 
         const wasCancelled = signal.aborted || discovery?.status === 'cancelled';
+        const hasReachedOutcome = hasDiscoveryEnded(discovery);
         let error = 'Account discovery failed';
+        let errorCode = UNKNOWN_ERROR_CODE;
 
         if (discovery?.status === 'failed') {
             error = discovery.error ?? error;
+            errorCode = discovery.errorCode ?? errorCode;
         } else if (runAdditionalDiscoveryThunk.rejected.match(discoveryResult)) {
             error = discoveryResult.error.message ?? error;
+            errorCode = getErrorCode(discoveryResult.error);
         }
 
         const finalDiscoveryStatus: DiscoveryStatus = wasCancelled
             ? { status: 'cancelled' }
-            : { status: 'failed', error };
+            : { status: 'failed', error, errorCode };
 
         if (!wasNetworkEnabled) {
             // Keep discovery marked as running during rollback for the same middleware reason as
             // activation: hiding the network must not start another discovery concurrently.
             dispatch(
                 discoveryActions.startDiscovery(devicePath, {
+                    trigger: 'add-account',
                     isAddingHiddenWallet: false,
                     isAddingExistingWallet: false,
                 }),
@@ -191,7 +207,13 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
             );
         }
 
-        dispatch(discoveryActions.updateDiscovery(finalDiscoveryStatus, devicePath));
+        dispatch(
+            updateDiscoveryThunk({
+                status: finalDiscoveryStatus,
+                path: devicePath,
+                isSilent: hasReachedOutcome,
+            }),
+        );
 
         if (!wasCancelled) {
             dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));

@@ -6,21 +6,21 @@ import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { useFormatters } from '@suite-common/formatters';
+import { type TokenAddress } from '@suite-common/tokens';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
     type FormStateTradingCryptoCurrency,
     type FormStateTradingFiatCurrency,
-    type TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/components';
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { useSelector } from 'src/hooks/suite';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { TransactionReviewOutputStatus } from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;
@@ -66,7 +66,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             return (
                 <TokenIcon
                     size={24}
-                    symbol={symbol}
+                    networkSymbol={symbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol ?? ''}
                     showNetworkIcon={showNetworkIcon}
@@ -74,7 +74,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             );
         }
 
-        return <TokenIcon size={24} symbol={symbol} showNetworkIcon />;
+        return <TokenIcon size={24} networkSymbol={symbol} showNetworkIcon />;
     };
 
     return (

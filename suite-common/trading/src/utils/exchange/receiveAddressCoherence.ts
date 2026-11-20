@@ -21,8 +21,8 @@ type IsReceiveAddressCoherentProps = {
     addressValidator: AddressValidator;
     receiveAddress: string | undefined;
     receiveCryptoId: CryptoId | undefined;
-    receiveAccountKey: string | undefined;
-    receiveAccountSymbol: NetworkSymbol | undefined;
+    receiveAccountKey?: string;
+    receiveAccountSymbol?: NetworkSymbol;
 };
 
 export const isReceiveAddressCoherent = ({

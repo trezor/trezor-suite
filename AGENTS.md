@@ -19,14 +19,17 @@ Read applicable skills once before making changes, using the task and their desc
 them; unrelated skills need not be loaded.
 Nested mandatory skills still apply within their stated scope.
 
+- General: [Asymptotic complexity](skills/performance-complexity/SKILL.md).
 - TypeScript changes: [Syntax](skills/basic-syntax/SKILL.md), [TypeScript](skills/typescript/SKILL.md),
   [Naming](skills/naming/SKILL.md), [Imports](skills/import-export/SKILL.md),
   [Defensive programming](skills/defensive-programming/SKILL.md), [Comments](skills/comments/SKILL.md).
 - React/UI: [Components](skills/components/SKILL.md), [React hooks](skills/performance-react-hooks/SKILL.md).
-  For relevant operations: [Collections](skills/performance-complexity/SKILL.md),
-  [DOM/CSS](skills/performance-dom/SKILL.md), [Scheduling](skills/performance-scheduling/SKILL.md).
+  For relevant operations: [DOM/CSS](skills/performance-dom/SKILL.md),
+  [Scheduling](skills/performance-scheduling/SKILL.md),
+  [Code splitting](skills/performance-code-splitting/SKILL.md).
 - State/services: [Redux](skills/redux/SKILL.md),
   [Dependency injection](skills/dependency-injection/SKILL.md) where the package uses DI.
+  For relevant operations: [Code splitting](skills/performance-code-splitting/SKILL.md).
 - Tests: [Test conventions](skills/tests/SKILL.md), [Commands](skills/tests-commands/SKILL.md),
   [Common tests](skills/tests-common/SKILL.md) or [Native tests](skills/tests-native/SKILL.md).
   Preserve suite-common's test-first feature workflow and platform test utilities. E2E tests follow
@@ -38,6 +41,7 @@ Nested mandatory skills still apply within their stated scope.
 - Persistence/browser APIs: [IDB migrations](skills/idb-migrations/SKILL.md),
   [Security headers](skills/security-headers/SKILL.md). Migration default exports are a specific exception
   to the general named-export rule.
+- Analytics/Sentry reporting: [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
 - Commits/PRs: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
   PR reviews: [PR review](skills/pr-review/SKILL.md).
   QA notes: [QA notes](skills/qa-notes/SKILL.md).
@@ -62,25 +66,27 @@ names from manifests, not paths.
 - `suite-common/` (`@suite-common/*`): Shared wallet/domain logic, including `wallet-core`,
   `device`, `message-system`. May use shared peers and reusable `@trezor/*` libraries; must not
   depend on desktop/web or native app code.
-- `suite/` (`@suite/*`): Desktop/web features and the applications they compose; may use peers,
+- `suite-app/` (`@suite-app/*`): Desktop/web application assembly. `web-app` is the web
+  composition root. `desktop-app` owns Electron packaging, distribution and installers, composed
+  from `desktop-app-renderer` (React entry point) and `desktop-app-main` (main and preload processes).
+  Reusable features and network modules must not depend on app assembly.
+- `suite/` (`@suite/*`): Desktop/web features and application code awaiting migration; may use peers,
   shared logic and reusable libraries, never native app code. `suite/e2e` is the Playwright
-  workspace (`@trezor/suite-e2e`). Two packages are application roots: `web-app` (web entry point
-  and composition root) and `desktop-app` (Electron packaging, distribution and installers).
-  `desktop-app` is assembled from `desktop-app-renderer` (Electron renderer process, desktop React
-  entry point), `desktop-app-main` (Electron main and preload processes) and
-  `desktop-app-native-bindings` (compiled OS bindings). Both applications use `app-assets` (static
-  assets and their generation) and `desktop-app-api` (desktop API contract), whose Electron
-  implementation is `desktop-app-api-electron`.
-- `suite-native/` (`@suite-native/*`): Mobile features and `app` (Expo/React Native); may use peers,
+  workspace (`@trezor/suite-e2e`). The applications use `app-assets` (static assets and generation),
+  `desktop-app-api` (desktop API contract), `desktop-app-api-electron` (Electron implementation)
+  and `desktop-app-native-bindings` (compiled OS bindings).
+- `suite-native/` (`@suite-native/*`): Mobile features and reusable building blocks; may use peers,
   shared logic and reusable libraries, never desktop/web app code.
+- `suite-native-app/` (`@suite-native-app/*`): Mobile application assembly, including the Expo/React
+  Native `app` entry point; may compose native features, shared logic and reusable libraries.
 - `packages/suite`: Remaining app-layer exception to the `packages/` convention. It contains the
-  web/desktop React app shared by both application roots, and `packages/suite/webpack` holds the
+  web/desktop React app shared by both application roots. `suite-app/app/webpack` holds the
   Webpack pieces they share; each application owns its own `webpack.config.ts`. Existing app
   composition depends on `@suite/*` and `@suite-common/*`; this is not permission to introduce
   app dependencies into reusable libraries.
 
-Keep dependencies acyclic. Web/desktop Redux assembly is in `packages/suite/src/reducers/store.ts`;
-native assembly is in `suite-native/state/src/createReduxStore.ts`. Shared slices live in
+Keep dependencies acyclic. Web/desktop Redux assembly is in `suite-app/app/src/store.ts`;
+native assembly is in `suite-native-app/state/src/createReduxStore.ts`. Shared slices live in
 `suite-common/wallet-core`; follow the Redux skill's state and dependency contracts.
 IndexedDB storage and migrations live in `packages/suite/src/storage`.
 Project gates are in `.github/workflows/check-code-validation.yml`; target prerequisites are in `nx.json`.
@@ -102,21 +108,22 @@ running the app, E2E or tests that load native modules requires a full install.
 - Web development: `yarn suite:dev` at `http://localhost:8000`; `yarn suite:dev:vite` is
   experimental and development-only.
 - Electron development: `yarn suite:dev:desktop`; requires a graphical environment.
-- Mobile development: Follow `suite-native/app/README.md` for Android SDK/emulator or macOS/Xcode
+- Mobile development: Follow `suite-native-app/app/README.md` for Android SDK/emulator or macOS/Xcode
   setup and `yarn native:prebuild`; run `yarn native:start` and `yarn native:android` or `yarn native:ios`. Android localhost services use `yarn native:reverse-ports`.
 - Focused unit test: `yarn workspace <package-name> test:unit --coverage=0 path/to/file.test.ts`
   (path relative to that workspace); also supports `.test.tsx`. Direct workspace scripts bypass Nx
   prerequisites: prepare generated dependencies first, including `yarn workspace @suite-common/message-system build:lib` when needed.
 - Package typecheck: `yarn nx run <package-name>:type-check --no-tui`; can also check dependencies
   and fetch guide content per `nx.json`.
-- Package lint: `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn workspace <package-name> lint:js`; use the
-  package's `lint:styles` script for styles where present.
+- Package lint: `yarn workspace <package-name> lint:js` runs the basic rules in parallel threads;
+  `ESLINT_RULE_SET=type-aware` runs the type-aware rules instead and `ESLINT_RULE_SET=all` runs both.
+  CI runs the two sets as separate jobs. Use the package's `lint:styles` script for styles where present.
 - Formatting changed files: `yarn prettier --check <files>`; use `--write` only on intended files.
 - Affected checks: `yarn test:unit --no-tui`, `yarn type-check --no-tui` (only on user's request),
-  `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
+  `yarn lint:js --no-tui` plus `ESLINT_RULE_SET=type-aware yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
 - Library build validation: `yarn build:libs:verify --no-tui` builds affected libraries; `yarn build:libs` rebuilds all libraries without Nx cache, so reserve it for a demonstrated need.
 - Production web behavior: `yarn suite:build:web`; `yarn suite:build:web:preview` builds and serves
-  with production security headers. For an existing build: `yarn workspace @suite/web-app preview`.
+  with production security headers. For an existing build: `yarn workspace @suite-app/web-app preview`.
 - Web/desktop E2E: `yarn workspace @trezor/suite-e2e test:e2e:web <test-file> --project=<project>`
   or `test:e2e:desktop`; inspect `suite/e2e/playwright-config` for projects. Requires Playwright
   browsers/system dependencies, a running web app or built Electron app, and scenario
@@ -138,8 +145,9 @@ confirm the fix plus relevant failure/edge cases. Run scoped lint for TypeScript
 affected checks for shared contracts, dependencies or configuration. Typechecks are slow even per
 package: for isolated changes rely on IDE diagnostics and focused tests; run the package typecheck at
 most once near final validation, only for integration risk or on request, and warn first. Run affected
-or repo-wide typechecks, including the CI type-check gate, only on request. Match CI's
-`ESLINT_RUN_EXPENSIVE_CHECKS=true` when validating JS/TS. Build changed publishing/bundling surfaces;
+or repo-wide typechecks, including the CI type-check gate, only on request. Match CI by validating
+JS/TS with both rule sets: the default run and `ESLINT_RULE_SET=type-aware`, or `ESLINT_RULE_SET=all`
+for both at once. Build changed publishing/bundling surfaces;
 exercise changed UI/runtime behavior in the relevant app when available, including production headers
 for browser-permission changes. Documentation-only edits need link/command/diff and formatting checks,
 not application builds or tests.
@@ -170,8 +178,8 @@ them.
   change pull request or issue descriptions, unless the user explicitly tasks them with that action.
   Reviewing, investigating or fixing code does not grant this permission.
 - Every comment, review, review comment and pull request or issue description an agent writes MUST
-  start with `🤖 Agent <Model> <Version> (reasoning: <Reasoning>):` using the actual model, version and
-  reasoning level. In descriptions, put the prefix on the first line.
+  start with `🤖 Agent <Model> <Version>:` using the actual model and version. In descriptions, put
+  the prefix on the first line.
 
 Follow the [PR review](skills/pr-review/SKILL.md) skill for reviews and leave review outcomes as comments.
 When the user explicitly asks to create an issue, follow [GitHub issues](skills/github-issues/SKILL.md).
@@ -185,6 +193,7 @@ site, not just the field type, and check the whole repo for outbound reporting.
 Confidential (see `redactAccount`/`redactDevice` in `suite-common/logger/src/utils.ts`): device
 id/label/state, static session id, `session_id`; account descriptor/xpub/key, addresses, UTXOs, txids;
 exact balances/amounts; labels and free-form user text; passphrase/seed/PIN/wipe code.
+For analytics events and Sentry reports, follow [Analytics and Sentry privacy](skills/analytics-and-sentry-privacy/SKILL.md).
 
 GitHub issue screenshots are the exception in [GitHub issues](skills/github-issues/SKILL.md): addresses,
 balances, txids, and labels from public QA and dev wallets may be attached. Seed words, PIN,

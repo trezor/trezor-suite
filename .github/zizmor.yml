@@ -1,0 +1,7 @@
+rules:
+  self-repository:
+    disable: true
+  dangerous-triggers:
+    ignore:
+      # The rebase bot must react to PR comments; it checks the commenter's write permission before touching the PR.
+      - bot-rebase.yml

@@ -1,4 +1,5 @@
 import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -8,12 +9,12 @@ import { Column, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { TradingReceiveOptionRow } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
-import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { TradingReceiveOptionRow } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveOptionRow';
+import { useReceiveAddressModalControls } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
@@ -58,7 +59,7 @@ export const TradingReceiveAccountSuiteOption = ({
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <TokenIcon size={24} symbol={account.symbol} />
+                <TokenIcon size={24} networkSymbol={account.symbol} />
 
                 <Column>
                     <Text

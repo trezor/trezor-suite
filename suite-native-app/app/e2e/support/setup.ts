@@ -1,0 +1,220 @@
+import { expect as jestExpect } from '@jest/globals';
+import fetch from 'cross-fetch';
+import { resolveConfig } from 'detox/internals';
+
+import { LaunchArguments } from '@suite-native/config';
+import { PreloadedState } from '@suite-native-app/state';
+import { mockInitialAppState } from '@suite-native-app/state/mocks';
+import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { mergeDeepObject } from '@trezor/utils';
+
+import { enableIOSReducedMotion } from './reducedMotion';
+import { appIsFullyLoaded, getModelFromEnv, platform } from './utils';
+import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
+import { onDevicePrompt } from '../pageObjects/devicePromptActions';
+
+type PrepareTrezorEmulatorProps = {
+    seed?: string;
+    passphrase_protection?: boolean;
+    model?: Model;
+    version?: string;
+};
+
+const INITIAL_LAUNCH_ARGS: LaunchArguments = {
+    // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
+    // bridge is exchanging messages with the app all the time, the test runner would wait forever otherwise.
+    detoxURLBlacklistRegex: '\\("^.*127.0.0.1.*",".*localhost.*","^*clients3\\.google\\.com*"\\)',
+
+    // Main loop synchronization is infinitely blocking iOS tests while is the graph displayed, so we need to disable it.
+    // Not sure about the cause of it yet.
+    DTXDisableMainRunLoopSync: platform === 'ios',
+    isDebugKeysAllowed: true,
+    isTradingBuyEnabled: true,
+    areDebugOnlyNetworksEnabled: true,
+    isTradingResidenceWhitelistRequired: false,
+};
+
+const MODEL_NAMES: Record<Model, string> = {
+    [Model.T1B1]: 'Model One',
+    [Model.T2T1]: 'Model T',
+    [Model.T3B1]: 'Safe 3',
+    [Model.T3T1]: 'Safe 5',
+    [Model.T3W1]: 'Safe 7',
+};
+
+const getTrezorE2eDeviceLabel = (model: Model) => `${MODEL_NAMES[model]} - Tester`;
+
+const getExpoDeepLinkUrl = () => {
+    const expoLauncherUrl = encodeURIComponent(
+        `http://localhost:8081?platform=${platform}&dev=true&minify=false&disableOnboarding=1`,
+    );
+
+    return `exp+trezor-suite-debug://expo-development-client/?url=${expoLauncherUrl}`;
+};
+
+const openExpoDevClientApp = async ({
+    newInstance,
+    launchArgs,
+    delete: deleteData,
+}: {
+    newInstance: boolean;
+    launchArgs: LaunchArguments;
+    delete?: boolean;
+}) => {
+    const deepLinkUrl = getExpoDeepLinkUrl();
+
+    if (platform === 'ios') {
+        await device.launchApp({
+            newInstance,
+            launchArgs,
+        });
+
+        await device.openURL({
+            url: deepLinkUrl,
+        });
+    } else {
+        await device.launchApp({
+            newInstance,
+            url: deepLinkUrl,
+            launchArgs,
+            delete: deleteData,
+        });
+    }
+};
+
+const isDebugTestBuild = async () => {
+    const { configurationName } = await resolveConfig();
+
+    const isDebugBuild = configurationName.split('.')[2] === 'debug';
+
+    return isDebugBuild;
+};
+
+const waitForBridgeReady = async ({ retries = 20, intervalMs = 500 } = {}) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch('http://127.0.0.1:21328/', { method: 'POST' });
+            if (response.ok) return;
+        } catch {
+            // bridge not ready yet
+        }
+        await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+    throw new Error('Trezor bridge did not become ready in time');
+};
+
+const waitForDeviceEnumerated = async ({ retries = 60, intervalMs = 1000 } = {}) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch('http://127.0.0.1:21328/enumerate', { method: 'POST' });
+            const devices = await response.json();
+            if (Array.isArray(devices) && devices.length > 0) return;
+        } catch {
+            // bridge not ready yet
+        }
+        await new Promise(resolve => setTimeout(resolve, intervalMs));
+    }
+    throw new Error('No device visible to Trezor bridge after enumerate polling');
+};
+
+export const openApp = async ({
+    newInstance = true,
+    wipeData = true,
+    waitForAppLoaded,
+    args = {},
+}: {
+    newInstance?: boolean;
+    wipeData?: boolean;
+    waitForAppLoaded?: boolean;
+    args?: LaunchArguments;
+}) => {
+    const launchArgs = {
+        ...INITIAL_LAUNCH_ARGS,
+        ...args,
+    };
+
+    // On iOS wipe via uninstall+reinstall; on Android pass delete:true directly into the
+    // launchApp call so the Expo URL is provided in the same launch that clears data,
+    // avoiding the slow/unstable uninstall+reinstall cycle on API 34.
+    if (wipeData && platform !== 'android') {
+        await device.uninstallApp();
+        await device.installApp();
+    }
+
+    if (platform === 'ios') {
+        enableIOSReducedMotion(device.id);
+    }
+
+    if (await isDebugTestBuild()) {
+        await openExpoDevClientApp({ newInstance, launchArgs, delete: wipeData });
+    } else {
+        await device.launchApp({
+            newInstance,
+            launchArgs,
+            delete: wipeData && platform === 'android',
+        });
+    }
+
+    if (getModelFromEnv() === Model.T3W1) {
+        await onDevicePrompt.allowConnectToTrezor();
+        await onDeviceOnboarding.enterTHPPairingCode();
+    }
+
+    if (waitForAppLoaded ?? Boolean(launchArgs.preloadedState)) {
+        // wait for preloaded state to be applied
+        await appIsFullyLoaded();
+    }
+};
+
+const getFwVersion = (model: Model, version: string | undefined) => {
+    const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
+    const defaultLatestVersion = model === Model.T1B1 ? '1-latest' : '2-latest';
+
+    return (
+        (version && modelSupportedFirmwares.find(v => v.replace('-arm', '') === version)) ||
+        defaultLatestVersion
+    );
+};
+
+export const prepareTrezorEmulator = async ({
+    version = process.env.TDR_FIRMWARE_VERSION,
+    seed = MNEMONICS.mnemonic_immune,
+    passphrase_protection = false,
+    model = getModelFromEnv(),
+}: PrepareTrezorEmulatorProps = {}) => {
+    if (platform === 'android') {
+        const { currentTestName, testPath } = jestExpect.getState();
+        await TrezorUserEnvLink.logTestDetails(
+            ` - - - STARTING TEST ${currentTestName} (${testPath})`,
+        );
+        await TrezorUserEnvLink.connect();
+        const fwVersion = getFwVersion(model, version);
+        // start with latest officially released firmware (necessary to pass the firmware checks)
+        await TrezorUserEnvLink.startEmu({ model, version: fwVersion, wipe: true });
+
+        if (seed) {
+            await TrezorUserEnvLink.setupEmu({
+                label: getTrezorE2eDeviceLabel(model),
+                mnemonic: seed,
+                passphrase_protection,
+            });
+        }
+        await TrezorUserEnvLink.startBridge('node-bridge');
+        await waitForBridgeReady();
+        await waitForDeviceEnumerated();
+    }
+};
+
+/**
+ * Merges multiple preloaded state fragments into the initial app state, to yield a complete preloaded state and serializes the result.
+ * Be mindful about the order of the fragments, as the later fragments will always override the earlier ones!
+ */
+export const preparePreloadedReduxState = (...stateFragments: PreloadedState[]): string => {
+    const initialStateAndFragments = [mockInitialAppState(), ...stateFragments];
+    const definedFragments = initialStateAndFragments.filter(
+        (fragment): fragment is NonNullable<typeof fragment> => fragment != null,
+    );
+    const mergedState = mergeDeepObject(...definedFragments);
+
+    return JSON.stringify(mergedState);
+};

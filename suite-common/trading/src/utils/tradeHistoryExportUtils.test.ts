@@ -15,7 +15,6 @@ import {
     getTradingHistoryCsvRow,
     getTradingHistoryCsvType,
     prepareTradingHistoryCsv,
-    sanitizeTradingCsvValue,
 } from './tradeHistoryExportUtils';
 
 const labels: TradingHistoryCsvColumnLabels = {
@@ -107,33 +106,6 @@ const exchangeTrade: TradingTransactionExchange = {
 };
 
 describe('tradeHistoryExportUtils', () => {
-    describe('sanitizeTradingCsvValue', () => {
-        it('returns plain values unchanged', () => {
-            expect(sanitizeTradingCsvValue('abc')).toBe('abc');
-        });
-
-        it('wraps values containing the separator', () => {
-            expect(sanitizeTradingCsvValue('a,b')).toBe('"a,b"');
-        });
-
-        it('escapes and wraps values containing quotes', () => {
-            expect(sanitizeTradingCsvValue('a"b')).toBe('"a""b"');
-        });
-
-        it('wraps values containing newlines', () => {
-            expect(sanitizeTradingCsvValue('a\nb')).toBe('"a\nb"');
-        });
-
-        it('neutralizes formula-injection prefixes', () => {
-            expect(sanitizeTradingCsvValue('=cmd')).toBe("'=cmd");
-            expect(sanitizeTradingCsvValue('@SUM(1)')).toBe("'@SUM(1)");
-        });
-
-        it('neutralizes and wraps a formula prefix that also contains a separator', () => {
-            expect(sanitizeTradingCsvValue('=a,b')).toBe('"\'=a,b"');
-        });
-    });
-
     describe('getTradingHistoryCsvType', () => {
         it.each([
             ['buy', 'buy'],

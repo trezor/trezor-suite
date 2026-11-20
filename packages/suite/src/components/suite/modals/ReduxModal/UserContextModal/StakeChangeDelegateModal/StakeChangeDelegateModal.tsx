@@ -21,16 +21,19 @@ import { Banner, Card, Column, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from 'src/components/earn';
-import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
-import { useSelector } from 'src/hooks/suite';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import {
+    BASE_VOTING_PREFERENCE_OPTIONS,
+    VotingPreferenceCard,
+} from '#src/components/earn/modals/shared/VotingDelegations/VotingPreferenceCard';
+import { Fees } from '#src/components/wallet/Fees/Fees';
+import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     ChangeDelegateFormContext,
     useChangeDelegateForm,
-} from 'src/hooks/wallet/useChangeDelegateForm';
-import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
+} from '#src/hooks/wallet/useChangeDelegateForm';
+import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
 
 import { CurrentVotingPreference } from './CurrentVotingPreference';
 
@@ -202,6 +205,7 @@ export const StakeChangeDelegateModalLoaded = ({
                                 isDisabled={isDisabled}
                                 isLoading={isComposing}
                                 onClick={handleContinue}
+                                data-testid="@modal/staking/continue-button"
                             >
                                 <Translation id="TR_CONTINUE" />
                             </Modal.Button>

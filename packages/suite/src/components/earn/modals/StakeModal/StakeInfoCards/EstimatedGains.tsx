@@ -8,12 +8,12 @@ import {
 } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
-import { useSelector } from 'src/hooks/suite';
-import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
+import { useStakeFormContext } from '#src/hooks/earn/useStakeForm';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { CRYPTO_INPUT } from '#src/types/earn/earnFormFields';
 
 export const EstimatedGains = () => {
     // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
@@ -81,7 +81,10 @@ export const EstimatedGains = () => {
                             {label}
                         </Paragraph>
                         <Text intent="brand">
-                            <FormattedCryptoAmount value={gainValue} symbol={account.symbol} />
+                            <FormattedCryptoAmount
+                                value={gainValue}
+                                networkSymbol={account.symbol}
+                            />
                         </Text>
                         <Paragraph align="end">
                             <BaseCurrencyValue amount={gainValue} symbol={account.symbol} />

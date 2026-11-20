@@ -75,7 +75,8 @@ export const SolanaUnstakeAmountBoundsAlert = ({
                     symbol={account.symbol}
                     color="contentCritical"
                     variant="body-sm-strong"
-                    isDiscreetText={false}
+                    // The user needs to compare the suggested valid unstaking amounts.
+                    discreetMode="disabled"
                 />
                 )
             </Text>

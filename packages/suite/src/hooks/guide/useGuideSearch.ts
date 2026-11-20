@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { type GuideArticle, type GuideCategory } from '@suite-common/suite-types';
 
-import { loadPageMarkdownFile } from 'src/hooks/guide/useGuideLoadArticle';
+import { loadPageMarkdownFile } from '#src/hooks/guide/useGuideLoadArticle';
 
 const SEARCH_DELAY = 300;
 export const MIN_QUERY_LENGTH = 3;

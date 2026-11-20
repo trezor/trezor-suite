@@ -5,6 +5,7 @@ import {
 } from '@suite-common/fiat-services';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type BackendType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -17,7 +18,6 @@ import {
     type Timestamp,
     type WalletAccountTransaction,
     asTimestamp,
-    toTokenAddress,
 } from '@suite-common/wallet-types';
 import {
     fetchTransactionsRates,

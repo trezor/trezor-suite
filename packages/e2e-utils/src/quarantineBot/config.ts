@@ -21,7 +21,8 @@ export const SLACK_TITLE_MAX_LENGTH = 50;
 
 export const PROJECTS: Array<{ id: string; name: string; label: string }> = [
     { id: 'Og0NOQ', name: 'web', label: 'Trezor Suite (web)' },
-    { id: '4ytF0E', name: 'desktop', label: 'Trezor Suite (desktop)' },
+    { id: '4ytF0E', name: 'desktop', label: 'Trezor Suite (Linux desktop)' },
+    { id: 'q2uGxh', name: 'desktop-windows', label: 'Trezor Suite (Windows desktop)' },
     { id: 'iUe1Y4', name: 'android', label: 'Trezor Suite Native (Android)' },
     { id: 'LjEjiV', name: 'ios', label: 'Trezor Suite Native (iOS)' },
     //{ id: 'iBEsWE', name: 'playground', label: 'Experimental Playground' },

@@ -1,62 +1,74 @@
-import {
-    type CryptoAmountFormatterFormatStyle,
-    joinAmountWithSymbol,
-    useFormatters,
-} from '@suite-common/formatters';
+import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
-import { type TokenSymbol } from '@suite-common/wallet-types';
+import { useTokenMetadata } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type TextProps } from '@suite-native/atoms';
+import { TokenSymbol } from '@suite-native/tokens';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
-import { type FormatterProps } from '../types';
+import { type DiscreetMode, type FormatterProps } from '../types';
 import { type DecimalTokenAmount } from '../utils';
 import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
 export type TokenAmountFormatterCommonProps = {
-    tokenSymbol: TokenSymbol | null;
-    isDiscreetText?: boolean;
-    isPhishingTransaction?: boolean;
+    networkSymbol: NetworkSymbol;
+    contractAddress: TokenAddress;
+    isSymbolTruncated?: boolean;
+    discreetMode?: DiscreetMode;
     signValue?: SignValue;
 } & FormatterProps<DecimalTokenAmount> &
     TextProps;
 
 export type BaseTokenAmountFormatterProps = TokenAmountFormatterCommonProps & {
-    // The token's decimal precision. Used only to decide the display style (e.g. money-like
-    // formatting for stablecoins). The `value` is always expected in human-readable units.
-    tokenDecimals?: number;
     maxDisplayedDecimals?: number;
     formatStyle?: CryptoAmountFormatterFormatStyle;
 };
 
 export const BaseTokenAmountFormatter = ({
     value,
-    tokenSymbol,
-    tokenDecimals,
+    networkSymbol,
+    contractAddress,
+    variant = 'body-sm',
+    color = 'contentSecondary',
+    discreetMode = 'auto',
+    isSymbolTruncated = false,
     maxDisplayedDecimals,
-    isPhishingTransaction = false,
     formatStyle,
     ...rest
 }: BaseTokenAmountFormatterProps) => {
-    // Phishing transactions values may be equal to empty string, so we replace it with 0.
-    // These values are hidden by discreet mode, so the exact value does not matter anyway.
-    const decimalValue = isPhishingTransaction || !value ? '0' : value.toString();
+    const token = useTokenMetadata(networkSymbol, contractAddress);
+    const decimalValue = value ? value.toString() : '0';
 
-    const { CryptoAmountFormatter: formatter } = useFormatters();
-    const formattedValue = formatter.format(decimalValue, {
-        // Token values are already decimal; a ticker matching a network must not change units.
-        smallestUnitsOverride: false,
-        withSymbol: false,
-        maxDisplayedDecimals,
-        formatStyle,
-        tokenDecimals,
-    });
-    const valueWithSymbol = tokenSymbol
-        ? joinAmountWithSymbol(formattedValue, tokenSymbol)
-        : formattedValue;
+    const { CryptoAmountFormatter } = useFormatters();
+    const formattedValue = (
+        <>
+            <CryptoAmountFormatter
+                value={decimalValue}
+                // Token values are already decimal; a ticker matching a network must not change units.
+                smallestUnitsOverride={false}
+                withSymbol={false}
+                maxDisplayedDecimals={maxDisplayedDecimals ?? token?.decimals}
+                formatStyle={formatStyle}
+                tokenDecimals={token?.decimals}
+            />
+            &nbsp;
+            {/* A token without a symbol still shows a unit, the unknown-token label. */}
+            <TokenSymbol
+                isTruncated={isSymbolTruncated}
+                networkSymbol={networkSymbol}
+                contractAddress={contractAddress}
+                variant={variant}
+                color={color}
+            />
+        </>
+    );
 
     return (
         <FormattedCryptoAmountText
-            formattedValue={valueWithSymbol}
-            isForcedDiscreetMode={isPhishingTransaction}
+            formattedValue={formattedValue}
+            discreetMode={discreetMode}
+            variant={variant}
+            color={color}
             {...rest}
         />
     );

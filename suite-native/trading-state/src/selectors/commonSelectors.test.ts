@@ -105,7 +105,7 @@ const getPreloadedState = ({
     residence,
     countryCode,
     formResetRequestedFor,
-    isFinpromRestricted,
+    isRegionRestricted,
 }: {
     buy?: boolean;
     sell?: boolean;
@@ -117,7 +117,7 @@ const getPreloadedState = ({
     residence?: boolean;
     countryCode?: TradingCountryCode | undefined;
     formResetRequestedFor?: TradingType | undefined;
-    isFinpromRestricted?: boolean;
+    isRegionRestricted?: boolean;
 }) => {
     const features: Feature[] = [];
     if (buy !== undefined) {
@@ -169,10 +169,10 @@ const getPreloadedState = ({
             payload: { allowedCountries: ['CZ'] },
         });
     }
-    if (isFinpromRestricted !== undefined) {
+    if (isRegionRestricted !== undefined) {
         features.push({
-            domain: 'finprom.presenceRestriction',
-            flag: isFinpromRestricted,
+            domain: 'regions.presenceRestriction',
+            flag: isRegionRestricted,
             payload: { countries: ['US'] },
         });
     }
@@ -462,7 +462,7 @@ describe('commonSelectors', () => {
             });
         });
 
-        describe('when FinProm restriction applies', () => {
+        describe('when region restriction applies', () => {
             it('should select that trading is not enabled even with every trading feature enabled', () => {
                 expect(
                     selectIsTradingEnabled(
@@ -471,16 +471,16 @@ describe('commonSelectors', () => {
                             exchange: true,
                             sell: true,
                             concierge: true,
-                            isFinpromRestricted: true,
+                            isRegionRestricted: true,
                         }),
                     ),
                 ).toBe(false);
             });
 
-            it('should select that trading is enabled when the FinProm flag is off', () => {
+            it('should select that trading is enabled when the region restriction flag is off', () => {
                 expect(
                     selectIsTradingEnabled(
-                        getPreloadedState({ buy: true, isFinpromRestricted: false }),
+                        getPreloadedState({ buy: true, isRegionRestricted: false }),
                     ),
                 ).toBe(true);
             });

@@ -12,7 +12,10 @@ import {
 import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 
-import { useChangeStringsExtractor } from './useChangeStringsExtractor';
+import {
+    type UseChangeStringsExtractorParams,
+    useChangeStringsExtractor,
+} from './useChangeStringsExtractor';
 import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 import type { TradingTradeType } from '../types';
 
@@ -75,8 +78,11 @@ const exchangeTrade = {
 } satisfies ExchangeTrade;
 
 describe('useChangeStringsExtractor', () => {
-    const renderUseChangeStringsExtractor = (trade: TradingTradeType | undefined) =>
-        renderHookWithTradingStore(() => useChangeStringsExtractor(trade), {
+    const renderUseChangeStringsExtractor = (
+        trade: TradingTradeType | undefined,
+        params?: UseChangeStringsExtractorParams,
+    ) =>
+        renderHookWithTradingStore(() => useChangeStringsExtractor(trade, params), {
             preloadedState: createTradingTestState({ info: { coins, platforms: undefined } }),
             wrapper: FormattersProvider,
         });
@@ -160,5 +166,19 @@ describe('useChangeStringsExtractor', () => {
             isFromCrypto: false,
             isToCrypto: true,
         });
+    });
+
+    it('should format crypto values in the compact-balance style and leave fiat values untouched', () => {
+        const { result: buyResult } = renderUseChangeStringsExtractor(buyTrade, {
+            formatStyle: 'compact-balance',
+        });
+        const { result: exchangeResult } = renderUseChangeStringsExtractor(exchangeTrade, {
+            formatStyle: 'compact-balance',
+        });
+
+        expect(buyResult.current.fromStringValue).toBe('$1,234.00');
+        expect(buyResult.current.toStringValue).toBe(joinAmountWithSymbol('0.46258', 'ETH'));
+        expect(exchangeResult.current.fromStringValue).toBe(joinAmountWithSymbol('10.12', 'USDC'));
+        expect(exchangeResult.current.toStringValue).toBe(joinAmountWithSymbol('0.46258', 'ETH'));
     });
 });

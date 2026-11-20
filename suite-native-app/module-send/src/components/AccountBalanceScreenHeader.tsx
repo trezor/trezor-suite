@@ -1,0 +1,48 @@
+import { useSelector } from 'react-redux';
+
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { AssetSymbol } from '@suite-native/assets';
+import { Text } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import { ScreenHeader } from '@suite-native/navigation';
+
+type AccountBalanceScreenHeaderProps = {
+    accountKey: AccountKey;
+    tokenContract?: TokenAddress;
+};
+
+export const AccountBalanceScreenHeader = ({
+    accountKey,
+    tokenContract,
+}: AccountBalanceScreenHeaderProps) => {
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+
+    if (!account) {
+        return;
+    }
+
+    return (
+        <ScreenHeader
+            customContent={
+                <Text variant="body-md-strong">
+                    <Translation
+                        id="moduleSend.outputs.title"
+                        values={{
+                            assetName: (
+                                <AssetSymbol
+                                    networkSymbol={account.symbol}
+                                    contractAddress={tokenContract}
+                                    variant="body-md-strong"
+                                />
+                            ),
+                        }}
+                    />
+                </Text>
+            }
+        />
+    );
+};

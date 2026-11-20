@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import { readJson } from '@trezor/node-utils';
 import { getWeakRandomInt, scheduleAction, unique } from '@trezor/utils';
 
 import { error, log, output, printProblemSummary, warn } from '../logger';
@@ -49,6 +50,8 @@ interface ClaudeCliEnvelope {
 
 interface OpenRouterCompletion {
     id?: string;
+    model?: string;
+    provider?: string;
     choices?: {
         finish_reason?: string;
         native_finish_reason?: string;
@@ -597,6 +600,8 @@ class OpenRouterHttpError extends Error {
     }
 }
 
+class OpenRouterUnparseableBodyError extends Error {}
+
 const logDiagnostic = (fields: Record<string, unknown>): void => {
     warn(`SELECTOR_DIAG ${JSON.stringify(fields)}`);
 };
@@ -671,13 +676,15 @@ const selectTestsViaApi = async (
             bodyTail: rawBody.slice(-300),
             promptChars,
         });
-        throw new Error(
+        throw new OpenRouterUnparseableBodyError(
             `OpenRouter returned HTTP 200 with an unparseable body (${Buffer.byteLength(rawBody, 'utf8')} bytes) — the response was truncated mid-generation.`,
         );
     }
 
     // The generation id is the only handle for reconciling a call against OpenRouter billing.
-    log(`OpenRouter generation id: ${completion.id ?? '(absent)'}`);
+    log(
+        `OpenRouter generation id: ${completion.id ?? '(absent)'}, model: ${completion.model ?? '(absent)'}, provider: ${completion.provider ?? '(absent)'}`,
+    );
 
     const choice = completion.choices?.[0];
 
@@ -742,23 +749,42 @@ const buildAttempts = () => [
     {},
 ];
 
-// Rate limits and 5xx are rejected at the gateway in under a second, so retrying them is nearly free
 const isRetryableError = (err: unknown): boolean =>
     err instanceof OpenRouterHttpError && (err.status === 429 || err.status >= 500);
 
-const selectTestsViaApiWithRetry = (
-    promptParts: PromptParts,
-    apiKey: string,
+const retryGatewayErrors = (
+    action: () => Promise<Omit<SelectionResult, 'changed_files'>>,
 ): Promise<Omit<SelectionResult, 'changed_files'>> =>
-    scheduleAction(() => selectTestsViaApi(promptParts, apiKey), {
+    scheduleAction(action, {
         attempts: buildAttempts(),
         // Returning the error stops the loop and rethrows it; returning nothing waits and retries.
         attemptFailureHandler: err => {
-            if (!isRetryableError(err)) return err;
+            if (!isRetryableError(err)) {
+                return err;
+            }
 
             warn(`OpenRouter attempt failed, retrying: ${err.message.split('\n')[0]}`);
         },
     });
+
+const selectTestsViaApiWithRetry = async (
+    promptParts: PromptParts,
+    apiKey: string,
+): Promise<Omit<SelectionResult, 'changed_files'>> => {
+    const select = () => selectTestsViaApi(promptParts, apiKey);
+
+    try {
+        return await retryGatewayErrors(select);
+    } catch (err) {
+        if (!(err instanceof OpenRouterUnparseableBodyError)) {
+            throw err;
+        }
+
+        warn('OpenRouter returned an unparseable body, retrying once');
+
+        return retryGatewayErrors(select);
+    }
+};
 
 const isInsufficientCreditsError = (err: unknown): boolean =>
     err instanceof OpenRouterHttpError && err.status === 402;
@@ -900,10 +926,8 @@ const main = async () => {
     }
 
     // 4. Map changed files → tests via coverage index
-    const index: CoverageIndex = JSON.parse(fs.readFileSync(indexFile, 'utf8'));
-    const llmAnalysis: Record<string, unknown> = JSON.parse(
-        fs.readFileSync(llmAnalysisFile, 'utf8'),
-    );
+    const index = readJson<CoverageIndex>(indexFile);
+    const llmAnalysis = readJson<Record<string, unknown>>(llmAnalysisFile);
 
     const { matchedByFile, uncovered: uncoveredFiles } = selectTestsByChangedFiles(
         index,

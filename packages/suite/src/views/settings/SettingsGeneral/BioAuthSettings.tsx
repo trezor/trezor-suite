@@ -7,7 +7,7 @@ import { Switch, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 
-import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
+import { useBioAuthDesktopApi } from '#src/hooks/suite/useBioAuthDesktopApi';
 
 const PositionedSwitch = styled.div`
     align-self: center;

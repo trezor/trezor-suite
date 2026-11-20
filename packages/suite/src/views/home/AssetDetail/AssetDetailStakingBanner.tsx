@@ -1,13 +1,13 @@
 import {
     selectWalletAssetContractAddress,
-    selectWalletAssetSymbol,
+    selectWalletAssetNetworkSymbol,
     selectWalletAssetUnstakedAccounts,
 } from '@suite-common/assets';
 import { type WalletAssetKey, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { isStakingBannerAccounts } from 'src/components/wallet/StakingBanner/useStakingBanner';
-import { useSelector } from 'src/hooks/suite';
+import { isStakingBannerAccounts } from '#src/components/wallet/StakingBanner/useStakingBanner';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailAccountsStakingBanner } from './AssetDetailAccountsStakingBanner';
 
@@ -18,12 +18,12 @@ type AssetDetailStakingBannerProps = {
 };
 
 export const AssetDetailStakingBanner = ({ assetKey }: AssetDetailStakingBannerProps) => {
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const canStake =
-        symbol !== undefined &&
+        networkSymbol !== undefined &&
         contractAddress === undefined &&
-        isSupportedStakingNetworkSymbol(symbol);
+        isSupportedStakingNetworkSymbol(networkSymbol);
     const accounts = useSelector(state =>
         canStake ? selectWalletAssetUnstakedAccounts(state, assetKey) : NO_ACCOUNTS,
     );

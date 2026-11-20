@@ -17,8 +17,7 @@ export const IconByCryptoId = ({
     tokenSymbol,
     withNetwork = false,
 }: IconByCryptoIdProps) => {
-    const { symbol: networkSymbol, contractAddress } =
-        cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
 
     if (!networkSymbol) {
         return null;

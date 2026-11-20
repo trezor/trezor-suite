@@ -6,62 +6,73 @@ import { type ExchangeTrade } from 'invity-api';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type SlippageFormValues,
+    cryptoIdToNetworkSymbolAndContractAddress,
     selectTradingExchangeReceiveAccountKey,
-    useTradingUtils,
 } from '@suite-common/trading';
 import { Column, Divider, Row, Text, TextButton } from '@trezor/components';
 import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
+import { BigNumber } from '@trezor/utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { formatCryptoAmountAsAmount } from '#src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 interface TradingOfferExchangeSlippageSummaryProps {
     selectedQuote: ExchangeTrade;
+    receiveAmount?: string;
 }
 
 export const TradingOfferExchangeSlippageSummary = ({
     selectedQuote,
+    receiveAmount = selectedQuote.receiveStringAmount,
 }: TradingOfferExchangeSlippageSummaryProps) => {
     // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
     // render-time read of it freezes on the first render. Remove once these reads move to
     // `useWatch` or out of render.
     'use no memo';
 
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { getAssetDecimals } = useTradingAssetDecimals();
     const { watch, formState } = useFormContext<SlippageFormValues>();
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
 
-    const { receive, receiveStringAmount } = selectedQuote;
+    const { receive } = selectedQuote;
     const slippageValue = watch('slippage');
 
     const decimals = getAssetDecimals({ accountKey: receiveAccountKey, cryptoId: receive });
 
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(receive);
+    const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(receive);
 
     const previewSlippage =
         !formState.errors.slippage && slippageValue !== ''
-            ? Number(slippageValue)
-            : Number(selectedQuote.swapSlippage);
+            ? slippageValue
+            : selectedQuote.swapSlippage;
 
-    const receiveAmount = Number(receiveStringAmount);
-
-    const toAmount = (fraction: number) =>
-        formatCryptoAmountAsAmount(fraction * receiveAmount, receiveAmount, decimals);
+    const receiveAmountBigNumber = new BigNumber(receiveAmount ?? '');
+    const quoteReceiveAmount = new BigNumber(selectedQuote.receiveStringAmount ?? '');
+    const minimumReceiveAmount = quoteReceiveAmount.minus(
+        quoteReceiveAmount.multipliedBy(previewSlippage ?? '').dividedBy(100),
+    );
+    const slippageDeduction = minimumReceiveAmount.minus(receiveAmountBigNumber);
 
     const rows: {
         label: TranslationKey;
         value?: string;
         isSummaryRow?: boolean;
     }[] = [
-        { label: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED', value: receiveStringAmount },
-        { label: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT', value: `-${toAmount(previewSlippage / 100)}` },
+        { label: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED', value: receiveAmount },
+        {
+            label: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT',
+            value: formatCryptoAmountAsAmount(slippageDeduction, receiveAmountBigNumber, decimals),
+        },
         {
             label: 'TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM',
-            value: toAmount((100 - previewSlippage) / 100),
+            value: formatCryptoAmountAsAmount(
+                minimumReceiveAmount,
+                receiveAmountBigNumber,
+                decimals,
+            ),
             isSummaryRow: true,
         },
     ];
@@ -79,7 +90,7 @@ export const TradingOfferExchangeSlippageSummary = ({
                             <Text typographyStyle={isSummaryRow ? 'body-md-strong' : 'body-md'}>
                                 <FormattedCryptoAmount
                                     value={value}
-                                    symbol={coinSymbol}
+                                    networkSymbol={networkSymbol}
                                     contractAddress={contractAddress}
                                 />
                             </Text>

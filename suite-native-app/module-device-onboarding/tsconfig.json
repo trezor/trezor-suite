@@ -1,0 +1,77 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/device-authenticity"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/persistent-device-data"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../../suite-common/thp" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        { "path": "../../suite-native/banners" },
+        { "path": "../../suite-native/config" },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/device-mutex"
+        },
+        {
+            "path": "../../suite-native/device-onboarding"
+        },
+        { "path": "../../suite-native/firmware" },
+        { "path": "../../suite-native/helpers" },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        { "path": "../../suite-native/link" },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/settings" },
+        {
+            "path": "../../suite-native/swipeable-walkthrough"
+        },
+        { "path": "../../suite-native/thp" },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/requirements" }
+    ],
+    "include": [".", "**/*.json"]
+}

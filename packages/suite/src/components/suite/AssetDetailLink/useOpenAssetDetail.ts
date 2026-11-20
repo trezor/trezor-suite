@@ -1,12 +1,12 @@
 import { gotoThunk } from '@suite/router';
-import { selectWalletAssetKey, selectWalletAssetSymbol } from '@suite-common/assets';
+import { selectWalletAssetKey, selectWalletAssetNetworkSymbol } from '@suite-common/assets';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type UseOpenAssetDetailParams = {
     symbol: NetworkSymbol;
@@ -24,7 +24,7 @@ export const useOpenAssetDetail = ({
     });
     const assetKey = useSelector(state => selectWalletAssetKey(state, symbol, contractAddress));
     const isAssetDetailAvailable = useSelector(
-        state => selectWalletAssetSymbol(state, assetKey) !== undefined,
+        state => selectWalletAssetNetworkSymbol(state, assetKey) !== undefined,
     );
 
     if (!isAssetDetailEnabled || !isAssetDetailAvailable) {

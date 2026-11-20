@@ -30,8 +30,10 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/device" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/lazy-loading" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },

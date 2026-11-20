@@ -19,7 +19,7 @@ const EXEMPT_TEST_PATH_PREFIXES = [
     'packages/transport-test/e2e/',
     'packages/trezor-user-env-link/e2e/',
     'packages/urls/tests/e2e/',
-    'suite-native/app/e2e/',
+    'suite-native-app/app/e2e/',
     'suite/e2e/',
 ] as const;
 

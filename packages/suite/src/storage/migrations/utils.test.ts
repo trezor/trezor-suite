@@ -2,7 +2,7 @@ import { openDB } from 'idb';
 
 import { installFakeIndexedDb } from '@suite-common/test-utils/fakeIndexedDb';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 import { updateAll } from './utils';
 

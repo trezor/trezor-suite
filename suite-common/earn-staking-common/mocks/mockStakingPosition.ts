@@ -1,5 +1,5 @@
-import { mockStakingProductDescriptor } from './mockStakingProductDescriptor';
 import { type StakingPosition, stakingAmountSchema, stakingProviderIdSchema } from '../src';
+import { mockStakingProductDescriptor } from './mockStakingProductDescriptor';
 
 export const mockStakingPosition = (overrides: Partial<StakingPosition> = {}): StakingPosition => ({
     productId: mockStakingProductDescriptor().id,
@@ -12,6 +12,7 @@ export const mockStakingPosition = (overrides: Partial<StakingPosition> = {}): S
         withdrawable: stakingAmountSchema.parse('0'),
         rewards: stakingAmountSchema.parse('12000000000000000'),
     },
+    activations: [],
     unlocks: [
         {
             amount: stakingAmountSchema.parse('500000000000000000'),
@@ -27,7 +28,9 @@ export const mockStakingPosition = (overrides: Partial<StakingPosition> = {}): S
         },
     ],
     operations: ['stake', 'unstake'],
-    pendingTxids: [],
+    pendingTransactions: [],
     warnings: [],
+    details: null,
+    revalidateAt: null,
     ...overrides,
 });

@@ -27,11 +27,18 @@ export { type DeviceSetupInfoLocation } from './events/deviceSetupInfoEvent';
 export type { AutoEjectModalValue } from './events/autoEjectModalEvent';
 export type { DemoAccountQuestionnaireLinkKey } from './events/demoAccountQuestionnaireLinksEvent';
 export { analytics, type NativeAnalyticsDep, injectNativeAnalytics } from './createAnalytics';
-export type { AnalyticsNativeEvents } from './analyticsEvents';
+export type {
+    AnalyticsNativeEvents,
+    TradingBuyQuotePayload,
+    TradingExchangeQuotePayload,
+    TradingSellQuotePayload,
+} from './analyticsEvents';
 
 export * as events from './events';
 
 export type {
+    NavigateFlowFrom,
+    NavigateFlowType,
     StakingNavigateFrom,
     StakingStakeStep,
     StakingUnstakeStep,

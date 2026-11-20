@@ -2,12 +2,12 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, isEarnYieldRowAnchor, selectRouterAnchor, useAnchor } from '@suite/router';
 import { Banner } from '@trezor/components';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { useSelector } from 'src/hooks/suite';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
 import {
     type EarnDashboardType,
     useMessageSystemEarnDashboard,
-} from 'src/hooks/suite/useMessageSystemEarnDashboard';
+} from '#src/hooks/suite/useMessageSystemEarnDashboard';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type EarnDashboardDisabledSectionProps = {
     type: EarnDashboardType;
@@ -16,11 +16,11 @@ type EarnDashboardDisabledSectionProps = {
 const SECTION_CONFIG: Record<EarnDashboardType, { anchor: string; titleId: TranslationKey }> = {
     staking: {
         anchor: EarnAnchor.Staking,
-        titleId: 'TR_EARN_STAKING_DASHBOARD_TITLE',
+        titleId: 'TR_EARN_STAKING',
     },
     yield: {
         anchor: EarnAnchor.Yield,
-        titleId: 'TR_EARN_DEFI_YIELD_TITLE',
+        titleId: 'TR_EARN_DEFI_YIELD',
     },
 };
 

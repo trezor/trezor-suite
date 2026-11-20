@@ -1,0 +1,129 @@
+import { useSelector } from 'react-redux';
+
+import {
+    enforceQuotaManagerUpdated,
+    eraseFetchedData,
+    selectEnforceQuotaManager,
+    selectOwnersAllowance,
+    selectQuotaManagerCustomUrl,
+    selectRegisteredDevices,
+    updateQuotaManagerBaseUrl,
+} from '@suite-common/suite-sync-quota-manager';
+import { Box, Button, Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';
+import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
+import { useToast } from '@suite-native/toasts';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+
+export const SuiteSyncQuotaManager = () => {
+    const { dispatch } = useServices(injectDispatch);
+    const { showToast } = useToast();
+
+    const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);
+    const registeredDevices = useSelector(selectRegisteredDevices);
+    const ownersAllowance = useSelector(selectOwnersAllowance);
+    const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
+
+    const onEraseFetchedData = () => dispatch(eraseFetchedData());
+
+    const onToggleEnforceQuotaManager = () =>
+        dispatch(
+            enforceQuotaManagerUpdated({
+                enforce: !enforceQuotaManager,
+            }),
+        );
+
+    const form = useForm<{ suiteSyncQuotaManagerUrl: string }>({
+        defaultValues: {
+            suiteSyncQuotaManagerUrl: quotaManagerCustomUrl ?? '',
+        },
+        validation: yup.object({
+            suiteSyncQuotaManagerUrl: yup.string().defined().url('Invalid URL format'),
+        }),
+    });
+
+    const onSubmit = form.handleSubmit(values => {
+        dispatch(updateQuotaManagerBaseUrl({ baseUrl: values.suiteSyncQuotaManagerUrl }));
+        showToast({
+            message: 'Quota Manager URL updated',
+            intent: 'brand',
+        });
+    });
+
+    return (
+        <Card>
+            <VStack spacing="sp12">
+                <Text variant="headline-sm">Suite Sync Quota Manager</Text>
+                <Form form={form}>
+                    <VStack>
+                        <TextInputField
+                            testID="@suiteSyncQuotaManager/url-input"
+                            label="Quota Manager URL"
+                            name="suiteSyncQuotaManagerUrl"
+                        />
+                        <Button
+                            testID="@suiteSyncQuotaManager/save-button"
+                            intent="neutral"
+                            priority="secondary"
+                            size="medium"
+                            onPress={() => onSubmit()}
+                        >
+                            Save
+                        </Button>
+                    </VStack>
+                </Form>
+                <VStack>
+                    <Text variant="body-sm" color="contentSecondary">
+                        Registered Devices
+                    </Text>
+                    {registeredDevices.length === 0 ? (
+                        <Text>No devices registered.</Text>
+                    ) : (
+                        registeredDevices.map(device => (
+                            <VStack key={device.deviceId} spacing="sp2">
+                                <Text variant="body-xs">Device ID</Text>
+                                <Text>{device.deviceId}</Text>
+                                <Text variant="body-xs">Total Storage Size</Text>
+                                <Text>{device.totalStorageSize}</Text>
+                                <Text variant="body-xs">Unspent Storage Size</Text>
+                                <Text>{device.unspentStorageSize}</Text>
+                            </VStack>
+                        ))
+                    )}
+                </VStack>
+                <VStack>
+                    <Text variant="body-sm" color="contentSecondary">
+                        Assigned Owner IDs
+                    </Text>
+                    {ownersAllowance.length === 0 ? (
+                        <Text>No owner IDs assigned.</Text>
+                    ) : (
+                        ownersAllowance.map(owner => (
+                            <VStack key={owner.walletDescriptor} spacing="sp2">
+                                <Text variant="body-xs">Owner ID</Text>
+                                <Text>{owner.walletDescriptor}</Text>
+                                <Text variant="body-xs">Total Space</Text>
+                                <Text>{owner.totalSpace}</Text>
+                            </VStack>
+                        ))
+                    )}
+                </VStack>
+                <HStack justifyContent="space-between">
+                    <Box flexShrink={1}>
+                        <Text variant="body-sm" color="contentSecondary">
+                            Enforce Quota Manager for custom relay
+                        </Text>
+                    </Box>
+                    <Switch
+                        testID="@suiteSyncQuotaManager/enforce-switch"
+                        isChecked={enforceQuotaManager}
+                        onChange={onToggleEnforceQuotaManager}
+                    />
+                </HStack>
+                <Button intent="critical" priority="primary" onPress={onEraseFetchedData}>
+                    Erase fetched data
+                </Button>
+            </VStack>
+        </Card>
+    );
+};

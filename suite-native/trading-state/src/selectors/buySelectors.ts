@@ -10,8 +10,11 @@ import {
     getDefaultCountrySubdivision,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
+    selectTradingBuyAccountKey,
     selectTradingBuyInfo,
+    selectTradingBuyReceiveAddress,
     selectTradingBuySupportedCryptoIds,
+    selectTradingCoins,
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
 import {
@@ -44,13 +47,10 @@ import {
 export const selectTradingBuy = (state: TradingRootState) => state.wallet.trading.buy;
 
 const selectBuyReceiveAccount = (state: TradingRootState & AccountsRootState) => {
-    const { tradingAccountKey } = selectTradingBuy(state);
+    const tradingAccountKey = selectTradingBuyAccountKey(state);
 
     return tradingAccountKey ? selectAccountByKey(state, tradingAccountKey) : null;
 };
-
-const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
-    selectTradingBuy(state).receiveAddress;
 
 export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
     [selectBuyReceiveAccount, selectTradingBuyReceiveAddress],
@@ -69,7 +69,7 @@ export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
 export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
         selectTradingBuySupportedCryptoIds,
-        ({ wallet }) => wallet.trading.info.coins,
+        selectTradingCoins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
@@ -99,7 +99,7 @@ export const selectBuyFormDefaultValues = createMemoizedSelectorWithWalletSettin
         selectTradingBuyInfo as unknown as (
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingBuyInfo>,
-        ({ wallet }) => wallet.trading.info.coins,
+        selectTradingCoins,
         selectTradingResidenceCountry,
         selectTradingResidenceCountrySubdivision,
         selectBaseCurrency,

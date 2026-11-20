@@ -1,7 +1,7 @@
+import type { TokenAddress } from '@suite-common/tokens';
 import type {
     RatesByTimestamps,
     Timestamp,
-    TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {

@@ -19,6 +19,10 @@ export const tradingMiddlewareFixtures = {
         'wallet-trading-exchange-confirm',
         BTC_ACCOUNT_PARAMS,
     ),
+    TRADING_EXCHANGE_APPROVAL_ROUTE: createRouterStateMockForRoute(
+        'wallet-trading-exchange-approval',
+        BTC_ACCOUNT_PARAMS,
+    ),
     TRADING_REDIRECT_ROUTE: createRouterStateMockForRoute('wallet-trading-redirect'),
     WALLET_INDEX_ROUTE: createRouterStateMockForRoute('wallet-index', BTC_ACCOUNT_PARAMS),
     DEFAULT_ROUTE: createRouterStateMock(),

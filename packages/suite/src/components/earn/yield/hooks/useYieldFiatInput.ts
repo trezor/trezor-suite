@@ -3,6 +3,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowFormValues,
@@ -10,11 +11,10 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {

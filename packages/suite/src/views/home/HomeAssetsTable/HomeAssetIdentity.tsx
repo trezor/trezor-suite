@@ -1,40 +1,38 @@
 import { type ReactNode } from 'react';
 
+import { AssetIcon, AssetSymbol } from '@suite/assets';
 import { useFormatters } from '@suite-common/formatters';
+import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Column, Row, TOOLTIP_DELAY_LONG, Text, TruncateWithTooltip } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
-import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
 
 type HomeAssetIdentityProps = {
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
-    displaySymbol: string | undefined;
-    tokenSymbol: TokenSymbol | null | undefined;
     badge?: ReactNode;
 };
 
-export const HomeAssetIdentity = ({
-    symbol,
-    contractAddress,
-    displaySymbol,
-    tokenSymbol,
-    badge,
-}: HomeAssetIdentityProps) => {
+export const HomeAssetIdentity = ({ symbol, contractAddress, badge }: HomeAssetIdentityProps) => {
     const { NetworkNameFormatter } = useFormatters();
+    const isIconFetchable = useSelector(
+        state =>
+            contractAddress === undefined ||
+            selectIsSpecificCoinDefinitionKnown(state, symbol, contractAddress),
+    );
 
     return (
         <Row gap={12} minWidth={0}>
-            <TokenIcon
-                symbol={symbol}
+            <AssetIcon
+                networkSymbol={symbol}
                 contractAddress={contractAddress}
                 size={32}
                 showNetworkIcon
-                placeholder={displaySymbol ?? ''}
+                shouldTryToFetch={isIconFetchable}
             />
             <Column alignItems="flex-start" gap={HOME_ASSET_LINE_GAP} flex="1" minWidth={0}>
                 <Row gap={8} maxWidth="100%">
@@ -45,7 +43,7 @@ export const HomeAssetIdentity = ({
                         data-testid="@dashboard/home-asset/name"
                     >
                         <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                            <TokenUrlBlur text={tokenSymbol ?? displaySymbol} />
+                            <AssetSymbol networkSymbol={symbol} contractAddress={contractAddress} />
                         </TruncateWithTooltip>
                     </Text>
                     {badge}

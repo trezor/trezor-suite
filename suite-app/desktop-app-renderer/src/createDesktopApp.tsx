@@ -1,0 +1,115 @@
+import { Provider as ReduxProvider } from 'react-redux';
+
+import { createRoot } from 'react-dom/client';
+
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import {
+    type HydrateReduxStoreDep,
+    type SuiteReduxStoreDep,
+    type SuiteServices,
+} from '@suite-app/app';
+import { ReactQueryProvider } from '@suite-common/react-query/react';
+import TrezorConnect from '@trezor/connect-electron';
+import { ServicesProvider } from '@trezor/dependency-injection';
+import {
+    ConnectedIntlProvider,
+    ErrorScreen,
+    LoadingScreen,
+    storageConstants as STORAGE,
+    desktopHandshake,
+} from '@trezor/suite';
+
+import { MainDesktop } from './MainDesktop';
+import { initSentry } from './sentry';
+import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
+
+type DesktopAppDeps = DesktopApiDep & {
+    services: SuiteServices & SuiteReduxStoreDep & HydrateReduxStoreDep;
+};
+
+export type DesktopApp = (container: HTMLElement) => Promise<void>;
+
+export type DesktopAppDep = { desktopApp: DesktopApp };
+
+export const createDesktopApp =
+    (deps: DesktopAppDeps): DesktopApp =>
+    async container => {
+        initSentry();
+
+        // render simple loader with theme provider without redux, wait for indexedDB
+        const root = createRoot(container);
+        root.render(<LoadingScreen />);
+
+        const preloadAction = await deps.services.hydrateReduxStore();
+
+        deps.services.networks.loadNetworkModules();
+        deps.services.staking.loadStakingProducts();
+
+        // Expose Redux store for Playwright/e2e tests
+        if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
+            (window as any).store = deps.services.store;
+        }
+
+        // start logging to file if Debug menu is active
+        if (preloadAction?.type === STORAGE.LOAD && preloadAction.payload.debug?.showDebugMenu) {
+            deps.desktopApi.setDebugMode(true);
+            deps.desktopApi.configLogger({
+                level: 'debug',
+                writeToDisk: true,
+            });
+        }
+
+        // Loading Tor as separate module, before the rest of the modules.
+        const { shouldRunTor } = await deps.desktopApi.loadTorModule();
+
+        // When we run this first time `shouldRunTor` will tell if Tor should run according to previous settings,
+        // when it runs because of renderer (e.g. Ctrl+R) it will always be false.
+        if (shouldRunTor) {
+            await new Promise(resolve => {
+                root.render(
+                    <ServicesProvider services={deps.services}>
+                        <ReduxProvider store={deps.services.store}>
+                            <ReactQueryProvider client={deps.services.queryClient}>
+                                <ConnectedIntlProvider>
+                                    <TorLoadingScreen callback={resolve} />
+                                </ConnectedIntlProvider>
+                            </ReactQueryProvider>
+                        </ReduxProvider>
+                    </ServicesProvider>,
+                );
+                deps.desktopApi.toggleTor(true);
+            });
+        }
+
+        const loadModules = await deps.desktopApi.loadModules({
+            legacyBioAuthEnabled: deps.services.store.getState()?.bioAuth?.bioAuthEnabled,
+        });
+        if (!loadModules.success) {
+            // loading failed, render error with theme provider without redux and do not continue
+            root.render(
+                <ServicesProvider services={deps.services}>
+                    <ErrorScreen error={loadModules.error} />
+                </ServicesProvider>,
+            );
+
+            return;
+        }
+
+        deps.services.store.dispatch(desktopHandshake(loadModules.payload));
+
+        // establish ipc connection with TrezorConnect living in main process
+        await TrezorConnect.initIpcProxy();
+
+        // init bluetooth module
+        // TODO should it really be here instead of initAction.ts?
+        await deps.services.bluetooth.init();
+
+        // finally render whole app
+        root.render(
+            <ServicesProvider services={deps.services}>
+                <ReduxProvider store={deps.services.store}>
+                    <MainDesktop />
+                </ReduxProvider>
+            </ServicesProvider>,
+        );
+    };

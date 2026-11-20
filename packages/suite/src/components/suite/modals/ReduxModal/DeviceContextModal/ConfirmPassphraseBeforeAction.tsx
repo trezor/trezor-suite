@@ -13,8 +13,8 @@ import {
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '@trezor/connect';
 
-import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
-import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
+import { CardWithDevice } from '#src/views/suite/SwitchDevice/CardWithDevice';
+import { SwitchDeviceModal } from '#src/views/suite/SwitchDevice/SwitchDeviceModal';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
 
@@ -55,7 +55,11 @@ export const ConfirmPassphraseBeforeAction = () => {
 
     return (
         <SwitchDeviceModal onCancel={onEnterPassphraseDialogCancel}>
-            <CardWithDevice onCancel={onEnterPassphraseDialogCancel} device={device}>
+            <CardWithDevice
+                onCancel={onEnterPassphraseDialogCancel}
+                device={device}
+                forceConnectionInfo={!device.state?.staticSessionId}
+            >
                 <Column gap={8} padding={{ horizontal: 8 }} margin={{ bottom: 16 }}>
                     <H3>
                         <Translation id="TR_CONFIRM_PASSPHRASE" />

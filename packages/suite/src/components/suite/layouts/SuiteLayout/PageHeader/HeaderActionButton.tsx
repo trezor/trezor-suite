@@ -1,7 +1,7 @@
 import { Button, type ButtonProps, IconButton, type IconComponent } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { ConditionalRender } from 'src/support/suite/ConditionalRender';
+import { ConditionalRender } from '#src/support/suite/ConditionalRender';
 
 type HeaderActionButtonProps = Pick<
     ButtonProps,

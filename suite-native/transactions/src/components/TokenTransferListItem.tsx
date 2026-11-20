@@ -1,15 +1,8 @@
+import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    type FiatRatesRootState,
-    type PhishingRootState,
-    type TransactionsRootState,
-    type WalletSettingsRootState,
-    selectIsPhishingTransaction,
-} from '@suite-common/wallet-core';
-import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import {
     CompactTokenAmountFormatter,
@@ -26,7 +19,10 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';
-import { TransactionListItemContainer } from './TransactionListItemContainer';
+import {
+    TransactionListItemContainer,
+    type TransactionSubtitleProps,
+} from './TransactionListItemContainer';
 
 const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
     extend: {
@@ -54,15 +50,6 @@ export const TokenTransferListItemValues = ({
         selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
     );
 
-    const { isPhishing: isPhishingTransaction } = useSelector(
-        (
-            state: TokenDefinitionsRootState &
-                TransactionsRootState &
-                FiatRatesRootState &
-                PhishingRootState,
-        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
-    );
-
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenTransfer?.contract),
     );
@@ -79,30 +66,22 @@ export const TokenTransferListItemValues = ({
                     symbol={transaction.symbol}
                     value={tokenTransfer.amount}
                     contract={tokenTransfer.contract}
-                    decimals={tokenTransfer.decimals}
                     signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     historicRate={historicRate}
                     useHistoricRate
-                    isForcedDiscreetMode={isPhishingTransaction}
                     style={applyStyle(failedTxStyle, { isFailedTx })}
                 />
             )}
             <CompactTokenAmountFormatter
+                isSymbolTruncated
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={
-                    tokenTransfer.symbol
-                        ? toTokenSymbol(
-                              getDisplaySymbol(tokenTransfer.symbol, tokenTransfer.contract),
-                          )
-                        : null
-                }
-                tokenDecimals={tokenTransfer.decimals}
+                networkSymbol={transaction.symbol}
+                contractAddress={tokenTransfer.contract}
                 signValue={isFailedTx ? undefined : getTransactionValueSign(tokenTransfer.type)}
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                isPhishingTransaction={isPhishingTransaction}
                 variant="body-sm"
                 color="contentSecondary"
             />
@@ -117,6 +96,7 @@ type TokenTransferListItemProps = {
     hasTokensCount?: number;
     isFirst?: boolean;
     isLast?: boolean;
+    subtitleComponent?: ComponentType<TransactionSubtitleProps>;
 };
 
 export const TokenTransferListItem = ({
@@ -126,6 +106,7 @@ export const TokenTransferListItem = ({
     hasTokensCount = 0,
     isFirst,
     isLast,
+    subtitleComponent,
 }: TokenTransferListItemProps) => {
     const isFailedTxn = transaction.type === 'failed';
 
@@ -138,6 +119,7 @@ export const TokenTransferListItem = ({
             accountKey={accountKey}
             isFirst={isFirst}
             isLast={isLast}
+            subtitleComponent={subtitleComponent}
         >
             <TokenTransferListItemValues
                 tokenTransfer={tokenTransfer}

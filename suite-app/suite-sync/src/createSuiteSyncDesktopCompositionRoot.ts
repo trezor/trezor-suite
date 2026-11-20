@@ -1,0 +1,63 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { suiteSyncErrorHandler } from '@suite/suite-sync';
+import { selectIsTorEnabled } from '@suite/tor';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import {
+    createSuiteSyncCompositionRoot,
+    createUpdateRelayConnectionStatus,
+} from '@suite-common/suite-sync';
+import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
+import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import { toGetter } from '@trezor/dependency-injection';
+import { type FetchDep } from '@trezor/type-utils';
+
+import { createLazyEvoluDeps } from './evolu/createLazyEvoluDeps';
+import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
+
+type SuiteSyncDesktopCompositionRootDeps = {
+    getState: () => any;
+    dispatch: Dispatch;
+    onStorageEnsured: OnStorageEnsured;
+} & GetTrezorConnectPrivilegedDep &
+    PlatformEncryptionDep &
+    EnsureDelegatedIdentityKeyDep &
+    DesktopAnalyticsDep &
+    FetchDep;
+
+export const createSuiteSyncDesktopCompositionRoot = (
+    deps: SuiteSyncDesktopCompositionRootDeps,
+): SuiteSync => {
+    const updateRelayConnectionStatus = createUpdateRelayConnectionStatus({
+        dispatch: deps.dispatch,
+    });
+    const evoluDeps = createLazyEvoluDeps({
+        dispatch: deps.dispatch,
+        updateRelayConnectionStatus,
+    });
+
+    // This sets up Evolu as a SuiteSync Storage. We provide a factory that
+    // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
+    const suiteSync = createSuiteSyncCompositionRoot({
+        ...deps,
+        ...evoluDeps,
+        getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
+        analytics: deps.analytics,
+        suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
+            suiteSyncErrorHandler({
+                error,
+                dispatch: deps.dispatch,
+                deviceStaticSessionId: device?.state?.staticSessionId ?? null,
+            }),
+    });
+
+    return {
+        ...suiteSync,
+        turnOnSuiteSync: createTurnOnDesktopSuiteSync({
+            turnOnSuiteSync: suiteSync.turnOnSuiteSync,
+            analytics: deps.analytics,
+        }),
+    };
+};

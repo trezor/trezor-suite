@@ -2,7 +2,7 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { groupExchangeQuotesByRateTypeProjection } from './groupExchangeQuotesByRateTypeProjection';
 
-describe(groupExchangeQuotesByRateTypeProjection.name, () => {
+describe('groupExchangeQuotesByRateTypeProjection', () => {
     it('groups quotes into fixed and float only', () => {
         const quotes = [
             {

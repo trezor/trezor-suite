@@ -3,13 +3,12 @@ import { memo } from 'react';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getInstantStakeType } from '@suite-common/wallet-core';
-import { type StakeType } from '@suite-common/wallet-types';
+import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';
 import { LightningIcon } from '@trezor/icons';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 const getTranslationId = (instantStakeType: StakeType) => {
     switch (instantStakeType) {
@@ -55,7 +54,7 @@ export const InstantStakeBadge = memo(
         return (
             <Badge size="small" iconLeft={LightningIcon}>
                 <Row gap={4}>
-                    <FormattedCryptoAmount value={amount} symbol={symbol} />
+                    <FormattedCryptoAmount value={amount} networkSymbol={symbol} />
                     <Translation id={translationId} />
                 </Row>
             </Badge>

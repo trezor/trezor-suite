@@ -68,11 +68,6 @@ const groups = {
         pattern: 'methods',
         includeFilter: 'rippleGetAddress,rippleSignTransaction',
     },
-    tezos: {
-        name: 'tezos',
-        pattern: 'methods',
-        includeFilter: 'tezosGetAddress,tezosGetPublicKey,tezosSignTransaction',
-    },
     tron: {
         name: 'tron',
         pattern: 'methods',

@@ -231,6 +231,30 @@ describe('tronStakeReducer', () => {
         expect(state.sessions[KEY]?.[FLOW]?.freeze).toEqual(FREEZE);
     });
 
+    it('keeps the submitted unstake amount until the flow completes', () => {
+        const submitted = { amount: '25', resourceType: 'bandwidth' } as const;
+        const pending = tronStakeReducer(
+            undefined,
+            tronStakeActions.submitFinished({
+                accountKey: KEY,
+                flow: 'unstake',
+                txid: 'unstake123',
+                submitted,
+            }),
+        );
+        const state = tronStakeReducer(
+            pending,
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: 'unstake',
+                txid: 'unstake123',
+            }),
+        );
+
+        expect(state.sessions[KEY]?.unstake?.step).toBe('complete');
+        expect(state.sessions[KEY]?.unstake?.submitted).toEqual(submitted);
+    });
+
     it('submitFinished without freeze details keeps the recorded freeze', () => {
         const frozen = tronStakeReducer(
             undefined,

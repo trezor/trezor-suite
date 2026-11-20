@@ -13,8 +13,12 @@ PR:
 PLATFORM options:
     mobile, m       Use mobile icon (:iphone:)
     common, c       Use common icon (:commie:)
-    desktop, d      Use desktop icon (:desktop_computer:) [default]
+    desktop, d      Use desktop icon (:desktop_computer:)
     yanas, y        Use Yanas TM icon (:typical-yanas:)
+
+    When omitted, the platform is detected from the PR's changed files:
+    only mobile code -> mobile, only desktop/web code -> desktop,
+    anything else (both, or shared code only) -> common.
 
 OPTIONS:
     -i, --icon NAME Add an extra emoji (repeatable). NAME may be with or
@@ -22,7 +26,7 @@ OPTIONS:
     -h, --help      Show this help message
 
 Environment variables:
-    DEFAULT_SLACK_PR_ICON    Override the default icon (e.g., ":rocket:")
+    DEFAULT_SLACK_PR_ICON    Icon used when the platform cannot be detected (e.g., ":rocket:")
 
 Examples:
     $(basename "$0")
@@ -213,6 +217,33 @@ Use -h option for more info." >&2
     echo "$current_branch"
 }
 
+detect_platform() {
+    local pr_json="$1"
+    local paths has_mobile=false has_desktop=false
+
+    paths=$(echo "$pr_json" | jq -r '.files[]?.path')
+
+    if [[ -z "$paths" ]]; then
+        return 0
+    fi
+
+    if echo "$paths" | grep -qE '^(suite-native/|suite-native-app/|packages/(styles-native|connect-mobile|react-native-usb|transport-native-[^/]+)/)'; then
+        has_mobile=true
+    fi
+
+    if echo "$paths" | grep -qE '^(suite/|suite-app/|packages/(suite|components|product-components|connect-electron)/)'; then
+        has_desktop=true
+    fi
+
+    if [[ "$has_mobile" == true && "$has_desktop" == false ]]; then
+        echo "mobile"
+    elif [[ "$has_desktop" == true && "$has_mobile" == false ]]; then
+        echo "desktop"
+    else
+        echo "common"
+    fi
+}
+
 get_platform_icon() {
     local platform="$1"
     local icon=":desktop_computer:"
@@ -235,7 +266,7 @@ fetch_pr_json() {
     local pr_reference="$1"
     local pr_json
 
-    if ! pr_json=$(gh pr view "$pr_reference" --json title,changedFiles,additions,deletions,url 2>&1); then
+    if ! pr_json=$(gh pr view "$pr_reference" --json title,changedFiles,additions,deletions,url,files 2>&1); then
         echo -e "\033[0;31mError: Failed to fetch PR information.
 $pr_json
 Make sure the PR number or URL is valid.\033[0m
@@ -320,11 +351,15 @@ main() {
         return 1
     fi
 
-    icon=$(get_platform_icon "$platform")
-
     if ! pr_json=$(fetch_pr_json "$pr_reference"); then
         return 1
     fi
+
+    if [[ -z "$platform" ]]; then
+        platform=$(detect_platform "$pr_json")
+    fi
+
+    icon=$(get_platform_icon "$platform")
 
     result=$(build_slack_message "$pr_json" "$icon" "$PARSED_EXTRA_EMOJIS")
     print_result "$result"

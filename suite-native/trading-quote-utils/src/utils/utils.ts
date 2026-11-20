@@ -3,13 +3,11 @@ import type { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } f
 import {
     type TradingTradeType,
     type TradingTransaction,
-    type TradingType,
     isBuyTrade,
     isExchangeTrade,
     isSellFiatTrade,
     tradeFinalStatuses,
 } from '@suite-common/trading';
-import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 
 type UndefinedTradeOperation = {
@@ -180,25 +178,44 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
 
 export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
 
-export const getFormDraftKeyPrefixFromTradingType = (tradingType: TradingType) =>
-    `trading-${tradingType}` as const satisfies FormDraftKeyPrefix;
+const isObject = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null;
 
-export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown) => {
-    const asAny = rejectedValue as any;
-    if (asAny?.error?.error) {
-        return `[${asAny.error.error}]: ${asAny.error.message ?? 'No description'}`;
-    }
+const formatErrorCode = (code: string) => `[${code}]`;
 
-    if (asAny?.error?.message) {
-        return asAny.error.message;
+export const getErrorStrFromThunkRejectedValue = (rejectedValue: unknown): string => {
+    if (typeof rejectedValue === 'string') {
+        return rejectedValue;
     }
 
     if (rejectedValue instanceof Error) {
         return rejectedValue.message;
     }
 
-    if (typeof rejectedValue === 'string') {
-        return rejectedValue;
+    if (!isObject(rejectedValue)) {
+        return 'Unknown error';
+    }
+
+    // RTK sets the error of an action rejected with a value to a generic "Rejected", so the
+    // payload is what says why it failed.
+    if (rejectedValue.payload !== undefined) {
+        return getErrorStrFromThunkRejectedValue(rejectedValue.payload);
+    }
+
+    const { error } = rejectedValue;
+
+    if (typeof error === 'string') {
+        return formatErrorCode(error);
+    }
+
+    if (isObject(error)) {
+        if (typeof error.error === 'string') {
+            return formatErrorCode(error.error);
+        }
+
+        if (typeof error.message === 'string') {
+            return error.message;
+        }
     }
 
     return 'Unknown error';

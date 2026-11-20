@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { selectIsFinpromRestricted } from '@suite/finprom';
+import { selectIsRegionRestricted } from '@suite/regions';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TradingRestricted } from './TradingRestricted';
 
@@ -12,10 +12,10 @@ type TradingRouteGuardProps = {
 };
 
 export const TradingRouteGuard = ({ routeName, children }: TradingRouteGuardProps) => {
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isTradingRoute = !!routeName?.startsWith('wallet-trading');
 
-    if (isFinpromRestricted && isTradingRoute) {
+    if (isRegionRestricted && isTradingRoute) {
         return <TradingRestricted />;
     }
 

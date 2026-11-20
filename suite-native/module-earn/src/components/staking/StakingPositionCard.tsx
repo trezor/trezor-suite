@@ -1,39 +1,46 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
-    type AccountsRootState,
-    type StakeRootState,
-    selectAccountByKey,
-    selectIsCardanoStakedOutsideEverstake,
-    selectIsCardanoStakedWithFiveBinaries,
-    selectTronAvailableVotingPowerByAccountKey,
-} from '@suite-common/wallet-core';
+    type StakingPositionEntry,
+    type StakingRootState,
+    formatStakingAmount,
+    selectIsStakingAccountDelegatedOutside,
+    useNetworkStakingRate,
+} from '@suite-common/earn-staking';
+import {
+    getStakingPositionAmount,
+    hasStakingPositionWarning,
+} from '@suite-common/earn-staking-common';
+import { useFormatters } from '@suite-common/formatters';
+import { type NetworksRootState, selectNativeTokenName } from '@suite-common/networks';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { ZeroApyBadge } from '@suite-native/accounts';
 import { Text } from '@suite-native/atoms';
+import { useStakingDetailNavigation, useStakingNavigateAnalytics } from '@suite-native/earn';
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
-import { useStakingDetailNavigation } from '../../hooks/staking/useStakingDetailNavigation';
-import { useStakingNavigateAnalytics } from '../../hooks/staking/useStakingNavigateAnalytics';
-import { useStakingRate } from '../../hooks/staking/useStakingRate';
-import { type StakingListItem } from '../../types';
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 import { EarnTronVotingAlert } from '../earn/EarnTronVotingAlert';
 
 type StakingPositionCardProps = {
-    item: StakingListItem;
+    entry: StakingPositionEntry;
     onClose: () => void;
 };
 
-export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps) => {
+export const StakingPositionCard = ({ entry, onClose }: StakingPositionCardProps) => {
     const { PercentageFormatter } = useFormatters();
-    const { symbol, accountKey, balance } = item;
+    const { accountKey, position, descriptor } = entry;
+    const { networkSymbol: symbol } = descriptor;
+
+    const nativeTokenName = useSelector((state: NetworksRootState) =>
+        selectNativeTokenName(state, symbol),
+    );
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
@@ -42,21 +49,32 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
         selectAccountByKey(state, accountKey),
     );
 
-    const { rate: apy } = useStakingRate({ symbol, accountKey });
+    const { rate, rateKind, isPending } = useNetworkStakingRate({
+        networkSymbol: symbol,
+        accountKey,
+    });
 
-    const availableTronVotingPower = useSelector((state: AccountsRootState) =>
-        selectTronAvailableVotingPowerByAccountKey(state, item.accountKey),
+    const isDelegatedOutside = useSelector((state: StakingRootState) =>
+        selectIsStakingAccountDelegatedOutside(state, accountKey),
     );
 
-    const isAdaStakedOutsideEverstake = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedOutsideEverstake(state, item.accountKey),
-    );
+    const hasOutdatedProvider = hasStakingPositionWarning(position, 'outdated-provider');
 
-    const isStakedWithFiveBinaries = useSelector((state: StakeRootState) =>
-        selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
-    );
+    const amount = formatStakingAmount({
+        amount: getStakingPositionAmount(position),
+        networkSymbol: symbol,
+    });
 
-    const showTronVotingAlert = symbol === 'trx' && availableTronVotingPower !== '0';
+    const unallocatedVotingPower =
+        position.details?.kind === 'tron-staking' ? position.details.unallocatedVotingPower : null;
+
+    const votesRemaining =
+        unallocatedVotingPower !== null && new BigNumber(unallocatedVotingPower).gt(0)
+            ? formatStakingAmount({ amount: unallocatedVotingPower, networkSymbol: symbol })
+            : null;
+
+    const isRateShown = isDelegatedOutside || !isPending;
+    const isRateAvailable = !isDelegatedOutside && isApyAvailable(rate);
 
     const onPress = useCallback(() => {
         if (!account) return;
@@ -74,12 +92,12 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                 <TokenIcon
                     networkSymbol={symbol}
                     tokenSymbol={symbol}
-                    size="extraSmall"
+                    size="small"
                     showNetworkIcon
                     wrappedTokenIcon="token"
                 />
             }
-            title={getNetworkDisplaySymbolName(symbol)}
+            title={nativeTokenName}
             description={
                 account?.accountLabel ? (
                     <Text variant="body-sm" color="contentSecondary">
@@ -89,7 +107,7 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
             }
             value={
                 <CompactCryptoAmountFormatter
-                    value={balance}
+                    value={amount}
                     symbol={symbol}
                     isBalance={true}
                     numberOfLines={1}
@@ -99,26 +117,26 @@ export const StakingPositionCard = ({ item, onClose }: StakingPositionCardProps)
                 />
             }
             valueDescription={
-                (isAdaStakedOutsideEverstake || apy != null) &&
-                (isStakedWithFiveBinaries ? (
+                isRateShown &&
+                (hasOutdatedProvider ? (
                     <ZeroApyBadge />
                 ) : (
                     <Text variant="body-sm" color="contentSecondary">
-                        {isAdaStakedOutsideEverstake || apy == null || !isApyAvailable(apy) ? (
-                            <ApyValue apy={null} withLabel />
-                        ) : (
+                        {isRateAvailable && rate !== null ? (
                             <Translation
-                                id={symbol === 'trx' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
-                                values={{ apy: PercentageFormatter.format(apy) }}
+                                id={
+                                    rateKind === 'apr' ? 'earn.aprPercentage' : 'earn.apyPercentage'
+                                }
+                                values={{ apy: PercentageFormatter.format(rate) }}
                             />
+                        ) : (
+                            <ApyValue apy={null} withLabel rateType={rateKind ?? 'apy'} />
                         )}
                     </Text>
                 ))
             }
             alerts={
-                showTronVotingAlert && (
-                    <EarnTronVotingAlert votesRemaining={availableTronVotingPower} />
-                )
+                votesRemaining !== null && <EarnTronVotingAlert votesRemaining={votesRemaining} />
             }
             onPress={onPress}
         />

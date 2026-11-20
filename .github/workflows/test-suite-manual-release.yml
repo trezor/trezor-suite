@@ -1,6 +1,9 @@
 name: "[Test] Release Suite Sanity test publisher"
 # Runs Playwright reporter, creating manual regressions release suite in GitHub"
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
     inputs:
@@ -20,10 +23,15 @@ on:
         required: false
         default: "false"
         type: string
+    secrets:
+      TREZOR_BOT_APP_ID:
+        required: true
+      TREZOR_BOT_PRIVATE_KEY:
+        required: true
 
 concurrency:
-  group: manual-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: manual-release${{ inputs.reporterWatchdog == 'true' && '-watchdog' || '' }}
+  cancel-in-progress: false
 
 jobs:
   run-e2e-suite-manual-tests:
@@ -37,6 +45,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -68,7 +77,7 @@ jobs:
         shell: bash
         run: |
           echo "Installing Playwright dependencies"
-          yarn workspaces focus @trezor/suite-e2e
+          yarn workspaces focus @trezor/suite-e2e @suite-app/desktop-app
           # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
           yarn message-system-sign-config
 
@@ -80,6 +89,7 @@ jobs:
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
           REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
+          TEST_FILTER: ${{ inputs.testFilter }}
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
-          yarn workspace @trezor/suite-e2e github:report:manual ${{ inputs.testFilter }}
+          yarn workspace @trezor/suite-e2e github:report:manual $TEST_FILTER

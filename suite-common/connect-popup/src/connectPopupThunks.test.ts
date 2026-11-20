@@ -1,28 +1,40 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { events } from '@suite-common/analytics';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type LockDevice, type LockDeviceDep } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
+import { type CallMethodKeys } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
-import { mock } from '@trezor/dependency-injection';
+import { mock, mockNotExpected } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPopupCallDeferred } from './connectPopupPromiseManager';
+import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import {
     prepareConnectPopupReducer,
     selectConnectPopupCall,
     selectConnectPopupCallWithState,
 } from './connectPopupReducer';
 import {
+    type ConnectPopupCallInnerThunkDeps,
     type ConnectPopupLoadSelectAccountPageThunkState,
+    connectPopupCallInnerThunk,
     connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
+    connectPopupSelectManualAccountThunk,
 } from './connectPopupThunks';
+import { CALL_SOURCE_DESKTOP_WS } from './connectPopupTypes';
+import {
+    CommonPopupFlow,
+    type PopupFlowParams,
+    type PopupFlowPayload,
+} from './popupFlows/CommonPopupFlow';
+import { SendTransaction } from './popupFlows/sendTransaction';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -81,7 +93,7 @@ const connectPopupReducer = prepareConnectPopupReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const initStore = () =>
+const initStore = (activeCall: object = selectAccountState) =>
     createTestCompositionRoot<
         WithServices<LockDeviceDep>,
         ConnectPopupLoadSelectAccountPageThunkState
@@ -93,7 +105,7 @@ const initStore = () =>
             wallet: (state = { accounts: accountsInitialState }) => state,
         }),
         preloadedState: {
-            connectPopup: { activeCall: selectAccountState, permissions: [] },
+            connectPopup: { activeCall, permissions: [] },
             device: fakeDeviceState,
             wallet: { accounts: accountsInitialState },
         },
@@ -248,6 +260,43 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
     });
 });
 
+describe('connectPopupSelectManualAccountThunk — account-only picker', () => {
+    beforeEach(() => {
+        mockedPrepare.mockReset();
+    });
+
+    const initAccountOnlyStore = () =>
+        initStore({
+            ...selectAccountState,
+            options: { ...selectAccountState.options, isAccountOnly: true },
+            manualPhase: 'account',
+            manualAccountIndex: undefined,
+        });
+
+    it('ends the selection with the picked account instead of listing its addresses', async () => {
+        const store = initAccountOnlyStore();
+        const pickerDeferred = getPermissionDeferred(true);
+
+        store.dispatch(connectPopupSelectManualAccountThunk({ accountIndex: 2 }));
+
+        await expect(pickerDeferred.promise).resolves.toBeUndefined();
+        expect(selectConnectPopupCall(store.getState())).toMatchObject({
+            state: 'select-account',
+            manualPhase: 'account',
+            manualAccountIndex: 2,
+        });
+        expect(mockedPrepare).not.toHaveBeenCalled();
+    });
+
+    it('leaves the picker for the ongoing call once the flow approves it', () => {
+        const store = initAccountOnlyStore();
+
+        store.dispatch(connectPopupActions.approvePermissions());
+
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('ongoing');
+    });
+});
+
 describe('connectPopupFinishCallThunk', () => {
     it('answers a call that ended with a device error when its popup is closed', async () => {
         const store = initStore();
@@ -259,5 +308,168 @@ describe('connectPopupFinishCallThunk', () => {
 
         await expect(deferred.promise).resolves.toEqual({ success: false, error });
         expect(selectConnectPopupCall(store.getState())?.state).toBe('finished');
+    });
+});
+
+describe('connectPopupCallInnerThunk', () => {
+    // The deprecated interactive composeTransaction, which the popup flow runs as sendTransaction.
+    const interactiveComposeParams: PopupFlowParams<CallMethodKeys> = {
+        method: 'composeTransaction',
+        payload: {
+            coin: 'btc',
+            outputs: [{ type: 'payment', address: 'bc1qrecipient', amount: '1000' }],
+        },
+        source: { type: 'web', origin: 'https://app.example', manifest: { appName: 'app' } },
+    };
+
+    const runCallThunk = async (params: PopupFlowParams<CallMethodKeys>) => {
+        const dispatch = jest.fn();
+        const extra: ConnectPopupCallInnerThunkDeps = {
+            services: {
+                analytics: {
+                    init: mockNotExpected('init'),
+                    enable: mockNotExpected('enable'),
+                    disable: mockNotExpected('disable'),
+                    isEnabled: mockNotExpected('isEnabled'),
+                    setUrl: mockNotExpected('setUrl'),
+                    setLoggerEnabled: mockNotExpected('setLoggerEnabled'),
+                    report: mock(),
+                },
+                lockDevice: mock(),
+            },
+        };
+        const deferred = getPopupCallDeferred(true);
+
+        await connectPopupCallInnerThunk(params)(dispatch, jest.fn(), extra);
+
+        return { dispatch, deferred, ...extra.services, report: extra.services.analytics.report };
+    };
+
+    beforeEach(() => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('answers and reports a successful call as requested, not as rewritten for compatibility', async () => {
+        const response = { success: true, payload: { message: 'ok' } } as const;
+        const run = jest.spyOn(CommonPopupFlow.prototype, 'run').mockResolvedValue(response);
+
+        const { deferred, report } = await runCallThunk(interactiveComposeParams);
+
+        expect(run.mock.contexts[0]).toMatchObject({ method: 'sendTransaction' });
+        await expect(deferred.promise).resolves.toBe(response);
+        expect(report).toHaveBeenCalledWith({
+            type: events.connectPopupCallEvent.name,
+            payload: expect.objectContaining({
+                method: 'composeTransaction',
+                paramNames: ['coin', 'outputs'],
+            }),
+        });
+    });
+
+    it('answers and reports a failed call, cleaning the flow up only after the error is shown', async () => {
+        jest.spyOn(CommonPopupFlow.prototype, 'run').mockRejectedValue(
+            TypedError('Method_InvalidParameter'),
+        );
+        const cleanup = jest.spyOn(SendTransaction.prototype, 'cleanup');
+
+        const { dispatch, deferred, report, lockDevice } =
+            await runCallThunk(interactiveComposeParams);
+
+        await expect(deferred.promise).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        });
+        expect(report).toHaveBeenCalledWith({
+            type: events.connectPopupErrorEvent.name,
+            payload: expect.objectContaining({
+                method: 'composeTransaction',
+                error: 'Method_InvalidParameter',
+            }),
+        });
+        const setErrorIndex = dispatch.mock.calls.findIndex(([action]) =>
+            connectPopupActions.setError.match(action),
+        );
+        expect(cleanup).toHaveBeenCalledTimes(1);
+        expect(dispatch.mock.invocationCallOrder[setErrorIndex]).toBeLessThan(
+            cleanup.mock.invocationCallOrder[0]!,
+        );
+        expect(lockDevice).toHaveBeenCalledWith(false);
+    });
+
+    it('neither answers nor reports a call waiting for the device to be reconnected', async () => {
+        jest.spyOn(CommonPopupFlow.prototype, 'run').mockRejectedValue(
+            TypedError('Device_Disconnected'),
+        );
+
+        const { dispatch, report } = await runCallThunk(interactiveComposeParams);
+
+        expect(dispatch).toHaveBeenCalledWith(
+            connectPopupActions.setError(serializeError(TypedError('Device_Disconnected'))),
+        );
+        expect(report).not.toHaveBeenCalled();
+    });
+
+    it('passes a malformed deeplink payload to Connect unchanged', async () => {
+        const run = jest
+            .spyOn(CommonPopupFlow.prototype, 'run')
+            .mockRejectedValue(TypedError('Method_InvalidParameter'));
+
+        const { deferred } = await runCallThunk({
+            ...interactiveComposeParams,
+            // Deeplink payloads are arbitrary JSON, not representable by the payload types.
+            payload: null as unknown as PopupFlowPayload<CallMethodKeys>,
+        });
+
+        expect(run.mock.contexts[0]).toMatchObject({ method: 'composeTransaction', payload: null });
+        await expect(deferred.promise).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        });
+    });
+
+    it.each<unknown>([
+        'constructor',
+        'toString',
+        '__proto__',
+        // Cannot even be converted to a property key, yet postMessage and JSON both carry it.
+        { toString: 'x' },
+    ])('answers a call of the unknown method %s as unsupported', async method => {
+        const { dispatch, deferred, lockDevice } = await runCallThunk({
+            ...interactiveComposeParams,
+            // Host apps can send any method name.
+            method: method as CallMethodKeys,
+        });
+
+        expect(dispatch).toHaveBeenCalledWith(connectPopupActions.finishCall());
+        await expect(deferred.promise).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_Unsupported' }),
+        });
+        expect(lockDevice).toHaveBeenCalledWith(false);
+    });
+
+    it('sanitizes the names a caller picked before the flow sees them', async () => {
+        const run = jest
+            .spyOn(CommonPopupFlow.prototype, 'run')
+            .mockResolvedValue({ success: true, payload: {} } as never);
+
+        await runCallThunk({
+            method: 'verifyMessage',
+            payload: {} as never,
+            source: {
+                type: CALL_SOURCE_DESKTOP_WS,
+                origin: 'ws://localhost',
+                manifest: { appName: 'Clau\u0000de Code' },
+                process: { name: '\u200b\u200b', fullPath: '/usr/bin/app', warning: false },
+            },
+        });
+
+        const { source } = run.mock.contexts[0] as PopupFlowParams<CallMethodKeys>;
+        expect(source.manifest.appName).toBe('Clau de Code');
+        expect(source.process).toEqual({ name: '', fullPath: '/usr/bin/app', warning: false });
     });
 });

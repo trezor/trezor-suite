@@ -2,7 +2,11 @@ import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type Account } from '@suite-common/wallet-types';
 
-import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/wallet/trading/buyUtils';
+import {
+    createQuoteLink,
+    createTxLink,
+    getStatusMessage,
+} from '#src/utils/wallet/trading/buyUtils';
 
 import { buyUtilsFixtures } from './__fixtures__/buyUtils';
 

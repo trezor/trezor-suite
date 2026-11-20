@@ -36,11 +36,11 @@ export const TradingExchangeSwitchInactiveNetworkModal = ({
             >
                 <Column gap={16} alignItems="flex-start">
                     {asset.isNativeToken ? (
-                        <TokenIcon size={48} symbol={asset.symbol} showNetworkIcon />
+                        <TokenIcon size={48} networkSymbol={asset.symbol} showNetworkIcon />
                     ) : (
                         <TokenIcon
                             size={48}
-                            symbol={asset.networkSymbol}
+                            networkSymbol={asset.networkSymbol}
                             contractAddress={asset.contractAddress}
                             placeholder={asset.displaySymbol}
                             showNetworkIcon

@@ -11,6 +11,7 @@ import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
 import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellSelectedQuote } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 
 export type ConfirmSellTradeThunkProps = {
     bankAccount: BankAccount;
@@ -36,6 +37,7 @@ export const confirmSellTradeThunk = createThunk<
         triggerAnalyticsTradeConfirmation();
 
         const trade = { ...selectedQuote, bankAccount };
+        const apiKey = tradeApi.getCurrentApiKey();
         const response = await dispatch(
             handleSellTradeThunk({
                 account,
@@ -61,6 +63,7 @@ export const confirmSellTradeThunk = createThunk<
                     date: new Date().toISOString(),
                     key: confirmedTrade.orderId,
                     sendAccountKey: account.key,
+                    apiKey,
                 }),
             );
             dispatch(tradingSellActions.saveTransactionId(confirmedTrade.orderId));

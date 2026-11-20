@@ -1,37 +1,52 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
-import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
+import {
+    type RecoveryRootState,
+    isRecoveryInProgress,
+    recoveryActions,
+    selectRecoveryStatus,
+} from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
+import { type AnalyticsRootState, selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { firmwareActions, selectFirmware } from '@suite-common/firmware';
+import { type FirmwareRootState, firmwareActions, selectFirmware } from '@suite-common/firmware';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { type PROTO, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 import { type Dispatch } from '@trezor/redux-utils';
 
-import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
-import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
-import { type AppState } from 'src/types/suite';
+import { type GoToNextStepThunkState } from '#src/actions/onboarding/onboardingActions';
+import * as onboardingActions from '#src/actions/onboarding/onboardingActions';
+import { selectIsOnboardingActive } from '#src/reducers/onboarding/onboardingReducer';
+
+type OnboardingMiddlewareState = GoToNextStepThunkState &
+    RecoveryRootState &
+    AnalyticsRootState &
+    FirmwareRootState;
 
 const onboardingMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, OnboardingMiddlewareState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const isFwInstallationDone =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
 
         const firmware = selectFirmware(api.getState());
-        const onboarding = selectOnboarding(api.getState());
+        const isOnboardingActive = selectIsOnboardingActive(api.getState());
 
         // Having just installed FW, we can mark the device as known, so that Manual Device Check is not seen again.
-        // In case of fresh/factory-reset device, it would be duplicate.
-        const deviceId = firmware.cachedDevice?.id;
+        // A device without FW has no id, so the check confirmed before the installation couldn't be persisted then.
+        // `firmware.cachedDevice` is unusable: it's a snapshot from before the installation, so its id is outdated
+        // and its path changes with the reconnection during the installation. The selected device is used instead,
+        // relying on the UI not allowing to select a different device while the installation is underway.
+        // The logic is duplicated in suite-native/device/src/middlewares/deviceMiddleware.ts for mobile.
         if (isFwInstallationDone) {
+            const deviceId = selectSelectedDevice(api.getState())?.id;
             api.dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         }
 
-        if (isFwInstallationDone && onboarding.isActive && firmware.status === 'thp-pairing') {
+        if (isFwInstallationDone && isOnboardingActive && firmware.status === 'thp-pairing') {
             // After the THP pairing is finished we want to jump to the next step automatically.
             // User already drifted away from the installation flow and is not aware that THP is actually in the middle
             // of the Firmware installation.
@@ -76,7 +91,7 @@ const onboardingMiddleware =
                     seed: 'recovery-in-progress',
                 }),
             );
-            if (!api.getState().analytics.confirmed) {
+            if (!selectIsAnalyticsConfirmed(api.getState())) {
                 // If you connect T2T1 in recovery mode to fresh Suite, you should see analytics opt-out option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
             } else {

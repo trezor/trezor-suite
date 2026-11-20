@@ -3,8 +3,8 @@ import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StepList } from '@trezor/components';
 
-import { EarnYieldApyTooltip } from 'src/components/earn/dashboard/yield/EarnYieldApyTooltip';
-import { useFormatApy } from 'src/hooks/earn/useFormatApy';
+import { EarnYieldApyTooltip } from '#src/components/earn/dashboard/yield/EarnYieldApyTooltip';
+import { useFormatApy } from '#src/hooks/earn/useFormatApy';
 
 import { EarnInfoRow } from './EarnInfoRow';
 

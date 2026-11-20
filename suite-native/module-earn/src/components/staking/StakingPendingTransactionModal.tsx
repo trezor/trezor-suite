@@ -54,7 +54,9 @@ export const StakingPendingTransactionModal = ({
                     symbol={account.symbol}
                     color="contentPrimary"
                     isBalance={false}
-                    isDiscreetText={false}
+                    withSymbol={false}
+                    // The user must be able to review the staking transaction amount.
+                    discreetMode="disabled"
                 />
             }
             amountLabel={<Translation id={amountLabelTranslationId[stakeType]} />}

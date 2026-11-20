@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 
+import { TokenMetadataProvider, useTokenMetadataSources } from '@suite-common/token';
+import { type YieldClaimAccountItem } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -10,34 +12,48 @@ import {
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardsAccountCard } from './YieldClaimRewardsAccountCard';
-import { type YieldClaimAccountItem } from '../../types';
 
 type YieldClaimRewardsBottomSheetProps = {
     ref: BottomSheetModalRef;
     items: YieldClaimAccountItem[];
     onClose: () => void;
+    onAccountSelect: () => void;
+    onDismiss: () => void;
 };
 
 export const YieldClaimRewardsBottomSheet = ({
     ref,
     items,
     onClose,
-}: YieldClaimRewardsBottomSheetProps) => (
-    <BottomSheetModal
-        ref={ref}
-        title={<Translation id="earn.earnScreen.claimRewards.title" />}
-        isCloseDisplayed
-        onClose={onClose}
-    >
-        <Box paddingTop="sp16">
-            <Card borderColor="borderNeutral" noPadding>
-                {items.map((claimItem, index) => (
-                    <Fragment key={claimItem.summary.accountKey}>
-                        {index > 0 && <Divider />}
-                        <YieldClaimRewardsAccountCard item={claimItem} onClose={onClose} />
-                    </Fragment>
-                ))}
-            </Card>
-        </Box>
-    </BottomSheetModal>
-);
+    onAccountSelect,
+    onDismiss,
+}: YieldClaimRewardsBottomSheetProps) => {
+    // The modal renders in a portal outside the screen's metadata provider.
+    const sources = useTokenMetadataSources();
+
+    return (
+        <BottomSheetModal
+            ref={ref}
+            title={<Translation id="earn.earnScreen.claimRewards.title" />}
+            isCloseDisplayed
+            onClose={onClose}
+            onDismiss={onDismiss}
+        >
+            <TokenMetadataProvider sources={sources}>
+                <Box paddingTop="sp16">
+                    <Card borderColor="borderNeutral" noPadding>
+                        {items.map((claimItem, index) => (
+                            <Fragment key={claimItem.summary.accountKey}>
+                                {index > 0 && <Divider />}
+                                <YieldClaimRewardsAccountCard
+                                    item={claimItem}
+                                    onClose={onAccountSelect}
+                                />
+                            </Fragment>
+                        ))}
+                    </Card>
+                </Box>
+            </TokenMetadataProvider>
+        </BottomSheetModal>
+    );
+};

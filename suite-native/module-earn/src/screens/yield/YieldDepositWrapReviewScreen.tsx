@@ -8,6 +8,7 @@ import {
     selectYieldSessionByFlowKey,
     yieldActions,
 } from '@suite-common/wallet-core';
+import { useYieldFlowData } from '@suite-native/earn';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -16,11 +17,9 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { WrappedNativeTokenReviewContent } from '../../components/earn/WrappedNativeTokenReviewContent';
 import { useWrappedNativeReviewPreview } from '../../hooks/earn/useWrappedNativeReviewPreview';
 import { useYieldFlowAnalytics } from '../../hooks/yield/useYieldFlowAnalytics';
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 import { type YieldBroadcastTransaction } from '../../types';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositWrapReview>;
@@ -103,18 +102,16 @@ export const YieldDepositWrapReviewScreen = () => {
     }
 
     return (
-        <EarnDeviceConnectionGuard>
-            <WrappedNativeTokenReviewContent
-                account={account}
-                amount={review.amount}
-                flowContext="in-flow"
-                flowType="wrap"
-                onBroadcast={handleBroadcast}
-                onError={handleReviewError}
-                preview={preview}
-                spentToken={spentToken}
-                unsignedTransaction={review.unsignedTransaction}
-            />
-        </EarnDeviceConnectionGuard>
+        <WrappedNativeTokenReviewContent
+            account={account}
+            amount={review.amount}
+            flowContext="in-flow"
+            flowType="wrap"
+            onBroadcast={handleBroadcast}
+            onError={handleReviewError}
+            preview={preview}
+            spentToken={spentToken}
+            unsignedTransaction={review.unsignedTransaction}
+        />
     );
 };

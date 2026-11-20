@@ -1,22 +1,21 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type YieldApproveModalState,
     type YieldFlowToken,
     type YieldSessionState,
 } from '@suite-common/wallet-core';
 import {
+    type AllowanceLimitType,
     type FeeLevelLabel,
     type FormState,
     type PrecomposedTransactionFinal,
-    type TokenAddress,
 } from '@suite-common/wallet-types';
-import { getAllowanceAmount, isAllowanceUnlimited } from '@suite-common/wallet-utils';
-
-import { type YieldApprovalLimitType } from '../../types';
+import { getAllowanceAmountForLimit, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 
 type BuildYieldAllowanceFormStateParams = {
     approvalModalState: YieldApproveModalState;
     data: string;
-    precomposedTransaction: PrecomposedTransactionFinal;
+    precomposedTransaction?: PrecomposedTransactionFinal;
     selectedFee: FeeLevelLabel;
 };
 
@@ -34,7 +33,7 @@ type YieldAllowanceFeeState = {
 
 type GetYieldApprovalAllowanceAmountParams = {
     amount: string;
-    approvalLimitType: YieldApprovalLimitType;
+    approvalLimitType: AllowanceLimitType;
     tokenContract: TokenAddress;
     tokenDecimals: number;
     tokenSymbol: string;
@@ -62,19 +61,16 @@ export const buildYieldAllowanceFormState = ({
         },
     ],
     selectedFee,
-    feePerUnit: precomposedTransaction.feePerByte,
-    feeLimit: precomposedTransaction.feeLimit ?? '',
-    maxFeePerGas: precomposedTransaction.maxFeePerGas,
-    maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
+    feePerUnit: precomposedTransaction?.feePerByte ?? '',
+    feeLimit: precomposedTransaction?.feeLimit ?? '',
+    maxFeePerGas: precomposedTransaction?.maxFeePerGas,
+    maxPriorityFeePerGas: precomposedTransaction?.maxPriorityFeePerGas,
     options: ['broadcast', 'transactionData'],
     transactionData: data,
     isCoinControlEnabled: false,
     hasCoinControlBeenOpened: false,
     selectedUtxos: [],
 });
-
-export const getYieldApprovalType = (approvalLimitType: YieldApprovalLimitType) =>
-    approvalLimitType === 'unlimited' ? 'INFINITE' : 'MINIMAL';
 
 export const getYieldAllowanceFeeState = (
     formDraft: FormState | null | undefined,
@@ -109,9 +105,9 @@ export const getYieldApprovalAllowanceAmount = ({
     tokenDecimals,
     tokenSymbol,
 }: GetYieldApprovalAllowanceAmountParams) =>
-    getAllowanceAmount({
-        rawAmount: amount,
-        approvalType: getYieldApprovalType(approvalLimitType),
+    getAllowanceAmountForLimit({
+        amount,
+        limitType: approvalLimitType,
         token: {
             contract: tokenContract,
             decimals: tokenDecimals,

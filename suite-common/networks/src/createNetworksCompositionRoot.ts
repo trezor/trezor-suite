@@ -1,8 +1,6 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
-import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-common-types';
-
-import { createNetworkModuleRepository } from './NetworkModuleRepository';
+import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworksServices } from './NetworksServices';
 import { createAddressValidator } from './createAddressValidator';
 import { createGetAccountSyncInterval } from './createGetAccountSyncInterval';
@@ -14,15 +12,13 @@ import { createGetNetworkConfigs } from './createGetNetworkConfigs';
 import { createIsWrappedNativeToken } from './createIsWrappedNativeToken';
 import { createLoadNetworkModules } from './createLoadNetworkModules';
 import { createNetworkIcon } from './createNetworkIcon';
-import { createNetworkModulesCompositionRoot } from './createNetworkModulesCompositionRoot';
 
-export type NetworksCompositionRootDeps = NetworkSuiteCommonModuleApi & { dispatch: Dispatch };
+export type NetworksCompositionRootDeps = NetworkModuleRepositoryDep & { dispatch: Dispatch };
 
 export const createNetworksCompositionRoot = (
     deps: NetworksCompositionRootDeps,
 ): NetworksServices => {
-    const networkModules = createNetworkModulesCompositionRoot(deps);
-    const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+    const { networkModuleRepository } = deps;
     const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
     const getNetworkConfigs = createGetNetworkConfigs({
         getNetworkConfig,
@@ -34,7 +30,6 @@ export const createNetworksCompositionRoot = (
         isSupportedNetwork: networkModuleRepository.isSupportedNetwork,
         networkIcon: createNetworkIcon({ networkModuleRepository }),
         isWrappedNativeToken: createIsWrappedNativeToken({ networkModuleRepository }),
-        networkModuleRepository,
         getNetworkConfig,
         getAccountSyncInterval: createGetAccountSyncInterval({ networkModuleRepository }),
         getNetworkByCoingeckoId: createGetNetworkByCoingeckoId({

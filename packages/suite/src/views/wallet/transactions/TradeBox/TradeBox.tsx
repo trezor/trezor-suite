@@ -1,18 +1,20 @@
 import { useDevice } from '@suite/device';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
 
-import { DashboardSection } from 'src/components/dashboard';
-import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
-import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
-import { type Account } from 'src/types/wallet';
+import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { YieldBadge } from '#src/components/earn/YieldBadge/YieldBadge';
+import { AssetDetailLink } from '#src/components/suite/AssetDetailLink/AssetDetailLink';
+import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
+import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
+import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { TradeBoxActionButton } from './TradeBoxActionButton';
 import { WrapNativeTokenButton } from './WrapNativeTokenButton';
@@ -27,7 +29,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { device } = useDevice();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
     const { hasEarnOption, yieldBadge } = useTradeBoxEarnOptions(account);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
 
     return (
         <DashboardSection>
@@ -43,7 +45,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         gap={isBelowMobile ? 16 : 40}
                     >
                         <AssetDetailLink symbol={account.symbol} gap={12}>
-                            <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
+                            <TokenIcon size={40} networkSymbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="body-md-strong"
@@ -101,7 +103,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 <Translation id="TR_EARN" />
                             </TradeBoxActionButton>
                         )}
-                        {!isFinpromRestricted && (
+                        {!isRegionRestricted && (
                             <>
                                 <TradeBoxActionButton account={account} type="buy">
                                     <Translation id="TR_NAV_BUY" />
@@ -115,7 +117,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 </TradeBoxActionButton>
                             </>
                         )}
-                        {!hasBitcoinOnlyFirmware(device) && !isFinpromRestricted && (
+                        {!hasBitcoinOnlyFirmware(device) && !isRegionRestricted && (
                             <TradeBoxActionButton
                                 account={account}
                                 type="exchange"

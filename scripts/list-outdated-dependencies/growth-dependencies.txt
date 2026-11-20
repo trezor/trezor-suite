@@ -76,7 +76,6 @@ react-zxing
 vm-browserify
 core-js
 styled-components
-react-helmet-async
 recharts
 react-svg
 react-toastify

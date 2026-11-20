@@ -1,0 +1,292 @@
+import { saveAs } from 'file-saver';
+
+import { selectFullSelectedAccount } from '@suite/account';
+import { createAnalytics } from '@suite/analytics';
+import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
+import { createBluetoothCompositionRoot } from '@suite/bluetooth';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { rerunFwAuthenticityChecksThunk } from '@suite/device';
+import { lockDevice } from '@suite/locks';
+import { selectLabelingDataForAccount } from '@suite/metadata';
+import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
+import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
+import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
+import { selectIsTorEnabled } from '@suite/tor';
+import { createSuiteSyncDesktopCompositionRoot } from '@suite-app/suite-sync';
+import { createBip329CompositionRoot } from '@suite-common/bip329';
+import {
+    type ConnectInitSettings,
+    type CreateTransports,
+    type GetTransportsFactoriesDep,
+} from '@suite-common/connect-init';
+import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
+import { selectDeviceByStaticSessionId } from '@suite-common/device';
+import {
+    createStakingCompositionRoot,
+    createStakingDeviceAccess,
+} from '@suite-common/earn-staking';
+import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
+import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
+import {
+    createNetworkModuleRepository,
+    createNetworksCompositionRoot,
+} from '@suite-common/networks';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { createQueryClient } from '@suite-common/react-query';
+import { createReferAFriendCompositionRoot } from '@suite-common/refer-a-friend';
+import { createSignVerify } from '@suite-common/sign-verify';
+import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
+import {
+    createSuiteSyncWriteLabels,
+    selectAllLabelsForAccount,
+    selectIsSuiteSyncEnabled,
+    selectSuiteSyncWalletLabel,
+} from '@suite-common/suite-sync';
+import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
+import { type ThpHostNameDep } from '@suite-common/thp';
+import { selectTradedAccountKeys } from '@suite-common/trading';
+import {
+    createTransactionRetriever,
+    fetchAllTransactionsForAccountThunk,
+    fetchTransactionsPageThunk,
+    selectAccountByKey,
+    selectAccountTransactionsFetchStatus,
+    selectAccountsByDeviceState,
+    selectAccountsTransactions,
+} from '@suite-common/wallet-core';
+import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import { toGetter } from '@trezor/dependency-injection';
+import { isDesktop } from '@trezor/env-utils';
+import type { CreateLoggerDep } from '@trezor/logger';
+import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
+import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
+import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
+import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
+import { createRippleSuiteNetworkModule } from '@trezor/network-ripple-suite';
+import { createSolanaSuiteNetworkModule } from '@trezor/network-solana-suite';
+import { createStellarSuiteNetworkModule } from '@trezor/network-stellar-suite';
+import { createTronSuiteNetworkModule } from '@trezor/network-tron-suite';
+import { type DbDep, reportSecurityCheck, selectIsWindowVisible } from '@trezor/suite';
+
+import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
+import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
+import { type SuiteReduxStore } from './createReduxStore';
+import { type AppState } from './store';
+import { type SuiteServices } from './suiteServices';
+
+const connectInitSettings: ConnectInitSettings = {
+    debug: false,
+    manifest: {
+        email: 'info@trezor.io',
+        appName: isDesktop() ? 'Trezor Suite desktop' : 'Trezor Suite web',
+        appUrl: isDesktop() ? 'Trezor Suite desktop' : window.origin,
+    },
+    enableFirmwareHashCheck: true,
+    firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
+};
+
+export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
+
+export type SuiteAppDeps = StoreAPIDep &
+    DbDep &
+    DesktopApiDep &
+    HistoryDep &
+    PlatformEncryptionDep &
+    CreateLoggerDep &
+    GetBinFilesBaseUrlDep &
+    ReloadAppDep &
+    ThpHostNameDep &
+    GetTransportsFactoriesDep &
+    GetTrezorConnectPrivilegedDep;
+
+export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
+    const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        platformEncryption: deps.platformEncryption,
+        getTrezorConnect: deps.getTrezorConnect,
+    });
+
+    const analytics = createAnalytics();
+    const bluetooth = createBluetoothCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        desktopApi: deps.desktopApi,
+    });
+
+    const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
+    const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
+
+    // Label writers that take storage as a param, used by the migration. They never call
+    // `ensureWalletSuiteSyncOn`, so the migration listener can be built before suiteSync.
+    const writeLabels = createSuiteSyncWriteLabels({ getState: deps.getState, analytics });
+
+    const { migrateLabelsIfAvailable, migrateLegacyLabelsToSuiteSync } =
+        createMetadataMigrationCompositionRoot({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            getAccountsByDeviceState,
+            getCurrentWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
+            getCurrentAccountLabels,
+            getDeviceByStaticSessionId: toGetter(deps.getState, selectDeviceByStaticSessionId),
+            ...writeLabels,
+        });
+
+    const suiteSync = createSuiteSyncDesktopCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        platformEncryption: deps.platformEncryption,
+        getTrezorConnect: deps.getTrezorConnect,
+        ensureDelegatedIdentityKey,
+        analytics,
+        fetch: globalThis.fetch.bind(globalThis),
+        onStorageEnsured: migrateLabelsIfAvailable,
+    });
+
+    const { bip329 } = createBip329CompositionRoot({
+        getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
+        getLegacyAccountLabels: toGetter(deps.getState, selectLabelingDataForAccount),
+        getAllLabelsForAccount: getCurrentAccountLabels,
+        updateAddressLabel: suiteSync.labeling.updateAddressLabel,
+        updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+    });
+
+    const referAFriend = createReferAFriendCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
+        platformEncryption: deps.platformEncryption,
+        getTrezorConnect: deps.getTrezorConnect,
+        fetch: globalThis.fetch.bind(globalThis),
+    });
+
+    const suiteNetworkModules: SuiteNetworkModule[] = [
+        createBitcoinSuiteNetworkModule(deps),
+        createEthereumSuiteNetworkModule(deps),
+        createRippleSuiteNetworkModule(),
+        createCardanoSuiteNetworkModule(deps),
+        createSolanaSuiteNetworkModule(),
+        createStellarSuiteNetworkModule(),
+        createTronSuiteNetworkModule(),
+    ];
+    const networkModuleRepository = createNetworkModuleRepository({
+        networkModules: suiteNetworkModules.map(networkModule => networkModule.getCommon()),
+    });
+    const networks = createNetworksCompositionRoot({
+        networkModuleRepository,
+        dispatch: deps.dispatch,
+    });
+
+    const staking = createStakingCompositionRoot({
+        platform: 'desktop',
+        adapters: createStakingProductsCompositionRoot(),
+        deviceAccess: createStakingDeviceAccess({
+            getTrezorConnect: deps.getTrezorConnect,
+            runStakingDeviceCall: callback => callback(),
+        }),
+        dispatch: deps.dispatch,
+    });
+
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: true });
+
+    const createTransports: CreateTransports = transports => {
+        const factories = deps.getTransportsFactories();
+
+        return transports.map(name => {
+            const factory = factories[name];
+            if (!factory) {
+                throw new Error(`Transport factory for ${name} not found`);
+            }
+
+            return factory(deps.createLogger);
+        }) as ReturnType<CreateTransports>;
+    };
+
+    return {
+        db: deps.db,
+        desktopApi: deps.desktopApi,
+        networks,
+        signVerify: createSignVerify({
+            networkModuleRepository,
+            analytics,
+            dispatch: deps.dispatch,
+        }),
+        staking,
+        queryClient,
+        suiteSync,
+        bip329,
+        migrateLegacyLabelsToSuiteSync,
+        ensureDelegatedIdentityKey,
+        platformEncryption: deps.platformEncryption,
+        referAFriend,
+        analytics,
+        bluetooth,
+        suiteRouterHistory: createSuiteRouterHistory({
+            history: deps.history,
+        }),
+        reportSecurityCheck,
+        reloadApp: deps.reloadApp,
+        saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
+        connectInitSettings,
+        connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
+            dispatch: deps.dispatch,
+            bluetooth,
+        }),
+        transactionRetriever: createTransactionRetriever({
+            fetchTransactionsPage: params =>
+                deps.dispatch(fetchTransactionsPageThunk(params)).unwrap(),
+            fetchAllTransactionsForAccount: params =>
+                deps.dispatch(fetchAllTransactionsForAccountThunk(params)).unwrap(),
+            getAccount: toGetter(deps.getState, selectAccountByKey),
+            getTransactionsFetchStatus: toGetter(
+                deps.getState,
+                selectAccountTransactionsFetchStatus,
+            ),
+            getAccountsTransactions: toGetter(deps.getState, selectAccountsTransactions),
+        }),
+        connectInitUIEventHooks: createConnectInitUIEventHooks({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+        }),
+        createLogger: deps.createLogger,
+        thpHostName: deps.thpHostName,
+        createTransports,
+        getTokenDefinitionsEnabledNetworks: toGetter(
+            deps.getState,
+            (state: AppState) => state.wallet.settings.enabledNetworks,
+        ),
+        // TODO: Coinjoin has not been moved to @suite-common yet, so its debug settings type is not available here.
+        getDebugSettings: toGetter(deps.getState, selectDebugSettings),
+        getBinFilesBaseUrl: deps.getBinFilesBaseUrl,
+        getLanguage: toGetter(deps.getState, selectLanguage),
+        getSelectedAccount: toGetter(deps.getState, selectFullSelectedAccount),
+        getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
+        getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
+        getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
+        getThpSettings: toGetter(deps.getState, (state: AppState) => ({
+            appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
+            pairingMethods: ['CodeEntry'],
+            knownCredentials: state.thp?.credentials,
+        })),
+        getAllowPrerelease: toGetter(
+            deps.getState,
+            (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
+        ),
+        shouldRetryFirmwareRevisionCheckError: toGetter(
+            deps.getState,
+            selectShouldRetryFirmwareRevisionCheckError,
+        ),
+        rerunFwAuthenticityChecksCall: () => {
+            deps.dispatch(rerunFwAuthenticityChecksThunk());
+        },
+        lockDevice: isLocked => {
+            deps.dispatch(lockDevice(isLocked));
+        },
+        migrateSuiteSyncLabelsForRbfTransaction:
+            createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
+                dispatch: deps.dispatch,
+                getState: deps.getState,
+                updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+            }),
+    };
+};

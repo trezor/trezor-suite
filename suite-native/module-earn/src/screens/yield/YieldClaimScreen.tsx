@@ -6,6 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { getClaimFeeWarning } from '@suite-common/earn-stablecoin';
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -16,8 +17,8 @@ import {
 import { selectAccountLabel } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { YieldDisabledAlert, useMessageSystemYield } from '@suite-native/earn';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
-import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import { ContextMessage } from '@suite-native/message-system';
@@ -28,18 +29,17 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { TokenIcon } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldClaimFlowFooter } from '../../components/yield/YieldClaimFlowFooter';
 import { YieldClaimRewardsCard } from '../../components/yield/YieldClaimRewardsCard';
-import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../../components/yield/YieldTxSimulationBottomSheet';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
-import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
 import { useShowYieldTransactionFailureAlert } from '../../hooks/yield/useShowYieldTransactionFailureAlert';
 import {
     type PreparedYieldClaimAction,
@@ -49,6 +49,7 @@ import { useYieldClaimRewards } from '../../hooks/yield/useYieldClaimRewards';
 import { useYieldPendingTransaction } from '../../hooks/yield/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../../hooks/yield/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../../hooks/yield/useYieldSession';
+import { yieldAccountRewardsToTokenMetadataSources } from '../../utils/yield/yieldAccountRewardsToTokenMetadataSources';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaim>;
@@ -86,7 +87,7 @@ export const YieldClaimScreen = () => {
         payload: {
             action: 'cancel',
             from: 'claim-form',
-            to: 'claim-form',
+            to: 'earn-dashboard',
             networkSymbol: account?.symbol,
         },
     });
@@ -117,7 +118,7 @@ export const YieldClaimScreen = () => {
     const isClaimSubmitting = session?.action.isSubmitting ?? false;
     const claimFee = useYieldClaimFees({
         accountRewards,
-        isEnabled: !!account && !isClaimPending,
+        isEnabled: !!account && isFocused && !isClaimPending,
     });
     const feeFiatAmount = useFiatFromCryptoValue({
         cryptoValue: claimFee.feePreview?.fee ?? null,
@@ -130,29 +131,22 @@ export const YieldClaimScreen = () => {
         feeFiatAmount,
         totalFiatClaimableAmount,
     });
-    const [hasClaimBeenPrepared, setHasClaimBeenPrepared] = useState(false);
     const isClaimPrepared =
         !isClaimRewardsLoading &&
         !isClaimRewardsFiatLoading &&
-        !claimFee.isPreparingClaimFee &&
+        !claimFee.isComposingFeeLevels &&
         !!claimFee.preparedAction;
-
-    useEffect(() => {
-        if (isClaimPrepared) {
-            setHasClaimBeenPrepared(true);
-        }
-    }, [isClaimPrepared]);
 
     const shouldShowFeeWarning = claimFeeWarning === 'fee-exceeds-rewards';
 
     const shouldShowUnverifiableFeeWarning =
-        claimFeeWarning === 'unverifiable-rewards-value' && hasClaimBeenPrepared;
+        claimFeeWarning === 'unverifiable-rewards-value' && isClaimPrepared;
 
     const isContinueDisabled =
         isClaimPending ||
         isClaimSubmitting ||
         isClaimRewardsLoading ||
-        claimFee.isPreparingClaimFee ||
+        claimFee.isComposingFeeLevels ||
         claimFee.isFeeUnavailable ||
         !accountRewards ||
         !claimFee.preparedAction ||
@@ -257,7 +251,7 @@ export const YieldClaimScreen = () => {
 
     const accountLabel = customAccountLabel ?? getNetwork(account.symbol).name;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -273,7 +267,6 @@ export const YieldClaimScreen = () => {
                                         <TokenIcon
                                             networkSymbol={account.symbol}
                                             contractAddress={vault.tokenContract}
-                                            tokenSymbol={vault.name}
                                             size="tiny"
                                         />
                                         <Box flexShrink={1}>
@@ -334,7 +327,7 @@ export const YieldClaimScreen = () => {
                         isLoading={isClaimRewardsLoading}
                     />
 
-                    <YieldFeeSection accountKey={account.key} fees={claimFee} />
+                    <EarnFeeSection accountKey={account.key} fees={claimFee} />
 
                     {shouldShowFeeWarning && (
                         <BannerFull
@@ -386,5 +379,11 @@ export const YieldClaimScreen = () => {
                 />
             )}
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldAccountRewardsToTokenMetadataSources(accountRewards)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

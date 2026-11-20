@@ -4,30 +4,31 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type ComposeYieldWrapErrorReason,
     type WrappedNativeFlowType,
+    getAccountTokenByContract,
     getWrapReserveStatus,
     getWrappableNativeBalance,
     getYieldNativeFeeStatus,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import { useMessageSystemWrappedNative } from '@suite-native/earn';
 import {
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
-import { useMessageSystemWrappedNative } from './useMessageSystemWrappedNative';
 import { useNavigateBackAnalytics } from './useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow';
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
-import { getAccountTokenByContract } from '../../utils/earn/contractTokenBalanceUtils';
+import { wrappedNativeToTokenMetadataSources } from '../../utils/earn/wrappedNativeToTokenMetadataSources';
 import { useYieldCurrencyToggleAnalytics } from '../yield/useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 
@@ -148,6 +149,7 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         nativeSymbol,
         wrappedTokenSymbol: wrappedNative.symbol,
         wrappedTokenContract: toTokenAddress(wrappedNative.address),
+        metadataSources: wrappedNativeToTokenMetadataSources(account.symbol, wrappedNative),
         spentSymbol,
         spentTokenContract,
         isInteractionBlocked: isFlowPending,
@@ -161,7 +163,6 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
             maxAmount: isWrap
                 ? getWrappableNativeBalance(account.formattedBalance, gasReserve.recommended)
                 : undefined,
-            tokenDecimals: isWrap ? undefined : wrappedNative.decimals,
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: flow.reportMaxSelected,
         },

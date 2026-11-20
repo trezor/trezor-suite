@@ -4,8 +4,7 @@ name: "[Test] Nightly Suite Web & Desktop e2e tests"
 # Runs full e2e test suite for Suite Desktop and Suite Web with all supported device models and latest firmware
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   schedule:
@@ -44,53 +43,43 @@ jobs:
       currents-project-id: "4ytF0E"
       currents-ci-build-id: "nightly-desktop-run-${{ github.run_id }}-${{ github.run_attempt }}"
       download-artifact-name: "desktop-app-build-e2e"
+      # Desktop only: the nightly web build is coverage-instrumented, which Lighthouse would measure.
+      # On unless the repository variable E2E_NIGHTLY_LIGHTHOUSE is set to "false".
+      lighthouse: ${{ vars.E2E_NIGHTLY_LIGHTHOUSE != 'false' && 'true' || 'false' }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
 
+  run-e2e-suite-desktop-windows-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - build-app
+    uses: ./.github/workflows/template-suite-run-e2e-windows.yml
+    with:
+      download-artifact-name: "desktop-app-build-e2e"
+      currents-ci-build-id: "nightly-windows-run-${{ github.run_id }}-${{ github.run_attempt }}"
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/build-suite-web-e2e.yml
     with:
       instrument-code: "true"
 
-  extract-branch:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    outputs:
-      branch: ${{ steps.extract_branch.outputs.branch }}
-    steps:
-      - name: Extract branch name
-        id: extract_branch
-        run: |
-          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
-
   build-connect:
-    needs: [extract-branch]
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-        with:
-          ref: ${{ needs.extract-branch.outputs.branch }}
-
-      - name: Release connect to dev environment
-        uses: ./.github/actions/release-connect
-        with:
-          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
-          awsRegion: "eu-central-1"
-          serverHostname: "dev.suite.sldev.cz"
-          serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
-          uploadArtifacts: "true"
-          explorerRetentionDays: "1"
-          buildArtifacts: "true"
-          nodeEnv: "development"
-          connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
-          suiteWebUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web"
+    if: github.repository == 'trezor/trezor-suite'
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/build-connect-e2e.yml
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
@@ -180,3 +169,23 @@ jobs:
         run: |
           jq -n --arg text "Nightly e2e coverage map build failed: <$GITHUB_RUN_URL|Github run>" '{text: $text}' \
             | curl -X POST -H 'Content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"
+
+  # See docs/tests/perf-history.md. Runs on the base branch, so it seals the baseline.
+  publish_performance_history:
+    # Not when both test jobs were skipped: there is nothing to publish.
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && (contains(needs.*.result, 'success') || contains(needs.*.result, 'failure')) }}
+    needs:
+      - run-e2e-suite-desktop-tests
+      - run-e2e-suite-web-tests
+    permissions:
+      id-token: write # to assume the dev-deploy role
+      contents: read
+    concurrency:
+      group: publish-performance-history-web-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/template-publish-performance-history.yml
+    with:
+      workspace: "@trezor/suite-e2e"
+      artifact-pattern: perf-history-*
+      publish-command: yarn workspace @trezor/suite-e2e perf:publish
+      timeout-minutes: 15

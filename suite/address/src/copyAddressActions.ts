@@ -5,13 +5,23 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AddressType } from '@suite-common/wallet-types';
 import { copyToClipboard } from '@trezor/dom-utils';
 
+type ShowCopyAddressModalOptions = {
+    copyAnalyticsFrom?: 'asset-detail';
+};
+
 export const showCopyAddressModal =
-    (address: string, addressType: AddressType) => (dispatch: Dispatch) => {
+    (
+        address: string,
+        addressType: AddressType,
+        { copyAnalyticsFrom }: ShowCopyAddressModalOptions = {},
+    ) =>
+    (dispatch: Dispatch) => {
         dispatch(
             openModal({
                 type: 'copy-address',
                 addressType,
                 address,
+                copyAnalyticsFrom,
             }),
         );
     };

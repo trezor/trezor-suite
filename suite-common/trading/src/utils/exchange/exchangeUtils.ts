@@ -7,12 +7,13 @@ import type {
     ExchangeTradeStatus,
 } from 'invity-api';
 
-import { type Network, type NetworkType } from '@suite-common/wallet-config';
+import { type Network, type NetworkType, isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     buildApprovalTransactionData,
     getErc20ApproveSpender,
+    getProviderTransactionValidityMs,
     getUnusedChangeAddress,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
@@ -22,12 +23,11 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { hasExistingAllowance } from './exchangeAllowanceUtils';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { type ExchangeInfo } from '../../reducers/exchangeReducer';
 import { type TradingExchangeAmountLimitProps } from '../../types';
 import { cryptoIdToNetwork, getUnusedAddressFromAccount, parseCryptoId } from '../../utils';
-
-export { tokenSupportsIncreasingAllowance };
 
 type GetAmountLimitsProps = {
     quotes: ExchangeTrade[];
@@ -46,6 +46,9 @@ const isNativeCryptoId = (cryptoId?: CryptoId) => {
 
     return !contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
+
+export const getExchangeFromAddress = (account: Account | undefined): string | undefined =>
+    account && isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
 
 export const isSendingEvmNativeToken = (cryptoId?: CryptoId) =>
     isEvmCryptoId(cryptoId) && isNativeCryptoId(cryptoId);
@@ -139,6 +142,38 @@ export const hasEip712SignDataType = (quote?: ExchangeTrade): boolean =>
 export const hasFixedPsbtFee = (quote: ExchangeTrade | undefined, networkType: NetworkType) =>
     networkType === 'bitcoin' && !!quote?.isDex && !!quote.dexTx?.data;
 
+export const hasExpiringProviderTransaction = (
+    quote: ExchangeTrade | undefined,
+    networkType: Account['networkType'] | undefined,
+) =>
+    !!quote?.isDex &&
+    !!quote.dexTx?.data &&
+    getProviderTransactionValidityMs(networkType) !== undefined;
+
+type GetProviderTransactionDeadlineParams = {
+    quote: ExchangeTrade | undefined;
+    networkType: Account['networkType'] | undefined;
+    selectedQuoteTimestamp: number | undefined;
+};
+
+export const getProviderTransactionDeadline = ({
+    quote,
+    networkType,
+    selectedQuoteTimestamp,
+}: GetProviderTransactionDeadlineParams): number | undefined => {
+    const validityMs = getProviderTransactionValidityMs(networkType);
+
+    if (
+        selectedQuoteTimestamp === undefined ||
+        validityMs === undefined ||
+        !hasExpiringProviderTransaction(quote, networkType)
+    ) {
+        return undefined;
+    }
+
+    return selectedQuoteTimestamp + validityMs;
+};
+
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
 
@@ -161,36 +196,42 @@ const getInsufficientAllowanceStatus = (send: CryptoId): ApprovalStatus =>
         ? 'needs_increase'
         : 'needs_revoke';
 
-export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
+export const getApprovalStatus = (
+    candidateQuote?: ExchangeTrade,
+    currentAllowance?: string,
+): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
     }
 
-    const { send, status, preapprovedStringAmount } = candidateQuote;
+    const { send, status } = candidateQuote;
 
     if (!send || !requiresTokenApproval(candidateQuote)) {
         return 'not_needed';
     }
 
-    const hasPreapprovedAmount = new BigNumber(preapprovedStringAmount ?? 0).gt(0);
+    const hasAllowance = hasExistingAllowance(candidateQuote, currentAllowance);
 
     if (status === 'APPROVAL_REQ') {
-        return hasPreapprovedAmount ? getInsufficientAllowanceStatus(send) : 'needs_approval';
+        return hasAllowance ? getInsufficientAllowanceStatus(send) : 'needs_approval';
     }
 
-    if (hasPreapprovedAmount) {
+    if (hasAllowance) {
         return 'approved';
     }
 
     return status === 'CONFIRM' || status === 'SIGN_DATA' ? 'not_needed' : 'needs_approval';
 };
 
-export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
+export const getDexEstimationData = (
+    quote: ExchangeTrade,
+    currentAllowance?: string,
+): string | undefined => {
     if (!quote.dexTx?.data) {
         return undefined;
     }
 
-    if (getApprovalStatus(quote) === 'needs_revoke') {
+    if (getApprovalStatus(quote, currentAllowance) === 'needs_revoke') {
         const spender = getErc20ApproveSpender(quote.dexTx.data);
         if (spender) {
             try {

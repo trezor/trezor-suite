@@ -6,6 +6,10 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const pin = '1';
+const backupCheckText = "Let's do a wallet backup check.";
+const wordCountText = 'Select the number of words in your backup.';
+const enterWordsText = 'Enter each word of your wallet backup in order.';
+const backupValidText = 'The entered wallet backup is valid and matches the one on this device.';
 
 test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -37,14 +41,18 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Do the recover dry run on emulator', async () => {
+                await device.expectToContainOnDisplay(backupCheckText);
                 await device.pressYes();
                 await device.type('1');
+                await device.expectToContainOnDisplay(wordCountText);
                 await device.selectNumberOfWords(12);
+                await device.expectToContainOnDisplay(enterWordsText);
                 await device.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
             });
 
             await test.step('Verify success in suite', async () => {
+                await device.expectToContainOnDisplay(backupValidText);
                 await device.pressYes();
                 await expect(recoveryModal.successTitle).toHaveTranslation(
                     'TR_SEED_CHECK_SUCCESS_TITLE',
@@ -73,9 +81,12 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Partially complete the dry run on emulator', async () => {
+                await device.expectToContainOnDisplay(backupCheckText);
                 await device.pressYes();
                 await device.type('1');
+                await device.expectToContainOnDisplay(wordCountText);
                 await device.selectNumberOfWords(12);
+                await device.expectToContainOnDisplay(enterWordsText);
                 await device.pressYes();
                 await device.type('all');
             });
@@ -93,9 +104,12 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Complete the dry run on emulator', async () => {
+                await device.expectToContainOnDisplay(wordCountText);
                 await device.selectNumberOfWords(12);
+                await device.expectToContainOnDisplay(enterWordsText);
                 await device.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+                await device.expectToContainOnDisplay(backupValidText);
                 await device.pressYes();
                 await expect(recoveryModal.successTitle).toHaveTranslation(
                     'TR_SEED_CHECK_SUCCESS_TITLE',
@@ -125,9 +139,12 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Partially complete the dry run on emulator', async () => {
+                await device.expectToContainOnDisplay(backupCheckText);
                 await device.pressYes();
                 await device.type('1');
+                await device.expectToContainOnDisplay(wordCountText);
                 await device.selectNumberOfWords(12);
+                await device.expectToContainOnDisplay(enterWordsText);
                 await device.pressYes();
                 await device.type('all');
             });
@@ -138,9 +155,12 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Complete the dry run on emulator', async () => {
+                await device.expectToContainOnDisplay(wordCountText);
                 await device.selectNumberOfWords(12);
+                await device.expectToContainOnDisplay(enterWordsText);
                 await device.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
+                await device.expectToContainOnDisplay(backupValidText);
                 await device.pressYes();
                 await expect(recoveryModal.successTitle).toHaveTranslation(
                     'TR_SEED_CHECK_SUCCESS_TITLE',

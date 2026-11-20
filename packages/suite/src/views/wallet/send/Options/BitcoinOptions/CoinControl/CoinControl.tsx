@@ -23,12 +23,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { Pagination } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { Pagination } from '#src/components/wallet/Pagination';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useBitcoinAmountUnit } from '#src/hooks/wallet/useBitcoinAmountUnit';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
+import { selectAccountLabelsForSearch } from '#src/selectors/suite/selectAccountLabelsForSearch';
 
 import { UtxoSearch } from './UtxoSearch';
 import { UtxoSelectionList } from './UtxoSelectionList/UtxoSelectionList';
@@ -158,7 +158,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     }, [account, dispatch]);
 
     const missingToInputValues = {
-        amount: <FormattedCryptoAmount value={formattedMissing} symbol={account.symbol} />,
+        amount: <FormattedCryptoAmount value={formattedMissing} networkSymbol={account.symbol} />,
     };
 
     const handleAllUtxosSelected = () => {
@@ -190,7 +190,10 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     </Checkbox>
 
                     <Text intent="neutral" priority="secondary">
-                        <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
+                        <FormattedCryptoAmount
+                            value={formattedTotal}
+                            networkSymbol={account.symbol}
+                        />
                     </Text>
                 </Row>
 

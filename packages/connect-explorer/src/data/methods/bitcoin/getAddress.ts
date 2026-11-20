@@ -5,7 +5,7 @@ const batch = [
     {
         name: 'path',
         type: 'input',
-        value: `m/49'/0'/0'`,
+        value: `m/49'/0'/0'/0/0`,
     },
     {
         name: 'coin',

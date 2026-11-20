@@ -1,16 +1,18 @@
 import { useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
-import { RedactNumericalValue } from '@suite/discreet-mode';
+import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { TokenUrlBlur } from '@suite/token';
 import {
     DefinitionType,
     type TokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { toTokenAddress } from '@suite-common/tokens';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -43,11 +45,9 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
-import { HiddenPlaceholder } from 'src/components/suite';
-import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
-import { useSelector } from 'src/hooks/suite';
-import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
+import { setTransactionHistoryPrefill } from '#src/actions/suite/suiteActions';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { getTokenAddressTranslationId } from '#src/utils/wallet/tokenUtils';
 
 import { DropdownRow } from '../../tokens/DropdownRow';
 
@@ -74,7 +74,13 @@ const NftsRow = ({
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;
     const { account } = selectedAccount;
     const nftItemsCount = nft.ids?.length || nft.multiTokenValues?.length || 0;
-    const NftName = <TokenUrlBlur text={nft.name} />;
+    const NftName = (
+        <TokenUrlBlur
+            networkSymbol={network.symbol}
+            tokenContract={toTokenAddress(nft.contract)}
+            text={nft.name}
+        />
+    );
 
     return (
         <>

@@ -14,6 +14,7 @@ test.describe.skip('MEV protection', { tag: ['@group=manual'] }, () => {
                     'Seeded Trezor device',
                     'Connected Trezor Suite',
                     'Funded Ethereum account',
+                    'Funded Bitcoin account',
                 ],
                 steps: [
                     'Navigate to "Settings" > "Application" > "Security"',
@@ -23,6 +24,7 @@ test.describe.skip('MEV protection', { tag: ['@group=manual'] }, () => {
                     'Send the transaction and confirm the actual routing changes: cross-check in blinklabs whether the transaction can be found',
                     'Disable the setting in Settings',
                     'Send another transaction with the setting disabled and confirm in blinklabs that the transaction cannot be found',
+                    'With the setting still disabled, send a transaction from the funded Bitcoin account and confirm it is broadcast successfully',
                 ],
                 category: TestCategory.Settings,
                 priority: TestPriority.High,

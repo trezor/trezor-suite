@@ -13,10 +13,9 @@ type QuickActionsProps = {
 
 export const QuickActions = ({ isSidebarCollapsed }: QuickActionsProps) => (
     <Flex
-        gap={16}
-        padding={16}
+        gap={isSidebarCollapsed ? 2 : 6}
+        padding={{ horizontal: 8, vertical: isSidebarCollapsed ? 10 : 6 }}
         alignItems="center"
-        justifyContent="space-evenly"
         direction={isSidebarCollapsed ? 'column' : 'row'}
     >
         <UpdateStatusActionBarIcon isSidebarCollapsed={isSidebarCollapsed} />

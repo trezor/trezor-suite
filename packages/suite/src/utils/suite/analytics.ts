@@ -1,8 +1,13 @@
 import type { SuiteReadyPayload } from '@suite/analytics';
-import { type DesktopUpdateRootState } from '@suite/desktop-update';
+import {
+    type DesktopUpdateRootState,
+    selectDesktopUpdateAllowPrerelease,
+    selectDesktopUpdateAutomaticUpdateEnabled,
+} from '@suite/desktop-update';
 import {
     type LegacyLabelingVisibleRootState,
     selectIsLegacyLabelingVisible,
+    selectSelectedProviderForLabels,
 } from '@suite/metadata';
 import { AccountTransactionBaseAnchor, EarnAnchor, isEarnYieldRowAnchor } from '@suite/router';
 import {
@@ -19,7 +24,10 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
-import { type DiscreetModeRootState } from '@suite-common/discreet-mode';
+import {
+    type DiscreetModeRootState,
+    selectIsDiscreteModeActive,
+} from '@suite-common/discreet-mode';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
@@ -36,7 +44,11 @@ import {
 import {
     type BlockchainRootState,
     type WalletSettingsRootState,
+    selectBaseCurrency,
+    selectBitcoinAmountUnit,
     selectCustomBackends,
+    selectIsMevProtectionEnabled,
+    selectIsNetworkReserveEnabled,
 } from '@suite-common/wallet-core';
 import {
     getOsName,
@@ -61,11 +73,7 @@ const resolveLabelingType = (
     state: GetSuiteReadyPayloadState,
 ): MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off' => {
     if (selectIsLegacyLabelingVisible(state)) {
-        return (
-            state.metadata.providers.find(
-                p => p.clientId === state.metadata.selectedProvider.labels,
-            )?.type || 'missing-provider'
-        );
+        return selectSelectedProviderForLabels(state)?.type || 'missing-provider';
     }
 
     return state.suiteSync.settings.isSuiteSyncEnabled ? 'suite-sync' : 'off';
@@ -89,9 +97,6 @@ export const redactAnchor = (anchor?: string) => {
     return anchor;
 };
 
-// 1. replace coinjoin by taproot
-export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproot');
-
 export const getSuiteReadyPayload = async (
     state: GetSuiteReadyPayloadState,
 ): Promise<SuiteReadyPayload> => {
@@ -104,9 +109,9 @@ export const getSuiteReadyPayload = async (
         customBackends: selectCustomBackends(state)
             .map(({ symbol }) => symbol)
             .filter(symbol => state.wallet.settings.enabledNetworks.includes(symbol)),
-        localCurrency: state.wallet.settings.localCurrency,
-        bitcoinUnit: UNIT_ABBREVIATIONS[state.wallet.settings.bitcoinAmountUnit],
-        discreetMode: state.discreetMode.isActive,
+        localCurrency: selectBaseCurrency(state),
+        bitcoinUnit: UNIT_ABBREVIATIONS[selectBitcoinAmountUnit(state)],
+        discreetMode: selectIsDiscreteModeActive(state),
         screenWidth: getScreenWidth(),
         screenHeight: getScreenHeight(),
         platformLanguages: getPlatformLanguages().join(','),
@@ -116,7 +121,7 @@ export const getSuiteReadyPayload = async (
         rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
         theme: selectTheme(state),
         suiteVersion: process.env.VERSION || '',
-        earlyAccessProgram: state.desktopUpdate.allowPrerelease,
+        earlyAccessProgram: selectDesktopUpdateAllowPrerelease(state),
         experimentalFeatures: selectExperimentalFeatures(state),
         browserName: getBrowserName(),
         browserVersion: getBrowserVersion(),
@@ -129,11 +134,11 @@ export const getSuiteReadyPayload = async (
         autodetectLanguage: selectAutodetectLanguage(state),
         autodetectTheme: selectAutodetectTheme(state),
 
-        isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
+        isAutomaticUpdateEnabled: selectDesktopUpdateAutomaticUpdateEnabled(state),
 
         experimentVariants: formatExperimentVariantsForAnalytics(experimentVariants),
 
-        mevProtection: state.wallet.settings.mevProtection,
-        networkReserve: state.wallet.settings.networkReserve,
+        mevProtection: selectIsMevProtectionEnabled(state),
+        networkReserve: selectIsNetworkReserveEnabled(state),
     };
 };

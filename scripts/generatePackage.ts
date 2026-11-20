@@ -21,10 +21,20 @@ const scopes = {
         templatePath: 'package-template/',
         templatePackageJson: templatePackageJsonWeb,
     },
+    '@suite-native-app': {
+        path: 'suite-native-app/',
+        templatePath: 'package-template-native/',
+        templatePackageJson: templatePackageJsonNative,
+    },
     '@suite-native': {
         path: 'suite-native/',
         templatePath: 'package-template-native/',
         templatePackageJson: templatePackageJsonNative,
+    },
+    '@suite-app': {
+        path: 'suite-app/',
+        templatePath: 'package-template/',
+        templatePackageJson: templatePackageJsonWeb,
     },
     '@suite': {
         path: 'suite/',

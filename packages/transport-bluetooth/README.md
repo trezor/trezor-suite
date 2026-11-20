@@ -12,7 +12,7 @@ import { bluetoothIpc } from '@trezor/transport-bluetooth';
 await bluetoothIpc.init();
 ```
 
-`@suite/desktop-app-main` main context module
+`@suite-app/desktop-app-main` main context module
 
 implement proxy handler and `BluetoothIpc`
 

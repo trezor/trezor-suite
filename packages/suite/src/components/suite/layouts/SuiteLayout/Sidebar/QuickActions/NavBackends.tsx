@@ -6,8 +6,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import type { CustomBackend } from 'src/types/wallet';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import type { CustomBackend } from '#src/types/wallet/backend';
 
 type BackendRowProps = {
     backend: CustomBackend;
@@ -25,7 +25,7 @@ const BackendRow = ({ backend: { symbol, type }, blockchain }: BackendRowProps) 
             width={260}
         >
             <Row gap={12}>
-                <TokenIcon symbol={symbol} />
+                <TokenIcon networkSymbol={symbol} />
                 <Column flex="1" overflow="hidden">
                     <Text typographyStyle="body-sm" ellipsisLineCount={1}>
                         {chain?.url ?? <Translation id="TR_BACKEND_DISCONNECTED" />}

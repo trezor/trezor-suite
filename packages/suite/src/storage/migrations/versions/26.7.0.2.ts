@@ -1,6 +1,6 @@
 import { createMigration } from '@suite/idb-migration-utils';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 const movedSettings = ['testnet-networks', 'nft-section'] as const;
 

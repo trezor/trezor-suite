@@ -22,7 +22,7 @@ import { Banner, Card, Column, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
+import { Fees } from '#src/components/wallet/Fees/Fees';
 
 import { TxSimulationDisclaimer } from '../common/components/TxSimulationDisclaimer';
 import { TxSimulationErrorBoundary } from '../common/components/TxSimulationErrorBoundary';

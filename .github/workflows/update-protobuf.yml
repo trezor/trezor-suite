@@ -1,5 +1,8 @@
 name: "[Bot] update protobuf definitions"
 
+permissions:
+  contents: read
+
 on:
   schedule:
     - cron: "0 6 * * 1-5"
@@ -15,16 +18,10 @@ jobs:
         with:
           ref: develop
 
-      - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: .nvmrc
-
-      - name: Restore develop Yarn cache
-        uses: ./.github/actions/restore-yarn-cache
-
       - name: Install dependencies
-        run: yarn install --immutable
+        uses: ./.github/actions/minimal-yarn-install
+        with:
+          safedep: "false"
 
       - name: Run update-protobuf
         run: yarn update-protobuf
@@ -55,6 +52,9 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write
 
       - name: Create Pull Request
         if: steps.check.outputs.has_changes == 'true'

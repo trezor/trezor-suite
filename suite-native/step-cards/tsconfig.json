@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../atoms" },
+        { "path": "../icons" },
+        { "path": "../intl" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../test-utils" }
+    ]
+}

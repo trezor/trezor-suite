@@ -8,7 +8,9 @@ import { supportedRippleNetworks } from '@trezor/network-ripple-types';
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
-export const createRippleSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+export type RippleSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+
+export const createRippleSuiteCommonNetworkModule = (): RippleSuiteCommonNetworkModule =>
     createNetworkModule(supportedRippleNetworks, {
         icon: rippleAssets,
         addressValidator: rippleValidator,

@@ -1,6 +1,7 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type TokenInfoBranded, type TokenSymbol } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 export type YieldAccountOpportunity = {
     key: string;

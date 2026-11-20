@@ -15,8 +15,8 @@ describe('collectMobileWorkspaceClosure', () => {
     it('follows workspace ranges in every dependency field', () => {
         const packages = createPackages([
             [
-                '@suite-native/app',
-                'suite-native/app',
+                '@suite-native-app/app',
+                'suite-native-app/app',
                 {
                     dependencies: { '@suite-common/wallet': 'workspace:*' },
                     devDependencies: { '@suite-native/storybook': 'workspace:*' },
@@ -33,7 +33,7 @@ describe('collectMobileWorkspaceClosure', () => {
 
         expect([...collectMobileWorkspaceClosure(packages)].sort()).toEqual([
             '@suite-common/wallet',
-            '@suite-native/app',
+            '@suite-native-app/app',
             '@suite-native/storybook',
             '@trezor/utils',
         ]);
@@ -41,7 +41,7 @@ describe('collectMobileWorkspaceClosure', () => {
 
     it('ignores desktop packages that nothing in the mobile graph reaches', () => {
         const packages = createPackages([
-            ['@suite-native/app', 'suite-native/app', {}],
+            ['@suite-native-app/app', 'suite-native-app/app', {}],
             [
                 '@suite/desktop-app-api-electron',
                 'suite/desktop-app-api-electron',
@@ -50,26 +50,26 @@ describe('collectMobileWorkspaceClosure', () => {
             ['@suite/desktop-app-api', 'suite/desktop-app-api', {}],
         ]);
 
-        expect([...collectMobileWorkspaceClosure(packages)]).toEqual(['@suite-native/app']);
+        expect([...collectMobileWorkspaceClosure(packages)]).toEqual(['@suite-native-app/app']);
     });
 
     it('does not follow registry ranges that shadow a workspace name', () => {
         const packages = createPackages([
             [
-                '@suite-native/app',
-                'suite-native/app',
+                '@suite-native-app/app',
+                'suite-native-app/app',
                 { dependencies: { '@trezor/utils': '^1.0.0' } },
             ],
             ['@trezor/utils', 'packages/utils', {}],
         ]);
 
-        expect([...collectMobileWorkspaceClosure(packages)]).toEqual(['@suite-native/app']);
+        expect([...collectMobileWorkspaceClosure(packages)]).toEqual(['@suite-native-app/app']);
     });
 });
 
 describe('buildEasignoreContent', () => {
     it('excludes each level before re-including its allowed children', () => {
-        const content = buildEasignoreContent(['packages/utils', 'suite-native/app']);
+        const content = buildEasignoreContent(['packages/utils', 'suite-native-app/app']);
         const lines = content.split('\n');
 
         expect(lines).toContain('/*');
@@ -90,12 +90,12 @@ describe('buildEasignoreContent', () => {
     });
 
     it('excludes env files after the allowlist, keeping only the committed ones', () => {
-        const lines = buildEasignoreContent(['suite-native/app']).split('\n');
+        const lines = buildEasignoreContent(['suite-native-app/app']).split('\n');
 
         expect(lines).toContain('**/.env*');
-        expect(lines.indexOf('!/suite-native/app')).toBeLessThan(lines.indexOf('**/.env*'));
+        expect(lines.indexOf('!/suite-native-app/app')).toBeLessThan(lines.indexOf('**/.env*'));
         expect(lines.indexOf('**/.env*')).toBeLessThan(
-            lines.indexOf('!/suite-native/app/.env.development'),
+            lines.indexOf('!/suite-native-app/app/.env.development'),
         );
     });
 });

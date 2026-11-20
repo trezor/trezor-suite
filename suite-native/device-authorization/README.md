@@ -17,7 +17,7 @@ The package automatically transitions between these states based on TrezorConnec
 
 ## Relationship with Other Packages
 
-- **Used by**: `@suite-native/module-authorize-device` - Consumes the authorization state and hooks to coordinate navigation
+- **Used by**: `@suite-native-app/module-authorize-device` - Consumes the authorization state and hooks to coordinate navigation
 - **Purpose**: Provides the state management layer that navigation modules use to coordinate authorization flows
 
 ### Dependency Constraints

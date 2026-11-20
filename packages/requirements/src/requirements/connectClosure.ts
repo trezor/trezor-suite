@@ -8,6 +8,13 @@ export type WorkspacePackage = {
     readonly packageJson: PackageJson;
 };
 
+export const CONNECT_PUBLISH_ROOTS: ReadonlyArray<string> = [
+    '@trezor/connect',
+    '@trezor/connect-web',
+    '@trezor/connect-mobile',
+    '@trezor/connect-webextension',
+];
+
 /**
  * Read every workspace's package.json into a name-keyed map. Packages without a
  * `name` are skipped; version-less packages are kept so a closure traversal can

@@ -29,14 +29,15 @@ export const paramDescriptions = {
 
 # Send transaction
 
-This method works only for `Bitcoin` and `Bitcoin-like` coins.
+This method works only through Trezor Suite on desktop and web, for the Bitcoin-like coins Suite
+supports: `btc`, `ltc`, `bch`, `doge`, `zec`, `test` and `regtest`.
 
 Requests a payment to a set of given outputs. An automated payment process separated into the following steps:
 
-1. Account discovery for requested coin is performed and the user is asked for source account selection. [[1]](#additional-notes)
-2. User is asked for fee level selection.
-3. Transaction is calculated, change output is added automatically if needed. [[2]](#additional-notes)
-4. Signing transaction with Trezor, user is asked for confirmation on device.
+1. User selects the source account in Suite's account picker.
+2. User selects the fee level. If the account cannot pay for the outputs, the user is asked to select another account.
+3. Transaction is calculated, change output is added automatically if needed. [[1]](#additional-notes)
+4. User reviews the transaction in Suite and confirms it on device.
 
 Returned response is a signed transaction in hexadecimal format same as in [signTransaction method](signTransaction#result).
 
@@ -80,9 +81,10 @@ TrezorConnect.sendTransaction({
 {
     success: true,
     payload: {
-        signatures: Array<string>, // signer signatures
-        serializedTx: string,      // serialized transaction
-        txid?: string,             // blockchain transaction id
+        signatures: Array<string>,              // signer signatures
+        serializedTx: string,                   // serialized transaction
+        witnesses?: Array<string | undefined>,  // witnesses of the inputs
+        txid?: string,                          // blockchain transaction id
     }
 }
 ```
@@ -100,5 +102,4 @@ Error
 
 ### Additional notes
 
-- [1] `UI_REQUESTS.REQUEST_ACCOUNT` and `UI_REQUESTS.REQUEST_FEE` events are emitted when using `trusted mode`
-- [2] Account utxo selection, fee and change calculation is performed by [@trezor/utxo-lib](https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib/src/compose) module
+- [1] Account utxo selection, fee and change calculation is performed by [@trezor/utxo-lib](https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib/src/compose) module

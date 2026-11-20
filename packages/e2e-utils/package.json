@@ -6,9 +6,11 @@
     "sideEffects": false,
     "main": "src/index",
     "scripts": {
+        "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test-health": "tsx ./src/quarantineBot/index.ts",
+        "refer-a-friend-server": "tsx ./src/mocks/referAFriend/startReferAFriendServer.ts",
         "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
         "build-coverage-map": "tsx ./src/testCoverage/buildCoverageMap.ts",
         "seed-tests": "CURRENTS_PROJECT_ID=iBEsWE yarn pwc --config ./src/quarantineBot/seed/playwright.config.ts",
@@ -34,16 +36,16 @@
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
         "dotenv": "18.0.6",
         "express": "^5.2.1",
-        "ws": "^8.20.0",
-        "zod": "4.6.7"
+        "ws": "^8.20.0"
     },
     "devDependencies": {
         "@anthropic-ai/claude-agent-sdk": "0.3.218",
         "@anthropic-ai/claude-code": "2.1.218",
         "@anthropic-ai/sdk": "0.117.1",
-        "@currents/mcp": "^2.6.1",
+        "@currents/mcp": "^2.7.0",
         "@currents/playwright": "^2.5.2",
         "@opencode-ai/sdk": "1.18.23",
         "@playwright/test": "1.64.0",

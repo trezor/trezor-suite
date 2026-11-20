@@ -4,9 +4,10 @@ import styled, { css } from 'styled-components';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Box, Card, Column, H4, InfoItem, Note, Row, Text, TextButton } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
@@ -14,10 +15,12 @@ import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { type Account } from 'src/types/wallet';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import {
+    type TransactionReviewOutputState,
+    TransactionReviewOutputStatus,
+} from '#src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 
 const DataWrapper = styled.p<{ $isExpanded: boolean; $fadeColor: Color }>`
     word-break: break-all;
@@ -132,7 +135,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state, isChunked }: 
                         data-testid="@modal/crypto-amount"
                         disableHiddenPlaceholder
                         value={formattedValue}
-                        symbol={token?.symbol ?? symbol}
+                        networkSymbol={symbol}
                         contractAddress={token?.contract}
                         isTabular={false}
                     />
@@ -173,7 +176,7 @@ export type TransactionReviewOutputElementProps = {
     title: ReactNode;
     lines: OutputElementLine[];
     account: Pick<Account, 'networkType' | 'symbol' | 'tokens'>;
-    state: 'active' | 'confirmed' | 'unconfirmed';
+    state: TransactionReviewOutputState;
     fiatVisible?: boolean;
 };
 

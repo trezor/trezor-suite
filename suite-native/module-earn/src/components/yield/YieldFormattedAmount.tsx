@@ -1,21 +1,21 @@
+import { toTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 import {
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
+    type DiscreetMode,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 
 export type YieldFormattedAmountValue = {
     value: string;
     tokenContract?: string | null;
-    tokenDecimals?: number;
-    tokenSymbol?: string | null;
 };
 
 type YieldFormattedAmountProps = YieldFormattedAmountValue & {
     networkSymbol: NetworkSymbol;
+    discreetMode?: DiscreetMode;
 } & Pick<
         TextProps,
         | 'adjustsFontSizeToFit'
@@ -30,18 +30,18 @@ type YieldFormattedAmountProps = YieldFormattedAmountValue & {
 export const YieldFormattedAmount = ({
     networkSymbol,
     tokenContract,
-    tokenDecimals,
-    tokenSymbol,
     value,
+    // Keep transaction amounts and allowance limits readable during yield actions.
+    discreetMode = 'disabled',
     ...textProps
 }: YieldFormattedAmountProps) => {
     if (tokenContract) {
         return (
             <CompactTokenAmountFormatter
+                networkSymbol={networkSymbol}
+                contractAddress={toTokenAddress(tokenContract)}
                 value={asDecimalTokenAmount(value)}
-                tokenDecimals={tokenDecimals}
-                tokenSymbol={tokenSymbol ? toTokenSymbol(tokenSymbol) : null}
-                isDiscreetText={false}
+                discreetMode={discreetMode}
                 {...textProps}
             />
         );
@@ -51,7 +51,7 @@ export const YieldFormattedAmount = ({
         <CompactCryptoAmountFormatter
             value={value}
             symbol={networkSymbol}
-            isDiscreetText={false}
+            discreetMode={discreetMode}
             {...textProps}
         />
     );

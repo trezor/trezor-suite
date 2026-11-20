@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
 
-import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { areTypeAwareRulesConfigured, isTypeInformationNeeded } from './ruleSets.mjs';
 import { allRoots } from './workspaceRoots.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
@@ -23,7 +23,14 @@ const networksPackagePattern = {
 // round. Of the workspace scopes only `@trezor/*` is below them, so it is the only one they may
 // depend on. Anything an app owns reaches a network module through dependency injection instead.
 const networksAppScopePattern = {
-    group: ['@suite/**', '@suite-cli/**', '@suite-common/**', '@suite-native/**'],
+    group: [
+        '@suite/**',
+        '@suite-app/**',
+        '@suite-cli/**',
+        '@suite-common/**',
+        '@suite-native/**',
+        '@suite-native-app/**',
+    ],
     message:
         'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
 };
@@ -55,9 +62,9 @@ const connectDeepImportPatterns = [
 
 // Deny importing internal suite packages from outside the suite app itself.
 const suiteInternalPatterns = {
-    group: ['@suite-common/**', '@suite-native/**'],
+    group: ['@suite-app/**', '@suite-common/**', '@suite-native/**', '@suite-native-app/**'],
     message:
-        '@suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
+        '@suite-app/*, @suite-common/*, @suite-native/* and @suite-native-app/* packages are private to the suite apps and must not be imported by other workspace packages.',
 };
 
 // Staking products are registered by the application composition roots only. Everything else
@@ -68,8 +75,14 @@ const stakingProductsPattern = {
         'Only an application composition root registers staking products. Import @suite-common/earn-staking and take the product repository as an injected dependency.',
 };
 
+// `@trezor/zod` turns zod's JIT off before any schema is constructed, so zod is imported only through it.
+const zodImportPattern = {
+    regex: '^zod(?:/|$)',
+    message: "Import from '@trezor/zod', which turns zod's JIT off.",
+};
+
 /*
- Currently only relevant in @suite/desktop-app-main, but if the ipcMain import is to be used elsewhere,
+ Currently only relevant in @suite-app/desktop-app-main, but if the ipcMain import is to be used elsewhere,
  the wrapper shall be extracted and this should still be a global rule.
 */
 const electronIpcMainRestrictedImport = {
@@ -84,6 +97,7 @@ const commonRestrictedImports = {
         buildArtifactPatterns,
         networksPackagePattern,
         stakingProductsPattern,
+        zodImportPattern,
         ...connectDeepImportPatterns,
     ],
 };
@@ -93,6 +107,7 @@ export const restrictedImportsPatterns = [
     suiteInternalPatterns,
     networksPackagePattern,
     stakingProductsPattern,
+    zodImportPattern,
     ...connectDeepImportPatterns,
 ];
 
@@ -154,9 +169,11 @@ export const typescriptConfig = [
     },
     {
         // An absolute base also applies when a native package has its own ESLint config.
-        basePath: fileURLToPath(new URL(`../../../${allRoots.suiteNative}`, import.meta.url)),
-        files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-        ignores: ['atoms/src/Animated/**'],
+        basePath: fileURLToPath(new URL('../../../', import.meta.url)),
+        files: [allRoots.suiteNative, allRoots.suiteNativeApp].map(
+            root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
+        ),
+        ignores: [`${allRoots.suiteNative}/atoms/src/Animated/**`],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',
@@ -212,6 +229,7 @@ export const typescriptConfig = [
                         buildArtifactPatterns,
                         networksAppScopePattern,
                         networksPackagePattern,
+                        zodImportPattern,
                         ...connectDeepImportPatterns,
                         {
                             regex: '^@trezor/connect(?!-common(?:/|$))',
@@ -282,12 +300,30 @@ export const typescriptConfig = [
             '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         },
     },
-    ...(areExpensiveChecksEnabled
+    ...(isTypeInformationNeeded
         ? []
         : [
               {
-                  ...tseslint.configs.disableTypeChecked,
+                  /**
+                   * The basic rule set needs no type information,
+                   * so skip the TypeScript project service, which would only slow ESLint down.
+                   */
                   files: ['**/src/**/*.{ts,tsx}'],
+                  languageOptions: tseslint.configs.disableTypeChecked.languageOptions,
+              },
+          ]),
+    ...(areTypeAwareRulesConfigured
+        ? []
+        : [
+              {
+                  /**
+                   * Without the runner's rule filter, a type-aware rule configured on would crash
+                   * on the missing program; see `ruleSets.mjs`.
+                   * The runner always sets `ESLINT_RULE_FILTER_ACTIVE`,
+                   * so this only covers running `eslint` directly, e.g. from an IDE integration.
+                   */
+                  files: ['**/src/**/*.{ts,tsx}'],
+                  rules: tseslint.configs.disableTypeChecked.rules,
               },
           ]),
 ];

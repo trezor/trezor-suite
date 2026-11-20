@@ -23,7 +23,6 @@ export * from './api/ethereum/common';
 export * from './api/monero/common';
 export * from './api/solana/common';
 export * from './api/stellar/common';
-export * from './api/tezos/common';
 export * from './api/tron/common';
 export * from './api/nostr/common';
 
@@ -65,8 +64,8 @@ export {
     ACCOUNT_TYPES,
     type AccountTypeItem,
     type AccountTypeKey,
-    type AdditionalParams,
     type DiscoverAccountsProgress,
+    type DiscoveryAccountInfoParams,
     CARDANO_DERIVATIONS,
 } from './api/account/discoverAccounts';
 export { type FirmwareUpdateResponse } from './api/device/firmwareUpdate';

@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { refreshStakingProductInfoThunk } from '@suite-common/earn-staking';
+import { getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
-    initStakeDataThunk,
-    isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { parseAccountKey } from '@suite-common/wallet-utils';
@@ -32,18 +32,26 @@ export const StakingManagementScreen = () => {
     );
 
     // Solana shows a rewards list, other networks keep the transaction history.
-    const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
+    const isSolanaStaking = getNetworkType(networkSymbol) === 'solana';
 
     useEffect(() => {
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
     }, [accountKey, dispatch]);
 
-    const refreshStakeData = useCallback(() => dispatch(initStakeDataThunk()), [dispatch]);
+    const refreshProductInfo = useCallback(
+        () => dispatch(refreshStakingProductInfoThunk()),
+        [dispatch],
+    );
+    // A pull asks for fresh data even within the maximum age, as the legacy fetch did.
+    const refreshProductInfoNow = useCallback(
+        () => dispatch(refreshStakingProductInfoThunk({ force: true })),
+        [dispatch],
+    );
 
-    // Screen mounts and pull-to-refresh are the only stake-data refresh paths after app init.
+    // Until the scheduler lands, screen mounts and pull-to-refresh are the only refresh paths after startup.
     useEffect(() => {
-        refreshStakeData();
-    }, [refreshStakeData]);
+        refreshProductInfo();
+    }, [refreshProductInfo]);
 
     const listHeaderComponent = useMemo(
         () => <StakingManagementListHeader accountKey={accountKey} />,
@@ -65,11 +73,12 @@ export const StakingManagementScreen = () => {
                         <SolanaStakingRewardsList
                             account={account}
                             listHeaderComponent={listHeaderComponent}
+                            onRefresh={refreshProductInfoNow}
                         />
                     ) : (
                         <TransactionList
                             account={account}
-                            onRefresh={refreshStakeData}
+                            onRefresh={refreshProductInfoNow}
                             listHeaderComponent={listHeaderComponent}
                             filter={{ type: 'staking' }}
                         />

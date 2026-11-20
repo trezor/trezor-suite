@@ -1,11 +1,10 @@
-import { z } from 'zod';
-
 import {
     type StakingProductAdapter,
     type StakingProductId,
     stakingProductDescriptorSchema,
 } from '@suite-common/earn-staking-common';
 import type { NetworkSymbol } from '@trezor/network-module-types';
+import { z } from '@trezor/zod';
 
 export type StakingProductRepositoryDeps = {
     adapters: readonly StakingProductAdapter[];
@@ -14,8 +13,8 @@ export type StakingProductRepositoryDeps = {
 export type StakingProductRepository = {
     get: (productId: StakingProductId) => StakingProductAdapter;
     list: () => readonly StakingProductAdapter[];
-    listBySymbol: (symbol: NetworkSymbol) => readonly StakingProductAdapter[];
-    isSupportedSymbol: (symbol: NetworkSymbol) => boolean;
+    listBySymbol: (networkSymbol: NetworkSymbol) => readonly StakingProductAdapter[];
+    isSupportedSymbol: (networkSymbol: NetworkSymbol) => boolean;
 };
 
 export type StakingProductRepositoryDep = {
@@ -31,7 +30,7 @@ export const createStakingProductRepository = (
     const adaptersBySymbol = new Map<NetworkSymbol, StakingProductAdapter[]>();
 
     deps.adapters.forEach(adapter => {
-        const { id, symbol } = adapter.descriptor;
+        const { id, networkSymbol } = adapter.descriptor;
         const result = stakingProductDescriptorSchema.safeParse(adapter.descriptor);
 
         if (!result.success) {
@@ -45,7 +44,10 @@ export const createStakingProductRepository = (
         }
 
         adapterByProductId.set(id, adapter);
-        adaptersBySymbol.set(symbol, [...(adaptersBySymbol.get(symbol) ?? []), adapter]);
+        adaptersBySymbol.set(networkSymbol, [
+            ...(adaptersBySymbol.get(networkSymbol) ?? []),
+            adapter,
+        ]);
     });
 
     const adapters: readonly StakingProductAdapter[] = Array.from(adapterByProductId.values());
@@ -62,10 +64,11 @@ export const createStakingProductRepository = (
 
     const list = (): readonly StakingProductAdapter[] => adapters;
 
-    const listBySymbol = (symbol: NetworkSymbol): readonly StakingProductAdapter[] =>
-        adaptersBySymbol.get(symbol) ?? NO_ADAPTERS;
+    const listBySymbol = (networkSymbol: NetworkSymbol): readonly StakingProductAdapter[] =>
+        adaptersBySymbol.get(networkSymbol) ?? NO_ADAPTERS;
 
-    const isSupportedSymbol = (symbol: NetworkSymbol): boolean => adaptersBySymbol.has(symbol);
+    const isSupportedSymbol = (networkSymbol: NetworkSymbol): boolean =>
+        adaptersBySymbol.has(networkSymbol);
 
     return { get, list, listBySymbol, isSupportedSymbol };
 };

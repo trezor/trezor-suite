@@ -21,6 +21,7 @@ import { getRefundAddressThunk } from './getRefundAddress';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
+import { type TradingError } from '../../types';
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -317,6 +318,44 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.payload).toEqual([mockPaymentRequest]);
         });
 
+        it('signs the exchange trade with the API key it was saved with', async () => {
+            tradeApi.getSignedTrade = jest.fn().mockResolvedValue(mockSignedExchangeTrade);
+            const tradeApiKey = 'trade-api-key';
+
+            const store = createMockStore({
+                exchange: {
+                    selectedQuote: mockExchangeQuote,
+                    exchangeInfo: mockExchangeInfo,
+                    receiveAccountKey: mockAccount.key,
+                    receiveAddress: mockExchangeQuote.receiveAddress,
+                },
+                trades: [
+                    {
+                        tradeType: 'exchange',
+                        date: '2026-11-04',
+                        key: mockExchangeQuote.orderId,
+                        data: mockExchangeQuote,
+                        sendAccountKey: mockAccount.key,
+                        apiKey: tradeApiKey,
+                    },
+                ],
+            });
+
+            await store.dispatch(
+                createPaymentRequestsThunk({
+                    type: 'exchange',
+                    account: mockAccount,
+                    composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockExchangeQuote.sendStringAmount,
+                }),
+            );
+
+            expect(tradeApi.getSignedTrade).toHaveBeenCalledWith(
+                expect.objectContaining({ type: 'exchange', id: mockExchangeQuote.orderId }),
+                tradeApiKey,
+            );
+        });
+
         it('should reject when exchange quote is missing orderId', async () => {
             const store = createMockStore({
                 exchange: {
@@ -339,7 +378,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -364,7 +403,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -392,7 +431,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -426,7 +465,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
     });
@@ -483,12 +522,23 @@ describe('createPaymentRequestsThunk', () => {
         it('signs the whole-balance amount in the memo text', async () => {
             tradeApi.getSignedTrade = jest.fn().mockResolvedValue(mockSignedSellTrade);
 
+            const tradeApiKey = 'trade-api-key';
             const store = createMockStore({
                 sell: {
-                    selectedQuote: mockSellQuote,
+                    selectedQuote: { ...mockSellQuote, orderId: 'sell-order-123' },
                     sellInfo: mockSellProviders,
                 },
                 info: mockInfoCoins,
+                trades: [
+                    {
+                        tradeType: 'sell',
+                        date: '2026-10-30',
+                        key: 'sell-order-123',
+                        data: mockSellQuote,
+                        sendAccountKey: mockAccount.key,
+                        apiKey: tradeApiKey,
+                    },
+                ],
             });
 
             const result = await store.dispatch(
@@ -506,6 +556,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'sell',
                     memoText: 'Selling 0.00099 BTC for 50 USD',
                 }),
+                tradeApiKey,
             );
             expect(result.payload).toEqual([
                 expect.objectContaining({
@@ -539,7 +590,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
             expect(tradeApi.getSignedTrade).not.toHaveBeenCalled();
         });
@@ -564,7 +615,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
 
@@ -595,7 +646,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
     });
@@ -623,7 +674,7 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
             expect(result.payload).toEqual({
                 type: 'sign-tx-error',
-                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+                code: 'payment-requests-failed',
             });
         });
     });
@@ -674,6 +725,51 @@ describe('createPaymentRequestsThunk', () => {
     });
 
     describe('error handling', () => {
+        const dispatchSellPaymentRequests = () =>
+            createMockStore().dispatch(
+                createPaymentRequestsThunk({
+                    type: 'sell',
+                    account: mockAccount,
+                    composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: undefined,
+                }),
+            );
+
+        it('keeps the trading error of a rejected sub-thunk', async () => {
+            const nonceError: TradingError = {
+                type: 'sign-tx-error',
+                code: 'nonce-failed',
+                cause: { source: 'connect', code: 'Device_Disconnected', message: 'Disconnected' },
+            };
+            (getNonceThunk as unknown as jest.Mock).mockImplementation(
+                createThunk(getNonceThunk.typePrefix, (_, { rejectWithValue }) =>
+                    rejectWithValue(nonceError),
+                ),
+            );
+
+            const result = await dispatchSellPaymentRequests();
+
+            expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
+            expect(result.payload).toEqual(nonceError);
+        });
+
+        it('keeps the message of a throwing sub-thunk as an unexpected cause', async () => {
+            (getRefundAddressThunk as unknown as jest.Mock).mockImplementation(
+                createThunk(getRefundAddressThunk.typePrefix, () => {
+                    throw new Error('Address check crashed');
+                }),
+            );
+
+            const result = await dispatchSellPaymentRequests();
+
+            expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
+            expect(result.payload).toEqual({
+                type: 'sign-tx-error',
+                code: 'payment-requests-failed',
+                cause: { source: 'unexpected', message: 'Address check crashed' },
+            });
+        });
+
         it('should handle tradeApi.getSignedTrade rejection', async () => {
             tradeApi.getSignedTrade = () => Promise.reject('API request errored');
 

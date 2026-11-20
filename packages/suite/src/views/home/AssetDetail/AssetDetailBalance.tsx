@@ -8,17 +8,15 @@ import {
     selectWalletAssetAmount,
     selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
-    selectWalletAssetSymbol,
-    selectWalletAssetTokenDecimals,
-    selectWalletAssetTokenSymbol,
+    selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Card, Column, Row, Skeleton, Text, TextButton } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { AssetDetailAccountsModal } from './AssetDetailModals/AssetDetailAccountsModal';
 
@@ -57,16 +55,14 @@ export const AssetDetailBalanceSkeleton = () => {
 
 export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
+    const networkSymbol = useSelector(state => selectWalletAssetNetworkSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
-    const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
-    const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
     const amount = useSelector(state => selectWalletAssetAmount(state, assetKey));
     const fiatValue = useSelector(state => selectWalletAssetFiatValue(state, assetKey));
     const accountCount = useSelector(state => selectWalletAssetAccountCount(state, assetKey));
     const [isAccountsModalOpen, setIsAccountsModalOpen] = useState(false);
 
-    if (symbol === undefined || amount === undefined) {
+    if (networkSymbol === undefined || amount === undefined) {
         return null;
     }
 
@@ -107,9 +103,8 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
                     <Text typographyStyle="body-md">
                         <FormattedCryptoAmount
                             value={amount}
-                            symbol={tokenSymbol ?? symbol}
+                            networkSymbol={networkSymbol}
                             contractAddress={contractAddress}
-                            tokenDecimals={tokenDecimals}
                             isSymbolSecondary
                         />
                     </Text>

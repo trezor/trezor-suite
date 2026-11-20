@@ -41,8 +41,8 @@ import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceMod
 import { UninitializedDeviceModalAppendix } from '../components/UninitializedDeviceModalAppendix';
 import {
     selectDeviceError,
-    selectIsDeviceFirmwareSupported,
     selectIsDeviceSetupSupported,
+    selectIsFirmwareUpdateRequiredInApp,
     selectShouldFactoryResetBeVisible,
 } from '../selectors';
 
@@ -73,7 +73,7 @@ export const useDetectDeviceError = () => {
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const isDevicePinLocked = useSelector(selectIsDevicePinLocked);
 
-    const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
+    const isFirmwareUpdateRequired = useSelector(selectIsFirmwareUpdateRequiredInApp);
     const deviceError = useSelector(selectDeviceError);
 
     const handleDisconnect = useCallback(() => {
@@ -114,7 +114,12 @@ export const useDetectDeviceError = () => {
                         acquireDeviceThunk({ requestedDevice: selectedDevice }),
                     );
                     if (acquireResult.type === acquireDeviceThunk.fulfilled.type) {
-                        dispatch(startDiscoveryThunk({ device: selectedDevice }));
+                        dispatch(
+                            startDiscoveryThunk({
+                                device: selectedDevice,
+                                trigger: 'device-connect',
+                            }),
+                        );
                     }
                 },
                 testID: '@device/errors/alert/unacquired-device',
@@ -135,13 +140,12 @@ export const useDetectDeviceError = () => {
     ]);
 
     useEffect(() => {
-        if (
-            !isDeviceFirmwareSupported &&
-            isOnboardingFinished &&
-            !isPortfolioTrackerDevice &&
-            !wasDeviceEjectedByUser &&
-            !isDeviceSetupSupported
-        ) {
+        const canShowFirmwareAlert =
+            isOnboardingFinished && !isPortfolioTrackerDevice && !wasDeviceEjectedByUser;
+
+        // Generic mechanism, but in practice, this is displayed for T1B1 with old FW that Suite Mobile doesn't support (cannot update).
+        // On the other hand, a device with unsupported FW that **can** be upgraded, is handled by useOnDeviceReadyNavigation and HomeScreen.
+        if (isFirmwareUpdateRequired && !isDeviceSetupSupported && canShowFirmwareAlert) {
             showAlert({
                 title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
                 description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
@@ -161,7 +165,7 @@ export const useDetectDeviceError = () => {
             });
         }
     }, [
-        isDeviceFirmwareSupported,
+        isFirmwareUpdateRequired,
         isOnboardingFinished,
         isPortfolioTrackerDevice,
         wasDeviceEjectedByUser,

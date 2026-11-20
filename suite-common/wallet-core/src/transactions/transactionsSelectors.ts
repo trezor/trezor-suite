@@ -13,12 +13,12 @@ import {
     selectNetworkTokenDefinitions,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import type { TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type {
     Account,
     AccountKey,
     Timestamp,
-    TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
@@ -26,6 +26,7 @@ import {
     getErc4626Contracts,
     getEvmPrivatePendingHint,
     getFiatRateKey,
+    getHistoryCoveredSince,
     isNftTokenTransfer,
     isPending,
     isStakeTypeTx,
@@ -160,6 +161,17 @@ export const selectTransactionByAccountKeyAndTxid = createMemoizedSelector(
 
         return transaction ?? null;
     },
+);
+
+export const selectAccountTransactionByNonce = createMemoizedSelector(
+    [
+        selectAccountTransactions,
+        (_state, _accountKey: AccountKey | null, nonce: number | undefined) => nonce,
+    ],
+    (transactions, nonce) =>
+        nonce === undefined
+            ? null
+            : (transactions.find(tx => tx.ethereumSpecific?.nonce === nonce) ?? null),
 );
 
 export const selectTransactionBlockTimeById = createMemoizedSelector(
@@ -367,6 +379,20 @@ export const selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp = create
     },
 );
 
+export const selectHistoryCoveredSince = createMemoizedSelector(
+    [selectAccountByKey, selectAccountTransactions],
+    (account, transactions) => {
+        const coveredSince = account ? getHistoryCoveredSince(account) : undefined;
+        if (coveredSince === undefined) return undefined;
+
+        return transactions.reduce(
+            (oldest, tx) =>
+                !isPending(tx) && tx.blockTime ? Math.min(oldest, tx.blockTime) : oldest,
+            coveredSince,
+        );
+    },
+);
+
 export const selectAccountTransactionsFromNowUntilTimestamp = createMemoizedSelector(
     [selectAccountTransactions, (_state, _accountKey: AccountKey, timestamp: number) => timestamp],
     (transactions, timestamp) =>
@@ -446,16 +472,28 @@ const createPhishingNotificationsSelector = createWeakMapSelector.withTypes<
 >();
 
 // Returns a stable predicate; recomputed only when phishing-relevant slices change.
-const selectIsNotificationPhishing = createPhishingNotificationsSelector(
+export const selectIsAccountTransactionPhishing = createPhishingNotificationsSelector(
     [
-        selectDeviceAccounts,
-        selectTransactions,
         selectPhishingTransactions,
         selectHistoricFiatRates,
         selectTokenDefinitions,
         selectActiveDustPhishingThreshold,
     ],
-    (deviceAccounts, transactions, phishingMap, historicRates, tokenDefinitions, dustThreshold) =>
+    (phishingMap, historicRates, tokenDefinitions, dustThreshold) =>
+        (accountKey: AccountKey, transaction: WalletAccountTransaction): boolean =>
+            isPhishingTransaction({
+                transaction,
+                tokenDefinitions: tokenDefinitions?.[transaction.symbol],
+                historicRates,
+                txsMarkedAsNotScam: phishingMap[accountKey] ?? [],
+                dustThreshold,
+            }).isPhishing,
+);
+
+// Returns a stable predicate; recomputed only when phishing-relevant slices change.
+const selectIsNotificationPhishing = createPhishingNotificationsSelector(
+    [selectDeviceAccounts, selectTransactions, selectIsAccountTransactionPhishing],
+    (deviceAccounts, transactions, isAccountTransactionPhishing) =>
         (notification: TransactionNotification): boolean => {
             const account = deviceAccounts.find(
                 a => a.descriptor === notification.descriptor && a.symbol === notification.symbol,
@@ -467,13 +505,7 @@ const selectIsNotificationPhishing = createPhishingNotificationsSelector(
             );
             if (!transaction) return false;
 
-            return isPhishingTransaction({
-                transaction,
-                tokenDefinitions: tokenDefinitions?.[transaction.symbol],
-                historicRates,
-                txsMarkedAsNotScam: phishingMap[account.key] ?? [],
-                dustThreshold,
-            }).isPhishing;
+            return isAccountTransactionPhishing(account.key, transaction);
         },
 );
 

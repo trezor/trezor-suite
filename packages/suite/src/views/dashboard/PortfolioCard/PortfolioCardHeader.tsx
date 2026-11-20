@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
 
+import { type Discovery } from '@suite-common/wallet-types';
 import { Row, Skeleton } from '@trezor/components';
 
-import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { type Discovery } from 'src/types/wallet';
+import { FiatHeader } from '#src/components/wallet/FiatHeader';
 
 export type PortfolioCardHeaderProps = {
     discovery?: Discovery;

@@ -11,10 +11,10 @@ import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
-import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { AmountUnitSwitchWrapper } from '#src/components/suite/AmountUnitSwitchWrapper';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useIsContentBelowBreakpoint } from '#src/support/suite/ContentFlex';
 
 const DetailsContainer = styled(motion.div)`
     -webkit-app-region: no-drag;
@@ -103,7 +103,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     return (
         <DetailsContainer initial={false} animate={controls}>
             <Row gap={4} overflow="hidden">
-                <TokenIcon size={40} symbol={symbol} />
+                <TokenIcon size={40} networkSymbol={symbol} />
                 <Column
                     overflow="hidden"
                     // To accommodate the labeling component
@@ -122,7 +122,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                                     <FormattedCryptoAmount
                                         data-testid="@wallet/account/crypto-balance"
                                         value={formattedBalance}
-                                        symbol={symbol}
+                                        networkSymbol={symbol}
                                     />
                                 </AmountUnitSwitchWrapper>
                                 {shallDisplayBaseCurrency && (

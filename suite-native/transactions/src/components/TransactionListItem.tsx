@@ -1,16 +1,11 @@
-import { useMemo } from 'react';
+import { type ComponentType, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     type AccountsRootState,
-    type FiatRatesRootState,
-    type PhishingRootState,
-    type TransactionsRootState,
     createTargets,
     getTxStakeType,
     selectAccountByKey,
-    selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { EmptyAmountText } from '@suite-native/formatters';
@@ -18,7 +13,10 @@ import { type WalletAccountTransaction } from '@suite-native/tokens';
 
 import { groupTargetOutputs } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
-import { TransactionListItemContainer } from './TransactionListItemContainer';
+import {
+    TransactionListItemContainer,
+    type TransactionSubtitleProps,
+} from './TransactionListItemContainer';
 import { TransactionTarget } from './TransactionTarget';
 
 type TransactionListItemProps = {
@@ -26,6 +24,7 @@ type TransactionListItemProps = {
     accountKey: AccountKey;
     isFirst?: boolean;
     isLast?: boolean;
+    subtitleComponent?: ComponentType<TransactionSubtitleProps>;
 };
 
 export const TransactionListItem = ({
@@ -33,19 +32,11 @@ export const TransactionListItem = ({
     accountKey,
     isFirst = false,
     isLast = false,
+    subtitleComponent,
 }: TransactionListItemProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const { isPhishing: isPhishingTransaction } = useSelector(
-        (
-            state: TokenDefinitionsRootState &
-                TransactionsRootState &
-                FiatRatesRootState &
-                PhishingRootState,
-        ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
-    );
-
     const hasTokensCount = transaction.tokens.length;
 
     const firstToken = transaction.tokens[0];
@@ -68,6 +59,7 @@ export const TransactionListItem = ({
                 hasTokensCount={hasTokensCount}
                 isFirst={isFirst}
                 isLast={isLast}
+                subtitleComponent={subtitleComponent}
             >
                 <EmptyAmountText />
             </TransactionListItemContainer>
@@ -85,6 +77,7 @@ export const TransactionListItem = ({
                 hasTokensCount={transaction.tokens.length - 1}
                 isFirst={isFirst}
                 isLast={isLast}
+                subtitleComponent={subtitleComponent}
             />
         );
 
@@ -97,12 +90,12 @@ export const TransactionListItem = ({
             hasTokensCount={hasTokensCount}
             isFirst={isFirst}
             isLast={isLast}
+            subtitleComponent={subtitleComponent}
         >
             {allOutputs.map((target, i) => (
                 <TransactionTarget
                     key={i}
                     accountKey={accountKey}
-                    isPhishingTransaction={isPhishingTransaction}
                     transaction={transaction}
                     {...target}
                 />

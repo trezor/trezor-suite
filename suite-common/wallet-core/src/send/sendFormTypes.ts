@@ -9,8 +9,6 @@ import {
 } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { type ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { type Err } from '@trezor/type-utils';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 
@@ -35,6 +33,11 @@ export type ComposeFeeLevelsError = {
     message?: string;
 };
 
+export type EnhanceTransactionError = {
+    error: 'enhance-transaction-failed';
+    message: string;
+};
+
 export type SignTransactionError = {
     error: 'sign-transaction-failed';
     errorCode?: CONNECT_ERRORS.ErrorCode;
@@ -49,11 +52,13 @@ export type SignTransactionTimeoutError = {
 
 export type PushTransactionError = {
     error: 'push-transaction-failed' | 'push-transaction-pending-conflict';
-    metadata: Err<SerializedError>;
+    errorCode?: CONNECT_ERRORS.ErrorCode;
+    message?: string;
 };
 
 export type SendFormError =
     | ComposeFeeLevelsError
+    | EnhanceTransactionError
     | SignTransactionError
     | SignTransactionTimeoutError
     | PushTransactionError;

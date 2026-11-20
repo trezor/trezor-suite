@@ -4,7 +4,7 @@ import type {
     StellarClaimableBalanceOffer,
     StellarContractCallData,
     StellarOperationType,
-} from '@trezor/network-stellar/types';
+} from '@trezor/network-stellar-types';
 
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TokenProtocols, TronAccountExtraData, TronChainExtraData } from './blockbook-api';
@@ -180,6 +180,7 @@ export interface ServerInfo {
     blockHash: string;
     consensusBranchId?: number; // zcash current branch id
     network: string;
+    cardanoProtocolParameters?: CardanoProtocolParameters; // cardano only, when the backend reports them
 }
 
 /**

@@ -78,15 +78,19 @@ import { noopCreateLogger } from '@trezor/logger';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { SUITE } from 'src/actions/suite/constants';
+import * as SUITE from '#src/actions/suite/constants/suiteConstants';
 import {
     type InitThunkDesktopApiDep,
     type InitThunkState,
     initThunk,
-} from 'src/actions/suite/initAction';
-import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { walletReducers } from 'src/reducers/wallet';
+} from '#src/actions/suite/initAction';
+import { prepareSuiteMiddleware } from '#src/middlewares/suite/suiteMiddleware';
+import suiteReducer from '#src/reducers/suite/suiteReducer';
+import { createWalletReducer } from '#src/reducers/wallet/walletReducer';
+
+import { mockExtraDependenciesForReducers } from '../../../mocks/mockExtraDependenciesForReducers';
+
+const walletReducers = createWalletReducer(mockExtraDependenciesForReducers);
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {

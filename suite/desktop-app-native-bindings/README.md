@@ -74,7 +74,7 @@ If you make changes to the C++ source code (`win_hello.cpp`), you must rebuild t
 
 ## Integration with Trezor Suite
 
-The Windows Hello module is automatically packaged with the Windows build of Trezor Suite. The electron-builder configuration in `suite/desktop-app/electron-builder-config.js` includes this package in the final application bundle.
+The Windows Hello module is automatically packaged with the Windows build of Trezor Suite. The electron-builder configuration in `suite-app/desktop-app/electron-builder-config.js` includes this package in the final application bundle.
 
 ### Packaging and Loading the Native Module
 

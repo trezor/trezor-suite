@@ -3,7 +3,7 @@ import { Keyboard } from 'react-native';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { events } from '@suite-common/analytics';
+import { toTokenAddress, toTokenSymbol } from '@suite-common/tokens';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWithdrawErrorReason,
@@ -14,7 +14,6 @@ import {
     splitYieldPendingTransaction,
     yieldActions,
 } from '@suite-common/wallet-core';
-import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, getApyBreakdown, subunitsToUnits } from '@suite-common/wallet-utils';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
@@ -31,8 +30,7 @@ import { BigNumber } from '@trezor/utils';
 import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { isAmountInputValueValid } from '../../../utils/yield/yieldFiatAmountUtils';
 import { getYieldWithdrawAmountValidationError } from '../../../utils/yield/yieldWithdrawUtils';
-import { useNavigateBackAnalytics } from '../../earn/useNavigateBackAnalytics';
-import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
+import { useYieldFlowAnalytics, useYieldFormExitAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingSheet } from '../useYieldPendingSheet';
 import { useYieldPendingTransactionDetails } from '../useYieldPendingTransactionDetails';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
@@ -86,15 +84,12 @@ export const useYieldWithdrawController = () => {
         vaultId: vault?.id,
     });
 
-    useNavigateBackAnalytics({
-        type: events.yieldNavigateEvent.name,
-        payload: {
-            action: 'cancel',
-            from: 'withdraw-form',
-            to: 'withdraw-form',
-            networkSymbol: account?.symbol,
-            vaultId: vault?.id,
-        },
+    useYieldFormExitAnalytics({
+        flowType: 'withdraw',
+        networkSymbol: account?.symbol,
+        vaultId: vault?.id,
+        isEnabled: resolutionStatus === 'resolved',
+        isCompleted: session?.step === 'complete' || session?.step === 'unwrap',
     });
 
     const activeInputToken = flowData
@@ -137,9 +132,9 @@ export const useYieldWithdrawController = () => {
     const {
         fee: withdrawFee,
         formDraft: withdrawFeeFormDraft,
+        isWithdrawFeeReady,
         hasFeeEstimationError,
         isComposingWithdrawFee,
-        isFeeUnavailable,
         preparedAction,
     } = withdrawFees;
     const feeFiatConverters = useCryptoFiatConverters({
@@ -160,8 +155,7 @@ export const useYieldWithdrawController = () => {
             isAmountValidationErrorDisplayed ||
             !withdrawFee ||
             resolutionStatus !== 'resolved' ||
-            preparedAction?.amount !== amount ||
-            preparedAction.flowType !== flowType
+            !isWithdrawFeeReady
         ) {
             return false;
         }
@@ -180,17 +174,10 @@ export const useYieldWithdrawController = () => {
         isAmountValidationErrorDisplayed,
         amountFiatConverters,
         feeFiatConverters,
-        preparedAction,
+        isWithdrawFeeReady,
         resolutionStatus,
         withdrawFee,
-        flowType,
     ]);
-
-    const isWithdrawReviewReady =
-        !!amount &&
-        preparedAction?.amount === amount &&
-        preparedAction.flowType === flowType &&
-        !!withdrawFeeFormDraft;
 
     const pendingTransaction = session?.action.pendingTransaction ?? null;
     const { actionPendingTransaction } = splitYieldPendingTransaction(pendingTransaction, flowType);
@@ -208,9 +195,7 @@ export const useYieldWithdrawController = () => {
         isWithdrawPending ||
         isAmountTooHigh ||
         isAmountValidationErrorDisplayed ||
-        !isWithdrawReviewReady ||
-        isComposingWithdrawFee ||
-        isFeeUnavailable ||
+        !isWithdrawFeeReady ||
         messageSystem.isDisabled;
 
     useYieldPendingTransactionTracking({
@@ -400,7 +385,7 @@ export const useYieldWithdrawController = () => {
     );
 
     const handleContinue = useCallback(() => {
-        if (!flowKey || !isWithdrawReviewReady || !preparedAction || messageSystem.isDisabled) {
+        if (!flowKey || isSubmitDisabled || !preparedAction) {
             return;
         }
 
@@ -432,8 +417,7 @@ export const useYieldWithdrawController = () => {
         dispatch,
         flowType,
         flowKey,
-        messageSystem.isDisabled,
-        isWithdrawReviewReady,
+        isSubmitDisabled,
         isWrappedNativeVault,
         navigation,
         preparedAction,
@@ -450,7 +434,7 @@ export const useYieldWithdrawController = () => {
     const resolvedVault = yieldFlowData.vault;
     const underlyingTokenSymbol = toTokenSymbol(yieldFlowData.flowData.token.symbol);
     const vaultTokenSymbol = toTokenSymbol(yieldFlowData.flowData.receiptToken.symbol);
-    const activeUnitSymbol = toTokenSymbol(activeInputToken.symbol);
+
     const activeUnitTokenContract = activeInputToken.contractAddress
         ? toTokenAddress(activeInputToken.contractAddress)
         : undefined;
@@ -493,22 +477,22 @@ export const useYieldWithdrawController = () => {
             ? {
                   amount: maxAmount,
                   tokenContract: activeUnitTokenContract,
-                  tokenDecimals: activeInputToken.decimals,
-                  tokenSymbol: activeUnitSymbol,
                   approximateAmount: assetAmount || (depositedAmount ?? ''),
               }
             : null,
         feeEstimationError: hasFeeEstimationError
             ? { onRetry: withdrawFees.retryFeeEstimation }
             : null,
-        feeSelector: withdrawFeeFormDraft
-            ? {
-                  formDraft: withdrawFeeFormDraft,
-                  formDraftKey: withdrawFees.formDraftKey,
-                  selectedFee: withdrawFees.selectedFee,
-                  updateFeeLevelThunk: withdrawFees.updateFeeLevelThunk,
-              }
-            : null,
+        feeSelector:
+            withdrawFeeFormDraft && !hasFeeEstimationError
+                ? {
+                      formDraft: withdrawFeeFormDraft,
+                      formDraftKey: withdrawFees.formDraftKey,
+                      getCustomFeeLevel: withdrawFees.getCustomFeeLevel,
+                      selectedFee: withdrawFees.selectedFee,
+                      updateFeeLevelThunk: withdrawFees.updateFeeLevelThunk,
+                  }
+                : null,
         warning: {
             isAmountTooHigh: !isAmountValidationErrorDisplayed && isAmountTooHigh,
             isMaxWithdrawInfoVisible,
@@ -528,7 +512,6 @@ export const useYieldWithdrawController = () => {
                   isExploreDisabled: !explorerUrl,
                   onExplorePress: openInBlockchain,
                   amountTokenContract: activeUnitTokenContract,
-                  amountTokenSymbol: activeUnitSymbol,
                   vaultTokenContract,
               }
             : null,

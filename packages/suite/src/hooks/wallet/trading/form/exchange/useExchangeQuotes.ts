@@ -28,12 +28,12 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDidUpdate } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 import {
     getExchangeActiveAmount,
     getExchangeActiveAmountField,
     isExchangeQuotesFetchAllowed,
-} from 'src/utils/wallet/trading/exchangeQuotesRequestUtils';
+} from '#src/utils/wallet/trading/exchangeQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 
@@ -41,6 +41,7 @@ type UseExchangeQuotesProps = {
     methods: UseFormReturn<TradingExchangeFormProps>;
     network: Network | undefined;
     shouldSendInSats: boolean | undefined;
+    fromAddress?: string;
     receiveAddress?: string;
     receiveAccountKey?: AccountKey;
     receiveAccountSymbol?: NetworkSymbol;
@@ -55,6 +56,7 @@ export const useExchangeQuotes = ({
     methods,
     network,
     shouldSendInSats,
+    fromAddress,
     receiveAddress,
     receiveAccountKey,
     receiveAccountSymbol,
@@ -97,7 +99,12 @@ export const useExchangeQuotes = ({
         requestQuotes: values =>
             dispatch(
                 exchangeThunks.handleRequestThunk({
-                    formValues: { ...values, receiveAddress, receiveAccountKey },
+                    formValues: {
+                        ...values,
+                        fromAddress: fromAddress ?? values.fromAddress,
+                        receiveAddress,
+                        receiveAccountKey,
+                    },
                     network: network!,
                     shouldSendInSats,
                     composeRequestCallback,

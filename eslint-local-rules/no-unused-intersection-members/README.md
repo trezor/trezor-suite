@@ -130,5 +130,5 @@ reached, the comparison cannot prove that a member is removable and the rule kee
 ### Type-aware execution
 
 The rule requires TypeScript parser services and reuses their existing `Program` and `TypeChecker`. It
-is enabled only when `ESLINT_RUN_EXPENSIVE_CHECKS=true`; normal editor and local lint runs do not pay
-for this analysis.
+runs only with `ESLINT_RULE_SET=type-aware` or `ESLINT_RULE_SET=all`, alongside the other type-aware
+rules; normal editor and default local lint runs do not pay for this analysis.

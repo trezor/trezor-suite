@@ -25,6 +25,16 @@ ruleTester.run('no-suite-imports-in-suite-common', noSuiteImportsInSuiteCommonRu
     ],
     invalid: [
         {
+            code: "import { foo } from '@suite-app/web-app';",
+            filename: '/repo/suite-common/example/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportSuiteIntoSuiteCommon',
+                    data: { sourcePath: '@suite-app/web-app' },
+                },
+            ],
+        },
+        {
             code: "import { TranslationKey } from '@suite/intl';",
             filename: '/repo/suite-common/wallet-types/src/transaction.ts',
             errors: [
@@ -41,6 +51,16 @@ ruleTester.run('no-suite-imports-in-suite-common', noSuiteImportsInSuiteCommonRu
                 {
                     messageId: 'doNotImportSuiteIntoSuiteCommon',
                     data: { sourcePath: '@suite-native/intl' },
+                },
+            ],
+        },
+        {
+            code: "import { app } from '@suite-native-app/app';",
+            filename: '/repo/suite-common/example/src/file.ts',
+            errors: [
+                {
+                    messageId: 'doNotImportSuiteIntoSuiteCommon',
+                    data: { sourcePath: '@suite-native-app/app' },
                 },
             ],
         },

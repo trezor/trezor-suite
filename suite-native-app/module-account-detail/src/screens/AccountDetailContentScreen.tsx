@@ -1,0 +1,76 @@
+import { useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
+import { type TokenAddress } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { Screen } from '@suite-native/navigation';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { TransactionList } from '@suite-native/transactions';
+import { useServices } from '@trezor/dependency-injection';
+
+import { AccountDetailEmptyState } from '../components/AccountDetailEmptyState';
+import { AssetDetailScreenHeader } from '../components/AssetDetailScreenHeader';
+import { TransactionListHeader } from '../components/TransactionListHeader';
+
+type AccountDetailContentScreenProps = {
+    account: Account;
+    tokenContract?: TokenAddress;
+};
+
+export const AccountDetailContentScreen = ({
+    account,
+    tokenContract,
+}: AccountDetailContentScreenProps) => {
+    const { analytics } = useServices(injectNativeAnalytics);
+    const token = useSelector((state: TokensRootState) =>
+        selectAccountTokenInfo(state, account.key, tokenContract),
+    );
+
+    useEffect(() => {
+        if (account) {
+            analytics.report({
+                type: events.assetDetailEvent.name,
+                payload: {
+                    assetSymbol: account.symbol,
+                    tokenSymbol: token?.symbol,
+                    tokenAddress: token?.contract,
+                },
+            });
+        }
+    }, [account, token?.symbol, token?.contract, analytics, token]);
+
+    const listHeaderComponent = useMemo(
+        () => <TransactionListHeader accountKey={account.key} tokenContract={tokenContract} />,
+        [account.key, tokenContract],
+    );
+
+    const renderListEmptyComponent = useCallback(
+        ({ isRecentWindowEmpty }: { isRecentWindowEmpty: boolean }) => (
+            <AccountDetailEmptyState
+                accountKey={account.key}
+                tokenContract={tokenContract}
+                isRecentWindowEmpty={isRecentWindowEmpty}
+            />
+        ),
+        [account.key, tokenContract],
+    );
+
+    return (
+        <Screen
+            /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
+            isScrollable={false}
+            header={<AssetDetailScreenHeader account={account} tokenContract={tokenContract} />}
+            noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
+        >
+            <TransactionList
+                account={account}
+                tokenContract={tokenContract}
+                listHeaderComponent={listHeaderComponent}
+                renderListEmptyComponent={renderListEmptyComponent}
+            />
+        </Screen>
+    );
+};

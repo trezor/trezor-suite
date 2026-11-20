@@ -11,21 +11,20 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
 const mockUseTradingFormOfferCommon = jest.fn();
 
-jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
+jest.mock('#src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
     useTradingFormContext: () => mockUseTradingFormContext(),
 }));
 
 jest.mock(
-    'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon',
+    '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon',
     () => ({ useTradingFormOfferCommon: () => mockUseTradingFormOfferCommon() }),
 );
 
@@ -34,7 +33,7 @@ type TradingFormOfferConfirmButtonProps = {
 };
 
 jest.mock(
-    'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton',
+    '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton',
     () => ({
         TradingFormOfferConfirmButton: ({ testId }: TradingFormOfferConfirmButtonProps) => (
             <button data-testid={testId} />
@@ -42,12 +41,12 @@ jest.mock(
     }),
 );
 
-jest.mock('src/views/wallet/trading/common/TradingKYCWarning', () => ({
+jest.mock('#src/views/wallet/trading/common/TradingKYCWarning', () => ({
     TradingKYCWarning: () => null,
 }));
 
 jest.mock(
-    'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC',
+    '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC',
     () => ({ TradingFormOfferOTC: () => null }),
 );
 
@@ -59,7 +58,10 @@ const account = mockWalletAccount({
 });
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: {
             ...mockInitialAppState,
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
@@ -71,7 +73,7 @@ const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
                     composedTransactionInfo: { composed },
                 },
             },
-        } as unknown as AppState,
+        } as unknown as MockSuiteState,
         services: () => ({ analytics: mockDesktopAnalytics() }),
     });
     renderWithProviders(services, <TradingFormOfferSellActions />);

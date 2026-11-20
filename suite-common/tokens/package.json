@@ -1,0 +1,18 @@
+{
+    "name": "@suite-common/tokens",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/type-utils": "workspace:*"
+    }
+}

@@ -1,6 +1,7 @@
 import { addDays, startOfMonth } from 'date-fns';
 
 import { type SignOperator } from '@suite-common/suite-types';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkFeature, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -15,7 +16,6 @@ import {
     type RbfTransactionParamsBitcoin,
     type RbfTransactionParamsEthereum,
     type Timestamp,
-    type TokenAddress,
     type WalletAccountTransaction,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
@@ -352,7 +352,7 @@ export const getDecreaseOutputId = (
         : undefined;
 
 /* Convert date to string in YYYY-MM-DD format */
-const generateTransactionDateKey = (d: Date) =>
+export const generateTransactionDateKey = (d: Date) =>
     `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 
 /** Parse Date object from a string in YYYY-MM-DD format */
@@ -369,6 +369,22 @@ export const generateTransactionMonthKey = (d: Date): MonthKey =>
 
 export const parseTransactionMonthKey = (key: MonthKey): Date => new Date(key);
 
+export const UNDATED_TRANSACTIONS_GROUP_KEY = 'no-blocktime';
+
+export const getTransactionDateGroupKey = (
+    transaction: WalletAccountTransaction,
+    groupBy: 'day' | 'month' = 'day',
+) => {
+    if (!transaction.blockTime || transaction.blockTime <= 0) {
+        return UNDATED_TRANSACTIONS_GROUP_KEY;
+    }
+
+    const keyFormatter =
+        groupBy === 'day' ? generateTransactionDateKey : generateTransactionMonthKey;
+
+    return keyFormatter(new Date(transaction.blockTime * 1000));
+};
+
 export type GroupedTransactionsByDate = Record<string, WalletAccountTransaction[]>;
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
@@ -378,32 +394,23 @@ export type GroupedTransactionsByDate = Record<string, WalletAccountTransaction[
 export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
     groupBy: 'day' | 'month' = 'day',
-): GroupedTransactionsByDate => {
+): GroupedTransactionsByDate =>
     // Note: We should use ts-belt for sorting this array but currently, there can be undefined inside
     // Built-in sort doesn't include undefined elements but ts-belt does so there will be some refactoring involved.
-    const keyFormatter =
-        groupBy === 'day' ? generateTransactionDateKey : generateTransactionMonthKey;
+    [...transactions]
+        // There could be some undefined/null in array, not sure how it happens. Maybe related to pagination?
+        .filter(transaction => !!transaction)
+        .sort(sortByBlockHeight)
+        .reduce<GroupedTransactionsByDate>((r, item) => {
+            // pending txs are grouped as 'no-blocktime' only if blockTime is unavailable (otherwise sorted by blockTime)
+            const key = getTransactionDateGroupKey(item, groupBy);
+            const prev = r[key] ?? [];
 
-    return (
-        [...transactions]
-            // There could be some undefined/null in array, not sure how it happens. Maybe related to pagination?
-            .filter(transaction => !!transaction)
-            .sort(sortByBlockHeight)
-            .reduce<GroupedTransactionsByDate>((r, item) => {
-                // pending txs are grouped as 'no-blocktime' only if blockTime is unavailable (otherwise sorted by blockTime)
-                const key =
-                    item.blockTime && item.blockTime > 0
-                        ? keyFormatter(new Date(item.blockTime * 1000))
-                        : 'no-blocktime';
-                const prev = r[key] ?? [];
-
-                return {
-                    ...r,
-                    [key]: [...prev, item],
-                };
-            }, {})
-    );
-};
+            return {
+                ...r,
+                [key]: [...prev, item],
+            };
+        }, {});
 
 export const groupJointTransactions = (transactions: WalletAccountTransaction[]) =>
     transactions
@@ -710,7 +717,12 @@ export const findChainedTransactions = (
 export const getConfirmations = (
     tx: WalletAccountTransaction | AccountTransaction,
     height: number,
-) => (tx.blockHeight && tx.blockHeight > 0 ? height - tx.blockHeight + 1 : 0);
+) =>
+    tx.blockHeight && tx.blockHeight > 0
+        ? // The stored blockchain tip can lag behind the transaction's block (or be unknown yet),
+          // but a mined transaction always has at least one confirmation.
+          Math.max(1, height - tx.blockHeight + 1)
+        : 0;
 
 // inner private type, it's pointless to move it outside of this file
 interface Analyze {
@@ -1284,3 +1296,7 @@ export const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
 
     return 0;
 };
+
+export const getProviderTransactionValidityMs = (
+    networkType: Account['networkType'] | undefined,
+): number | undefined => (networkType === 'solana' ? SOLANA_BLOCKHASH_VALIDITY_MS : undefined);

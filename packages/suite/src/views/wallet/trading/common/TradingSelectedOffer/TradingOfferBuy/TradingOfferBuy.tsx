@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import {
     type TradingRootState,
     selectTradingBuyExtraField,
-    selectTradingBuyInfo,
+    selectTradingBuyProviders,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
     selectTradingProviderCompanyName,
@@ -14,11 +14,11 @@ import { Card, Column, H2, Text } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
-import { type TradingOfferBuyProps } from 'src/types/trading/tradingForm';
-import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
-import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
+import { type TradingGetCryptoQuoteAmountProps } from '#src/types/trading/trading';
+import { type TradingOfferBuyProps } from '#src/types/trading/tradingForm';
+import { TradingFormOfferConfirmButton } from '#src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
+import { TradingKYCWarning } from '#src/views/wallet/trading/common/TradingKYCWarning';
+import { TradingSelectedOfferInfo } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 
 export const TradingOfferBuy = ({
     selectedQuote,
@@ -27,7 +27,7 @@ export const TradingOfferBuy = ({
 }: TradingOfferBuyProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
 
-    const buyInfo = useSelector(selectTradingBuyInfo);
+    const providers = useSelector(selectTradingBuyProviders);
     const receiveAddress = useSelector(selectTradingBuyReceiveAddress);
     const receiveExtraField = useSelector(selectTradingBuyExtraField);
     const receiveAccountKey = useSelector(selectTradingBuyReceiveAccountKey);
@@ -65,7 +65,7 @@ export const TradingOfferBuy = ({
                     <TradingSelectedOfferInfo
                         type="buy"
                         selectedQuote={selectedQuote}
-                        providers={buyInfo?.providerInfos}
+                        providers={providers}
                         quoteAmounts={quoteAmounts}
                         paymentMethod={selectedQuote.paymentMethod}
                         paymentMethodName={selectedQuote.paymentMethodName}

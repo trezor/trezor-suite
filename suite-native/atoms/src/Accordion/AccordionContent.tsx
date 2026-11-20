@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, type ViewInstance } from 'react-native';
 import {
     type SharedValue,
     measure,
@@ -7,21 +7,21 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AnimatedBox } from '../Animated/AnimatedBox';
 
 export type AccordionContentProps = {
     isOpened: SharedValue<boolean>;
-    style?: NativeStyleObject;
     children: React.ReactNode;
 };
 
-const contentWrapperStyle = prepareNativeStyle(() => ({
+const contentWrapperStyle = prepareNativeStyle(({ spacings }) => ({
     position: 'absolute',
     left: 0,
     top: 0,
     width: '100%',
+    paddingTop: spacings.sp8,
 }));
 
 const ANIMATION_DURATION = 200;
@@ -29,7 +29,7 @@ const ANIMATION_DURATION = 200;
 export const AccordionContent = ({ isOpened, children }: AccordionContentProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const animatedRef = useAnimatedRef<View>();
+    const animatedRef = useAnimatedRef<ViewInstance>();
 
     const animatedHeightStyle = useAnimatedStyle(() => ({
         height: withTiming(isOpened.value ? Number(measure(animatedRef)?.height ?? 0) : 0, {
@@ -40,10 +40,8 @@ export const AccordionContent = ({ isOpened, children }: AccordionContentProps) 
 
     return (
         <AnimatedBox style={animatedHeightStyle}>
-            <View style={applyStyle(contentWrapperStyle)}>
-                <View ref={animatedRef} collapsable={false}>
-                    {children}
-                </View>
+            <View ref={animatedRef} style={applyStyle(contentWrapperStyle)} collapsable={false}>
+                {children}
             </View>
         </AnimatedBox>
     );

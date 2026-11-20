@@ -5,7 +5,7 @@ import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@windows'] }, () => {
     test.use({ webClipboardRead: true });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -40,6 +40,12 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
             coin: asNetworkSymbol('trx'),
             category: TestCategory.Coins,
             addressFormat: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
+            deviceDisplayPrefix: '',
+        },
+        {
+            coin: asNetworkSymbol('xlm'),
+            category: TestCategory.Coins,
+            addressFormat: /^G[A-Z2-7]{55}$/,
             deviceDisplayPrefix: '',
         },
     ];

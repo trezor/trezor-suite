@@ -9,13 +9,9 @@
 import { useCallback } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { type TokenAddress } from '@suite-common/tokens';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import {
-    type FormOptions,
-    type FormState,
-    type Output,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type FormOptions, type FormState, type Output } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     parseBaseCurrencyToFormattedCrypto,
@@ -24,15 +20,14 @@ import {
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import {
+    type GetCurrentRateParams,
+    type SendContextValues,
+    type UseSendFormState,
+} from '#src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
-
-export type GetCurrentRateParams = {
-    currencyCode: BaseCurrencyCode;
-    tokenAddress: TokenAddress;
-};
 
 type UseSendFormFieldsParams = UseFormReturn<FormState> & {
     network: UseSendFormState['network'];
@@ -43,8 +38,8 @@ export const useSendFormFields = ({
     getValues,
     setValue,
     clearErrors,
+    getErrors,
     network,
-    formState: { errors },
 }: UseSendFormFieldsParams) => {
     const { shouldSendInSats, areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
     const currentRates = useSelector(selectCurrentFiatRates);
@@ -82,7 +77,8 @@ export const useSendFormFields = ({
                 return; // fiat input not registered (testnet or fiat not available)
             }
             const targetInputName = `outputs.${outputId}.${target}` as const;
-            const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
+            const { outputs: outputErrors } = getErrors();
+            const outputError = outputErrors ? outputErrors[outputId] : undefined;
             const error = outputError
                 ? outputError[target === 'fiat' ? 'amount' : 'fiat']
                 : undefined;
@@ -107,7 +103,7 @@ export const useSendFormFields = ({
                 setValue(targetInputName, formattedTargetValue, { shouldValidate: true });
             }
         },
-        [clearErrors, getCurrentFiatRate, getValues, setValue, errors],
+        [clearErrors, getCurrentFiatRate, getValues, setValue, getErrors],
     );
 
     const calculateBaseCurrencyAmountFromCryptoAmount = useCallback(

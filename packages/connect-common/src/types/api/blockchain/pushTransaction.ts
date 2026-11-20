@@ -10,15 +10,10 @@ import type { Params, Response } from '../../params';
 
 export type PushTransaction = Static<typeof PushTransaction>;
 export const PushTransaction = Type.Object({
-    tx: Type.Union([
-        Type.String(),
-        Type.Object({
-            hex: Type.String(),
-            disableAlternativeRPC: Type.Optional(Type.Boolean()),
-        }),
-    ]),
+    tx: Type.String(),
     coin: CoinSymbolParam(),
     identity: Type.Optional(Type.String()),
+    disableAlternativeRPC: Type.Optional(Type.Boolean()),
 });
 
 // push transaction response

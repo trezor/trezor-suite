@@ -149,8 +149,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await dashboardPage.passphraseSubmitButton.click();
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+                await devicePrompt.confirmPassphraseOnDevice('cba');
                 await expect(dashboardPage.passphraseMismatchHeader).toContainTranslation(
                     'TR_PASSPHRASE_MISMATCH',
                 );
@@ -163,8 +162,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await dashboardPage.passphraseMismatchStartOverButton.click();
                 await dashboardPage.passphraseInput.fill('abc');
                 await dashboardPage.passphraseSubmitButton.click();
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+                await devicePrompt.confirmPassphraseOnDevice('abc');
                 await dashboardPage.openUnusedWalletButton1.click();
                 await dashboardPage.openUnusedWalletButton2.click();
             });
@@ -172,8 +170,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Confirm correct passphrase', async () => {
                 await dashboardPage.passphraseInput.fill('abc');
                 await dashboardPage.passphraseSubmitButton.click();
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
-                await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+                await devicePrompt.confirmPassphraseOnDevice('abc');
 
                 await dashboardPage.modal.waitFor({ state: 'detached' });
                 await dashboardPage.openDeviceSwitcher();

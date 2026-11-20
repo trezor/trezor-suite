@@ -22,7 +22,7 @@ import {
 import { PROTO } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
+import { submitRequestForm as envSubmitRequestForm } from '#src/utils/suite/env';
 
 type FormState = {
     cryptoInput?: string;
@@ -52,7 +52,9 @@ export const submitRequestFormThunk =
         }
     };
 
-type ConvertDraftsThunkState = AccountsRootState & FormDraftRootState & WalletSettingsRootState;
+export type ConvertDraftsThunkState = AccountsRootState &
+    FormDraftRootState &
+    WalletSettingsRootState;
 
 export const convertDraftsThunk =
     () => (dispatch: Dispatch<UnknownAction>, getState: () => ConvertDraftsThunkState) => {

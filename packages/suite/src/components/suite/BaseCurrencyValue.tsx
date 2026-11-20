@@ -7,18 +7,15 @@ import { HiddenPlaceholder, type HiddenPlaceholderProps } from '@suite/discreet-
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
-import {
-    type RateTypeWithoutHistoric,
-    type TokenAddress,
-    asBaseCurrencyAmount,
-} from '@suite-common/wallet-types';
+import { type RateTypeWithoutHistoric, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
-import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import type { UseFiatFromCryptoValueParams } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
 const SameWidthNums = styled.span<HiddenPlaceholderProps>`

@@ -1,8 +1,9 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress, type WalletSettings } from '@suite-common/wallet-types';
+import { type WalletSettings } from '@suite-common/wallet-types';
 
 type FetchLastWeekAssetPriceParams = {
     networkSymbol: NetworkSymbol;
@@ -26,7 +27,11 @@ export const fetchLastWeekAssetPrice = async ({
         tokenContract !== undefined && networkSymbol !== 'eth',
     );
 
+    if (!historicalRates) {
+        throw new Error('Failed to fetch the last week asset price');
+    }
+
     // Providers may normalize the requested timestamp. Since only one timestamp was requested,
     // its rate is the first and only response rather than an exact timestamp match.
-    return historicalRates?.tickers[0]?.rates[fiatCurrencyCode];
+    return historicalRates.tickers[0]?.rates[fiatCurrencyCode];
 };

@@ -1,9 +1,9 @@
 import { getCryptoId } from '@suite-common/trading';
 import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type Account } from 'src/types/wallet';
 import {
     getBuyReceiveExtraFieldDescription,
     getComposeAddressPlaceholder,
@@ -11,7 +11,7 @@ import {
     tradingGetAccountLabel,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
-} from 'src/utils/wallet/trading/tradingUtils';
+} from '#src/utils/wallet/trading/tradingUtils';
 
 import { FIXTURE_ACCOUNT_OPTIONS } from './__fixtures__/tradingUtils';
 

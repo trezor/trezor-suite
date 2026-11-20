@@ -1,23 +1,23 @@
 import { useSelector } from 'react-redux';
 
-import { type DeviceRootState } from '@suite-common/device';
-import { type NetworksRootState } from '@suite-common/networks';
-import { type AccountsRootState } from '@suite-common/wallet-core';
+import {
+    type StakingDeviceRootState,
+    selectDeviceStakingEntryByWarning,
+    selectDeviceStakingPositionEntries,
+} from '@suite-common/earn-staking';
+import {
+    type EarnListRootState,
+    selectYieldClaimListItems,
+    selectYieldListItems,
+    useYieldClaimRewardsWithFiat,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { EarnBalanceCard } from './EarnBalanceCard';
-import {
-    type EarnListRootState,
-    selectCardanoStakedWithFiveBinariesAccountKey,
-    selectStakingListItems,
-    selectYieldClaimListItems,
-    selectYieldListItems,
-} from '../../earnScreenSelectors';
 import { useMessageSystemEarnDashboard } from '../../hooks/earn/useMessageSystemEarnDashboard';
 import { useReportEarnDashboardReadyEvent } from '../../hooks/earn/useReportEarnDashboardReadyEvent';
-import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 import { CardanoStakingInfoBanner } from '../staking/CardanoStakingInfoBanner';
 import { StakingPositionsCard } from '../staking/StakingPositionsCard';
 import { YieldPositionsCard } from '../yield/YieldPositionsCard';
@@ -34,26 +34,27 @@ export const EarnScreenHeader = () => {
         isError: isYieldOpportunitiesError,
     } = useYieldOpportunities();
 
-    const stakingPositions = useSelector((state: EarnListRootState) =>
-        !isStakingDisabled ? selectStakingListItems(state) : EMPTY_ARRAY,
+    const stakingPositionEntries = useSelector((state: StakingDeviceRootState) =>
+        isStakingDisabled ? EMPTY_ARRAY : selectDeviceStakingPositionEntries(state),
     );
 
     const yieldPositions = useSelector((state: EarnListRootState) =>
         !isYieldDisabled ? selectYieldListItems(state, yieldOpportunities) : EMPTY_ARRAY,
     );
 
-    const { claimRewardsWithFiat, isClaimLoading, isClaimError } = useClaimRewardsWithFiat();
+    const { claimRewardsWithFiat, isClaimLoading, isClaimError } = useYieldClaimRewardsWithFiat();
 
     const claimItems = useSelector((state: EarnListRootState) =>
         selectYieldClaimListItems(state, claimRewardsWithFiat),
     );
 
-    const cardanoStakedWithFiveBinariesAccountKey = useSelector(
-        (state: AccountsRootState & DeviceRootState & NetworksRootState) =>
-            !isStakingDisabled ? selectCardanoStakedWithFiveBinariesAccountKey(state) : null,
+    const outdatedProviderAccountKey = useSelector((state: StakingDeviceRootState) =>
+        isStakingDisabled
+            ? null
+            : (selectDeviceStakingEntryByWarning(state, 'outdated-provider')?.accountKey ?? null),
     );
 
-    const hasEarnPositions = stakingPositions.length > 0 || yieldPositions.length > 0;
+    const hasEarnPositions = stakingPositionEntries.length > 0 || yieldPositions.length > 0;
     const hasClaimItems = claimItems.length > 0;
 
     useReportEarnDashboardReadyEvent({
@@ -61,7 +62,7 @@ export const EarnScreenHeader = () => {
         isLoading: !isYieldDisabled && (isYieldOpportunitiesLoading || isClaimLoading),
         isError: !isYieldDisabled && (isYieldOpportunitiesError || isClaimError),
         yieldPositionsCount: yieldPositions.length,
-        stakingPositionsCount: stakingPositions.length,
+        stakingPositionsCount: stakingPositionEntries.length,
         claimItemsCount: isYieldDisabled ? 0 : claimItems.length,
         isStakingDisabled,
         isYieldDisabled,
@@ -71,8 +72,8 @@ export const EarnScreenHeader = () => {
 
     return (
         <VStack spacing="sp24">
-            {cardanoStakedWithFiveBinariesAccountKey !== null && (
-                <CardanoStakingInfoBanner accountKey={cardanoStakedWithFiveBinariesAccountKey} />
+            {outdatedProviderAccountKey !== null && (
+                <CardanoStakingInfoBanner accountKey={outdatedProviderAccountKey} />
             )}
 
             <VStack spacing="sp12">

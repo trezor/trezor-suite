@@ -1,4 +1,3 @@
-export { createSuiteSyncDesktopCompositionRoot } from './createSuiteSyncDesktopCompositionRoot';
 export { SelectSuiteSyncServer } from './SelectSuiteSyncServer';
 export { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
 export { suiteSyncErrorHandler } from './suiteSyncErrorHandler';

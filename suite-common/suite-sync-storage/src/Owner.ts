@@ -1,3 +1,4 @@
+import { type LazyLoadingError } from '@trezor/lazy-loading';
 import { type Result } from '@trezor/type-utils';
 
 import type { SuiteSyncOwner } from './owner/suiteSyncOwner';
@@ -11,6 +12,6 @@ export const CreateSuiteSyncOwnerError = (message: string): CreateSuiteSyncOwner
 
 export type CreateSuiteSyncOwner = (params: {
     data: string;
-}) => Result<SuiteSyncOwner, CreateSuiteSyncOwnerError>;
+}) => Promise<Result<SuiteSyncOwner, CreateSuiteSyncOwnerError | LazyLoadingError>>;
 
 export type CreateSuiteSyncOwnerDep = { createSuiteSyncOwner: CreateSuiteSyncOwner };

@@ -28,6 +28,7 @@ test.describe(
     'Live - Trading - Swap SPL token to coin via CEX',
     { tag: ['@skipOnPR', '@specificFirmware', '@T3W1', '@webOnly'] },
     () => {
+        test.describe.configure({ retries: 0 });
         test.setTimeout(tenMinutes);
         test.use({
             deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },

@@ -1,11 +1,11 @@
 import { Horizon, StrKey, extractBaseAddress } from '@stellar/stellar-sdk';
 
+import type { StellarOperationType } from '@trezor/network-stellar-types';
 import { BigNumber } from '@trezor/utils';
 
 import { type StellarBalanceDelta, readBalanceDeltas } from './balances';
 import { decodeSorobanInvocation } from './decodeContractCall';
-import { toStroops } from '../../constants';
-import type { StellarOperationType } from '../../types/operations';
+import { toStroops } from '../../constants/decimals';
 import { parseCanonicalAsset } from '../assets';
 
 type OperationRecord = Horizon.ServerApi.OperationRecord;
@@ -89,9 +89,11 @@ const convertMemo = ({ memo, memo_type: memoType }: TransactionRecord): string |
 const isClassicAsset = (assetType: string) =>
     assetType === 'credit_alphanum4' || assetType === 'credit_alphanum12';
 
-// A balance-change counterparty can be a `C…` contract, which `extractBaseAddress` throws on.
+// A muxed counterparty (`M…`, or a `W…` contract since protocol 30) is named by its base address.
 const toBaseAddress = (address: string): string =>
-    StrKey.isValidMed25519PublicKey(address) ? extractBaseAddress(address) : address;
+    StrKey.isValidMed25519PublicKey(address) || StrKey.isValidMuxedContract(address)
+        ? extractBaseAddress(address)
+        : address;
 
 // Horizon marshals a call that moved nothing as `null`, though the SDK types an array.
 const identifyBalanceChanges = (changes: BalanceChange[] | null): TokenTransferInfo[] =>

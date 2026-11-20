@@ -48,7 +48,6 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    getMevProtectedTxData,
     isCardanoTx,
     isRbfBumpFeeTransaction,
     tryGetAccountIdentity,
@@ -63,11 +62,21 @@ import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 
-type ComposeTransactionThunkState = BlockchainRootState & StakeRootState;
+type ComposeTransactionThunkState = BlockchainRootState &
+    StakeRootState &
+    stakeFormSolanaActions.ComposeTransactionThunkState;
+
+type ComposeTransactionThunkDeps = stakeFormSolanaActions.ComposeTransactionThunkDeps;
 
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
-    (dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>) => {
+    (
+        dispatch: ThunkDispatch<
+            ComposeTransactionThunkState,
+            ComposeTransactionThunkDeps,
+            UnknownAction
+        >,
+    ) => {
         const { account } = formState;
 
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
@@ -84,6 +93,19 @@ export const composeTransaction =
 
         return Promise.resolve(undefined);
     };
+
+const openStakingModal = (stakeType: StakeType, account: Account) => {
+    switch (stakeType) {
+        case 'stake':
+            return openModal({ type: stakeType, flow: EarnFlow.Stake, account });
+        case 'unstake':
+            return openModal({ type: stakeType, accountKey: account.key });
+        case 'claim':
+            return openModal({ type: stakeType, account });
+        case 'change-delegate':
+            return openModal({ type: stakeType });
+    }
+};
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 type CancelSignTxThunkState = StakeRootState;
@@ -105,14 +127,7 @@ export const cancelSignTxThunk =
 
         const { stakeType } = precomposedForm ?? {};
         if (account && stakeType && !isSuccessTx) {
-            switch (stakeType) {
-                case 'stake':
-                    dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
-                    break;
-
-                default:
-                    dispatch(openModal({ type: stakeType, account }));
-            }
+            dispatch(openStakingModal(stakeType, account));
         }
     };
 
@@ -142,16 +157,11 @@ const pushTransactionThunk =
 
         if (!serializedTx || !precomposedTx || !account) return;
 
-        const txData = getMevProtectedTxData(
-            serializedTx.symbol,
-            serializedTx.tx,
-            isMevProtectionEnabled && isMevProtectionFeatureEnabled,
-        );
-
         const sentTx = await TrezorConnect.pushTransaction({
-            tx: txData,
+            tx: serializedTx.tx,
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
+            disableAlternativeRPC: !isMevProtectionEnabled || !isMevProtectionFeatureEnabled,
         });
 
         const flow = stakeType === 'change-delegate' ? 'vote' : stakeType;
@@ -360,19 +370,13 @@ export const signTransactionThunk =
             if (serializedTx?.error?.message === 'tx-timeout') {
                 return;
             }
+            dispatch(stakeActions.requestSignTransaction());
             // close modal manually since UI_EVENTS.CLOSE_UI_WINDOW was blocked
             dispatch(closeModal());
 
             const { stakeType } = formValues;
             if (stakeType) {
-                switch (stakeType) {
-                    case 'stake':
-                        dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake, account }));
-                        break;
-
-                    default:
-                        dispatch(openModal({ type: stakeType, account }));
-                }
+                dispatch(openStakingModal(stakeType, account));
             }
 
             return;

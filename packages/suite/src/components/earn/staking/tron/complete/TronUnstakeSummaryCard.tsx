@@ -5,12 +5,11 @@ import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
-import { getCurrentResource } from '../unstake/unstakeUtils';
 
 const REDUCTION_LABEL: Record<TronResourceType, TranslationKey> = {
     bandwidth: 'TR_EARN_TRON_BANDWIDTH_REDUCTION',
@@ -18,20 +17,16 @@ const REDUCTION_LABEL: Record<TronResourceType, TranslationKey> = {
 };
 
 export const TronUnstakeSummaryCard = () => {
-    const { account, form } = useTronStakeContext();
+    const { account, actions } = useTronStakeContext();
+    const { submitted } = actions;
 
-    if (account.networkType !== 'tron') {
+    if (account.networkType !== 'tron' || !submitted?.resourceType) {
         return null;
     }
 
-    const { amount, resourceType } = form.methods.getValues();
-
-    const { tronResources } = account.misc;
-    const gain = getResourceGain(amount, resourceType, tronResources);
-    const reduction = Math.min(
-        gain !== null ? Math.round(gain) : 0,
-        getCurrentResource(account, resourceType),
-    );
+    const { amount, resourceType } = submitted;
+    const gain = getResourceGain(amount, resourceType, account.misc.tronResources);
+    const reduction = gain !== null ? Math.round(gain) : 0;
 
     return (
         <Card type="contrast" paddingType="none" data-testid="@staking/tron-complete/summary-card">
@@ -49,13 +44,16 @@ export const TronUnstakeSummaryCard = () => {
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_UNSTAKED" />}>
                     <Row alignItems="center" gap={8}>
-                        <TokenIcon symbol={account.symbol} size={24} />
+                        <TokenIcon networkSymbol={account.symbol} size={24} />
                         <Column gap={2} alignItems="flex-end">
                             <Text
                                 typographyStyle="body-md-strong"
                                 data-testid="@staking/tron-complete/unstaked-amount"
                             >
-                                <FormattedCryptoAmount value={amount} symbol={account.symbol} />
+                                <FormattedCryptoAmount
+                                    value={amount}
+                                    networkSymbol={account.symbol}
+                                />
                             </Text>
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                                 <BaseCurrencyValue

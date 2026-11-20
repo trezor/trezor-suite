@@ -1,6 +1,11 @@
 import { type TranslationKey } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
-import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
+import {
+    type GeneralPrecomposedTransaction,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
+} from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 type FeeNetworkParams = {
     networkType: NetworkType;
@@ -17,6 +22,11 @@ type GetSupportsAdjustableFeesParams = {
     isTokenTransfer: boolean;
 };
 
+type GetTronFeeLimitSunParams = {
+    tx: GeneralPrecomposedTransaction | undefined;
+    formFeeLimit: string | undefined;
+};
+
 export const getIsTrc20Transfer = ({ networkType, composedLevels }: FeeNetworkParams): boolean => {
     if (networkType !== 'tron' || composedLevels == null) return false;
     const { normal } = composedLevels;
@@ -29,6 +39,19 @@ export const getSupportsAdjustableFees = ({
     isTokenTransfer,
 }: GetSupportsAdjustableFeesParams): boolean =>
     networkType !== 'solana' && (networkType !== 'tron' || isTokenTransfer);
+
+// The send form and the transaction review must show the same maximum TRX burn, so both derive
+// the fee limit here instead of each picking its own.
+export const getTronFeeLimitSun = ({
+    tx,
+    formFeeLimit,
+}: GetTronFeeLimitSunParams): string | undefined => {
+    const estimatedFeeLimit = tx?.type !== 'error' ? tx?.estimatedFeeLimit : undefined;
+
+    return formFeeLimit && estimatedFeeLimit && new BigNumber(formFeeLimit).gt(estimatedFeeLimit)
+        ? formFeeLimit
+        : estimatedFeeLimit;
+};
 
 export const getFeeTooltipTextId = ({
     networkType,

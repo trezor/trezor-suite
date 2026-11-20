@@ -7,19 +7,19 @@ import {
     handleYieldApproveCancelThunk,
     sendFormActions,
 } from '@suite-common/wallet-core';
+import { type AllowanceTransactionType } from '@suite-common/wallet-types';
 import { useDisableIOSGesture } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldReviewCancellationAlert } from './useShowYieldReviewCancellationAlert';
-import { type YieldAllowanceFormDraftTransactionType } from '../../types';
 import { useEarnReviewCancellationAnalytics } from '../earn/useEarnReviewCancellationAnalytics';
 
 type UseYieldApprovalReviewNavigationParams = {
     flowKey: string;
     onReviewLeave?: () => void;
     shouldConfirmCancellation: boolean;
-    transactionType: YieldAllowanceFormDraftTransactionType;
+    transactionType: AllowanceTransactionType;
     networkSymbol: string;
     isSigned: boolean;
 };

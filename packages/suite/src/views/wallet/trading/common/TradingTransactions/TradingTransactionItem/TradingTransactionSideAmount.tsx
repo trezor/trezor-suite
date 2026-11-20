@@ -1,12 +1,13 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
-import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { Flag, Row } from '@trezor/components';
 import { selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { TradingCoinLogo } from '#src/views/wallet/trading/common/TradingCoinLogo';
 
 import { type TradingTransactionSide } from './tradingTransactionItemUtils';
 
@@ -19,13 +20,8 @@ export const TradingTransactionSideAmount = ({
     side,
     'data-testid': dataTestId,
 }: TradingTransactionSideAmountProps) => {
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
-
     const cryptoId = side.type === 'crypto' ? side.cryptoId : undefined;
-    const { coinSymbol, contractAddress } = cryptoId
-        ? cryptoIdToSymbolAndContractAddress(cryptoId)
-        : { coinSymbol: undefined, contractAddress: undefined };
-    const { symbol: networkSymbol } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    const { networkSymbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
     const showNetworkIcon = useSelector(state =>
         selectShouldShowNetworkIcon(state, networkSymbol, contractAddress),
     );
@@ -41,7 +37,7 @@ export const TradingTransactionSideAmount = ({
                     />
                     <FormattedCryptoAmount
                         value={side.amount}
-                        symbol={coinSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={contractAddress}
                         data-testid={dataTestId}
                         isCompact

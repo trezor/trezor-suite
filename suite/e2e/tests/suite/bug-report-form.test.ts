@@ -25,7 +25,6 @@ test.describe('Bug report forms', { tag: ['@T3W1', '@T3T1', '@optional'] }, () =
 
             await guidePanel.openPanel();
             await guidePanel.supportAndFeedbackButton.click();
-
             await guidePanel.sendBugReport(testData);
 
             await expect(page.getByTestId('@toast/user-feedback-send-success')).toBeVisible();

@@ -111,8 +111,8 @@ describe('TradingHistoryScreen', () => {
         const { getByText } = await renderTradingHistory();
 
         expect(getByText('$1,234.00')).toBeTruthy();
-        expect(getByText('0.462586 ETH')).toBeTruthy();
-        expect(getByText('10.1232 JTO')).toBeTruthy();
+        expect(getByText('0.46258 ETH')).toBeTruthy();
+        expect(getByText('10.12 JTO')).toBeTruthy();
         expect(getByText('1.22 BTC')).toBeTruthy();
         expect(
             getByText(
@@ -136,14 +136,14 @@ describe('TradingHistoryScreen', () => {
             getByText(getTranslation('moduleTrading.tradeHistory.tabs.exchange')),
         );
 
-        expect(getByText('10.1232 JTO')).toBeTruthy();
+        expect(getByText('10.12 JTO')).toBeTruthy();
         expect(queryByText('$1,234.00')).toBeNull();
         expect(queryByText('1.22 BTC')).toBeNull();
 
         await fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.tabs.sell')));
 
         expect(getByText('1.22 BTC')).toBeTruthy();
-        expect(queryByText('10.1232 JTO')).toBeNull();
+        expect(queryByText('10.12 JTO')).toBeNull();
     });
 
     it('should show the first trade after scrolling and changing the filter', async () => {
@@ -160,7 +160,7 @@ describe('TradingHistoryScreen', () => {
         );
 
         expect(list).toBeVisible();
-        expect(getByText('10.1232 JTO')).toBeVisible();
+        expect(getByText('10.12 JTO')).toBeVisible();
     });
 
     it('should show filtered empty state and return to all trades', async () => {

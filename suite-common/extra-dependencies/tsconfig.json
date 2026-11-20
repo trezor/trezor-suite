@@ -7,10 +7,13 @@
         {
             "path": "../delegated-identity-key-types"
         },
+        { "path": "../earn-staking" },
         { "path": "../locale" },
         { "path": "../metadata-types" },
         { "path": "../networks" },
         { "path": "../platform-encryption" },
+        { "path": "../react-query" },
+        { "path": "../sign-verify" },
         {
             "path": "../suite-rbf-labels-migrations-types"
         },

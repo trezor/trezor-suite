@@ -1,9 +1,8 @@
 import { type ReactNode, useMemo } from 'react';
 
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { groupTransactionsByDate } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
@@ -20,6 +19,7 @@ type TransactionListBodyProps = {
     customNoTransactions?: ReactNode;
     isAccountShown?: boolean;
     isBumpFeeAllowed?: boolean;
+    onTransactionDetailOpen?: (transaction: WalletAccountTransaction) => void;
 };
 
 export const TransactionListBody = ({
@@ -32,6 +32,7 @@ export const TransactionListBody = ({
     customNoTransactions,
     isAccountShown,
     isBumpFeeAllowed,
+    onTransactionDetailOpen,
 }: TransactionListBodyProps) => {
     const pendingTxsByDate = useMemo(
         () => groupTransactionsByDate(pendingTxs, 'day'),
@@ -72,6 +73,7 @@ export const TransactionListBody = ({
                             isPending={true}
                             isAccountShown={isAccountShown}
                             isBumpFeeAllowed={isBumpFeeAllowed}
+                            onTransactionDetailOpen={onTransactionDetailOpen}
                         />
                         <TransactionGroupedList
                             transactionGroups={confirmedTxsByDate}
@@ -80,6 +82,7 @@ export const TransactionListBody = ({
                             isPending={false}
                             isAccountShown={isAccountShown}
                             isBumpFeeAllowed={isBumpFeeAllowed}
+                            onTransactionDetailOpen={onTransactionDetailOpen}
                         />
                     </>
                 ))}

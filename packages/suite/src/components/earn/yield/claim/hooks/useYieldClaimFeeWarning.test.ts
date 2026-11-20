@@ -14,9 +14,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type WithServices } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type AppState } from 'src/reducers/store';
-
 import { useYieldClaimFeeWarning } from './useYieldClaimFeeWarning';
+import { type MockSuiteState } from '../../../../../../mocks/mockInitialAppState';
 
 const mockEstimateYieldFeeLevel = jest.fn();
 
@@ -69,12 +68,16 @@ const accountRewards: YieldAccountRewards = {
         },
     ],
     totalClaimableFiatAmount: asBaseCurrencyAmount(new BigNumber('2.5')),
+    isTotalClaimableFiatAmountComplete: true,
 };
 
 type RenderParams = Partial<Parameters<typeof useYieldClaimFeeWarning>[0]>;
 
 const renderClaimFeeWarning = (params: RenderParams = {}) => {
-    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: mockState,
         services: () => ({ analytics: mockDesktopAnalytics(jest.fn()) }),
     });
@@ -111,6 +114,17 @@ describe('useYieldClaimFeeWarning', () => {
         expect(mockEstimateYieldFeeLevel).toHaveBeenCalledWith(
             expect.objectContaining({ coin: ethSymbol, from: SENDER }),
         );
+    });
+
+    it('reports an unverifiable value instead of a fee warning when a reward has no fiat rate', async () => {
+        mockFeeLevel(EXPENSIVE_FEE_PER_UNIT);
+
+        const { result } = renderClaimFeeWarning({
+            accountRewards: { ...accountRewards, isTotalClaimableFiatAmountComplete: false },
+        });
+
+        await waitFor(() => expect(mockEstimateYieldFeeLevel).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(result.current).toBe('unverifiable-rewards-value'));
     });
 
     it('does not warn when the estimated fee is below the claimable rewards', async () => {

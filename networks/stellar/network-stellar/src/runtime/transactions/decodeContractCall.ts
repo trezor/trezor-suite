@@ -1,12 +1,11 @@
 import { Address, scValToNative, xdr } from '@stellar/stellar-sdk';
 
-import { isNotUndefined } from '@trezor/utils';
-
 import type {
     StellarAuthorizedCallData,
     StellarContractCallArgument,
     StellarContractCallData,
-} from '../../types/contractCall';
+} from '@trezor/network-stellar-types';
+import { isNotUndefined } from '@trezor/utils';
 
 /** A contract argument in a shape the UI can render; addresses stay distinguishable from text. */
 export type StellarScValue =
@@ -44,7 +43,9 @@ const decodeAddress = (address: xdr.ScAddress): StellarScValue => {
         return {
             type: 'address',
             value: Address.fromScAddress(address).toString(),
-            isContract: address.type === 'scAddressTypeContract',
+            isContract:
+                address.type === 'scAddressTypeContract' ||
+                address.type === 'scAddressTypeMuxedContract',
         };
     } catch {
         // Claimable-balance and liquidity-pool addresses have no string form in stellar-sdk 17.

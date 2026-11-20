@@ -1,0 +1,65 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "include": [
+        ".",
+        "../../packages/suite/global.d.ts"
+    ],
+    "references": [
+        { "path": "../app" },
+        { "path": "../module-account-detail" },
+        { "path": "../module-activity-center" },
+        { "path": "../module-apps-embedding" },
+        { "path": "../module-assets" },
+        { "path": "../module-coinjoin" },
+        { "path": "../module-connect-popup" },
+        { "path": "../module-earn" },
+        { "path": "../module-home" },
+        { "path": "../module-password-manager" },
+        { "path": "../module-receive" },
+        { "path": "../module-refer-a-friend" },
+        { "path": "../module-send" },
+        { "path": "../module-settings" },
+        { "path": "../module-sign-verify" },
+        { "path": "../module-trading" },
+        { "path": "../module-transactions" },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        { "path": "../../suite/analytics" },
+        { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-app-api" },
+        {
+            "path": "../../suite/desktop-app-api-electron"
+        },
+        { "path": "../../suite/desktop-update" },
+        { "path": "../../suite/flags" },
+        { "path": "../../suite/github" },
+        { "path": "../../suite/intl" },
+        {
+            "path": "../../suite/platform-encryption-electron"
+        },
+        { "path": "../../suite/router" },
+        { "path": "../../suite/sentry" },
+        { "path": "../../suite/tor-desktop" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/connect-electron"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../suite-common/flags" },
+        {
+            "path": "../../suite-common/suite-config"
+        }
+    ]
+}

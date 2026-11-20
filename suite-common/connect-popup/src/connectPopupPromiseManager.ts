@@ -1,6 +1,8 @@
 import { type CallMethodAnyResponse } from '@trezor/connect';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
+import { type SelectFeeChoice } from './connectPopupTypes';
+
 type GetDeferred<Resolve> = (clear?: boolean) => Deferred<Resolve>;
 type AwaitDeferred = () => Promise<void>;
 
@@ -37,6 +39,7 @@ export const getPopupCallDeferred: GetDeferred<Awaited<CallMethodAnyResponse>> =
     callDeferredWrapper.getDeferred;
 export const queuePopupCall: AwaitDeferred = callDeferredWrapper.awaitDeferred;
 
-// Deferred for the permission request
-const permissionDeferredWrapper = createDeferredWrapper('popup-permission');
-export const getPermissionDeferred: GetDeferred<void> = permissionDeferredWrapper.getDeferred;
+// Deferred for the permission request and the following user interactions of the call
+const permissionDeferredWrapper = createDeferredWrapper<SelectFeeChoice | void>('popup-permission');
+export const getPermissionDeferred: GetDeferred<SelectFeeChoice | void> =
+    permissionDeferredWrapper.getDeferred;

@@ -7,7 +7,6 @@ name: "[Test] Reporter watchdog"
 # See packages/e2e-utils/src/githubReporter/watchdog/README.md for the full design.
 
 permissions:
-  id-token: write
   contents: read
 
 on:
@@ -24,9 +23,9 @@ on:
       - "suite/e2e/playwright-config/playwright-manual.config.ts"
       - "suite/e2e/playwright-config/playwright-reporter-watchdog.config.ts"
       - "suite/e2e/reporter-watchdog/**"
-      - "suite-native/app/e2e/support/reporter/**"
-      - "suite-native/app/e2e/reporter-watchdog/**"
-      - "suite-native/app/e2e/jest.config.reporter.js"
+      - "suite-native-app/app/e2e/support/reporter/**"
+      - "suite-native-app/app/e2e/reporter-watchdog/**"
+      - "suite-native-app/app/e2e/jest.config.reporter.js"
       - ".github/workflows/template-suite-run-e2e.yml"
       - ".github/workflows/test-suite-manual-release.yml"
       - ".github/workflows/test-suite-web-desktop-e2e-release.yml"
@@ -52,6 +51,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -75,27 +75,43 @@ jobs:
         run: yarn workspace @trezor/e2e-utils reporter-watchdog:wipe
 
   call-test-suite-manual-release:
+    permissions:
+      contents: read
     needs: wipe-sandbox
     uses: ./.github/workflows/test-suite-manual-release.yml
-    secrets: inherit
+    secrets:
+      TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
+      TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
     with:
       reporterWatchdog: "true"
       testFilter: "reporter-watchdog.manual.spec.ts"
 
   call-test-suite-web-desktop-e2e-release:
+    permissions:
+      id-token: write
+      contents: read
     needs: wipe-sandbox
     # Skipped on PR to not clash with web deploy of PR test workflow
     if: github.event_name != 'pull_request'
     uses: ./.github/workflows/test-suite-web-desktop-e2e-release.yml
-    secrets: inherit
+    secrets:
+      CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+      E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+      E2E_TEST_PASSPHRASE_LIVE: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+      TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
+      TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
     with:
       publish_results_to_github: true
       reporterWatchdog: "true"
 
   call-test-suite-native-manual-release:
+    permissions:
+      contents: read
     needs: wipe-sandbox
     uses: ./.github/workflows/test-suite-native-e2e-manual-reporter.yml
-    secrets: inherit
+    secrets:
+      TREZOR_BOT_APP_ID: ${{ secrets.TREZOR_BOT_APP_ID }}
+      TREZOR_BOT_PRIVATE_KEY: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
     with:
       reporterWatchdog: "true"
 
@@ -114,6 +130,7 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-organization-projects: write
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6

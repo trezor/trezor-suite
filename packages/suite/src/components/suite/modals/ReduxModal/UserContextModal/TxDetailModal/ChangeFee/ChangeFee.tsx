@@ -7,10 +7,10 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 
-import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
-import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { FeeRate } from '#src/components/wallet/Fees/FeeRate';
+import { useRbfContext } from '#src/hooks/wallet/useRbfForm';
 
 import { RbfFees } from './RbfFees';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
@@ -86,7 +86,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
                             value={fee}
-                            symbol={tx.symbol}
+                            networkSymbol={tx.symbol}
                         />
                         <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                             <BaseCurrencyValue

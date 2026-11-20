@@ -10,7 +10,7 @@ import { localizePercentage } from '@suite-common/wallet-utils';
 import { Row, Skeleton, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 type AssetCoinLogoProps = {
     symbol: NetworkSymbol;
@@ -39,7 +39,7 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLo
                 cursor="pointer"
             >
                 <AssetShareIndicator
-                    symbol={symbol}
+                    networkSymbol={symbol}
                     networkColor={networkColor ?? 'transparent'}
                     size={24}
                     percentageShare={assetPercentage}

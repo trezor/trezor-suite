@@ -7,12 +7,13 @@ import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type StakeType } from '@suite-common/wallet-types';
+import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getNativeWrapTxKind,
     getTxHeaderSymbol,
     hasValueMovement,
 } from '@suite-common/wallet-utils';
+import { BlurUrls } from '@trezor/components';
 import { type AccountTransaction } from '@trezor/connect';
 import {
     type StellarOperationLabel,
@@ -20,10 +21,8 @@ import {
 } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
-import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
-import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
-import { WrapTxAmount } from 'src/components/suite/WrapTxAmount';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { UnstakingTxAmount } from '#src/components/suite/UnstakingTxAmount';
+import { WrapTxAmount } from '#src/components/suite/WrapTxAmount';
 
 type TransactionHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -209,7 +208,8 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 : totalVotes;
 
             return (
-                <TokenUrlBlur
+                <BlurUrls
+                    tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
                     text={translationString('TR_TRON_TX_VOTED_VOTES', { votes: displayedVotes })}
                 />
             );
@@ -221,7 +221,10 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
         return (
             <>
-                <TokenUrlBlur text={translationString(tronTransactionMessageId)} />
+                <BlurUrls
+                    tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
+                    text={translationString(tronTransactionMessageId)}
+                />
                 {isUnfreeze && <UnstakingTxAmount transaction={transaction} />}
             </>
         );
@@ -260,7 +263,8 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             : 'TR_STELLAR_TRUSTLINE_ADDED';
 
         return (
-            <TokenUrlBlur
+            <BlurUrls
+                tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
                 text={translationString(translationId, {
                     assetCode: transaction.stellarSpecific.changeTrust.assetCode,
                 })}
@@ -290,7 +294,8 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
         if (fromSymbol && toSymbol && !transaction.cardanoSpecific) {
             return (
-                <TokenUrlBlur
+                <BlurUrls
+                    tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
                     text={translationString('TR_SWAP_TRANSACTION', { fromSymbol, toSymbol })}
                 />
             );
@@ -306,7 +311,8 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             : transactionSymbol;
 
     return (
-        <TokenUrlBlur
+        <BlurUrls
+            tooltipContent={<Translation id="TR_URL_IN_TOKEN" />}
             text={translationString(getTransactionMessageId({ transaction, isPending }), {
                 symbol,
                 multiple: isMultiTokenTransaction,

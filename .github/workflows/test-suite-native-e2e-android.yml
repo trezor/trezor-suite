@@ -1,14 +1,13 @@
 name: "[Test] suite-native Android E2E"
 
 permissions:
-  id-token: write # for fetching the OIDC token (needed for aws s3 actions)
-  contents: read # read attached artifacts from tests
-  actions: write # upload/download artifacts
+  contents: read
 
 on:
   pull_request:
     paths:
       - "suite-native/**"
+      - "suite-native-app/**"
       - "suite-common/**"
       - "packages/connect/**"
       - "packages/connect-core/**"
@@ -47,6 +46,8 @@ jobs:
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+          permission-actions: read
+          permission-pull-requests: write
       - name: Check previous runs
         id: check-previous-runs
         uses: "./.github/actions/check-previous-test-runs"
@@ -59,6 +60,9 @@ jobs:
           run_attempt: ${{ github.run_attempt }}
 
   prepare_android_test_app:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
     needs: check-previous-runs
     uses: ./.github/workflows/template-suite-native-prepare-test-app-android.yml
@@ -92,8 +96,8 @@ jobs:
       cancel-in-progress: false
     uses: ./.github/workflows/template-publish-performance-history.yml
     with:
-      workspace: "@suite-native/app"
+      workspace: "@suite-native-app/app"
       artifact-pattern: android-perf-report-*
       # Not a package.json script: the scripts block is an Expo fingerprint input, and changing it
       # forces a ~50 minute native rebuild.
-      publish-command: yarn workspace @suite-native/app exec tsx e2e/support/performance/publish.ts
+      publish-command: yarn workspace @suite-native-app/app exec tsx e2e/support/performance/publish.ts

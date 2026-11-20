@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type Account } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import {
     AccountLabel,
@@ -10,6 +11,7 @@ import {
     selectAccountFiatBalance,
 } from '@suite-native/accounts';
 import { Box, HStack, IconButton } from '@suite-native/atoms';
+import { useYieldFlowData } from '@suite-native/earn';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import {
@@ -20,8 +22,6 @@ import {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,

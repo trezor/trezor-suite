@@ -7,13 +7,13 @@ import {
     useState,
 } from 'react';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import type {
     AccountKey,
     FeeLevelLabel,
     FormState,
     GeneralPrecomposedLevels,
-    TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
@@ -33,6 +33,7 @@ import { FeeOptionsList } from './FeeOptionList/FeeOptionsList';
 import { TronFeeLimitContent } from './TronFeeLimitContent';
 import { type FeesFormType, type FeesFormValues } from '../../feesFormSchema';
 import { type CustomFeeParams } from '../../hooks';
+import { type CustomFeeLevelBuilder } from '../../hooks/fees/useCustomFee';
 
 type TabValue = 'standard' | 'custom';
 
@@ -47,6 +48,7 @@ type FeesBottomSheetProps = {
     areFeesLoading: boolean;
     isSubmittable: boolean;
     formDraft: FormState | null | undefined;
+    getCustomFeeLevel?: CustomFeeLevelBuilder;
     snapshotRef: RefObject<FeesFormValues | undefined>;
     confirmedRef: MutableRefObject<boolean>;
     onConfirm: (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => void | Promise<void>;
@@ -78,6 +80,7 @@ export const FeesBottomSheet = ({
     areFeesLoading,
     isSubmittable: standardIsSubmittable,
     formDraft,
+    getCustomFeeLevel,
     snapshotRef,
     confirmedRef,
     onConfirm,
@@ -86,18 +89,17 @@ export const FeesBottomSheet = ({
     const isTrc20 = networkType === 'tron' && tokenContract !== undefined;
     const showCustomTab = networkType !== 'solana' && !isTrc20;
 
-    const [activeTab, setActiveTab] = useState<TabValue>(() =>
-        showCustomTab ? feeLevelToTab(form.getValues('feeLevel')) : 'standard',
-    );
     const selectedFeeLevel = useWatch({ control: form.control, name: 'feeLevel' });
+    const [activeTab, setActiveTab] = useState<TabValue>(() =>
+        showCustomTab ? feeLevelToTab(selectedFeeLevel) : 'standard',
+    );
     useEffect(() => {
         setActiveTab(showCustomTab ? feeLevelToTab(selectedFeeLevel) : 'standard');
     }, [selectedFeeLevel, showCustomTab]);
+    const [customFeeLevels, setCustomFeeLevels] = useState<GeneralPrecomposedLevels>();
     const [customIsSubmittable, setCustomIsSubmittable] = useState(false);
 
-    const standardFeeRef = useRef(
-        form.getValues('feeLevel') === 'custom' ? 'normal' : form.getValues('feeLevel'),
-    );
+    const standardFeeRef = useRef(selectedFeeLevel === 'custom' ? 'normal' : selectedFeeLevel);
     const handleTabChange = (tab: TabValue) => {
         const selectedFee = form.getValues('feeLevel');
         if (tab === 'custom') {
@@ -118,9 +120,11 @@ export const FeesBottomSheet = ({
     const tabIsSubmittable = activeTab === 'custom' ? customIsSubmittable : standardIsSubmittable;
     const currentIsSubmittable = isTrc20 ? customIsSubmittable : tabIsSubmittable;
 
-    const isConfirmVisible = isDirty && currentIsSubmittable;
+    const isConfirmVisible = isDirty && currentIsSubmittable && !areFeesLoading;
 
     const handleConfirm = useCallback(() => {
+        if (areFeesLoading) return;
+
         confirmedRef.current = true;
         const values = getValues();
 
@@ -131,6 +135,7 @@ export const FeesBottomSheet = ({
         } else if (activeTab === 'custom') {
             form.setValue('feeLevel', 'custom');
             onConfirm('custom', {
+                customFeeLevels,
                 customFeePerUnit: values.customFeePerUnit,
                 customFeeLimit: values.customFeeLimit,
                 customMaxFeePerGas: values.customMaxFeePerGas,
@@ -141,12 +146,20 @@ export const FeesBottomSheet = ({
         }
 
         closeModal();
-    }, [isTrc20, activeTab, confirmedRef, form, getValues, onConfirm, closeModal]);
+    }, [
+        areFeesLoading,
+        isTrc20,
+        activeTab,
+        confirmedRef,
+        form,
+        getValues,
+        onConfirm,
+        closeModal,
+        customFeeLevels,
+    ]);
 
     const handleDismiss = useCallback(() => {
         if (confirmedRef.current) {
-            confirmedRef.current = false;
-
             return;
         }
 
@@ -206,6 +219,10 @@ export const FeesBottomSheet = ({
                     <FeeOptionsList
                         feeLevels={feeLevels}
                         symbol={symbol}
+                        estimatedFeeLimit={
+                            formDraft?.estimatedFeeLimit ||
+                            (formDraft?.selectedFee !== 'custom' ? formDraft?.feeLimit : undefined)
+                        }
                         isLoading={areFeesLoading}
                     />
                 )}
@@ -214,7 +231,9 @@ export const FeesBottomSheet = ({
                         accountKey={accountKey}
                         symbol={symbol}
                         formDraft={formDraft}
+                        getCustomFeeLevel={getCustomFeeLevel}
                         onSubmittableChange={setCustomIsSubmittable}
+                        onFeeLevelsChange={setCustomFeeLevels}
                     />
                 )}
             </Form>

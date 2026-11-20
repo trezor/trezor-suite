@@ -1,4 +1,10 @@
-import { UI_EVENTS } from '@trezor/connect-common';
+import {
+    UI_EVENTS,
+    UI_REQUEST,
+    UI_REQUESTS,
+    UI_RESPONSE,
+    type UiRequestMessage,
+} from '@trezor/connect-common';
 import type { DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 
 import TrezorConnect, { type UiEventBundleProgress } from '../../../src';
@@ -69,7 +75,19 @@ describe(`TrezorConnect.discoverAccounts`, () => {
             */
         };
 
+        // Reads the accounts the way Suite does.
+        const onRequest = async (message: UiRequestMessage) => {
+            if (message.type !== UI_REQUESTS.REQUEST_DISCOVERY_ACCOUNT_INFO) return;
+
+            TrezorConnect.uiResponse({
+                type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
+                payload: await TrezorConnect.getAccountInfo(message.payload),
+                requestId: message.requestId,
+            });
+        };
+
         TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onUiEventBundleProgress);
+        TrezorConnect.on(UI_REQUEST, onRequest);
         /*
         new Promise(resolve => setTimeout(resolve, 600)).then(() =>
             TrezorConnect.cancel({ reason: 'CANCELLED' }),
@@ -92,6 +110,7 @@ describe(`TrezorConnect.discoverAccounts`, () => {
         });
 
         TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onUiEventBundleProgress);
+        TrezorConnect.off(UI_REQUEST, onRequest);
 
         expect(result).toMatchObject({});
     }, 180000);

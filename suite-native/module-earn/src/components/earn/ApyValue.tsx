@@ -16,17 +16,23 @@ export const ApyValue = ({
     rateType = 'apy',
 }: ApyValueProps) => {
     const { PercentageFormatter } = useFormatters();
+
     const getValue = () => {
         if (isNotEarning) {
             return <>{PercentageFormatter.format(0, { withSymbol: true })}</>;
         }
 
         if (apy == null || !isApyAvailable(apy)) {
-            return <Translation id="earn.notAvailableShort" />;
+            return (
+                <>
+                    <Translation id="earn.notAvailableShort" />%
+                </>
+            );
         }
 
         return <>~{PercentageFormatter.format(apy, { withSymbol: true })}</>;
     };
+
     const value = getValue();
 
     if (!withLabel) {

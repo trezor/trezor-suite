@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "include": [".", "**/*.json"],
+    "references": [
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite/account" },
+        { "path": "../../suite/device" },
+        { "path": "../../suite/receive" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/requirements" }
+    ]
+}

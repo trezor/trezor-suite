@@ -12,9 +12,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { QrCodeIcon } from '@trezor/icons';
 import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
-import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
-import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
-import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { type TradingVerifyFormProps } from '#src/types/trading/tradingVerify';
+import { TradingExtraField } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
+import { useReceiveAddressModalControls } from '#src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';
 

@@ -3,7 +3,7 @@ import { type UseFormReturn } from 'react-hook-form';
 
 import { TRADING_FORM_OUTPUT_MAX } from '@suite-common/trading';
 
-import { type TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
+import { type TradingSellExchangeFormProps } from '#src/types/trading/tradingForm';
 
 type UseTradingFiatCryptoAmountProps<T extends TradingSellExchangeFormProps> = {
     methods: UseFormReturn<T>;

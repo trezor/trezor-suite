@@ -12,8 +12,8 @@ import {
 } from '@suite-common/earn-stablecoin-api';
 import { getCompactAmount, useFormatters } from '@suite-common/formatters';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { toTokenSymbol } from '@suite-common/tokens';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     compareAccountsByCoin,
@@ -26,7 +26,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const getRewardTokenAmounts = ({ rewards }: YieldAccountRewards) => {
     const tokenAmounts = new Map<string, { amount: BigNumber; decimals: number; symbol: string }>();
@@ -200,7 +200,10 @@ export const EarnYieldClaimSelectAccountModal = ({
                             data-testid={`@earn/claim-select-account/account/${accountRewards.account.symbol}-${accountRewards.account.accountType}-${accountRewards.account.index}`}
                         >
                             <Row flex="1" overflow="hidden">
-                                <TokenIcon symbol={accountRewards.account.symbol} size={32} />
+                                <TokenIcon
+                                    networkSymbol={accountRewards.account.symbol}
+                                    size={32}
+                                />
 
                                 <Column
                                     flex="1"
@@ -241,6 +244,8 @@ export const EarnYieldClaimSelectAccountModal = ({
                                             isTabular
                                             data-testid="@earn/claim-select-account/fiat-amount"
                                         >
+                                            {!accountRewards.isTotalClaimableFiatAmountComplete &&
+                                                '≈ '}
                                             {BaseCurrencyAmountFormatter.format(
                                                 accountRewards.totalClaimableFiatAmount,
                                             )}

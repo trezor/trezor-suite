@@ -2,7 +2,7 @@ import { createMigration } from '@suite/idb-migration-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type SuspiciousTransactionsFilter, type WalletSettings } from '@suite-common/wallet-types';
 
-import { type SuiteDBSchema } from 'src/storage/definitions';
+import { type SuiteDBSchema } from '#src/storage/definitions';
 
 type WalletSettingsWithLegacyHideSuspiciousTransactions = WalletSettings & {
     hideSuspiciousTransactions?: Partial<Record<NetworkSymbol, boolean>>;

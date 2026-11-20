@@ -2,6 +2,7 @@ import { BigNumber } from '@trezor/utils';
 
 const MAX_DECIMALS_LENGTH = 2;
 const SATOSHIS_IN_BITCOIN = 100_000_000;
+const NON_BREAKING_SPACE = '\u00a0';
 
 type WholeNumberParams = {
     value: string;
@@ -82,8 +83,27 @@ const getFormattedCurrencySymbol = ({ locale, currency, isSatsValue }: CurrencyS
     return formattedValue.replace(regex, '');
 };
 
+// Same reason as above: the whitespace a dummy 0 is written with is what the locale puts between
+// the amount and the symbol.
+const getCurrencySymbolSeparator = ({ locale, currency, isSatsValue }: CurrencySymbolParams) => {
+    if (isSatsValue) {
+        return NON_BREAKING_SPACE;
+    }
+
+    const formatted = new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currencyDisplay: 'symbol',
+        currency,
+        maximumFractionDigits: 0,
+    }).format(0);
+
+    return formatted.match(/\s+/)?.[0] ?? '';
+};
+
 export type CurrencyAmountParts = {
     currencySymbol: string;
+    /** The whitespace the locale puts between the amount and the symbol — `1 234 Kč`, against `$1`. */
+    currencySymbolSeparator: string;
     wholeNumber: string;
     decimalNumber: string;
     /** Whether the locale writes the symbol before the amount — `$1.00`, against `1,00 €`. */
@@ -129,6 +149,7 @@ export const getCurrencyAmountParts = ({
 
     return {
         currencySymbol: getFormattedCurrencySymbol({ locale, currency, isSatsValue }),
+        currencySymbolSeparator: getCurrencySymbolSeparator({ locale, currency, isSatsValue }),
         wholeNumber: getFormattedWholeNumber({ value: integerPart, locale }),
         decimalNumber: getFormattedDecimalNumber({
             value: decimalPart,

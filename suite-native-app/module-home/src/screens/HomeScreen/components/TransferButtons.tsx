@@ -1,0 +1,78 @@
+import { useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
+
+import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { Button, HStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    SendStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+
+import { selectAreTransferButtonsVisible } from '../homescreenSelectors';
+import { useReceiveNavigation } from '../useReceiveNavigation';
+
+const ReceiveButton = () => {
+    const { isReceiveAvailable, navigateToReceive } = useReceiveNavigation();
+
+    if (!isReceiveAvailable) return null;
+
+    return (
+        <Button
+            flex={1}
+            testID="@home/portfolio/receive-button"
+            onPress={navigateToReceive}
+            iconLeft="arrowDown"
+        >
+            <Translation id="moduleHome.buttons.receive" />
+        </Button>
+    );
+};
+
+export const SendButton = () => {
+    const { analytics } = useServices(injectNativeAnalytics);
+    const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
+    const hasDeviceAnySendAvailableAccount = useSelector(selectHasDeviceAnySendAvailableAccount);
+    const showSendButton = hasDeviceAnySendAvailableAccount;
+
+    const handleSend = () => {
+        analytics.report({
+            type: events.sendFlowEnteredEvent.name,
+            payload: { location: 'dashboard' },
+        });
+        navigation.navigate(RootStackRoutes.SendStack, {
+            screen: SendStackRoutes.SendAccounts,
+        });
+    };
+
+    if (!showSendButton) return null;
+
+    return (
+        <Button
+            flex={1}
+            testID="@home/portfolio/send-button"
+            onPress={handleSend}
+            iconLeft="arrowUp"
+        >
+            <Translation id="moduleHome.buttons.send" />
+        </Button>
+    );
+};
+
+export const TransferButtons = () => {
+    const areTransferButtonsVisible = useSelector(selectAreTransferButtonsVisible);
+
+    if (!areTransferButtonsVisible) return null;
+
+    return (
+        <HStack spacing="sp16" justifyContent="space-between">
+            <ReceiveButton />
+            <SendButton />
+        </HStack>
+    );
+};

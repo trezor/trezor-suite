@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
-import { excludedFromFullPrRun, noOtherDevice } from '@trezor/e2e-utils';
+import { excludedFromFullPrRun, sharedWithOtherModelUnlessEdited } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { baseConfig } from './playwright-base.config';
@@ -16,6 +16,7 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  * To save Currents quota, T3W1 acts as the representative flagship and runs the full set; T3T1 runs only
  * its exclusive (T3T1-only) tests on PR. Shared T3W1/T3T1 tests get full T3T1 coverage in nightly instead.
  * @skipOnPR tests are excluded, and so are @optional tests unless the PR edits their file.
+ * Test files the PR edits run on every tagged model, as in a spec-list run.
  * Spec-list runs use playwright-desktop-pr-all.config.ts.
  */
 const target = PlaywrightTarget.Desktop;
@@ -23,9 +24,8 @@ const definition: PlaywrightProjectDefinition[] = [
     { model: Model.T3W1, additionalGrepInvert: excludedFromFullPrRun(), currentsTags: tagsPr },
     {
         model: Model.T3T1,
-        additionalGrepInvert: excludedFromFullPrRun(),
+        additionalGrepInvert: [...excludedFromFullPrRun(), sharedWithOtherModelUnlessEdited()],
         currentsTags: tagsPr,
-        grep: new RegExp(`^(?=.*@T3T1)${noOtherDevice()}`),
     },
     { model: Model.T3B1, additionalGrepInvert: excludedFromFullPrRun(), currentsTags: tagsPr },
     { model: Model.T2T1, additionalGrepInvert: excludedFromFullPrRun(), currentsTags: tagsPr },

@@ -11,7 +11,8 @@ import { openModal } from '@suite/modal';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { formatNetworkAmount, getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
     Checkbox,
     Column,
@@ -29,12 +30,13 @@ import { useServices } from '@trezor/dependency-injection';
 import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
 import { injectDispatch, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
-import { useSendFormContext } from 'src/hooks/wallet';
-import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { TransactionTimestamp } from '#src/components/wallet/TransactionTimestamp';
+import { UtxoAnonymity } from '#src/components/wallet/UtxoAnonymity';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useCoinjoinUnavailableUtxos } from '#src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
+import { useSendFormContext } from '#src/hooks/wallet/useSendForm';
 
 type ResolveUtxoSpendableProps = {
     utxo: AccountUtxo;
@@ -76,7 +78,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         account,
         network,
         utxoSelection: {
-            selectedUtxos,
+            selectedUtxoOutpoints,
             coinjoinRegisteredUtxos,
             composedInputs,
             toggleUtxoSelection,
@@ -111,7 +113,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const anonymity = account.addresses?.anonymitySet?.[utxo.address];
 
     const isChecked = isCoinControlEnabled
-        ? selectedUtxos.some(selected => isSameUtxo(selected, utxo))
+        ? selectedUtxoOutpoints.has(getUtxoOutpoint(utxo))
         : composedInputs.some(u => u.prev_hash === utxo.txid && u.prev_index === utxo.vout);
 
     const unspendableTooltip = resolveUtxoSpendable({ utxo, coinjoinRegisteredUtxos });
@@ -227,7 +229,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         <Text textWrap="nowrap" margin={{ left: 'auto' }}>
                             <FormattedCryptoAmount
                                 value={formatNetworkAmount(utxo.amount, account.symbol)}
-                                symbol={account.symbol}
+                                networkSymbol={account.symbol}
                             />
                         </Text>
                     </Row>

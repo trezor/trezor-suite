@@ -1,8 +1,12 @@
 import * as crypto from 'crypto';
 
+import { TAG_LENGTH } from '../constants';
+
 export const aesgcm = (key: Buffer, iv: Buffer) => {
     const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv, {
+        authTagLength: TAG_LENGTH,
+    });
 
     return {
         auth: (authData: Buffer) => {

@@ -1,11 +1,7 @@
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type Account,
-    type AccountKey,
-    type TokenAddress,
-    asAccountDescriptor,
-} from '@suite-common/wallet-types';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asGetter, createMockDeps } from '@trezor/dependency-injection';
 

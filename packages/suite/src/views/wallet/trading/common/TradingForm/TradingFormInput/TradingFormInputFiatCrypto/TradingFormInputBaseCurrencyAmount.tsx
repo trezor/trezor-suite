@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
@@ -20,7 +21,6 @@ import {
     selectFiatRatesByFiatRateKey,
     selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
     parseBaseCurrencyToFormattedCrypto,
@@ -31,12 +31,12 @@ import { Row, Skeleton, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useTradingFormContext } from '#src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
-} from 'src/types/trading/tradingForm';
-import { isTradingExchangeOrSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
+} from '#src/types/trading/tradingForm';
+import { isTradingExchangeOrSellContext } from '#src/utils/wallet/trading/tradingTypingUtils';
 
 import { TRADING_BASE_CURRENCY_SKELETON_WIDTH } from '../../tradingFormInputsUtils';
 

@@ -4,8 +4,7 @@ name: "[Test] Nightly Canary Suite Web & Desktop e2e tests"
 # Runs only the canary FW e2e suite (against firmware built nightly from main branch)
 
 permissions:
-  id-token: write # for fetching the OIDC token
-  contents: read # for actions/checkout
+  contents: read
 
 on:
   schedule:
@@ -52,43 +51,18 @@ jobs:
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
+    permissions:
+      id-token: write
+      contents: read
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/build-suite-web-e2e.yml
 
-  extract-branch:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    outputs:
-      branch: ${{ steps.extract_branch.outputs.branch }}
-    steps:
-      - name: Extract branch name
-        id: extract_branch
-        run: |
-          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
-
   build-connect:
-    needs: [extract-branch]
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-        with:
-          ref: ${{ needs.extract-branch.outputs.branch }}
-
-      - name: Release connect to dev environment
-        uses: ./.github/actions/release-connect
-        with:
-          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
-          awsRegion: "eu-central-1"
-          serverHostname: "dev.suite.sldev.cz"
-          serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
-          uploadArtifacts: "true"
-          explorerRetentionDays: "1"
-          buildArtifacts: "true"
-          nodeEnv: "development"
-          connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
-          suiteWebUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web"
+    if: github.repository == 'trezor/trezor-suite'
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/build-connect-e2e.yml
 
   run-e2e-suite-web-canary-tests:
     if: github.repository == 'trezor/trezor-suite'

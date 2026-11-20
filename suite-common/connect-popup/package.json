@@ -26,17 +26,18 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:^",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
-        "@types/react": "19.2.14"
+        "@types/react": "19.3.0"
     }
 }

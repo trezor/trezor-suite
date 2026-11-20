@@ -139,9 +139,12 @@ const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set
     'BEP1155',
     'TRC10',
     'TRC20',
+    // Stellar asset codes are case-sensitive, e.g. `yUSDC` and `YUSDC` are different assets.
+    'STELLAR-CLASSIC',
+    'STELLAR-CONTRACT',
 ]);
 
-export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
+export const shouldUppercaseTokenSymbol = (token: Partial<Pick<TokenInfo, 'standard'>>) =>
     token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;
 
 export const isErc4626 = (token?: TokenInfo | null) =>

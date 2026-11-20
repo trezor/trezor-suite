@@ -1,8 +1,10 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const regtestSymbol = asNetworkSymbol('regtest');
 const accounts = {
@@ -75,10 +77,70 @@ test.describe(
                         await page.getByTestId('outputs.1.amount').fill('0.7');
                         await page.getByTestId('outputs.1.address').fill(transaction.address);
                         await tradingPage.sendButton.click();
+                        await devicePrompt.confirmOnDevicePromptIsShown();
+                        await expect(device).toShowOnDisplay({
+                            T3W1: {
+                                header: { title: 'Send' },
+                                body: [transformAddress(transaction.address, 'fourTetragrams')],
+                                actions: { right_button: 'Continue' },
+                            },
+                            T3T1: {
+                                header: { title: 'Address', subtitle: 'Recipient #1' },
+                            },
+                        });
                         await device.pressYes(); // 1st recipient address
+                        await expect(device).toShowOnDisplay({
+                            T3W1: {
+                                header: { title: 'Send' },
+                                body: [['Amount'], ['0.3 REGTEST']],
+                                actions: { right_button: 'Confirm' },
+                            },
+                            T3T1: {
+                                header: { title: 'Amount', subtitle: 'Recipient #1' },
+                                body: [['0.3 REGTEST']],
+                            },
+                        });
                         await device.pressYes(); // 1st recipient amount
+                        await expect(device).toShowOnDisplay({
+                            T3W1: {
+                                header: { title: 'Send' },
+                                body: [transformAddress(transaction.address, 'fourTetragrams')],
+                                actions: { right_button: 'Continue' },
+                            },
+                            T3T1: {
+                                header: { title: 'Address', subtitle: 'Recipient #2' },
+                            },
+                        });
                         await device.pressYes(); // 2nd recipient address
+                        await expect(device).toShowOnDisplay({
+                            T3W1: {
+                                header: { title: 'Send' },
+                                body: [['Amount'], ['0.7 REGTEST']],
+                                actions: { right_button: 'Confirm' },
+                            },
+                            T3T1: {
+                                header: { title: 'Amount', subtitle: 'Recipient #2' },
+                                body: [['0.7 REGTEST']],
+                            },
+                        });
                         await device.pressYes(); // 2nd recipient amount
+                        const fee = await devicePrompt.cryptoAmountOf('fee').innerText();
+                        const total = new BigNumber(fee).plus('0.3').plus('0.7').toString();
+                        await expect(device).toShowOnDisplay({
+                            T3W1: {
+                                header: { title: 'Send' },
+                                body: [
+                                    ['Total amount'],
+                                    device.wrapText(`${total} REGTEST`, { isAmount: true }),
+                                    ['incl. Transaction fee'],
+                                    device.wrapText(`${fee} REGTEST`, { isAmount: true }),
+                                ],
+                                actions: { right_button: 'Hold to sign' },
+                            },
+                            T3T1: {
+                                header: { title: 'Summary' },
+                            },
+                        });
                         await device.pressYes(); // Summary
                         await devicePrompt.sendButton.click();
 

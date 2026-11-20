@@ -1,16 +1,16 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsFinpromRestricted } from '@suite/finprom';
 import { selectFlags, setFlag } from '@suite/flags';
+import { selectIsRegionRestricted } from '@suite/regions';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { selectDiscoveryOverallStatus } from '#src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { BannerCarousel, type CarouselBanner } from './BannerCarousel';
 import { type DashboardBannerType, isDashboardBannerType } from './dashboardBannerTypes';
@@ -26,7 +26,7 @@ export const DashboardPromoBanner = () => {
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const flags = useSelector(selectFlags);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+    const isRegionRestricted = useSelector(selectIsRegionRestricted);
     const isOnboardingFeedbackBannerShown = useSelector(selectShouldShowOnboardingFeedbackBanner);
 
     const allPromoBanners = useSelector(state =>
@@ -47,7 +47,7 @@ export const DashboardPromoBanner = () => {
             return acc;
         }, []);
 
-    const eligibilityContext = { selectedDevice, isFinpromRestricted };
+    const eligibilityContext = { selectedDevice, isRegionRestricted };
 
     const eligibleBannerTypes = deduplicatedBanners.reduce<DashboardBannerType[]>(
         (acc, feature) => {

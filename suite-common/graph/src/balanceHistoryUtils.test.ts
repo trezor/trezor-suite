@@ -1,5 +1,5 @@
+import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 
 import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';
 import {

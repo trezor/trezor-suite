@@ -11,7 +11,9 @@
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
+        { "path": "../token" },
         { "path": "../token-definitions" },
+        { "path": "../tokens" },
         { "path": "../tx-simulation" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
@@ -38,10 +40,10 @@
         {
             "path": "../../networks/solana/network-solana"
         },
-        { "path": "../../packages/react-utils" },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" },
         { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]

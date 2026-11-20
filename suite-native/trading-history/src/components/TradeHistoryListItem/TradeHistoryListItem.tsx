@@ -66,7 +66,7 @@ export const TradeHistoryListItem = memo(({ transaction, onPress }: TradeHistory
     const { DateTimeFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const { fromStringValue, toStringValue, fromCurrency, toCurrency, isFromCrypto, isToCrypto } =
-        useChangeStringsExtractor(transaction.data);
+        useChangeStringsExtractor(transaction.data, { formatStyle: 'compact-balance' });
 
     const date = new Date(transaction.date);
     const hasFromAmount = !!fromStringValue && !!fromCurrency;

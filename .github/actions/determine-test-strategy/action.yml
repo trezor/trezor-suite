@@ -21,6 +21,9 @@ runs:
     - name: Classify changed files
       id: classify
       shell: bash
+      env:
+        BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        BASE_REF: ${{ github.base_ref }}
       run: |
         set -euo pipefail
 
@@ -29,8 +32,7 @@ runs:
         # three-dot diff impossible. Fetching the full ref gives the connected history.
         # The calling workflow must use fetch-depth: 0 on the PR head so the merge-base
         # is reachable from both sides.
-        BASE_SHA="${{ github.event.pull_request.base.sha }}"
-        git fetch origin "${{ github.base_ref }}"
+        git fetch origin "$BASE_REF"
 
         CHANGED=$(git diff "$BASE_SHA"...HEAD --name-only)
         echo "Changed files:"

@@ -3,20 +3,20 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/tokens';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import {
     AppTabsRoutes,
     ReceiveStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
-} from '@suite-native/trading-state';
+} from '@suite-native/trading-shared';
 
 export type EarnNoBalanceAction = 'buy' | 'swap' | 'receive';
 
@@ -43,11 +43,8 @@ export const useEarnNoBalanceActions = ({
 
     const navigateToTrading = (tradingType: 'buy' | 'exchange') => {
         navigation.popTo(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.TradeStack,
-            params: {
-                screen: TradingStackRoutes.Trading,
-                params: { tradingType },
-            },
+            screen: AppTabsRoutes.Trading,
+            params: { tradingType },
         });
     };
 

@@ -1,11 +1,10 @@
-import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
-import { type Account } from 'src/types/wallet';
 import {
     type AggregatedAccountHistory,
     type AggregatedDashboardHistory,
     type GraphRange,
-} from 'src/types/wallet/graph';
+} from '#src/types/wallet/graph';
 
 export interface CommonGraphProps {
     isLoading?: boolean;

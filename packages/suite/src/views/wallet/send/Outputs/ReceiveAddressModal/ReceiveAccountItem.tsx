@@ -1,5 +1,6 @@
 import { selectSelectedAccount } from '@suite/account';
 import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -9,10 +10,10 @@ import { Badge, CardList, Column, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
-import { useSelector } from 'src/hooks/suite';
-import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { CoinBalance } from '#src/components/suite/CoinBalance';
+import { AccountLabeling } from '#src/components/suite/labeling/AccountLabeling';
+import { useFiatFromCryptoValue } from '#src/hooks/suite/useFiatFromCryptoValue';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 interface ReceiveAccountItemProps {
     account: Account;
@@ -37,7 +38,7 @@ export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountI
     return (
         <CardList.Item onClick={() => onAccountSelect(account)}>
             <Row gap={12}>
-                <TokenIcon size={24} symbol={account.symbol} />
+                <TokenIcon size={24} networkSymbol={account.symbol} />
 
                 <Column>
                     <Row alignItems="center" gap={8}>

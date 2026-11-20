@@ -99,6 +99,7 @@ const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
 
         dispatch(
             discoveryActions.startDiscovery(device.path, {
+                trigger: 'add-wallet',
                 isAddingHiddenWallet,
                 isAddingExistingWallet: true,
                 useScopedCallIds,
@@ -161,6 +162,7 @@ export const startAddWalletDiscoveryThunk = createThunk<
         dispatch(
             startDiscoveryThunk({
                 device,
+                trigger: 'add-wallet',
                 isAddingHiddenWallet,
                 isAddingExistingWallet,
                 useScopedCallIds: isAddingHiddenWallet,

@@ -22,7 +22,7 @@ jest.mock('@react-navigation/native', () => ({
 
 const event = {
     type: events.yieldNavigateEvent.name,
-    payload: { action: 'cancel', from: 'deposit-form', to: 'deposit-form' },
+    payload: { action: 'cancel', from: 'deposit-form', to: 'earn-dashboard' },
 } as const satisfies AnalyticsNativeEvents;
 
 const renderBackAnalytics = async (isEnabled = true) => {

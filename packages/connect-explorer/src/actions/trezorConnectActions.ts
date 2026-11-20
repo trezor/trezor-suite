@@ -1,7 +1,6 @@
 import TrezorConnectMobile from '@trezor/connect-mobile';
 import TrezorConnect from '@trezor/connect-web';
 
-import { type ConnectRootState, selectConnect } from '../reducers/trezorConnectReducer';
 import type { Dispatch } from '../types';
 import {
     type ConnectOptions,
@@ -35,8 +34,8 @@ export const init =
             ...options,
         };
 
-        // onSubmitInit re-runs init() on each "Init Connect" click; close the previous
-        // channel so a popup_callback isn't handled once per past init.
+        // init() runs again each time the settings form re-initializes Connect; close the
+        // previous channel so a popup_callback isn't handled once per past init.
         _deeplinkChannel?.close();
         _deeplinkChannel = undefined;
 
@@ -79,12 +78,3 @@ export const init =
 // (middleware auto-init) never disposed either, so this keeps both paths consistent.
 export const initWithOptions = (options: ConnectOptions) => (dispatch: Dispatch) =>
     dispatch(init(options));
-
-type OnSubmitInitThunkState = ConnectRootState;
-
-export const onSubmitInitThunk =
-    () => (dispatch: Dispatch, getState: () => OnSubmitInitThunkState) => {
-        const connect = selectConnect(getState());
-
-        return dispatch(initWithOptions(connect.options ?? {}));
-    };

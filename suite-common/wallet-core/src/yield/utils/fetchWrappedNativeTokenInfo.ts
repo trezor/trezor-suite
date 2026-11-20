@@ -31,7 +31,6 @@ export const fetchWrappedNativeTokenInfo = async ({
             descriptor: account.descriptor,
             details: 'tokenBalances',
             contractFilter: wrappedNativeContract,
-            suppressBackupWarning: true,
         }),
         new Promise<never>((_, reject) =>
             setTimeout(

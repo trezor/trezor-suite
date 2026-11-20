@@ -14,13 +14,15 @@ export const evoluCreateSuiteSyncOwner: CreateSuiteSyncOwner = ({ data }) => {
     if (!appOwnerResult.ok) {
         console.error('Evolu: appOwnerResult error', appOwnerResult);
 
-        return err(
-            CreateSuiteSyncOwnerError('Catastrophic failure, possible Evolu Breaking Change'),
+        return Promise.resolve(
+            err(CreateSuiteSyncOwnerError('Catastrophic failure, possible Evolu Breaking Change')),
         );
     }
 
-    return ok({
-        ownerId: asSuiteSyncOwnerId(appOwnerResult.value.id),
-        ownerSecret: asSuiteSyncOwnerSecretHex(data),
-    });
+    return Promise.resolve(
+        ok({
+            ownerId: asSuiteSyncOwnerId(appOwnerResult.value.id),
+            ownerSecret: asSuiteSyncOwnerSecretHex(data),
+        }),
+    );
 };

@@ -20,8 +20,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
+import { signAndPushSendFormTransactionThunk } from '#src/actions/wallet/send/sendFormThunks';
+import { type SendContextValues } from '#src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -36,7 +36,7 @@ export const useCompose = <TFieldValues extends FormState>({
     state,
     defaultField,
     getValues,
-    formState: { errors },
+    getErrors,
     clearErrors,
     ...props
 }: Props<TFieldValues>) => {
@@ -70,11 +70,6 @@ export const useCompose = <TFieldValues extends FormState>({
             setComposedLevels(undefined);
             // set ref for later use in useEffect
             composeRequestIDRef.current += 1;
-            // clear errors from previous compose process
-            const composeErrors = findComposeErrors(errors);
-            if (composeErrors.length > 0) {
-                clearErrors(composeErrors);
-            }
             // set field value for later use in updateComposedValues
             setComposeField(field);
             // start composing
@@ -83,7 +78,19 @@ export const useCompose = <TFieldValues extends FormState>({
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestIDRef.current;
             const result = await debounce(() => {
-                if (Object.keys(errors).length > 0) {
+                const errors = getErrors();
+                const errorCount = Object.values(errors).reduce(
+                    (count, error) =>
+                        count +
+                        (Array.isArray(error)
+                            ? error.reduce(
+                                  (sum, output) => sum + Object.keys(output ?? {}).length,
+                                  0,
+                              )
+                            : 1),
+                    0,
+                );
+                if (errorCount > findComposeErrors(errors).length) {
                     return Promise.resolve(undefined);
                 }
 
@@ -112,7 +119,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, getErrors, debounce, getValues, dispatch],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
@@ -153,7 +160,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 return;
             }
 
-            const composeErrors = findComposeErrors(errors);
+            const composeErrors = findComposeErrors(getErrors());
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -162,7 +169,7 @@ export const useCompose = <TFieldValues extends FormState>({
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
             setLoading(false);
         },
-        [composeField, getValues, setValue, errors, setError, clearErrors, translationString],
+        [composeField, getValues, setValue, getErrors, setError, clearErrors, translationString],
     );
 
     // called from the useFees sub-hook

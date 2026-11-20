@@ -2,13 +2,32 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../analytics" },
+        { "path": "../device" },
         { "path": "../earn-staking-common" },
+        { "path": "../message-system" },
+        { "path": "../networks" },
+        { "path": "../react-query" },
+        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/connect-common"
+        },
         {
             "path": "../../packages/dependency-injection"
         },
         {
             "path": "../../networks/network-module/network-module-types"
+        },
+        { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/zod" },
+        { "path": "../suite-types" },
+        { "path": "../test-utils" },
+        {
+            "path": "../../packages/analytics-uploader"
         },
         { "path": "../../packages/requirements" }
     ]

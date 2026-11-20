@@ -4,6 +4,7 @@ import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
+    type AccountKey,
     type AddressType,
     type EvmSelectedFee,
     type FeeLevelLabel,
@@ -180,7 +181,7 @@ export type UserContextPayload =
       }
     | {
           type: 'unstake';
-          account: Account;
+          accountKey: AccountKey;
       }
     | {
           type: 'claim';
@@ -200,6 +201,7 @@ export type UserContextPayload =
           type: 'copy-address';
           addressType: AddressType;
           address: string;
+          copyAnalyticsFrom?: 'asset-detail';
       }
     | {
           type: 'unhide-token';

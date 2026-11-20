@@ -1,5 +1,5 @@
 import { type Account } from '@suite-common/wallet-types';
-import { StakeState } from '@trezor/network-solana/constants';
+import { MAX_CLAIM_ACCOUNTS, StakeState } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import { BigNumber } from '@trezor/utils';
 
@@ -16,9 +16,8 @@ type ResolveSolanaStakingLimitParams =
       }
     | {
           type: 'claim';
-          outputAmount: string;
           totalClaimAmount: string;
-          rentExemptReserves: string[];
+          deactivatedAccountCount: number;
       };
 
 export type SolanaStakingLimit = {
@@ -38,27 +37,22 @@ export const resolveSolanaStakingLimit = (
         };
     }
 
-    const { outputAmount, totalClaimAmount, rentExemptReserves } = params;
+    const { totalClaimAmount, deactivatedAccountCount } = params;
 
-    const claimableAmount = rentExemptReserves.reduce(
-        (acc, reserve) => acc.minus(reserve),
-        new BigNumber(totalClaimAmount),
-    );
-
+    // A claim withdraws whole accounts, so only their number can exceed one transaction. The
+    // on-chain balance may differ from "stake plus rent" and must not drive the decision.
     return {
-        isLimitExceeded: claimableAmount.lt(outputAmount),
+        isLimitExceeded: deactivatedAccountCount > MAX_CLAIM_ACCOUNTS,
         estimatedAmount: totalClaimAmount,
     };
 };
 
-export const getSolanaDeactivatedRentReserves = (account: Account): string[] =>
-    getSolanaStakingAccountsByStatus(account, StakeState.Deactivated).map(
-        ({ rentExemptReserve }) => rentExemptReserve,
-    );
+export const getSolanaDeactivatedAccountCount = (account: Account): number =>
+    getSolanaStakingAccountsByStatus(account, StakeState.Deactivated).length;
 
 type EstimateSolanaStakingLimitParams = {
     descriptor: string;
-    deactivatedRentReserves: string[];
+    deactivatedAccountCount: number;
     blockchainUrl: string;
     userAgent: string;
     type: SolanaStakingLimitType;
@@ -67,7 +61,7 @@ type EstimateSolanaStakingLimitParams = {
 
 export const estimateSolanaStakingLimit = async ({
     descriptor,
-    deactivatedRentReserves,
+    deactivatedAccountCount,
     blockchainUrl,
     userAgent,
     type,
@@ -95,8 +89,7 @@ export const estimateSolanaStakingLimit = async ({
 
     return resolveSolanaStakingLimit({
         type,
-        outputAmount,
         totalClaimAmount: totalClaimAmount.toString(),
-        rentExemptReserves: deactivatedRentReserves,
+        deactivatedAccountCount,
     });
 };

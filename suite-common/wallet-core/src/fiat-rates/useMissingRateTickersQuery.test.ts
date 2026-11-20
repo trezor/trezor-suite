@@ -3,8 +3,9 @@
  */
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
+import { type TickerId } from '@suite-common/wallet-types';
 
 import { updateFiatRatesThunk } from './fiatRatesThunks';
 import { useMissingRateTickersQuery } from './useMissingRateTickersQuery';

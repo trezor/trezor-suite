@@ -1,0 +1,46 @@
+import {
+    type HomeAssetTableState,
+    selectCappedAssetKeysByNetwork,
+    selectDisplayedNetworkSymbols,
+    selectDisplayedWalletAssetKeys,
+    selectHomeAssetGrouping,
+} from '@suite-common/assets';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { createWeakMapSelector } from '@trezor/redux-utils';
+import { exhaustive } from '@trezor/type-utils';
+
+export type PortfolioAssetListEntry =
+    { type: 'network'; symbol: NetworkSymbol } | { type: 'asset'; assetKey: WalletAssetKey };
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
+
+const toAssetEntries = (assetKeys: readonly WalletAssetKey[]): PortfolioAssetListEntry[] =>
+    assetKeys.map(assetKey => ({ type: 'asset', assetKey }));
+
+export const selectPortfolioAssetListEntries = createMemoizedSelector(
+    [
+        selectHomeAssetGrouping,
+        selectDisplayedWalletAssetKeys,
+        selectDisplayedNetworkSymbols,
+        selectCappedAssetKeysByNetwork,
+    ],
+    (
+        grouping,
+        assetKeys,
+        networkSymbols,
+        assetKeysByNetwork,
+    ): readonly PortfolioAssetListEntry[] => {
+        switch (grouping) {
+            case 'default':
+                return toAssetEntries(assetKeys);
+            case 'networks':
+                return networkSymbols.flatMap((symbol): PortfolioAssetListEntry[] => [
+                    { type: 'network', symbol },
+                    ...toAssetEntries(assetKeysByNetwork.get(symbol) ?? []),
+                ]);
+            default:
+                return exhaustive(grouping);
+        }
+    },
+);

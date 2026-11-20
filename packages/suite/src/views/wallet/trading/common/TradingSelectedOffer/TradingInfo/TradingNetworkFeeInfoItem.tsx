@@ -7,9 +7,10 @@ import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { type getFeeTooltipTextId } from 'src/components/wallet/Fees/feeUtils';
-import { TradingExchangeNetworkFeeModal } from 'src/views/wallet/trading/exchange/TradingExchangeNetworkFeeModal/TradingExchangeNetworkFeeModal';
+import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { type getFeeTooltipTextId } from '#src/components/wallet/Fees/feeUtils';
+import { TradingExchangeNetworkFeeModal } from '#src/views/wallet/trading/exchange/TradingExchangeNetworkFeeModal/TradingExchangeNetworkFeeModal';
 
 export type TradingNetworkFeeInfoItemProps = {
     amount: string;
@@ -80,7 +81,7 @@ export const TradingNetworkFeeInfoItem = ({
                             <FormattedCryptoAmount
                                 disableHiddenPlaceholder
                                 value={amount}
-                                symbol={symbol}
+                                networkSymbol={symbol}
                             />
                         }
                     >

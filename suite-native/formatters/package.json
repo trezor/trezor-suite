@@ -12,8 +12,11 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/token": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -21,14 +24,15 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/tokens": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-intl": "^12.1.4",
-        "react-native": "0.86.3",
+        "react-native": "0.88.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

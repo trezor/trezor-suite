@@ -5,10 +5,11 @@ import { type ReloadAppDep } from '@suite-common/suite-types';
 import { type DispatchDep } from '@trezor/redux-utils';
 import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
 
-import { storageError } from 'src/actions/suite/storageLifecycleActions';
+import { storageError } from '#src/actions/suite/storageLifecycleActions';
 
+import type { Db } from './Db';
 import type { SuiteDBSchema } from './definitions';
-import { runLegacyMigrations } from './migrations';
+import { runLegacyMigrations } from './migrations/runLegacyMigrations';
 import * as migrations from './migrations/versions';
 
 const LAST_LEGACY_VERSION = 57;
@@ -81,12 +82,6 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 };
 
 export type DbDeps = DispatchDep & ReloadAppDep;
-
-export type Db = SuiteDB<SuiteDBSchema>;
-
-export type DbDep = { db: Db };
-
-export const injectDb = (services: any): DbDep => ({ db: services.db });
 
 export const createDb = (deps: DbDeps): Db => {
     const db = new SuiteDB<SuiteDBSchema>(

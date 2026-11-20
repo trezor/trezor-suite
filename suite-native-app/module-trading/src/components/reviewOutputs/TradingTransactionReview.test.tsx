@@ -1,0 +1,325 @@
+import type { CryptoId, ExchangeTrade } from 'invity-api';
+
+import { mockNetworksServices } from '@suite-common/networks/mocks';
+import { type TokenAddress } from '@suite-common/tokens';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
+import { userEvent } from '@suite-native/test-utils-store';
+import {
+    btc1NormalAccount,
+    exchangeInvity,
+    oneInchFusionPlusWithEip712SignDataQuote,
+} from '@suite-native/trading-fixtures';
+
+import {
+    TradingTransactionReview,
+    type TradingTransactionReviewProps,
+} from './TradingTransactionReview';
+import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+import { createFormStateForSendForm } from '../../utils/tradingFormUtils';
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({
+        navigate: jest.fn(),
+        goBack: jest.fn(),
+        popToTop: jest.fn(),
+        popTo: jest.fn(),
+        dispatch: jest.fn(),
+        canGoBack: () => false,
+        getState: () => ({ routes: [] }),
+        addListener: jest.fn(() => jest.fn()),
+    }),
+    usePreventRemove: jest.fn(),
+}));
+
+jest.mock('@suite-native/confirm-on-trezor', () => ({
+    ...jest.requireActual('@suite-native/confirm-on-trezor'),
+    useConfirmOnTrezorController: () => ({
+        confirmOnTrezorRef: { current: null },
+        closeSheet: jest.fn(),
+        revealConfirmOnTrezorSheet: jest.fn(),
+    }),
+    ConfirmOnTrezorWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+const mockUseTradingOutputsReviewScreenControls = jest.fn();
+
+jest.mock('../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
+    useTradingOutputsReviewScreenControls: (args: any) =>
+        mockUseTradingOutputsReviewScreenControls(args),
+}));
+
+const mockUseDelayedReviewOutputListDisplayFlag = jest.fn(() => true);
+
+jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
+    useDelayedReviewOutputListDisplayFlag: () => mockUseDelayedReviewOutputListDisplayFlag(),
+}));
+
+const createControlsMockValue = (overrides: Record<string, unknown> = {}) => ({
+    isTransactionAlreadySigned: false,
+    confirmOnTrezorRef: { current: null },
+    closeSheet: jest.fn(),
+    revealConfirmOnTrezorSheet: jest.fn(),
+    showTimer: false,
+    secondsLeft: 0,
+    isPastDeadline: false,
+    isBroadcasting: false,
+    onRetry: jest.fn(),
+    isRetryDisabled: false,
+    handleSendTransaction: jest.fn(),
+    ...overrides,
+});
+
+describe('TradingTransactionReview', () => {
+    const renderReviewOutputsContent = (
+        props: Partial<Omit<TradingTransactionReviewProps, 'exchangeFlowType' | 'tradingType'>> & {
+            exchangeFlowType?: TradingTransactionReviewProps['exchangeFlowType'];
+        } = {},
+    ) =>
+        renderWithTradingProvider(
+            <TradingTransactionReview
+                orderId="ORDER_ID"
+                accountKey={mockAccountKey({ descriptor: 'accountKey' })}
+                reportToAnalytics={jest.fn()}
+                tradingType="exchange"
+                isTransactionSendConsentRequested={true}
+                tokenContract={'TOKEN_CONTRACT' as TokenAddress}
+                resolveTransactionSendConsent={jest.fn()}
+                signAndSendTransaction={jest.fn()}
+                exchangeFlowType="swap"
+                {...props}
+            />,
+            {
+                tradeType: 'exchange',
+                services: { networks: mockNetworksServices() },
+            },
+        );
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockUseDelayedReviewOutputListDisplayFlag.mockReturnValue(true);
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue(createControlsMockValue());
+    });
+
+    it('should not display footer if transaction is not signed yet', async () => {
+        const { queryByTestId } = await renderReviewOutputsContent();
+
+        expect(queryByTestId('@trading/transaction-review/footer')).not.toBeOnTheScreen();
+    });
+
+    it('should display footer if transaction is signed', async () => {
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue(
+            createControlsMockValue({ isTransactionAlreadySigned: true }),
+        );
+        const { getByTestId } = await renderReviewOutputsContent({
+            accountKey: btc1NormalAccount.key,
+        });
+
+        expect(getByTestId('@trading/transaction-review/footer')).toBeOnTheScreen();
+        expect(getByTestId('@trading/transaction-review/footer/submit-button')).toHaveTextContent(
+            getTranslation('moduleTrading.tradingReviewOutputs.submitButton'),
+        );
+    });
+
+    it('should resolve the send consent on submit button press', async () => {
+        const handleSendTransaction = jest.fn();
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue(
+            createControlsMockValue({ isTransactionAlreadySigned: true, handleSendTransaction }),
+        );
+        const { getByTestId } = await renderReviewOutputsContent({
+            accountKey: btc1NormalAccount.key,
+        });
+
+        await userEvent.press(getByTestId('@trading/transaction-review/footer/submit-button'));
+
+        expect(handleSendTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('should disable the submit button until the send consent is requested', async () => {
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue(
+            createControlsMockValue({ isTransactionAlreadySigned: true }),
+        );
+        const { getByTestId } = await renderReviewOutputsContent({
+            accountKey: btc1NormalAccount.key,
+            isTransactionSendConsentRequested: false,
+        });
+
+        expect(getByTestId('@trading/transaction-review/footer/submit-button')).toBeDisabled();
+    });
+
+    it('should disable the submit button when the transaction validity deadline has passed', async () => {
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue(
+            createControlsMockValue({ isTransactionAlreadySigned: true, isPastDeadline: true }),
+        );
+        const { getByTestId } = await renderReviewOutputsContent({
+            accountKey: btc1NormalAccount.key,
+        });
+
+        expect(getByTestId('@trading/transaction-review/footer/submit-button')).toBeDisabled();
+    });
+
+    it('should display the submit button loading state while broadcasting', async () => {
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue(
+            createControlsMockValue({ isTransactionAlreadySigned: true, isBroadcasting: true }),
+        );
+        const { getByTestId } = await renderReviewOutputsContent({
+            accountKey: btc1NormalAccount.key,
+        });
+
+        expect(
+            getByTestId('@trading/transaction-review/footer/submit-button/loading'),
+        ).toBeOnTheScreen();
+    });
+
+    it('should display the transaction validity timer', async () => {
+        mockUseTradingOutputsReviewScreenControls.mockReturnValue(
+            createControlsMockValue({
+                isTransactionAlreadySigned: true,
+                showTimer: true,
+                secondsLeft: 30,
+            }),
+        );
+
+        const { getByText } = await renderReviewOutputsContent();
+
+        expect(
+            getByText(
+                getTranslation('transactionManagement.txValidityTimer.countdown', {
+                    seconds: 30,
+                }),
+            ),
+        ).toBeOnTheScreen();
+    });
+
+    it('renders loading skeleton when the review list display is still delayed', async () => {
+        mockUseDelayedReviewOutputListDisplayFlag.mockReturnValue(false);
+
+        const { getByTestId } = await renderReviewOutputsContent();
+
+        expect(getByTestId('@trading/transaction-review/skeleton')).toBeOnTheScreen();
+    });
+
+    it('renders the no-account error when the account is unknown', async () => {
+        const { getByText, queryByTestId } = await renderReviewOutputsContent();
+
+        // The default accountKey is not present in the store, so the review
+        // body falls back to the error state instead of the outputs list.
+        expect(
+            getByText(new RegExp(getTranslation('transactionManagement.review.outputs.noAccount'))),
+        ).toBeOnTheScreen();
+        expect(queryByTestId('@trading/transaction-review/skeleton')).not.toBeOnTheScreen();
+    });
+
+    it('renders the outputs of the signed form state instead of the trading form draft', async () => {
+        const quote: ExchangeTrade = {
+            exchange: 'invity',
+            send: 'bitcoin' as CryptoId,
+            sendStringAmount: '0.001',
+            sendAddress: 'PROVIDER_DEPOSIT_ADDRESS',
+            receive: 'ethereum' as CryptoId,
+            receiveStringAmount: '0.03',
+            receiveAddress: 'RECEIVE_ADDRESS',
+            status: 'CONFIRM',
+            orderId: 'ORDER_ID',
+        };
+        const createForm = (isSlip24Active: boolean) =>
+            createFormStateForSendForm({
+                quote,
+                providers: { invity: exchangeInvity },
+                isSlip24Active,
+                networkType: 'bitcoin',
+                sendAccountKey: btc1NormalAccount.key,
+                receiveAccountKey: btc1NormalAccount.key,
+            });
+
+        const { getByText, queryByText } = await renderWithTradingProvider(
+            <TradingTransactionReview
+                orderId="ORDER_ID"
+                accountKey={btc1NormalAccount.key}
+                reportToAnalytics={jest.fn()}
+                tradingType="exchange"
+                isTransactionSendConsentRequested={true}
+                resolveTransactionSendConsent={jest.fn()}
+                signAndSendTransaction={jest.fn()}
+                exchangeFlowType="swap"
+            />,
+            {
+                tradeType: 'exchange',
+                overrides: {
+                    device: {
+                        selectedDevice: {
+                            path: 'device-path',
+                            mode: 'normal',
+                            features: { major_version: 2, minor_version: 9, patch_version: 0 },
+                        },
+                    },
+                    wallet: {
+                        send: {
+                            precomposedTx: {
+                                type: 'final',
+                                outputs: [
+                                    { address: 'PROVIDER_DEPOSIT_ADDRESS', amount: '100000' },
+                                ],
+                                fee: '200',
+                                feePerByte: '1',
+                                bytes: 200,
+                                totalSpent: '100200',
+                            },
+                            precomposedForm: createForm(false),
+                        },
+                        formDrafts: { 'trading-exchange/': createForm(true) },
+                    },
+                },
+                services: { networks: mockNetworksServices() },
+            },
+        );
+
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.addressLabel')),
+        ).toBeOnTheScreen();
+        expect(
+            queryByText(
+                getTranslation('transactionManagement.review.outputs.tradedAssetsOutputLabel'),
+            ),
+        ).toBeNull();
+    });
+
+    it('renders SignDataMessageReview when exchangeFlowType is sign-data', async () => {
+        const { getByText, queryByText } = await renderWithTradingProvider(
+            <TradingTransactionReview
+                orderId="ORDER_ID"
+                accountKey={mockAccountKey({ descriptor: 'accountKey' })}
+                reportToAnalytics={jest.fn()}
+                tradingType="exchange"
+                isTransactionSendConsentRequested={true}
+                tokenContract={'TOKEN_CONTRACT' as TokenAddress}
+                resolveTransactionSendConsent={jest.fn()}
+                signAndSendTransaction={jest.fn()}
+                exchangeFlowType="sign-data"
+            />,
+            {
+                tradeType: 'exchange',
+                overrides: {
+                    wallet: {
+                        trading: {
+                            exchange: {
+                                selectedQuote: oneInchFusionPlusWithEip712SignDataQuote,
+                            },
+                        },
+                    },
+                },
+                services: { networks: mockNetworksServices() },
+            },
+        );
+
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.heading')),
+        ).toBeOnTheScreen();
+        // The message review replaces the outputs list entirely, so the
+        // unknown-account error must not appear for the sign-data flow.
+        expect(
+            queryByText(getTranslation('transactionManagement.review.outputs.noAccount')),
+        ).toBeNull();
+    });
+});

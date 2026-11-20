@@ -15,9 +15,9 @@ import { type AnonymitySet } from '@trezor/blockchain-link-types';
 import { Column, Icon, Link, Row, Text, Tooltip } from '@trezor/components';
 import { ChangeIcon, WalletIcon } from '@trezor/icons';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { UtxoAnonymity } from 'src/components/wallet';
-import { useSelector } from 'src/hooks/suite';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
+import { UtxoAnonymity } from '#src/components/wallet/UtxoAnonymity';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 const OP_RETURN_REGEX = /^OP_RETURN \(([^)]+)\)/;
 
@@ -99,7 +99,7 @@ export const IOItem = ({
                                                     ? formatNetworkAmount(amount, symbol)
                                                     : amount
                                             }
-                                            symbol={symbol}
+                                            networkSymbol={networkSymbol}
                                             contractAddress={contractAddress}
                                         />
                                     </Text>

@@ -73,7 +73,7 @@ export const DisableTorModal = ({
                         <Column gap={32} hasDivider>
                             {onionBackends.map(({ symbol, urls }) => (
                                 <Row key={symbol} gap={16}>
-                                    <TokenIcon symbol={symbol} />
+                                    <TokenIcon networkSymbol={symbol} />
                                     <Column>
                                         <Paragraph>{getNetwork(symbol).name}</Paragraph>
                                         <Paragraph

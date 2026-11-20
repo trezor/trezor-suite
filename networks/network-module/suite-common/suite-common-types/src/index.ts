@@ -1,8 +1,31 @@
 export { DEFAULT_ACCOUNT_SYNC_INTERVAL } from './AccountSyncInterval';
-export { addressType } from './AddressValidator';
-export type { AddressType, AddressValidator } from './AddressValidator';
-export type { NamedAddressResolveOptions, NamedAddressResolver } from './NamedAddressResolver';
+export { addressType } from './addressValidator/AddressValidator';
+export type { AddressType, AddressValidator } from './addressValidator/AddressValidator';
+export type {
+    NamedAddressResolveOptions,
+    NamedAddressResolver,
+} from './namedAddressResolver/NamedAddressResolver';
 export type { IsWrappedNativeToken } from './IsWrappedNativeToken';
+export type { NetworkSignVerify, SignVerifyError } from './signVerify/NetworkSignVerify';
+export {
+    SignatureFormatNotSupportedError,
+    type NetworkSignMessage,
+    type SignError,
+    type SignMessageParams,
+    type SignatureFormat,
+    type SignatureFormatNotSupportedErrorType,
+    type SignedMessage,
+} from './signVerify/NetworkSignMessage';
+export {
+    SignVerifyNotSupportedError,
+    type SignVerifyNotSupportedErrorType,
+    connectErrorToSignVerifyError,
+} from './signVerify/signVerifyErrors';
+export type {
+    NetworkVerifyMessage,
+    VerifyError,
+    VerifyMessageParams,
+} from './signVerify/NetworkVerifyMessage';
 export { createNetworkModule } from './createNetworkModule';
 export type { NetworkModuleDefinition } from './createNetworkModule';
 export { asDisplayOrderKey } from './DisplayOrderKey';

@@ -5,7 +5,7 @@ import { useTheme } from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { FormattedCryptoAmount } from '#src/components/suite/FormattedCryptoAmount';
 
 interface CommonProps {
     setWidth: (n: number) => void;
@@ -55,7 +55,11 @@ export const GraphYAxisTick = ({
                 )}
 
                 {symbol && (
-                    <FormattedCryptoAmount value={payload.value} symbol={symbol} isRawString />
+                    <FormattedCryptoAmount
+                        value={payload.value}
+                        networkSymbol={symbol}
+                        isRawString
+                    />
                 )}
             </text>
         </g>

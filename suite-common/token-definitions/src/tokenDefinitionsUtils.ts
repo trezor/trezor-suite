@@ -2,6 +2,7 @@ import {
     type NetworkSymbol,
     getCoingeckoId,
     getNetworkFeatures,
+    getNetworkType,
 } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
@@ -44,6 +45,11 @@ export const filterKnownTokens = (
     symbol: NetworkSymbol,
     tokens: TokenInfo[],
 ) => tokens.filter(token => isTokenDefinitionKnown(tokenDefinitions, symbol, token.contract));
+
+export const normalizeTokenContract = (symbol: NetworkSymbol, contract: string) =>
+    getNetworkType(symbol) === 'ethereum'
+        ? getContractAddressForNetworkSymbol(symbol, contract)
+        : contract;
 
 export const getSupportedDefinitionTypes = (symbol: NetworkSymbol) => {
     const isCoinDefinitionsEnabled = getNetworkFeatures(symbol).includes('coin-definitions');

@@ -32,10 +32,16 @@ import {
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type ReceiveRootState, selectReceiveAccountState } from '@suite-common/receive';
 import {
+    type ReferAFriendRootState,
+    selectReferAFriendSettings,
+    selectReferAFriendWallets,
+} from '@suite-common/refer-a-friend';
+import {
     type WithSuiteSyncQuotaManagerState,
     selectSuiteSyncQuotaManager,
 } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { type ThpRootState, selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -73,6 +79,7 @@ import {
     selectWalletSettings,
 } from '@suite-common/wallet-core';
 import type {
+    Account,
     AccountKey,
     FormDraftKeyPrefix,
     FormState,
@@ -90,21 +97,18 @@ import { parseStaticSessionId } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils/';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
-import { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { type GraphState } from 'src/reducers/wallet/graphReducer';
-import { selectGraph } from 'src/reducers/wallet/graphReducer';
+import { type SuiteState } from '#src/reducers/suite/suiteReducer';
+import { selectGraph } from '#src/reducers/wallet/graphReducer';
 import {
     selectEvmSettings,
     selectSeenDisconnectNotificationForDeviceIds,
-} from 'src/selectors/suite/suiteSelectors';
-import { type DbDep } from 'src/storage/createDb';
-import type { TrezorDevice } from 'src/types/suite';
-import type { Account } from 'src/types/wallet';
-import { type GraphData } from 'src/types/wallet/graph';
-import { serializeCoinjoinAccount, serializeDevice } from 'src/utils/suite/storage';
-import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
+} from '#src/selectors/suite/suiteSelectors';
+import { type DbDep } from '#src/storage/Db';
+import { type GraphData, type GraphState } from '#src/types/wallet/graph';
+import { serializeCoinjoinAccount, serializeDevice } from '#src/utils/suite/storage';
+import { deviceGraphDataFilterFn } from '#src/utils/wallet/graph/utils';
 
-import { STORAGE } from './constants';
+import * as STORAGE from './constants/storageConstants';
 
 type SaveExplorerParams = {
     symbol: NetworkSymbol;
@@ -922,6 +926,30 @@ export const saveSuiteSyncQuotaManagerThunk =
                 ownersAllowance: suiteSyncQuotaManager.ownersAllowance,
             },
             'suiteSyncQuotaManager',
+            true,
+        );
+    };
+
+type SaveReferAFriendThunkState = ReferAFriendRootState;
+
+type SaveReferAFriendThunkDeps = WithServices<DbDep>;
+
+export const saveReferAFriendThunk =
+    () =>
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveReferAFriendThunkState,
+        extra: SaveReferAFriendThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) return;
+
+        return extra.services.db.addItem(
+            'referAFriend',
+            {
+                settings: selectReferAFriendSettings(getState()),
+                wallets: selectReferAFriendWallets(getState()),
+            },
+            'referAFriend',
             true,
         );
     };

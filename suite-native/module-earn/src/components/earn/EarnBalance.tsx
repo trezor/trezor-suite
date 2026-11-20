@@ -1,33 +1,32 @@
 import { useSelector } from 'react-redux';
 
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { Translation } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
-
 import {
-    type EarnListRootState,
+    type EarnRootState,
     selectEarnTotalFiatAmount,
     selectIsEarnFiatTotalIncomplete,
     selectIsEarnFiatTotalUnavailable,
-} from '../../earnScreenSelectors';
-import { useEarnMissingRateTickersQuery } from '../../hooks/earn/useEarnMissingRateTickersQuery';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
+    useEarnMissingRateTickersQuery,
+} from '@suite-common/earn';
+import { useYieldOpportunities } from '@suite-common/wallet-core';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { Discreet, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
 export const EarnBalance = () => {
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();
     const { yieldOpportunities } = useYieldOpportunities();
 
-    const isFiatTotalIncomplete = useSelector((state: EarnListRootState) =>
+    const isFiatTotalIncomplete = useSelector((state: EarnRootState) =>
         selectIsEarnFiatTotalIncomplete(state, yieldOpportunities, isFiatRatesLoading),
     );
 
-    const isFiatTotalUnavailable = useSelector((state: EarnListRootState) =>
+    const isFiatTotalUnavailable = useSelector((state: EarnRootState) =>
         selectIsEarnFiatTotalUnavailable(state, yieldOpportunities, isFiatRatesLoading),
     );
 
-    const totalEarnFiatAmount = useSelector((state: EarnListRootState) =>
+    const totalEarnFiatAmount = useSelector((state: EarnRootState) =>
         selectEarnTotalFiatAmount(state, yieldOpportunities),
     );
 
@@ -45,11 +44,13 @@ export const EarnBalance = () => {
                 <HStack spacing="sp4" alignItems="center">
                     {isFiatTotalIncomplete && <Text variant="headline-md">~</Text>}
                     <DiscreetTextTrigger>
-                        <BaseCurrencyAmountFormatter
-                            value={asBaseCurrencyAmount(new BigNumber(totalEarnFiatAmount))}
-                            variant="headline-md"
-                            isLoading={isFiatRatesLoading}
-                        />
+                        <Discreet textVariant="headline-md">
+                            <BaseCurrencyAmountFormatter
+                                value={asBaseCurrencyAmount(new BigNumber(totalEarnFiatAmount))}
+                                variant="headline-md"
+                                isLoading={isFiatRatesLoading}
+                            />
+                        </Discreet>
                     </DiscreetTextTrigger>
                 </HStack>
             )}

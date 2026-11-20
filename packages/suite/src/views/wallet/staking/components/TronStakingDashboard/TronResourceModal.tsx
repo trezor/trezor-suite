@@ -9,7 +9,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 import {
     TronResourceBreakdownRow,

@@ -86,10 +86,11 @@ export const Feature = {
     firmwareHashCheckTimeout: 'security.firmware.hashCheck.timeout',
 
     // Disables wallet-creation entropy check UI, making it silent on Desktop/Web.
+    // Also disables discovery entropy check UI, because it relies on the wallet-creation check.
     entropyCheck: 'security.entropyCheck',
     // Like `entropyCheck` for Mobile. DO NOT separate flags per platform, rather use conditions in the message. Kept here for compatibility.
     entropyCheckMobile: 'security.entropyCheck.mobile',
-    // Disables discovery entropy check UI, making it silent.
+    // Disables discovery entropy check UI, making it silent. Doesn't affect wallet-creation entropy check.
     entropyCheckDiscovery: 'security.entropyCheck.discovery',
 
     // Disables UI for Optiga proof result on Device Authenticity Check.
@@ -135,8 +136,8 @@ export const Feature = {
             unwrap: 'earn.wrappedNative.unwrap',
         } as const satisfies Record<WrappedNativeFlowType, string>,
     },
-    finprom: {
-        presenceRestriction: 'finprom.presenceRestriction',
+    regions: {
+        presenceRestriction: 'regions.presenceRestriction',
     },
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
@@ -227,6 +228,7 @@ export type ContextDomain = FunctionContextReturnValues;
 
 export enum ExperimentId {
     assetFirstHomeTable = 'da21537c-d393-4292-9908-cba1eabdb651',
+    assetFirstHomeTableMobile = 'd0dca9bc-578f-47c9-97a9-fc83d2b27713',
     tradingFeedbackForm = '092db279-98dc-418e-bbfa-ef70716fb211',
     tradingFiatValues = 'b73df44d-37ed-4b66-aba1-5c4164493bae',
 }

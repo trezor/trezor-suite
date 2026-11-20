@@ -9,18 +9,22 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     getCardanoAccountDrepId,
+    prepareStakeReducer,
     stakeActions,
     stakeInitialState,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { type AppState } from 'src/reducers/store';
-import { stakeReducer } from 'src/reducers/wallet';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from './VotingPreferenceCard';
-import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+import {
+    type MockSuiteState,
+    mockInitialAppState,
+} from '../../../../../../mocks/mockInitialAppState';
+
+const stakeReducer = prepareStakeReducer({});
 
 const LEGACY_DREP_ID = 'drep1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjmv589e';
 const KEY_DREP_ID = 'drep1yfpfkyjxzeqvalf6fgvj7lznrk8kcmfnvy9hyl6gr6ez6wgsqdglp';
@@ -37,7 +41,7 @@ const renderCard = (account: Account = createAccount()) => {
         ...mockInitialAppState,
         wallet: { ...mockInitialAppState.wallet, stake: stakeInitialState },
     };
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, MockSuiteState>({
         preloadedState,
         reducer: (state = preloadedState, action: UnknownAction) => ({
             ...state,

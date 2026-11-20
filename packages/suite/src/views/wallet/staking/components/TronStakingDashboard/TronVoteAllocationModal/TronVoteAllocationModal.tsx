@@ -24,8 +24,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { TronStakeInfoRow } from 'src/components/earn/staking/tron/TronStakeInfoRow';
-import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { TronStakeInfoRow } from '#src/components/earn/staking/tron/TronStakeInfoRow';
+import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationRow } from './TronVoteAllocationRow';
 

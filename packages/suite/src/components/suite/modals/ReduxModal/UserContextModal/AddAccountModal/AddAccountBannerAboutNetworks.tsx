@@ -9,7 +9,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { GraduationCapIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { bannerAnimationConfig } from 'src/components/suite/modals/ReduxModal/UserContextModal/ActivateAssetsModal';
+import { bannerAnimationConfig } from '#src/components/suite/modals/ReduxModal/UserContextModal/ActivateAssetsModal';
 
 const AddAccountBannerAboutNetworksInner = () => {
     const { dispatch } = useServices(injectDispatch);

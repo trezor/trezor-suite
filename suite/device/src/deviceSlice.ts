@@ -26,15 +26,29 @@ export type DesktopDeviceRootState = {
     device: DesktopDeviceState;
 };
 
+// The mode applies only to the current opening, so the next one starts at the type chooser.
+const closeConnectionModal = (state: DesktopDeviceState) => {
+    state.isConnectionModalOpen = false;
+    state.defaultConnectionMode = 'cable';
+};
+
 const deviceSlice = createSliceWithExtraDeps({
     name: 'device',
     initialState,
     reducers: {
         toggleConnectionModal: (state: DesktopDeviceState) => {
-            state.isConnectionModalOpen = !state.isConnectionModalOpen;
+            if (state.isConnectionModalOpen) {
+                closeConnectionModal(state);
+            } else {
+                state.isConnectionModalOpen = true;
+            }
         },
         setConnectionModal: (state: DesktopDeviceState, { payload }: PayloadAction<boolean>) => {
-            state.isConnectionModalOpen = payload;
+            if (payload) {
+                state.isConnectionModalOpen = true;
+            } else {
+                closeConnectionModal(state);
+            }
         },
         setConnectionMode: (
             state: DesktopDeviceState,
@@ -50,7 +64,7 @@ const deviceSlice = createSliceWithExtraDeps({
             .addMatcher(
                 isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
                 (state, action) => {
-                    state.isConnectionModalOpen = false;
+                    closeConnectionModal(state);
                     commonReducer(state, action);
                 },
             )

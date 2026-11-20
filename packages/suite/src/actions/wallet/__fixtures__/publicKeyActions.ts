@@ -4,7 +4,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
+import * as publicKeyActions from '#src/actions/wallet/publicKeyActions';
 
 export default [
     {

@@ -9,6 +9,7 @@ import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
 import {
     type FlagsRootState,
+    closeTokenYieldBanner,
     markNewContentIndicatorAsSeen,
     setAssetPriceChartRange,
     setFlag,
@@ -32,6 +33,7 @@ import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { receiveActions } from '@suite-common/receive';
+import { referAFriendActions } from '@suite-common/refer-a-friend';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
@@ -44,7 +46,7 @@ import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
 import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
-import { tradingActions } from '@suite-common/trading';
+import { type TradingRootState, selectTradingTrades, tradingActions } from '@suite-common/trading';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -86,16 +88,16 @@ import {
     createMiddlewareWithExtraDeps,
 } from '@trezor/redux-utils';
 
-import * as storageActions from 'src/actions/suite/storageActions';
+import * as storageActions from '#src/actions/suite/storageActions';
 import {
     closeEvmExplanationBanner,
     confirmEvmExplanationModal,
-} from 'src/actions/suite/suiteActions';
-import { accountGraphFail, accountGraphSuccess } from 'src/actions/wallet/graphActions';
-import { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { selectGraph } from 'src/reducers/wallet/graphReducer';
-import { type GraphState } from 'src/reducers/wallet/graphReducer';
-import { type DbDep } from 'src/storage/createDb';
+} from '#src/actions/suite/suiteActions';
+import { accountGraphFail, accountGraphSuccess } from '#src/actions/wallet/graphActions';
+import { type SuiteState } from '#src/reducers/suite/suiteReducer';
+import { selectGraph } from '#src/reducers/wallet/graphReducer';
+import { type DbDep } from '#src/storage/Db';
+import { type GraphState } from '#src/types/wallet/graph';
 
 type StorageMiddlewareDeps = WithServices<DbDep>;
 
@@ -104,7 +106,8 @@ export type StorageMiddlewareState = AccountsRootState &
     FiatRatesRootState &
     WalletSettingsRootState &
     FlagsRootState &
-    SuiteSettingsRootState & {
+    SuiteSettingsRootState &
+    TradingRootState & {
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
         wallet: {
             graph: GraphState;
@@ -463,6 +466,17 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         api.dispatch(storageActions.saveSuiteSyncQuotaManagerThunk());
     }
 
+    if (
+        isAnyOf(
+            referAFriendActions.setReferAFriendApiBaseUrl,
+            referAFriendActions.setEncryptedReferralKey,
+            referAFriendActions.setReferralLink,
+            referAFriendActions.removeReferralWallet,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveReferAFriendThunk());
+    }
+
     if (deviceActions.setRememberDevice.match(action)) {
         const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
 
@@ -541,6 +555,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             deviceActions.connectDevice,
             deviceActions.deviceChanged,
             persistentDeviceDataActions.setEntropyCheckResult,
+            persistentDeviceDataActions.clearEntropyCheckXPubHashes,
             persistentDeviceDataActions.setDiscoveryEntropyCheckResult,
             persistentDeviceDataActions.setDeviceAuthenticityResult,
             persistentDeviceDataActions.setManualDeviceCheckSuccess,
@@ -575,6 +590,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         isAnyOf(
             suiteSettingsActions.setLanguage,
             setFlag,
+            closeTokenYieldBanner,
             setAssetPriceChartRange,
             markNewContentIndicatorAsSeen,
             setNewContentIndicatorSeen,
@@ -597,7 +613,13 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
     } else if (debugActions.setShowDebugMenu.match(action)) {
         api.dispatch(storageActions.saveDebugSettingsThunk());
     } else if (tradingActions.saveTrade.match(action)) {
-        storageActions.saveTradingTrade(api.extra.services, action.payload);
+        const savedTrade = selectTradingTrades(api.getState()).find(
+            trade => trade.key === action.payload.key,
+        );
+
+        if (savedTrade) {
+            storageActions.saveTradingTrade(api.extra.services, savedTrade);
+        }
     } else if (
         metadataActions.enableMetadata.match(action) ||
         metadataActions.disableMetadata.match(action) ||

@@ -1,17 +1,20 @@
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-core';
+import {
+    type NetworkSymbol,
+    getNetworkDisplaySymbol,
+    getNetworkType,
+} from '@suite-common/wallet-config';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { useFormattedEarnRate } from '@suite-native/earn';
 import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type HowEarnWorksScreenPreset } from './types';
-import { useFormattedEarnRate } from '../../../hooks/earn/useFormattedEarnRate';
 
 interface UseHowStakeWorksPresetProps {
     symbol: NetworkSymbol;
-    entryPeriodInDays: number | undefined;
-    unstakingPeriodInDays: number | undefined;
-    apy: number | null | undefined;
+    entryPeriodInDays: number | null;
+    unstakingPeriodInDays: number | null;
+    apy: number | null;
 }
 
 export const useHowStakeWorksPreset = ({
@@ -23,10 +26,10 @@ export const useHowStakeWorksPreset = ({
     const apyFormatted = useFormattedEarnRate(apy);
 
     const displaySymbol = getNetworkDisplaySymbol(symbol);
-    const isSolana = isSupportedSolStakingNetworkSymbol(symbol);
+    const isSolana = getNetworkType(symbol) === 'solana';
 
     const entryPeriodDescriptionId =
-        entryPeriodInDays !== undefined
+        entryPeriodInDays !== null
             ? 'earn.howStakeWorksScreen.stakingTimeline.second.description'
             : 'earn.notAvailable';
     const stakingPeriodTitleId = isSolana
@@ -42,7 +45,7 @@ export const useHowStakeWorksPreset = ({
         ? 'earn.howStakeWorksScreen.unstakeTimeline.second.titleSolana'
         : 'earn.howStakeWorksScreen.unstakeTimeline.second.titleEthereum';
     const unstakingPeriodDescriptionId =
-        unstakingPeriodInDays !== undefined
+        unstakingPeriodInDays !== null
             ? 'earn.howStakeWorksScreen.unstakeTimeline.second.description'
             : 'earn.notAvailable';
 

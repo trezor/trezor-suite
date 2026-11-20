@@ -21,6 +21,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
+        "@suite-common/tokens": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -30,6 +31,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
@@ -38,7 +40,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "react": "19.2.3",
-        "react-hook-form": "^7.77.0"
+        "react": "19.3.0",
+        "react-hook-form": "^7.91.0"
     }
 }

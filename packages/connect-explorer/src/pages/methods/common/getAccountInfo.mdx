@@ -105,13 +105,16 @@ export const paramDescriptions = {
     marker: 'XRP accounts only, transaction history page marker',
     defaultAccountType:
         'Deprecated, no-op: this parameter only affected the account-selection popup of the removed on-device discovery flow and is now ignored by `getAccountInfo`',
-    suppressBackupWarning:
-        'By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.',
+    suppressBackupWarning: 'Deprecated, no-op: this parameter is ignored by `getAccountInfo`',
 };
 
 ## Get account info
 
 Gets an info of specified account.
+
+An account given by `path` and a `bundle` of accounts are available only through Trezor Suite. Suite
+derives the descriptor of the account on the device and then reads it from the backend by the
+descriptor.
 
 ```javascript
 const result = await TrezorConnect.getAccountInfo(params);
@@ -121,7 +124,7 @@ const result = await TrezorConnect.getAccountInfo(params);
 
 <CommonParamsLink />
 
-#### Using path
+#### Using path (only through Trezor Suite)
 
 <ParamsTable schema={UsingPathSchema} />
 
@@ -165,9 +168,9 @@ TrezorConnect.getAccountInfo({
     success: true,
     payload: {
         id: number,                           // account id
-        path: string,                         // serialized path
+        path?: string,                        // serialized path, when given
         descriptor: string,                   // account public key
-        legacyXpub?: string,                  // (optional) account public key in legacy format (only for segwit and segwit native accounts)
+        legacyXpub?: string,                  // (optional) account public key in legacy format (only for segwit and segwit native accounts given by path)
         balance: string,                      // account balance (confirmed transactions only)
         availableBalance: string,             // account balance (including unconfirmed transactions)
         addresses: {

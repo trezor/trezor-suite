@@ -1,6 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type DeviceConnectActionPayload } from '@suite-common/device';
+import { type BlackFridayHolidayBannerType } from '@suite-common/suite-constants';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { DEVICE } from '@trezor/connect';
 
@@ -15,6 +16,8 @@ export interface BannerFlagsState {
     isTradingExperiencePromoBannerClosed: boolean; // promo banner on Home dashboard introducing the new trading experience
     isTs7PromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to buy Trezor Safe 7
     closedEarnBannerSymbols: NetworkSymbol[]; // networks for which the promo earn banner in account view was closed
+    closedTokenYieldBannerKeys: string[]; // tokens for which the yield banner in asset detail was closed
+    closedHolidayPromoBannerKeys: BlackFridayHolidayBannerType[];
 }
 
 export type BannerFlagsSliceRootState = {
@@ -32,12 +35,22 @@ export const bannerFlagsInitialState: BannerFlagsState = {
     isTradingExperiencePromoBannerClosed: false,
     isTs7PromoBannerClosed: false,
     closedEarnBannerSymbols: [],
+    closedTokenYieldBannerKeys: [],
+    closedHolidayPromoBannerKeys: [],
 };
 
 export const bannerFlagsSlice = createSlice({
     name: 'bannerFlags',
     initialState: bannerFlagsInitialState,
     reducers: {
+        setHolidayPromoBannerClosed: (
+            state: BannerFlagsState,
+            { payload }: PayloadAction<BlackFridayHolidayBannerType>,
+        ) => {
+            if (!state.closedHolidayPromoBannerKeys.includes(payload)) {
+                state.closedHolidayPromoBannerKeys.push(payload);
+            }
+        },
         setIsStellarLimitedHistoryBannerClosed: state => {
             state.isStellarLimitedHistoryBannerClosed = true;
         },
@@ -65,6 +78,11 @@ export const bannerFlagsSlice = createSlice({
         setIsEarnBannerClosed: (state, action: PayloadAction<NetworkSymbol>) => {
             if (!state.closedEarnBannerSymbols.includes(action.payload)) {
                 state.closedEarnBannerSymbols.push(action.payload);
+            }
+        },
+        setIsTokenYieldBannerClosed: (state: BannerFlagsState, action: PayloadAction<string>) => {
+            if (!state.closedTokenYieldBannerKeys.includes(action.payload)) {
+                state.closedTokenYieldBannerKeys.push(action.payload);
             }
         },
     },
@@ -96,7 +114,12 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isTradingExperiencePromoBannerClosed',
     'isTs7PromoBannerClosed',
     'closedEarnBannerSymbols',
+    'closedTokenYieldBannerKeys',
+    'closedHolidayPromoBannerKeys',
 ];
+
+export const selectClosedHolidayPromoBannerKeys = (state: BannerFlagsSliceRootState) =>
+    state.bannerFlags.closedHolidayPromoBannerKeys;
 
 export const selectIsStellarLimitedHistoryBannerClosed = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isStellarLimitedHistoryBannerClosed;
@@ -128,7 +151,13 @@ export const selectIsTs7PromoBannerClosed = (state: BannerFlagsSliceRootState) =
 export const selectIsEarnBannerClosed = (state: BannerFlagsSliceRootState, symbol: NetworkSymbol) =>
     state.bannerFlags.closedEarnBannerSymbols.includes(symbol);
 
+export const selectIsTokenYieldBannerClosed = (
+    state: BannerFlagsSliceRootState,
+    bannerKey: string,
+) => state.bannerFlags.closedTokenYieldBannerKeys.includes(bannerKey);
+
 export const {
+    setHolidayPromoBannerClosed,
     setIsStellarLimitedHistoryBannerClosed,
     setIsSolanaLimitedHistoryBannerClosed,
     setIsGetTrezorBannerClosed,
@@ -138,6 +167,7 @@ export const {
     setIsTradingExperiencePromoBannerClosed,
     setIsTs7PromoBannerClosed,
     setIsEarnBannerClosed,
+    setIsTokenYieldBannerClosed,
 } = bannerFlagsSlice.actions;
 
 export const bannerFlagsReducer = bannerFlagsSlice.reducer;

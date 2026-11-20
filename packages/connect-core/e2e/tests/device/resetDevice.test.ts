@@ -1,4 +1,6 @@
-import TrezorConnect from '../../../src';
+import { vi } from 'vitest';
+
+import TrezorConnect, { UI_EVENTS } from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
@@ -24,6 +26,33 @@ describe('TrezorConnect.resetDevice', () => {
         });
         expect(response.success).toEqual(true);
     });
+
+    conditionalTest(
+        ['<1.13.1', '<2.8.7'],
+        'resetDevice reports entropy check xpub hashes',
+        async () => {
+            const entropyCheckSpy = vi.fn();
+            TrezorConnect.on(UI_EVENTS.WALLET_CREATION_ENTROPY_CHECK, entropyCheckSpy);
+
+            const response = await TrezorConnect.resetDevice({
+                skip_backup: true,
+                backup_type: 0,
+                entropy_check: true,
+            });
+            expect(response.success).toEqual(true);
+            // xpubHashes are reported only via the event
+            expect(response.success && response.payload).toEqual({ message: expect.any(String) });
+            expect(entropyCheckSpy).toHaveBeenCalledTimes(1);
+            expect(entropyCheckSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    xpubHashes: {
+                        "m/84'/0'/0'": expect.any(String),
+                        "m/44'/60'/0'": expect.any(String),
+                    },
+                }),
+            );
+        },
+    );
 
     conditionalTest(['1', '<2.7.2'], 'resetDevice Slip39_Basic', async () => {
         const response = await TrezorConnect.resetDevice({

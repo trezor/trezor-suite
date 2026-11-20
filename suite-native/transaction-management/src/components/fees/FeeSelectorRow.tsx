@@ -12,7 +12,7 @@ type FeeSelectorRowProps = UseFeeSelectorParams & {
     isReadOnly?: boolean;
 };
 
-const FEE_SELECTOR_ROW_TEST_ID = '@transactionManagement/fee-selector-row';
+export const FEE_SELECTOR_ROW_TEST_ID = '@transactionManagement/fee-selector-row';
 
 export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowProps) => {
     const {

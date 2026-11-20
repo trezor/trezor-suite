@@ -5,33 +5,28 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { TokenMetadataProvider } from '@suite-common/token';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type AccountsRootState,
     type TransactionsRootState,
-    fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountTransactionsCount,
     selectAccountTransactionsFetchStatus,
     selectAccountTransactionsWithNulls,
     selectAreAllAccountTransactionsLoaded,
+    selectHistoryCoveredSince,
     selectIsPageAlreadyFetched,
     useDirectRpcHistoryState,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     type MonthKey,
-    getHistoryCoveredSince,
     getOlderHistoryFrom,
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
-import {
-    Box,
-    ListItemSkeleton,
-    VStack,
-    useBannerAwareSafeAreaInsets,
-    useScrollDivider,
-} from '@suite-native/atoms';
+import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import {
     type TokensRootState,
@@ -48,12 +43,14 @@ import { exhaustive } from '@trezor/type-utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
+import { useRefreshAccounts } from '../hooks/useRefreshAccounts';
+import { transactionsToTokenMetadataSources } from '../transactionsToTokenMetadataSources';
 import { getNextRequestedTransactionCount, getOlderHistoryPage } from '../utils';
 import { OlderHistoryStatus } from './OlderHistoryStatus';
 import { TokenTransferListItem } from './TokenTransferListItem';
+import { TransactionListEmptyState } from './TransactionListEmptyState';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
-import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 
 type RenderSectionHeaderParams = {
@@ -167,7 +164,6 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const { dispatch } = useServices(injectDispatch);
-    const [isRefreshing, setIsRefreshing] = useState(false);
     const { bottom } = useBannerAwareSafeAreaInsets();
     const isBottomInsetApplicable = useIsBottomInsetApplicable();
 
@@ -240,6 +236,11 @@ export const TransactionList = ({
     );
 
     const { scrollDivider, handleScroll } = useScrollDivider();
+    const { isRefreshing, refreshAccountsAndLatestTransactions } = useRefreshAccounts({
+        accountKeys: [accountKey],
+        perPage: txnsPerPage,
+        onRefresh,
+    });
 
     const fetchPage = useCallback(
         async (requestedPage: number, from?: number) => {
@@ -283,28 +284,6 @@ export const TransactionList = ({
             handleOnLoadMore();
         }
     }, [isInitialPageLoaded, handleOnLoadMore]);
-
-    const handleOnRefresh = useCallback(async () => {
-        try {
-            setIsRefreshing(true);
-            await Promise.allSettled([
-                dispatch(fetchAndUpdateAccountThunk({ accountKey })),
-                dispatch(
-                    fetchTransactionsPageThunk({
-                        accountKey,
-                        page: 1,
-                        perPage: txnsPerPage,
-                        forceRefetch: true,
-                    }),
-                ),
-                onRefresh?.(),
-            ]);
-        } catch {
-            // Do nothing
-        }
-        // It's usually too fast so loading indicator only flashes for a moment, which is not nice
-        setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey, txnsPerPage, onRefresh]);
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
@@ -354,7 +333,9 @@ export const TransactionList = ({
     const visibleTransactionCount = data.filter(item => typeof item !== 'string').length;
     const hasInitialScanFailed = directRpcHistoryState === 'unscanned' && fetchStatus === 'error';
     const isHistoryUnscanned = directRpcHistoryState === 'unscanned' && !hasInitialScanFailed;
-    const historyCoveredSince = getHistoryCoveredSince(account);
+    const historyCoveredSince = useSelector((state: TransactionsRootState & AccountsRootState) =>
+        selectHistoryCoveredSince(state, accountKey),
+    );
     const [requestedVisibleCount, setRequestedVisibleCount] = useState<number>(txnsPerPage);
     const [autoFillLastPage, setAutoFillLastPage] = useState(
         initialPageNumber + YIELD_AUTO_FILL_PAGE_LIMIT - 1,
@@ -398,33 +379,7 @@ export const TransactionList = ({
         }
     };
 
-    useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
-
-    const getListEmptyComponent = () => {
-        if (isHistoryUnscanned) {
-            return (
-                <VStack spacing="sp8">
-                    <ListItemSkeleton />
-                    <ListItemSkeleton />
-                    <ListItemSkeleton />
-                </VStack>
-            );
-        }
-
-        if (shouldDeferEmptyState) {
-            return null;
-        }
-
-        // The list is empty here, so a reachable older window is what sets this apart from an
-        // account (or token) without any transactions.
-        const isRecentWindowEmpty = olderHistoryFrom !== undefined;
-
-        return (
-            renderListEmptyComponent?.({ isRecentWindowEmpty }) ?? (
-                <TransactionsEmptyState isRecentWindowEmpty={isRecentWindowEmpty} />
-            )
-        );
-    };
+    useFetchMissingTransactionFiatRates({ accountKeys: [accountKey], isEnabled: data.length > 0 });
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
@@ -461,50 +416,61 @@ export const TransactionList = ({
     );
 
     return (
-        <Box flex={1}>
-            {scrollDivider}
-            <FlashList<TransactionListItem>
-                data={data}
-                renderItem={renderItem}
-                contentContainerStyle={applyStyle(sectionListContainerStyle)}
-                ListEmptyComponent={getListEmptyComponent()}
-                ListHeaderComponent={listHeaderComponent}
-                ListFooterComponent={
-                    <TransactionsListFooter
-                        hasMoreTransactions={
-                            hasMoreTransactions ||
-                            olderHistoryFrom !== undefined ||
-                            hasInitialScanFailed
-                        }
-                        isOlderHistory={olderHistoryFrom !== undefined}
-                        // The skeleton stands in for the loader until the first scan is done.
-                        isLoading={
-                            !isHistoryUnscanned &&
-                            (isLoadingTransactions || shouldAutoFillTransactions)
-                        }
-                        onButtonPress={handleOnLoadMorePress}
-                    >
-                        {(olderHistoryFrom !== undefined || hasInitialScanFailed) && (
-                            <OlderHistoryStatus
-                                historyCoveredSince={historyCoveredSince}
-                                hasLoadingFailed={hasLoadingOlderFailed || hasInitialScanFailed}
-                            />
-                        )}
-                    </TransactionsListFooter>
-                }
-                ListFooterComponentStyle={applyStyle(listFooterStyle, {
-                    insetBottom: isBottomInsetApplicable ? bottom : 0,
-                })}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={handleOnRefresh}
-                        colors={[colors.elementFillBrandBold]}
-                    />
-                }
-                refreshing={isRefreshing}
-                onScroll={handleScroll}
-            />
-        </Box>
+        <TokenMetadataProvider sources={transactionsToTokenMetadataSources(transactions)}>
+            <Box flex={1}>
+                {scrollDivider}
+                <FlashList<TransactionListItem>
+                    data={data}
+                    renderItem={renderItem}
+                    contentContainerStyle={applyStyle(sectionListContainerStyle)}
+                    ListEmptyComponent={
+                        <TransactionListEmptyState
+                            isLoading={isHistoryUnscanned}
+                            isDeferred={shouldDeferEmptyState}
+                            // The list is empty here, so a reachable older window is what sets this apart
+                            // from an account (or token) without any transactions.
+                            isRecentWindowEmpty={olderHistoryFrom !== undefined}
+                            renderEmptyComponent={renderListEmptyComponent}
+                        />
+                    }
+                    ListHeaderComponent={listHeaderComponent}
+                    ListFooterComponent={
+                        <TransactionsListFooter
+                            hasMoreTransactions={
+                                hasMoreTransactions ||
+                                olderHistoryFrom !== undefined ||
+                                hasInitialScanFailed
+                            }
+                            isOlderHistory={olderHistoryFrom !== undefined}
+                            // The skeleton stands in for the loader until the first scan is done.
+                            isLoading={
+                                !isHistoryUnscanned &&
+                                (isLoadingTransactions || shouldAutoFillTransactions)
+                            }
+                            onButtonPress={handleOnLoadMorePress}
+                        >
+                            {(olderHistoryFrom !== undefined || hasInitialScanFailed) && (
+                                <OlderHistoryStatus
+                                    historyCoveredSince={historyCoveredSince}
+                                    hasLoadingFailed={hasLoadingOlderFailed || hasInitialScanFailed}
+                                />
+                            )}
+                        </TransactionsListFooter>
+                    }
+                    ListFooterComponentStyle={applyStyle(listFooterStyle, {
+                        insetBottom: isBottomInsetApplicable ? bottom : 0,
+                    })}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={refreshAccountsAndLatestTransactions}
+                            colors={[colors.elementFillBrandBold]}
+                        />
+                    }
+                    refreshing={isRefreshing}
+                    onScroll={handleScroll}
+                />
+            </Box>
+        </TokenMetadataProvider>
     );
 };

@@ -32,6 +32,8 @@ export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
     'https://docs.trezor.io/trezor-suite/analytics/index.html',
 );
 
+export const TREZOR_TOS_URL: Url = 'https://trezor.io/terms-of-use';
+export const TREZOR_TOS_REFER_A_FRIEND_URL: Url = 'https://trezor.io/terms-of-use#refer-a-friend';
 export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
 export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
 export const TREZOR_TRADING_DEX_SLIPPAGE_URL: Url =
@@ -347,6 +349,8 @@ export const SUITE_REFERRAL: Url = withPlatformUtm('https://trezor.io/refer-a-fr
 export const DASHBOARD_BANNER_TS7_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-safe-7?utm_source=trezor_suite&utm_campaign=ts7_introduction',
 );
+
+export const DASHBOARD_BANNER_HOLIDAY_DEALS_URL: Url = 'https://trezor.io/holiday-deals';
 
 export const DASHBOARD_ONBOARDING_FEEDBACK_URL: Url =
     'https://satoshilabs.typeform.com/to/fsiLqgmd';

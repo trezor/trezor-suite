@@ -1,8 +1,10 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
+import { T3T1_FIRST_PAGE_KEY_LENGTH } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const testCases: { symbol: NetworkSymbol; xpub: string }[] = [
     {
@@ -40,7 +42,7 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
                 ...tagOptions,
                 annotation: createTestAnnotation({ stream: TestStream.Wallet }),
             },
-            async ({ settingsPage, walletPage, devicePrompt }) => {
+            async ({ settingsPage, walletPage, devicePrompt, device }) => {
                 await test.step(`Activate coin ${symbol}`, async () => {
                     await settingsPage.changeNetworks({ enableNetworks: [symbol] });
                 });
@@ -57,6 +59,28 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await test.step('Display and Verify Public key again', async () => {
+                    await expect(device).toShowOnDisplay({
+                        T3W1: {
+                            header: {
+                                title: symbol === 'ada' ? 'Public key' : 'Public key (XPUB)',
+                            },
+                            body: [transformAddress(xpub, 'fullLine')],
+                            actions: { right_button: 'Confirm' },
+                        },
+                        T3T1: {
+                            header: { title: symbol === 'ada' ? 'Public key' : 'XPUB' },
+                            body: [
+                                xpub.length > T3T1_FIRST_PAGE_KEY_LENGTH
+                                    ? [
+                                          ...device.wrapText(
+                                              xpub.slice(0, T3T1_FIRST_PAGE_KEY_LENGTH),
+                                          ),
+                                          '...',
+                                      ]
+                                    : device.wrapText(xpub),
+                            ],
+                        },
+                    });
                     await devicePrompt.waitForPromptAndConfirm();
 
                     const value = await devicePrompt.outputValue.innerText();

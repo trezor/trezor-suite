@@ -9,6 +9,7 @@ export class EarnNutshellModal {
     readonly updateProviderProcess: Locator;
     readonly updateProviderHeading: Locator;
     readonly continueButton: Locator;
+    readonly cancelButton: Locator;
     readonly depositApyValue: Locator;
 
     constructor(private readonly page: Page) {
@@ -30,6 +31,7 @@ export class EarnNutshellModal {
             '@modal/earn-in-a-nutshell/process-heading',
         );
         this.continueButton = this.modalContainer.getByTestId('@modal/staking/continue-button');
+        this.cancelButton = this.modalContainer.getByTestId('@modal/staking/cancel-button');
         this.depositApyValue = this.depositProcess.getByTestId('@earn/dashboard/apy-percentage');
     }
 }

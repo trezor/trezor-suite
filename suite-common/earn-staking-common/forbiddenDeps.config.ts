@@ -6,7 +6,9 @@ const reason =
 export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'forbidden-deps': [
         { packageNamePattern: '^@suite/', reason },
+        { packageNamePattern: '^@suite-app/', reason },
         { packageNamePattern: '^@suite-common/', reason },
         { packageNamePattern: '^@suite-native/', reason },
+        { packageNamePattern: '^@suite-native-app/', reason },
     ],
 };

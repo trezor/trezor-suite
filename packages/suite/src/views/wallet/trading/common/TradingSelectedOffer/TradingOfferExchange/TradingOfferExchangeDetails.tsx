@@ -8,18 +8,18 @@ import {
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
     selectTradingExchangeReceiveAccountKey,
-    useTradingUtils,
 } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
-import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
-import { useSelector } from 'src/hooks/suite';
-import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
+import { BannerPoints } from '#src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { useTradingAssetDecimals } from '#src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
+import { type TradingExchangeProvidersInfoProps } from '#src/types/trading/trading';
+import { formatCryptoAmountAsAmount } from '#src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
 import { TradingUtilsProviderKyc } from '../../TradingUtils/TradingUtilsProviderKyc';
 import { TradingComposedNetworkFeeInfoItem } from '../TradingInfo/TradingComposedNetworkFeeInfoItem';
@@ -33,6 +33,7 @@ import { TradingProviderInfoItem } from '../TradingInfo/TradingProviderInfoItem'
 type TradingOfferExchangeDetailsProps = {
     account: Account;
     exchangeQuote: ExchangeTrade;
+    receiveAmount: string | undefined;
     exchange: string | undefined;
     providers: TradingExchangeProvidersInfoProps;
     networkFeeEdit?: TradingNetworkFeeInfoItemProps['edit'];
@@ -41,6 +42,7 @@ type TradingOfferExchangeDetailsProps = {
 export const TradingOfferExchangeDetails = ({
     account,
     exchangeQuote,
+    receiveAmount,
     exchange,
     providers,
     networkFeeEdit,
@@ -50,7 +52,6 @@ export const TradingOfferExchangeDetails = ({
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
-    const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -65,9 +66,6 @@ export const TradingOfferExchangeDetails = ({
     const sendNetwork = exchangeQuote.send ? cryptoIdToNetwork(exchangeQuote.send) : undefined;
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
 
-    const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
-        cryptoIdToSymbolAndContractAddress(exchangeQuote.receive);
-
     const provider =
         providers && exchangeQuote.exchange ? providers[exchangeQuote.exchange] : undefined;
     const providerName = exchange
@@ -76,10 +74,12 @@ export const TradingOfferExchangeDetails = ({
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
     const dexSlippage = exchangeQuote.isDex ? exchangeQuote.swapSlippage : undefined;
 
+    const quoteReceiveAmount = new BigNumber(exchangeQuote.receiveStringAmount ?? '');
     const minimumYouGetAmount = formatCryptoAmountAsAmount(
-        ((100 - Number(exchangeQuote.swapSlippage)) / 100) *
-            Number(exchangeQuote.receiveStringAmount),
-        Number(exchangeQuote.receiveStringAmount),
+        quoteReceiveAmount.minus(
+            quoteReceiveAmount.multipliedBy(exchangeQuote.swapSlippage ?? '').dividedBy(100),
+        ),
+        quoteReceiveAmount,
         decimals,
     );
 
@@ -92,11 +92,11 @@ export const TradingOfferExchangeDetails = ({
                             isEditable
                             slippage={dexSlippage}
                             selectedQuote={exchangeQuote}
+                            receiveAmount={receiveAmount}
                         />
                         <TradingExchangeMinimumReceivedInfoItem
                             minimumYouGetAmount={minimumYouGetAmount}
-                            symbol={receiveCoinSymbol}
-                            contractAddress={receiveContractAddress}
+                            cryptoId={exchangeQuote.receive}
                         />
                     </>
                 )}

@@ -1,0 +1,73 @@
+import { type Control } from 'react-hook-form';
+
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import {
+    type AccountFormValues,
+    AccountLabelFieldHint,
+    MAX_ACCOUNT_LABEL_LENGTH,
+} from '@suite-native/accounts';
+import { Discreet, VStack } from '@suite-native/atoms';
+import {
+    BaseCurrencyAmountLargeFormatter,
+    ExactCryptoAmountFormatter,
+    useFiatFromCryptoValue,
+} from '@suite-native/formatters';
+import { TextInputField } from '@suite-native/forms';
+import { TokenIcon } from '@suite-native/icons';
+import { useTranslate } from '@suite-native/intl';
+
+import { AccountImportOverviewCard } from './AccountImportOverviewCard';
+
+type AssetsOverviewProps = {
+    balance: string;
+    symbol: NetworkSymbol;
+    formControl: Control<AccountFormValues>;
+};
+
+export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOverviewProps) => {
+    const { translate } = useTranslate();
+    const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
+
+    const fiatBalanceValue = useFiatFromCryptoValue({
+        cryptoValue: balance,
+        symbol,
+    });
+    const coinLabelFieldLabel = translate(
+        'moduleAccountManagement.accountSettingsScreen.renameForm.coinLabel',
+    );
+
+    return (
+        <AccountImportOverviewCard
+            icon={<TokenIcon tokenSymbol={symbol} networkSymbol={symbol} />}
+            coinName={getNetwork(symbol).name}
+            cryptoAmount={
+                <ExactCryptoAmountFormatter
+                    value={balance}
+                    symbol={symbol}
+                    // Show the discovered balance so the user can identify the account being imported.
+                    discreetMode="disabled"
+                    isBalance={false}
+                    variant="body-xs"
+                />
+            }
+        >
+            <VStack spacing="sp24">
+                {shallDisplayBaseCurrency && (
+                    <Discreet textVariant="headline-lg">
+                        <BaseCurrencyAmountLargeFormatter value={fiatBalanceValue} />
+                    </Discreet>
+                )}
+                <VStack spacing="sp8">
+                    <TextInputField
+                        testID="@account-import/coin-synced/label-input"
+                        name="accountLabel"
+                        label={coinLabelFieldLabel}
+                        maxLength={MAX_ACCOUNT_LABEL_LENGTH}
+                    />
+                    <AccountLabelFieldHint formControl={formControl} />
+                </VStack>
+            </VStack>
+        </AccountImportOverviewCard>
+    );
+};

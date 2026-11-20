@@ -22,11 +22,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@tanstack/react-query": "5.104.2",
-        "@tanstack/react-query-devtools": "5.104.2",
-        "react": "19.2.3"
+        "@tanstack/react-query": "5.105.0",
+        "@tanstack/react-query-devtools": "5.105.0",
+        "react": "19.3.0"
     }
 }

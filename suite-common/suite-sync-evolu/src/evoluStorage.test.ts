@@ -31,10 +31,16 @@ const suiteSyncOwner: SuiteSyncOwner = {
 const createTestStorage = async (run: Run<EvoluPlatformDeps>) => {
     const evoluInstanceFactory = createEvoluInstanceFactory({ run });
 
-    return await createEvoluStorageFactory({
+    const storageResult = await createEvoluStorageFactory({
         evoluInstanceFactory,
         createOwnerWebSocketTransport,
     })({ suiteSyncOwner });
+
+    if (!storageResult.success) {
+        throw new Error(storageResult.error.message);
+    }
+
+    return storageResult.payload;
 };
 
 describe(createEvoluStorageFactory.name, () => {

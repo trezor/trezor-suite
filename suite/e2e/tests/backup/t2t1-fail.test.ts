@@ -35,6 +35,10 @@ test.describe('Backup errors', { tag: ['@T2T1', '@optional'] }, () => {
                 await onboardingPage.backup.hasEnoughTimeCheckbox.click();
                 await onboardingPage.backup.isInPrivateCheckbox.click();
                 await onboardingPage.backup.startButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.expectToContainOnDisplay(
+                    'Your wallet backup contains 12 words in a specific order.',
+                );
                 await devicePrompt.waitForPromptAndConfirm();
             });
 

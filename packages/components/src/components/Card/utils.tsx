@@ -26,18 +26,6 @@ export const mapPaddingTypeToPadding = ({ paddingType }: PaddingMapArgs): Paddin
     return paddingMap[paddingType];
 };
 
-export const mapPaddingTypeToLabelPadding = ({ paddingType }: PaddingMapArgs): Padding => {
-    const paddingMap: Record<PaddingType, Padding> = {
-        none: { vertical: 4 },
-        tiny: { vertical: 4, horizontal: 4 },
-        small: { vertical: 4, horizontal: 12 },
-        normal: { vertical: 8, horizontal: 20 },
-        large: { vertical: 12, horizontal: 24 },
-    };
-
-    return paddingMap[paddingType];
-};
-
 export const mapCardTypeToCSS = ({
     $type,
     $isClickable,

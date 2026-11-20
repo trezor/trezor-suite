@@ -72,6 +72,7 @@ describe('FeeOptionsList', () => {
     };
 
     const reducer = {
+        discreetMode: createStaticReducer({ isActive: false }),
         locale: localeReducer,
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
@@ -196,6 +197,21 @@ describe('FeeOptionsList', () => {
             expect(getByText('10.0000 Gwei')).toBeOnTheScreen();
             expect(getByText('Unavailable')).toBeOnTheScreen();
             expect(queryByText(/0\.02\s*ETH/)).toBeNull();
+        });
+
+        it('keeps known gas estimates visible when every Standard level is unaffordable', async () => {
+            const { getAllByText, queryByText } = await renderFeeOptionsList({
+                props: {
+                    estimatedFeeLimit: '200000',
+                    feeLevels: {
+                        normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                        high: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                    },
+                },
+            });
+
+            expect(getAllByText(/0\.002\s*ETH/)).toHaveLength(2);
+            expect(queryByText('Unavailable')).toBeNull();
         });
 
         it('should show loading state when isLoading is true', async () => {

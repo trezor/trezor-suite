@@ -212,3 +212,14 @@ export const Success = Type.Object(
     },
     { $id: 'Success' },
 );
+
+export type Version = Static<typeof Version>;
+export const Version = Type.Object(
+    {
+        major: Type.Number(),
+        minor: Type.Number(),
+        patch: Type.Optional(Type.Number()),
+        build: Type.Optional(Type.Number()),
+    },
+    { $id: 'Version' },
+);

@@ -5,6 +5,9 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { initialState as selectedAccountInitialState } from '@suite/account';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { openModal } from '@suite/modal';
 import { type GotoThunkDeps, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { selectWalletAssetKey } from '@suite-common/assets';
@@ -12,17 +15,18 @@ import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
-import { type AppState } from 'src/reducers/store';
-import { extraDependencies } from 'src/support/extraDependencies';
-import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
+import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { AssetDetailMenu } from './AssetDetailMenu';
-import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
+import { mockExtraDependenciesForReducers } from '../../../../../mocks/mockExtraDependenciesForReducers';
+import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
 const networkIcon = mockNetworkIcon();
 
@@ -33,7 +37,7 @@ const ETH = asNetworkSymbol('eth');
 const XRP = asNetworkSymbol('xrp');
 const ADA = asNetworkSymbol('ada');
 
-const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
+const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(mockExtraDependenciesForReducers);
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const HOSKY_POLICY_ID = 'a0028f350aaabe0545fdcb56b039bfb08e4bb4d8c4d7c3c7d481c235';
@@ -78,7 +82,7 @@ const cardanoAccount = mockWalletAccount({
     ],
 });
 
-const getInitialState = (accounts: Account[]): AppState => ({
+const getInitialState = (accounts: Account[]): MockSuiteState => ({
     ...mockInitialAppState,
     networks: mockNetworksState([BTC, ETH, XRP, ADA]),
     device: {
@@ -104,17 +108,25 @@ const getInitialState = (accounts: Account[]): AppState => ({
     },
 });
 
+const mockReport = jest.fn();
+
 const renderMenu = (accounts: Account[], symbol: NetworkSymbol, contractAddress?: TokenAddress) => {
     const initialState = getInitialState(accounts);
-    const reducer: Reducer<AppState> = (state = initialState, action) => ({
+    const reducer: Reducer<MockSuiteState> = (state = initialState, action) => ({
         ...state,
         router: routerReducer(state.router, action),
         tokenDefinitions: tokenDefinitionsReducer(state.tokenDefinitions, action),
     });
-    const { services } = createTestCompositionRoot<GotoThunkDeps, AppState>({
+    const { services } = createTestCompositionRoot<
+        GotoThunkDeps & WithServices<DesktopAnalyticsDep>,
+        MockSuiteState
+    >({
         preloadedState: initialState,
         reducer,
-        services: () => ({ suiteRouterHistory: mockSuiteRouterHistory() }),
+        services: () => ({
+            suiteRouterHistory: mockSuiteRouterHistory(),
+            analytics: mockDesktopAnalytics(mockReport),
+        }),
     });
     const assetKey = selectWalletAssetKey(services.store.getState(), symbol, contractAddress);
 
@@ -136,6 +148,22 @@ const openMenu = async () => {
 };
 
 describe('AssetDetailMenu', () => {
+    beforeEach(() => {
+        mockReport.mockClear();
+    });
+
+    it('reports opening the menu', async () => {
+        renderMenu([ethereumAccount], ETH, USDC_ON_ETH);
+
+        await openMenu();
+
+        expect(mockReport).toHaveBeenCalledTimes(1);
+        expect(mockReport).toHaveBeenCalledWith({
+            type: events.assetsActionsEvent.name,
+            payload: { action: 'more-menu', networkSymbol: ETH, contractAddress: USDC_ON_ETH },
+        });
+    });
+
     it('describes a token with its network, accounts and contract, and offers every action', async () => {
         renderMenu([ethereumAccount, bitcoinAccount], ETH, USDC_ON_ETH);
 
@@ -162,6 +190,24 @@ describe('AssetDetailMenu', () => {
         });
 
         expect(setData).toHaveBeenCalledWith('text/plain', USDC_ON_ETH);
+    });
+
+    it('leaves reporting the copy to the confirmation modal, which the user can cancel', async () => {
+        const services = renderMenu([ethereumAccount], ETH, USDC_ON_ETH);
+
+        await openMenu();
+        mockReport.mockClear();
+        await userEvent.click(screen.getByTestId('@asset-detail/menu/contract/copy'));
+
+        expect(services.store.getActions()).toContainEqual(
+            openModal({
+                type: 'copy-address',
+                addressType: 'contract',
+                address: USDC_ON_ETH,
+                copyAnalyticsFrom: 'asset-detail',
+            }),
+        );
+        expect(mockReport).not.toHaveBeenCalled();
     });
 
     it('offers a coin neither a contract nor hiding', async () => {
@@ -224,6 +270,18 @@ describe('AssetDetailMenu', () => {
 
         await waitFor(() => {
             expect(services.store.getState().tokenDefinitions[ETH]?.coin?.hide).toEqual([]);
+        });
+    });
+
+    it('reports hiding the token', async () => {
+        renderMenu([ethereumAccount], ETH, USDC_ON_ETH);
+
+        await openMenu();
+        await userEvent.click(screen.getByTestId('@asset-detail/menu/hide-token'));
+
+        expect(mockReport).toHaveBeenLastCalledWith({
+            type: events.assetsActionsEvent.name,
+            payload: { action: 'hide-token', networkSymbol: ETH, contractAddress: USDC_ON_ETH },
         });
     });
 

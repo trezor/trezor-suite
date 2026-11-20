@@ -7,9 +7,9 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Box, DiscreetText } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Box, Discreet, Text } from '@suite-native/atoms';
+import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InstantStakeBannerProps = {
@@ -28,7 +28,6 @@ const bannerStyle = prepareNativeStyle(utils => ({
 
 export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBannerProps) => {
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -48,22 +47,36 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
 
     if (!internalTransfer || !stakeType || stakeType === 'change-delegate') return null;
 
-    const amount = formatNetworkAmount(internalTransfer.amount ?? '0', symbol, false);
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 
-    const labelMap = {
-        stake: translate('earn.instantStakeBanner.stakedTitle', { amount, displaySymbol }),
-        unstake: translate('earn.instantStakeBanner.unstakedTitle', { amount, displaySymbol }),
-        claim: translate('earn.instantStakeBanner.claimedTitle', { amount, displaySymbol }),
-    } satisfies Record<Exclude<typeof stakeType, 'change-delegate'>, string>;
-
-    const label = labelMap[stakeType];
+    const labelMap: Record<Exclude<typeof stakeType, 'change-delegate'>, TxKeyPath> = {
+        stake: 'earn.instantStakeBanner.stakedTitle',
+        unstake: 'earn.instantStakeBanner.unstakedTitle',
+        claim: 'earn.instantStakeBanner.claimedTitle',
+    };
 
     return (
         <Box style={applyStyle(bannerStyle)}>
-            <DiscreetText variant="body-sm" color="contentPrimary">
-                {label}
-            </DiscreetText>
+            <Discreet>
+                <Text variant="body-sm" color="contentPrimary">
+                    <Translation
+                        id={labelMap[stakeType]}
+                        values={{
+                            amount: (
+                                <ExactCryptoAmountFormatter
+                                    value={internalTransfer.amount ?? '0'}
+                                    symbol={symbol}
+                                    isBalance={false}
+                                    withSymbol={false}
+                                    variant="body-sm"
+                                    color="contentPrimary"
+                                />
+                            ),
+                            displaySymbol,
+                        }}
+                    />
+                </Text>
+            </Discreet>
         </Box>
     );
 };

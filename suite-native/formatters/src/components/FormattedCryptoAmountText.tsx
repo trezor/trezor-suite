@@ -1,16 +1,18 @@
+import { type ReactNode } from 'react';
+
 import { useFormatters } from '@suite-common/formatters';
 
-import { AmountText } from './AmountText';
+import { DiscreetAmountText } from './DiscreetAmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { type CryptoAmountFormatterProps } from './cryptoAmountFormatterTypes';
 
 type FormattedCryptoAmountTextProps = Omit<CryptoAmountFormatterProps, 'value' | 'symbol'> & {
-    formattedValue: string | null;
+    formattedValue: ReactNode;
 };
 
 export const FormattedCryptoAmountText = ({
     formattedValue,
-    isDiscreetText = true,
+    discreetMode = 'auto',
     variant = 'body-sm',
     color = 'contentSecondary',
     isLoading = false,
@@ -23,12 +25,17 @@ export const FormattedCryptoAmountText = ({
         return <EmptyAmountSkeleton variant={variant} />;
     }
 
-    const valueWithSign = `${SignValueFormatter.format(signValue)}${formattedValue}`;
+    const valueWithSign = (
+        <>
+            <SignValueFormatter value={signValue} />
+            {formattedValue}
+        </>
+    );
 
     return (
-        <AmountText
+        <DiscreetAmountText
             value={valueWithSign}
-            isDiscreetText={isDiscreetText}
+            discreetMode={discreetMode}
             variant={variant}
             color={color}
             {...otherProps}

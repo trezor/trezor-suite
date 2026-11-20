@@ -4,7 +4,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from '#src/hooks/suite/useSelector';
 
 export const TradeApi = () => {
     const tradeServerEnvironment = useSelector(selectTradeServerEnvironment);
@@ -21,7 +21,6 @@ export const TradeApi = () => {
     const handleChange = (item: { value: TradeServerEnvironment; label: string }) => {
         dispatch(suiteSettingsActions.setDebugMode({ tradeServerEnvironment: item.value }));
         tradeApi.setServersEnvironment(item.value);
-        tradeApi.resetCurrentAccount();
         dispatch(tradingActions.invalidateCatalog());
     };
 

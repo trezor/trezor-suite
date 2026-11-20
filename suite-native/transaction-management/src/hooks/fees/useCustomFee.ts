@@ -1,24 +1,32 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { isRejected } from '@reduxjs/toolkit';
+import { isFulfilled } from '@reduxjs/toolkit';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
     type FeesRootState,
-    selectAccountNetworkSymbol,
-    selectAccountNetworkType,
+    selectAccountByKey,
+    selectConvertedNetworkFeeInfo,
     selectIsEip1559Fee,
 } from '@suite-common/wallet-core';
-import type { AccountKey, FormState } from '@suite-common/wallet-types';
+import type {
+    Account,
+    AccountKey,
+    FeeInfo,
+    FormState,
+    GeneralPrecomposedLevels,
+    PrecomposedTransaction,
+} from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
-import { useFormContext, useWatch } from '@suite-native/forms';
+import { useFormContext, useFormState, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { type FeeLevel } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
-import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
+import { BigNumber } from '@trezor/utils';
 
 import { type FeesFormValues } from '../../feesFormSchema';
 import {
@@ -27,157 +35,231 @@ import {
     MAX_FEE_PER_GAS_FIELD_NAME,
     MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
 } from '../../presets';
-import { selectCustomFeeLevel, selectFeeLevelTransactionBytes } from '../../selectors';
-import { type NativeSendRootState } from '../../sendFormSlice';
 import { calculateCustomFeeLevelThunk } from '../../thunks';
+import { usePrecomposedTransactionError } from '../usePrecomposedTransactionError';
+
+export type CustomFeeLevelBuilder = (feeLevel: FeeLevel) => PrecomposedTransaction | undefined;
+
+const buildCustomFeeLevels = (
+    builder: CustomFeeLevelBuilder,
+    feeLevel: FeeLevel,
+): GeneralPrecomposedLevels | undefined => {
+    try {
+        const custom = builder(feeLevel);
+
+        return custom ? { custom } : undefined;
+    } catch {
+        return undefined;
+    }
+};
 
 type UseCustomFeeProps = {
     accountKey: AccountKey;
     formState: FormState | null | undefined;
+    getCustomFeeLevel?: CustomFeeLevelBuilder;
 };
 
-export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
+export const useCustomFee = ({ accountKey, formState, getCustomFeeLevel }: UseCustomFeeProps) => {
     const debounce = useDebounce();
     const { translate } = useTranslate();
     const { dispatch } = useServices(injectDispatch);
 
-    const [isErrorBoxVisible, setIsErrorBoxVisible] = useState(false);
-    const [isFeeLoading, setIsFeeLoading] = useState(false);
+    const [feeError, setFeeError] = useState<{ code?: string } | null>(null);
+    const [isFeeLoading, setIsFeeLoading] = useState(true);
 
-    const customFeeLevel = useSelector(selectCustomFeeLevel);
+    const requestIdRef = useRef(0);
+    const [preparedFee, setPreparedFee] = useState<{
+        key: string;
+        formState: FormState;
+        account: Account | null;
+        feeInfo: FeeInfo | null;
+        feeLevels: GeneralPrecomposedLevels;
+        builder: CustomFeeLevelBuilder | undefined;
+    } | null>(null);
 
-    const networkType = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkType(state, accountKey),
+    const account = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, accountKey),
     );
-
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
+    const networkType = account?.networkType;
+    const symbol = account?.symbol;
+    const feeInfo = useSelector((state: FeesRootState) =>
+        selectConvertedNetworkFeeInfo(state, symbol),
     );
 
     const isEip1559Fee = useSelector((state: FeesRootState) =>
         selectIsEip1559Fee(state, symbol ?? undefined),
     );
 
-    const {
-        formState: { errors },
-        setError,
-        trigger,
-        getValues,
-        control,
-    } = useFormContext<FeesFormValues>();
+    const { trigger, control, setError } = useFormContext<FeesFormValues>();
+    const { isValid } = useFormState({ control });
 
-    const { customFeePerUnit, customFeeLimit, customMaxFeePerGas, customMaxPriorityFeePerGas } =
-        getValues();
-
-    const watchedFeePerUnit = useWatch({
+    const customFeePerUnit = useWatch({
         control,
         name: FEE_PER_UNIT_FIELD_NAME,
-        defaultValue: '0',
     });
-    const watchedFeeLimit = useWatch({
+    const customFeeLimit = useWatch({
         control,
         name: FEE_LIMIT_FIELD_NAME,
-        defaultValue: '1',
     }) as string;
-    const watchedMaxFeePerGas = useWatch({
+    const customMaxFeePerGas = useWatch({
         control,
         name: MAX_FEE_PER_GAS_FIELD_NAME,
-        defaultValue: '0',
     });
-    const watchedMaxPriorityFeePerGas = useWatch({
+    const customMaxPriorityFeePerGas = useWatch({
         control,
         name: MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
-        defaultValue: '0',
     });
 
-    const normalLevelTransactionBytes = useSelector((state: NativeSendRootState) =>
-        selectFeeLevelTransactionBytes(state, 'normal'),
-    );
+    const inputKey = JSON.stringify([
+        accountKey,
+        customFeePerUnit,
+        customFeeLimit,
+        customMaxFeePerGas,
+        customMaxPriorityFeePerGas,
+    ]);
+    const handleValuesChange = useCallback(
+        async (requestId: number) => {
+            const areValuesValid = await trigger();
+            if (requestId !== requestIdRef.current) return;
 
-    const handleValuesChange = useCallback(async () => {
-        trigger();
+            invariant(networkType !== 'solana', 'Custom fee is not supported for solana');
 
-        invariant(networkType !== 'solana', 'Custom fee is not supported for solana');
+            const feePerUnit = isEip1559Fee ? customMaxFeePerGas : customFeePerUnit;
+            if (!areValuesValid || !feePerUnit || !formState) {
+                setIsFeeLoading(false);
 
-        if ((!isEip1559Fee && !customFeePerUnit) || !formState) {
-            console.warn('Cannot calculate custom fee because of missing values');
-            setIsFeeLoading(false);
+                return;
+            }
 
-            return;
-        }
+            setIsFeeLoading(true);
+            setFeeError(null);
 
-        setIsFeeLoading(true);
-        setIsErrorBoxVisible(false);
-
-        const response = await dispatch(
-            calculateCustomFeeLevelThunk({
-                accountKey,
-                formState,
-                selectedFeeLevel: 'custom',
-                customFeePerUnit,
-                customFeeLimit,
-                customMaxPriorityFeePerGas,
-                customMaxFeePerGas,
-            }),
-        );
-
-        if (isRejected(response)) {
-            if (networkType === 'ethereum') {
-                setIsErrorBoxVisible(true);
+            let feeLevels: GeneralPrecomposedLevels | undefined;
+            if (getCustomFeeLevel) {
+                feeLevels = buildCustomFeeLevels(getCustomFeeLevel, {
+                    label: 'custom',
+                    blocks: -1,
+                    feePerUnit,
+                    feeLimit: customFeeLimit,
+                    ...(isEip1559Fee
+                        ? {
+                              maxPriorityFeePerGas: customMaxPriorityFeePerGas,
+                              maxFeePerGas: customMaxFeePerGas,
+                          }
+                        : {}),
+                });
             } else {
-                setError(FEE_PER_UNIT_FIELD_NAME, {
-                    message: translate('moduleSend.fees.error'),
+                const response = await dispatch(
+                    calculateCustomFeeLevelThunk({
+                        accountKey,
+                        formState,
+                        selectedFeeLevel: 'custom',
+                        customFeePerUnit,
+                        customFeeLimit,
+                        customMaxPriorityFeePerGas,
+                        customMaxFeePerGas,
+                    }),
+                );
+                feeLevels = isFulfilled(response) ? response.payload : undefined;
+            }
+            if (requestId !== requestIdRef.current) return;
+
+            const custom = feeLevels?.custom;
+            const estimatedGasLimit = new BigNumber(
+                isFinalPrecomposedTransaction(custom) ? (custom.estimatedFeeLimit ?? NaN) : NaN,
+            );
+            if (!isFinalPrecomposedTransaction(custom)) {
+                setFeeError({ code: custom?.type === 'error' ? custom.error : undefined });
+            } else if (
+                networkType === 'ethereum' &&
+                (!estimatedGasLimit.isFinite() ||
+                    !estimatedGasLimit.isInteger() ||
+                    estimatedGasLimit.lte(0))
+            ) {
+                setFeeError({});
+            } else if (
+                networkType === 'ethereum' &&
+                new BigNumber(customFeeLimit).lt(estimatedGasLimit)
+            ) {
+                setError('customFeeLimit', {
+                    type: 'validate',
+                    message: translate(
+                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
+                        {
+                            minGasLimit: estimatedGasLimit.toFixed(),
+                        },
+                    ),
+                });
+            } else if (feeLevels) {
+                setPreparedFee({
+                    key: inputKey,
+                    formState,
+                    account,
+                    feeInfo,
+                    feeLevels,
+                    builder: getCustomFeeLevel,
                 });
             }
-        }
-
-        setIsFeeLoading(false);
-    }, [
-        trigger,
-        networkType,
-        isEip1559Fee,
-        customFeePerUnit,
-        formState,
-        dispatch,
-        accountKey,
-        customFeeLimit,
-        customMaxPriorityFeePerGas,
-        customMaxFeePerGas,
-        setError,
-        translate,
-    ]);
+            if (requestId === requestIdRef.current) setIsFeeLoading(false);
+        },
+        [
+            trigger,
+            setError,
+            translate,
+            inputKey,
+            getCustomFeeLevel,
+            account,
+            feeInfo,
+            networkType,
+            isEip1559Fee,
+            customFeePerUnit,
+            formState,
+            dispatch,
+            accountKey,
+            customFeeLimit,
+            customMaxPriorityFeePerGas,
+            customMaxFeePerGas,
+        ],
+    );
 
     useEffect(() => {
+        const requestId = ++requestIdRef.current;
+        setPreparedFee(null);
         setIsFeeLoading(true);
-        debounce(handleValuesChange);
-    }, [
-        watchedFeePerUnit,
-        watchedFeeLimit,
-        handleValuesChange,
-        debounce,
-        networkType,
-        watchedMaxFeePerGas,
-        watchedMaxPriorityFeePerGas,
-    ]);
+        setFeeError(null);
+        debounce(() => handleValuesChange(requestId));
 
-    // If the trezor-connect is unable to compose the transaction, we display rough estimate of the fee instead.
-    const feeEstimate = useMemo(
-        () =>
-            watchedFeePerUnit
-                ? BigNumber(watchedFeePerUnit)
-                      .times(watchedFeeLimit)
-                      .times(normalLevelTransactionBytes)
-                      .toString()
-                : '0',
-        [watchedFeePerUnit, watchedFeeLimit, normalLevelTransactionBytes],
-    );
-    const feeValue = isFinalPrecomposedTransaction(customFeeLevel)
-        ? customFeeLevel.fee
-        : feeEstimate;
+        return () => {
+            requestIdRef.current += 1;
+        };
+    }, [handleValuesChange, debounce]);
 
-    const hasFormErrors = Object.keys(errors).length > 0;
-    const isSubmittable =
-        isNotNullOrUndefined(customFeeLevel) && !hasFormErrors && !isErrorBoxVisible;
+    const currentFeeLevels =
+        preparedFee?.key === inputKey &&
+        preparedFee.formState === formState &&
+        preparedFee.account === account &&
+        preparedFee.feeInfo === feeInfo &&
+        preparedFee.builder === getCustomFeeLevel
+            ? preparedFee.feeLevels
+            : undefined;
+    const customFeeLevel = currentFeeLevels?.custom;
+    const feeValue = isFinalPrecomposedTransaction(customFeeLevel) ? customFeeLevel.fee : null;
 
-    return { feeValue, isFeeLoading, isErrorBoxVisible, isSubmittable };
+    const precomposedError = usePrecomposedTransactionError({
+        error: feeError?.code,
+        networkSymbol: symbol,
+    });
+    const errorMessage = feeError
+        ? (precomposedError ?? translate('moduleSend.fees.unavailable'))
+        : null;
+
+    const isSubmittable = isFinalPrecomposedTransaction(customFeeLevel) && !isFeeLoading && isValid;
+
+    return {
+        feeValue,
+        isFeeLoading,
+        errorMessage,
+        isSubmittable,
+        feeLevels: currentFeeLevels,
+    };
 };

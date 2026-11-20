@@ -1,22 +1,24 @@
 import { Context } from '@suite-common/message-system';
+import { TokenMetadataProvider } from '@suite-common/token';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
+import { YieldDisabledAlert } from '@suite-native/earn';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { EarnFeeSection } from '../../components/earn/EarnFeeSection';
 import { YieldAmountInputCard } from '../../components/yield/YieldAmountInputCard';
 import { YieldDepositApprovedAmountCard } from '../../components/yield/YieldDepositApprovedAmountCard';
 import { YieldDepositFlowFooter } from '../../components/yield/YieldDepositFlowFooter';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
-import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeReserveBanner } from '../../components/yield/YieldFeeReserveBanner';
-import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { YieldSessionTxSimulationSheet } from '../../components/yield/YieldSessionTxSimulationSheet';
 import { useYieldDepositController } from '../../hooks/yield/controllers/useYieldDepositController';
 import { getYieldTokenContract } from '../../utils/yield/yieldFiatAmountUtils';
+import { yieldFlowDataToTokenMetadataSources } from '../../utils/yield/yieldFlowDataToTokenMetadataSources';
 
 export const YieldDepositScreen = () => {
     const controller = useYieldDepositController();
@@ -42,9 +44,9 @@ export const YieldDepositScreen = () => {
         tokenContract,
         yieldFlowData,
     } = controller;
-    const { account, apy, token, tokenSymbol } = yieldFlowData;
+    const { account, apy, token } = yieldFlowData;
 
-    return (
+    const content = (
         <Screen
             noHorizontalPadding
             header={
@@ -103,9 +105,7 @@ export const YieldDepositScreen = () => {
                             isApprovedAmountUnlimited={approvedAmountCard.isUnlimited}
                             networkSymbol={account.symbol}
                             onActionPress={stepCard.onEditApprovalStep}
-                            tokenDecimals={token.decimals}
                             tokenContract={tokenContract}
-                            tokenSymbol={tokenSymbol}
                         />
                     </Box>
 
@@ -120,8 +120,6 @@ export const YieldDepositScreen = () => {
                                 onMaxPress={amountInput.onMaxPress}
                                 symbol={account.symbol}
                                 tokenContract={getYieldTokenContract(token)}
-                                tokenDecimals={token.decimals}
-                                tokenSymbol={tokenSymbol}
                             />
                         </Form>
                     </Box>
@@ -149,7 +147,7 @@ export const YieldDepositScreen = () => {
 
                     {feeSection.isVisible && (
                         <Box paddingHorizontal="sp16">
-                            <YieldFeeSection
+                            <EarnFeeSection
                                 accountKey={account.key}
                                 fees={feeSection.fees}
                                 tokenContract={tokenContract}
@@ -165,7 +163,6 @@ export const YieldDepositScreen = () => {
                 accountSymbol={account.symbol}
                 amountLabel={<Translation id="earn.yieldDepositFlowScreen.amountToDeposit" />}
                 amountTokenContract={tokenContract}
-                amountTokenSymbol={tokenSymbol}
                 title={<Translation id="earn.yieldDepositFlowScreen.depositPendingTitle" />}
                 vaultName={yieldFlowData.vaultTokenName}
                 vaultTokenContract={tokenContract}
@@ -177,5 +174,11 @@ export const YieldDepositScreen = () => {
                 sheet={simulationSheet}
             />
         </Screen>
+    );
+
+    return (
+        <TokenMetadataProvider sources={yieldFlowDataToTokenMetadataSources(yieldFlowData)}>
+            {content}
+        </TokenMetadataProvider>
     );
 };

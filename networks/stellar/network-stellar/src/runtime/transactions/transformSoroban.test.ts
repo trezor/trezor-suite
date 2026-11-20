@@ -41,13 +41,37 @@ const addressCredentials = (signature: xdr.ScVal) =>
         }),
     );
 
+const SALT = '000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f';
+const WASM_HASH = 'e4c15ea3d5a4b6a2b7bb0b34a4e3cf8f45d9e2f0b1a5c6d7e8f90a1b2c3d4e5f';
+
+const createContractArgs = () =>
+    new xdr.CreateContractArgsV2({
+        contractIdPreimage: xdr.ContractIdPreimage.contractIdPreimageFromAddress(
+            new xdr.ContractIdPreimageFromAddress({
+                address: new Address(SOURCE).toScAddress(),
+                salt: Buffer.from(SALT, 'hex'),
+            }),
+        ),
+        executable: xdr.ContractExecutable.contractExecutableWasm(Buffer.from(WASM_HASH, 'hex')),
+        constructorArgs: [nativeToScVal(7, { type: 'u32' })],
+    });
+
+const delegateSignature = (address: string, nestedDelegates: xdr.SorobanDelegateSignature[]) =>
+    new xdr.SorobanDelegateSignature({
+        address: new Address(address).toScAddress(),
+        signature: xdr.ScVal.scvVoid(),
+        nestedDelegates,
+    });
+
 type BuildTransactionParams = {
+    func?: xdr.HostFunction;
     args?: xdr.ScVal[];
     auth?: xdr.SorobanAuthorizationEntry[];
     withSorobanData?: boolean;
 };
 
 const buildTransaction = ({
+    func,
     args = [],
     auth = [],
     withSorobanData = true,
@@ -58,7 +82,7 @@ const buildTransaction = ({
     })
         .addOperation(
             Operation.invokeHostFunction({
-                func: xdr.HostFunction.hostFunctionTypeInvokeContract(contractArgs(args)),
+                func: func ?? xdr.HostFunction.hostFunctionTypeInvokeContract(contractArgs(args)),
                 auth,
             }),
         )
@@ -203,7 +227,84 @@ describe('transformTransaction with a Soroban operation', () => {
         expect((operation as any).auth[0].credentials.address_v2.signature).toEqual({ type: 1 });
     });
 
-    it('refuses a host function other than a contract invocation', () => {
+    it('maps address credentials with nested delegates', () => {
+        const auth = [
+            new xdr.SorobanAuthorizationEntry({
+                credentials: xdr.SorobanCredentials.sorobanCredentialsAddressWithDelegates(
+                    new xdr.SorobanAddressCredentialsWithDelegates({
+                        addressCredentials: new xdr.SorobanAddressCredentials({
+                            address: new Address(CONTRACT).toScAddress(),
+                            nonce: xdr.Int64.fromString(NONCE),
+                            signatureExpirationLedger: 123456,
+                            signature: xdr.ScVal.scvVoid(),
+                        }),
+                        delegates: [delegateSignature(HOLDER, [delegateSignature(SOURCE, [])])],
+                    }),
+                ),
+                rootInvocation: rootInvocation(),
+            }),
+        ];
+
+        const [operation] = transformTransaction(buildTransaction({ auth })).operations;
+
+        expect((operation as any).auth[0].credentials).toEqual({
+            type: 3,
+            address_with_delegates: {
+                address_credentials: {
+                    address: CONTRACT,
+                    nonce: NONCE,
+                    signature_expiration_ledger: 123456,
+                    signature: { type: 1 },
+                },
+                delegates: [
+                    {
+                        address: HOLDER,
+                        signature: { type: 1 },
+                        nested_delegates: [
+                            { address: SOURCE, signature: { type: 1 }, nested_delegates: [] },
+                        ],
+                    },
+                ],
+            },
+        });
+    });
+
+    it('maps a create-contract host function and its authorization', () => {
+        const auth = [
+            new xdr.SorobanAuthorizationEntry({
+                credentials: xdr.SorobanCredentials.sorobanCredentialsSourceAccount(),
+                rootInvocation: new xdr.SorobanAuthorizedInvocation({
+                    function:
+                        xdr.SorobanAuthorizedFunction.sorobanAuthorizedFunctionTypeCreateContractV2HostFn(
+                            createContractArgs(),
+                        ),
+                    subInvocations: [],
+                }),
+            }),
+        ];
+        const func = xdr.HostFunction.hostFunctionTypeCreateContractV2(createContractArgs());
+
+        const [operation] = transformTransaction(buildTransaction({ func, auth })).operations;
+
+        const expectedArgs = {
+            contract_id_preimage: {
+                type: 0,
+                from_address: { address: SOURCE, salt: SALT },
+            },
+            executable: { type: 0, wasm_hash: WASM_HASH },
+            constructor_args: [{ type: 3, u32: 7 }],
+        };
+        expect((operation as any).function).toEqual({
+            type: 3,
+            create_contract_v2: expectedArgs,
+        });
+        expect((operation as any).auth[0].root_invocation.function).toEqual({
+            type: 2,
+            create_contract_v2_host_fn: expectedArgs,
+        });
+    });
+
+    it('refuses a host function the device cannot sign', () => {
         const transaction = new TransactionBuilder(new Account(SOURCE, '1'), {
             fee: BASE_FEE,
             networkPassphrase: Networks.PUBLIC,

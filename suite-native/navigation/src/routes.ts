@@ -21,8 +21,10 @@ export enum RootStackRoutes {
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
     AppsEmbedding = 'AppsEmbedding',
-    SignAndVerify = 'SignAndVerify',
-    SignAndVerifyStack = 'SignAndVerifyStack',
+    // Route names are reported to analytics (screen change events) and Sentry (route tag, breadcrumbs);
+    // keep the original values so existing dashboards and filters still match.
+    SignVerify = 'SignAndVerify',
+    SignVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
@@ -44,21 +46,7 @@ export enum RootStackRoutes {
     StellarManageTokenStack = 'StellarManageTokenStack',
     FeatureFeedbackModal = 'FeatureFeedbackModal',
     UnstakeFlow = 'UnstakeFlow',
-    TradingExchangePreview = 'TradingExchangePreview',
-    TradingExchangeApproval = 'TradingExchangeApproval',
-    TradingExchangeRevoke = 'TradingExchangeRevoke',
-    TradingSellPreview = 'TradingSellPreview',
-    TradingSellCompletion = 'TradingSellCompletion',
-    TradingConfirming = 'TradingConfirming',
-    TradingSellTransactionReview = 'TradingSellTransactionReview',
-    TradingExchangeTransactionReview = 'TradingExchangeTransactionReview',
-    TradingMyAsset = 'TradingMyAsset',
-    TradingTradeableAsset = 'TradingTradeableAsset',
-    ReceiveAccounts = 'ReceiveAccounts',
-    TradingReceiveAddress = 'TradingReceiveAddress',
-    TradingHistory = 'TradingHistory',
-    TradingHistoryDetail = 'TradingHistoryDetail',
-    TradingBuyPreview = 'TradingBuyPreview',
+    TradingStack = 'TradingStack',
     ActivityCenterStack = 'ActivityCenterStack',
 }
 
@@ -69,6 +57,7 @@ export enum AccountDetailStackRoutes {
 
 export enum AssetsStackRoutes {
     AssetDetail = 'AssetDetail',
+    HiddenTokens = 'HiddenTokens',
 }
 
 export enum ActivityCenterStackRoutes {
@@ -78,7 +67,7 @@ export enum ActivityCenterStackRoutes {
 export enum AppTabsRoutes {
     HomeStack = 'HomeStack',
     AccountsStack = 'AccountsStack',
-    TradeStack = 'TradeStack',
+    Trading = 'Trading',
     EarnStack = 'EarnStack',
     Settings = 'Settings',
 }
@@ -92,9 +81,9 @@ export enum OnboardingStackRoutes {
 
 export enum DeviceOnboardingStackRoutes {
     DeviceDisconnected = 'DeviceDisconnected',
-    UninitializedDeviceLanding = 'UninitializedDeviceLanding',
+    DeviceVisualCheck = 'DeviceVisualCheck',
     SuspiciousDevice = 'SuspiciousDevice',
-    SecurityCheck = 'SecurityCheck',
+    PackagingVisualCheck = 'PackagingVisualCheck',
     FirmwareInfo = 'FirmwareInfo',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
     FirmwareInstallation = 'FirmwareInstallation',
@@ -102,7 +91,7 @@ export enum DeviceOnboardingStackRoutes {
     ThpConfirmation = 'ThpConfirmation',
     ThpCodeEntry = 'ThpCodeEntry',
     ThpPairingSuccess = 'ThpPairingSuccess',
-    DeviceAuthenticity = 'DeviceAuthenticity ',
+    DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticitySuccess = 'DeviceAuthenticitySuccess',
     DeviceTutorial = 'DeviceTutorial',
     CreateOrRecoverCrossroads = 'CreateOrRecoverCrossroads',
@@ -258,7 +247,7 @@ export enum AccountsStackRoutes {
     Accounts = 'Accounts',
 }
 
-export enum SignAndVerifyStackRoutes {
+export enum SignVerifyStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ContinueOnTrezor = 'ContinueOnTrezor',
 }
@@ -355,7 +344,21 @@ export enum SettingsStackRoutes {
 }
 
 export enum TradingStackRoutes {
-    Trading = 'Trading',
+    TradingExchangePreview = 'TradingExchangePreview',
+    TradingExchangeApproval = 'TradingExchangeApproval',
+    TradingExchangeRevoke = 'TradingExchangeRevoke',
+    TradingSellPreview = 'TradingSellPreview',
+    TradingSellCompletion = 'TradingSellCompletion',
+    TradingConfirming = 'TradingConfirming',
+    TradingSellTransactionReview = 'TradingSellTransactionReview',
+    TradingExchangeTransactionReview = 'TradingExchangeTransactionReview',
+    TradingMyAsset = 'TradingMyAsset',
+    TradingTradeableAsset = 'TradingTradeableAsset',
+    ReceiveAccounts = 'ReceiveAccounts',
+    TradingReceiveAddress = 'TradingReceiveAddress',
+    TradingHistory = 'TradingHistory',
+    TradingHistoryDetail = 'TradingHistoryDetail',
+    TradingBuyPreview = 'TradingBuyPreview',
 }
 
 export enum TransactionDetailStackRoutes {

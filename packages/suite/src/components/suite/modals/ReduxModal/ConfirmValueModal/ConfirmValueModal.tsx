@@ -44,12 +44,11 @@ import {
     WarningIcon,
 } from '@trezor/icons';
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
-import { injectDispatch } from '@trezor/redux-utils';
+import { type OriginalReduxThunk, injectDispatch } from '@trezor/redux-utils';
 
-import { useGuideOpenNode } from 'src/hooks/guide';
-import { useSelector } from 'src/hooks/suite';
-import { type ThunkAction } from 'src/types/suite';
-import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
+import { useGuideOpenNode } from '#src/hooks/guide/useGuideOpenNode';
+import { useSelector } from '#src/hooks/suite/useSelector';
+import { DESTINATION_TAG_GUIDE_PATH } from '#src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
     account?: Account;
@@ -57,7 +56,7 @@ export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & 
     isConfirmed?: boolean;
     isValueChunked?: boolean;
     label?: ReactNode;
-    validateOnDevice: () => ThunkAction;
+    validateOnDevice: OriginalReduxThunk<void>;
     value: string;
     isAddress?: boolean;
 };
@@ -145,7 +144,7 @@ export const ConfirmValueModal = ({
                 description={
                     account && (
                         <Row gap={4}>
-                            <TokenIcon size={16} symbol={account.symbol} />
+                            <TokenIcon size={16} networkSymbol={account.symbol} />
                             <AccountLabel
                                 account={account}
                                 accountTypeBadgeSize="small"

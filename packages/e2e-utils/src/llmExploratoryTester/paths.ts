@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 
 export const REPO_ROOT = execFileSync('git', ['rev-parse', '--show-toplevel'], {
@@ -19,10 +19,6 @@ export const CONTEXT_IMAGES_DIR = join(REPORTS_DIR, 'context-images');
 export const CONTEXT_IMAGES_RELATIVE_DIR = relative(REPO_ROOT, CONTEXT_IMAGES_DIR);
 // Isolated XDG home so the spawned server cannot merge a global opencode.json.
 export const OPENCODE_CONFIG_DIR = join(REPORTS_DIR, 'opencode-config');
-
-export function readJson(path: string): unknown {
-    return JSON.parse(readFileSync(path, 'utf-8'));
-}
 
 export function writeJson(path: string, data: unknown): void {
     mkdirSync(dirname(path), { recursive: true });

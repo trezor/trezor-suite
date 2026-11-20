@@ -4,8 +4,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AccountExceptionLayout } from 'src/components/wallet';
-import { useDiscovery } from 'src/hooks/suite';
+import { AccountExceptionLayout } from '#src/components/wallet/AccountExceptionLayout';
+import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 
 /**
  * Handler for discovery "hard" error (other than bundle-error)
@@ -16,7 +16,7 @@ export const DiscoveryFailed = () => {
     const { discovery } = useDiscovery();
     const description = discovery?.status === 'failed' ? discovery.error : undefined;
 
-    const handleClick = () => dispatch(startOrRestartDiscoveryThunk());
+    const handleClick = () => dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
 
     return (
         <AccountExceptionLayout

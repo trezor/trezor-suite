@@ -29,7 +29,7 @@ const lintRestrictedImports = async ({ code, filename = nativeFilename, instance
 test('allows shared Suite services in the CLI app composition root', async () => {
     assert.deepEqual(
         await lintRestrictedImports({
-            code: "import { createNetworkModulesCompositionRoot } from '@suite-common/networks';",
+            code: "import { createNetworksCompositionRoot } from '@suite-common/networks';",
             filename: `${repositoryRoot}suite-cli/app/src/createCliCompositionRoot.ts`,
         }),
         [],
@@ -38,11 +38,21 @@ test('allows shared Suite services in the CLI app composition root', async () =>
 
 test('keeps shared Suite services private outside application packages', async () => {
     const errors = await lintRestrictedImports({
-        code: "import { createNetworkModulesCompositionRoot } from '@suite-common/networks';",
+        code: "import { createNetworksCompositionRoot } from '@suite-common/networks';",
         filename: `${repositoryRoot}packages/example/src/index.ts`,
     });
 
     assert.equal(errors.length, 1);
+});
+
+test('rejects app assembly imports in reusable libraries', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import { foo } from '@suite-app/web-app';",
+        filename: `${repositoryRoot}packages/example/src/index.ts`,
+    });
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].message, /private to the suite apps/);
 });
 
 for (const code of [
@@ -121,8 +131,8 @@ test('requires the shared Lottie atom inside Spinner', async () => {
 test('applies when a native package loads the shared config from its own directory', async () => {
     const errors = await lintRestrictedImports({
         code: "import Motion from 'react-native-reanimated';",
-        filename: `${repositoryRoot}suite-native/app/src/App.tsx`,
-        instance: createEslint(`${repositoryRoot}suite-native/app`),
+        filename: `${repositoryRoot}suite-native-app/app/src/App.tsx`,
+        instance: createEslint(`${repositoryRoot}suite-native-app/app`),
     });
     assert.equal(errors.length, 1);
 });
@@ -185,7 +195,7 @@ const stakingProductsImport =
 
 for (const filename of [
     `${repositoryRoot}packages/suite/src/support/createSuiteCompositionRoot.ts`,
-    `${repositoryRoot}suite-native/state/src/createNativeServicesCompositionRoot.ts`,
+    `${repositoryRoot}suite-native-app/state/src/createNativeServicesCompositionRoot.ts`,
 ]) {
     test(`allows staking products in the composition root ${filename}`, async () => {
         assert.deepEqual(
@@ -211,6 +221,60 @@ for (const filename of [
         assert.deepEqual(
             await lintRestrictedImports({
                 code: "import { injectStakingProductRepository } from '@suite-common/earn-staking';",
+                filename,
+            }),
+            [],
+        );
+    });
+}
+
+test('rejects the web application scope in network packages', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import { foo } from '@suite-app/web-app';",
+        filename: `${repositoryRoot}networks/bitcoin/network-bitcoin/src/index.ts`,
+    });
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].message, /Network packages may only depend on @trezor/);
+});
+
+for (const filename of [
+    `${repositoryRoot}networks/bitcoin/network-bitcoin/src/index.ts`,
+    `${repositoryRoot}packages/example/src/index.ts`,
+]) {
+    test(`keeps native app assembly private in ${filename}`, async () => {
+        const errors = await lintRestrictedImports({
+            code: "import { app } from '@suite-native-app/app';",
+            filename,
+        });
+        assert.equal(errors.length, 1);
+    });
+}
+
+for (const filename of [
+    nativeFilename,
+    `${repositoryRoot}networks/bitcoin/network-bitcoin/src/index.ts`,
+    `${repositoryRoot}packages/example/src/index.ts`,
+    `${repositoryRoot}suite-common/example/src/index.ts`,
+    `${repositoryRoot}suite-app/app/src/createSuiteCompositionRoot.ts`,
+]) {
+    for (const code of [
+        "import * as z from 'zod';",
+        "import { z } from 'zod/v4';",
+        "export * from 'zod';",
+    ]) {
+        test(`rejects a direct zod import in ${filename}: ${code}`, async () => {
+            const errors = await lintRestrictedImports({ code, filename });
+
+            assert.equal(errors.length, 1);
+            assert.match(errors[0].message, /@trezor\/zod/);
+        });
+    }
+
+    test(`allows @trezor/zod and zod-named packages in ${filename}`, async () => {
+        assert.deepEqual(
+            await lintRestrictedImports({
+                code: "import { z } from '@trezor/zod';\nimport { fromError } from 'zod-validation-error';",
                 filename,
             }),
             [],

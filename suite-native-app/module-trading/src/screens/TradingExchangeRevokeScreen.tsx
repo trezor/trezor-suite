@@ -1,0 +1,174 @@
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
+import type { ExchangeTrade } from 'invity-api';
+
+import {
+    type TradingRootState,
+    selectTradingCoinSymbolByCryptoId,
+    selectTradingExchangeSelectedQuote,
+    tradingExchangeActions,
+} from '@suite-common/trading';
+import { BannerInline, VStack } from '@suite-native/atoms';
+import { Translation } from '@suite-native/intl';
+import {
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
+    DynamicScreenHeader,
+    Screen,
+    ScreenHeader,
+    type TradingStackRoutes,
+    useOnNavigationRemove,
+} from '@suite-native/navigation';
+import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { type TradingStackScreenProps } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+
+import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
+import { ExchangeRevokeDetails } from '../components/exchange/Approval/ExchangeRevokeDetails';
+import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
+import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
+
+type TradingExchangeRevokeScreenProps =
+    TradingStackScreenProps<TradingStackRoutes.TradingExchangeRevoke>;
+
+export const TradingExchangeRevokeScreen = ({
+    route: { params },
+}: TradingExchangeRevokeScreenProps) => {
+    const { shouldIncreaseLimit } = params;
+    const { dispatch } = useServices(injectDispatch);
+    const reportToAnalytics = useExchangeAnalyticsStepReport('revoke-preview');
+
+    const quote = useSelector(selectTradingExchangeSelectedQuote);
+
+    const { isReady, isConfirming, error: confirmError, confirmApproval } = useApprovalFlow();
+
+    const coinSymbol = useSelector((state: TradingRootState) =>
+        selectTradingCoinSymbolByCryptoId(state, quote?.send),
+    );
+
+    const {
+        fee,
+        isLoading: isComposingFees,
+        error: feeError,
+        isFeeUnavailable,
+    } = useEvmApprovalFees({
+        approvalTypeOverride: 'ZERO',
+    });
+
+    const isLoading = isConfirming || isComposingFees;
+    const error = confirmError || feeError;
+    const isRevokeReady = !isLoading && !error && fee !== undefined;
+
+    const hasConfirmedRef = useRef(false);
+
+    useEffect(() => {
+        if (hasConfirmedRef.current) {
+            return;
+        }
+
+        if (!quote) {
+            console.error('No quote to revoke approval');
+
+            return;
+        }
+
+        if (!isReady) {
+            return;
+        }
+
+        hasConfirmedRef.current = true;
+
+        const quoteWithType =
+            quote.approvalType === 'ZERO'
+                ? quote
+                : ({ ...quote, approvalType: 'ZERO' } satisfies ExchangeTrade);
+
+        if (quote.approvalType !== 'ZERO') {
+            dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithType));
+        }
+
+        let isActive = true;
+
+        confirmApproval(quoteWithType).then(response => {
+            if (!isActive) {
+                return;
+            }
+
+            if (response === undefined) {
+                hasConfirmedRef.current = false;
+            }
+        });
+
+        reportToAnalytics('visit');
+
+        return () => {
+            isActive = false;
+        };
+    }, [quote, isReady, dispatch, confirmApproval, reportToAnalytics]);
+
+    useOnNavigationRemove({
+        actionTypes: DEFAULT_BACK_NAVIGATION_ACTIONS,
+        onRemoveAttempt: () => {
+            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+            reportToAnalytics('cancel');
+        },
+    });
+
+    if (!quote) {
+        return (
+            <Screen header={<ScreenHeader closeActionType="back" />}>
+                <BannerInline
+                    title={
+                        <Translation id="moduleTrading.tradingExchangeRevokeScreen.revokeErrorAlert" />
+                    }
+                    intent="critical"
+                />
+            </Screen>
+        );
+    }
+
+    return (
+        <Screen
+            header={
+                <DynamicScreenHeader
+                    title={
+                        <Translation
+                            id="moduleTrading.tradingExchangeRevokeScreen.revokeTitle"
+                            values={{ symbol: coinSymbol }}
+                        />
+                    }
+                    subtitle={
+                        shouldIncreaseLimit ? undefined : (
+                            <Translation
+                                id="moduleTrading.tradingExchangeRevokeScreen.revokeSubtitle"
+                                values={{ symbol: coinSymbol }}
+                            />
+                        )
+                    }
+                    closeActionType="back"
+                />
+            }
+            footer={
+                <ApprovalButton
+                    isReady={isRevokeReady}
+                    isDisabled={!!error || isFeeUnavailable}
+                    flowType={shouldIncreaseLimit ? 'revoke-and-approve' : 'revoke'}
+                />
+            }
+        >
+            <VStack spacing="sp12">
+                {!!shouldIncreaseLimit && (
+                    <BannerInline
+                        intent="info"
+                        title={
+                            <Translation id="moduleTrading.tradingExchangeRevokeScreen.lowLimitInfoAlert" />
+                        }
+                    />
+                )}
+
+                <ExchangeRevokeDetails exchange={quote.exchange} />
+            </VStack>
+        </Screen>
+    );
+};

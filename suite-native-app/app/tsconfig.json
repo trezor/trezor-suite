@@ -1,0 +1,171 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "./libDev" },
+    "references": [
+        { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
+        {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
+            "path": "../../suite-common/firmware-authenticity"
+        },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../app-init" },
+        { "path": "../apps-embedding-demo" },
+        { "path": "../module-account-detail" },
+        { "path": "../module-accounts" },
+        { "path": "../module-accounts-import" },
+        { "path": "../module-activity-center" },
+        { "path": "../module-add-accounts" },
+        { "path": "../module-assets" },
+        {
+            "path": "../module-authenticity-checks"
+        },
+        { "path": "../module-authorize-device" },
+        { "path": "../module-connect-popup" },
+        {
+            "path": "../module-demo-account-questionnaire"
+        },
+        { "path": "../module-dev-utils" },
+        { "path": "../module-device-onboarding" },
+        { "path": "../module-device-settings" },
+        { "path": "../module-home" },
+        { "path": "../module-onboarding" },
+        { "path": "../module-passphrase" },
+        { "path": "../module-receive" },
+        { "path": "../module-send" },
+        { "path": "../module-settings" },
+        { "path": "../module-sign-verify" },
+        {
+            "path": "../module-stellar-token-management"
+        },
+        { "path": "../module-trading" },
+        { "path": "../module-transactions" },
+        { "path": "../state" },
+        { "path": "../../suite-native/alerts" },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite-native/atoms" },
+        {
+            "path": "../../suite-native/biometrics"
+        },
+        {
+            "path": "../../suite-native/blockchain"
+        },
+        {
+            "path": "../../suite-native/bluetooth"
+        },
+        { "path": "../../suite-native/config" },
+        {
+            "path": "../../suite-native/connection-status"
+        },
+        { "path": "../../suite-native/device" },
+        {
+            "path": "../../suite-native/device-authorization"
+        },
+        {
+            "path": "../../suite-native/device-bootloader-mode"
+        },
+        {
+            "path": "../../suite-native/feature-flags"
+        },
+        {
+            "path": "../../suite-native/formatters-config"
+        },
+        { "path": "../../suite-native/icons" },
+        { "path": "../../suite-native/intl" },
+        {
+            "path": "../../suite-native/message-system"
+        },
+        {
+            "path": "../../suite-native/module-earn"
+        },
+        {
+            "path": "../../suite-native/navigation"
+        },
+        { "path": "../../suite-native/sentry" },
+        { "path": "../../suite-native/settings" },
+        { "path": "../../suite-native/storage" },
+        { "path": "../../suite-native/theme" },
+        { "path": "../../suite-native/toasts" },
+        {
+            "path": "../../suite-native/trading-consts"
+        },
+        {
+            "path": "../../suite-native/trading-residence"
+        },
+        {
+            "path": "../../suite-native/trading-shared"
+        },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../packages/bundler-security"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/e2e-utils" },
+        {
+            "path": "../../packages/react-native-usb"
+        },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/theme" },
+        {
+            "path": "../../packages/trezor-user-env-link"
+        },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/e2e-evolu-client"
+        },
+        { "path": "../storybook" },
+        {
+            "path": "../../suite-native/performance-metrics"
+        },
+        {
+            "path": "../../suite-native/test-utils-store"
+        },
+        { "path": "../../packages/connect-core" },
+        {
+            "path": "../../packages/connect-mobile"
+        },
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/perf-e2e" }
+    ],
+    "include": [".", "**/*.json"]
+}

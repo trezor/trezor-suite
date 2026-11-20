@@ -1,10 +1,10 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenAddress } from '@suite-common/tokens';
 import {
     type Account,
     type AccountKey,
     type TickerResult,
-    type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';

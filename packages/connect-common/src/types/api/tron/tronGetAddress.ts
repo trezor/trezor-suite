@@ -1,4 +1,3 @@
-import type { Address, BundledParams, GetAddress, Params, Response } from '../../params';
+import type { Address, BundleableMethod, GetAddress } from '../../params';
 
-export declare function tronGetAddress(params: Params<GetAddress>): Response<Address>;
-export declare function tronGetAddress(params: BundledParams<GetAddress>): Response<Address[]>;
+export declare const tronGetAddress: BundleableMethod<GetAddress, Address>;
