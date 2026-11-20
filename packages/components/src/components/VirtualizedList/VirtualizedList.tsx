@@ -84,6 +84,7 @@ export type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & 
     onScrollEnd?: () => void;
     listHeight: number | string;
     listMinHeight: number | string;
+    'data-testid'?: string;
     ref?: React.RefObject<HTMLDivElement | null>;
     renderItem: (item: T, virtualItem: VirtualItem) => React.ReactNode;
 
@@ -154,6 +155,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     resetScrollOnItemsChange = true,
     resetItemHeightsOnItemsChange = true,
     measureItems = false,
+    'data-testid': dataTestId,
     ...rest
 }: VirtualizedListProps<T>) {
     const internalRef = useRef<HTMLDivElement | null>(null);
@@ -222,6 +224,7 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
         <Container
             ref={containerRef}
             data-component="VirtualizedList"
+            data-testid={dataTestId}
             $height={listHeight}
             $minHeight={listMinHeight}
             {...frameProps}
