@@ -194,7 +194,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'sign-transaction-timeout'
               | 'suite-sync-keys-error'
               | 'suite-sync-enabled'
-              | 'bip-329-labels-imported';
+              | 'bip-329-labels-imported'
+              | 'walletconnect-authenticate-error';
       }
     | {
           type: 'legacy-labeling-migration-success';
