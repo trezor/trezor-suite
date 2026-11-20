@@ -24,9 +24,11 @@ import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import {
+    ADA,
     ETH,
     TRX,
     ZERO_BALANCES,
+    adaProduct,
     amount,
     createEarnStakingTableState,
     ethProduct,
@@ -39,6 +41,8 @@ import { type MockSuiteState } from '../../../../../mocks/mockInitialAppState';
 
 const ONE_TRX = '1000000';
 const ONE_ETH = '1000000000000000000';
+const HUNDRED_ADA = '100000000';
+const ADA_REWARDS = '56398';
 const HOUR_MS = 60 * 60 * 1000;
 
 const WITHDRAW_BUTTON = '@earn/dashboard/withdraw-button';
@@ -46,9 +50,19 @@ const CLAIM_BUTTON = '@account/staking/claim-button';
 const BUY_BUTTON = '@earn/dashboard/buy-button';
 
 const trxAccount = mockAccount({ symbol: TRX, descriptor: 'TRX', index: 2 });
+const adaAccount = mockAccount({ symbol: ADA, descriptor: 'ADA', availableBalance: HUNDRED_ADA });
 
 const tronPosition = (overrides: Partial<StakingPosition> = {}) =>
     mockStakedPosition(trxProduct.id, '0', overrides);
+
+// A delegation with an unclaimed reward balance, which Cardano keeps outside the available balance.
+const cardanoPosition = (overrides: Partial<StakingPosition> = {}) =>
+    mockStakedPosition(adaProduct.id, HUNDRED_ADA, {
+        lockup: 'liquid',
+        balances: { ...ZERO_BALANCES, staked: amount(HUNDRED_ADA), rewards: amount(ADA_REWARDS) },
+        operations: ['unstake', 'claim', 'vote'],
+        ...overrides,
+    });
 
 type RenderParams = {
     account: Account;
@@ -183,13 +197,51 @@ describe('EarnStakingAccountRow', () => {
                 account: ethAccount,
                 position: mockStakedPosition(ethProduct.id, '0', {
                     balances: { ...ZERO_BALANCES, withdrawable: amount(ONE_ETH) },
+                    operations: ['stake', 'withdraw'],
                 }),
             });
 
-            expect(screen.getByTestId(CLAIM_BUTTON)).toHaveTextContent(
+            const claimButton = screen.getByTestId(CLAIM_BUTTON);
+            expect(claimButton).toHaveTextContent(
                 messages.TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS.defaultMessage,
             );
+            expect(claimButton).toBeEnabled();
             expect(screen.queryByTestId(WITHDRAW_BUTTON)).not.toBeInTheDocument();
+        });
+
+        it('disables the claim of the unstaked principal while the Ethereum position withholds it', () => {
+            renderRow({
+                account: mockAccount({ symbol: ETH, descriptor: '0xa' }),
+                position: mockStakedPosition(ethProduct.id, '0', {
+                    balances: { ...ZERO_BALANCES, withdrawable: amount(ONE_ETH) },
+                    operations: ['stake'],
+                }),
+            });
+
+            expect(screen.getByTestId(CLAIM_BUTTON)).toBeDisabled();
+        });
+
+        it('offers the claim of the Cardano rewards the position offers', () => {
+            renderRow({ account: adaAccount, position: cardanoPosition() });
+
+            const claimButton = screen.getByTestId(CLAIM_BUTTON);
+            expect(claimButton).toHaveTextContent(messages.TR_EARN_CLAIM_REWARDS.defaultMessage);
+            expect(claimButton).toBeEnabled();
+        });
+
+        it('keeps the claim of the Cardano rewards visible and disabled while a deregistration is pending', () => {
+            renderRow({
+                account: adaAccount,
+                position: cardanoPosition({
+                    operations: ['vote'],
+                    pendingTransactions: [{ txid: 'deregistration-txid', operation: 'unstake' }],
+                }),
+            });
+
+            const claimButton = screen.getByTestId(CLAIM_BUTTON);
+            expect(claimButton).toHaveTextContent(messages.TR_EARN_CLAIM_REWARDS.defaultMessage);
+            expect(claimButton).toBeDisabled();
+            expect(screen.queryByTestId(BUY_BUTTON)).not.toBeInTheDocument();
         });
     });
 });
