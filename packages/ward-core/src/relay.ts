@@ -42,6 +42,13 @@ export type RelayMethod =
      * (`WardCatchUp`). Reads stay "not proven current"; nothing is persisted on the device.
      */
     | 'catchUp'
+    /**
+     * ADVERSARIAL TESTS, on a wardd started with `--adversarial-tests` only: offer the device an
+     * older head (`{ counter }`), or answer a pull from the tree at one (`{ request, counter }`).
+     * The device must refuse both.
+     */
+    | 'adversarialCatchUpToOlderHead'
+    | 'adversarialServeEntry'
     /** Conversation: flush the offline queue, `{ maxBatch? }`, then publish and sync. */
     | 'flush'
     /** `{}` -> `{ counter, root, wmCounter, wmRoot }`. */

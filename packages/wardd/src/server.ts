@@ -19,6 +19,11 @@ import {
     type WarddFrame,
 } from '@trezor/ward-core';
 
+import {
+    adversarialCatchUpToOlderHead,
+    adversarialServeEntry,
+    isAdversarialMethod,
+} from './adversarial';
 import { type Device, RelayFailure, type WardHost } from './host';
 import { type Wardd } from './service';
 
@@ -41,6 +46,11 @@ export interface ServerOptions {
      * values and the token are never logged; keys and roots are shortened.
      */
     log?: (line: string) => void;
+    /**
+     * Allow the ADVERSARIAL TEST methods (`adversarial*`): a hostile host serving the device an
+     * older state, which the device must refuse. Never on in normal use (`--adversarial-tests`).
+     */
+    adversarialTests?: boolean;
 }
 
 const short = (hex: unknown) => (typeof hex === 'string' && hex ? `${hex.slice(0, 12)}…` : '-');
@@ -152,6 +162,25 @@ export const startServer = async (opts: ServerOptions) => {
                     log(`[${conn}] #${call.id}   -> ${message.name}`);
                     send({ id: call.id, deviceCall: message });
                 });
+            // ===================================================================================
+            //   ADVERSARIAL TESTS -- a hostile host, on purpose; see adversarial.ts. Refused
+            //   unless this wardd was started with `--adversarial-tests`.
+            // ===================================================================================
+            if (isAdversarialMethod(call.method)) {
+                if (!opts.adversarialTests) {
+                    throw new RelayFailure(
+                        'bad_request',
+                        'adversarial tests are off; start wardd with --adversarial-tests',
+                    );
+                }
+                const counter = Number(p.counter);
+                if (call.method === 'adversarialCatchUpToOlderHead') {
+                    return { ...(await adversarialCatchUpToOlderHead(host, device, counter, log)) };
+                }
+
+                return { ...(await adversarialServeEntry(host, p.request ?? {}, counter, log)) };
+            }
+
             switch (call.method) {
                 case 'serveEntry':
                     return { ...(await host.serveEntry(p.request ?? {}, p.staged ?? [])) };

@@ -111,4 +111,57 @@ describe('the wardd socket', () => {
         });
         ws.close();
     });
+
+    it('refuses the ADVERSARIAL TEST methods unless started with --adversarial-tests', async () => {
+        const device = new FakeDevice();
+        const ws = await open(server.port);
+        await call(ws, 1, 'hello', { version: RELAY_PROTOCOL_VERSION, token: TOKEN });
+        await call(ws, 2, 'openStore', { wardId: toHex(device.wardId) });
+        for (const method of ['adversarialCatchUpToOlderHead', 'adversarialServeEntry']) {
+            expect(await call(ws, 3, method, { counter: 0 }, device)).toMatchObject({
+                error: {
+                    code: 'bad_request',
+                    message: expect.stringContaining('--adversarial-tests'),
+                },
+            });
+        }
+        ws.close();
+    });
+});
+
+describe('a wardd with --adversarial-tests', () => {
+    it('serves an older state on request, and the device refuses it', async () => {
+        const wardd = await Wardd.create({ dataDir: null, memory: true });
+        const server = await startServer({ wardd, token: TOKEN, port: 0, adversarialTests: true });
+        try {
+            const device = new FakeDevice();
+            const ws = await open(server.port);
+            await call(ws, 1, 'hello', { version: RELAY_PROTOCOL_VERSION, token: TOKEN });
+            await call(ws, 2, 'openStore', { wardId: toHex(device.wardId) });
+            device.enqueue('alice', 'v1');
+            device.enqueue('bob', 'v2');
+            await call(ws, 3, 'flush', {}, device);
+            const head = toHex(device.head.root);
+
+            // a pull answered from the tree at #1: a proof against another root than the head's
+            const current = await call(ws, 4, 'serveEntry', {
+                request: { entry_key: toHex(device.queue[0]?.entryKey ?? new Uint8Array(32)) },
+            });
+            const older = await call(ws, 5, 'adversarialServeEntry', {
+                request: { entry_key: toHex(new Uint8Array(32)) },
+                counter: 1,
+            });
+            expect('result' in older).toBe(true);
+            expect(older).not.toEqual(current);
+
+            // an older head offered to catch up to: the device refuses
+            expect(
+                await call(ws, 6, 'adversarialCatchUpToOlderHead', { counter: 1 }, device),
+            ).toMatchObject({ error: { code: 'device_failure' } });
+            expect(toHex(device.head.root)).toBe(head);
+            ws.close();
+        } finally {
+            await server.close();
+        }
+    });
 });

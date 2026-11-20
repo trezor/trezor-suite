@@ -461,7 +461,13 @@ export class WardHost {
         });
     }
 
-    private async answerChain(device: Device, trie: WardTrie, reply: RelayMessage) {
+    /** The stored rows, as the replica is built from them. */
+    storedLinks() {
+        return this.backend.load();
+    }
+
+    /** Answer the device's `WardChainRequest`s from `trie` until it sends something else. */
+    async answerChain(device: Device, trie: WardTrie, reply: RelayMessage) {
         while (reply.name === 'WardChainRequest') {
             const req = reply.message as Json;
             reply = await device({

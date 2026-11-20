@@ -2,6 +2,9 @@
 /**
  * wardd --port 21329 --data-dir ~/.trezor-ward [--token-file F] [--memory] [--relay URL] [--origin O]...
  *       [--verbose]   log every call, its outcome and the device messages it exchanged
+ *       [--adversarial-tests]
+ *                     allow the ADVERSARIAL TEST methods: serving a device an older state on
+ *                     purpose, which it must refuse. For test stacks only.
  *       [--wm URL]    the WARD Manager to use (`wm` process, see wmCli.ts); without it, an
  *                     in-process development WM persisted in the data dir
  *
@@ -87,7 +90,11 @@ const main = async () => {
         token: await readOrCreateToken(dataDir, value('token-file')),
         port: Number(value('port') ?? DEFAULT_PORT),
         allowedOrigins: origins.length ? origins : DEFAULT_ORIGINS,
+        adversarialTests: flag('adversarial-tests'),
     });
+    if (flag('adversarial-tests')) {
+        console.log('ADVERSARIAL TESTS ENABLED: this wardd will serve older states on request');
+    }
     console.log(
         `wardd listening on ws://127.0.0.1:${server.port} (data: ${memory ? 'memory' : dataDir}` +
             `${value('relay') ? `, relay: ${value('relay')}` : ''}` +
