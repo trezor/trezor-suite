@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import {
     type TradingRootState,
     selectTradingComposedTransactionInfo,
+    selectTradingDisplayComposedFee,
     selectTradingProviderCompanyName,
     selectTradingSellActiveTrade,
     selectTradingSellFormStep,
@@ -56,6 +57,9 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     const isLoading = useSelector(selectTradingSellIsLoading);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { composed } = useSelector(selectTradingComposedTransactionInfo);
+    const networkFee = useSelector((state: TradingRootState) =>
+        selectTradingDisplayComposedFee(state, undefined),
+    );
     const { feeInfo, composeFormState, applySelectedFee, assumeNewAccount } =
         useTradingSellConfirmFees(account);
 
@@ -171,7 +175,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
                         networkFee={
                             <TradingComposedNetworkFeeInfoItem
                                 account={account}
-                                fee={composed?.fee}
+                                fee={networkFee}
                                 edit={networkFeeEdit}
                             />
                         }

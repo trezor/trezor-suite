@@ -859,8 +859,11 @@ export const selectTradingComposedTransactionInfo = (state: TradingRootState) =>
 export const selectTradingDisplayComposedFee = (
     state: TradingRootState,
     quote: ExchangeTrade | undefined,
-): string | undefined =>
-    getDisplayNetworkFee(quote, state.wallet.trading.composedTransactionInfo.composed?.fee);
+): string | undefined => {
+    const { composed } = state.wallet.trading.composedTransactionInfo;
+
+    return getDisplayNetworkFee(quote, composed?.burnedFee ?? composed?.fee);
+};
 
 export const selectIsTradingNetworkFeeMissing = (
     state: TradingRootState,

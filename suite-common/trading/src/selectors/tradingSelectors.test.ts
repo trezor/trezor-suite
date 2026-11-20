@@ -1868,11 +1868,17 @@ describe('tradingSelectors', () => {
     describe('selectTradingDisplayComposedFee', () => {
         it.each([
             ['return the composed fee for a regular quote', { fee: '12345' }, undefined, '12345'],
+            [
+                'return the burned fee over the Tron fee limit',
+                { fee: '6500000', burnedFee: '0' },
+                undefined,
+                '0',
+            ],
             ['return undefined when there is no composed fee', undefined, undefined, undefined],
             ['return "0" for an EIP-712-signed (gasless) quote', undefined, gaslessQuote, '0'],
         ] as [
             string,
-            { fee: string } | undefined,
+            { fee: string; burnedFee?: string } | undefined,
             ExchangeTrade | undefined,
             string | undefined,
         ][])('should %s', (_title, composed, quote, expected) => {

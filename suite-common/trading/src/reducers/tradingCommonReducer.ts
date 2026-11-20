@@ -31,6 +31,7 @@ export type TradingComposedTransactionInfo = {
         | 'maxPriorityFeePerGas'
         | 'token'
         | 'accountActivationFee'
+        | 'burnedFee'
     >;
     selectedFee?: FeeLevel['label'];
 };
