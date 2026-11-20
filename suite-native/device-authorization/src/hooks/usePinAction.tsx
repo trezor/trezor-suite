@@ -84,11 +84,6 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const handleError = onError ?? showErrorFallback;
 
     const handlePinAction = useCallback(async () => {
-        analytics.report({
-            type: events.deviceSettingsPinProtectionChangeEvent.name,
-            payload: { action: type },
-        });
-
         const { remove, successMessageKey, canceledMessageKey } = actionConfigMap[type];
 
         const result = await requestPrioritizedDeviceAccess(() =>
@@ -106,6 +101,10 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
 
         const unwrappedResult = result.payload;
         if (unwrappedResult.success) {
+            analytics.report({
+                type: events.deviceSettingsPinProtectionChangeEvent.name,
+                payload: { action: type },
+            });
             showSuccess(successMessageKey);
             onSuccess();
         } else {
