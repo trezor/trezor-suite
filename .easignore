@@ -226,6 +226,7 @@
 !/suite-native/send
 !/suite-native/sentry
 !/suite-native/settings
+!/suite-native/sign-verify
 !/suite-native/storage
 !/suite-native/suite-sync
 !/suite-native/swipeable-walkthrough
