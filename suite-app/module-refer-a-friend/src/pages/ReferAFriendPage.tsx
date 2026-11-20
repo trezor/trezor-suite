@@ -41,7 +41,7 @@ import {
     ReferralJoinedContent,
     ReferralLoading,
     ReferralUnavailable,
-    selectIsReferralAvailable,
+    selectIsReferAFriendAvailableInApp,
     useLayout,
     useModal,
     useReferralActions,
@@ -63,7 +63,7 @@ type ReferralFAQ = {
 export const ReferAFriendPage = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceId = device?.id ?? undefined;
-    const isReferralAvailable = useSelector(selectIsReferralAvailable);
+    const isReferralAvailable = useSelector(selectIsReferAFriendAvailableInApp);
     const program = useSelector(selectReferralProgram);
     const isReferralWalletDescriptorAvailable = useSelector((state: DeviceRootState) =>
         selectIsReferralWalletDescriptorAvailable(state, deviceId),
