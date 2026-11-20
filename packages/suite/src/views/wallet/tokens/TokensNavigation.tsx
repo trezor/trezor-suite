@@ -47,6 +47,7 @@ type SubTabItem = {
     onClick: () => void;
     count?: number;
     labelId: TranslationKey;
+    'data-testid'?: string;
 };
 
 const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig) => {
@@ -89,6 +90,7 @@ const getSubTabConfig = ({ isNft, tokens, goToRoute, networkType }: SubTabConfig
             iconName: CoinSlashIcon,
             onClick: goToRoute('wallet-tokens-inactive'),
             labelId: 'TR_NAV_INACTIVE_TOKENS',
+            'data-testid': '@wallet/tokens/inactive',
         });
     }
 
@@ -160,6 +162,7 @@ export const TokensNavigation = ({
                         icon={tab.iconName}
                         onClick={tab.onClick}
                         count={tab.count}
+                        data-testid={tab['data-testid']}
                     >
                         <Translation id={tab.labelId} />
                     </SubTabs.Item>
