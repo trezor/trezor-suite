@@ -53,10 +53,13 @@ const activeAccount: ReferralAccount = {
 };
 
 const accountWithoutCode = (status: 'none' | 'left'): ReferralAccount => ({
-    ...activeAccount,
     status,
+    joinedAt: null,
     code: null,
     shareUrl: null,
+    redemptionCount: null,
+    redemptionLimit: null,
+    redemptionLimitResetsAt: null,
 });
 
 const availableVoucher: ReferralVoucher = {

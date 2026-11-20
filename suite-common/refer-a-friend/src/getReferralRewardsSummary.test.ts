@@ -1,16 +1,18 @@
 import { getReferralRewardsSummary } from './getReferralRewardsSummary';
 import { type ReferralVoucher, type ReferralVoucherStatus } from './referAFriendTypes';
 
-const createVoucher = (status: ReferralVoucherStatus, amount: number): ReferralVoucher => ({
-    code: status === 'pending' ? null : 'TREF-0000-0000',
-    status,
-    amount,
-    fiatCurrency: 'USD',
-    orderPaidAt: '2026-09-15T15:30:00Z',
-    readyAt: '2026-10-15T00:00:00Z',
-    expiresAt: null,
-    usedAt: null,
-});
+// The summary reads only the status, amount and dates, so the status-specific fields are left loose.
+const createVoucher = (status: ReferralVoucherStatus, amount: number) =>
+    ({
+        code: status === 'pending' ? null : 'TREF-0000-0000',
+        status,
+        amount,
+        fiatCurrency: 'USD',
+        orderPaidAt: '2026-09-15T15:30:00Z',
+        availableAt: '2026-10-15T00:00:00Z',
+        expiresAt: null,
+        usedAt: null,
+    }) as ReferralVoucher;
 
 describe(getReferralRewardsSummary.name, () => {
     it('returns zeros for no vouchers', () => {
