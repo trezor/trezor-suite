@@ -33,10 +33,11 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     }
 
                     if (currentRate) {
+                        // A failed rate keeps its error through the retry, so whatever reads it as
+                        // unavailable does not flip to waiting on every periodic refetch.
                         currentRate = {
                             ...currentRate,
                             isLoading: true,
-                            error: null,
                         };
                     } else {
                         currentRate = {
