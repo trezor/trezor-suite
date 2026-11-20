@@ -393,21 +393,24 @@ describe('getEthereumEverstakePooledProductPosition', () => {
             ).toEqual({ activatesAt: [1_700_100_000 * 1000 + 4 * DAY_MS], unlocksAt: [] });
         });
 
-        it('starts the activation at the latest mined stake', () => {
-            const position = getEthereumEverstakePooledProductPosition({
+        const readStartedAt = (scenario: EthereumStakingScenario) =>
+            getEthereumEverstakePooledProductPosition({
                 productId: eth.id,
                 poolAddress: ETH_POOL_ADDRESS,
-                account: mockEthereumStakingAccount('pending'),
+                account: mockEthereumStakingAccount(scenario),
                 productInfo,
                 transactions: [
                     minedTransaction('0x3a29dbae', 1_700_000_000),
                     minedTransaction('0x3a29dbae', 1_700_100_000),
                 ],
-            });
+            })?.activations.map(({ startedAt }) => startedAt);
 
-            expect(position?.activations.map(({ startedAt }) => startedAt)).toEqual([
-                1_700_100_000 * 1000,
-            ]);
+        it('starts the queue wait at the latest mined stake once the pool has deposited it', () => {
+            expect(readStartedAt('pendingDeposited')).toEqual([1_700_100_000 * 1000]);
+        });
+
+        it('leaves the queue wait unstarted while the pool still collects the stake', () => {
+            expect(readStartedAt('pending')).toEqual([null]);
         });
 
         it('dates the unlock from the latest mined unstake and the exit period', () => {
