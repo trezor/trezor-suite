@@ -16,6 +16,8 @@ import {
     SOL,
     THOD,
     TRX,
+    ZERO_BALANCES,
+    amount,
     createEarnStakingTableState,
     ethProduct,
     messageSystemWithStakeOff,
@@ -23,11 +25,13 @@ import {
     mockStakedPosition,
     products,
     thodProduct,
+    trxProduct,
 } from './earnStakingTableTestState';
 
 const ONE_ETH = '1000000000000000000';
 const HALF_ETH = '500000000000000000';
 const HUNDREDTH_ETH = '10000000000000000';
+const FIVE_TRX = '5000000';
 
 const ethStaked = mockAccount({ symbol: ETH, descriptor: '0xstaked', availableBalance: ONE_ETH });
 const ethStakeable = mockAccount({
@@ -57,8 +61,26 @@ const createState = (overrides: Parameters<typeof createEarnStakingTableState>[0
     });
 
 describe('selectEarnStakingStakedAccounts', () => {
-    it('lists the accounts with a funded mainnet position', () => {
+    it('lists the accounts with an active mainnet position', () => {
         expect(selectEarnStakingStakedAccounts(createState())).toEqual([ethStaked]);
+    });
+
+    it('lists an account whose position is active on unclaimed rewards alone', () => {
+        const trxRewardsOnly = mockAccount({ symbol: TRX, descriptor: 'trxrewards' });
+        const state = createState({
+            accounts: [trxRewardsOnly],
+            positions: {
+                [trxRewardsOnly.key]: [
+                    mockStakedPosition(trxProduct.id, '0', {
+                        balances: { ...ZERO_BALANCES, rewards: amount(FIVE_TRX) },
+                        operations: ['stake'],
+                    }),
+                ],
+            },
+        });
+
+        expect(selectEarnStakingStakedAccounts(state)).toEqual([trxRewardsOnly]);
+        expect(selectEarnStakingUnderfundedAccounts(state)).toEqual([]);
     });
 
     it('keeps its reference while its content is the same', () => {

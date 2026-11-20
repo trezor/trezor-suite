@@ -9,6 +9,7 @@ import {
     ADA,
     ETH,
     TRX,
+    ZERO_BALANCES,
     adaProduct,
     amount,
     createEarnStakingTableState,
@@ -102,6 +103,28 @@ describe('useStakingAccountStatus', () => {
                 positions: { [account.key]: [mockStakedPosition(ethProduct.id, ONE_ETH)] },
             }),
         ).toBe('staking-max');
+    });
+
+    it('is staked but wants funds with unclaimed TRX rewards alone and a balance below the minimum', () => {
+        const account = mockAccount({
+            symbol: TRX,
+            descriptor: 'trxa',
+            availableBalance: '500000',
+        });
+
+        expect(
+            renderStatus({
+                account,
+                positions: {
+                    [account.key]: [
+                        mockStakedPosition(trxProduct.id, '0', {
+                            balances: { ...ZERO_BALANCES, rewards: amount('5000000') },
+                            operations: ['stake', 'claim'],
+                        }),
+                    ],
+                },
+            }),
+        ).toBe('staked-but-insufficient-funds');
     });
 
     it('has everything staked on an active liquid position, as Cardano delegation is', () => {

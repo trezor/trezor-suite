@@ -3,7 +3,7 @@ import {
     type StakingFiatRootState,
     type StakingPromoRootState,
     formatStakingAmount,
-    selectDeviceStakingPositionEntries,
+    selectDeviceActiveStakingPositionEntries,
     selectIsStakingOperationDisabled,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakingAccountAmount,
@@ -65,10 +65,11 @@ const hasDashboardMinimum = (state: EarnStakingTableRootState, account: Account)
     );
 };
 
-// The table lists mainnet staking only; a testnet position still counts in the Earn header. One row
-// stands for an account, however many products it holds a position in.
+// The table lists an active mainnet position, as the account menu counts it, so a Tron account that
+// holds unclaimed rewards alone is a staked row; a testnet position still counts in the Earn header.
+// One row stands for an account, however many products it holds a position in.
 export const selectEarnStakingStakedAccounts = createMemoizedSelector(
-    [selectDeviceStakingPositionEntries, selectVisibleDeviceAccountsMap],
+    [selectDeviceActiveStakingPositionEntries, selectVisibleDeviceAccountsMap],
     (entries, accountsByKey): readonly Account[] =>
         returnStableArrayIfEmpty(
             createStableAccounts(
