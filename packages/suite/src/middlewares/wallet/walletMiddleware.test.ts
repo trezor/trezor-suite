@@ -3,7 +3,7 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
-import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRefreshTimeState,
@@ -28,6 +28,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { updateWindowVisibility } from '#src/actions/suite/windowActions';
@@ -44,8 +45,6 @@ const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: { storageLoadFormDrafts: mockReducer() },
 });
-
-const TrezorConnect = testMocks.getTrezorConnectMock();
 
 interface Args {
     router?: Partial<RouterState>;
@@ -186,10 +185,10 @@ describe('walletMiddleware', () => {
 
             const { subscribe, disconnect } = f.result;
             if (subscribe) {
-                expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(subscribe.called);
+                expect(TrezorBlockchain.subscribe).toHaveBeenCalledTimes(subscribe.called);
                 if (subscribe.called) {
                     const accounts = subscribe.accounts?.map(a => mockWalletAccount(a)) ?? [];
-                    expect(TrezorConnect.blockchainSubscribe).toHaveBeenLastCalledWith(
+                    expect(TrezorBlockchain.subscribe).toHaveBeenLastCalledWith(
                         expect.objectContaining({
                             accounts: accounts.map(a => expect.objectContaining(a)),
                             coin: subscribe.coin,
@@ -199,7 +198,7 @@ describe('walletMiddleware', () => {
             }
 
             if (disconnect) {
-                expect(TrezorConnect.blockchainDisconnect).toHaveBeenCalledTimes(disconnect.called);
+                expect(TrezorBlockchain.disconnect).toHaveBeenCalledTimes(disconnect.called);
             }
         });
     });
@@ -220,7 +219,7 @@ describe('walletMiddleware', () => {
 
             store.dispatch(updateWindowVisibility(true));
 
-            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(1);
+            expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(1);
         });
 
         it('does nothing when there is no pending tx', () => {
@@ -234,7 +233,7 @@ describe('walletMiddleware', () => {
 
             store.dispatch(updateWindowVisibility(true));
 
-            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
         });
 
         it('does nothing when the window was already visible', () => {
@@ -248,7 +247,7 @@ describe('walletMiddleware', () => {
 
             store.dispatch(updateWindowVisibility(true));
 
-            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
         });
 
         it('does nothing when the window is being hidden', () => {
@@ -262,7 +261,7 @@ describe('walletMiddleware', () => {
 
             store.dispatch(updateWindowVisibility(false));
 
-            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
         });
 
         it('re-checks sibling accounts of the network, so a receiver balance updates too', () => {
@@ -280,7 +279,7 @@ describe('walletMiddleware', () => {
 
             store.dispatch(updateWindowVisibility(true));
 
-            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(2);
+            expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(2);
         });
 
         it('kicks one sync per network even with multiple pending accounts', () => {
@@ -303,7 +302,7 @@ describe('walletMiddleware', () => {
 
             // one sync of the deduped symbol -> one basic fetch per visible account,
             // not one sync per pending account
-            expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(2);
+            expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(2);
         });
 
         it('skips accounts that are not visible', () => {
@@ -321,7 +320,7 @@ describe('walletMiddleware', () => {
 
             store.dispatch(updateWindowVisibility(true));
 
-            expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+            expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
         });
     });
 

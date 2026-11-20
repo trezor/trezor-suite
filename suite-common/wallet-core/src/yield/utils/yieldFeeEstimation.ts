@@ -1,7 +1,7 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import type { BlockchainEstimatedFee } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
-import type { BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 export type YieldFeeEstimationError = 'fee-estimation-failed';
@@ -29,7 +29,7 @@ export const estimateYieldFeeLevel = async ({
 }: EstimateYieldFeeLevelParams): Promise<
     Result<YieldEstimatedFeeLevel, YieldFeeEstimationError>
 > => {
-    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+    const estimatedFee = await TrezorBlockchain.estimateFee({
         coin: asCoinSymbol(coin),
         identity,
         request: {

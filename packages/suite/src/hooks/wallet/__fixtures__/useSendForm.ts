@@ -1329,7 +1329,7 @@ export const setMax: any[] = [
             selectedAccount: ETH_ACCOUNT,
         },
         finalResult: {
-            estimateFeeCalls: 2,
+            estimateFeeCalls: 1,
             composedLevels: {
                 normal: {
                     type: 'final',
@@ -1361,7 +1361,7 @@ export const setMax: any[] = [
             selectedAccount: ETH_ACCOUNT,
         },
         finalResult: {
-            estimateFeeCalls: 2,
+            estimateFeeCalls: 1,
             composedLevels: {
                 normal: {
                     type: 'final',
@@ -1443,7 +1443,7 @@ export const setMax: any[] = [
         ],
         finalResult: {
             solanaComposeTransactionCalls: 1,
-            estimateFeeCalls: 2,
+            estimateFeeCalls: 1,
             composedLevels: {
                 normal: {
                     type: 'final',

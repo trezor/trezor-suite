@@ -4,7 +4,7 @@ import { type TestCompositionStore, createTestCompositionRoot } from '@suite-com
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asGetter } from '@trezor/dependency-injection';
 
 import {
@@ -38,7 +38,7 @@ describe('synchronizeSentTransactionThunk – RBF eviction (#28147)', () => {
 
     beforeEach(() => {
         getTransactions = jest
-            .spyOn(TrezorConnect, 'blockchainGetTransactions')
+            .spyOn(TrezorBlockchain, 'getTransactions')
             .mockResolvedValue({ success: true, payload: [] } as any);
     });
 

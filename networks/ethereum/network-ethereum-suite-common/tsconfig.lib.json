@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
+        {
+            "path": "../../../packages/blockchain-core"
+        },
         { "path": "../../../packages/calldata" },
         {
             "path": "../../../packages/connect-common"

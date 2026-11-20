@@ -10,6 +10,7 @@
         - `@trezor/connect` is installed as regular node_module and works in nodejs context (electron main process).
         - `@trezor/connect` files are **not** hosted on the electron renderer context.
         - In the renderer context, `@trezor/connect` is aliased to `@trezor/connect-electron`, which proxies its methods via `@trezor/ipc-proxy`; see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite-app/desktop-app-renderer/webpack.config.ts).
+        - The blockchain backends of `@trezor/blockchain-core` live next to it in the main process; in the renderer context, `@trezor/blockchain-core` is aliased to its `index.electron` entry, which proxies `TrezorBlockchain` the same way.
 - Firmware binaries
     - suite-web
         - newest firmware binaries are hosted at `[url]/build/static/connect/data/firmware` and they are downloaded using regular `fetch` API.

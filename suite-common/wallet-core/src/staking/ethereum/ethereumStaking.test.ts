@@ -1,16 +1,13 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, {
-    type AccountInfo,
-    type InternalTransfer,
-    type OkWithDevice,
-} from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import {
     type BlockchainEstimatedFee,
     type BlockchainEstimatedFeeLevel,
-} from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+} from '@trezor/blockchain-core';
+import { type AccountInfo, type InternalTransfer, type OkWithDevice } from '@trezor/connect';
+import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {
@@ -72,19 +69,19 @@ describe('transformTx', () => {
     });
 });
 
-type AccountInfoResult = Result<(AccountInfo | null)[]>;
+type AccountInfoResult = Result<AccountInfo>;
 type EstimateFeeResult = Result<BlockchainEstimatedFeeLevel>;
 
 const mockTrezorConnect = (test: Record<string, any>) => {
     const { accountInfo, estimatedFee } = test;
     if (!accountInfo && !estimatedFee) return null;
     if (accountInfo) {
-        jest.spyOn(TrezorConnect, 'getAccountInfo').mockImplementation(() =>
+        jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockImplementation(() =>
             Promise.resolve(accountInfo as AccountInfoResult),
         );
     }
     if (estimatedFee) {
-        jest.spyOn(TrezorConnect, 'blockchainEstimateFee').mockImplementation(() =>
+        jest.spyOn(TrezorBlockchain, 'estimateFee').mockImplementation(() =>
             Promise.resolve(estimatedFee as EstimateFeeResult),
         );
     }
@@ -281,7 +278,7 @@ type SimulateUnstakeArgs = StakeTxBaseArgs & { amount: string };
 describe('simulateUnstake', () => {
     simulateUnstakeFixture.forEach(test => {
         it(test.description, async () => {
-            jest.spyOn(TrezorConnect, 'blockchainEvmRpcCall').mockImplementation(() =>
+            jest.spyOn(TrezorBlockchain, 'evmRpcCall').mockImplementation(() =>
                 Promise.resolve(test.blockchainEvmRpcCallResult as BlockchainEvmRpcCallResult),
             );
             const result = await simulateUnstake({
@@ -370,7 +367,7 @@ describe('getUnstakeAmountFromCalldata', () => {
 });
 
 describe('verifyEthereumStakingLiveState', () => {
-    // TrezorConnect.getAccountInfo is a shared spy across this file's describe blocks, so its
+    // TrezorBlockchain.getAccountInfo is a shared spy across this file's describe blocks, so its
     // call history must be cleared before each test here too, not just restored after.
     beforeEach(() => {
         jest.clearAllMocks();
@@ -390,7 +387,7 @@ describe('verifyEthereumStakingLiveState', () => {
         });
 
         expect(result).toEqual({ isValid: true });
-        expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+        expect(TrezorBlockchain.getAccountInfo).not.toHaveBeenCalled();
     });
 
     it('is valid for unstake when the live balance still covers the amount', async () => {

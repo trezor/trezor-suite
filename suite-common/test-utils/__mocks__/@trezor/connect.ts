@@ -117,4 +117,5 @@ module.exports = {
     default: mock,
     setTestFixtures,
     emitTestEvent,
+    mockResponse,
 };

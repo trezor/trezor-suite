@@ -30,13 +30,10 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect, {
-    type AccountInfo,
-    type AccountTransaction,
-    type TokenTransfer,
-} from '@trezor/connect';
+import { type AccountInfo, type AccountTransaction, type TokenTransfer } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
 import {
@@ -1067,7 +1064,7 @@ export const fetchTransactionsPageThunk = createThunk<
         }
 
         const { marker, stellarCursor } = account;
-        const result = await TrezorConnect.getAccountInfo({
+        const result = await TrezorBlockchain.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
@@ -1171,7 +1168,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
             return selectAccountTransactions(getState(), accountKey);
         }
 
-        const result = await TrezorConnect.blockchainGetTransactions({
+        const result = await TrezorBlockchain.getTransactions({
             coin: asCoinSymbol(account.symbol),
             txs: account.utxo.map(utxo => utxo.txid),
             descriptor: account.descriptor,

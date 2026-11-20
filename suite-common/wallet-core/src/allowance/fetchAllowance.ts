@@ -1,6 +1,6 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
@@ -27,7 +27,7 @@ export const fetchAllowance = async ({
     }
 
     const response = await Promise.race([
-        TrezorConnect.blockchainEvmRpcCall({
+        TrezorBlockchain.evmRpcCall({
             coin: asCoinSymbol(coin),
             from: owner,
             to: tokenContractAddress,

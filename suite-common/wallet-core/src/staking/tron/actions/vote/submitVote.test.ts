@@ -6,6 +6,7 @@ import { type TestCompositionStore, createTestCompositionRoot } from '@suite-com
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
@@ -34,10 +35,10 @@ jest.mock('@trezor/connect', () => {
         default: {
             ...actual.default,
             tronComposeTransaction: jest.fn(),
-            pushTransaction: jest.fn(),
         },
     };
 });
+jest.mock('@trezor/blockchain-core', () => ({ TrezorBlockchain: { pushTransaction: jest.fn() } }));
 jest.mock('../../shared/reportTronVoteTxId', () => ({ reportTronVoteTxId: jest.fn() }));
 jest.mock('../../shared/signTronContract', () => ({ signTronContract: jest.fn() }));
 
@@ -60,7 +61,7 @@ const captureExceptionMock = jest.mocked(captureException);
 const reportTronVoteTxIdMock = jest.mocked(reportTronVoteTxId);
 const signTronContractMock = jest.mocked(signTronContract);
 const tronComposeTransactionMock = TrezorConnect.tronComposeTransaction as jest.Mock;
-const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
+const pushTransactionMock = TrezorBlockchain.pushTransaction as jest.Mock;
 const scope = { setTag: jest.fn(), setExtra: jest.fn(), setLevel: jest.fn() };
 
 const device = {

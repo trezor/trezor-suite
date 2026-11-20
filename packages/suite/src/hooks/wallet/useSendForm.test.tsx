@@ -46,6 +46,7 @@ import {
     type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
@@ -242,10 +243,10 @@ const actionCallback = (
         );
     }
     if (typeof result.estimateFeeCalls === 'number') {
-        expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(result.estimateFeeCalls);
+        expect(TrezorBlockchain.estimateFee).toHaveBeenCalledTimes(result.estimateFeeCalls);
     }
     if (typeof result.getAccountInfoCalls === 'number') {
-        expect(TrezorConnect.getAccountInfo).toHaveBeenCalledTimes(result.getAccountInfoCalls);
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenCalledTimes(result.getAccountInfoCalls);
     }
 
     // validate '@trezor/connect' params
@@ -257,12 +258,12 @@ const actionCallback = (
         expect(composeTransactionsParams).toMatchObject(result.composeTransactionParams);
     }
     if (result.estimateFeeParams) {
-        expect(TrezorConnect.blockchainEstimateFee).toHaveBeenLastCalledWith(
+        expect(TrezorBlockchain.estimateFee).toHaveBeenLastCalledWith(
             expect.objectContaining(result.estimateFeeParams),
         );
     }
     if (result.getAccountInfoParams) {
-        expect(TrezorConnect.getAccountInfo).toHaveBeenLastCalledWith(
+        expect(TrezorBlockchain.getAccountInfo).toHaveBeenLastCalledWith(
             expect.objectContaining(result.getAccountInfoParams),
         );
     }

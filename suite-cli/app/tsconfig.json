@@ -4,6 +4,9 @@
     "references": [
         { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/networks" },
+        {
+            "path": "../../packages/blockchain-core"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/logger" },
         {

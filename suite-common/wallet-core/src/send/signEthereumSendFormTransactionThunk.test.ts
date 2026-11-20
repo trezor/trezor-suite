@@ -4,6 +4,7 @@ import {
     type FormState,
     type RbfTransactionParams,
 } from '@suite-common/wallet-types';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect from '@trezor/connect';
 
 import { confirmedNonces, ethAccount, evmTx } from './__fixtures__/evmFixtures';
@@ -63,7 +64,7 @@ describe(signEthereumSendFormTransactionThunk.name, () => {
     let signMock: jest.SpyInstance;
 
     beforeEach(() => {
-        jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
+        jest.spyOn(TrezorBlockchain, 'getAccountInfo').mockResolvedValue({
             success: true,
             payload: { misc: { nonce: '6' } },
         } as any);

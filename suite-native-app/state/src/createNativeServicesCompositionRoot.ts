@@ -25,6 +25,7 @@ import { reportSecurityCheck } from '@suite-native/sentry';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-shared';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sync';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
@@ -92,12 +93,16 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
+    const networkModuleDeps = {
+        getTrezorConnect: deps.getTrezorConnect,
+        getTrezorBlockchain: () => TrezorBlockchain,
+    };
     const networks = createNetworksCompositionRoot({
         networkModules: [
-            createBitcoinSuiteCommonNetworkModule(deps),
-            createEthereumSuiteCommonNetworkModule(deps),
+            createBitcoinSuiteCommonNetworkModule(networkModuleDeps),
+            createEthereumSuiteCommonNetworkModule(networkModuleDeps),
             createRippleSuiteCommonNetworkModule(),
-            createCardanoSuiteCommonNetworkModule(deps),
+            createCardanoSuiteCommonNetworkModule(networkModuleDeps),
             createSolanaSuiteCommonNetworkModule(),
             createStellarSuiteCommonNetworkModule(),
             createTronSuiteCommonNetworkModule(),

@@ -36,6 +36,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/react": "^16.3.3",
+        "@trezor/blockchain-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",

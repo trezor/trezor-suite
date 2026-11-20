@@ -53,6 +53,7 @@ const runPreCall = ({ payload, source, dispatch, txSigningPrecomposed }: RunPreC
         {
             dispatch,
             getState: () => ({}),
+            signal: new AbortController().signal,
         },
     );
 

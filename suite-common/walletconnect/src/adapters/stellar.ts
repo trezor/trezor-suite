@@ -6,7 +6,8 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
+import { type CallMethodResponse } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import loadStellar from '@trezor/network-stellar/runtime';
 import { createThunk } from '@trezor/redux-utils';
@@ -143,7 +144,7 @@ const stellarRequestThunk = createThunk<
                 stellarSignXDRThunk({ session, xdrBase64: xdr, origin, event }),
             ).unwrap();
 
-            const pushResponse = await TrezorConnect.pushTransaction({
+            const pushResponse = await TrezorBlockchain.pushTransaction({
                 coin: asCoinSymbol(context.symbol),
                 tx: Buffer.from(result.signedXDR, 'base64').toString('hex'),
             });

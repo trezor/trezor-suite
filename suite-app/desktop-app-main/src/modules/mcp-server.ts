@@ -16,6 +16,7 @@ import {
 } from '@suite-common/connect-popup';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { convertAmountUnitsToSubunits, substituteBip43Path } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import { sanitizeName } from '@trezor/connect-common';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
@@ -506,7 +507,6 @@ type PopupCallFn = (call: {
     id: string;
     method: string;
     payload: Record<string, unknown>;
-    silent?: boolean;
     origin: string;
     process?: { name: string; fullPath: string; warning: boolean; icon?: string };
     manifest: typeof MCP_MANIFEST;
@@ -523,28 +523,6 @@ const callPopup = async (
         id: nextMessageId(),
         method,
         payload,
-        origin: 'mcp://localhost',
-        manifest: MCP_MANIFEST,
-    });
-
-    return response as PopupResult;
-};
-
-/**
- * Call TrezorConnect directly, bypassing the connect-popup flow.
- * Used for backend-only calls (blockchainEstimateFee) that need neither the device
- * nor user confirmation.
- */
-const callSilent = async (
-    sendPopupCall: PopupCallFn,
-    method: string,
-    payload: Record<string, unknown>,
-): Promise<PopupResult> => {
-    const response = await sendPopupCall({
-        id: nextMessageId(),
-        method,
-        payload,
-        silent: true,
         origin: 'mcp://localhost',
         manifest: MCP_MANIFEST,
     });
@@ -717,29 +695,23 @@ const handleEvmSend = async (
         let maxPriorityFeePerGas = params.maxPriorityFeePerGas as string | undefined;
 
         if (maxFeePerGas === undefined) {
-            // Try estimating fees via the blockchain backend (silent call).
+            // Try estimating fees via the blockchain backend.
             // Uses feeLevels: 'smart' to match Suite's fee estimation approach,
             // which returns economy/normal/high tiers. We pick "normal" by default.
             // On failure, fall back to placeholder values — the Suite pre-hook
             // for ethereumSignTransaction allows fee adjustment in the UI.
-            try {
-                const feeResult = await callSilent(sendPopupCall, 'blockchainEstimateFee', {
-                    coin,
-                    request: { blocks: [2], feeLevels: 'smart' },
-                });
-                const levels = feeResult.success ? feeResult.payload?.levels : undefined;
-                const level =
-                    levels?.find((l: { label?: string }) => l.label === 'normal') ?? levels?.[0];
-                if (level?.maxFeePerGas) {
-                    maxFeePerGas = level.maxFeePerGas;
-                    maxPriorityFeePerGas =
-                        maxPriorityFeePerGas ?? level.maxPriorityFeePerGas ?? '0';
-                } else if (level?.feePerUnit) {
-                    // Network doesn't support EIP-1559 — use legacy
-                    transaction.gasPrice = toHex(level.feePerUnit);
-                }
-            } catch {
-                // Fee estimation failed — will use defaults below
+            const feeResult = await TrezorBlockchain.estimateFeeLevels({
+                coin,
+                request: { blocks: [2], feeLevels: 'smart' },
+            });
+            const levels = feeResult.success ? feeResult.payload.levels : undefined;
+            const level = levels?.find(l => l.label === 'normal') ?? levels?.[0];
+            if (level?.maxFeePerGas) {
+                maxFeePerGas = level.maxFeePerGas;
+                maxPriorityFeePerGas = maxPriorityFeePerGas ?? level.maxPriorityFeePerGas ?? '0';
+            } else if (level?.feePerUnit) {
+                // Network doesn't support EIP-1559 — use legacy
+                transaction.gasPrice = toHex(level.feePerUnit);
             }
         }
 
@@ -800,17 +772,8 @@ const handleXrpSend = async (
     }
 
     // Auto-fill fee (default 12 drops if estimation fails)
-    let fee = '12';
-    try {
-        const feeResult = await callSilent(sendPopupCall, 'blockchainEstimateFee', {
-            coin,
-        });
-        if (feeResult.success && feeResult.payload?.levels?.[0]?.feePerUnit) {
-            fee = feeResult.payload.levels[0].feePerUnit;
-        }
-    } catch {
-        // Fee estimation failed — use default 12 drops
-    }
+    const feeResult = await TrezorBlockchain.estimateFee({ coin });
+    const fee = (feeResult.success && feeResult.payload.levels[0]?.feePerUnit) || '12';
 
     const signResult = await callPopup(sendPopupCall, 'rippleSignTransaction', {
         path,
@@ -1132,7 +1095,6 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
             id: string;
             method: string;
             payload: Record<string, unknown>;
-            silent?: boolean;
             origin: string;
             process?: {
                 name: string;
@@ -1158,7 +1120,6 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                 id: call.id,
                 method: call.method,
                 payload: call.payload,
-                silent: call.silent,
                 sourceType: CALL_SOURCE_MCP,
                 origin: call.origin,
                 // Without a process the prompt shows no badge at all, so a caller Suite knows

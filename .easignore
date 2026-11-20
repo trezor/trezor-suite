@@ -57,6 +57,7 @@
 !/packages/env-utils
 !/packages/eslint
 !/packages/icons
+!/packages/ipc-proxy
 !/packages/jsonl
 !/packages/lazy-loading
 !/packages/logger

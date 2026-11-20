@@ -15,7 +15,7 @@ export interface StakeState {
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: StakeFormState;
     accountKey?: AccountKey;
-    serializedTx?: SerializedTx; // payload for TrezorConnect.pushTransaction
+    serializedTx?: SerializedTx; // payload for TrezorBlockchain.pushTransaction
     resolvedEthereumNonce?: string; // EVM nonce resolved at signing time, shown in the review modal
     votingDelegation?: AccountVotingDelegation;
     data: StakeDataState;

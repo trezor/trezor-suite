@@ -18,6 +18,7 @@ import {
     isRbfBumpFeeTransaction,
     restoreOrigOutputsOrder,
 } from '@suite-common/wallet-utils';
+import { TrezorBlockchain } from '@trezor/blockchain-core';
 import TrezorConnect, {
     type ComposeUtxo,
     DEFAULT_SORTING_STRATEGY,
@@ -370,10 +371,9 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             const fetchedTxs =
                 // Fetching would reveal coinjoin account transactions to the backend.
                 selectedAccount.accountType !== 'coinjoin' && missingTxs.length
-                    ? await TrezorConnect.blockchainGetTransactions({
+                    ? await TrezorBlockchain.getRawTransactions({
                           coin: asCoinSymbol(selectedAccount.symbol),
                           txs: missingTxs,
-                          hexOnly: true,
                       }).then(response => (response.success ? response.payload : []))
                     : [];
 
