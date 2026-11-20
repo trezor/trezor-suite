@@ -6,6 +6,10 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebouncedValue } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
+// Only bridges the blur and focus events when the focus moves between amount inputs. A longer
+// delay holds back the layout animations driven by this flag.
+const AMOUNT_INPUT_ACTIVE_DEBOUNCE_DELAY = 50;
+
 export const useFocusedValueWatch = <
     TFieldValues extends FieldValues,
     TTransformedValues = TFieldValues,
@@ -16,7 +20,9 @@ export const useFocusedValueWatch = <
 
     const focusedValue = useWatch({ control, name: 'focusedValue' as Path<TFieldValues> });
     const isAmountInputActive = !!focusedValue;
-    const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive);
+    const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive, {
+        delay: AMOUNT_INPUT_ACTIVE_DEBOUNCE_DELAY,
+    });
 
     useEffect(() => {
         dispatch(tradingActions.setIsAmountInputActive(isAmountInputActiveDebounced));
