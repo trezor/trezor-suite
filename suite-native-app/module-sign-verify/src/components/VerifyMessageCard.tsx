@@ -1,20 +1,27 @@
 import { Button, Card, VStack } from '@suite-native/atoms';
-import { Form, TextInputField } from '@suite-native/forms';
+import { Form, TextInputField, type UseFormReturn } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-import { type VerifyMessageForm } from '../hooks/useVerifyMessageForm';
+import { type VerifyFormValues } from './SignVerifyFormValues';
 
 type VerifyMessageCardProps = {
-    form: VerifyMessageForm;
+    form: UseFormReturn<VerifyFormValues>;
+    isVerified: boolean;
+    onVerify: () => void;
+    onClear: () => void;
 };
 
-export const VerifyMessageCard = ({ form }: VerifyMessageCardProps) => {
-    const { hookForm, submit, clear, isVerified } = form;
+export const VerifyMessageCard = ({
+    form,
+    isVerified,
+    onVerify,
+    onClear,
+}: VerifyMessageCardProps) => {
     const { translate } = useTranslate();
 
     return (
         <Card>
-            <Form form={hookForm}>
+            <Form form={form}>
                 <VStack spacing="sp16">
                     <TextInputField
                         name="address"
@@ -40,11 +47,11 @@ export const VerifyMessageCard = ({ form }: VerifyMessageCardProps) => {
                         multiline
                     />
                     {isVerified ? (
-                        <Button onPress={clear} intent="neutral" priority="secondary">
+                        <Button onPress={onClear} intent="neutral" priority="secondary">
                             <Translation id="signAndVerify.buttons.clear" />
                         </Button>
                     ) : (
-                        <Button onPress={() => submit()}>
+                        <Button onPress={onVerify}>
                             <Translation id="signAndVerify.buttons.verify" />
                         </Button>
                     )}
