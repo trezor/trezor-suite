@@ -131,7 +131,7 @@ export const mockStakedPosition = (
     });
 
 // In dollars, the dollar rate is the rate itself.
-const mockRate = (rate: number) => ({ rate, usdRate: rate }) as CurrentRate;
+export const mockRate = (rate: number) => ({ rate, usdRate: rate }) as CurrentRate;
 
 const STAKE_OFF_MESSAGE_ID = 'stakeOff';
 
