@@ -106,7 +106,16 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             : totals.withdrawable;
     const claimableAmount = claimOperation === 'claim' ? totals.rewards : withdrawableAmount;
     const canClaim = new BigNumber(claimableAmount).gt(0);
-    const isClaimButtonDisabled = isClaimingDisabled || isClaimPending || isDrepDelegationRequired;
+
+    // The position withholds the Cardano claim while any transaction is pending and the Ethereum
+    // withdrawal while one is; the settled Tron amount is the row's own, so Tron asks the position
+    // nothing.
+    const isClaimOffered = position?.operations.includes(claimOperation) ?? false;
+    const isClaimButtonDisabled =
+        isClaimingDisabled ||
+        isClaimPending ||
+        (!isTronNetworkType && !isClaimOffered) ||
+        isDrepDelegationRequired;
 
     const claimTooltipContent =
         claimingMessageContent ??
