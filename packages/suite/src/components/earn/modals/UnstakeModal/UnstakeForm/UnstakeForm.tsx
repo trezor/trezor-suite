@@ -8,7 +8,6 @@ import {
 } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { getSolanaUnstakeAmountBounds, getStakingHelpCenterLink } from '@suite-common/wallet-core';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -41,6 +40,7 @@ export const UnstakeForm = () => {
         onCryptoAmountChange,
         getValues,
         unstakableBalance,
+        isCardanoBalanceEmpty,
     } = useWithdrawalFormContext();
     const { CryptoAmountFormatter } = useFormatters();
     const { position, totals, access } = useStakingAccountPosition(account.key);
@@ -58,8 +58,6 @@ export const UnstakeForm = () => {
         amount: totals.withdrawable,
         networkSymbol: symbol,
     });
-
-    const isCardanoBalanceEmpty = isCardanoNetwork && !isPositiveBalance(unstakableBalance);
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);

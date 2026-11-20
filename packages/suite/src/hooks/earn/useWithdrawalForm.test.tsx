@@ -114,6 +114,21 @@ describe('useWithdrawalForm', () => {
         );
 
         expect(result.current.unstakableBalance).toBe('100.056398');
+        expect(result.current.isCardanoBalanceEmpty).toBe(false);
+    });
+
+    it('blocks a Cardano unstake while nothing is spendable, whatever the reward balance', () => {
+        const { result } = renderForm(
+            { ...adaAccount, availableBalance: '0', formattedBalance: '0' },
+            mockPosition(adaEverstakeProduct.id, {
+                lockup: 'liquid',
+                balances: { ...zeroBalances, staked: amount('56398'), rewards: amount('56398') },
+                operations: ['unstake', 'claim', 'vote'],
+            }),
+        );
+
+        expect(result.current.unstakableBalance).toBe('0.056398');
+        expect(result.current.isCardanoBalanceEmpty).toBe(true);
     });
 
     it('offers nothing to unstake without a position', () => {
