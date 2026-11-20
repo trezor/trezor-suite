@@ -54,6 +54,26 @@ const getMessageStateById = (draft: MessageSystemState, id: string): MessageStat
     return draft.dismissedMessages[id];
 };
 
+const deleteExperimentInclusionOverride = (draft: MessageSystemState, id: string) => {
+    if (!draft.experimentInclusionOverrides) return;
+
+    delete draft.experimentInclusionOverrides[id];
+
+    if (Object.keys(draft.experimentInclusionOverrides).length === 0) {
+        delete draft.experimentInclusionOverrides;
+    }
+};
+
+const deleteExperimentVariantOverride = (draft: MessageSystemState, id: string) => {
+    if (!draft.experimentVariantOverrides) return;
+
+    delete draft.experimentVariantOverrides[id];
+
+    if (Object.keys(draft.experimentVariantOverrides).length === 0) {
+        delete draft.experimentVariantOverrides;
+    }
+};
+
 export type MessageSystemReducerDeps = ActionTypesDep<'storageLoad'>;
 
 export const prepareMessageSystemReducer = createReducerWithExtraDeps(
@@ -164,18 +184,24 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
                     state.experimentInclusionOverrides = {};
                 }
                 state.experimentInclusionOverrides[payload.id] = payload.inclusion;
+                deleteExperimentVariantOverride(state, payload.id);
             })
             .addCase(
                 messageSystemActions.clearExperimentInclusionOverride,
                 (state, { payload }) => {
-                    if (state.experimentInclusionOverrides) {
-                        delete state.experimentInclusionOverrides[payload];
-                        if (Object.keys(state.experimentInclusionOverrides).length === 0) {
-                            delete state.experimentInclusionOverrides;
-                        }
-                    }
+                    deleteExperimentInclusionOverride(state, payload);
                 },
             )
+            .addCase(messageSystemActions.setExperimentVariantOverride, (state, { payload }) => {
+                if (!state.experimentVariantOverrides) {
+                    state.experimentVariantOverrides = {};
+                }
+                state.experimentVariantOverrides[payload.id] = payload.variant;
+                deleteExperimentInclusionOverride(state, payload.id);
+            })
+            .addCase(messageSystemActions.clearExperimentVariantOverride, (state, { payload }) => {
+                deleteExperimentVariantOverride(state, payload);
+            })
             .addMatcher(
                 (action: UnknownAction): action is StorageLoadMessageSystemAction =>
                     action.type === extra.actionTypes.storageLoad,
