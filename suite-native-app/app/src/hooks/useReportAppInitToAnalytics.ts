@@ -8,6 +8,10 @@ import {
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
+import {
+    formatExperimentVariantsForAnalytics,
+    selectActiveExperimentsWithVariants,
+} from '@suite-common/message-system';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
@@ -39,6 +43,7 @@ export const useReportAppInitToAnalytics = () => {
     const appLanguage = useSelector(selectSupportedLanguageLocale);
     const deviceLanguage = useSelector(selectDeviceLanguage);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
 
     useEffect(() => {
         if (isAppReady && isOnboardingFinished && !initWasReported) {
@@ -63,6 +68,9 @@ export const useReportAppInitToAnalytics = () => {
                     rememberedHiddenWallets,
                     enabledNetworks,
                     labeling: isSuiteSyncEnabled ? 'suite-sync' : 'off',
+                    experimentVariants: formatExperimentVariantsForAnalytics(
+                        activeExperimentsWithVariants,
+                    ),
                 },
             });
         }
@@ -81,6 +89,7 @@ export const useReportAppInitToAnalytics = () => {
         appLanguage,
         deviceLanguage,
         isSuiteSyncEnabled,
+        activeExperimentsWithVariants,
         analytics,
     ]);
 };

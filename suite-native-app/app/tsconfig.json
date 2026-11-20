@@ -15,6 +15,9 @@
         {
             "path": "../../suite-common/formatters"
         },
+        {
+            "path": "../../suite-common/message-system"
+        },
         { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/react-query"
@@ -149,9 +152,6 @@
         { "path": "../../packages/utils" },
         {
             "path": "../../suite-common/e2e-evolu-client"
-        },
-        {
-            "path": "../../suite-common/message-system"
         },
         { "path": "../storybook" },
         {
