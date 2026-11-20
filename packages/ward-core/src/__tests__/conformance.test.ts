@@ -10,12 +10,11 @@ import {
     EMPTY_ROOT,
     WardTrieError,
     checkShape,
-    commitOf,
     deleteRoot,
     insertRoot,
-    partBytes,
     proofElem,
     updateRoot,
+    valueDigest,
     verifyMembership,
     verifyNonmembership,
 } from '../trie';
@@ -32,12 +31,17 @@ describe('ward-core conformance with trezorlib.ward_trie', () => {
     it('verifies the firmware frozen vectors', () => {
         const f = vectors.frozen;
         expect(
-            verifyMembership(hex(f.member), hex(f.witness_commit), hexes(f.proof), hex(f.root)),
+            verifyMembership(
+                hex(f.member),
+                hex(f.member_commit),
+                hexes(f.member_proof),
+                hex(f.root),
+            ),
         ).toBe(true);
         expect(
             verifyNonmembership(
                 hex(f.absent),
-                hex(f.member),
+                hex(f.witness),
                 hex(f.witness_commit),
                 hexes(f.proof),
                 hex(f.root),
@@ -46,21 +50,21 @@ describe('ward-core conformance with trezorlib.ward_trie', () => {
         // the witness equal to the target proves presence, not absence
         expect(
             verifyNonmembership(
-                hex(f.member),
-                hex(f.member),
+                hex(f.witness),
+                hex(f.witness),
                 hex(f.witness_commit),
                 hexes(f.proof),
                 hex(f.root),
             ),
         ).toBe(false);
-        // a relabelled split bit misses the root
-        const relabelled = Uint8Array.from([0, 1, ...hex(f.proof[0]!).slice(2)]);
+        // a relabelled split bit misses the root (the leaf-most step branches on bit 4)
+        const relabelled = Uint8Array.from([5, ...hex(f.proof[0]!).slice(1)]);
         expect(
             verifyNonmembership(
                 hex(f.absent),
-                hex(f.member),
+                hex(f.witness),
                 hex(f.witness_commit),
-                [relabelled],
+                [relabelled, ...hexes(f.proof.slice(1))],
                 hex(f.root),
             ),
         ).toBe(false);
@@ -68,7 +72,7 @@ describe('ward-core conformance with trezorlib.ward_trie', () => {
 
     it('computes every commit the reference does', () => {
         for (const c of vectors.commits) {
-            expect(toHex(commitOf(c.key_type, c.identity as any, c.content as any))).toBe(c.commit);
+            expect(toHex(valueDigest(c.content))).toBe(c.commit);
         }
     });
 
@@ -89,7 +93,7 @@ describe('ward-core conformance with trezorlib.ward_trie', () => {
                     );
                     store.remove(key);
                 } else {
-                    const newCommit = commitOf('address', step.leaf.identity, step.leaf.content);
+                    const newCommit = valueDigest(step.leaf.content);
                     if (step.op === 'update') {
                         derived = updateRoot(
                             key,
@@ -102,10 +106,7 @@ describe('ward-core conformance with trezorlib.ward_trie', () => {
                         const [proof, wk, wc] = store.nonmembershipProof(key);
                         derived = insertRoot(key, newCommit, proof, before, wk, wc);
                     }
-                    store.set(key, {
-                        ...step.leaf,
-                        identity: { ...step.leaf.identity, key_type: 'address' },
-                    });
+                    store.set(key, step.leaf);
                 }
                 expect(store.root() === null ? null : toHex(store.root()!)).toBe(step.root);
                 expect(toHex(derived)).toBe(step.root ?? vectors.empty_root);
@@ -179,8 +180,8 @@ describe('ward-core conformance with trezorlib.ward_trie', () => {
 describe('ward-core refuses what the device refuses', () => {
     it('refuses malformed proofs before hashing', () => {
         for (const proof of [
-            [Uint8Array.from([1, 0, ...new Uint8Array(32)])], // split_bit 256
-            [new Uint8Array(33)],
+            [new Uint8Array(32)], // short element
+            [new Uint8Array(34)], // long element
             [proofElem(1, new Uint8Array(32)), proofElem(4, new Uint8Array(32))], // reversed
             [proofElem(1, new Uint8Array(32)), proofElem(1, new Uint8Array(32))], // repeated
         ]) {
@@ -199,26 +200,15 @@ describe('ward-core refuses what the device refuses', () => {
     });
 });
 
-describe('ward-core frames an SIV part (encoding 2) as the device does', () => {
-    const siv = {
-        encoding: 2,
-        encrypted: {
-            nonce: new Uint8Array(0),
-            tag: new Uint8Array(16).fill(0x74),
-            ct: new Uint8Array(64).fill(0x63),
-        },
-    };
-
-    it('keeps its own encoding byte in the framing and the commit', () => {
-        expect(toHex(partBytes(siv as any)).slice(0, 6)).toBe('020010');
-        // commit_of("address", None, <the same part>) in trezorlib.ward_trie
-        expect(toHex(commitOf('address', null, siv as any))).toBe(
-            '4c488f1a19849c699f56e2c053d3925cb3eb72ea595a1af104ff227df3b5cd51',
-        );
-        expect(leafIsDelete({ identity: null, content: siv } as any)).toBe(false);
-    });
-
-    it('still refuses an unknown encoding', () => {
-        expect(() => partBytes({ encoding: 3 } as any)).toThrow('unknown leaf part encoding');
+describe('ward-core commits to the sealed content only', () => {
+    it('ignores the identity and reads an empty content as a delete', () => {
+        const content = `01${'6e'.repeat(12)}${'74'.repeat(16)}63`;
+        const a = new WardTrie();
+        const b = new WardTrie();
+        a.set(new Uint8Array(32), { identity: `01${'69'.repeat(30)}`, content });
+        b.set(new Uint8Array(32), { identity: null, content });
+        expect(a.root()).toEqual(b.root());
+        expect(leafIsDelete({ identity: null, content })).toBe(false);
+        expect(leafIsDelete({ identity: content, content: '' })).toBe(true);
     });
 });

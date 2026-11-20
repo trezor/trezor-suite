@@ -3,7 +3,7 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
-import { WardChainLink, WardLeafContent, WardLeafIdentity } from './messages-ward';
+import { WardChainLink } from './messages-ward';
 
 export type WardFlushQueueApplied = Static<typeof WardFlushQueueApplied>;
 export const WardFlushQueueApplied = Type.Object(
@@ -28,8 +28,8 @@ export type WardPublish = Static<typeof WardPublish>;
 export const WardPublish = Type.Object(
     {
         entry_key: Type.Optional(Type.String()),
-        identity: Type.Optional(WardLeafIdentity),
-        content: Type.Optional(WardLeafContent),
+        sealed_identity: Type.Optional(Type.String()),
+        sealed_content: Type.Optional(Type.String()),
         counter: Type.Optional(Type.Number()),
         auth_commit: Type.Optional(Type.String()),
         wm_sig: Type.Optional(Type.String()),

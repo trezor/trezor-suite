@@ -27,7 +27,7 @@ const link = (toCounter: number): StoredLink => ({
     changes: [
         {
             entryKey: toHex(randomBytes(32)),
-            leaf: { content: { encoding: 1, plaintext: { content: 'aa' } } },
+            leaf: { identity: `01${'00'.repeat(28)}bb`, content: `01${'00'.repeat(28)}aa` },
         },
         { entryKey: toHex(randomBytes(32)), leaf: null },
     ],

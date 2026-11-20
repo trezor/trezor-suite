@@ -5,7 +5,7 @@
  */
 import { type BytesLike, equalBytes, toBytes, toHex } from './bytes';
 import { OP_COMMIT, type WardLeaf, type WardTrie } from './store';
-import { EMPTY_ROOT, type WardPart } from './trie';
+import { EMPTY_ROOT } from './trie';
 
 /** WardEntryRequest, as it arrives: the path, and (batched flush only) the change just folded. */
 export interface WardEntryRequestJson {
@@ -14,8 +14,8 @@ export interface WardEntryRequestJson {
 }
 
 export interface WardEntryAckJson {
-    identity?: WardPart | null;
-    content?: WardPart | null;
+    // absent = no such entry; a read never needs the identity
+    sealed_content?: string | null;
     proof: string[];
     witness_entry_key?: string;
     witness_commit?: string;
@@ -36,8 +36,7 @@ export const serveEntry = (
         const blob = view.blobs.get(toHex(entryKey));
 
         return {
-            identity: blob?.identity ?? null,
-            content: blob?.content ?? null,
+            sealed_content: toHex(toBytes(blob?.content)),
             proof: view.membershipProof(entryKey).map(toHex),
         };
     }
@@ -74,33 +73,30 @@ export const serveChain = (
         auth_commit: toHex(link.authCommit),
     }));
 
-/** A content body that is empty is a deletion (dispatching on `encoding`, like the firmware). */
-export const leafIsDelete = (leaf: WardLeaf | null | undefined): boolean => {
-    const content = leaf?.content;
-    if (!content) return true;
-    const encoding = content.encoding ?? 0;
-    if (encoding !== 0 && encoding !== 1 && encoding !== 2) {
-        throw new Error(`unknown leaf content encoding: ${encoding}`);
-    }
-    if (content.encrypted && content.plaintext) {
-        throw new Error('leaf content sets both encodings');
-    }
-    if (encoding === 1) return !toBytes(content.plaintext?.content ?? null).length;
+/** An empty sealed content is a deletion. */
+export const leafIsDelete = (leaf: WardLeaf | null | undefined): boolean =>
+    !toBytes(leaf?.content).length;
 
-    return !toBytes(content.encrypted?.ct ?? null).length;
-};
+/** A leaf as the device hands it over on the wire. */
+export interface WardLeafJson {
+    sealed_identity?: string | null;
+    sealed_content?: string | null;
+}
+
+export const leafFromWire = (wire: WardLeafJson): WardLeaf => ({
+    identity: wire.sealed_identity ?? null,
+    content: wire.sealed_content ?? null,
+});
 
 /** WardLeafAck / a single-leaf WardFlushQueueAck, as the device sends it. */
-export interface WardResultJson {
+export interface WardResultJson extends WardLeafJson {
     entry_key?: string | null;
-    identity?: WardPart | null;
-    content?: WardPart | null;
     counter?: number | null;
     auth_commit?: string | null;
     wm_sig?: string | null;
     // batched WardFlushQueueAck only
     from_counter?: number | null;
-    leaves?: { entry_key?: string | null; identity?: WardPart | null; content?: WardPart | null }[];
+    leaves?: ({ entry_key?: string | null } & WardLeafJson)[];
 }
 
 /**
@@ -129,13 +125,13 @@ export const applyResult = (store: WardTrie, result: WardResultJson): void => {
         }
         for (const leaf of result.leaves) {
             const entryKey = toBytes(leaf.entry_key ?? '');
-            if (leafIsDelete(leaf)) store.remove(entryKey);
-            else store.set(entryKey, { identity: leaf.identity, content: leaf.content });
+            if (leafIsDelete(leafFromWire(leaf))) store.remove(entryKey);
+            else store.set(entryKey, leafFromWire(leaf));
         }
     } else {
         const entryKey = toBytes(result.entry_key ?? '');
-        if (leafIsDelete(result)) store.remove(entryKey);
-        else store.set(entryKey, { identity: result.identity, content: result.content });
+        if (leafIsDelete(leafFromWire(result))) store.remove(entryKey);
+        else store.set(entryKey, leafFromWire(result));
     }
     store.record(
         {

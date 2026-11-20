@@ -236,7 +236,7 @@ export const config: Config = {
             },
         },
         // TODO(ward): gate the WARD methods once the introducing firmware version is known.
-        // The WARD methods (wardGetEntry / wardSetEntry / wardQueueSetEntry / wardQueueGetEntry /
+        // The WARD methods (wardGetEntry / wardSetEntry / wardSetPointer / wardQueueSetEntry / wardQueueGetEntry /
         // wardQueueDeleteEntry / wardFlushQueue / wardResetApp) have no supportedFirmware rule, so
         // they fall back to DEFAULT_FIRMWARE_RANGE and connect treats them as supported on ANY
         // firmware -- the device then rejects the unknown message with a generic Failure instead of

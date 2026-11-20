@@ -24,21 +24,9 @@ H = lambda b: b.hex()  # noqa: E731
 HN = lambda b: None if b is None else b.hex()  # noqa: E731
 
 
-def part(nonce: bytes, tag: bytes, ct: bytes) -> dict:
-    return {"encoding": 0, "encrypted": {"nonce": H(nonce), "tag": H(tag), "ct": H(ct)}}
-
-
-def ns(d):
-    """JSON part -> the attribute shape trezorlib's _part_bytes reads."""
-    if d is None:
-        return None
-    enc = d.get("encrypted")
-    return SimpleNamespace(
-        encoding=d.get("encoding"),
-        encrypted=None if enc is None else SimpleNamespace(**{k: bytes.fromhex(v) for k, v in enc.items()}),
-        plaintext=None if "plaintext" not in d else SimpleNamespace(content=bytes.fromhex(d["plaintext"].get("content", ""))),
-        plain=None,
-    )
+def part(nonce: bytes, tag: bytes, ct: bytes) -> str:
+    """A sealed part as the wire carries it: 0x01 || nonce || tag || ct, hex."""
+    return H(b"\x01" + nonce + tag + ct)
 
 
 def leaf(rng: random.Random) -> dict:
@@ -50,8 +38,7 @@ def leaf(rng: random.Random) -> dict:
 
 
 def as_leaf(d: dict):
-    identity = ns(d["identity"]); identity.key_type = "address"
-    return SimpleNamespace(identity=identity, content=ns(d["content"]))
+    return SimpleNamespace(identity=bytes.fromhex(d["identity"]), content=bytes.fromhex(d["content"]))
 
 
 def keys(rng, n, shared):
@@ -81,6 +68,25 @@ def run(seed: int, shared: int, steps: int = 120) -> dict:
             step["nonmembership"] = {"key": H(probe), "proof": [H(e) for e in proof], "witness_key": H(wk), "witness_commit": H(wc)}
         out.append(step)
     return {"seed": seed, "shared_prefix_bytes": shared, "steps": out}
+
+
+def frozen_vectors() -> dict:
+    """The firmware's shared four-leaf vectors (common/tests/fixtures/ward/trie.json), as the
+    firmware, trezorlib and rust/trezor-ward pin them."""
+    fw = os.environ.get("TREZOR_FIRMWARE", "../trezor-firmware")
+    with open(os.path.join(fw, "common/tests/fixtures/ward/trie.json")) as f:
+        v = json.load(f)
+    member = next(l for l in v["leaves"] if l["entryKeyHex"] == v["memberKey"])
+    return {
+        "root": v["root"],
+        "member": v["memberKey"],
+        "member_commit": member["valueDigestHex"],
+        "member_proof": v["memberProof"],
+        "absent": v["absentKey"],
+        "witness": v["witnessKey"],
+        "witness_commit": v["witnessCommit"],
+        "proof": v["nonMemberProof"],
+    }
 
 
 def wm_vectors() -> dict:
@@ -123,10 +129,8 @@ def wm_vectors() -> dict:
 def main() -> None:
     rng = random.Random(1)
     commits = []
-    for kt in ("address", "label"):
-        for d in (None, part(b"a" * 12, b"b" * 16, b""), part(b"n" * 12, b"t" * 16, b"hello"), {"encoding": 1, "plaintext": {"content": H(b"plain")}}):
-            commits.append({"key_type": kt, "identity": d, "content": part(b"c" * 12, b"d" * 16, b"v"),
-                            "commit": H(wt.commit_of(kt, ns(d), ns(part(b"c" * 12, b"d" * 16, b"v"))))})
+    for content in (part(b"a" * 12, b"b" * 16, b""), part(b"n" * 12, b"t" * 16, b"hello"), part(b"c" * 12, b"d" * 16, b"v")):
+        commits.append({"content": content, "commit": H(wt.value_digest(bytes.fromhex(content)))})
 
     # a batch served from a staged scratch tree
     base = wt.WardTrie(); bk = keys(rng, 6, 0)
@@ -135,7 +139,7 @@ def main() -> None:
     staged, served = [], []
     for k in bk[2:]:
         view = base.scratch(staged)
-        new = leaf(rng); c = wt.commit_of("address", ns(new["identity"]), ns(new["content"]))
+        new = leaf(rng); c = wt.value_digest(bytes.fromhex(new["content"]))
         if k in view:
             served.append({"key": H(k), "present": True, "proof": [H(e) for e in view.membership_proof(k)], "root_before": H(view.root_or_empty())})
         else:
@@ -154,13 +158,7 @@ def main() -> None:
 
     vectors = {
         "empty_root": H(wt.EMPTY_ROOT),
-        "frozen": {
-            "root": "2b4e46b341ecf5ebbb506bb6878e1523dff181e103ede3c683c955d34302fa1e",
-            "member": "358b7591f24d313e523c7b34b8bd513e4310e08d058aee11d679ba41958853fe",
-            "absent": "5ad38304b535c2987dbd24657c1a11b884984ff600d9f389deb0d4e634fee792",
-            "witness_commit": "2a36629301c9f5965be929bdbb741bbf5980f3829349748045ce20130496bb54",
-            "proof": ["0000e96a5c3627be9ad15ae404da1ac72b42f1a602039dbc46fa22eb52e6071949d3"],
-        },
+        "frozen": frozen_vectors(),
         "commits": commits,
         "runs": [run(3, 0), run(4, 20)],
         "batch": {"base": base_leaves, "base_root": H(base.root_or_empty()), "served": served},

@@ -13,7 +13,7 @@
 # wardd. WARD has three parties: the app that invokes the user-facing operations -- over the WALLET
 # channel, which is where they belong, since that app stands in for what a wallet will do itself --
 # the device, and the replica owner behind the service channel. What the second channel keeps off the
-# wallet connection is the replica traffic, not these calls. See `docs/core/misc/ward-channels.md` in
+# wallet connection is the replica traffic, not these calls. See `docs/ward/ward-channels.md` in
 # trezor-firmware.
 #
 # BOTH VARIANTS LIVE HERE, and which one runs is decided by the binary rather than by a flag.

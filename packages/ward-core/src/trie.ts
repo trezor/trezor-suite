@@ -6,21 +6,20 @@
  * vectors in `__tests__/fixtures/vectors.json` are generated from the Python reference.
  *
  *     leaf     = sha256(0x00 || entry_key || commit)
- *     commit   = sha256(0x02 || len8(key_type) || key_type
- *                            || len32(id_part) || id_part || len32(val_part) || val_part)
- *     internal = sha256(0x01 || u16be(split_bit) || left || right)
- *     empty    = sha256(0x03)
- *     part     = encoding(1B) || len8(nonce) || nonce || len8(tag) || tag || len32(body) || body
+ *     commit   = value_digest = sha256(0x03 || sealed_content)    -- docs/ward/ward-leaf.md
+ *     internal = sha256(0x01 || u8(split_bit) || left || right)
+ *     empty    = sha256(0x02)
  *
  * Children are POSITIONAL (left is bit 0), never sorted; a node's hash commits to its split bit
- * and never to its depth. A proof is a list of 34-byte elements, LEAF-TO-ROOT.
+ * and never to its depth. A proof is a list of 33-byte elements, LEAF-TO-ROOT. The split bit is one
+ * byte, which holds every position of a 32-byte key -- `rust/trezor-ward`'s `BitPos` encoding.
  */
 import { sha256 } from '@noble/hashes/sha2.js';
 
-import { type BytesLike, concatBytes, equalBytes, toBytes, u16, u32 } from './bytes';
+import { type BytesLike, concatBytes, equalBytes, toBytes } from './bytes';
 
-export const EMPTY_ROOT = sha256(Uint8Array.of(0x03));
-export const PROOF_ELEM_LEN = 34;
+export const EMPTY_ROOT = sha256(Uint8Array.of(0x02));
+export const PROOF_ELEM_LEN = 33;
 const KEY_BITS = 256;
 
 /** A malformed operand or proof, or a claim that does not hold -- what the device refuses too. */
@@ -36,7 +35,7 @@ const require32 = (...values: (Uint8Array | null | undefined)[]) => {
     // concatenate them with no separator, so a key K || C[0] with commit C[1:] would hash to the
     // leaf of (K, C). Fixed width makes every split unambiguous.
     for (const v of values) {
-        if (!v || v.length !== 32) throw new WardTrieError('WARD trie operands must be 32 bytes');
+        if (v?.length !== 32) throw new WardTrieError('WARD trie operands must be 32 bytes');
     }
 };
 
@@ -44,69 +43,12 @@ const require32 = (...values: (Uint8Array | null | undefined)[]) => {
 export const addrBit = (entryKey: Uint8Array, bit: number): number =>
     ((entryKey[bit >> 3] ?? 0) >> (7 - (bit & 7))) & 1;
 
-/** A wire WardLeafIdentity / WardLeafContent, as Connect carries it (bytes as hex). */
-export interface WardPart {
-    encoding?: number | null;
-    encrypted?: { nonce?: BytesLike | null; tag?: BytesLike | null; ct?: BytesLike | null } | null;
-    plaintext?: { content?: BytesLike | null } | null;
-    plain?: object | null;
-    key_type?: string | null;
-}
-
-const EMPTY_PART = concatBytes(Uint8Array.of(1, 0, 0), u32(0));
-
 /**
- * A leaf part -> its canonical framing. DISPATCHES ON `encoding`, NOT ON FIELD PRESENCE, exactly
- * as the firmware does; an unknown encoding or both arms at once are refused.
+ * The leaf commitment: sha256(0x03 || sealed_content), over sealed bytes only, so a host with no
+ * keys can compute it. The sealed identity is not committed -- entry_key authenticates it.
  */
-export const partBytes = (part: WardPart | null | undefined): Uint8Array => {
-    if (!part) return EMPTY_PART;
-    const encoding = part.encoding ?? 0;
-    // 0 = AEAD (12-byte nonce), 1 = plaintext, 2 = SIV (no nonce): 0 and 2 share the sealed framing
-    if (encoding !== 0 && encoding !== 1 && encoding !== 2) {
-        throw new Error(`unknown leaf part encoding: ${encoding}`);
-    }
-    const clear = part.plaintext ?? part.plain ?? null;
-    const sealed = part.encrypted ?? null;
-    if (sealed && clear) throw new Error('leaf part sets both encodings');
-
-    if (encoding === 1) {
-        if (!clear) return EMPTY_PART;
-        // a plaintext identity carries structured fields, not a body; only the empty form ever
-        // reaches the trie in practice (a delete)
-        const body = toBytes((clear as { content?: BytesLike | null }).content ?? null);
-
-        return concatBytes(Uint8Array.of(1, 0, 0), u32(body.length), body);
-    }
-    if (!sealed) return EMPTY_PART;
-    const nonce = toBytes(sealed.nonce);
-    const tag = toBytes(sealed.tag);
-    const ct = toBytes(sealed.ct);
-
-    return concatBytes(
-        Uint8Array.of(encoding, nonce.length),
-        nonce,
-        Uint8Array.of(tag.length),
-        tag,
-        u32(ct.length),
-        ct,
-    );
-};
-
-/** The leaf commitment over a leaf's wire parts. */
-export const commitOf = (
-    keyType: string,
-    identity: WardPart | null | undefined,
-    content: WardPart | null | undefined,
-): Uint8Array => {
-    const kt = new TextEncoder().encode(keyType);
-    const a = partBytes(identity);
-    const b = partBytes(content);
-
-    return sha256(
-        concatBytes(Uint8Array.of(0x02, kt.length), kt, u32(a.length), a, u32(b.length), b),
-    );
-};
+export const valueDigest = (sealedContent: BytesLike | null | undefined): Uint8Array =>
+    sha256(concatBytes(Uint8Array.of(0x03), toBytes(sealedContent)));
 
 export const leafHash = (entryKey: Uint8Array, commit: Uint8Array): Uint8Array => {
     require32(entryKey, commit);
@@ -115,18 +57,18 @@ export const leafHash = (entryKey: Uint8Array, commit: Uint8Array): Uint8Array =
 };
 
 export const internalHash = (splitBit: number, left: Uint8Array, right: Uint8Array): Uint8Array =>
-    sha256(concatBytes(Uint8Array.of(0x01), u16(splitBit), left, right));
+    sha256(concatBytes(Uint8Array.of(0x01, splitBit), left, right));
 
 export const proofElem = (splitBit: number, sibling: Uint8Array): Uint8Array => {
     require32(sibling);
 
-    return concatBytes(u16(splitBit), sibling);
+    return concatBytes(Uint8Array.of(splitBit), sibling);
 };
 
 export const parseProofElem = (elem: Uint8Array): [number, Uint8Array] => {
     if (elem.length !== PROOF_ELEM_LEN) throw new WardTrieError('invalid proof element length');
 
-    return [(elem[0]! << 8) | elem[1]!, elem.slice(2)];
+    return [elem[0]!, elem.slice(1)];
 };
 
 /** Refuse a proof that is not a real root-to-leaf path; return its parsed steps (root first). */

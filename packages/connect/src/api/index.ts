@@ -68,4 +68,5 @@ export { default as wardQueueSetEntry } from './ward/wardQueueSetEntry';
 export { default as wardRelay } from './ward/wardRelay';
 export { default as wardResetApp } from './ward/wardResetApp';
 export { default as wardSetEntry } from './ward/wardSetEntry';
+export { default as wardSetPointer } from './ward/wardSetPointer';
 export { default as wipeDevice } from './wipeDevice';

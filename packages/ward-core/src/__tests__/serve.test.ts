@@ -1,16 +1,22 @@
 import { toBytes, toHex } from '../bytes';
 import { applyResult, serveChain, serveEntry, storeIsAt } from '../serve';
 import { WardTrie } from '../store';
-import { EMPTY_ROOT, commitOf, insertRoot, leafHash, updateRoot, verifyMembership } from '../trie';
+import {
+    EMPTY_ROOT,
+    insertRoot,
+    leafHash,
+    updateRoot,
+    valueDigest,
+    verifyMembership,
+} from '../trie';
 
 const key = (b: number) => new Uint8Array(32).fill(b);
-const part = (body: string) => ({
-    encoding: 0,
-    encrypted: { nonce: '6e'.repeat(12), tag: '74'.repeat(16), ct: body },
-});
-const leafOf = (body: string) => ({
-    identity: { ...part('6964'), key_type: 'address' },
-    content: part(body),
+// a sealed part as the wire carries it: 0x01 || nonce || tag || ct, hex
+const part = (body: string) => `01${'6e'.repeat(12)}${'74'.repeat(16)}${body}`;
+const leafOf = (body: string) => ({ identity: part('6964'), content: part(body) });
+const wireLeafOf = (body: string) => ({
+    sealed_identity: part('6964'),
+    sealed_content: part(body),
 });
 
 describe('serveEntry', () => {
@@ -27,15 +33,9 @@ describe('serveEntry', () => {
         ] as const) {
             const ack = serveEntry(store, { entry_key: toHex(k) }, staged);
             const proof = ack.proof.map(toBytes);
-            const newCommit = commitOf('address', leafOf(body).identity, leafOf(body).content);
-            running = ack.content
-                ? updateRoot(
-                      k,
-                      commitOf('address', ack.identity, ack.content),
-                      newCommit,
-                      proof,
-                      running,
-                  )
+            const newCommit = valueDigest(leafOf(body).content);
+            running = ack.sealed_content
+                ? updateRoot(k, valueDigest(ack.sealed_content), newCommit, proof, running)
                 : insertRoot(
                       k,
                       newCommit,
@@ -55,9 +55,9 @@ describe('serveEntry', () => {
             auth_commit: '6d'.repeat(32),
             wm_sig: '73'.repeat(64),
             leaves: [
-                { entry_key: toHex(key(3)), ...leafOf('03') },
-                { entry_key: toHex(key(1)), ...leafOf('11') },
-                { entry_key: toHex(key(4)), ...leafOf('04') },
+                { entry_key: toHex(key(3)), ...wireLeafOf('03') },
+                { entry_key: toHex(key(1)), ...wireLeafOf('11') },
+                { entry_key: toHex(key(4)), ...wireLeafOf('04') },
             ],
         });
         expect(store.rootOrEmpty()).toEqual(running);
@@ -70,7 +70,7 @@ describe('serveEntry', () => {
         const store = new WardTrie();
         store.set(key(9), leafOf('09'));
         const ack = serveEntry(store, { entry_key: toHex(key(9)) });
-        expect(ack.content).toEqual(leafOf('09').content);
+        expect(ack.sealed_content).toEqual(leafOf('09').content);
         expect(
             verifyMembership(
                 key(9),
@@ -87,13 +87,13 @@ describe('applyResult and serveChain', () => {
         const store = new WardTrie();
         applyResult(store, {
             entry_key: toHex(key(1)),
-            ...leafOf('01'),
+            ...wireLeafOf('01'),
             counter: 1,
             auth_commit: 'aa'.repeat(32),
         });
         applyResult(store, {
             entry_key: toHex(key(2)),
-            ...leafOf('02'),
+            ...wireLeafOf('02'),
             counter: 2,
             auth_commit: 'bb'.repeat(32),
         });
@@ -110,7 +110,7 @@ describe('applyResult and serveChain', () => {
                 counter: 9,
                 from_counter: 7,
                 auth_commit: 'cc'.repeat(32),
-                leaves: [{ entry_key: toHex(key(1)), ...leafOf('01') }],
+                leaves: [{ entry_key: toHex(key(1)), ...wireLeafOf('01') }],
             }),
         ).toThrow('starts at counter 7');
     });

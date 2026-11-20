@@ -44,8 +44,8 @@ describe('WardSetEntry', () => {
     it('returns the leaf ack verbatim, counter and authenticators included', async () => {
         const ack = {
             entry_key: '22'.repeat(32),
-            identity: { encoding: 1 },
-            content: { encoding: 1 },
+            sealed_identity: '01',
+            sealed_content: '01',
             counter: 7,
             auth_commit: '44'.repeat(32),
             wm_sig: '55'.repeat(64),
@@ -89,8 +89,8 @@ describe('WardSetEntry', () => {
 
         const result = (await method.run()) as { message: Record<string, unknown> };
 
-        expect(result.message).not.toHaveProperty('identity');
-        expect(result.message).not.toHaveProperty('content');
+        expect(result.message).not.toHaveProperty('sealed_identity');
+        expect(result.message).not.toHaveProperty('sealed_content');
         expect(result.message).not.toHaveProperty('mac');
     });
 

@@ -20,8 +20,8 @@ const makeMethod = (
 
 const LEAF_ACK = {
     entry_key: '11'.repeat(32),
-    identity: { encoding: 1 },
-    content: { encoding: 1 },
+    sealed_identity: '01',
+    sealed_content: '01',
     counter: 5,
     auth_commit: '33'.repeat(32),
     wm_sig: '44'.repeat(64),

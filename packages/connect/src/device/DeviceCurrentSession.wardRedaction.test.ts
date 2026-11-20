@@ -30,10 +30,15 @@ const setup = () => {
         getThpState: () => undefined,
     } as unknown as IDevice;
 
-    const session = new DeviceCurrentSession(device, transport, '1' as Session, {
-        debug,
-        warn: () => {},
-    } as any);
+    const session = new DeviceCurrentSession(
+        device,
+        transport,
+        '1' as Session,
+        {
+            debug,
+            warn: () => {},
+        } as any,
+    );
 
     const respondWith = (response: { type: string; message: any }) => {
         next = response;
@@ -54,7 +59,7 @@ describe('DeviceCurrentSession: WARD log redaction', () => {
                 entry_key: 'aa',
                 counter: 1,
                 mac: 'MAC_SECRET',
-                content: { plaintext: { content: 'LEAF_SECRET' } },
+                sealed_content: 'LEAF_SECRET',
             },
         });
 

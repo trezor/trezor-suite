@@ -21,6 +21,7 @@ import {
     WmConflict,
     applyResult as applyToTrie,
     equalBytes,
+    leafFromWire,
     leafIsDelete,
     serveChain,
     serveEntry,
@@ -58,7 +59,7 @@ const expectReply = (reply: RelayMessage, ...names: string[]): Json => {
         throw new RelayFailure('device_failure', `unexpected ${reply.name}; wanted ${names}`);
     }
 
-    return reply.message as Json;
+    return reply.message;
 };
 
 /** The wire's root: absent, empty and EMPTY_ROOT all mean the empty tree. */
@@ -74,7 +75,7 @@ const sameRoot = (a: Uint8Array | null, b: Uint8Array | null) =>
 
 /** Bytes to the wire, leaving the field out when it is absent -- never `null`. */
 const opt = (key: string, v: Uint8Array | null | undefined): Json =>
-    v && v.length ? { [key]: toHex(v) } : {};
+    v?.length ? { [key]: toHex(v) } : {};
 
 export interface HostSyncResult {
     counter: number;
@@ -221,16 +222,12 @@ export class WardHost {
         const changes = result.leaves?.length
             ? result.leaves.map(leaf => ({
                   entryKey: leaf.entry_key ?? '',
-                  leaf: leafIsDelete(leaf)
-                      ? null
-                      : { identity: leaf.identity, content: leaf.content },
+                  leaf: leafIsDelete(leafFromWire(leaf)) ? null : leafFromWire(leaf),
               }))
             : [
                   {
                       entryKey: result.entry_key ?? '',
-                      leaf: leafIsDelete(result)
-                          ? null
-                          : { identity: result.identity, content: result.content },
+                      leaf: leafIsDelete(leafFromWire(result)) ? null : leafFromWire(result),
                   },
               ];
         const link: StoredLink = {
@@ -359,8 +356,8 @@ export class WardHost {
         return this.exclusive(async () => {
             const result: WardResultJson = {
                 entry_key: req.entry_key,
-                identity: req.identity,
-                content: req.content,
+                sealed_identity: req.sealed_identity,
+                sealed_content: req.sealed_content,
                 counter: req.counter,
                 auth_commit: req.auth_commit,
                 wm_sig: req.wm_sig,

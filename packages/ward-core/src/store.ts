@@ -2,16 +2,8 @@
  * The host's side of the trie: the leaves it holds, the proofs it serves, and its transition log.
  * A port of `trezorlib.ward_trie.WardTrie` / `TransitionLog`.
  */
-import { equalBytes, toHex } from './bytes';
-import {
-    EMPTY_ROOT,
-    type WardPart,
-    addrBit,
-    commitOf,
-    internalHash,
-    leafHash,
-    proofElem,
-} from './trie';
+import { type BytesLike, equalBytes, toHex } from './bytes';
+import { EMPTY_ROOT, addrBit, internalHash, leafHash, proofElem, valueDigest } from './trie';
 
 export const OP_COMMIT = 'commit';
 export const OP_REVERT = 'revert';
@@ -96,10 +88,13 @@ export class TransitionLog {
     }
 }
 
-/** A stored leaf exactly as the device built it. */
+/**
+ * A stored leaf exactly as the device built it: the sealed identity, kept beside the leaf and not
+ * committed, and the sealed content the trie commits to. An empty content is a deletion.
+ */
 export interface WardLeaf {
-    identity?: WardPart | null;
-    content?: WardPart | null;
+    identity?: BytesLike | null;
+    content?: BytesLike | null;
 }
 
 type Node = ['leaf', string] | ['branch', number, Node, Node];
@@ -120,9 +115,8 @@ export class WardTrie extends TransitionLog {
     counter = 0;
     private tree: Node | null = null;
 
-    set(entryKey: Uint8Array, leaf: WardLeaf, keyType?: string): void {
-        const kt = keyType ?? leaf.identity?.key_type ?? 'address';
-        const commit = commitOf(kt, leaf.identity, leaf.content);
+    set(entryKey: Uint8Array, leaf: WardLeaf): void {
+        const commit = valueDigest(leaf.content);
         const k = toHex(entryKey);
         this.commits.set(k, commit);
         this.leaves.set(k, leafHash(entryKey, commit));

@@ -24,9 +24,7 @@ import {
     TAG_WM_HEAD,
     TAG_WM_INIT,
     type WardLeaf,
-    type WardPart,
     attestationPreimage,
-    commitOf,
     deleteRoot,
     equalBytes,
     insertRoot,
@@ -34,6 +32,7 @@ import {
     toHex,
     transitionPreimage,
     updateRoot,
+    valueDigest,
     wmPreimage,
 } from '@trezor/ward-core';
 
@@ -51,15 +50,11 @@ const fromWire = (v: string | undefined | null) => (v ? toBytes(v) : EMPTY_ROOT)
 const msg = (name: string, message: Json = {}): RelayMessage => ({ name, message });
 
 /**
- * A SEALED part, as a real device builds every leaf (encoding 0). The fake does not encrypt -- the
- * host never opens a part, so only the framing matters -- but the shape is the real one, which is
- * what a codec in between gets to mangle.
+ * A SEALED part, as a real device builds every leaf: 0x01 || nonce || tag || ct, hex. The fake
+ * does not encrypt -- the host never opens a part, so only the framing matters.
  */
-const sealed = (bytes: Uint8Array, keyType?: string): WardPart => ({
-    encoding: 0,
-    ...(keyType ? { key_type: keyType } : {}),
-    encrypted: { nonce: toHex(randomBytes(12)), tag: toHex(randomBytes(16)), ct: toHex(bytes) },
-});
+const sealed = (bytes: Uint8Array): string =>
+    toHex(new Uint8Array([0x01, ...randomBytes(12), ...randomBytes(16), ...bytes]));
 
 export interface WalletKeys {
     kAuth: Uint8Array;
@@ -93,7 +88,7 @@ export class FakeDevice {
                 value === null
                     ? null
                     : {
-                          identity: sealed(id, 'address'),
+                          identity: sealed(id),
                           content: sealed(new TextEncoder().encode(value)),
                       },
         });
@@ -295,11 +290,9 @@ export class FakeDevice {
             });
             const ans = reply.message as Json;
             const proof = ((ans.proof ?? []) as string[]).map(toBytes);
-            const present = !!(ans.identity || ans.content);
-            const oldCommit = present ? commitOf('address', ans.identity, ans.content) : null;
-            const newCommit = change.leaf
-                ? commitOf('address', change.leaf.identity, change.leaf.content)
-                : null;
+            const present = !!ans.sealed_content;
+            const oldCommit = present ? valueDigest(ans.sealed_content) : null;
+            const newCommit = change.leaf ? valueDigest(change.leaf.content) : null;
             if (present && newCommit) {
                 root = updateRoot(change.entryKey, oldCommit!, newCommit, proof, root);
             } else if (present) {
@@ -322,8 +315,8 @@ export class FakeDevice {
                 : undefined;
             leaves.push({
                 entry_key: toHex(change.entryKey),
-                identity: change.leaf?.identity ?? null,
-                ...(change.leaf ? { content: change.leaf.content } : {}),
+                sealed_identity: change.leaf?.identity ?? '',
+                sealed_content: change.leaf?.content ?? '',
             });
         }
 
@@ -447,11 +440,9 @@ export class FakeDevice {
     servicePublishRequest(fetched: Json): RelayMessage {
         const change = this.queue[0]!;
         const proof = ((fetched.proof ?? []) as string[]).map(toBytes);
-        const present = !!(fetched.identity || fetched.content);
-        const oldCommit = present ? commitOf('address', fetched.identity, fetched.content) : null;
-        const newCommit = change.leaf
-            ? commitOf('address', change.leaf.identity, change.leaf.content)
-            : null;
+        const present = !!fetched.sealed_content;
+        const oldCommit = present ? valueDigest(fetched.sealed_content) : null;
+        const newCommit = change.leaf ? valueDigest(change.leaf.content) : null;
         let root: Uint8Array;
         if (present && newCommit)
             root = updateRoot(change.entryKey, oldCommit!, newCommit, proof, this.head.root);
@@ -472,9 +463,8 @@ export class FakeDevice {
 
         return msg('WardPublish', {
             entry_key: toHex(change.entryKey),
-            ...(change.leaf
-                ? { identity: change.leaf.identity, content: change.leaf.content }
-                : {}),
+            sealed_identity: change.leaf?.identity ?? '',
+            sealed_content: change.leaf?.content ?? '',
             counter: to.counter,
             auth_commit: toHex(this.authCommit(this.head, to)),
             wm_sig: toHex(

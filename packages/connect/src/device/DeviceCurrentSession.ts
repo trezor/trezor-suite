@@ -30,6 +30,7 @@ const blacklist: Record<string, string[] | true> = {
     // `Features`); keyed identity only where non-secret routing fields (counter/remaining/missing)
     // are worth keeping.
     WardSetEntry: true,
+    WardSetPointer: true,
     WardQueueSetEntry: true,
     WardQueueGetAck: true,
     WardEntryAck: true,

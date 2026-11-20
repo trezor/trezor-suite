@@ -24,70 +24,10 @@ export const WardDeleteEntry = Type.Object(
     { $id: 'WardDeleteEntry' },
 );
 
-export type WardEncryptedIdentity = Static<typeof WardEncryptedIdentity>;
-export const WardEncryptedIdentity = Type.Object(
-    {
-        nonce: Type.Optional(Type.String()),
-        tag: Type.Optional(Type.String()),
-        ct: Type.Optional(Type.String()),
-    },
-    { $id: 'WardEncryptedIdentity' },
-);
-
-export type WardEncryptedLeaf = Static<typeof WardEncryptedLeaf>;
-export const WardEncryptedLeaf = Type.Object(
-    {
-        nonce: Type.Optional(Type.String()),
-        tag: Type.Optional(Type.String()),
-        ct: Type.Optional(Type.String()),
-    },
-    { $id: 'WardEncryptedLeaf' },
-);
-
-export type WardPlainIdentity = Static<typeof WardPlainIdentity>;
-export const WardPlainIdentity = Type.Object(
-    {
-        identifier: Type.Optional(Type.String()),
-        app_id: Type.Optional(Type.String()),
-        device_id: Type.Optional(Type.Number()),
-    },
-    { $id: 'WardPlainIdentity' },
-);
-
-export type WardLeafIdentity = Static<typeof WardLeafIdentity>;
-export const WardLeafIdentity = Type.Object(
-    {
-        encoding: Type.Optional(Type.Number()),
-        key_type: Type.Optional(Type.String()),
-        encrypted: Type.Optional(WardEncryptedIdentity),
-        plain: Type.Optional(WardPlainIdentity),
-    },
-    { $id: 'WardLeafIdentity' },
-);
-
-export type WardPlaintextLeaf = Static<typeof WardPlaintextLeaf>;
-export const WardPlaintextLeaf = Type.Object(
-    {
-        content: Type.Optional(Type.String()),
-    },
-    { $id: 'WardPlaintextLeaf' },
-);
-
-export type WardLeafContent = Static<typeof WardLeafContent>;
-export const WardLeafContent = Type.Object(
-    {
-        encoding: Type.Optional(Type.Number()),
-        encrypted: Type.Optional(WardEncryptedLeaf),
-        plaintext: Type.Optional(WardPlaintextLeaf),
-    },
-    { $id: 'WardLeafContent' },
-);
-
 export type WardEntryAck = Static<typeof WardEntryAck>;
 export const WardEntryAck = Type.Object(
     {
-        identity: Type.Optional(WardLeafIdentity),
-        content: Type.Optional(WardLeafContent),
+        sealed_content: Type.Optional(Type.String()),
         proof: Type.Array(Type.String()),
         witness_entry_key: Type.Optional(Type.String()),
         witness_commit: Type.Optional(Type.String()),
@@ -206,4 +146,14 @@ export const WardSetEntry = Type.Object(
         value: Type.Optional(Type.String()),
     },
     { $id: 'WardSetEntry' },
+);
+
+export type WardSetPointer = Static<typeof WardSetPointer>;
+export const WardSetPointer = Type.Object(
+    {
+        app_id: Type.Optional(Type.String()),
+        identifier: Type.Optional(Type.String()),
+        target_identifier: Type.Optional(Type.String()),
+    },
+    { $id: 'WardSetPointer' },
 );

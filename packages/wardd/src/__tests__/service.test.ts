@@ -146,13 +146,11 @@ describe('the service codec', () => {
         expect(failureCode(new Uint8Array(64))).toBeNull();
     });
 
-    it("decodes a sealed publish without the decoder's phantom arms", () => {
+    it('round-trips a sealed publish', () => {
         const publish = {
             entry_key: '11'.repeat(32),
-            content: {
-                encoding: 0,
-                encrypted: { nonce: '22'.repeat(12), tag: '33'.repeat(16), ct: '44' },
-            },
+            sealed_identity: `01${'22'.repeat(12)}${'33'.repeat(16)}55`,
+            sealed_content: `01${'22'.repeat(12)}${'33'.repeat(16)}44`,
             counter: 1,
         };
         const { id, bytes } = encodeMessage({ name: 'WardPublish', message: publish });

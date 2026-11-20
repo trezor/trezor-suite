@@ -331,6 +331,7 @@ import {
     WardResetApp,
     WardResetAppAck,
     WardSetEntry,
+    WardSetPointer,
 } from './messages-ward';
 import {
     WardChainLinkAck,
@@ -714,6 +715,7 @@ export const MessageType = Type.Object(
         WardVerifyChainAck,
         WardRejoin,
         WardRejoinAck,
+        WardSetPointer,
         WardSync,
         WardSyncAck,
         WardIngestAttestation,
@@ -939,7 +941,8 @@ export type WireInMessage =
     | 'WardSyncRequired'
     | 'WardPublishAck'
     | 'WardPublishConflict'
-    | 'WardResetService';
+    | 'WardResetService'
+    | 'WardSetPointer';
 
 export type WireOutMessage =
     | 'Success'

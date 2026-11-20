@@ -9,6 +9,7 @@ import type { wardQueueSetEntry } from './wardQueueSetEntry';
 import type { wardRelay } from './wardRelay';
 import type { wardResetApp } from './wardResetApp';
 import type { wardSetEntry } from './wardSetEntry';
+import type { wardSetPointer } from './wardSetPointer';
 
 // WARD entry operations. The queue has its own calls, as it has its own wire messages: a write
 // that applies now and a write the device merely holds are different operations with different
@@ -16,6 +17,7 @@ import type { wardSetEntry } from './wardSetEntry';
 export const TrezorConnectWard = Type.Object({
     wardGetEntry: Type.Unsafe<typeof wardGetEntry>(),
     wardSetEntry: Type.Unsafe<typeof wardSetEntry>(),
+    wardSetPointer: Type.Unsafe<typeof wardSetPointer>(),
     wardQueueSetEntry: Type.Unsafe<typeof wardQueueSetEntry>(),
     wardQueueGetEntry: Type.Unsafe<typeof wardQueueGetEntry>(),
     wardQueueDeleteEntry: Type.Unsafe<typeof wardQueueDeleteEntry>(),

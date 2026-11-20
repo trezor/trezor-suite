@@ -40,7 +40,7 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  *
  * THE CALLER HERE IS THE WARD APP, never a wallet. WARD's user-facing operations belong to the
  * application the user reaches WARD through; a wallet on the same connection is not part of the
- * protocol and proxies none of it. See `docs/core/misc/ward-channels.md` in trezor-firmware.
+ * protocol and proxies none of it. See `docs/ward/ward-channels.md` in trezor-firmware.
  *
  * NO PULL HANDLING IS NEEDED HERE. When the session IS synced the device interrupts this call
  * with a `WardEntryRequest`; `DeviceCurrentSession` answers it from the registered

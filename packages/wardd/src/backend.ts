@@ -84,7 +84,7 @@ export class InMemoryWardBackend implements WardBackend {
 }
 
 export const hexOrNull = (v: Uint8Array | null | undefined): string | null =>
-    v && v.length ? toHex(v) : null;
+    v?.length ? toHex(v) : null;
 
 export const bytesOrNull = (v: string | null | undefined): Uint8Array | null =>
     v ? toBytes(v) : null;

@@ -3,14 +3,14 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
-import { WardChainLink, WardLeafContent, WardLeafIdentity } from './messages-ward';
+import { WardChainLink } from './messages-ward';
 
 export type WardBatchedLeaf = Static<typeof WardBatchedLeaf>;
 export const WardBatchedLeaf = Type.Object(
     {
         entry_key: Type.Optional(Type.String()),
-        identity: Type.Optional(WardLeafIdentity),
-        content: Type.Optional(WardLeafContent),
+        sealed_identity: Type.Optional(Type.String()),
+        sealed_content: Type.Optional(Type.String()),
     },
     { $id: 'WardBatchedLeaf' },
 );
@@ -54,8 +54,8 @@ export type WardFlushQueueAck = Static<typeof WardFlushQueueAck>;
 export const WardFlushQueueAck = Type.Object(
     {
         entry_key: Type.Optional(Type.String()),
-        identity: Type.Optional(WardLeafIdentity),
-        content: Type.Optional(WardLeafContent),
+        sealed_identity: Type.Optional(Type.String()),
+        sealed_content: Type.Optional(Type.String()),
         counter: Type.Optional(Type.Number()),
         auth_commit: Type.Optional(Type.String()),
         remaining: Type.Number(),
@@ -93,8 +93,8 @@ export type WardLeafAck = Static<typeof WardLeafAck>;
 export const WardLeafAck = Type.Object(
     {
         entry_key: Type.String(),
-        identity: Type.Optional(WardLeafIdentity),
-        content: Type.Optional(WardLeafContent),
+        sealed_identity: Type.Optional(Type.String()),
+        sealed_content: Type.Optional(Type.String()),
         counter: Type.Optional(Type.Number()),
         auth_commit: Type.Optional(Type.String()),
         wm_sig: Type.Optional(Type.String()),

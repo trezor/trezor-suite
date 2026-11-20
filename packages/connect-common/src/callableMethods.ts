@@ -118,6 +118,7 @@ const connectPublicCallableMethodGroups = {
     ward: [
         'wardGetEntry',
         'wardSetEntry',
+        'wardSetPointer',
         'wardQueueSetEntry',
         'wardQueueGetEntry',
         'wardQueueDeleteEntry',

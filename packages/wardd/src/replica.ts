@@ -26,7 +26,7 @@ const chainTo = (trie: WardTrie, head: Head): Link[] | null => {
     if (head.counter === 0) return sameRoot(head.root, null) ? [] : null;
     const back = trie.linksEndingAt(head.counter, head.root, Number.MAX_SAFE_INTEGER);
     const oldest = back[back.length - 1];
-    if (!oldest || oldest.fromCounter !== 0 || !sameRoot(oldest.fromRoot, null)) return null;
+    if (oldest?.fromCounter !== 0 || !sameRoot(oldest.fromRoot, null)) return null;
 
     return back.reverse();
 };
