@@ -7,6 +7,7 @@ import { Button, Card, Column, Grid, H3, Paragraph, Tooltip } from '@trezor/comp
 import { InfoIcon } from '@trezor/icons';
 
 import { DashboardSection } from '#src/components/dashboard/DashboardSection';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -28,8 +29,23 @@ export const EmptyStakingCard = ({ account }: EmptyStakingCardProps) => {
     const data = useEmptyStakingCardData({ account });
     const content = useStakingCardContent({ variant, data });
 
+    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
+
+    // A first stake that firmware withholds asks for the update instead of opening the flow.
+    const onStartStakingClick = () => {
+        if (data.isStartStakingFirmwareOutdated) {
+            openFirmwareModal('TR_EARN_TRON_STAKE_TITLE');
+
+            return;
+        }
+
+        content.onStartStakingClick();
+    };
+
     return (
         <DashboardSection data-testid="@wallet/staking/empty-card">
+            {firmwareModal}
+
             <Column gap={16}>
                 {isDiscoveryRunning && <DiscoveryWarning />}
 
@@ -51,7 +67,7 @@ export const EmptyStakingCard = ({ account }: EmptyStakingCardProps) => {
 
                         <Tooltip content={data.stakingMessageContent}>
                             <Button
-                                onClick={content.onStartStakingClick}
+                                onClick={onStartStakingClick}
                                 isDisabled={data.isStartStakingDisabled}
                                 iconLeft={data.isStartStakingDisabled ? InfoIcon : undefined}
                                 data-testid="@wallet/staking/empty-card/start-staking-button"

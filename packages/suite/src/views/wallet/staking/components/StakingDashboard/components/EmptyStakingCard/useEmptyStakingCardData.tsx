@@ -3,6 +3,7 @@ import {
     getPotentialStakingRewards,
     selectStakeableStakingProductDescriptorBySymbol,
     useNetworkStakingRate,
+    useStakingAccess,
 } from '@suite-common/earn-staking';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -20,6 +21,8 @@ export interface EmptyStakingCardData {
     hasEnoughBalanceForStaking: boolean;
     displaySymbol: string;
     isStartStakingDisabled: boolean;
+    /** Withheld below the minimum firmware: the control stays enabled and asks for the update. */
+    isStartStakingFirmwareOutdated: boolean;
     stakingMessageContent: string | null;
 }
 
@@ -43,6 +46,8 @@ export const useEmptyStakingCardData = ({
 
     const { isDisabled: isStartStakingDisabled, message: stakingMessageContent } =
         useStakingOperationSwitch(stakeableDescriptor?.id ?? null, 'stake');
+    const { disabled } = useStakingAccess(stakeableDescriptor?.id ?? null);
+    const isStartStakingFirmwareOutdated = disabled.stake?.kind === 'firmware';
 
     const hasEnoughBalanceForStaking =
         stakeableDescriptor !== null &&
@@ -78,6 +83,7 @@ export const useEmptyStakingCardData = ({
         hasEnoughBalanceForStaking,
         displaySymbol,
         isStartStakingDisabled,
+        isStartStakingFirmwareOutdated,
         stakingMessageContent,
     };
 };

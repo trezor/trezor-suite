@@ -19,6 +19,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { mock } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
+import { type VersionArray } from '@trezor/utils';
 
 import { renderWithProviders } from '#src/support/test-utils/hooksHelper';
 
@@ -40,16 +41,34 @@ import {
 import { type MockSuiteState } from '../../../../../mocks/mockInitialAppState';
 
 const ONE_TRX = '1000000';
+const HUNDRED_TRX = '100000000';
 const ONE_ETH = '1000000000000000000';
 const HUNDRED_ADA = '100000000';
 const ADA_REWARDS = '56398';
 const HOUR_MS = 60 * 60 * 1000;
 
 const WITHDRAW_BUTTON = '@earn/dashboard/withdraw-button';
+const STAKE_MORE_BUTTON = '@earn/dashboard/stake-more-button';
+const VOTE_BUTTON = '@earn/dashboard/vote-button';
 const CLAIM_BUTTON = '@account/staking/claim-button';
 const BUY_BUTTON = '@earn/dashboard/buy-button';
 
 const trxAccount = mockAccount({ symbol: TRX, descriptor: 'TRX', index: 2 });
+const fundedTrxAccount = mockAccount({
+    symbol: TRX,
+    descriptor: 'TRX',
+    index: 2,
+    availableBalance: HUNDRED_TRX,
+});
+
+const tronDetails: StakingPosition['details'] = {
+    kind: 'tron-staking',
+    frozen: { energy: amount(HUNDRED_TRX), bandwidth: amount('0') },
+    delegated: { energy: amount('0'), bandwidth: amount('0') },
+    votingPower: amount(HUNDRED_TRX),
+    unallocatedVotingPower: amount(HUNDRED_TRX),
+    rewardClaimAvailableAt: null,
+};
 const adaAccount = mockAccount({ symbol: ADA, descriptor: 'ADA', availableBalance: HUNDRED_ADA });
 
 const tronPosition = (overrides: Partial<StakingPosition> = {}) =>
@@ -68,15 +87,17 @@ type RenderParams = {
     account: Account;
     position: StakingPosition;
     messageSystem?: MessageSystemState;
+    firmware?: VersionArray;
 };
 
-const renderRow = ({ account, position, messageSystem }: RenderParams) => {
+const renderRow = ({ account, position, messageSystem, firmware }: RenderParams) => {
     const report = mock<DesktopAnalyticsDep['analytics']['report']>();
     const initialState: MockSuiteState = {
         ...createEarnStakingTableState({
             accounts: [account],
             positions: { [account.key]: [position] },
             messageSystem,
+            firmware,
         }),
         metadata: initialMetadataState,
     };
@@ -242,6 +263,75 @@ describe('EarnStakingAccountRow', () => {
             expect(claimButton).toHaveTextContent(messages.TR_EARN_CLAIM_REWARDS.defaultMessage);
             expect(claimButton).toBeDisabled();
             expect(screen.queryByTestId(BUY_BUTTON)).not.toBeInTheDocument();
+        });
+    });
+
+    describe('Tron flows below the minimum firmware', () => {
+        const firmware: VersionArray = [2, 12, 1];
+
+        const expectFirmwarePrompt = (
+            store: ReturnType<typeof renderRow>['store'],
+            report: jest.Mock,
+        ) => {
+            expect(
+                screen.getByText(
+                    messages.TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING.defaultMessage,
+                ),
+            ).toBeInTheDocument();
+            expect(store.getState().router.route?.name).not.toMatch(/^earn-tron/);
+            expect(report).not.toHaveBeenCalled();
+        };
+
+        it('asks for a firmware update instead of opening the stake flow', async () => {
+            const { store, report } = renderRow({
+                account: fundedTrxAccount,
+                position: tronPosition({
+                    balances: { ...ZERO_BALANCES, staked: amount(HUNDRED_TRX) },
+                }),
+                firmware,
+            });
+
+            const stakeMoreButton = screen.getByTestId(STAKE_MORE_BUTTON);
+            expect(stakeMoreButton).toBeEnabled();
+
+            await userEvent.click(stakeMoreButton);
+
+            expectFirmwarePrompt(store, report);
+        });
+
+        it('asks for a firmware update instead of opening the vote flow', async () => {
+            const { store, report } = renderRow({
+                account: fundedTrxAccount,
+                position: tronPosition({
+                    balances: { ...ZERO_BALANCES, staked: amount(HUNDRED_TRX) },
+                    details: tronDetails,
+                }),
+                firmware,
+            });
+
+            const voteButton = screen.getByTestId(VOTE_BUTTON);
+            expect(voteButton).toBeEnabled();
+
+            await userEvent.click(voteButton);
+
+            expectFirmwarePrompt(store, report);
+        });
+
+        it('asks for a firmware update instead of opening the withdrawal flow', async () => {
+            const { store, report } = renderRow({
+                account: trxAccount,
+                position: tronPosition({
+                    balances: { ...ZERO_BALANCES, withdrawable: amount(ONE_TRX) },
+                }),
+                firmware,
+            });
+
+            const withdrawButton = screen.getByTestId(WITHDRAW_BUTTON);
+            expect(withdrawButton).toBeEnabled();
+
+            await userEvent.click(withdrawButton);
+
+            expectFirmwarePrompt(store, report);
         });
     });
 });
