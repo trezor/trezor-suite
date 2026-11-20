@@ -49,7 +49,7 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
 
     const representatives = useStakingProductTargets(productId);
     const vote = useTronStakingOperation(productId, 'vote');
-    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
+    const { openFirmwareModal, isFirmwareModalOpen, firmwareModal } = useTronFirmwareUpgradeModal();
 
     const formatAmount = (amount: StakingAmount) =>
         formatStakingAmount({ amount, networkSymbol: account.symbol });
@@ -100,11 +100,13 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
         <>
             {firmwareModal}
 
+            {/* Every mounted modal handles Escape, so the dialog yields it to the prompt above. */}
             <Modal
                 width={600}
                 data-testid="@modal/tron-vote-allocation"
                 heading={<Translation id="TR_EARN_TRON_VOTE_ALLOCATION" />}
                 onCancel={onClose}
+                isBackdropCancelable={!isFirmwareModalOpen}
             >
                 <Column gap={16} alignItems="stretch">
                     <Card type="contrast" paddingType="none">

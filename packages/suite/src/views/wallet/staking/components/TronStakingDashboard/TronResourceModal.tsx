@@ -42,7 +42,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
     );
 
     const stake = useTronStakingOperation(productId, 'stake');
-    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
+    const { openFirmwareModal, isFirmwareModalOpen, firmwareModal } = useTronFirmwareUpgradeModal();
 
     const freeBandwidth = resources?.totalFreeBandwidth ?? 0;
     const stakedBandwidth = resources?.totalStakedBandwidth ?? 0;
@@ -135,6 +135,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
         <>
             {firmwareModal}
 
+            {/* Every mounted modal handles Escape, so the dialog yields it to the prompt above. */}
             <Modal
                 width={400}
                 data-testid="@modal/tron-resource"
@@ -144,6 +145,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
                     />
                 }
                 onCancel={onClose}
+                isBackdropCancelable={!isFirmwareModalOpen}
                 bottomContent={
                     <Row gap={8}>
                         <Tooltip content={stake.message}>
