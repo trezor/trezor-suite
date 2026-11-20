@@ -36,10 +36,10 @@ export const getContractAddressForNetworkSymbolFixtures = [
         expected: '',
     },
     {
-        testName: 'Returns policy id for cardano',
+        testName: 'Keeps the asset name of a cardano asset unit',
         symbol: 'ada' as const,
         contractAddress: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc53541474958',
-        expected: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc535',
+        expected: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc53541474958',
     },
     {
         testName: 'Returns same case for random non-existing symbol in networks config',

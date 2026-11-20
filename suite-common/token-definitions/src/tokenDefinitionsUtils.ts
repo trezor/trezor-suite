@@ -5,6 +5,7 @@ import {
     getNetworkType,
 } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import { type TokenInfo } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { isSafeObjectKey } from '@trezor/utils';
@@ -22,6 +23,12 @@ import {
     type TokenStructureType,
 } from './tokenDefinitionsTypes';
 
+// Token definition using incorrectly policyId as key.
+const getTokenDefinitionKey = (symbol: NetworkSymbol, contractAddress: string) =>
+    getNetworkType(symbol) === 'cardano'
+        ? parseAsset(contractAddress).policyId.toLowerCase()
+        : getContractAddressForNetworkSymbol(symbol, contractAddress);
+
 // Using Set greatly improves performance of this function because of O(1) complexity instead of O(n) for Array.includes
 const tokenDefinitionsMap = new WeakMap<SimpleTokenStructure, Set<string>>();
 export const isTokenDefinitionKnown = (
@@ -35,9 +42,9 @@ export const isTokenDefinitionKnown = (
         tokenDefinitionsMap.set(tokenDefinitions, new Set(tokenDefinitions));
     }
 
-    const contractAddressForNetwork = getContractAddressForNetworkSymbol(symbol, contractAddress);
+    const tokenDefinitionKey = getTokenDefinitionKey(symbol, contractAddress);
 
-    return tokenDefinitionsMap.get(tokenDefinitions)?.has(contractAddressForNetwork);
+    return tokenDefinitionsMap.get(tokenDefinitions)?.has(tokenDefinitionKey);
 };
 
 export const filterKnownTokens = (
