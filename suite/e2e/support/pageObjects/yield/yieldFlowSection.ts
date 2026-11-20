@@ -61,6 +61,7 @@ export class YieldFlowSection {
     readonly backToOverviewButton: Locator;
     readonly feedbackFormTextarea: Locator;
     readonly feedbackFormSubmitButton: Locator;
+    readonly feedbackSuccessHeading: Locator;
     readonly feedbackRating = (rating: Rating): Locator =>
         this.page.getByTestId(`@feedback/card/rating/${rating}`);
 
@@ -124,8 +125,9 @@ export class YieldFlowSection {
         this.backToOverviewButton = this.page.getByTestId(
             '@yield/flow-complete/back-to-overview-button',
         );
-        this.feedbackFormTextarea = this.page.getByTestId('@modal/feedback-form/textarea');
-        this.feedbackFormSubmitButton = this.page.getByTestId('@modal/feedback-form/submit-button');
+        this.feedbackFormTextarea = this.page.getByTestId('@feedback/form-modal/textarea');
+        this.feedbackFormSubmitButton = this.page.getByTestId('@feedback/form-modal/submit-button');
+        this.feedbackSuccessHeading = this.page.getByTestId('@feedback/card/success-heading');
     }
 
     // Token symbol shown in the claim review modal's "Reward tokens" step.

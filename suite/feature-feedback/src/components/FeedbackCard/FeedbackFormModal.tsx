@@ -40,7 +40,7 @@ export const FeedbackFormModal = ({
                 <Modal.Button
                     isDisabled={isSubmitDisabled}
                     onClick={onSubmit}
-                    data-testid="@modal/feedback-form/submit-button"
+                    data-testid="@feedback/form-modal/submit-button"
                 >
                     {submitLabel}
                 </Modal.Button>
@@ -61,7 +61,7 @@ export const FeedbackFormModal = ({
                 onChange={e => onFeedbackTextChange(e.target.value)}
                 characterCount
                 maxLength={1000}
-                data-testid="@modal/feedback-form/textarea"
+                data-testid="@feedback/form-modal/textarea"
             />
         </Column>
     </Modal>

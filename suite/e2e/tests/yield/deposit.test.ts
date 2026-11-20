@@ -1,5 +1,6 @@
+import { feedbackRatingSelectedEvent, feedbackSentEvent } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { PROD_STAKING_SYMBOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
@@ -28,11 +29,12 @@ const DASHBOARD_CONTEXT = {
     hasStakingPosition: 'true',
     hasClaimBanner: 'false',
     availableVaultCount: String(Object.keys(YIELD_VAULTS).length),
-    availableStakingCount: '4',
+    availableStakingCount: String(PROD_STAKING_SYMBOLS.length),
     hasShowMore: 'false',
 };
 
 const FEEDBACK_RATING = '5';
+const FEEDBACK_CONTEXT = { category: 'yield', context: 'deposit', provider: usdcPrime.id };
 
 const DEPOSIT_TXID = '0x1111111111111111111111111111111111111111111111111111111111111111';
 
@@ -46,6 +48,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
     test.beforeEach(
         async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
             await analytics.interceptAnalytics();
+            await analytics.stubFeedback();
             await onboardingPage.completeOnboarding();
             await blockbookMock.start('eth');
             await yieldMock.start();
@@ -83,6 +86,8 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             const navigateEvents = analytics.trackEvents(events.yieldNavigateEvent.name);
             const interactionEvents = analytics.trackEvents(events.yieldInteractionEvent.name);
             const depositEvents = analytics.trackEvents(events.yieldDepositEvent.name);
+            const ratingSelectedEvents = analytics.trackEvents(feedbackRatingSelectedEvent.name);
+            const feedbackSentEvents = analytics.trackEvents(feedbackSentEvent.name);
 
             await test.step('Check yield dashboard', async () => {
                 await yieldSection.earnMenuButton.click();
@@ -398,7 +403,6 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 });
                 await devicePrompt.sendButton.click();
                 await expect(toastSection.yieldDeposit).toBeVisible();
-                depositEvents.expectNone();
 
                 await yieldFlowSection.pendingTransactionId.click();
                 await interactionEvents.expectNext({
@@ -443,18 +447,23 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             });
 
             await test.step('Deposit flow can be rated', async () => {
-                await page.route('**://data.trezor.io/suite/feedback/**', route =>
-                    route.fulfill({ headers: { 'access-control-allow-origin': '*' } }),
-                );
                 await yieldFlowSection.feedbackRating(FEEDBACK_RATING).click();
+                await ratingSelectedEvents.expectNext({
+                    ...FEEDBACK_CONTEXT,
+                    rating: FEEDBACK_RATING,
+                });
                 await yieldFlowSection.feedbackFormTextarea.fill('E2E test feedback');
                 await yieldFlowSection.feedbackFormSubmitButton.click();
-                await expect(yieldFlowSection.feedbackFormSubmitButton).toBeHidden();
+                await expect(yieldFlowSection.feedbackSuccessHeading).toHaveTranslation(
+                    'TR_FEEDBACK_CARD_SUCCESS_TITLE',
+                );
+                await expect(toastSection.feedbackSent).toBeVisible();
                 await interactionEvents.expectNext({
                     element: 'feedback-submit',
                     value: FEEDBACK_RATING,
                     vaultId: usdcPrime.id,
                 });
+                await feedbackSentEvents.expectNext(FEEDBACK_CONTEXT);
             });
 
             await test.step('Returning to the dashboard shows the deposited position', async () => {

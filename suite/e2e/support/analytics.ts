@@ -3,7 +3,7 @@ import { RequireExactlyOne } from 'type-fest';
 
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';
-import { EventPayload, SuiteDesktopAnalyticsEventsForE2e } from './types';
+import { EventPayload, ExtractByEventType, SuiteDesktopAnalyticsEventsForE2e } from './types';
 
 type AnalyticsOptions = RequireExactlyOne<
     {
@@ -165,23 +165,28 @@ export class AnalyticsFixture {
     }
 
     /**
-     * Tracks how many events of the given type were already checked, so each check only
-     * waits for the next one. Analytics requests are sent asynchronously after the UI action,
-     * so the count is polled.
+     * Tracks how many events of the given type were already checked, so each check expects
+     * exactly one new event. Analytics requests are sent asynchronously after the UI action,
+     * so the new event is polled for.
      */
-    trackEvents(eventType: string) {
+    trackEvents<T extends SuiteDesktopAnalyticsEventsForE2e['type']>(eventType: T) {
         let checkedCount = 0;
-        const findEvents = () => this.findAnalyticsEventsByType(eventType);
+        const findUncheckedEvents = () =>
+            this.findAnalyticsEventsByType(eventType).slice(checkedCount);
 
         return {
-            expectNext: async (expected: Record<string, unknown>) => {
+            expectNext: async (
+                expected: Partial<Record<keyof EventPayload<ExtractByEventType<T>>, unknown>>,
+            ) => {
                 await expect
-                    .poll(() => findEvents().length, `expected a new ${eventType} event`)
-                    .toBe(checkedCount + 1);
-                expect(findEvents()[checkedCount]).toMatchObject(expected);
+                    .poll(() => findUncheckedEvents().length, `expected a new ${eventType} event`)
+                    .toBeGreaterThanOrEqual(1);
+
+                const uncheckedEvents = findUncheckedEvents();
+                expect(uncheckedEvents, `unexpected extra ${eventType} event`).toHaveLength(1);
+                expect(uncheckedEvents[0]).toMatchObject(expected);
                 checkedCount += 1;
             },
-            expectNone: () => expect(findEvents()).toHaveLength(checkedCount),
         };
     }
 
@@ -193,6 +198,13 @@ export class AnalyticsFixture {
             this.requests.push(Object.fromEntries(params.entries()));
             route.continue();
         });
+    }
+
+    @step()
+    async stubFeedback() {
+        await this.page.route('**://data.trezor.io/suite/feedback/**', route =>
+            route.fulfill({ headers: { 'access-control-allow-origin': '*' } }),
+        );
     }
 
     @step()
