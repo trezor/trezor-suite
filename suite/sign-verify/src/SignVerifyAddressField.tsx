@@ -1,13 +1,41 @@
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
+import {
+    type SignAddressGroup,
+    type SignAddressesRootState,
+    selectAccountSignAddresses,
+} from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
 import { Input } from '@trezor/components';
+import { getStakingPath } from '@trezor/network-cardano-suite-common';
 
 import { CopyFieldButton } from './CopyFieldButton';
 import { SignAddressInput } from './SignAddressInput';
 import { type SignVerifyFormFields } from './useSignVerifyForm';
+
+const getAccountAddressGroups = (
+    account: Account,
+    signAddressGroups: SignAddressGroup[],
+): SignAddressGroup[] => {
+    switch (account.networkType) {
+        // Ethereum signs with the account itself, it has no address list.
+        case 'ethereum':
+            return [{ addresses: [{ address: account.descriptor, path: account.path }] }];
+        case 'cardano':
+            return [
+                {
+                    category: 'stake',
+                    addresses: [
+                        { path: getStakingPath(account), address: account.misc.staking.address },
+                    ],
+                },
+                ...signAddressGroups,
+            ];
+        default:
+            return signAddressGroups;
+    }
+};
 
 type SignVerifyAddressFieldProps = {
     account: Account;
@@ -36,9 +64,10 @@ export const SignVerifyAddressField = ({
     hasAddressError,
     onCopy,
 }: SignVerifyAddressFieldProps) => {
-    const touchedAddresses = useSelector((state: ReceiveRootState) =>
-        selectTouchedAddresses(state, account.key),
+    const signAddressGroups = useSelector((state: SignAddressesRootState) =>
+        selectAccountSignAddresses(state, account),
     );
+    const addressGroups = getAccountAddressGroups(account, signAddressGroups);
 
     if (isCompleted) {
         return (
@@ -64,7 +93,7 @@ export const SignVerifyAddressField = ({
                 name="path"
                 label={<Translation id="TR_ADDRESS" />}
                 account={account}
-                touchedAddresses={touchedAddresses}
+                addressGroups={addressGroups}
                 hasError={hasPathError}
                 bottomText={pathError || null}
                 data-testid="@sign-verify/sign-address"
