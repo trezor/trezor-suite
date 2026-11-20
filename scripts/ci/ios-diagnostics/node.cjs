@@ -37,7 +37,7 @@ const memory = () => {
     }
 };
 
-emit('process-start', { executable: executableBasename(process.execPath), ...memory() });
+emit('process-start', { executable: executableBasename(process.execPath), script: executableBasename(process.argv[1]), ...memory() });
 
 const originalSpawn = childProcess.spawn;
 childProcess.spawn = function (...args) {
@@ -50,6 +50,21 @@ childProcess.spawn = function (...args) {
     });
 
     return child;
+};
+
+const originalSpawnSync = childProcess.spawnSync;
+childProcess.spawnSync = function (...args) {
+    const result = Reflect.apply(originalSpawnSync, this, args);
+    emit('sync-child-exit', { executable: executableBasename(args[0]), childPid: result.pid ?? null, code: result.status, signal: result.signal, errorCode: result.error?.code ?? null });
+
+    return result;
+};
+
+const originalKill = process.kill;
+process.kill = function (targetPid, signal) {
+    emit('signal-send', { targetPid, signal: signal ?? 'SIGTERM' });
+
+    return Reflect.apply(originalKill, this, arguments);
 };
 
 const memoryInterval = setInterval(() => emit('process-memory', memory()), 1_000);

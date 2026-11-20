@@ -3,7 +3,7 @@ name: "[Diagnostic] iOS Jest termination"
 on:
   push:
     branches:
-      - investigate/ios-jest-termination-repeat
+      - investigate/ios-jest-native-imports
   workflow_dispatch:
     inputs:
       diagnostic_build_run_id:
@@ -33,7 +33,7 @@ env:
 
 jobs:
   run_ios_e2e_tests:
-    timeout-minutes: 60
+    timeout-minutes: 45
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -73,70 +73,24 @@ jobs:
         working-directory: ./suite-common/message-system
         run: yarn sign-config
 
-      - name: Generate GitHub App token
-        id: trezor-bot-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
-        with:
-          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
-          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
-          permission-organization-projects: write
-          permission-pull-requests: write
-
-      # Used by github reporter when publishing results of release run
-      - name: Extract Release Build
-        id: extract_branch
-        shell: bash
-        run: |
-          echo "release_build=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}-${GITHUB_SHA:0:7}" >> $GITHUB_ENV
-
-      - name: Install macOS dependencies
-        run: |
-          brew tap wix/brew
-          brew install wix/brew/applesimutils
-        env:
-          HOMEBREW_NO_AUTO_UPDATE: 1
-          HOMEBREW_NO_INSTALL_CLEANUP: 1
-
-      - name: Cache Detox framework
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: ~/Library/Detox
-          key: detox-framework-${{ hashFiles('**/node_modules/detox/package.json') }}
-
-      - name: Build Detox framework cache
-        run: yarn exec detox clean-framework-cache && yarn exec detox build-framework-cache
-        working-directory: ./suite-native-app/app
-
-      - name: Download app build artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: ios-test-build
-          github-token: ${{ github.token }}
-          run-id: ${{ inputs.diagnostic_build_run_id || '44642410579' }}
-          path: |
-            suite-native-app/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
-
-      - name: Prepare iPhone 11 Simulator
-        run: xcrun simctl create "iPhone 11"  com.apple.CoreSimulator.SimDeviceType.iPhone-11
-
-      - name: Run Detox E2E iOS tests
+      - name: Repeated native-transform module loading
         working-directory: ./suite-native-app/app
         env:
-          PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
-          GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
-          GITHUB_REPORTER_VERBOSE: false
-          RELEASE_BUILD: ${{ env.release_build }}
-          GITHUB_ACTION: true
-          CURRENTS_PROJECT_ID: LjEjiV
-          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
-          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
-          CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
+          IOS_IMPORT_ONLY_JEST_CACHE: ${{ runner.temp }}/ios-import-transform-cache
         run: |
           export NODE_OPTIONS="${NODE_OPTIONS:-} --require=$GITHUB_WORKSPACE/scripts/ci/ios-diagnostics/node.cjs"
           python3 "$GITHUB_WORKSPACE/scripts/ci/ios-diagnostics/host.py" > "$RUNNER_TEMP/ios-host-resources.log" 2>&1 &
           observer_pid=$!
           trap 'kill "$observer_pid" 2>/dev/null || true' EXIT
-          yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless --quarantine
+          files=(accountManagement bitcoinAccountsImport deeplinkPopup deviceSettingsT1B1 ejectWallets firmwareUpdateRequired invalidAccountsImport passphraseFlow send tokenReceive tradingCountryResidence tradingExchangeFlow)
+          paths=()
+          for file in "${files[@]}"; do paths+=("e2e/tests/$file.test.ts"); done
+          for attempt in {1..20}; do
+            echo "Native module-loading attempt $attempt"
+            cache_args=()
+            if (( attempt % 5 == 1 )); then cache_args+=(--no-cache); fi
+            yarn exec jest --config "$GITHUB_WORKSPACE/scripts/ci/ios-diagnostics/ios-import-only-native-node.config.cjs" --runInBand "${cache_args[@]}" "${paths[@]}"
+          done
 
       - name: Extract process termination diagnostics
         if: always()
