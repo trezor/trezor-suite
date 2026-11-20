@@ -11908,8 +11908,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-app/module-sign-verify@workspace:suite-app/module-sign-verify"
   dependencies:
+    "@suite-common/sign-verify": "workspace:*"
     "@suite/account": "workspace:*"
+    "@suite/device": "workspace:*"
     "@suite/sign-verify": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
@@ -18401,16 +18404,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/sign-verify@workspace:suite/sign-verify"
   dependencies:
-    "@hookform/resolvers": "npm:^5.9.2"
     "@suite-common/networks": "workspace:*"
     "@suite-common/sign-verify": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/device": "workspace:*"
-    "@suite/forms": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
@@ -18420,11 +18421,10 @@ __metadata:
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.3.0"
     react: "npm:19.3.0"
-    react-hook-form: "npm:^7.91.0"
     react-redux: "npm:9.3.0"
-    redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
 

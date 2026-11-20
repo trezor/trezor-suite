@@ -1,203 +1,91 @@
-import { useEffect, useState } from 'react';
-import { type FieldError } from 'react-hook-form';
+import { type FormEvent, type ReactNode, use, useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { injectSignVerify } from '@suite-common/sign-verify';
-import { type Network } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { Button, Card, Column } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
-import { exhaustive } from '@trezor/type-utils';
+import { Translation } from '@suite/intl';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { Button, Column } from '@trezor/components';
+import { throwError } from '@trezor/utils';
 
-import { FormatSwitch } from './FormatSwitch';
-import { SignVerifyAddressField } from './SignVerifyAddressField';
-import { SignVerifyMessageField } from './SignVerifyMessageField';
-import { SignVerifyPubKeyField } from './SignVerifyPubKeyField';
-import { SignVerifySignatureField } from './SignVerifySignatureField';
-import { SignVerifyTabs } from './SignVerifyTabs';
-import { type SignVerifyOutcome, type SignVerifyPage } from './types';
-import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
-import { type SignVerifyFields, useSignVerifyForm } from './useSignVerifyForm';
+import {
+    SignVerifyContext,
+    type SignVerifyErrors,
+    SignVerifyFormContext,
+    type SignVerifyValues,
+} from './SignVerifyContext';
 
 type SignVerifyFormProps = {
-    account: Account;
-    network?: Network;
-    page: SignVerifyPage;
-    onPageChange: (page: SignVerifyPage) => void;
+    defaultValues: SignVerifyValues;
+    getErrors: (values: SignVerifyValues) => SignVerifyErrors;
+    submit: (
+        values: SignVerifyValues,
+        device: TrezorDevice | undefined,
+    ) => Promise<Partial<SignVerifyValues>>;
+    children: ReactNode;
 };
 
-export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVerifyFormProps) => {
-    const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
+export const SignVerifyForm = ({
+    defaultValues,
+    getErrors,
+    submit,
+    children,
+}: SignVerifyFormProps) => {
+    const { page, outcome, setOutcome } =
+        use(SignVerifyContext) ?? throwError('Missing SignVerify');
 
-    const { signVerify } = useServices(injectSignVerify);
-
-    const isSignPage = page === 'sign';
-
-    const {
-        register,
-        isSubmitting,
-        resetForm,
-        formSubmit,
-        formValues,
-        formErrors,
-        formSetSignature,
-        hexField,
-        addressField,
-        pathField,
-        formatField,
-    } = useSignVerifyForm(isSignPage, account);
+    const [values, setValues] = useState(defaultValues);
+    const [errors, setErrors] = useState<SignVerifyErrors>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { device, isLocked } = useDevice();
-    const { translationString } = useTranslation();
-    const copyValue = useSignVerifyCopyValue();
 
-    const isCompleted = outcome === 'signed' || outcome === 'verified';
-    const hasFailedVerification = outcome === 'failed';
+    const update = (changes: Partial<SignVerifyValues>) => {
+        setValues({ ...values, ...changes });
+        setErrors({});
 
-    const getErrorMessage = (error?: FieldError) =>
-        error ? translationString(error.message as TranslationKey) : undefined;
-
-    const verificationInputs = [
-        formValues.message,
-        formValues.address,
-        formValues.signature,
-        formValues.hex,
-    ].join('\u0000');
-
-    // A failed verification is the only outcome that leaves the form editable, and it comes with no
-    // Clear button, so editing the values it was about is the only way out of it.
-    useEffect(() => {
-        setOutcome(prev => {
-            if (prev === 'failed') {
-                return 'idle';
-            }
-
-            return prev;
-        });
-    }, [verificationInputs]);
-
-    // Every button inside the form has to cancel the click, otherwise it submits the form.
-    const clearForm = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        resetForm();
-        setOutcome('idle');
-    };
-
-    const onSubmit = async (data: SignVerifyFields) => {
-        const { address, path, message, signature, hex, format } = data;
-
-        if (isSignPage && path !== undefined) {
-            const result = await signVerify.sign({
-                device,
-                account,
-                path,
-                message,
-                hex,
-                format,
-            });
-
-            if (result.success) {
-                formSetSignature(result.payload);
-                setOutcome('signed');
-            }
-        } else if (signature !== undefined) {
-            const result = await signVerify.verify({
-                device,
-                account,
-                address,
-                message,
-                signature,
-                hex,
-            });
-
-            if (result.success) {
-                setOutcome('verified');
-
-                return;
-            }
-
-            switch (result.error.type) {
-                // Cancelling on the device leaves the form exactly as it was, the way a cancelled
-                // signing does: nothing was verified, and nothing failed to verify either.
-                case 'DeviceCancelled':
-                    break;
-                case 'DeviceError':
-                case 'DeviceNotConnectedError':
-                case 'SignVerifyNotSupported':
-                    setOutcome('failed');
-                    break;
-                default:
-                    exhaustive(result.error);
-            }
+        // A failed verification comes with no Clear button, editing the values is the way out.
+        if (outcome === 'failed') {
+            setOutcome('idle');
         }
     };
 
-    const formats = signVerify.getFormats(account);
-    const canVerify = signVerify.isVerifySupported(account);
-    const isCardano = network?.networkType === 'cardano';
+    const clear = () => {
+        setValues(defaultValues);
+        setErrors({});
+        setOutcome('idle');
+    };
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const submitErrors = getErrors(values);
+        setErrors(submitErrors);
+
+        const hasErrors = Object.values(submitErrors).some(error => error !== undefined);
+
+        if (hasErrors) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        const changes = await submit(values, device);
+        setValues(current => ({ ...current, ...changes }));
+        setIsSubmitting(false);
+    };
+
+    const isCompleted = outcome === 'signed' || outcome === 'verified';
 
     return (
-        <Card>
-            <SignVerifyTabs
-                page={page}
-                canVerify={canVerify}
-                outcome={outcome}
-                onPageChange={onPageChange}
-            />
-            <form onSubmit={formSubmit(onSubmit)}>
+        <SignVerifyFormContext value={{ values, errors, update }}>
+            <form onSubmit={handleSubmit}>
                 <Column gap={16} margin={{ bottom: 32 }}>
-                    {isSignPage && formats.length > 1 && (
-                        <FormatSwitch options={formats} isDisabled={isCompleted} {...formatField} />
-                    )}
-                    <SignVerifyAddressField
-                        account={account}
-                        isSignPage={isSignPage}
-                        isCompleted={isCompleted}
-                        address={formValues.address}
-                        pathField={pathField}
-                        addressField={addressField}
-                        pathError={getErrorMessage(formErrors.path)}
-                        addressError={getErrorMessage(formErrors.address)}
-                        hasPathError={!!formErrors.path}
-                        hasAddressError={!!formErrors.address || hasFailedVerification}
-                        onCopy={copyValue}
-                    />
-                    <SignVerifyMessageField
-                        message={formValues.message}
-                        isCompleted={isCompleted}
-                        hasError={!!formErrors.message || hasFailedVerification}
-                        errorMessage={getErrorMessage(formErrors.message)}
-                        hexField={hexField}
-                        registration={register('message')}
-                        onCopy={copyValue}
-                    />
-                    <SignVerifySignatureField
-                        signature={formValues.signature}
-                        isSignPage={isSignPage}
-                        isCompleted={isCompleted}
-                        hasError={!!formErrors.signature || hasFailedVerification}
-                        errorMessage={getErrorMessage(formErrors.signature)}
-                        registration={register('signature')}
-                        onCopy={copyValue}
-                    />
-                    {isSignPage && isCardano && (
-                        <SignVerifyPubKeyField
-                            pubKey={formValues.pubKey}
-                            isCompleted={isCompleted}
-                            hasError={!!formErrors.pubKey}
-                            errorMessage={getErrorMessage(formErrors.pubKey)}
-                            registration={register('pubKey')}
-                            onCopy={copyValue}
-                        />
-                    )}
+                    {children}
                 </Column>
                 {isCompleted ? (
                     <Button
                         type="button"
                         intent="neutral"
                         priority="secondary"
-                        onClick={clearForm}
+                        onClick={clear}
                         data-testid="@sign-verify/clear"
                         minWidth={200}
                     >
@@ -212,10 +100,10 @@ export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVer
                         data-testid="@sign-verify/submit"
                         minWidth={200}
                     >
-                        <Translation id={isSignPage ? 'TR_SIGN' : 'TR_VERIFY'} />
+                        <Translation id={page === 'sign' ? 'TR_SIGN' : 'TR_VERIFY'} />
                     </Button>
                 )}
             </form>
-        </Card>
+        </SignVerifyFormContext>
     );
 };
