@@ -23,7 +23,7 @@ type ActiveReferralAccount = {
     shareUrl: string;
     redemptionCount: number;
     redemptionLimit: number;
-    redemptionLimitResetsAt: string;
+    redemptionLimitResetsAt: string | null; // TODO type unclear, confirm with trezor.io backend team.
 };
 
 export type ReferralAccount = InactiveReferralAccount | ActiveReferralAccount;
@@ -41,31 +41,32 @@ type PendingReferralVoucher = ReferralVoucherBase & {
     expiresAt: null;
     usedAt: null;
 };
+// TODO all types below ↓ are unclear, confirm with trezor.io backend team.
 type AvailableReferralVoucher = ReferralVoucherBase & {
     status: 'available';
     code: string;
-    expiresAt: string | null;
+    expiresAt: string;
     usedAt: null;
 };
 type UsedReferralVoucher = ReferralVoucherBase & {
     status: 'used';
-    code: string | null;
-    expiresAt: string | null;
+    code: string;
+    expiresAt: string;
     usedAt: string;
 };
 type ExpiredReferralVoucher = ReferralVoucherBase & {
     status: 'expired';
-    code: string | null;
+    code: string;
     expiresAt: string;
     usedAt: null;
 };
-// Canceled when the order is returned or canceled, possibly even after it became available.
 type CanceledReferralVoucher = ReferralVoucherBase & {
     status: 'canceled';
-    code: string | null;
-    expiresAt: string | null;
+    code: string;
+    expiresAt: string;
     usedAt: null;
 };
+// TODO all types above ↑ are unclear, confirm with trezor.io backend team.
 
 export type ReferralVoucher =
     | PendingReferralVoucher
