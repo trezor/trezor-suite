@@ -1,4 +1,5 @@
-import { type Timestamp } from '@suite-common/wallet-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type TickerId, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
@@ -13,7 +14,7 @@ const fiatRatesReducer = prepareFiatRatesReducer({
 });
 
 const BASE_CURRENCY = 'usd' as BaseCurrencyCode;
-const TICKER = { symbol: 'eth' } as const;
+const TICKER: TickerId = { symbol: asNetworkSymbol('eth') };
 const FIAT_RATE_KEY = getFiatRateKeyFromTicker(TICKER, BASE_CURRENCY);
 
 const fetchStarted = updateFiatRatesThunk.pending('request-id', {
