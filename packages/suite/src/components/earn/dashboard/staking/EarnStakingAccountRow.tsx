@@ -4,12 +4,14 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import {
+    TRON_UNLOCKS_REFRESH_INTERVAL_MS,
     formatStakingAmount,
     selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingOperationPending,
     selectStakeableStakingProductDescriptorBySymbol,
     selectStakingAccountAmount,
+    settleTronUnlocks,
     useNetworkStakingRate,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
@@ -22,6 +24,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
+import { useNow } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -38,6 +41,13 @@ import { EarnStakingRemainingVotes } from './EarnStakingRemainingVotes';
 import { getEarnStakingPotentialRewards } from './getEarnStakingPotentialRewards';
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
+
+type TronFlowRoute = 'earn-tron-stake' | 'earn-tron-vote' | 'earn-tron-withdraw';
+
+type TronFlowEvent =
+    | typeof events.stakingStakeEvent.name
+    | typeof events.stakingUnstakeEvent.name
+    | typeof events.stakingUpdateProviderEvent.name;
 
 interface EarnStakingAccountRowProps {
     account: Account;
@@ -58,8 +68,9 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const { rate: newProviderApy } = useNetworkStakingRate({ networkSymbol: account.symbol });
 
     const isCardanoNetworkType = account.networkType === 'cardano';
+    const isTronNetworkType = account.networkType === 'tron';
 
-    const { productId, descriptor, totals } = useStakingAccountPosition(account.key);
+    const { productId, descriptor, position, totals } = useStakingAccountPosition(account.key);
 
     const stakeableDescriptor = useSelector(state =>
         selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
@@ -71,10 +82,10 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         selectHasStakingAccountWarning(state, account.key, 'missing-drep'),
     );
 
-    // Ethereum and Solana pay out the unstaked principal here, Cardano its rewards.
-    const claimOperation: StakingOperation = descriptor?.operations.includes('claim')
-        ? 'claim'
-        : 'withdraw';
+    // Ethereum and Solana pay out the unstaked principal here, Cardano its rewards and Tron its
+    // unfrozen TRX; Tron claims its rewards on its own page.
+    const claimOperation: StakingOperation =
+        !isTronNetworkType && descriptor?.operations.includes('claim') ? 'claim' : 'withdraw';
     const isClaimPending = useSelector(state =>
         selectIsStakingOperationPending(state, account.key, claimOperation),
     );
@@ -86,9 +97,14 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const { isDisabled: isVotingDisabled, message: votingMessageContent } =
         useStakingOperationSwitch(productId, 'vote');
 
-    // The claim modal serves Ethereum, Solana and Cardano; Tron claims on its own page.
-    const claimableAmount = claimOperation === 'claim' ? totals.rewards : totals.withdrawable;
-    const canClaim = account.networkType !== 'tron' && new BigNumber(claimableAmount).gt(0);
+    // A Tron unlock matures by time alone, so the row settles it at the current minute.
+    const nowMs = useNow(TRON_UNLOCKS_REFRESH_INTERVAL_MS);
+    const withdrawableAmount =
+        isTronNetworkType && position !== null
+            ? settleTronUnlocks({ position, nowMs }).withdrawable
+            : totals.withdrawable;
+    const claimableAmount = claimOperation === 'claim' ? totals.rewards : withdrawableAmount;
+    const canClaim = new BigNumber(claimableAmount).gt(0);
     const isClaimButtonDisabled = isClaimingDisabled || isClaimPending || isDrepDelegationRequired;
 
     const claimTooltipContent =
@@ -257,16 +273,16 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         </Paragraph>
     );
 
-    const onTronStake = (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (isStakingDisabled) {
-            return;
-        }
-
+    const navigateToTronFlow = (
+        event: React.MouseEvent<HTMLButtonElement>,
+        routeName: TronFlowRoute,
+        eventType: TronFlowEvent,
+    ) => {
         event.stopPropagation();
 
         dispatch(
             gotoThunk({
-                routeName: 'earn-tron-stake',
+                routeName,
                 params: {
                     symbol: account.symbol,
                     accountIndex: account.index,
@@ -276,7 +292,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         );
 
         analytics.report({
-            type: events.stakingStakeEvent.name,
+            type: eventType,
             payload: {
                 action: 'continue',
                 step: 'staking-dashboard',
@@ -285,32 +301,28 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         });
     };
 
+    const onTronStake = (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (isStakingDisabled) {
+            return;
+        }
+
+        navigateToTronFlow(event, 'earn-tron-stake', events.stakingStakeEvent.name);
+    };
+
     const onTronVote = (event: React.MouseEvent<HTMLButtonElement>) => {
         if (isVotingDisabled) {
             return;
         }
 
-        event.stopPropagation();
+        navigateToTronFlow(event, 'earn-tron-vote', events.stakingUpdateProviderEvent.name);
+    };
 
-        dispatch(
-            gotoThunk({
-                routeName: 'earn-tron-vote',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
+    const onTronWithdraw = (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (isClaimButtonDisabled) {
+            return;
+        }
 
-        analytics.report({
-            type: events.stakingUpdateProviderEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'staking-dashboard',
-                networkSymbol: account.symbol,
-            },
-        });
+        navigateToTronFlow(event, 'earn-tron-withdraw', events.stakingUnstakeEvent.name);
     };
 
     const apyAvailable =
@@ -328,11 +340,11 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         isClaimButtonDisabled,
         claimingMessageContent: claimTooltipContent,
         onBuy: navigateToTradingBuy,
-        onStake: account.symbol === 'trx' ? onTronStake : openStakeModal,
-        onStakeNow: account.symbol === 'trx' ? onTronStake : navigateToStaking,
+        onStake: isTronNetworkType ? onTronStake : openStakeModal,
+        onStakeNow: isTronNetworkType ? onTronStake : navigateToStaking,
         onUpdateProvider: navigateToStaking,
         onVote: onTronVote,
-        onClaim: openClaimModal,
+        onClaim: isTronNetworkType ? onTronWithdraw : openClaimModal,
     } as const;
 
     if (isCardLayout) {
