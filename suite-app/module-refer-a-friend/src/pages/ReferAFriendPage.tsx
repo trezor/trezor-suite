@@ -3,14 +3,18 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectSelectedDevice,
+    selectStandardWalletDescriptorByDeviceId,
+} from '@suite-common/device';
 import {
     type ReferAFriendRootState,
     fetchReferralAccountThunk,
     fetchReferralProgramThunk,
+    selectIsReferralWalletDescriptorAvailable,
     selectReferralAccountState,
     selectReferralProgram,
-    selectReferralStandardWallet,
     selectReferralWalletRecord,
 } from '@suite-common/refer-a-friend';
 import {
@@ -61,8 +65,11 @@ export const ReferAFriendPage = () => {
     const deviceId = device?.id ?? undefined;
     const isReferralAvailable = useSelector(selectIsReferralAvailable);
     const program = useSelector(selectReferralProgram);
-    const walletDescriptor = useSelector(
-        (state: DeviceRootState) => selectReferralStandardWallet(state, deviceId)?.walletDescriptor,
+    const isReferralWalletDescriptorAvailable = useSelector((state: DeviceRootState) =>
+        selectIsReferralWalletDescriptorAvailable(state, deviceId),
+    );
+    const walletDescriptor = useSelector((state: DeviceRootState) =>
+        selectStandardWalletDescriptorByDeviceId(state, deviceId),
     );
     const walletRecord = useSelector((state: ReferAFriendRootState) =>
         selectReferralWalletRecord(state, walletDescriptor),
@@ -90,12 +97,16 @@ export const ReferAFriendPage = () => {
     }, [isReferralAvailable, dispatch]);
 
     useEffect(() => {
-        if (!isReferralAvailable || deviceId === undefined || walletDescriptor === undefined) {
+        if (
+            !isReferralAvailable ||
+            deviceId === undefined ||
+            !isReferralWalletDescriptorAvailable
+        ) {
             return;
         }
 
         dispatch(fetchReferralAccountThunk({ deviceId }));
-    }, [isReferralAvailable, deviceId, walletDescriptor, dispatch]);
+    }, [isReferralAvailable, deviceId, isReferralWalletDescriptorAvailable, dispatch]);
 
     useEffect(() => {
         if (!isReferralAvailable || !isJoined) {
@@ -108,7 +119,7 @@ export const ReferAFriendPage = () => {
     }
 
     // All referral data belong to the standard wallet, without it there is nothing to show.
-    if (walletDescriptor === undefined) {
+    if (!isReferralWalletDescriptorAvailable) {
         return <ReferralUnavailable description="TR_REFERRAL_OPEN_STANDARD_WALLET" />;
     }
 
@@ -269,7 +280,6 @@ export const ReferAFriendPage = () => {
             {isJoined && deviceId !== undefined ? (
                 <ReferralJoinedContent
                     deviceId={deviceId}
-                    walletDescriptor={walletDescriptor}
                     shareUrl={shareUrl}
                     isDeviceConnected={isDeviceConnected}
                     program={program.data}
