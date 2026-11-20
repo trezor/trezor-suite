@@ -64,6 +64,45 @@ export interface WardBackend {
     close(): Promise<void>;
 }
 
+const short = (hex: string | null) => (hex ? `${hex.slice(0, 12)}…` : 'empty');
+
+/**
+ * A backend that says what it stores: one line per transition written, with its step and every
+ * change -- the entry key, and for a put the sizes of the sealed parts (never their bytes). The
+ * replica holds only sealed parts, so this is everything it could reveal anyway.
+ */
+export const loggingBackend = (inner: WardBackend, log: (line: string) => void): WardBackend => {
+    // the replica is read on every operation; say so only when what it holds has changed
+    let held: number | null = null;
+
+    return {
+        async load() {
+            const links = await inner.load();
+            if (links.length !== held) log(`replica: holds ${links.length} transition(s)`);
+            held = links.length;
+
+            return links;
+        },
+        async append(link) {
+            const step = `${link.fromCounter} -> ${link.toCounter}`;
+            log(
+                `replica: storing ${link.operation} ${step} root=${short(link.toRoot)}` +
+                    ` changes=${link.changes.length}${link.wmSig ? ' +wm_sig' : ''}`,
+            );
+            for (const change of link.changes) {
+                const sizes = change.leaf
+                    ? `put content=${toBytes(change.leaf.content ?? '').length}B` +
+                      ` identity=${toBytes(change.leaf.identity ?? '').length}B`
+                    : 'delete';
+                log(`replica:   entry=${short(change.entryKey)} ${sizes}`);
+            }
+            await inner.append(link);
+            log(`replica: stored ${step} (durable locally)`);
+        },
+        close: () => inner.close(),
+    };
+};
+
 export class InMemoryWardBackend implements WardBackend {
     private links = new Map<string, StoredLink>();
 

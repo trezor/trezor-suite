@@ -6,7 +6,7 @@ import path from 'path';
 
 import { DevWm, type DevWmSnapshot, type WmClient, toBytes, toHex } from '@trezor/ward-core';
 
-import { InMemoryWardBackend, type WardBackend } from './backend';
+import { InMemoryWardBackend, type WardBackend, loggingBackend } from './backend';
 import { EvoluWardBackend } from './evoluBackend';
 import { WardHost } from './host';
 
@@ -19,6 +19,8 @@ export interface WarddOptions {
     memory?: boolean;
     /** the WM; the persisted in-process dev WM if omitted */
     wm?: WmClient;
+    /** say what each replica stores (`--verbose`) */
+    log?: (line: string) => void;
 }
 
 const DEV_WM_FILE = 'dev-wm.json';
@@ -58,10 +60,12 @@ export class Wardd {
         const key = toHex(toBytes(params.wardId));
         let host = this.hosts.get(key);
         if (!host) {
-            host = this.openBackend(params).then(backend => {
+            host = this.openBackend(params).then(opened => {
+                const { log } = this.opts;
+                const backend = log ? loggingBackend(opened, log) : opened;
                 this.backends.push(backend);
 
-                return new WardHost(toBytes(key), backend, this.wm, this.persistWm);
+                return new WardHost(toBytes(key), backend, this.wm, this.persistWm, log);
             });
             this.hosts.set(key, host);
             host.catch(() => this.hosts.delete(key));

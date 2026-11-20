@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /**
  * wardd --port 21329 --data-dir ~/.trezor-ward [--token-file F] [--memory] [--relay URL] [--origin O]...
+ *       [--verbose]   log every call, its outcome and the device messages it exchanged
  *
  * With no --token-file, a token is generated into `<data-dir>/token` (mode 0600) and reused.
  *
@@ -66,20 +67,25 @@ const main = async () => {
     const memory = flag('memory');
     const dataDir = value('data-dir') ?? path.join(os.homedir(), '.trezor-ward');
     await fs.mkdir(dataDir, { recursive: true, mode: 0o700 });
+    const verbose = flag('verbose');
+    const log = (line: string) => process.stdout.write(`${new Date().toISOString()} ${line}\n`);
     const wardd = await Wardd.create({
         dataDir: memory ? null : dataDir,
         memory,
         relayUrl: value('relay'),
+        log: verbose ? log : undefined,
     });
     const origins = values('origin');
     const server = await startServer({
+        log: verbose ? log : undefined,
         wardd,
         token: await readOrCreateToken(dataDir, value('token-file')),
         port: Number(value('port') ?? DEFAULT_PORT),
         allowedOrigins: origins.length ? origins : DEFAULT_ORIGINS,
     });
     console.log(
-        `wardd listening on ws://127.0.0.1:${server.port} (data: ${memory ? 'memory' : dataDir})`,
+        `wardd listening on ws://127.0.0.1:${server.port} (data: ${memory ? 'memory' : dataDir}` +
+            `${value('relay') ? `, relay: ${value('relay')}` : ''})`,
     );
     const stop = async () => {
         await server.close();

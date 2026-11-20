@@ -21,6 +21,10 @@ export interface Replica {
 const sameRoot = (a: Uint8Array | null, b: Uint8Array | null) =>
     equalBytes(a ?? EMPTY_ROOT, b ?? EMPTY_ROOT);
 
+/** A root as the logs show it: the empty tree by name, any other by its first bytes. */
+const showRoot = (root: Uint8Array | null) =>
+    !root || equalBytes(root, EMPTY_ROOT) ? 'empty' : `${toHex(root).slice(0, 12)}…`;
+
 /** Genesis-to-head, oldest first; null if the walk back does not reach the empty tree at 0. */
 const chainTo = (trie: WardTrie, head: Head): Link[] | null => {
     if (head.counter === 0) return sameRoot(head.root, null) ? [] : null;
@@ -39,7 +43,12 @@ const chainTo = (trie: WardTrie, head: Head): Link[] | null => {
  * root is corrupt, and serving from it would only get the device to refuse later, for a reason
  * that no longer points here.
  */
-export const materialize = (links: readonly StoredLink[], want?: Head | null): Replica => {
+export const materialize = (
+    links: readonly StoredLink[],
+    want?: Head | null,
+    /** narrate the rebuild: the walk back to genesis, each step's entries, each root */
+    log?: (line: string) => void,
+): Replica => {
     const trie = new WardTrie();
     const stored = new Map<Link, StoredLink>();
     for (const s of links) {
@@ -75,12 +84,44 @@ export const materialize = (links: readonly StoredLink[], want?: Head | null): R
         }
     }
 
+    if (log) {
+        let source = ' (no WM head; highest buildable)';
+        if (want)
+            source = behind ? ' (the WM head cannot be built: rows missing)' : ' (the WM head)';
+        log(
+            `rebuild: ${links.length} stored transition(s); head #${head.counter}` +
+                ` root=${showRoot(head.root)}${source}`,
+        );
+        // THE WALK BACK, as `chainTo` takes it: from the head, each link's `from` names the next
+        for (const link of [...chain].reverse()) {
+            const s = stored.get(link)!;
+            log(
+                `rebuild:   retrieved transition #${link.fromCounter} -> #${link.toCounter}` +
+                    ` (${s.operation}, ${s.changes.length} entr${s.changes.length === 1 ? 'y' : 'ies'})` +
+                    ` to root=${showRoot(link.toRoot)}`,
+            );
+        }
+        log(`rebuild:   reached genesis: #0, empty tree`);
+    }
+
     for (const link of chain) {
-        for (const change of stored.get(link)!.changes) {
+        const s = stored.get(link)!;
+        log?.(`rebuild: applying #${link.fromCounter} -> #${link.toCounter}`);
+        for (const change of s.changes) {
             const entryKey = toBytes(change.entryKey);
             if (change.leaf) trie.set(entryKey, change.leaf);
             else trie.remove(entryKey);
+            log?.(
+                `rebuild:   entry=${change.entryKey.slice(0, 12)}… ` +
+                    (change.leaf
+                        ? `put content=${toBytes(change.leaf.content ?? '').length}B`
+                        : 'delete'),
+            );
         }
+        log?.(
+            `rebuild:   root=${showRoot(trie.root())} (${trie.size} leaves)` +
+                (sameRoot(trie.root(), link.toRoot) ? ', matches the stored transition' : ''),
+        );
         if (!sameRoot(trie.root(), link.toRoot)) {
             throw new Error(
                 `the stored link into counter ${link.toCounter} does not reproduce its root ` +
@@ -89,6 +130,7 @@ export const materialize = (links: readonly StoredLink[], want?: Head | null): R
         }
     }
     trie.counter = head.counter;
+    log?.(`rebuild: trie at #${head.counter}, root=${showRoot(trie.root())}, ${trie.size} leaves`);
 
     return { trie, head: { counter: head.counter, root: head.root }, behind };
 };

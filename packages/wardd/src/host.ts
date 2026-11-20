@@ -102,7 +102,12 @@ export class WardHost {
         private readonly backend: WardBackend,
         private readonly wm: WmClient,
         private readonly onWmChange: () => void | Promise<void> = () => {},
+        /** narrate replica rebuilds (`--verbose`) */
+        private readonly log?: (line: string) => void,
     ) {}
+
+    /** What the last narrated rebuild was built from, so an unchanged replica is not retold. */
+    private rebuilt = '';
 
     /** Run `fn` with this wallet to itself. */
     exclusive<T>(fn: () => Promise<T>): Promise<T> {
@@ -113,7 +118,14 @@ export class WardHost {
     }
 
     async replica(): Promise<Replica> {
-        return materialize(await this.backend.load(), await this.wm.head(this.wardId));
+        const links = await this.backend.load();
+        const head = await this.wm.head(this.wardId);
+        // the replica is rebuilt on every call; narrate it only when what it is built from changed
+        const from = `${links.length}/${head?.counter ?? '-'}/${head?.root ? toHex(head.root) : ''}`;
+        const narrate = this.log && from !== this.rebuilt;
+        this.rebuilt = from;
+
+        return materialize(links, head, narrate ? this.log : undefined);
     }
 
     status() {

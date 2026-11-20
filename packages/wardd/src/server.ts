@@ -36,7 +36,39 @@ export interface ServerOptions {
     token: string;
     port?: number;
     allowedOrigins?: readonly string[];
+    /**
+     * One line per exchange: the call, its outcome, and every device message by NAME. Payloads,
+     * values and the token are never logged; keys and roots are shortened.
+     */
+    log?: (line: string) => void;
 }
+
+const short = (hex: unknown) => (typeof hex === 'string' && hex ? `${hex.slice(0, 12)}…` : '-');
+
+/** What a call is about, in a few words: the path for a pull, the wallet for a store. */
+const describeCall = (call: RelayCall): string => {
+    const p = (call.params ?? {}) as Record<string, any>;
+    if (call.method === 'serveEntry') {
+        const staged = p.staged?.length ? ` staged=${p.staged.length}` : '';
+
+        return ` entry=${short(p.request?.entry_key)}${staged}`;
+    }
+    if (call.method === 'openStore') return ` ward=${short(p.wardId)}`;
+
+    return '';
+};
+
+const outcome = (method: string, result: Record<string, unknown>): string => {
+    if (method === 'serveEntry') {
+        return result.sealed_content ? 'present' : 'absent';
+    }
+    const parts = [];
+    if ('counter' in result) parts.push(`counter=${String(result.counter)}`);
+    if ('root' in result) parts.push(`root=${short(result.root)}`);
+    if ('remaining' in result) parts.push(`remaining=${String(result.remaining)}`);
+
+    return parts.join(' ') || 'ok';
+};
 
 const digest = (s: string) => createHash('sha256').update(s).digest();
 const tokenMatches = (given: unknown, token: string) =>
@@ -44,6 +76,8 @@ const tokenMatches = (given: unknown, token: string) =>
 const major = (v: string) => v.split('.')[0];
 
 export const startServer = async (opts: ServerOptions) => {
+    const log = opts.log ?? (() => {});
+    let connections = 0;
     const allowed = new Set(opts.allowedOrigins ?? DEFAULT_ORIGINS);
     const wss = new WebSocketServer({
         host: '127.0.0.1',
@@ -56,6 +90,8 @@ export const startServer = async (opts: ServerOptions) => {
     });
 
     wss.on('connection', socket => {
+        const conn = ++connections;
+        log(`[${conn}] connected`);
         let authed = false;
         let host: WardHost | null = null;
         const pending = new Map<
@@ -68,6 +104,7 @@ export const startServer = async (opts: ServerOptions) => {
 
         // A CLIENT THAT GOES AWAY MID-CONVERSATION must end it, or the wallet's lock is held forever.
         socket.on('close', () => {
+            log(`[${conn}] closed`);
             for (const { reject } of pending.values()) {
                 reject(new RelayFailure('device_failure', 'the client went away'));
             }
@@ -104,7 +141,14 @@ export const startServer = async (opts: ServerOptions) => {
             if (!host) throw new RelayFailure('no_store', 'openStore first');
             const device: Device = message =>
                 new Promise((resolve, reject) => {
-                    pending.set(call.id, { resolve, reject });
+                    pending.set(call.id, {
+                        resolve: reply => {
+                            log(`[${conn}] #${call.id}   <- ${reply.name}`);
+                            resolve(reply);
+                        },
+                        reject,
+                    });
+                    log(`[${conn}] #${call.id}   -> ${message.name}`);
                     send({ id: call.id, deviceCall: message });
                 });
             switch (call.method) {
@@ -139,9 +183,20 @@ export const startServer = async (opts: ServerOptions) => {
                 return waiting.resolve(frame.deviceReply);
             }
             const { id } = frame;
+            log(`[${conn}] #${id} ${String(frame.method)}${describeCall(frame)}`);
             handle(frame).then(
-                result => send({ id, result }),
+                result => {
+                    log(
+                        `[${conn}] #${id} ${String(frame.method)} ok ${outcome(frame.method, result)}`,
+                    );
+                    send({ id, result });
+                },
                 (e: unknown) => {
+                    log(
+                        `[${conn}] #${id} ${String(frame.method)} FAILED ${
+                            e instanceof RelayFailure ? e.code : 'internal'
+                        }: ${e instanceof Error ? e.message : String(e)}`,
+                    );
                     pending.delete(id);
                     if (e instanceof RelayFailure) fail(id, e.code, e.message);
                     else fail(id, 'internal', e instanceof Error ? e.message : String(e));

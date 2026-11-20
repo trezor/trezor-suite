@@ -267,6 +267,29 @@ describe('the replica', () => {
         );
     });
 
+    it("narrates a rebuild: the walk back to genesis, each step's entries, each root", async () => {
+        const { a, host } = await setup();
+        a.enqueue('x', '1');
+        a.enqueue('y', '2');
+        await host.flush(a.call);
+        const links = await (host as unknown as { backend: InMemoryWardBackend }).backend.load();
+        const { head } = await host.replica();
+        const lines: string[] = [];
+        materialize(links, head, line => lines.push(line));
+        const text = lines.join('\n');
+        // newest first on the way back, oldest first on the way forward
+        expect(text.indexOf('retrieved transition #1 -> #2')).toBeLessThan(
+            text.indexOf('retrieved transition #0 -> #1'),
+        );
+        expect(text).toContain('reached genesis');
+        expect(text.indexOf('applying #0 -> #1')).toBeLessThan(text.indexOf('applying #1 -> #2'));
+        expect(lines.filter(l => l.includes('entry=')).length).toBe(2);
+        expect(lines.filter(l => l.includes('matches the stored transition')).length).toBe(2);
+        expect(lines[lines.length - 1]).toBe(
+            `rebuild: trie at #2, root=${toHex(head.root!).slice(0, 12)}…, 2 leaves`,
+        );
+    });
+
     it('says when the head asked for cannot be built', () => {
         const r = materialize([], { counter: 5, root: new Uint8Array(32).fill(1) });
         expect(r).toMatchObject({ behind: true, head: { counter: 0, root: null } });
