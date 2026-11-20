@@ -79,10 +79,18 @@ const successResultWithNativeReceive = createSimulationResult({
     } as unknown as SimulationPayload['simulation'],
 });
 
-const renderUseExchangeIssue = () =>
+// A successful simulation where the account receives nothing back.
+const successResultWithoutReceive = createSimulationResult({
+    simulation: {
+        status: 'Success',
+        account_summary: { assets_diffs: [] },
+    } as unknown as SimulationPayload['simulation'],
+});
+
+const renderUseExchangeIssue = (quote: ExchangeTrade = selectedQuote) =>
     renderHookWithTradingStore(() => useExchangeIssue(defaultParams), {
         preloadedState: createTradingTestState({
-            exchange: { ...initialState.exchange, selectedQuote },
+            exchange: { ...initialState.exchange, selectedQuote: quote },
         }),
     });
 
@@ -182,5 +190,25 @@ describe('useExchangeIssue', () => {
             sendAmount: selectedQuote.sendStringAmount,
             sendCryptoId: selectedQuote.send,
         });
+    });
+
+    it('feeds a zero receive amount into the fiat deviation when a same-chain swap receives nothing', () => {
+        const sameChainQuote: ExchangeTrade = {
+            ...selectedQuote,
+            send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            receive: 'ethereum' as CryptoId,
+        };
+        mockUseDexExchangeTxSimulation.mockReturnValue({
+            isEnabled: true,
+            isLoading: false,
+            error: null,
+            data: successResultWithoutReceive,
+        });
+
+        renderUseExchangeIssue(sameChainQuote);
+
+        expect(mockUseExchangeFiatDeviation).toHaveBeenCalledWith(
+            expect.objectContaining({ receiveAmount: '0' }),
+        );
     });
 });

@@ -6,7 +6,7 @@ import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
 
 export const useExchangeReceiveAmount = (quote: ExchangeTrade | undefined) => {
     const { isLoading, data: simulationResult } = useDexExchangeTxSimulation();
-    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote?.receive);
+    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote);
 
     return {
         isLoading,

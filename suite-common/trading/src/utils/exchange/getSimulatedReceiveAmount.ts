@@ -1,4 +1,4 @@
-import { type CryptoId } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import {
     type AccountSummary,
@@ -9,10 +9,19 @@ import {
 } from '@suite-common/tx-simulation';
 import { BigNumber } from '@trezor/utils';
 
-import { parseCryptoId } from '../../utils';
+import { cryptoIdToNetworkSymbol, parseCryptoId } from '../../utils';
 
 type EvmAssetDiff = AccountSummary['assets_diffs'][number];
 type ReceiveAssetDiff = Extract<EvmAssetDiff, { asset_type: 'ERC20' | 'NATIVE' }>;
+type SimulatedQuote = Pick<ExchangeTrade, 'send' | 'receive'>;
+
+const isSameChainTrade = ({ send, receive }: SimulatedQuote) => {
+    const sendNetworkSymbol = cryptoIdToNetworkSymbol(send);
+
+    return (
+        sendNetworkSymbol !== undefined && sendNetworkSymbol === cryptoIdToNetworkSymbol(receive)
+    );
+};
 
 const isReceiveAssetDiff = (
     assetDiff: EvmAssetDiff,
@@ -32,12 +41,12 @@ const isReceiveAssetDiff = (
 /**
  * Extract how much of the quote's receive asset the user gets according to
  * a successful Blockaid simulation. Returns a decimal string in main units,
- * or `null` when the amount cannot be determined — callers are expected to
- * fall back to the quote data.
+ * `'0'` when a same-chain swap receives none of it, or `null` when the amount
+ * cannot be determined — callers are expected to fall back to the quote data.
  */
 export const getSimulatedReceiveAmount = (
     result: NetworkTxSimulationResult | undefined,
-    quoteReceiveCryptoId: CryptoId | undefined,
+    quote: SimulatedQuote | undefined,
 ): string | null => {
     // Stellar also has a top-level `simulation`, with a differently shaped account summary, so the
     // narrowing has to be by method. DEX quotes are EVM-only, so nothing else reaches this.
@@ -48,17 +57,19 @@ export const getSimulatedReceiveAmount = (
         ? getEvmSimulationSummary(result.payload)
         : null;
 
-    if (!quoteReceiveCryptoId || !summary) {
+    if (!quote?.receive || !summary) {
         return null;
     }
 
-    const { contractAddress } = parseCryptoId(quoteReceiveCryptoId);
+    const missingReceiveAmount = isSameChainTrade(quote) ? '0' : null;
+
+    const { contractAddress } = parseCryptoId(quote.receive);
     const assetDiff = summary.assetsDiffs.find((diff): diff is ReceiveAssetDiff =>
         isReceiveAssetDiff(diff, contractAddress),
     );
 
     if (!assetDiff || assetDiff.in.length === 0) {
-        return null;
+        return missingReceiveAmount;
     }
 
     const decimals = 'decimals' in assetDiff.asset ? assetDiff.asset.decimals : undefined;
@@ -75,5 +86,5 @@ export const getSimulatedReceiveAmount = (
         total = total.plus(amount);
     }
 
-    return total.isGreaterThan(0) ? total.toString() : null;
+    return total.isGreaterThan(0) ? total.toString() : missingReceiveAmount;
 };

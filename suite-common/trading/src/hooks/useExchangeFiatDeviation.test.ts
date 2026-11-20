@@ -85,6 +85,30 @@ describe('useExchangeFiatDeviation', () => {
         });
     });
 
+    it('reports the whole send value as deviation when nothing is received', () => {
+        mockedUseTradingFiatValues
+            .mockReturnValueOnce(createTradingFiatValuesResult('1000'))
+            .mockReturnValueOnce(createTradingFiatValuesResult('0.00'));
+
+        const { result } = renderUseExchangeFiatDeviation({ receiveAmount: '0' });
+
+        expect(result.current).toEqual({
+            deviation: 1,
+            exceedsThreshold: true,
+            exceedsHighThreshold: true,
+        });
+    });
+
+    it('returns null when the send value is zero', () => {
+        mockedUseTradingFiatValues
+            .mockReturnValueOnce(createTradingFiatValuesResult('0.00'))
+            .mockReturnValueOnce(createTradingFiatValuesResult('980'));
+
+        const { result } = renderUseExchangeFiatDeviation();
+
+        expect(result.current).toBeNull();
+    });
+
     it('returns null when fiat values are missing', () => {
         mockedUseTradingFiatValues.mockReturnValue(null);
 

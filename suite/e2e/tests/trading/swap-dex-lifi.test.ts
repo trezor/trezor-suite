@@ -125,7 +125,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             let slippagePercent: string;
 
             await test.step('Verify DEX details on the Confirm & send screen', async () => {
-                const { receiveStringAmount, swapSlippage, receive, dexTx } =
+                const { receiveStringAmount, swapSlippage, send, receive, dexTx } =
                     await tradingResponses.swap.trade();
                 receiveAmount = localizeNumber(receiveStringAmount);
                 formattedReceiveAmount = `${receiveAmount} USDC`;
@@ -174,7 +174,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 // rendered value is compared against the last captured scan on each attempt.
                 await expect(async () => {
                     await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                        `${localizeNumber(tradingMock.simulatedReceiveAmount(receive))} USDC`,
+                        `${localizeNumber(tradingMock.simulatedReceiveAmount({ send, receive }))} USDC`,
                         { timeout: 2_000 },
                     );
                 }).toPass({ timeout: 15_000 });

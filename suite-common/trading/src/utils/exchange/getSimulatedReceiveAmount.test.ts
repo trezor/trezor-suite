@@ -1,4 +1,4 @@
-import type { CryptoId } from 'invity-api';
+import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { type NetworkTxSimulationResult } from '@suite-common/tx-simulation';
 
@@ -38,12 +38,18 @@ const createSimulationResult = (
         },
     }) as unknown as NetworkTxSimulationResult;
 
-const nativeQuoteReceive: CryptoId = 'ethereum' as CryptoId;
-const tokenQuoteReceive: CryptoId = `ethereum--${USDC_CONTRACT}` as CryptoId;
+type SimulatedQuote = Pick<ExchangeTrade, 'send' | 'receive'>;
+
+const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
+const USDC_CRYPTO_ID = `ethereum--${USDC_CONTRACT}` as CryptoId;
+
+const nativeReceiveQuote: SimulatedQuote = { send: USDC_CRYPTO_ID, receive: ETH_CRYPTO_ID };
+const tokenReceiveQuote: SimulatedQuote = { send: ETH_CRYPTO_ID, receive: USDC_CRYPTO_ID };
+const crossChainQuote: SimulatedQuote = { send: ETH_CRYPTO_ID, receive: 'bitcoin' as CryptoId };
 
 describe('getSimulatedReceiveAmount', () => {
     it('returns null without a simulation result', () => {
-        expect(getSimulatedReceiveAmount(undefined, nativeQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(undefined, nativeReceiveQuote)).toBeNull();
     });
 
     it('returns null without a quote', () => {
@@ -55,19 +61,19 @@ describe('getSimulatedReceiveAmount', () => {
     it('returns null when the simulation errored', () => {
         const result = createSimulationResult([nativeAssetDiff], { simulationStatus: 'Error' });
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(result, nativeReceiveQuote)).toBeNull();
     });
 
     it('returns the incoming native amount for a native receive asset', () => {
         const result = createSimulationResult([usdcAssetDiff, nativeAssetDiff]);
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBe('1');
+        expect(getSimulatedReceiveAmount(result, nativeReceiveQuote)).toBe('1');
     });
 
     it('matches an ERC20 receive asset by contract address case-insensitively', () => {
         const result = createSimulationResult([nativeAssetDiff, usdcAssetDiff]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('250');
+        expect(getSimulatedReceiveAmount(result, tokenReceiveQuote)).toBe('250');
     });
 
     it('prefers exact raw_value math over the float-derived value', () => {
@@ -80,7 +86,7 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('0.971813');
+        expect(getSimulatedReceiveAmount(result, tokenReceiveQuote)).toBe('0.971813');
     });
 
     it('sums multiple incoming transfers of the receive asset', () => {
@@ -92,7 +98,7 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('300.5');
+        expect(getSimulatedReceiveAmount(result, tokenReceiveQuote)).toBe('300.5');
     });
 
     it('falls back to value when the asset decimals are unknown', () => {
@@ -104,19 +110,50 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('250');
+        expect(getSimulatedReceiveAmount(result, tokenReceiveQuote)).toBe('250');
     });
 
-    it('returns null when the receive asset has no incoming transfer', () => {
+    it('returns 0 when a same-chain swap simulation shows no incoming receive asset', () => {
         const result = createSimulationResult([{ ...nativeAssetDiff, in: [] }]);
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(result, nativeReceiveQuote)).toBe('0');
     });
 
-    it('returns null when only other assets changed', () => {
+    it('returns 0 when a same-chain swap simulation changes only other assets', () => {
         const result = createSimulationResult([usdcAssetDiff]);
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(result, nativeReceiveQuote)).toBe('0');
+    });
+
+    it('returns 0 when a same-chain swap simulation shows no asset changes', () => {
+        const result = createSimulationResult([]);
+
+        expect(getSimulatedReceiveAmount(result, tokenReceiveQuote)).toBe('0');
+    });
+
+    it('returns 0 when the incoming receive asset transfers sum to zero', () => {
+        const result = createSimulationResult([
+            { ...usdcAssetDiff, in: [{ raw_value: '0x0', value: '0' }] },
+        ]);
+
+        expect(getSimulatedReceiveAmount(result, tokenReceiveQuote)).toBe('0');
+    });
+
+    it('returns null for a cross-chain swap whose receive asset does not arrive on the simulated chain', () => {
+        const result = createSimulationResult([usdcAssetDiff]);
+
+        expect(getSimulatedReceiveAmount(result, crossChainQuote)).toBeNull();
+    });
+
+    it('returns null without an incoming receive asset when the send network is unknown', () => {
+        const result = createSimulationResult([]);
+
+        expect(
+            getSimulatedReceiveAmount(result, {
+                ...nativeReceiveQuote,
+                send: 'unknown' as CryptoId,
+            }),
+        ).toBeNull();
     });
 
     it('returns null when an incoming transfer cannot be valued', () => {
@@ -128,6 +165,6 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(result, tokenReceiveQuote)).toBeNull();
     });
 });
