@@ -1,25 +1,17 @@
-import { type Dispatch } from 'redux';
-
-import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { isTrezorDeviceWithState } from '@suite-common/device';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
-import { DeviceNotConnectedError } from '@trezor/device';
 import {
     SignVerifyNotSupportedError,
     type VerifyError,
 } from '@trezor/network-module-suite-common-types';
-import { type Result, err, exhaustive } from '@trezor/type-utils';
+import { type Result, err } from '@trezor/type-utils';
 
+import { type SignVerifyReporterDep } from './createSignVerifyReporter';
 import { getNetworkSignVerify } from './getNetworkSignVerify';
-import { getErrorMessage, getFailureAttributes } from './signVerifyFailure';
+import { getReadyDevice } from './getReadyDevice';
 
-export type VerifyMessageDeps = NetworkModuleRepositoryDep &
-    AnalyticsDep & {
-        dispatch: Dispatch;
-    };
+export type VerifyMessageDeps = NetworkModuleRepositoryDep & SignVerifyReporterDep;
 
 export type VerifyParams = {
     device: TrezorDevice | undefined;
@@ -35,21 +27,6 @@ export type VerifyMessage = {
     isVerifySupported: (account: Account) => boolean;
 };
 
-const getVerifyErrorToast = (error: VerifyError): ToastPayload => {
-    switch (error.type) {
-        // Backing out on the device says nothing about the signature. Still say so: the prompt
-        // disappearing with the form untouched leaves no other sign the check was dropped.
-        case 'DeviceCancelled':
-            return { type: 'verify-message-cancelled' };
-        case 'DeviceError':
-        case 'DeviceNotConnectedError':
-        case 'SignVerifyNotSupported':
-            return { type: 'verify-message-error', error: getErrorMessage(error) };
-        default:
-            return exhaustive(error);
-    }
-};
-
 export const createVerifyMessage = (deps: VerifyMessageDeps): VerifyMessage => {
     const isVerifySupported = (account: Account) =>
         getNetworkSignVerify(deps, account)?.verifyMessage !== undefined;
@@ -62,18 +39,19 @@ export const createVerifyMessage = (deps: VerifyMessageDeps): VerifyMessage => {
         signature,
         hex,
     }: VerifyParams): Promise<Result<void, VerifyError>> => {
-        if (!isTrezorDeviceWithState(device) || !device.connected || !device.available) {
-            return err(DeviceNotConnectedError('Device not connected: verifyMessage'));
-        }
-
+        const readyDevice = getReadyDevice(device, 'verifyMessage');
         const verifyMessage = getNetworkSignVerify(deps, account)?.verifyMessage;
+
+        if (!readyDevice.success) {
+            return readyDevice;
+        }
 
         if (!verifyMessage) {
             return err(SignVerifyNotSupportedError());
         }
 
         return await verifyMessage({
-            device,
+            device: readyDevice.payload,
             symbol: account.symbol,
             address,
             message,
@@ -83,24 +61,11 @@ export const createVerifyMessage = (deps: VerifyMessageDeps): VerifyMessage => {
     };
 
     const verify: VerifyMessage['verify'] = async params => {
-        const { account, hex } = params;
         const result = await verifyOnDevice(params);
-
-        if (!result.success) {
-            deps.analytics.report({
-                type: events.coinVerifyMessageEvent.name,
-                payload: { ...getFailureAttributes(result.error), symbol: account.symbol, hex },
-            });
-            deps.dispatch(notificationsActions.addToast(getVerifyErrorToast(result.error)));
-
-            return result;
-        }
-
-        deps.analytics.report({
-            type: events.coinVerifyMessageEvent.name,
-            payload: { status: 'success', symbol: account.symbol, hex },
-        });
-        deps.dispatch(notificationsActions.addToast({ type: 'verify-message-success' }));
+        deps.signVerifyReporter.reportVerify(
+            { symbol: params.account.symbol, hex: params.hex },
+            result,
+        );
 
         return result;
     };
