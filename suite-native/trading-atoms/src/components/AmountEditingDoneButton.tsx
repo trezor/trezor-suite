@@ -10,7 +10,7 @@ export type AmountEditingDoneButtonProps = {
 
 export const AmountEditingDoneButton = ({ testID }: AmountEditingDoneButtonProps) => (
     <AnimatedBox entering={FadeInDown} exiting={FadeOutDown}>
-        <Button onPress={Keyboard.dismiss} intent="neutral" priority="secondary" testID={testID}>
+        <Button onPress={Keyboard.dismiss} intent="neutral" priority="primary" testID={testID}>
             <Translation id="generic.buttons.done" />
         </Button>
     </AnimatedBox>
