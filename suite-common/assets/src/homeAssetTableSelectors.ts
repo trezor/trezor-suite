@@ -871,17 +871,23 @@ export const selectWalletAssetFiatValue = createMemoizedSelector(
         (
             state: HomeAssetTableState,
             _assetKey: WalletAssetKey | undefined,
+            _isHidden?: boolean,
             accountKey?: AccountKey,
         ) => selectWalletAssetValues(state, accountKey),
         (state: HomeAssetTableState) => selectHiddenWalletAssetValues(state),
         (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
+        (_state: HomeAssetTableState, _assetKey: WalletAssetKey | undefined, isHidden = false) =>
+            isHidden,
     ],
-    (values, hiddenValues, assetKey): BaseCurrencyAmount | undefined => {
+    (values, hiddenValues, assetKey, isHidden): BaseCurrencyAmount | undefined => {
         if (assetKey === undefined) {
             return undefined;
         }
 
-        const fiatValue = values.get(assetKey) ?? hiddenValues.get(assetKey);
+        // Looked up as `selectWalletAsset` looks up the asset itself.
+        const fiatValue = isHidden
+            ? hiddenValues.get(assetKey)
+            : (values.get(assetKey) ?? hiddenValues.get(assetKey));
 
         return fiatValue === undefined ? undefined : asBaseCurrencyAmount(fiatValue);
     },

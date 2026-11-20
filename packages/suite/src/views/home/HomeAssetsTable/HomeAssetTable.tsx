@@ -89,13 +89,13 @@ export const HomeAssetTable = () => {
         [analytics, dispatch],
     );
 
-    const openHiddenTokens = useCallback(() => {
+    const openHiddenTokens = () => {
         analytics.report({
             type: events.navigateFlowEvent.name,
             payload: { action: 'navigate', type: 'hidden-tokens', from: 'dashboard' },
         });
         dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' }));
-    }, [analytics, dispatch]);
+    };
 
     if (!hasAssets && isDiscoveryRunning) {
         return <AssetRowsSkeleton data-testid="@dashboard/home-asset-table/loading" />;

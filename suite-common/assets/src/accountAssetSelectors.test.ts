@@ -89,7 +89,10 @@ const mockRate = (rate: number, contract?: TokenAddress) => ({
 });
 
 type CreateStateOptions = {
-    rates?: Record<string, { rate?: number; usdRate?: number; error?: string | null }>;
+    rates?: Record<
+        string,
+        { rate?: number; usdRate?: number; error?: string | null; isLoading?: boolean }
+    >;
     areSmallBalancesShown?: boolean;
     localCurrency?: 'usd' | 'eur';
     stakingPositions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
@@ -141,7 +144,7 @@ const rowsOf = (state: HomeAssetTableState, account: Account) =>
         selectWalletAssetTokenSymbol(state, assetKey, false, account.key) ??
             selectWalletAssetNetworkSymbol(state, assetKey, false, account.key)?.toUpperCase(),
         selectWalletAssetAmount(state, assetKey, false, account.key),
-        selectWalletAssetFiatValue(state, assetKey, account.key)?.toFixed(),
+        selectWalletAssetFiatValue(state, assetKey, false, account.key)?.toFixed(),
     ]);
 
 const totalOf = (state: HomeAssetTableState, account: Account) =>
@@ -267,6 +270,18 @@ describe('the fiat total of an account', () => {
 
         expect(totalOf(state, account)).toEqual(new BigNumber('1022.4'));
         expect(flagsOf(state, account)).toEqual({ isPending: true, isIncomplete: false });
+    });
+
+    it('keeps a total incomplete while a rate that failed is fetched again', () => {
+        // The periodic refresh retries a failed rate; its error stays until the retry settles.
+        const retrying = {
+            [getFiatRateKey(ETH, 'usd')]: { error: 'Failed to fetch', isLoading: true },
+        };
+        const state = createState([account], {
+            rates: { ...retrying, ...mockRate(1, USDC), ...mockRate(20, ENS) },
+        });
+
+        expect(flagsOf(state, account)).toEqual({ isPending: false, isIncomplete: true });
     });
 
     it('does not miss an empty coin, whatever its rate', () => {

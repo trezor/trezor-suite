@@ -58,7 +58,7 @@ const isAssetUnpriced = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
     accountKey: AccountKey | undefined,
-) => selectWalletAssetFiatValue(state, assetKey, accountKey) === undefined;
+) => selectWalletAssetFiatValue(state, assetKey, false, accountKey) === undefined;
 
 /** Whether a rate the table still lacks is on its way, so its total is worth waiting for. */
 export const selectIsAssetTableRatePending = (
