@@ -138,10 +138,7 @@ export const TradingOfferExchange = ({ stepLabel }: TradingOfferExchangeProps) =
               })
             : undefined;
 
-    const simulatedReceiveAmount = getSimulatedReceiveAmount(
-        simulationResult,
-        selectedTrade.receive,
-    );
+    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, selectedTrade);
     const receiveAmount = simulatedReceiveAmount ?? selectedTrade.receiveStringAmount;
 
     const reportConfirmAndSendStep = (action: TradeExchangeAction) => {

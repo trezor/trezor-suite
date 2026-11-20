@@ -36,7 +36,7 @@ export const useExchangeIssue = ({
         data: simulationResult,
     } = useDexExchangeTxSimulation({ account, isEnabled, sourceOrigin });
 
-    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote?.receive);
+    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote);
 
     const fiatDeviation = useExchangeFiatDeviation({
         fiatCurrency,

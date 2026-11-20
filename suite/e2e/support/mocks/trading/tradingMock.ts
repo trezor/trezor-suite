@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import type { CryptoId } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
 import { getSimulatedReceiveAmount } from '@suite-common/trading';
 import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
@@ -136,14 +136,14 @@ export class TradingMock {
 
     // Amount the last captured simulation credits, derived the same way the confirm step derives
     // the amount it renders. A re-quote refetches the scan, so read this at assertion time.
-    simulatedReceiveAmount(receive: CryptoId): string {
+    simulatedReceiveAmount(quote: Pick<ExchangeTrade, 'send' | 'receive'>): string {
         if (!this.capturedTxSimulation) {
             throw new Error(
                 'No tx simulation captured - is captureTxSimulation() set up in beforeEach?',
             );
         }
 
-        const amount = getSimulatedReceiveAmount(this.capturedTxSimulation, receive);
+        const amount = getSimulatedReceiveAmount(this.capturedTxSimulation, quote);
 
         if (!amount) {
             throw new Error(
