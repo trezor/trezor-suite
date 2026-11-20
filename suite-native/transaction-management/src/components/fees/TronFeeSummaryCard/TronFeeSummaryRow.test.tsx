@@ -13,7 +13,8 @@ const defaultProps: TronFeeSummaryRowProps = {
     supportsAdjustableFees: false,
     trxBurned: '1000000',
     areFeesLoading: false,
-    resourceLabel: '',
+    resourceParts: [],
+    hasComposeError: false,
     isAccountActivation: false,
 };
 
@@ -57,14 +58,17 @@ describe('TronFeeSummaryRow', () => {
         ).toBeOnTheScreen();
     });
 
-    it('should render the resource coverage line when trxBurned and a resourceLabel are present', async () => {
-        const { getByText } = await renderRow({ resourceLabel: '120 Energy' });
+    it('should render the resource coverage line when trxBurned and resource parts are present', async () => {
+        const { getByText } = await renderRow({ resourceParts: ['120 Energy'] });
 
         expect(getByText('+ 120 Energy')).toBeOnTheScreen();
     });
 
     it('should NOT render the resource coverage line when trxBurned is null', async () => {
-        const { queryByText } = await renderRow({ trxBurned: null, resourceLabel: '120 Energy' });
+        const { queryByText } = await renderRow({
+            trxBurned: null,
+            resourceParts: ['120 Energy'],
+        });
 
         expect(queryByText('+ 120 Energy')).toBeNull();
     });

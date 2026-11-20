@@ -1,8 +1,8 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { calculateTotal } from '@suite-common/wallet-utils';
+import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
+import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { TRON_MEMO_FEE_SUN } from '@trezor/network-tron/constants';
-import { BigNumber } from '@trezor/utils';
 
 import { getContractCallFeeFields } from './getContractCallFeeFields';
 import { type EstimateFeeLevel } from './types';
@@ -14,14 +14,28 @@ export const calculateRawContractCall = (
     networkSymbol: NetworkSymbol,
     bytes: number,
     hasMemo: boolean,
+    tronResources?: TronAccountExtraData,
 ): PrecomposedTransaction => {
     const feeFields = getContractCallFeeFields(feeLevel);
-    const baseFeeInSun = feeFields.fee;
-    const memoFeeInSun = hasMemo ? TRON_MEMO_FEE_SUN : 0;
-    const totalFeeInSun = new BigNumber(baseFeeInSun).plus(memoFeeInSun).toString();
     const amount = 'amount' in output ? (output.amount ?? '0') : '0';
 
-    if (new BigNumber(calculateTotal(amount, totalFeeInSun)).isGreaterThan(availableBalance)) {
+    const payloadData = {
+        type: 'nonfinal' as const,
+        totalSpent: amount,
+        max: undefined,
+        memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
+        ...feeFields,
+        bytes,
+        inputs: [],
+    };
+    const burnedFeeSun = calculateTronFeeBreakdown(
+        payloadData,
+        tronResources,
+        networkSymbol,
+        payloadData.feeLimit,
+    )?.burnedFeeSun;
+
+    if (!burnedFeeSun || burnedFeeSun.plus(amount).isGreaterThan(availableBalance)) {
         return {
             type: 'error',
             error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
@@ -34,19 +48,10 @@ export const calculateRawContractCall = (
         } as const;
     }
 
-    const payloadData = {
-        type: 'nonfinal' as const,
-        totalSpent: amount,
-        max: undefined,
-        memoFee: hasMemo ? String(TRON_MEMO_FEE_SUN) : undefined,
-        ...feeFields,
-        bytes,
-        inputs: [],
-    };
-
     if (output.type === 'payment') {
         return {
             ...payloadData,
+            burnedFee: burnedFeeSun.toString(),
             type: 'final',
             inputs: [],
             outputsPermutation: [0],
@@ -54,5 +59,5 @@ export const calculateRawContractCall = (
         };
     }
 
-    return payloadData;
+    return { ...payloadData, burnedFee: burnedFeeSun.toString() };
 };

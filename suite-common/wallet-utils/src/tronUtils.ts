@@ -43,6 +43,7 @@ export const computeBandwidthFeeLevel = ({
 };
 
 export type TronFeeBreakdown = {
+    burnedFeeSun: BigNumber;
     trxBurned: BigNumber;
     coveredEnergy: BigNumber;
     coveredBandwidth: BigNumber;
@@ -79,8 +80,11 @@ export const calculateTronFeeBreakdown = (
     const isContractCall = 'feeLimit' in tx && tx.feeLimit !== undefined;
 
     if (!isContractCall) {
+        const burnedFeeSun = new BigNumber(tx.fee);
+
         return {
-            trxBurned: toTrx(new BigNumber(tx.fee), symbol),
+            burnedFeeSun,
+            trxBurned: toTrx(burnedFeeSun, symbol),
             coveredEnergy,
             coveredBandwidth,
             isAccountActivation,
@@ -103,7 +107,13 @@ export const calculateTronFeeBreakdown = (
               )
             : new BigNumber(energyConsumed - coveredEnergy.toNumber()).multipliedBy(energyPrice);
 
-    const trxBurned = toTrx(energyBurnSun.plus(bandwidthBurnSun).plus(memoFeeSun), symbol);
+    const burnedFeeSun = energyBurnSun.plus(bandwidthBurnSun).plus(memoFeeSun);
 
-    return { trxBurned, coveredEnergy, coveredBandwidth, isAccountActivation };
+    return {
+        burnedFeeSun,
+        trxBurned: toTrx(burnedFeeSun, symbol),
+        coveredEnergy,
+        coveredBandwidth,
+        isAccountActivation,
+    };
 };

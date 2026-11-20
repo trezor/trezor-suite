@@ -189,6 +189,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                 token,
                 isNewAccount,
                 userCallDataHex,
+                account.misc?.tronResources,
             );
 
         const tx = calculateWithFeeLevel(feeLevel);

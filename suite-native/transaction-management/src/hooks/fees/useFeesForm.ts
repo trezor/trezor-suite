@@ -16,6 +16,7 @@ import type {
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { calculateTronFeeBreakdown, getTronResources } from '@suite-common/wallet-utils';
 import { type UseFormReturn, useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
@@ -103,6 +104,11 @@ export const useFeesForm = ({
         referenceFee?.estimatedFeeLimit ??
         (networkType === 'ethereum' ? (referenceFee?.feeLimit ?? customEstimate) : undefined);
 
+    const getTronBurnedFeeSun = (feeLimit: string) =>
+        account &&
+        calculateTronFeeBreakdown(referenceFee, getTronResources(account), account.symbol, feeLimit)
+            ?.burnedFeeSun;
+
     const form = useForm<FeesFormValues>({
         validation: feesFormValidationSchema,
         defaultValues: {
@@ -117,6 +123,7 @@ export const useFeesForm = ({
             symbol: account?.symbol,
             minimalFeeLimit,
             availableBalance: account?.availableBalance,
+            getTronBurnedFeeSun,
             translate,
             isEip1559Fee,
             isTrc20: networkType === 'tron' && !!tokenContract,

@@ -33,7 +33,8 @@ export const TronFeeSummaryCard = ({
             supportsAdjustableFees={supportsAdjustableFees}
             trxBurned={breakdown.trxBurned}
             areFeesLoading={breakdown.areFeesLoading}
-            resourceLabel={breakdown.resourceLabel}
+            resourceParts={breakdown.resourceParts}
+            hasComposeError={breakdown.hasComposeError}
             isAccountActivation={breakdown.isAccountActivation}
         />
     );

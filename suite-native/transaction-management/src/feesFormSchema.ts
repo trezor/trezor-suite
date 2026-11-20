@@ -12,6 +12,7 @@ export type FeesFormContext = {
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
     availableBalance?: string;
+    getTronBurnedFeeSun?: (feeLimit: string) => BigNumber | undefined;
     translate?: Translate;
     isEip1559Fee: boolean;
     isTrc20?: boolean;
@@ -163,12 +164,14 @@ export const feesFormValidationSchema = yup.object({
             },
         )
         .test('fee-limit-above-balance', 'Insufficient balance.', function (value) {
-            const { isTrc20, availableBalance, translate } = this.options
+            const { isTrc20, availableBalance, getTronBurnedFeeSun, translate } = this.options
                 .context as FeesFormContext;
 
             if (!value || !isTrc20 || !availableBalance) return true;
 
-            if (new BigNumber(value).isGreaterThan(availableBalance)) {
+            const burnedFeeSun = getTronBurnedFeeSun?.(value) ?? new BigNumber(value);
+
+            if (burnedFeeSun.isGreaterThan(availableBalance)) {
                 return this.createError({
                     message: translate!('transactionManagement.fees.error'),
                 });
