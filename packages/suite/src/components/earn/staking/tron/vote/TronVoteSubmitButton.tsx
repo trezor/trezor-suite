@@ -3,12 +3,17 @@ import { useWatch } from 'react-hook-form';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import {
+    selectStakeableStakingProductDescriptorBySymbol,
+    useStakingAccess,
+} from '@suite-common/earn-staking';
 import { getTotalVotes, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 
 import { useEarnDeviceStatus } from '#src/hooks/earn/useEarnDeviceStatus';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useMessageSystemStaking } from '#src/hooks/suite/useMessageSystemStaking';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -28,7 +33,15 @@ export const TronVoteSubmitButton = () => {
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { control } = form.methods;
 
+    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
+
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
+
+    const productId = useSelector(
+        state => selectStakeableStakingProductDescriptorBySymbol(state, account.symbol)?.id ?? null,
+    );
+    const access = useStakingAccess(productId);
+    const isVoteFirmwareOutdated = access.disabled.vote?.kind === 'firmware';
 
     const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
 
@@ -63,6 +76,12 @@ export const TronVoteSubmitButton = () => {
             return;
         }
 
+        if (isVoteFirmwareOutdated) {
+            openFirmwareModal('TR_EARN_TRON_VOTE');
+
+            return;
+        }
+
         analytics.report({
             type: events.stakingUpdateProviderEvent.name,
             payload: {
@@ -81,26 +100,30 @@ export const TronVoteSubmitButton = () => {
     };
 
     return (
-        <Tooltip content={tooltipContent}>
-            <Button
-                iconLeft={tooltipContent ? InfoIcon : undefined}
-                size="large"
-                width="100%"
-                onClick={handleClick}
-                data-testid="@staking/tron-vote/continue-button"
-                isDisabled={
-                    isVotingDisabled ||
-                    !hasVotesToSubmit ||
-                    isOverAllocated ||
-                    isSubmitting ||
-                    isDeviceLocked ||
-                    hasInsufficientFunds ||
-                    !!pendingTxid
-                }
-                isLoading={isSubmitting || isDiscoveryRunning}
-            >
-                <Translation id="TR_CONTINUE" />
-            </Button>
-        </Tooltip>
+        <>
+            {firmwareModal}
+
+            <Tooltip content={tooltipContent}>
+                <Button
+                    iconLeft={tooltipContent ? InfoIcon : undefined}
+                    size="large"
+                    width="100%"
+                    onClick={handleClick}
+                    data-testid="@staking/tron-vote/continue-button"
+                    isDisabled={
+                        isVotingDisabled ||
+                        !hasVotesToSubmit ||
+                        isOverAllocated ||
+                        isSubmitting ||
+                        isDeviceLocked ||
+                        hasInsufficientFunds ||
+                        !!pendingTxid
+                    }
+                    isLoading={isSubmitting || isDiscoveryRunning}
+                >
+                    <Translation id="TR_CONTINUE" />
+                </Button>
+            </Tooltip>
+        </>
     );
 };
