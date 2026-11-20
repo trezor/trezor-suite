@@ -1,2 +1,6 @@
+export type { GetSignVerify, SignVerify, SignVerifyProps } from './SignVerify';
 export type { SuiteNativeNetworkModule } from './SuiteNativeNetworkModule';
-export { createNetworkModuleSuiteNative } from './createNetworkModuleSuiteNative';
+export {
+    createNetworkModuleSuiteNative,
+    type NetworkModuleSuiteNativeDefinition,
+} from './createNetworkModuleSuiteNative';

@@ -8,7 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@trezor/network-module-suite-types": "workspace:*",
@@ -16,6 +17,9 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }
 }

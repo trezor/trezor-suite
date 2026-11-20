@@ -6,6 +6,7 @@
         { "path": "../app-modal" },
         { "path": "../apps-embedding-demo" },
         { "path": "../module-onboarding" },
+        { "path": "../networks" },
         { "path": "../suite-sync" },
         {
             "path": "../../suite-common/analytics-redux"

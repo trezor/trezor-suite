@@ -3,6 +3,7 @@ import {
     type CardanoSuiteCommonNetworkModuleDeps,
     createCardanoSuiteCommonNetworkModule,
 } from '@trezor/network-cardano-suite-common';
+import { supportedCardanoNetworks } from '@trezor/network-cardano-types';
 import {
     type SuiteNetworkModule,
     createNetworkModuleSuite,
@@ -15,4 +16,8 @@ export type CardanoSuiteNetworkModule = SuiteNetworkModule<CardanoSuiteCommonNet
 export const createCardanoSuiteNetworkModule = (
     deps: CardanoSuiteNetworkModuleDeps,
 ): CardanoSuiteNetworkModule =>
-    createNetworkModuleSuite(createCardanoSuiteCommonNetworkModule(deps));
+    createNetworkModuleSuite(
+        createCardanoSuiteCommonNetworkModule(deps),
+        supportedCardanoNetworks,
+        {},
+    );
