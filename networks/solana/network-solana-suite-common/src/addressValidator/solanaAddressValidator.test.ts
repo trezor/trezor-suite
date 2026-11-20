@@ -59,12 +59,12 @@ describe('solana validator', () => {
     it.each(solanaIsAddressValidCases)('validates address $address', testCase => {
         const { address, expected } = testCase;
 
-        expect(solanaValidator.isAddressValid(address, 'sol')).toBe(expected);
+        expect(solanaValidator.isAddressValid('sol', address)).toBe(expected);
     });
 
     it.each(solanaAddressTypeCases)('resolves address type for $address', testCase => {
         const { address, expectedAddressType } = testCase;
 
-        expect(solanaValidator.getAddressType(address, 'sol')).toBe(expectedAddressType);
+        expect(solanaValidator.getAddressType('sol', address)).toBe(expectedAddressType);
     });
 });

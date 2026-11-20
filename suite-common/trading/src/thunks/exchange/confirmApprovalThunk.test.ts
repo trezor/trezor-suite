@@ -81,7 +81,7 @@ describe('confirmApprovalThunk', () => {
                     addressValidator: {
                         getAddressType: jest.fn(),
                         isAddressValid: jest.fn(
-                            (address, symbol) => address === RECEIVE_ADDRESS && symbol === 'btc',
+                            (symbol, address) => address === RECEIVE_ADDRESS && symbol === 'btc',
                         ),
                     },
                 },

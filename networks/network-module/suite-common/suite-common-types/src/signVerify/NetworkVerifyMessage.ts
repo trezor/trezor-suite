@@ -8,9 +8,8 @@ import type { Result } from '@trezor/type-utils';
 
 import type { SignVerifyNotSupportedErrorType } from './signVerifyErrors';
 
-export type VerifyMessageParams<TNetworkSymbol extends string> = {
+export type VerifyMessageParams = {
     device: DeviceIdentity;
-    symbol: TNetworkSymbol;
     address: string;
     message: string;
     signature: string;
@@ -25,6 +24,7 @@ export type VerifyError =
 
 export type NetworkVerifyMessage<TNetworkSymbol extends string> = {
     verifyMessage?: (
-        params: VerifyMessageParams<TNetworkSymbol>,
+        networkSymbol: TNetworkSymbol,
+        params: VerifyMessageParams,
     ) => Promise<Result<void, VerifyError>>;
 };

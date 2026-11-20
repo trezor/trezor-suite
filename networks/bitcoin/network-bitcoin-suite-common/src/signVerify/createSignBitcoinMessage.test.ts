@@ -24,9 +24,8 @@ describe(createSignBitcoinMessage.name, () => {
     const connect = () => ({ signMessage });
 
     const sign = (hex = false) =>
-        createSignBitcoinMessage(deps)({
+        createSignBitcoinMessage(deps)('btc', {
             device: DEVICE,
-            symbol: 'btc',
             path: PATH,
             message: MESSAGE,
             hex,

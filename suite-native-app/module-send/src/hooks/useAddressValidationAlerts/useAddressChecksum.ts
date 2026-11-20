@@ -30,7 +30,7 @@ export const useAddressChecksum = (addressFieldName: string) => {
 
     const addressValue = useWatch({ control, name: addressFieldName });
     const isFilledValidAddress =
-        !!addressValue && !!symbol && addressValidator.isAddressValid(addressValue, symbol);
+        !!addressValue && !!symbol && addressValidator.isAddressValid(symbol, addressValue);
 
     const convertAddressToChecksum = useCallback(() => {
         setValue(addressFieldName, toChecksumAddress(addressValue), {

@@ -3,6 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../../suite-common/wallet-types"
+        },
+        { "path": "../../../../suite/intl" },
+        {
             "path": "../../suite-common/suite-common-types"
         },
         { "path": "../../network-module-types" }

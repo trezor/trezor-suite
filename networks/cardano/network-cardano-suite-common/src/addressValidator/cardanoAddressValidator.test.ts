@@ -141,13 +141,13 @@ describe('cardano validator', () => {
     it.each(cardanoIsAddressValidCases)('validates address $address', testCase => {
         const { address, expected } = testCase;
 
-        expect(adaValidator.isAddressValid(address, 'ada')).toBe(expected);
+        expect(adaValidator.isAddressValid('ada', address)).toBe(expected);
     });
 
     it.each(cardanoAddressTypeCases)('resolves address type for $address', testCase => {
         const { address, expectedAddressType } = testCase;
 
-        expect(adaValidator.getAddressType(address, 'ada')).toBe(expectedAddressType);
+        expect(adaValidator.getAddressType('ada', address)).toBe(expectedAddressType);
     });
 });
 
@@ -160,11 +160,11 @@ describe('cardano validator before the legacy address decoder loads', () => {
         await jest.isolateModulesAsync(async () => {
             const isolated = await import('./cardanoAddressValidator');
 
-            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(false);
+            expect(isolated.adaValidator.isAddressValid('ada', legacyAddress)).toBe(false);
 
             await new Promise(resolve => setTimeout(resolve, 0));
 
-            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(true);
+            expect(isolated.adaValidator.isAddressValid('ada', legacyAddress)).toBe(true);
         });
     });
 
@@ -176,12 +176,12 @@ describe('cardano validator before the legacy address decoder loads', () => {
             const isolated = await import('./cardanoAddressValidator');
             await isolated.preloadCborDecode();
 
-            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(false);
+            expect(isolated.adaValidator.isAddressValid('ada', legacyAddress)).toBe(false);
 
             jest.dontMock('cbor');
             await isolated.preloadCborDecode();
 
-            expect(isolated.adaValidator.isAddressValid(legacyAddress, 'ada')).toBe(true);
+            expect(isolated.adaValidator.isAddressValid('ada', legacyAddress)).toBe(true);
         });
     });
 });

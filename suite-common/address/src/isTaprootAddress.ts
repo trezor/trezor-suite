@@ -8,4 +8,4 @@ type IsTaprootAddressParams = {
 };
 
 export const isTaprootAddress = ({ addressValidator, address, symbol }: IsTaprootAddressParams) =>
-    addressValidator.getAddressType(address, symbol) === 'p2tr';
+    addressValidator.getAddressType(symbol, address) === 'p2tr';

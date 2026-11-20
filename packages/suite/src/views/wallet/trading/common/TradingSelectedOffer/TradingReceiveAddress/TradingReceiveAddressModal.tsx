@@ -50,7 +50,7 @@ export const TradingReceiveAddressModal = () => {
                 try {
                     isValid =
                         value && symbol !== undefined && isNetworkSymbol(symbol)
-                            ? addressValidator.isAddressValid(value, symbol)
+                            ? addressValidator.isAddressValid(symbol, value)
                             : true;
                 } catch {
                     isValid = false;

@@ -16,9 +16,9 @@ export const injectAddressValidator = (services: any): AddressValidatorDep => ({
 });
 
 export const createAddressValidator = (deps: AddressValidatorDeps): AddressValidator => ({
-    isAddressValid: (address: string, symbol: NetworkSymbol) =>
-        deps.networkModuleRepository.get(symbol).addressValidator.isAddressValid(address, symbol),
+    isAddressValid: (symbol: NetworkSymbol, address: string) =>
+        deps.networkModuleRepository.get(symbol).addressValidator.isAddressValid(symbol, address),
 
-    getAddressType: (address: string, symbol: NetworkSymbol) =>
-        deps.networkModuleRepository.get(symbol).addressValidator.getAddressType(address, symbol),
+    getAddressType: (symbol: NetworkSymbol, address: string) =>
+        deps.networkModuleRepository.get(symbol).addressValidator.getAddressType(symbol, address),
 });

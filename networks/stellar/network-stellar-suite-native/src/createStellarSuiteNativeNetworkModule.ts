@@ -6,9 +6,14 @@ import {
     type StellarSuiteCommonNetworkModule,
     createStellarSuiteCommonNetworkModule,
 } from '@trezor/network-stellar-suite-common';
+import { supportedStellarNetworks } from '@trezor/network-stellar-types';
 
 export type StellarSuiteNativeNetworkModule =
     SuiteNativeNetworkModule<StellarSuiteCommonNetworkModule>;
 
 export const createStellarSuiteNativeNetworkModule = (): StellarSuiteNativeNetworkModule =>
-    createNetworkModuleSuiteNative(createStellarSuiteCommonNetworkModule());
+    createNetworkModuleSuiteNative(
+        createStellarSuiteCommonNetworkModule(),
+        supportedStellarNetworks,
+        {},
+    );

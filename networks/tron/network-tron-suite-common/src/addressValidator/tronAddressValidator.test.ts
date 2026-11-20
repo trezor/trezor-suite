@@ -95,7 +95,7 @@ describe('tron validator', () => {
     it.each(tronIsAddressValidCases)('validates $symbol address $address', testCase => {
         const { address, expected, symbol } = testCase;
 
-        expect(tronValidator.isAddressValid(address, symbol)).toBe(expected);
+        expect(tronValidator.isAddressValid(symbol, address)).toBe(expected);
     });
 
     it.each(tronAddressTypeCases)(
@@ -103,7 +103,7 @@ describe('tron validator', () => {
         testCase => {
             const { address, expectedAddressType, symbol } = testCase;
 
-            expect(tronValidator.getAddressType(address, symbol)).toBe(expectedAddressType);
+            expect(tronValidator.getAddressType(symbol, address)).toBe(expectedAddressType);
         },
     );
 });

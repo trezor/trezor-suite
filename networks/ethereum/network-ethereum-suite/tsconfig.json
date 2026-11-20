@@ -5,6 +5,7 @@
         {
             "path": "../network-ethereum-suite-common"
         },
+        { "path": "../network-ethereum-types" },
         {
             "path": "../../network-module/suite/suite-types"
         }

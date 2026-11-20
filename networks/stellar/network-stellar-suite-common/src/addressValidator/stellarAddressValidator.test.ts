@@ -130,12 +130,12 @@ describe('stellar validator', () => {
     it.each(stellarIsAddressValidCases)('validates address $address', testCase => {
         const { address, expected } = testCase;
 
-        expect(stellarValidator.isAddressValid(address, 'xlm')).toBe(expected);
+        expect(stellarValidator.isAddressValid('xlm', address)).toBe(expected);
     });
 
     it.each(stellarAddressTypeCases)('resolves address type for $address', testCase => {
         const { address, expectedAddressType } = testCase;
 
-        expect(stellarValidator.getAddressType(address, 'xlm')).toBe(expectedAddressType);
+        expect(stellarValidator.getAddressType('xlm', address)).toBe(expectedAddressType);
     });
 });

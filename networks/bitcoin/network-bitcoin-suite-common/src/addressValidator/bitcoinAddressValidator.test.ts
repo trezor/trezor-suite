@@ -806,13 +806,13 @@ describe('bitcoin validator', () => {
         const { address, expected } = testCase;
         const { symbol } = testCase;
 
-        expect(bitcoinValidator.isAddressValid(address, symbol)).toBe(expected);
+        expect(bitcoinValidator.isAddressValid(symbol, address)).toBe(expected);
     });
 
     it.each(bitcoinAddressTypeCases)('resolves address type for $address', testCase => {
         const { address, expectedAddressType } = testCase;
         const { symbol } = testCase;
 
-        expect(bitcoinValidator.getAddressType(address, symbol)).toBe(expectedAddressType);
+        expect(bitcoinValidator.getAddressType(symbol, address)).toBe(expectedAddressType);
     });
 });

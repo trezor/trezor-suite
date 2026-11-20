@@ -35,7 +35,7 @@ function verifyChecksum(address: string): boolean {
     return computedChecksum === checksum;
 }
 
-export const isAddressValid = (address: string, _symbol: StellarNetworkSymbol): boolean => {
+export const isAddressValid = (_symbol: StellarNetworkSymbol, address: string): boolean => {
     if (regexp.test(address)) {
         return verifyChecksum(address);
     }
@@ -43,8 +43,8 @@ export const isAddressValid = (address: string, _symbol: StellarNetworkSymbol): 
     return false;
 };
 
-export const getAddressType = (address: string, _symbol: StellarNetworkSymbol) => {
-    if (isAddressValid(address, _symbol)) {
+export const getAddressType = (_symbol: StellarNetworkSymbol, address: string) => {
+    if (isAddressValid(_symbol, address)) {
         return addressType.ADDRESS;
     }
 

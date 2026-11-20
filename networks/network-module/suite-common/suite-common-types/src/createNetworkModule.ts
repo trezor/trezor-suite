@@ -1,6 +1,5 @@
 import type { NetworkAssetsModule } from '@trezor/network-assets-types';
-import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
-import { isArrayMember } from '@trezor/utils';
+import { asNetworkSymbols, createNarrow } from '@trezor/network-module-types';
 
 import type { IsWrappedNativeToken } from './IsWrappedNativeToken';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
@@ -25,9 +24,9 @@ export type NetworkModuleDefinition<TNetworkSymbol extends string> = {
     /** Only for networks with a name system; see `NamedAddressResolver`. */
     namedAddressResolver?: NamedAddressResolver<TNetworkSymbol>;
 
-    getNetworkConfig: (symbol: TNetworkSymbol) => SuiteCommonNetworkConfig;
+    getNetworkConfig: (networkSymbol: TNetworkSymbol) => SuiteCommonNetworkConfig;
 
-    getAccountSyncInterval: (symbol: TNetworkSymbol) => number;
+    getAccountSyncInterval: (networkSymbol: TNetworkSymbol) => number;
 
     signVerify?: NetworkSignVerify<TNetworkSymbol>;
 };
@@ -45,38 +44,23 @@ export const createNetworkModule = <TNetworkSymbol extends string>(
     supportedNetworks: readonly TNetworkSymbol[],
     definition: NetworkModuleDefinition<TNetworkSymbol>,
 ): SuiteCommonNetworkModule => {
-    const isSupportedNetwork = (symbol: string): symbol is TNetworkSymbol =>
-        isArrayMember(symbol, supportedNetworks);
-
-    const narrow = (symbol: NetworkSymbol): TNetworkSymbol => {
-        if (!isSupportedNetwork(symbol)) {
-            throw new Error(
-                `Unsupported network symbol: ${symbol}. Supported: ${supportedNetworks.join(', ')}.`,
-            );
-        }
-
-        return symbol;
-    };
+    const narrow = createNarrow(supportedNetworks);
 
     const { isWrappedNativeToken, namedAddressResolver, signVerify } = definition;
 
     return {
         icon: definition.icon,
-        isWrappedNativeToken: isWrappedNativeToken
-            ? (symbol, contract) => isWrappedNativeToken(narrow(symbol), contract)
-            : undefined,
+        isWrappedNativeToken: isWrappedNativeToken && narrow(isWrappedNativeToken),
         addressValidator: {
-            isAddressValid: (address, symbol) =>
-                definition.addressValidator.isAddressValid(address, narrow(symbol)),
-            getAddressType: (address, symbol) =>
-                definition.addressValidator.getAddressType(address, narrow(symbol)),
+            isAddressValid: narrow(definition.addressValidator.isAddressValid),
+            getAddressType: narrow(definition.addressValidator.getAddressType),
         },
         namedAddressResolver:
             namedAddressResolver &&
-            createNamedAddressResolver(namedAddressResolver, isSupportedNetwork, narrow),
+            createNamedAddressResolver(namedAddressResolver, supportedNetworks),
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
-        getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),
-        getAccountSyncInterval: symbol => definition.getAccountSyncInterval(narrow(symbol)),
-        signVerify: signVerify && createNetworkSignVerify(signVerify, narrow),
+        getNetworkConfig: narrow(definition.getNetworkConfig),
+        getAccountSyncInterval: narrow(definition.getAccountSyncInterval),
+        signVerify: signVerify && createNetworkSignVerify(signVerify, supportedNetworks),
     };
 };

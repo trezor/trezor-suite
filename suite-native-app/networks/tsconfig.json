@@ -8,7 +8,11 @@
         {
             "path": "../../networks/network-module/network-module-types"
         },
-        { "path": "../../packages/utils" },
-        { "path": "../../packages/requirements" }
+        {
+            "path": "../../packages/utils"
+        },
+        {
+            "path": "../../packages/requirements"
+        }
     ]
 }

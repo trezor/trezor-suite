@@ -11,7 +11,7 @@ export const isReceiveAddressValid = (
     receiveSymbol: NetworkSymbol,
 ): boolean => {
     try {
-        return addressValidator.isAddressValid(receiveAddress, receiveSymbol);
+        return addressValidator.isAddressValid(receiveSymbol, receiveAddress);
     } catch {
         return false;
     }

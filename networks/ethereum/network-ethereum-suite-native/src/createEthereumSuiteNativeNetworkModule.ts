@@ -3,6 +3,7 @@ import {
     type EthereumSuiteCommonNetworkModuleDeps,
     createEthereumSuiteCommonNetworkModule,
 } from '@trezor/network-ethereum-suite-common';
+import { supportedEthereumNetworks } from '@trezor/network-ethereum-types';
 import {
     type SuiteNativeNetworkModule,
     createNetworkModuleSuiteNative,
@@ -16,4 +17,8 @@ export type EthereumSuiteNativeNetworkModule =
 export const createEthereumSuiteNativeNetworkModule = (
     deps: EthereumSuiteNativeNetworkModuleDeps,
 ): EthereumSuiteNativeNetworkModule =>
-    createNetworkModuleSuiteNative(createEthereumSuiteCommonNetworkModule(deps));
+    createNetworkModuleSuiteNative(
+        createEthereumSuiteCommonNetworkModule(deps),
+        supportedEthereumNetworks,
+        {},
+    );

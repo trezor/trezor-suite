@@ -122,7 +122,7 @@ describe('getResolveNamedAddressQueryOptions', () => {
                 queryOptions('  vitalik.eth  ', asNetworkSymbol('eth')),
             );
 
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('eth', 'vitalik.eth', {
                 identity: undefined,
             });
         });
@@ -163,7 +163,7 @@ describe('getResolveNamedAddressQueryOptions', () => {
 
             await queryClient.ensureQueryData(queryOptions(RESOLVED_HEX, asNetworkSymbol('eth')));
 
-            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth', {
+            expect(mockReverseResolveAddress).toHaveBeenCalledWith('eth', RESOLVED_HEX, {
                 identity: undefined,
             });
             expect(mockResolveNamedAddress).not.toHaveBeenCalled();
@@ -181,8 +181,8 @@ describe('getResolveNamedAddressQueryOptions', () => {
             );
 
             const options = { identity: 'deviceState' };
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', options);
-            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth', options);
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('eth', 'vitalik.eth', options);
+            expect(mockReverseResolveAddress).toHaveBeenCalledWith('eth', RESOLVED_HEX, options);
         });
 
         it('rejects rather than resolving an unsupported symbol', async () => {

@@ -68,7 +68,7 @@ const getAccountInfoSpy = jest.spyOn(TrezorConnect, 'getAccountInfo');
 const services: { networks: AddressValidatorDep } = {
     networks: {
         addressValidator: mockAddressValidator({
-            isAddressValid: address => address !== eoaAddressChecksumInvalid,
+            isAddressValid: (_symbol, address) => address !== eoaAddressChecksumInvalid,
         }),
     },
 };

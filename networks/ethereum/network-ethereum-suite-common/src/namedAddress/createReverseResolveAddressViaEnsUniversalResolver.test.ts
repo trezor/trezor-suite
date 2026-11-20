@@ -87,7 +87,7 @@ describe('reverseResolveAddressOnchain', () => {
     it('sends the lookup on the given backend identity', async () => {
         succeedWith(REVERSE_SUCCESS);
 
-        await reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth', { identity: 'deviceState' });
+        await reverseResolveAddressOnchain('eth', VITALIK_ADDRESS, { identity: 'deviceState' });
 
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'deviceState' }),
@@ -106,7 +106,7 @@ describe('reverseResolveAddressOnchain', () => {
     ] as const)('asks for the chain coin type on %s', async (symbol, expectedCoinType) => {
         succeedWith(REVERSE_SUCCESS);
 
-        await reverseResolveAddressOnchain(VITALIK_ADDRESS, symbol);
+        await reverseResolveAddressOnchain(symbol, VITALIK_ADDRESS);
 
         expect(getSentCoinType()).toBe(expectedCoinType);
     });
@@ -114,7 +114,7 @@ describe('reverseResolveAddressOnchain', () => {
     it('resolves an address to its primary name', async () => {
         succeedWith(REVERSE_SUCCESS);
 
-        await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBe(
+        await expect(reverseResolveAddressOnchain('eth', VITALIK_ADDRESS)).resolves.toBe(
             'nick.eth',
         );
     });
@@ -122,13 +122,13 @@ describe('reverseResolveAddressOnchain', () => {
     it('returns null when the address has no primary name', async () => {
         succeedWith(REVERSE_EMPTY);
 
-        await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBeNull();
+        await expect(reverseResolveAddressOnchain('eth', VITALIK_ADDRESS)).resolves.toBeNull();
     });
 
     it('returns null when the revert carries no data', async () => {
         failWith('execution reverted');
 
-        await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBeNull();
+        await expect(reverseResolveAddressOnchain('eth', VITALIK_ADDRESS)).resolves.toBeNull();
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
@@ -137,7 +137,7 @@ describe('reverseResolveAddressOnchain', () => {
     it('returns null when the reverse resolver asks for an offchain hop', async () => {
         revertWith(OFFCHAIN_LOOKUP);
 
-        await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBeNull();
+        await expect(reverseResolveAddressOnchain('eth', VITALIK_ADDRESS)).resolves.toBeNull();
     });
 
     it('returns null when the resolver reports a reverse mismatch', async () => {
@@ -149,6 +149,6 @@ describe('reverseResolveAddressOnchain', () => {
             ),
         );
 
-        await expect(reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth')).resolves.toBeNull();
+        await expect(reverseResolveAddressOnchain('eth', VITALIK_ADDRESS)).resolves.toBeNull();
     });
 });

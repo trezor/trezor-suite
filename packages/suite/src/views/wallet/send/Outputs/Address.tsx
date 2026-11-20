@@ -221,7 +221,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 return;
             }
 
-            if (addressValidator.isAddressValid(uri, symbol)) {
+            if (addressValidator.isAddressValid(symbol, uri)) {
                 setValue(inputName, uri, { shouldValidate: true });
 
                 composeTransaction(inputName);
@@ -427,7 +427,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 if (namedAddress.isSupported && namedAddress.isNameLike(value)) {
                     return;
                 }
-                if (!addressValidator.isAddressValid(value, symbol)) {
+                if (!addressValidator.isAddressValid(symbol, value)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },

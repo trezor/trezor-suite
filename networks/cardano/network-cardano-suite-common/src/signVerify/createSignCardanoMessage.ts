@@ -21,7 +21,6 @@ export type SignCardanoMessageDeps = GetTrezorConnectDep<'cardanoSignMessage'>;
 
 export type SignCardanoMessageParams = {
     device: DeviceIdentity;
-    symbol: CardanoNetworkSymbol;
     accountIndex: number;
     accountType: AccountType;
     /** The account's staking path signs with its stake address, any other path with its address. */
@@ -38,6 +37,7 @@ export type CardanoSignedMessage = {
 };
 
 export type SignCardanoMessage = (
+    networkSymbol: CardanoNetworkSymbol,
     params: SignCardanoMessageParams,
 ) => Promise<Result<CardanoSignedMessage, SignError>>;
 
@@ -69,7 +69,7 @@ const getPublicKey = (
 
 export const createSignCardanoMessage =
     (deps: SignCardanoMessageDeps): SignCardanoMessage =>
-    async ({ device, symbol, accountIndex, accountType, path, message, hex, format }) => {
+    async (networkSymbol, { device, accountIndex, accountType, path, message, hex, format }) => {
         const signatureFormat = toCardanoSignatureFormat(format);
 
         if (!signatureFormat.success) {
@@ -81,7 +81,7 @@ export const createSignCardanoMessage =
             path,
             payload: hex ? message : Buffer.from(message, 'utf8').toString('hex'),
             addressParameters: getCardanoAddressParameters(accountIndex, path),
-            protocolMagic: getProtocolMagic(symbol),
+            protocolMagic: getProtocolMagic(networkSymbol),
             networkId: getNetworkId(),
             derivationType: getDerivationType(accountType),
         });

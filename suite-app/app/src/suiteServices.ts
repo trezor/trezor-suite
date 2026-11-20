@@ -8,6 +8,7 @@ import { type TransportsDep } from '@suite-common/connect-init';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { type ReferAFriendDep } from '@suite-common/refer-a-friend';
 import { type TransactionRetrieverDep } from '@suite-common/wallet-core';
+import { type GetSignVerifyDep } from '@trezor/network-module-suite-types';
 import { type DbDep } from '@trezor/suite';
 
 export type SuiteServices = CommonServices &
@@ -20,4 +21,5 @@ export type SuiteServices = CommonServices &
     BluetoothDep &
     ReferAFriendDep &
     TransactionRetrieverDep &
-    ReduxLoggerControlDep;
+    ReduxLoggerControlDep &
+    GetSignVerifyDep;

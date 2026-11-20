@@ -46,10 +46,10 @@ export const createEthereumNamedAddressResolverCompositionRoot = (
 
     return {
         ethereumNamedAddressResolver: createEthereumNamedAddressResolver({
-            resolveNamedAddress: async (value, symbol, options) =>
-                (await loadResolver()).resolveNamedAddress(value, symbol, options),
-            reverseResolveAddress: async (address, symbol, options) =>
-                (await loadResolver()).reverseResolveAddress(address, symbol, options),
+            resolveNamedAddress: async (symbol, value, options) =>
+                (await loadResolver()).resolveNamedAddress(symbol, value, options),
+            reverseResolveAddress: async (symbol, address, options) =>
+                (await loadResolver()).reverseResolveAddress(symbol, address, options),
         }),
     };
 };

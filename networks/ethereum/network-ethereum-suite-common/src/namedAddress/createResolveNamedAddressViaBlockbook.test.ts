@@ -19,7 +19,7 @@ describe('resolveViaBlockbook', () => {
             payload: { descriptor: VITALIK_ADDRESS },
         });
 
-        await expect(resolveViaBlockbook('vitalik.eth', 'eth')).resolves.toBe(VITALIK_ADDRESS);
+        await expect(resolveViaBlockbook('eth', 'vitalik.eth')).resolves.toBe(VITALIK_ADDRESS);
         expect(mockGetAccountInfo).toHaveBeenCalledWith({
             descriptor: 'vitalik.eth',
             coin: 'eth',
@@ -34,7 +34,7 @@ describe('resolveViaBlockbook', () => {
             payload: { descriptor: VITALIK_ADDRESS },
         });
 
-        await resolveViaBlockbook('vitalik.eth', 'eth', { identity: 'deviceState' });
+        await resolveViaBlockbook('eth', 'vitalik.eth', { identity: 'deviceState' });
 
         expect(mockGetAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'deviceState' }),
@@ -48,7 +48,7 @@ describe('resolveViaBlockbook', () => {
         async descriptor => {
             mockGetAccountInfo.mockResolvedValue({ success: true, payload: { descriptor } });
 
-            await expect(resolveViaBlockbook('vitalik.eth', 'eth')).resolves.toBeNull();
+            await expect(resolveViaBlockbook('eth', 'vitalik.eth')).resolves.toBeNull();
         },
     );
 
@@ -58,7 +58,7 @@ describe('resolveViaBlockbook', () => {
             error: { message: 'Blockbook unavailable' },
         });
 
-        await expect(resolveViaBlockbook('vitalik.eth', 'eth')).rejects.toThrow(
+        await expect(resolveViaBlockbook('eth', 'vitalik.eth')).rejects.toThrow(
             'Blockbook unavailable',
         );
     });

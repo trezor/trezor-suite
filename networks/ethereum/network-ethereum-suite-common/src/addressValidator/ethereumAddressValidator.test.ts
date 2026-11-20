@@ -288,13 +288,13 @@ describe('ethereum validator', () => {
         const { address, expected } = testCase;
         const { symbol } = testCase;
 
-        expect(ethereumValidator.isAddressValid(address, symbol)).toBe(expected);
+        expect(ethereumValidator.isAddressValid(symbol, address)).toBe(expected);
     });
 
     it.each(ethereumAddressTypeCases)('resolves address type for $address', testCase => {
         const { address, expectedAddressType } = testCase;
         const { symbol } = testCase;
 
-        expect(ethereumValidator.getAddressType(address, symbol)).toBe(expectedAddressType);
+        expect(ethereumValidator.getAddressType(symbol, address)).toBe(expectedAddressType);
     });
 });

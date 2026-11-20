@@ -5,6 +5,7 @@
         {
             "path": "../network-cardano-suite-common"
         },
+        { "path": "../network-cardano-types" },
         {
             "path": "../../network-module/suite-native/suite-native-types"
         }

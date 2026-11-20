@@ -17,7 +17,7 @@ function verifyChecksum(address: string): boolean {
     return computedChecksum === checksum;
 }
 
-export const isAddressValid = (address: string, _symbol: RippleNetworkSymbol): boolean => {
+export const isAddressValid = (_symbol: RippleNetworkSymbol, address: string): boolean => {
     if (regexp.test(address)) {
         return verifyChecksum(address);
     }
@@ -25,8 +25,8 @@ export const isAddressValid = (address: string, _symbol: RippleNetworkSymbol): b
     return false;
 };
 
-export const getAddressType = (address: string, _symbol: RippleNetworkSymbol) => {
-    if (isAddressValid(address, _symbol)) {
+export const getAddressType = (_symbol: RippleNetworkSymbol, address: string) => {
+    if (isAddressValid(_symbol, address)) {
         return addressType.ADDRESS;
     }
 

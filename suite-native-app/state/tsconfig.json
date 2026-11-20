@@ -84,6 +84,7 @@
         {
             "path": "../../suite-common/walletconnect"
         },
+        { "path": "../networks" },
         { "path": "../suite-sync" },
         {
             "path": "../../suite-native/analytics"

@@ -59,7 +59,7 @@ export const createResolveNamedAddressViaEnsUniversalResolver = (
         return trim(address) === '0x00' ? null : address;
     };
 
-    return async (value, symbol, options) => {
+    return async (symbol, value, options) => {
         // A name no conformant resolver could hold — `isNameLike` accepts shapes ENSIP-15
         // rejects, such as an underscore. Answering "no record" beats falling through to a backend
         // that cannot do better either.

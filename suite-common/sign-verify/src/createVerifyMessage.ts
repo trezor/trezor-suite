@@ -50,9 +50,8 @@ export const createVerifyMessage = (deps: VerifyMessageDeps): VerifyMessage => {
             return err(SignVerifyNotSupportedError());
         }
 
-        return await verifyMessage({
+        return await verifyMessage(account.symbol, {
             device: readyDevice.payload,
-            symbol: account.symbol,
             address,
             message,
             signature,

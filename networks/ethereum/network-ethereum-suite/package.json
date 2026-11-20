@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/network-ethereum-types": "workspace:*",
         "@trezor/network-module-suite-types": "workspace:*"
     }
 }

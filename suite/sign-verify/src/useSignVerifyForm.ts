@@ -47,7 +47,7 @@ const signVerifySchema: yup.ObjectSchema<SignVerifyFields> = yup.object({
             (value, { options }) =>
                 value &&
                 options.context?.symbol &&
-                options.context.addressValidator.isAddressValid(value, options.context.symbol),
+                options.context.addressValidator.isAddressValid(options.context.symbol, value),
         )
         .required(),
     path: yup.string().when('$isSignPage', {

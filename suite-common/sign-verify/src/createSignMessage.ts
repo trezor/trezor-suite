@@ -62,9 +62,8 @@ export const createSignMessage = (deps: SignMessageDeps): SignMessage => {
             return err(SignVerifyNotSupportedError());
         }
 
-        return await networkSignVerify.signMessage({
+        return await networkSignVerify.signMessage(account.symbol, {
             device: readyDevice.payload,
-            symbol: account.symbol,
             accountIndex: account.index,
             accountType: account.accountType,
             path,

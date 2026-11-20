@@ -125,7 +125,7 @@ export const XpubScanScreen = ({
         if (
             xpubAddress &&
             !isAddressBasedNetwork(networkType) &&
-            addressValidator.isAddressValid(xpubAddress, networkSymbol)
+            addressValidator.isAddressValid(networkSymbol, xpubAddress)
         ) {
             showDelayedAlert({
                 title: <Translation id="moduleAccountImport.xpubScanScreen.alert.address.title" />,

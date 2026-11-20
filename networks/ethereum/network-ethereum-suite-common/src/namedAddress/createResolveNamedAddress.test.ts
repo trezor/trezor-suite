@@ -22,14 +22,14 @@ describe('resolveNamedAddress', () => {
     it('returns the onchain result without touching Blockbook', async () => {
         mockResolveOnchain.mockResolvedValue(VITALIK_ADDRESS);
 
-        await expect(resolveNamedAddress('vitalik.eth', 'eth')).resolves.toBe(VITALIK_ADDRESS);
+        await expect(resolveNamedAddress('eth', 'vitalik.eth')).resolves.toBe(VITALIK_ADDRESS);
         expect(mockResolveViaBlockbook).not.toHaveBeenCalled();
     });
 
     it('treats a null onchain result as definitive and does not fall back', async () => {
         mockResolveOnchain.mockResolvedValue(null);
 
-        await expect(resolveNamedAddress('nope.eth', 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddress('eth', 'nope.eth')).resolves.toBeNull();
         expect(mockResolveViaBlockbook).not.toHaveBeenCalled();
     });
 
@@ -37,26 +37,26 @@ describe('resolveNamedAddress', () => {
         mockResolveOnchain.mockRejectedValue(new Error('Backend not connected'));
         mockResolveViaBlockbook.mockResolvedValue(VITALIK_ADDRESS);
 
-        await expect(resolveNamedAddress('vitalik.eth', 'eth')).resolves.toBe(VITALIK_ADDRESS);
-        expect(mockResolveViaBlockbook).toHaveBeenCalledWith('vitalik.eth', 'eth', undefined);
+        await expect(resolveNamedAddress('eth', 'vitalik.eth')).resolves.toBe(VITALIK_ADDRESS);
+        expect(mockResolveViaBlockbook).toHaveBeenCalledWith('eth', 'vitalik.eth', undefined);
     });
 
     it('hands the backend identity to both the onchain call and the fallback', async () => {
         mockResolveOnchain.mockRejectedValue(new Error('Backend not connected'));
         mockResolveViaBlockbook.mockResolvedValue(VITALIK_ADDRESS);
 
-        await resolveNamedAddress('vitalik.eth', 'eth', { identity: 'deviceState' });
+        await resolveNamedAddress('eth', 'vitalik.eth', { identity: 'deviceState' });
 
         const options = { identity: 'deviceState' };
-        expect(mockResolveOnchain).toHaveBeenCalledWith('vitalik.eth', 'eth', options);
-        expect(mockResolveViaBlockbook).toHaveBeenCalledWith('vitalik.eth', 'eth', options);
+        expect(mockResolveOnchain).toHaveBeenCalledWith('eth', 'vitalik.eth', options);
+        expect(mockResolveViaBlockbook).toHaveBeenCalledWith('eth', 'vitalik.eth', options);
     });
 
     it('reports a Blockbook answer that is not an address as no record', async () => {
         mockResolveOnchain.mockRejectedValue(new Error('Backend not connected'));
         mockResolveViaBlockbook.mockResolvedValue(null);
 
-        await expect(resolveNamedAddress('vitalik.eth', 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddress('eth', 'vitalik.eth')).resolves.toBeNull();
     });
 
     // The send form awaits this before it can validate, so a backend that takes the request and
@@ -68,7 +68,7 @@ describe('resolveNamedAddress', () => {
         try {
             // The rejection has to be caught up front: the assertion can only run once the
             // timers below have advanced, and an unhandled rejection in between fails the run.
-            const resolution = resolveNamedAddress('vitalik.eth', 'eth').catch(error => error);
+            const resolution = resolveNamedAddress('eth', 'vitalik.eth').catch(error => error);
 
             // Past any budget the onchain attempt and the fallback could share.
             await jest.advanceTimersByTimeAsync(60_000);
@@ -85,7 +85,7 @@ describe('resolveNamedAddress', () => {
         mockResolveOnchain.mockRejectedValue(new Error('Backend not connected'));
         mockResolveViaBlockbook.mockRejectedValue(new Error('Blockbook unavailable'));
 
-        await expect(resolveNamedAddress('vitalik.eth', 'eth')).rejects.toThrow(
+        await expect(resolveNamedAddress('eth', 'vitalik.eth')).rejects.toThrow(
             'Blockbook unavailable',
         );
     });

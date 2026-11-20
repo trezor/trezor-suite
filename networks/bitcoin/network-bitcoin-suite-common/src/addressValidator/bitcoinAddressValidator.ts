@@ -323,9 +323,9 @@ const getAddressTypeForNetwork = (
     return undefined;
 };
 
-export const getAddressType = (address: string, symbol: BitcoinNetworkSymbol) => {
+export const getAddressType = (symbol: BitcoinNetworkSymbol, address: string) => {
     if (symbol === 'bch') {
-        return bchValidator.getAddressType(address, symbol);
+        return bchValidator.getAddressType(symbol, address);
     }
 
     const currency = getCurrency(symbol);
@@ -342,8 +342,8 @@ export const getAddressType = (address: string, symbol: BitcoinNetworkSymbol) =>
     return undefined;
 };
 
-export const isAddressValid = (address: string, symbol: BitcoinNetworkSymbol): boolean => {
-    const addrType = getAddressType(address, symbol);
+export const isAddressValid = (symbol: BitcoinNetworkSymbol, address: string): boolean => {
+    const addrType = getAddressType(symbol, address);
 
     return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
 };

@@ -3,7 +3,7 @@ import { base58 } from '@scure/base';
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
 import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
 
-export const isAddressValid = (address: string, _symbol: SolanaNetworkSymbol): boolean => {
+export const isAddressValid = (_symbol: SolanaNetworkSymbol, address: string): boolean => {
     try {
         const decoded = base58.decode(address);
 
@@ -13,8 +13,8 @@ export const isAddressValid = (address: string, _symbol: SolanaNetworkSymbol): b
     }
 };
 
-export const getAddressType = (address: string, _symbol: SolanaNetworkSymbol) => {
-    if (isAddressValid(address, _symbol)) {
+export const getAddressType = (_symbol: SolanaNetworkSymbol, address: string) => {
+    if (isAddressValid(_symbol, address)) {
         return addressType.ADDRESS;
     }
 

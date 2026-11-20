@@ -15,25 +15,25 @@ export type NamedAddressResolveOptions = {
  * it on a subset of their symbols only — hence the per-symbol `supportsNamedAddress`.
  */
 export type NamedAddressResolver<TNetworkSymbol extends string> = {
-    supportsNamedAddress(symbol: TNetworkSymbol): boolean;
+    supportsNamedAddress: (networkSymbol: TNetworkSymbol) => boolean;
 
     /** Shape check: a value the user may have meant as a name, not a promise that it resolves. */
-    isNameLike(value: string): boolean;
+    isNameLike: (value: string) => boolean;
 
     /** Shape check only — checksums are not enforced, so a lowercase paste still qualifies. */
-    isAddressLike(value: string): boolean;
+    isAddressLike: (value: string) => boolean;
 
     /** Resolves to `null` when the name exists but holds no address record. */
-    resolveNamedAddress(
+    resolveNamedAddress: (
+        networkSymbol: TNetworkSymbol,
         value: string,
-        symbol: TNetworkSymbol,
         options?: NamedAddressResolveOptions,
-    ): Promise<string | null>;
+    ) => Promise<string | null>;
 
     /** Resolves to `null` when the address has no primary name. */
-    reverseResolveAddress(
+    reverseResolveAddress: (
+        networkSymbol: TNetworkSymbol,
         address: string,
-        symbol: TNetworkSymbol,
         options?: NamedAddressResolveOptions,
-    ): Promise<string | null>;
+    ) => Promise<string | null>;
 };

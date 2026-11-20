@@ -1,16 +1,18 @@
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import { type NetworkSymbol, createNarrow, createNarrowAsync } from '@trezor/network-module-types';
 
 import type { NetworkSignVerify } from './NetworkSignVerify';
 
 export const createNetworkSignVerify = <TNetworkSymbol extends string>(
     { getFormats, getDefaultFormat, signMessage, verifyMessage }: NetworkSignVerify<TNetworkSymbol>,
-    narrow: (symbol: NetworkSymbol) => TNetworkSymbol,
-): NetworkSignVerify<NetworkSymbol> => ({
-    getFormats: getFormats && ((symbol, accountType) => getFormats(narrow(symbol), accountType)),
-    getDefaultFormat:
-        getDefaultFormat &&
-        ((symbol, accountType) => getDefaultFormat(narrow(symbol), accountType)),
-    signMessage: params => signMessage({ ...params, symbol: narrow(params.symbol) }),
-    verifyMessage:
-        verifyMessage && (params => verifyMessage({ ...params, symbol: narrow(params.symbol) })),
-});
+    supportedNetworks: readonly TNetworkSymbol[],
+): NetworkSignVerify<NetworkSymbol> => {
+    const narrow = createNarrow(supportedNetworks);
+    const narrowAsync = createNarrowAsync(supportedNetworks);
+
+    return {
+        getFormats: getFormats && narrow(getFormats),
+        getDefaultFormat: getDefaultFormat && narrow(getDefaultFormat),
+        signMessage: narrowAsync(signMessage),
+        verifyMessage: verifyMessage && narrowAsync(verifyMessage),
+    };
+};

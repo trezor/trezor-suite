@@ -84,7 +84,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             t => t.contract.toLowerCase() === addr.toLowerCase(),
         );
 
-        const isValid = addressValidator.isAddressValid(addr, account.symbol);
+        const isValid = addressValidator.isAddressValid(account.symbol, addr);
 
         if (addr && !isValid) {
             setError(translationString('TR_ADD_TOKEN_ADDRESS_NOT_VALID'));

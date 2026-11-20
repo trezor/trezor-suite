@@ -41,7 +41,7 @@ describe('resolution request cost', () => {
             error: { message: 'execution reverted' },
         });
 
-        const resolved = await resolveNamedAddress('cult.et', 'eth');
+        const resolved = await resolveNamedAddress('eth', 'cult.et');
 
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
         // A definitive answer, so no Blockbook fallback.
@@ -62,7 +62,7 @@ describe('resolution request cost', () => {
             },
         });
 
-        const resolved = await resolveNamedAddress('vitalik.eth', 'eth');
+        const resolved = await resolveNamedAddress('eth', 'vitalik.eth');
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
@@ -95,7 +95,7 @@ describe('resolution request cost', () => {
             payload: { descriptor: RESOLVED_ADDRESS },
         });
 
-        const resolved = await resolveNamedAddress('offchain.eth', 'eth');
+        const resolved = await resolveNamedAddress('eth', 'offchain.eth');
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
         expect(mockGetAccountInfo).toHaveBeenCalledTimes(1);
@@ -111,7 +111,7 @@ describe('resolution request cost', () => {
             payload: { descriptor: RESOLVED_ADDRESS },
         });
 
-        const resolved = await resolveNamedAddress('vitalik.eth', 'eth');
+        const resolved = await resolveNamedAddress('eth', 'vitalik.eth');
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
         expect(mockGetAccountInfo).toHaveBeenCalledTimes(1);
@@ -134,7 +134,7 @@ describe('backend identity', () => {
             payload: { descriptor: RESOLVED_ADDRESS },
         });
 
-        await resolveNamedAddress('vitalik.eth', 'eth', { identity: 'account-identity' });
+        await resolveNamedAddress('eth', 'vitalik.eth', { identity: 'account-identity' });
 
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'account-identity' }),
@@ -150,7 +150,7 @@ describe('backend identity', () => {
             error: { message: 'execution reverted' },
         });
 
-        await reverseResolveAddress(RESOLVED_ADDRESS, 'eth', { identity: 'account-identity' });
+        await reverseResolveAddress('eth', RESOLVED_ADDRESS, { identity: 'account-identity' });
 
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'account-identity' }),

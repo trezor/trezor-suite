@@ -1,2 +1,12 @@
+export {
+    type GetSignVerify,
+    type GetSignVerifyDep,
+    type SignVerify,
+    type SignVerifyProps,
+    injectGetSignVerify,
+} from './SignVerify';
 export type { SuiteNetworkModule } from './SuiteNetworkModule';
-export { createNetworkModuleSuite } from './createNetworkModuleSuite';
+export {
+    createNetworkModuleSuite,
+    type NetworkModuleSuiteDefinition,
+} from './createNetworkModuleSuite';

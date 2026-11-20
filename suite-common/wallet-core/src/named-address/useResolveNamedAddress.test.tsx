@@ -112,7 +112,7 @@ describe('useResolveNamedAddress', () => {
             expect(result.current.resolvedAddress).toBe(RESOLVED_HEX);
             expect(result.current.reverseResolvedName).toBeUndefined();
             expect(result.current.isResolveError).toBe(false);
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('eth', 'vitalik.eth', {
                 identity: undefined,
             });
         });
@@ -124,7 +124,7 @@ describe('useResolveNamedAddress', () => {
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
             expect(result.current.resolvedAddress).toBe(RESOLVED_HEX);
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'tsep', {
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('tsep', 'vitalik.eth', {
                 identity: undefined,
             });
         });
@@ -139,7 +139,7 @@ describe('useResolveNamedAddress', () => {
             );
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('eth', 'vitalik.eth', {
                 identity: 'deviceState',
             });
         });
@@ -150,7 +150,7 @@ describe('useResolveNamedAddress', () => {
             const { result } = renderResolveHook('  vitalik.eth  ', asNetworkSymbol('eth'));
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('eth', 'vitalik.eth', {
                 identity: undefined,
             });
         });
@@ -168,7 +168,7 @@ describe('useResolveNamedAddress', () => {
 
             expect(result.current.reverseResolvedName).toBe('vitalik.eth');
             expect(result.current.resolvedAddress).toBeUndefined();
-            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth', {
+            expect(mockReverseResolveAddress).toHaveBeenCalledWith('eth', RESOLVED_HEX, {
                 identity: undefined,
             });
             expect(mockResolveNamedAddress).not.toHaveBeenCalled();

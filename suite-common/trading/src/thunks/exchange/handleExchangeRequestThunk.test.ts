@@ -91,7 +91,7 @@ describe('handleExchangeRequestThunk', () => {
                     addressValidator: {
                         getAddressType: jest.fn(),
                         isAddressValid: jest.fn(
-                            (address, symbol) => address === validEthAddress && symbol === 'eth',
+                            (symbol, address) => address === validEthAddress && symbol === 'eth',
                         ),
                     },
                 },

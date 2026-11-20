@@ -14,7 +14,6 @@ export type VerifyBitcoinMessageDeps = GetTrezorConnectDep<'verifyMessage'>;
 
 export type VerifyBitcoinMessageParams = {
     device: DeviceIdentity;
-    symbol: BitcoinNetworkSymbol;
     address: string;
     message: string;
     signature: string;
@@ -22,6 +21,7 @@ export type VerifyBitcoinMessageParams = {
 };
 
 export type VerifyBitcoinMessage = (
+    networkSymbol: BitcoinNetworkSymbol,
     params: VerifyBitcoinMessageParams,
 ) => Promise<Result<void, VerifyError>>;
 
@@ -31,11 +31,11 @@ export type VerifyBitcoinMessageDep = {
 
 export const createVerifyBitcoinMessage =
     (deps: VerifyBitcoinMessageDeps): VerifyBitcoinMessage =>
-    async ({ device, symbol, address, message, signature, hex }) => {
+    async (networkSymbol, { device, address, message, signature, hex }) => {
         const response = await deps.getTrezorConnect().verifyMessage({
             device,
             address,
-            coin: asCoinSymbol(symbol),
+            coin: asCoinSymbol(networkSymbol),
             message,
             signature,
             hex,

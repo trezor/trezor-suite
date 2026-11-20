@@ -26,7 +26,7 @@ describe('isAddressDeprecated', () => {
         });
 
         expect(isAddressDeprecated({ ...deps, address, symbol })).toBe(expected);
-        expect(deps.addressValidator.isAddressValid).toHaveBeenCalledWith(address, 'btc');
+        expect(deps.addressValidator.isAddressValid).toHaveBeenCalledWith('btc', address);
     });
 
     it.each([

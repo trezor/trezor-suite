@@ -109,14 +109,14 @@ function isValidBech32Address(address: string, network: NetworkEnvironment): boo
     return true;
 }
 
-export const isAddressValid = (address: string, _symbol: CardanoNetworkSymbol): boolean => {
+export const isAddressValid = (_symbol: CardanoNetworkSymbol, address: string): boolean => {
     const resolvedNetwork = getNetworkEnvironment(address);
 
     return isValidLegacyAddress(address) || isValidBech32Address(address, resolvedNetwork);
 };
 
-export const getAddressType = (address: string, symbol: CardanoNetworkSymbol) => {
-    if (isAddressValid(address, symbol)) {
+export const getAddressType = (symbol: CardanoNetworkSymbol, address: string) => {
+    if (isAddressValid(symbol, address)) {
         return addressType.ADDRESS;
     }
 

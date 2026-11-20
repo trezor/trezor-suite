@@ -1,18 +1,24 @@
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import {
+    type NetworkSymbol,
+    createNarrowAsync,
+    isSupportedNetworkSymbol,
+} from '@trezor/network-module-types';
 
 import type { NamedAddressResolver } from './NamedAddressResolver';
 
 export const createNamedAddressResolver = <TNetworkSymbol extends string>(
     resolver: NamedAddressResolver<TNetworkSymbol>,
-    isSupportedNetwork: (symbol: string) => symbol is TNetworkSymbol,
-    narrow: (symbol: NetworkSymbol) => TNetworkSymbol,
-): NamedAddressResolver<NetworkSymbol> => ({
-    supportsNamedAddress: symbol =>
-        isSupportedNetwork(symbol) && resolver.supportsNamedAddress(symbol),
-    isNameLike: resolver.isNameLike,
-    isAddressLike: resolver.isAddressLike,
-    resolveNamedAddress: async (value, symbol, options) =>
-        await resolver.resolveNamedAddress(value, narrow(symbol), options),
-    reverseResolveAddress: async (address, symbol, options) =>
-        await resolver.reverseResolveAddress(address, narrow(symbol), options),
-});
+    supportedNetworks: readonly TNetworkSymbol[],
+): NamedAddressResolver<NetworkSymbol> => {
+    const narrowAsync = createNarrowAsync(supportedNetworks);
+
+    return {
+        supportsNamedAddress: networkSymbol =>
+            isSupportedNetworkSymbol(supportedNetworks, networkSymbol) &&
+            resolver.supportsNamedAddress(networkSymbol),
+        isNameLike: resolver.isNameLike,
+        isAddressLike: resolver.isAddressLike,
+        resolveNamedAddress: narrowAsync(resolver.resolveNamedAddress),
+        reverseResolveAddress: narrowAsync(resolver.reverseResolveAddress),
+    };
+};

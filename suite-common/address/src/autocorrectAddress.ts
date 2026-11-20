@@ -23,7 +23,7 @@ export const autocorrectAddress = ({
     if (isBitcoinCashAddressUppercase(address) || isBech32AddressUppercase(address)) {
         const lowercased = address.toLowerCase();
 
-        if (addressValidator.isAddressValid(lowercased, symbol)) {
+        if (addressValidator.isAddressValid(symbol, lowercased)) {
             return { corrected: lowercased, type: 'lowercase' };
         }
     }
@@ -31,7 +31,7 @@ export const autocorrectAddress = ({
     if (symbol === 'bch' && !hasBitcoinCashAddressPrefix(address)) {
         const corrected = `bitcoincash:${address.toLowerCase()}`;
 
-        if (addressValidator.isAddressValid(corrected, symbol)) {
+        if (addressValidator.isAddressValid(symbol, corrected)) {
             return { corrected, type: 'bchPrefix' };
         }
     }
