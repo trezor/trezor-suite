@@ -57,6 +57,7 @@ const cardanoComposeTransactionMock = TrezorConnect.cardanoComposeTransaction as
 const PREDEFINED_DREP_ID = 'drep_always_abstain';
 const OTHER_ACCOUNT_KEY = 'other-ada-account-key' as AccountKey;
 const NON_EVERSTAKE_POOL_ID = 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy';
+const UNBUNDLED_POOL_ID = 'pool1pyysjzgfpyysjzgfpyysjzgfpyysjzgfpyysjzgfpyysjz7we6v';
 
 const CHANGE_ADDRESS = {
     address: 'addr1change',
@@ -71,12 +72,14 @@ type CreateCardanoAccountProps = {
     drepId: string | null;
     isStakingActive?: boolean;
     rewards?: string;
+    poolId?: string;
 };
 
 const createCardanoAccount = ({
     drepId,
     isStakingActive = true,
     rewards = '0',
+    poolId = NON_EVERSTAKE_POOL_ID,
 }: CreateCardanoAccountProps): Account =>
     ({
         key: 'ada-account-key',
@@ -95,7 +98,7 @@ const createCardanoAccount = ({
                 address: 'stake-address',
                 rewards,
                 isActive: isStakingActive,
-                poolId: NON_EVERSTAKE_POOL_ID,
+                poolId,
                 drep: drepId === null ? null : { drep_id: drepId },
             },
         },
@@ -626,6 +629,25 @@ describe('composeTransactionThunk', () => {
         );
 
         expect(getDelegationPool()).toBe(poolBech32ToHex(MOCK_CARDANO_EVERSTAKE_OTHER_POOL));
+    });
+
+    it('keeps a delegation on a pool the product info lists but the bundled identities predate', async () => {
+        mockComposeSuccess();
+
+        await compose(
+            createCardanoAccount({ drepId: PREDEFINED_DREP_ID, poolId: UNBUNDLED_POOL_ID }),
+            { type: 'abstain' },
+            'normal',
+            'stake',
+            mockStakingProductInfo({
+                targets: [
+                    everstakeTarget(UNBUNDLED_POOL_ID, 95),
+                    everstakeTarget(MOCK_CARDANO_EVERSTAKE_POOL, 40),
+                ],
+            }),
+        );
+
+        expect(getDelegationPool()).toBe(poolBech32ToHex(UNBUNDLED_POOL_ID));
     });
 
     it('delegates a first stake to the default Everstake pool while no product info is cached', async () => {
