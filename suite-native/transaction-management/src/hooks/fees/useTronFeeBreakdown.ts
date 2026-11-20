@@ -58,14 +58,14 @@ export const useTronFeeBreakdown = ({
             }),
         );
     }
-    const resourceLabel = resourceParts.join(' & ');
 
     return {
         symbol: account.symbol,
         networkType: account.networkType,
         trxBurned,
         areFeesLoading,
-        resourceLabel,
+        resourceParts,
+        hasComposeError: feeLevels.normal?.type === 'error',
         isAccountActivation: breakdown?.isAccountActivation ?? false,
     };
 };

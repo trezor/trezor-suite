@@ -1,5 +1,9 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import type { Account, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type {
+    Account,
+    PrecomposedTransactionError,
+    PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -95,7 +99,8 @@ describe('useTronFeeBreakdown', () => {
             networkType: 'tron',
             trxBurned: null,
             areFeesLoading: expect.any(Boolean),
-            resourceLabel: expect.any(String),
+            resourceParts: expect.any(Array),
+            hasComposeError: false,
             isAccountActivation: false,
         });
     });
@@ -112,5 +117,30 @@ describe('useTronFeeBreakdown', () => {
         );
 
         expect(result.current?.isAccountActivation).toBe(true);
+    });
+
+    it('should flag a compose error instead of a breakdown', async () => {
+        const baseState = getPreloadedStateWith([getTronAccount()]);
+        const composeError: PrecomposedTransactionError = {
+            type: 'error',
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+        };
+        const preloadedState = {
+            wallet: {
+                ...baseState.wallet,
+                send: { ...baseState.wallet.send, feeLevels: { normal: composeError } },
+            },
+        };
+
+        const { result } = await renderHookWithStoreProvider(
+            () => useTronFeeBreakdown({ accountKey: TRON_ACCOUNT_KEY }),
+            { preloadedState },
+        );
+
+        expect(result.current).toMatchObject({
+            trxBurned: null,
+            resourceParts: [],
+            hasComposeError: true,
+        });
     });
 });

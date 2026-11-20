@@ -5,17 +5,17 @@ import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-
 type TronFeeValueProps = {
     trxBurned: string | null;
     areFeesLoading: boolean;
-    resourceLabel: string;
+    resourceParts: string[];
     symbol: NetworkSymbol;
 };
 
 export const TronFeeValue = ({
     trxBurned,
     areFeesLoading,
-    resourceLabel,
+    resourceParts,
     symbol,
 }: TronFeeValueProps) => {
-    const hasResourceCoverage = !!resourceLabel;
+    const hasResourceCoverage = resourceParts.length > 0;
     if (trxBurned !== null) {
         return (
             <HStack alignItems="center" spacing="sp4">
@@ -51,9 +51,13 @@ export const TronFeeValue = ({
 
     if (hasResourceCoverage) {
         return (
-            <Text variant="body-sm" color="contentPrimary">
-                {resourceLabel}
-            </Text>
+            <>
+                {resourceParts.map(part => (
+                    <Text key={part} variant="body-sm" color="contentPrimary">
+                        {part}
+                    </Text>
+                ))}
+            </>
         );
     }
 

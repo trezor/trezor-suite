@@ -62,7 +62,8 @@ export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowP
                         supportsAdjustableFees={isTrc20}
                         trxBurned={tronBreakdown.trxBurned}
                         areFeesLoading={tronBreakdown.areFeesLoading}
-                        resourceLabel={tronBreakdown.resourceLabel}
+                        resourceParts={tronBreakdown.resourceParts}
+                        hasComposeError={tronBreakdown.hasComposeError}
                         isAccountActivation={tronBreakdown.isAccountActivation}
                     />
                 ) : (

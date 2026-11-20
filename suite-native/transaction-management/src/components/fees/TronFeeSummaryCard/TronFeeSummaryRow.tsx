@@ -12,7 +12,8 @@ export type TronFeeSummaryRowProps = {
     supportsAdjustableFees: boolean;
     trxBurned: string | null;
     areFeesLoading: boolean;
-    resourceLabel: string;
+    resourceParts: string[];
+    hasComposeError: boolean;
     isAccountActivation: boolean;
 };
 
@@ -22,10 +23,11 @@ export const TronFeeSummaryRow = ({
     supportsAdjustableFees,
     trxBurned,
     areFeesLoading,
-    resourceLabel,
+    resourceParts,
+    hasComposeError,
     isAccountActivation,
 }: TronFeeSummaryRowProps) => {
-    const hasResourceCoverage = !!resourceLabel;
+    const hasResourceCoverage = resourceParts.length > 0;
 
     return (
         <HStack
@@ -43,19 +45,24 @@ export const TronFeeSummaryRow = ({
                 </Text>
             </VStack>
             <HStack alignItems="center" spacing="sp8">
-                <VStack alignItems="flex-end" spacing="sp2">
-                    <TronFeeValue
-                        trxBurned={trxBurned}
-                        areFeesLoading={areFeesLoading}
-                        resourceLabel={resourceLabel}
-                        symbol={symbol}
-                    />
-                    {trxBurned !== null && hasResourceCoverage && !areFeesLoading && (
-                        <Text variant="body-sm" color="contentSecondary">
-                            {`+ ${resourceLabel}`}
-                        </Text>
-                    )}
-                </VStack>
+                {!hasComposeError && (
+                    <VStack alignItems="flex-end" spacing="sp2">
+                        <TronFeeValue
+                            trxBurned={trxBurned}
+                            areFeesLoading={areFeesLoading}
+                            resourceParts={resourceParts}
+                            symbol={symbol}
+                        />
+                        {trxBurned !== null &&
+                            hasResourceCoverage &&
+                            !areFeesLoading &&
+                            resourceParts.map(part => (
+                                <Text key={part} variant="body-sm" color="contentSecondary">
+                                    {`+ ${part}`}
+                                </Text>
+                            ))}
+                    </VStack>
+                )}
                 <TronFeeInfoButton isAccountActivation={isAccountActivation} />
                 {supportsAdjustableFees && (
                     <Icon name="caretDown" size="medium" color="contentSecondary" />
