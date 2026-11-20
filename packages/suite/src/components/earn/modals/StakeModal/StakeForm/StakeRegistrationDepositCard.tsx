@@ -1,7 +1,10 @@
 import { AssetSymbol } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { selectIsStakingAccountActive } from '@suite-common/earn-staking';
-import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
+import {
+    formatStakingAmount,
+    selectIsStakingAccountActive,
+    selectStakeableStakingProductDescriptorBySymbol,
+} from '@suite-common/earn-staking';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
@@ -18,6 +21,17 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
 
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, key));
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
+
+    // The deposit the product the network stakes on asks for, in the network's main unit.
+    const registrationDeposit = useSelector(
+        state =>
+            selectStakeableStakingProductDescriptorBySymbol(state, symbol)?.limits
+                .registrationDeposit ?? null,
+    );
+    const formattedDeposit =
+        registrationDeposit === null
+            ? '0'
+            : formatStakingAmount({ amount: registrationDeposit, networkSymbol: symbol });
 
     return (
         <Card paddingType="small" flex="1">
@@ -55,8 +69,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                             data-testid="@modal/staking/registration-deposit-amount-with-symbol"
                             typographyStyle="body-md-strong"
                         >
-                            {CARDANO_STAKING_REGISTRATION_DEPOSIT}{' '}
-                            <AssetSymbol networkSymbol={symbol} />
+                            {formattedDeposit} <AssetSymbol networkSymbol={symbol} />
                         </Paragraph>
                     </Row>
                     <Row gap={20} justifyContent="space-between">
@@ -65,10 +78,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                         </Paragraph>
                         <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                             ≈
-                            <BaseCurrencyValue
-                                amount={CARDANO_STAKING_REGISTRATION_DEPOSIT}
-                                symbol={symbol}
-                            />
+                            <BaseCurrencyValue amount={formattedDeposit} symbol={symbol} />
                         </Paragraph>
                     </Row>
                 </>

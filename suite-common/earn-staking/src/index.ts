@@ -235,6 +235,7 @@ export {
     type GetPotentialStakingRewardsParams,
     type PotentialStakingRewardsAccount,
 } from './utils/getPotentialStakingRewards';
+export { getStakeableBalance, type GetStakeableBalanceParams } from './utils/getStakeableBalance';
 export { getStakingDaysUntil } from './utils/getStakingDaysUntil';
 export {
     getStakingOperationAvailability,
