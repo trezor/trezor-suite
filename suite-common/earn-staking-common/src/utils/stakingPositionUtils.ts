@@ -83,10 +83,17 @@ export const getStakingPositionRate = ({
         return rate === undefined || rate === null ? [] : [{ rate, amount: new BigNumber(amount) }];
     });
 
+    if (ratedTargets.length === 0) {
+        return productInfo.rate;
+    }
+
     const ratedAmount = BigNumber.sum(0, ...ratedTargets.map(({ amount }) => amount));
 
+    // A delegation keeps its target while it holds nothing, so the targets rate it evenly then.
     if (!ratedAmount.gt(0)) {
-        return productInfo.rate;
+        return BigNumber.sum(0, ...ratedTargets.map(({ rate }) => rate))
+            .div(ratedTargets.length)
+            .toNumber();
     }
 
     return BigNumber.sum(0, ...ratedTargets.map(({ rate, amount }) => amount.times(rate)))
