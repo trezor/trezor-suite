@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useFormState, useWatch } from 'react-hook-form';
 
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import {
@@ -21,6 +21,13 @@ import { BigNumber } from '@trezor/utils';
 import { useSelector } from '#src/hooks/suite/useSelector';
 import { useComposedLevelsPlaceholder } from '#src/hooks/wallet/form/useComposedLevelsPlaceholder';
 import { type FeesFormValues, useFees } from '#src/hooks/wallet/form/useFees';
+
+const CUSTOM_FEE_FIELDS = [
+    'feeLimit',
+    'feePerUnit',
+    'maxFeePerGas',
+    'maxPriorityFeePerGas',
+] as const;
 
 interface UseTxFeesFormProps {
     accountBalance: string;
@@ -45,6 +52,7 @@ export function useEvmTxSimulationFeesForm({
     isGasLimitFinal = false,
 }: UseTxFeesFormProps) {
     const form = useForm<FeesFormValues>({
+        mode: 'onChange',
         defaultValues: {
             feeLimit: defaultGasLimit,
             estimatedFeeLimit: defaultGasLimit,
@@ -75,6 +83,24 @@ export function useEvmTxSimulationFeesForm({
         control: form.control,
         name: ['selectedFee', 'feePerUnit', 'maxFeePerGas', 'feeLimit'],
     });
+
+    const { errors } = useFormState({ control: form.control, name: CUSTOM_FEE_FIELDS });
+    // Leaf reads: react-hook-form mutates `errors` in place, so the compiler would freeze the object.
+    const hasCustomFeeErrors =
+        selectedFee === 'custom' &&
+        Boolean(
+            errors.feeLimit?.type ||
+            errors.feePerUnit?.type ||
+            errors.maxFeePerGas?.type ||
+            errors.maxPriorityFeePerGas?.type,
+        );
+
+    // Unmounted inputs are skipped, so this validates only the active fee kind.
+    function validateCustomFee() {
+        if (form.getValues('selectedFee') !== 'custom') return Promise.resolve(true);
+
+        return form.trigger(CUSTOM_FEE_FIELDS);
+    }
 
     // calculate levels with total max fee
     const feeTotalCalculation = useCallback(
@@ -177,6 +203,8 @@ export function useEvmTxSimulationFeesForm({
         feeInfo,
         composedLevels,
         composedLevelsError,
+        hasCustomFeeErrors,
+        validateCustomFee,
         handleTxSimulationResult,
         getSelectedFee,
     };

@@ -55,6 +55,8 @@ export function ConnectPopupTxSimulationModalInner({
         changeFeeLevel,
         feeInfo,
         composedLevels,
+        hasCustomFeeErrors,
+        validateCustomFee,
         handleTxSimulationResult,
         getSelectedFee,
     } = useEvmTxSimulationFeesForm({
@@ -91,7 +93,9 @@ export function ConnectPopupTxSimulationModalInner({
         setAcceptedDisclaimerKey(isAccepted ? disclaimerKey : null);
     }
 
-    function confirm() {
+    async function confirm() {
+        if (!(await validateCustomFee())) return;
+
         const selectedFee = getSelectedFee();
 
         if (areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && selectedFee) {
@@ -125,7 +129,8 @@ export function ConnectPopupTxSimulationModalInner({
     const isConfirmDisabled = Boolean(
         txSimulationQuery.isLoading ||
         (txSimulationQuery.data?.payload?.needsDisclaimer && !disclaimerAccepted) ||
-        (hasRenderFailure && !renderFailureAccepted),
+        (hasRenderFailure && !renderFailureAccepted) ||
+        hasCustomFeeErrors,
     );
 
     const { formState } = form;

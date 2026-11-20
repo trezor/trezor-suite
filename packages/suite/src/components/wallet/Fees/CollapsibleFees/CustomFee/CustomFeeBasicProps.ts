@@ -6,6 +6,5 @@ export type CustomFeeBasicProps = {
     feeUnits: string;
     sharedRules: {
         required: string;
-        validate: (value: string) => string | undefined;
     };
 };

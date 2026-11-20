@@ -1,6 +1,6 @@
 import { act, renderHook } from '@suite-common/test-utils';
 import { type FeeInfo } from '@suite-common/wallet-types';
-import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { getConvertedOrDefaultFeeInfo, isInteger } from '@suite-common/wallet-utils';
 
 import { useEvmTxSimulationFeesForm } from './useEvmTxSimulationFeesForm';
 
@@ -65,4 +65,77 @@ describe('useEvmTxSimulationFeesForm selection', () => {
             }
         },
     );
+});
+
+describe('useEvmTxSimulationFeesForm custom fee guard', () => {
+    const renderWithGasLimitRule = () => {
+        jest.mocked(getConvertedOrDefaultFeeInfo).mockReturnValue({
+            blockHeight: 0,
+            blockTime: 12,
+            minFee: 0,
+            maxFee: 100,
+            minPriorityFee: 0,
+            levels: [{ label: 'normal', blocks: 1, feePerUnit: '1' }],
+        });
+        const { result } = renderHook(() =>
+            useEvmTxSimulationFeesForm({
+                accountBalance: '1000000000000000000',
+                defaultGasLimit: '21000',
+            }),
+        );
+        // Stands in for the mounted gas limit input, which owns the real rules.
+        act(() => {
+            result.current.form.register('feeLimit', {
+                validate: value => isInteger(value) || 'not an integer',
+            });
+        });
+
+        return result;
+    };
+
+    it('blocks confirmation while a custom field is invalid', async () => {
+        const result = renderWithGasLimitRule();
+
+        act(() => {
+            result.current.form.setValue('selectedFee', 'custom');
+            result.current.form.setValue('feeLimit', '21000.5');
+        });
+
+        let isValid: boolean | undefined;
+        await act(async () => {
+            isValid = await result.current.validateCustomFee();
+        });
+
+        expect(isValid).toBe(false);
+        expect(result.current.hasCustomFeeErrors).toBe(true);
+
+        act(() => result.current.form.setValue('feeLimit', '21001'));
+        await act(async () => {
+            isValid = await result.current.validateCustomFee();
+        });
+
+        expect(isValid).toBe(true);
+        expect(result.current.hasCustomFeeErrors).toBe(false);
+    });
+
+    it('ignores custom field errors once a preset level is selected', async () => {
+        const result = renderWithGasLimitRule();
+
+        act(() => {
+            result.current.form.setValue('selectedFee', 'custom');
+            result.current.form.setValue('feeLimit', '');
+        });
+        await act(async () => {
+            await result.current.validateCustomFee();
+        });
+        act(() => result.current.form.setValue('selectedFee', 'normal'));
+
+        let isValid: boolean | undefined;
+        await act(async () => {
+            isValid = await result.current.validateCustomFee();
+        });
+
+        expect(isValid).toBe(true);
+        expect(result.current.hasCustomFeeErrors).toBe(false);
+    });
 });
