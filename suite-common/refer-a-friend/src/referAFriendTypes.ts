@@ -23,7 +23,7 @@ export type ReferralVoucherStatus = 'pending' | 'available' | 'used' | 'expired'
 
 export type ReferralVoucher = {
     // null if the voucher hasn't been processed yet.
-    voucher: string | null;
+    code: string | null;
     status: ReferralVoucherStatus;
     amount: number;
     fiatCurrency: string;

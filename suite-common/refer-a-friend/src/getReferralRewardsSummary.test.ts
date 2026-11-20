@@ -2,7 +2,7 @@ import { getReferralRewardsSummary } from './getReferralRewardsSummary';
 import { type ReferralVoucher, type ReferralVoucherStatus } from './referAFriendTypes';
 
 const createVoucher = (status: ReferralVoucherStatus, amount: number): ReferralVoucher => ({
-    voucher: status === 'pending' ? null : 'TREF-0000-0000',
+    code: status === 'pending' ? null : 'TREF-0000-0000',
     status,
     amount,
     fiatCurrency: 'USD',
