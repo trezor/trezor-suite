@@ -139,6 +139,7 @@ export const TransactionTarget = ({
     }, [amount, operation, transaction.symbol, type, payload, transaction.type]);
 
     const isNft = type === 'token' && isNftTokenTransfer(payload);
+    const isSelfTokenTransfer = type === 'token' && payload.type === 'self';
 
     const fiatAmountComponent = useMemo(
         () =>
@@ -146,6 +147,7 @@ export const TransactionTarget = ({
             amount &&
             historicRate &&
             transaction.type !== 'self' &&
+            !isSelfTokenTransfer &&
             !isPhishingTransaction &&
             !isNft ? (
                 <>
@@ -167,6 +169,7 @@ export const TransactionTarget = ({
             isPhishingTransaction,
             operation,
             isNft,
+            isSelfTokenTransfer,
         ],
     );
 

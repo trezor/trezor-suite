@@ -31,7 +31,8 @@ export const AmountComponent = ({
     linkTypographyStyle,
     'data-testid': dataTest,
 }: AmountComponentProps): React.ReactNode => {
-    const operation = getTxOperation(transfer.type);
+    // A token sent to self does not leave the account, so it has no sign
+    const operation = getTxOperation(transfer.type, true);
 
     if (isNftTokenTransfer(transfer)) {
         return (
