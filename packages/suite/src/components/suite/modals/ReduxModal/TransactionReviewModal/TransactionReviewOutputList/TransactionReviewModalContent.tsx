@@ -15,6 +15,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
+    getClearSignedDisplayFormat,
     getDecreaseOutputId,
     getStakeType,
     isDeviceReviewOnlyTransaction,
@@ -95,6 +96,17 @@ export const TransactionReviewModalContent = ({
         ],
     );
 
+    const displayFormat = useMemo(
+        () =>
+            getClearSignedDisplayFormat({
+                account,
+                device,
+                precomposedTx,
+                transactionData: precomposedForm.transactionData,
+            }),
+        [account, device, precomposedTx, precomposedForm.transactionData],
+    );
+
     const stakeType = getStakeType(precomposedForm);
 
     if (areDetailsVisible) {
@@ -122,6 +134,7 @@ export const TransactionReviewModalContent = ({
                 precomposedForm={precomposedForm}
                 signedTx={serializedTx}
                 outputs={outputs}
+                displayFormat={displayFormat}
                 buttonRequestsCount={buttonRequestsCount}
                 isRbfAction={isBumpFeeRbfAction}
                 reviewStep={reviewStep}

@@ -20,6 +20,7 @@ export type { VerifyIssue } from './calldata/types/verifier';
 export {
     isEvmClearSigningTx,
     getEvmClearSignedSwapCoverage,
+    MAX_CLEAR_SIGNING_DATA_LENGTH,
     type ClearSigningCoverage,
 } from './calldata/clearSigning';
 export {
@@ -28,6 +29,13 @@ export {
     type DecodedClearSignedSwap,
     type ClearSignedSwapLeg,
 } from './calldata/clearSigningSwap';
+export {
+    resolveDisplayFormat,
+    type DisplayFormatRow,
+    type DisplayFormatSubcallPosition,
+    type DisplayFormatValue,
+    type ResolvedDisplayFormat,
+} from './calldata/displayFormat/resolveDisplayFormat';
 
 export {
     createSignEthereumMessage,
