@@ -1,8 +1,6 @@
 import { isCodesignBuild } from '@trezor/env-utils';
 import { TOR_URLS } from '@trezor/urls';
-import { isNotNull, urlToOnion } from '@trezor/utils';
-
-import { type ReferAFriendRootState } from './referAFriendSlice';
+import { urlToOnion } from '@trezor/utils';
 
 export type ReferAFriendApiEnvironment = 'local' | 'prod';
 
@@ -55,12 +53,3 @@ export const getReferAFriendApiDefaultUrl = ({
     isTorEnabled,
 }: GetReferAFriendApiDefaultUrlParams) =>
     getReferAFriendApiUrl({ env: getReferAFriendApiDefaultEnvironment(), isTorEnabled });
-
-export const selectReferAFriendApiCustomUrl = (state: ReferAFriendRootState) => {
-    const { baseUrl } = state.referAFriend.settings;
-
-    return isNotNull(baseUrl) && baseUrl.trim() !== '' ? baseUrl : null;
-};
-
-export const selectReferAFriendApiUrl = (state: ReferAFriendRootState, isTorEnabled: boolean) =>
-    selectReferAFriendApiCustomUrl(state) ?? getReferAFriendApiDefaultUrl({ isTorEnabled });
