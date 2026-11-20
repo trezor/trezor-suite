@@ -95,7 +95,7 @@ export const ReferralVoucherRow = ({ voucher, voucherNumber, amount }: ReferralV
     const { translationString } = useTranslation();
     const { formatDate } = useIntl();
     const config = voucherStates[voucher.status];
-    const voucherCode = voucher.voucher;
+    const voucherCode = voucher.code;
     const isInactive = ['used', 'canceled', 'expired'].includes(voucher.status);
     const formatExpiry = (date: string) =>
         formatDate(date, { dateStyle: 'medium', timeZone: 'UTC' });
