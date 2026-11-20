@@ -1,8 +1,15 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
+import { type Middleware, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type DebugRootState, debugInitialState } from '@suite/debug';
 import { type LocksRootState, locksInitialState, locksReducer } from '@suite/locks';
 import { type State as ModalReducerState, type ModalRootState, modalReducer } from '@suite/modal';
-import { type GotoThunkDeps, type RouterRootState, routerReducer } from '@suite/router';
+import {
+    type GotoThunkDeps,
+    type RouterRootState,
+    onLocationChangeThunk,
+    routerLocationChange,
+    routerReducer,
+} from '@suite/router';
 import {
     type RouterStateOverrides,
     createRouterStateMock,
@@ -46,6 +53,7 @@ const deviceReducer = prepareDeviceReducer({
 });
 
 type State = SuiteRootState &
+    DebugRootState &
     DeviceRootState &
     LocksRootState &
     RouterRootState &
@@ -57,7 +65,9 @@ const getInitialState = (
     device?: Partial<DeviceReducerState>,
     router?: RouterStateOverrides,
     modal?: ModalReducerState,
+    isDebugModeActive = false,
 ): State => ({
+    debug: { ...debugInitialState, showDebugMenu: isDebugModeActive },
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
@@ -77,9 +87,9 @@ const middlewares = [
     prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
 ];
 
-const initStore = (state: State) =>
+const initStore = (state: State, downstreamMiddleware: Middleware[] = []) =>
     createTestCompositionRoot<GotoThunkDeps, State>({
-        middleware: middlewares,
+        middleware: [...middlewares, ...downstreamMiddleware],
         reducer: (currentState = state, action: UnknownAction) => {
             const typedState = currentState as State;
 
@@ -150,6 +160,50 @@ describe('redirectMiddleware', () => {
                 payload: mockSuiteDevice(),
             });
             expect(store.getState().router.route?.name).toBe('wallet-index');
+        });
+    });
+
+    describe('debug-only routes', () => {
+        const watchLocation = { pathname: '/watch', hash: '#/eth/0xWatchedAddress' } as const;
+
+        it('lands on the dashboard without the watch params when debug mode is off', () => {
+            // Stands in for the analytics, router and Sentry middlewares that run after it.
+            const downstreamActions: UnknownAction[] = [];
+            const recordDownstream: Middleware = () => next => action => {
+                downstreamActions.push(action as UnknownAction);
+
+                return next(action);
+            };
+            const store = initStore(getInitialState(), [recordDownstream]);
+
+            store.dispatch(onLocationChangeThunk(watchLocation));
+
+            const { router } = store.getState();
+            expect(router.route?.name).toBe('suite-index');
+            expect(router.pathname).toBe('/');
+            expect(router.hash).toBe('');
+            expect(router.params).toBeUndefined();
+            const downstreamLocationChanges = downstreamActions.filter(action =>
+                routerLocationChange.match(action),
+            );
+            expect(downstreamLocationChanges).toEqual([
+                expect.objectContaining({
+                    payload: expect.objectContaining({ pathname: '/', hash: '' }),
+                }),
+            ]);
+            expect(JSON.stringify(downstreamLocationChanges)).not.toContain('0xWatchedAddress');
+        });
+
+        it('opens the watch route when debug mode is on', () => {
+            const store = initStore(
+                getInitialState(undefined, undefined, undefined, undefined, true),
+            );
+
+            store.dispatch(onLocationChangeThunk(watchLocation));
+
+            const { router } = store.getState();
+            expect(router.route?.name).toBe('suite-watch-account');
+            expect(router.params).toEqual({ symbol: 'eth', address: '0xWatchedAddress' });
         });
     });
 });
