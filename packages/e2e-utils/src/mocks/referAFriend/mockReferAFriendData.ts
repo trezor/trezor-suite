@@ -10,12 +10,12 @@ export type MockReferralProgram = {
 };
 
 export type MockReferralVoucher = {
-    voucher: string | null;
+    code: string | null;
     status: 'pending' | 'available' | 'used' | 'expired' | 'canceled';
     amount: number;
     fiatCurrency: string;
     orderPaidAt: string;
-    readyAt: string;
+    availableAt: string;
     expiresAt: string | null;
     usedAt: string | null;
 };
@@ -38,12 +38,12 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const getDateInDays = (days: number) => new Date(Date.now() + days * DAY_MS).toISOString();
 
 const createVoucher = (
-    voucher: Pick<MockReferralVoucher, 'voucher' | 'status'> & Partial<MockReferralVoucher>,
+    voucher: Pick<MockReferralVoucher, 'code' | 'status'> & Partial<MockReferralVoucher>,
 ): MockReferralVoucher => ({
     amount: mockReferralProgram.rewardAmount,
     fiatCurrency: mockReferralProgram.fiatCurrency,
     orderPaidAt: '2026-07-01T15:30:00Z',
-    readyAt: '2026-08-05T00:00:00Z',
+    availableAt: '2026-08-05T00:00:00Z',
     expiresAt: null,
     usedAt: null,
     ...voucher,
@@ -51,36 +51,36 @@ const createVoucher = (
 
 const getAllStatesVouchers = () => [
     createVoucher({
-        voucher: 'TREF-8K2M-X9P4',
+        code: 'TREF-8K2M-X9P4',
         status: 'available',
         expiresAt: VOUCHER_EXPIRES_AT,
     }),
     createVoucher({
-        voucher: 'TREF-2P8R-N6Y3',
+        code: 'TREF-2P8R-N6Y3',
         status: 'available',
         amount: 25,
         expiresAt: VOUCHER_EXPIRES_AT,
     }),
     createVoucher({
-        voucher: 'TREF-6H5J-K2W9',
+        code: 'TREF-6H5J-K2W9',
         status: 'available',
         expiresAt: VOUCHER_EXPIRES_AT,
     }),
     createVoucher({
-        voucher: null,
+        code: null,
         status: 'pending',
         orderPaidAt: getDateInDays(-30),
-        readyAt: getDateInDays(5),
+        availableAt: getDateInDays(5),
     }),
     createVoucher({
-        voucher: 'TREF-4B7D-R5Q2',
+        code: 'TREF-4B7D-R5Q2',
         status: 'used',
         expiresAt: VOUCHER_EXPIRES_AT,
         usedAt: '2026-08-20T10:00:00Z',
     }),
-    createVoucher({ voucher: 'TREF-9C3F-M8L6', status: 'canceled' }),
+    createVoucher({ code: 'TREF-9C3F-M8L6', status: 'canceled' }),
     createVoucher({
-        voucher: 'TREF-7N2V-P4S8',
+        code: 'TREF-7N2V-P4S8',
         status: 'expired',
         expiresAt: '2026-06-30T00:00:00Z',
     }),
@@ -89,7 +89,7 @@ const getAllStatesVouchers = () => [
 const getLimitReachedVouchers = () =>
     Array.from({ length: mockReferralProgram.redemptionLimit }, (_, index) =>
         createVoucher({
-            voucher: `TREF-MOCK-${String(index + 1).padStart(4, '0')}`,
+            code: `TREF-MOCK-${String(index + 1).padStart(4, '0')}`,
             status: 'available',
             expiresAt: VOUCHER_EXPIRES_AT,
         }),
