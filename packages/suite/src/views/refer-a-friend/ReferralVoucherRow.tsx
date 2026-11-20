@@ -62,7 +62,7 @@ const getVoucherTooltip = (voucher: ReferralVoucher, formatExpiry: (date: string
             return (
                 <Translation
                     id="TR_REFERRAL_VOUCHER_AVAILABLE_IN"
-                    values={{ days: getDaysUntil(voucher.readyAt) }}
+                    values={{ days: getDaysUntil(voucher.availableAt) }}
                 />
             );
         case 'available':
@@ -73,7 +73,7 @@ const getVoucherTooltip = (voucher: ReferralVoucher, formatExpiry: (date: string
                 />
             );
         case 'expired':
-            return voucher.expiresAt === null ? undefined : (
+            return (
                 <Translation
                     id="TR_REFERRAL_VOUCHER_EXPIRED_ON"
                     values={{ date: formatExpiry(voucher.expiresAt) }}
