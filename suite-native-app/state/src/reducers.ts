@@ -59,6 +59,7 @@ import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/s
 import {
     type MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
+    backfillDeviceKeys,
     backfillManualCheckResult,
     backfillPortfolioTrackerUnavailableCapabilities,
     blockchainPersistTransform,
@@ -77,6 +78,7 @@ import {
     migrateTransactionsBnbToBsc,
     migrateTransactionsDeprecateNetworks,
     preparePersistReducer,
+    replaceDescriptorWithDescriptors,
     sortAccountsByCoin,
     tokenDefinitionsPersistTransform,
     walletPersistTransform,
@@ -373,7 +375,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             'persistentDeviceData' as any,
         ],
         key: 'devices',
-        version: 5,
+        version: 6,
         transforms: [devicePersistTransform],
         migrations: {
             2: (oldState: any /* FIXME */) => {
@@ -401,6 +403,12 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             },
             // v5 was deleted – it modified state.device.persistentDeviceData, which was migrated (data not explicitely deleted here).
             // Migration 1 of the `persistentDeviceData` persist key also includes does the job of the former v5 here.
+            6: (oldState: any /* FIXME */) => {
+                if (!oldState?.devices) return oldState;
+                const migratedDevices = backfillDeviceKeys(oldState.devices);
+
+                return { ...oldState, devices: migratedDevices };
+            },
         },
         storage: deps.mmkvStorage,
     });
@@ -409,7 +417,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         reducer: persistentDeviceDataReducer,
         persistedKeys: ['devices'],
         key: 'persistentDeviceData',
-        version: 1,
+        version: 2,
         migrations: {
             1: async (oldState: any /* FIXME */) => {
                 // persistentDeviceData used to be persisted as part of the `devices` persist key
@@ -428,6 +436,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 const devices = backfillManualCheckResult(rawPersistentDeviceData);
 
                 return { ...(oldState ?? {}), devices };
+            },
+            2: (oldState: any /* FIXME */) => {
+                if (!oldState?.devices) return oldState;
+
+                return {
+                    ...oldState,
+                    devices: replaceDescriptorWithDescriptors(oldState.devices),
+                };
             },
         },
         storage: deps.mmkvStorage,

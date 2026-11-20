@@ -428,14 +428,14 @@ export const forgetDevicePersistentDataThunk = createThunk<
 
         dispatch(persistentDeviceDataActions.forgetDevicePersistentData({ deviceId }));
 
-        const bluetoothId =
-            matchingDevice?.descriptor?.apiType === 'bluetooth' && matchingDevice.descriptor.id
-                ? asBluetoothDeviceId(matchingDevice.descriptor.id)
-                : undefined;
+        const bluetoothDescriptor = matchingDevice?.descriptors.find(
+            descriptor => descriptor.apiType === 'bluetooth',
+        );
+        const bluetoothId = bluetoothDescriptor?.id
+            ? asBluetoothDeviceId(bluetoothDescriptor.id)
+            : undefined;
 
-        // Also check for a known BT device by trezor device ID.
-        // The device may have been paired via BT previously but is now
-        // connected via USB — the persistent descriptor won't be 'bluetooth'.
+        // Also check for a known BT device by trezor device ID, in case no bluetooth descriptor was persisted.
         const knownBtDevice = selectKnownDeviceByDeviceId(getState(), deviceId);
         const btIdToRemove =
             bluetoothId ?? (knownBtDevice ? asBluetoothDeviceId(knownBtDevice.id) : undefined);

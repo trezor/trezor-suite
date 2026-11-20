@@ -31,6 +31,11 @@ const secondUsbDevice = mockConnectDevice(
     { device_id: 'device-id-2' },
 );
 
+const usbDeviceOnAnotherPort = mockConnectDevice(
+    { path: 'usb-path-new', descriptor: { apiType: 'usb', id: 'usb-device-new' } },
+    { device_id: 'device-id-1' },
+);
+
 const unacquiredDevice = mockConnectDevice({
     path: 'unacquired-path',
     type: 'unacquired',
@@ -60,9 +65,9 @@ describe('persistentDeviceDataReducer', () => {
                 delegatedIdentityKey: null,
                 lastConnectedVia: 'usb',
                 firmwareVersion: [2, 1, 1],
+                descriptors: [usbDevice.descriptor],
             }),
         );
-        expect(state.devices[0]?.descriptor).toBeUndefined();
     });
 
     it('updates existing persistent device data on deviceChanged', () => {
@@ -78,9 +83,23 @@ describe('persistentDeviceDataReducer', () => {
                 label: bluetoothDevice.features?.label,
                 revision: bluetoothDevice.features?.revision,
                 lastConnectedVia: 'bluetooth',
-                descriptor: bluetoothDevice.descriptor,
+                descriptors: [usbDevice.descriptor, bluetoothDevice.descriptor],
             }),
         );
+    });
+
+    it('overrides the descriptor of the same API type and keeps the others', () => {
+        const state = reduceMultipleActions(
+            deviceActions.connectDevice({ device: usbDevice }),
+            deviceActions.deviceChanged(bluetoothDevice),
+            deviceActions.deviceChanged(usbDeviceOnAnotherPort),
+        );
+
+        expect(state.devices).toHaveLength(1);
+        expect(state.devices[0]?.descriptors).toEqual([
+            bluetoothDevice.descriptor,
+            usbDeviceOnAnotherPort.descriptor,
+        ]);
     });
 
     it('removes device data on forgetDevicePersistentData', () => {

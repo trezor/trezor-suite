@@ -1,5 +1,10 @@
 # Storage changelog
 
+## 26.12.0
+
+- replace the optional `descriptor` of `persistentDeviceData` entries with the `descriptors` array
+- add a unique `key` to every remembered device in the `devices` store
+
 ## 26.11.0.2
 
 - add `tradeApiInstallSalt` (per-installation trade API salt) object store

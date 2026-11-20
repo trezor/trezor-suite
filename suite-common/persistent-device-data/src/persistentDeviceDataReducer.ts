@@ -34,6 +34,17 @@ const updatePersistentDeviceData = (
     // do not persist data for bootloader devices
     if (device.features.device_id === null) return;
 
+    const index = state.devices.findIndex(
+        persistentDeviceData => persistentDeviceData.device_id === device.id,
+    );
+    const existingData = index >= 0 ? state.devices[index] : undefined;
+
+    // one descriptor per API type, the latest connection overrides the previous one
+    const descriptors = [
+        ...(existingData?.descriptors ?? []).filter(d => d.apiType !== device.descriptor.apiType),
+        device.descriptor,
+    ];
+
     const updatedPersistentData = {
         device_id: device.features.device_id,
         fw_vendor: device.features.fw_vendor,
@@ -41,7 +52,7 @@ const updatePersistentDeviceData = (
         label: device.features.label,
         initialized: device.features.initialized,
         thp: device.thp,
-        descriptor: device.descriptor.apiType === 'bluetooth' ? device.descriptor : undefined,
+        descriptors,
         lastConnectedVia: device.descriptor.apiType === 'bluetooth' ? 'bluetooth' : 'usb',
         firmwareVersion: getFirmwareVersionArray(device),
     } as const;
@@ -54,10 +65,6 @@ const updatePersistentDeviceData = (
         delegatedIdentityKey: null,
     } as const;
 
-    const index = state.devices.findIndex(
-        persistentDeviceData => persistentDeviceData.device_id === device.id,
-    );
-    const existingData = index >= 0 ? state.devices[index] : undefined;
     if (existingData) {
         state.devices[index] = {
             ...existingData,
