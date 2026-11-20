@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
+import { getFormattedCurrencySymbol } from '@suite-common/formatters';
 import { type TokenAddress } from '@suite-common/tokens';
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
@@ -26,7 +27,6 @@ import {
     parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
-import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Row, Skeleton, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
@@ -108,19 +108,15 @@ export const TradingFormInputBaseCurrencyAmount = ({
     const assetKey = `${symbol ?? ''}:${tokenAddress ?? ''}`;
     const typedRef = useRef<{ cryptoAmount: string; assetKey: string } | undefined>(undefined);
 
-    const currencyLabel = useMemo(() => {
-        const currencyCode = baseCurrency.toUpperCase();
-
-        if (!isFiatBaseCurrencyCode(baseCurrency)) {
-            return isBaseCurrencyInSats ? 'sat' : currencyCode;
-        }
-
-        return (
-            new Intl.NumberFormat(locale, { style: 'currency', currency: currencyCode })
-                .formatToParts(0)
-                .find(part => part.type === 'currency')?.value ?? currencyCode
-        );
-    }, [baseCurrency, isBaseCurrencyInSats, locale]);
+    const currencyLabel = useMemo(
+        () =>
+            getFormattedCurrencySymbol({
+                locale,
+                currency: baseCurrency,
+                isSatsValue: isBaseCurrencyInSats,
+            }),
+        [baseCurrency, isBaseCurrencyInSats, locale],
+    );
 
     const baseCurrencyAmountFromCrypto = useMemo(() => {
         const formattedAmount =

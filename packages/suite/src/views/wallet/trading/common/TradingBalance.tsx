@@ -8,13 +8,10 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { BaseCurrencyValue } from '#src/components/suite/BaseCurrencyValue';
-
 type TradingBalanceProps = {
     balance: string | undefined;
     symbol: NetworkSymbol;
     tokenAddress?: TokenAddress | undefined;
-    showOnlyAmount?: boolean;
     isInSats?: boolean;
     decimals?: number;
 };
@@ -23,7 +20,6 @@ export const TradingBalance = ({
     balance,
     symbol,
     tokenAddress,
-    showOnlyAmount,
     isInSats,
     decimals = getNetworkDecimalsWithFallback(symbol),
 }: TradingBalanceProps) => {
@@ -32,24 +28,6 @@ export const TradingBalance = ({
     const amountInUnits = isInSats
         ? subunitsToUnits({ value: asAmountSubunit(new BigNumber(amount)), decimals }).toString()
         : amount;
-
-    if (showOnlyAmount) {
-        return (
-            <Text
-                intent="neutral"
-                priority="secondary"
-                typographyStyle="body-sm"
-                overflowWrap="anywhere"
-            >
-                <BaseCurrencyValue
-                    amount={amountInUnits}
-                    symbol={symbol}
-                    tokenAddress={tokenAddress}
-                    rateType="current"
-                />
-            </Text>
-        );
-    }
 
     return (
         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
