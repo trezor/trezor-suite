@@ -46,7 +46,7 @@ describe(getReferralRewardsSummary.name, () => {
     it('takes the longest waiting period of all vouchers, rounded up to days', () => {
         const vouchers = [
             createVoucher('available', 20),
-            { ...createVoucher('pending', 20), readyAt: '2026-10-25T16:00:00Z' },
+            { ...createVoucher('pending', 20), availableAt: '2026-10-25T16:00:00Z' },
         ];
 
         expect(getReferralRewardsSummary(vouchers).rewardWaitingPeriodDays).toBe(41);
@@ -54,18 +54,21 @@ describe(getReferralRewardsSummary.name, () => {
 
     it('ignores vouchers with invalid dates in the waiting period', () => {
         const validVoucher = createVoucher('available', 20);
-        const invalidReadyAtVoucher = { ...createVoucher('pending', 20), readyAt: 'invalid' };
+        const invalidAvailableAtVoucher = {
+            ...createVoucher('pending', 20),
+            availableAt: 'invalid',
+        };
         const invalidOrderPaidAtVoucher = { ...createVoucher('pending', 20), orderPaidAt: '' };
 
         expect(
             getReferralRewardsSummary([
-                invalidReadyAtVoucher,
+                invalidAvailableAtVoucher,
                 validVoucher,
                 invalidOrderPaidAtVoucher,
             ]).rewardWaitingPeriodDays,
         ).toBe(30);
         expect(
-            getReferralRewardsSummary([invalidReadyAtVoucher, invalidOrderPaidAtVoucher])
+            getReferralRewardsSummary([invalidAvailableAtVoucher, invalidOrderPaidAtVoucher])
                 .rewardWaitingPeriodDays,
         ).toBeNull();
     });

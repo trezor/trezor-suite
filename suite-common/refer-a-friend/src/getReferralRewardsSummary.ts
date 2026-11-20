@@ -6,7 +6,8 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 const getWaitingPeriodDays = (voucher: ReferralVoucher) =>
     Math.ceil(
-        (new Date(voucher.readyAt).getTime() - new Date(voucher.orderPaidAt).getTime()) / DAY_MS,
+        (new Date(voucher.availableAt).getTime() - new Date(voucher.orderPaidAt).getTime()) /
+            DAY_MS,
     );
 
 // TODO: Consider redesign. The waiting period is displayed as single value, but it differs per voucher.
