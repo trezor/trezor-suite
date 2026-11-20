@@ -8,6 +8,8 @@ import { useFirmwareUpgradeModal } from '#src/hooks/suite/useFirmwareUpgradeModa
 export type TronFirmwareUpgradeModal = {
     /** Opens the modal for the flow named by `featureName`. */
     openFirmwareModal: (featureName: TranslationKey) => void;
+    /** A dialog the modal opens over yields Escape and its backdrop to it while this holds. */
+    isFirmwareModalOpen: boolean;
     firmwareModal: ReactNode;
 };
 
@@ -34,5 +36,5 @@ export const useTronFirmwareUpgradeModal = (): TronFirmwareUpgradeModal => {
             />
         ) : null;
 
-    return { openFirmwareModal: openForFeature, firmwareModal };
+    return { openFirmwareModal: openForFeature, isFirmwareModalOpen, firmwareModal };
 };
