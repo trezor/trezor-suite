@@ -171,7 +171,7 @@ jobs:
 
           $(jq -r '.summary' "$RESULT")
 
-          $(jq -r '.issues[] | "- **\(.id)** [\(.severity)] \(.title)"' "$RESULT")
+          $(jq -r -f packages/e2e-utils/src/llmExploratoryTester/formatIssues.jq "$RESULT")
           EOF
 
       - name: Upload test artifacts
@@ -198,7 +198,7 @@ jobs:
             echo
             jq -r '.summary' "$RESULT"
             echo
-            jq -r '.issues[] | "- **\(.id)** [\(.severity)] \(.title)"' "$RESULT"
+            jq -r -f packages/e2e-utils/src/llmExploratoryTester/formatIssues.jq "$RESULT"
             echo
             echo "[Download report, including screenshots](${ARTIFACT_URL})"
           } | gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file -
