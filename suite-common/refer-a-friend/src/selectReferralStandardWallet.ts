@@ -1,11 +1,19 @@
-import { type DeviceRootState, isTrezorDeviceWithState, selectDevices } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    isTrezorDeviceWithState,
+    selectDeviceId,
+    selectDevices,
+} from '@suite-common/device';
 import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type ReferralStandardWallet = {
     device: TrezorDeviceWithState;
     walletDescriptor: WalletDescriptor;
 };
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
 /**
  * The referral key is derived from the standard (empty passphrase) wallet, so it is shared by all wallets even across
@@ -36,3 +44,28 @@ export const selectReferralStandardWallet = (
         walletDescriptor: parseStaticSessionId(device.state.staticSessionId).walletDescriptor,
     };
 };
+
+export const selectReferAFriendStandardWallet = createMemoizedSelector(
+    [
+        selectDevices,
+        selectDeviceId,
+        // TODO: (state: DeviceRootState, deviceId?: string) => deviceId ?? selectDeviceId(state),
+    ],
+    (devices, deviceId) => {
+        const device = devices.find(
+            (instance): instance is TrezorDeviceWithState =>
+                instance.id === deviceId &&
+                instance.useEmptyPassphrase === true &&
+                isTrezorDeviceWithState(instance),
+        );
+
+        if (device === undefined) {
+            return null;
+        }
+
+        return {
+            device,
+            walletDescriptor: parseStaticSessionId(device.state.staticSessionId).walletDescriptor,
+        };
+    },
+);

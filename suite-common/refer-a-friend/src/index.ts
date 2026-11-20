@@ -49,4 +49,5 @@ export { type ReferralKey, isReferralKey } from './referralKey';
 export {
     type ReferralStandardWallet,
     selectReferralStandardWallet,
+    selectReferAFriendStandardWallet,
 } from './selectReferralStandardWallet';

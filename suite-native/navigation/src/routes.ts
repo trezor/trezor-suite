@@ -48,6 +48,8 @@ export enum RootStackRoutes {
     UnstakeFlow = 'UnstakeFlow',
     TradingStack = 'TradingStack',
     ActivityCenterStack = 'ActivityCenterStack',
+    ReferAFriend = 'ReferAFriend',
+    ReferAFriendStack = 'ReferAFriendStack',
 }
 
 export enum AccountDetailStackRoutes {
@@ -370,4 +372,9 @@ export enum StellarManageTokenStackRoutes {
     ManualTokenInput = 'ManualTokenInput',
     ActivationFee = 'ActivationFee',
     DeactivationFee = 'DeactivationFee',
+}
+
+export enum ReferAFriendStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }

@@ -10,7 +10,7 @@ type TorVariant = 'clearnet' | 'onion';
 
 type ReferAFriendApiUrlMap = Record<ReferAFriendApiEnvironment, Record<TorVariant, string>>;
 
-export const LOCAL_REFER_A_FRIEND_API_URL = 'http://127.0.0.1:4010/';
+export const LOCAL_REFER_A_FRIEND_API_URL = 'http://192.168.1.214:4010/';
 
 // TODO: Replace with the production backend once it exists.
 const PRODUCTION_REFER_A_FRIEND_API_URL = 'https://trezor.io/api/refer-a-friend/';

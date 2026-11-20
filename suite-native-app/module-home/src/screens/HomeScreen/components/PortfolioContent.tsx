@@ -5,6 +5,7 @@ import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { PromoBanners } from '@suite-native/banners';
 import { FiveBinariesHomeBanner } from '@suite-native/earn';
+import { ReferAFriendCard } from '@suite-native/refer-a-friend';
 
 import { HomescreenAlerts } from './HomescreenAlerts';
 import { PortfolioGraph, type PortfolioGraphRef } from './PortfolioGraph';
@@ -23,6 +24,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => (
                     <FiveBinariesHomeBanner />
                     <Assets />
                 </VStack>
+                <ReferAFriendCard />
                 <ReferralButton />
             </VStack>
         </AnimatedVStack>

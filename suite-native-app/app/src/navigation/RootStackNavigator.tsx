@@ -57,6 +57,10 @@ import { FeatureFeedbackModalScreen } from '@suite-native-app/module-home';
 import { OnboardingStackNavigator } from '@suite-native-app/module-onboarding';
 import { PassphraseStackNavigator } from '@suite-native-app/module-passphrase';
 import { ReceiveStackNavigator } from '@suite-native-app/module-receive';
+import {
+    ReferAFriendScreen,
+    ReferAFriendStackNavigator,
+} from '@suite-native-app/module-refer-a-friend';
 import { SendStackNavigator } from '@suite-native-app/module-send';
 import { SettingsStackNavigator } from '@suite-native-app/module-settings';
 import { SignVerifyScreen, SignVerifyStackNavigator } from '@suite-native-app/module-sign-verify';
@@ -232,7 +236,7 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.ActivityCenterStack}
                 component={ActivityCenterStackNavigator}
             />
-
+            <RootStack.Screen name={RootStackRoutes.ReferAFriend} component={ReferAFriendScreen} />
             {/* Navigation flows that start by push from bottom animation on the first screen of its stack. */}
             <RootStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
                 <RootStack.Screen
@@ -286,6 +290,10 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.FeatureFeedbackModal}
                     component={FeatureFeedbackModalScreen}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.ReferAFriendStack}
+                    component={ReferAFriendStackNavigator}
                 />
 
                 {isDevelopOrDebugEnv() && (

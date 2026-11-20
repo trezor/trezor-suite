@@ -292,6 +292,7 @@ deviceConnectionMiddleware.startListening({
                 DeviceSettingsStackRoutes.DeviceAuthenticityStack,
                 DeviceSettingsStackRoutes.WipeDeviceStack,
                 RootStackRoutes.SignVerifyStack,
+                RootStackRoutes.ReferAFriendStack,
             ])
         ) {
             return;

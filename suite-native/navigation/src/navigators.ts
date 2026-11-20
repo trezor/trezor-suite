@@ -45,6 +45,7 @@ import {
     type ReceiveAddressVerificationSource,
     type ReceiveAddressVerificationStackRoutes,
     type ReceiveStackRoutes,
+    type ReferAFriendStackRoutes,
     type RootStackRoutes,
     type SendStackRoutes,
     type SettingsStackRoutes,
@@ -621,6 +622,8 @@ export type RootStackParamList = {
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
     [RootStackRoutes.FeatureFeedbackModal]: { feature: ExperimentalFeature };
     [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;
+    [RootStackRoutes.ReferAFriend]: undefined;
+    [RootStackRoutes.ReferAFriendStack]: undefined;
 };
 
 export type ActivityCenterStackParamList = {
@@ -710,4 +713,9 @@ export type StellarManageTokenStackParamList = {
         accountKey: AccountKey;
         tokenContract: TokenAddress;
     };
+};
+
+export type ReferAFriendStackParamList = {
+    [ReferAFriendStackRoutes.DeviceConnectionGuard]: undefined;
+    [ReferAFriendStackRoutes.ContinueOnTrezor]: undefined;
 };
