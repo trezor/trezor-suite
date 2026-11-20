@@ -434,6 +434,19 @@ export const selectPhysicalDeviceWallets = createMemoizedSelector([selectDevices
     ),
 );
 
+export const selectHasSetUpTrezorWallet = createMemoizedSelector(
+    [selectPhysicalDeviceWallets],
+    devices =>
+        devices.some(
+            device =>
+                !!device.state &&
+                getIsDeviceInitialized({
+                    deviceMode: device.mode,
+                    deviceFeatures: device.features,
+                }),
+        ),
+);
+
 export const selectIsNoPhysicalDeviceConnected = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
     devices => devices.every(device => !device.connected),
