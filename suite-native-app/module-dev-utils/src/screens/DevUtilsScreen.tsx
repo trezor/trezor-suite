@@ -16,6 +16,7 @@ import { MessageSystemCard } from '../components/MessageSystemCard';
 import { SuiteSyncQuotaManager } from '../components/SuiteSyncQuotaManager';
 import { SuiteSyncRelaySettings } from '../components/SuiteSyncRelaySettings';
 import { TradingCard } from '../components/TradingCard';
+import { TransportClientsCard } from '../components/TransportClientsCard';
 
 export const DevUtilsScreen = () => (
     <Screen
@@ -39,6 +40,7 @@ export const DevUtilsScreen = () => (
             <SuiteSyncRelaySettings />
             <SuiteSyncQuotaManager />
             <DebuggingCard />
+            {isDevelopOrDebugEnv() && <TransportClientsCard />}
             <DangerZoneCard />
         </VStack>
     </Screen>

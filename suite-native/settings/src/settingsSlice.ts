@@ -8,6 +8,11 @@ import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type ExperimentalFeature = 'suite-sync' | 'slip24';
 
+export type NativeDebugTransport =
+    'BridgeTransport' | 'NativeUsbTransport' | 'NativeBluetoothTransport';
+
+const DEFAULT_DEBUG_TRANSPORTS: NativeDebugTransport[] = [];
+
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
     isDeviceAuthenticityCheckEnabled: boolean;
@@ -20,6 +25,7 @@ export interface AppSettingsState {
     hasAutoEjectAlertBeenDisplayed: boolean;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
     earnStakingWorkerBaseUrl?: EarnStakingWorkerBaseUrl;
+    debugTransports?: NativeDebugTransport[];
 }
 
 export type SettingsSliceRootState = {
@@ -40,6 +46,7 @@ export const appSettingsInitialState: AppSettingsState = {
     hasAutoEjectAlertBeenDisplayed: false,
     earnYieldWorkerBaseUrl: undefined,
     earnStakingWorkerBaseUrl: undefined,
+    debugTransports: DEFAULT_DEBUG_TRANSPORTS,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
@@ -53,12 +60,19 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'hasAutoEjectAlertBeenDisplayed',
     'earnYieldWorkerBaseUrl',
     'earnStakingWorkerBaseUrl',
+    'debugTransports',
 ];
 
 const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState: appSettingsInitialState,
     reducers: {
+        setDebugTransports: (
+            state: AppSettingsState,
+            { payload }: PayloadAction<NativeDebugTransport[]>,
+        ) => {
+            state.debugTransports = payload;
+        },
         setIsOnboardingFinished: state => {
             state.isOnboardingFinished = true;
         },
@@ -141,6 +155,9 @@ export const selectEarnYieldWorkerBaseUrl = (state: SettingsSliceRootState) =>
 export const selectEarnStakingWorkerBaseUrl = (state: SettingsSliceRootState) =>
     state.appSettings.earnStakingWorkerBaseUrl;
 
+export const selectDebugTransports = (state: SettingsSliceRootState) =>
+    state.appSettings.debugTransports ?? DEFAULT_DEBUG_TRANSPORTS;
+
 export const selectIsFirmwareRevisionCheckEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.isFirmwareRevisionCheckEnabled;
 export const selectIsFirmwareHashCheckEnabled = (state: SettingsSliceRootState) =>
@@ -158,6 +175,7 @@ export const selectIsFirmwareAuthenticityCheckEnabled = (state: SettingsSliceRoo
     selectAreDeviceMetaChecksEnabled(state);
 
 export const {
+    setDebugTransports,
     setIsOnboardingFinished,
     setDeviceAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticityEnabled,

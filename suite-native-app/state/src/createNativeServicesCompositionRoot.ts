@@ -22,6 +22,7 @@ import {
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
+import { type NativeDebugTransport, selectDebugTransports } from '@suite-native/settings';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-shared';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sync';
@@ -45,15 +46,13 @@ import { type NativeReduxStore } from './createReduxStore';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
-type NativeTransport = 'BridgeTransport' | 'NativeUsbTransport' | 'NativeBluetoothTransport';
-
 const transportsPerDeviceType = {
-    device: Platform.select<NativeTransport[]>({
+    device: Platform.select<NativeDebugTransport[]>({
         ios: ['NativeBluetoothTransport'],
         android: ['NativeUsbTransport', 'NativeBluetoothTransport'],
         default: ['BridgeTransport'],
     }),
-    emulator: ['BridgeTransport'] satisfies NativeTransport[],
+    emulator: ['BridgeTransport'] satisfies NativeDebugTransport[],
 };
 
 const transports = transportsPerDeviceType[deviceType];
@@ -153,25 +152,33 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         connectInitDeviceEventHooks: {},
         connectInitUIEventHooks: {},
         createLogger,
-        // Native constructs its per-device-type transports directly (single platform, no
-        // web/desktop split) and returns the enabled ones as ready-made instances.
-        createTransports: () =>
-            (transports ?? []).map(name => {
-                switch (name) {
-                    case 'BridgeTransport':
-                        return new BridgeTransport({ port: 21328, id: 'bridge', logger });
-                    case 'NativeUsbTransport':
-                        return new NativeUsbTransport({ id: 'native-usb', logger });
-                    case 'NativeBluetoothTransport':
-                        return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
-                }
-            }),
+        createTransports: debugTransports =>
+            (debugTransports.length > 0 ? debugTransports : (transports ?? []))
+                .filter(
+                    (name): name is NativeDebugTransport =>
+                        name === 'BridgeTransport' ||
+                        name === 'NativeBluetoothTransport' ||
+                        (name === 'NativeUsbTransport' && Platform.OS === 'android'),
+                )
+                .map(name => {
+                    switch (name) {
+                        case 'BridgeTransport':
+                            return new BridgeTransport({ port: 21328, id: 'bridge', logger });
+                        case 'NativeUsbTransport':
+                            return new NativeUsbTransport({ id: 'native-usb', logger });
+                        case 'NativeBluetoothTransport':
+                            return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
+                    }
+                }),
         getLanguage: toGetter(deps.getState, selectSupportedLanguageLocale),
         getTokenDefinitionsEnabledNetworks: toGetter(
             deps.getState,
             selectTokenDefinitionsEnabledNetworks,
         ),
-        getDebugSettings: toGetter(deps.getState, () => ({ transports })),
+        getDebugSettings: toGetter(deps.getState, state => ({
+            transports: selectDebugTransports(state),
+            showConnectLogs: false,
+        })),
         getTradingEnvironment: toGetter(deps.getState, selectTradingEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
         // This getter is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk.
