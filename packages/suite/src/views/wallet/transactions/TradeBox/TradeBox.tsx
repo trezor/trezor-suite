@@ -88,7 +88,8 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         {yieldBadge && (
                             <Row alignItems="center">
                                 <YieldBadge
-                                    apy={yieldBadge.apy}
+                                    rate={yieldBadge.rate}
+                                    rateKind={yieldBadge.rateKind}
                                     variant="promo"
                                     account={account}
                                     vaultId={yieldBadge.vaultId}

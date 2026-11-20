@@ -70,7 +70,7 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
         return isApr ? (
             <Translation id="TR_EARN_APR_APPROX" values={{ aprPercent: formatApy(rate) }} />
         ) : (
-            <Translation id="TR_EARN_YIELD_BADGE_RATE" values={{ apy: formatApy(rate) }} />
+            <Translation id="TR_EARN_YIELD_BADGE_RATE_APY" values={{ rate: formatApy(rate) }} />
         );
     };
 

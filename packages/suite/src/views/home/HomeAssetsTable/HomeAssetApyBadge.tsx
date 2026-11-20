@@ -24,7 +24,7 @@ export const HomeAssetApyBadge = (props: HomeAssetApyBadgeProps) => {
         state => !isToken && selectIsStakingPromotedSymbol(state, props.symbol, 'offered'),
     );
 
-    const { rate: stakingApy } = useNetworkStakingRate({
+    const { rate: stakingApy, rateKind } = useNetworkStakingRate({
         networkSymbol: isStakingAdvertised ? props.symbol : null,
     });
 
@@ -38,5 +38,5 @@ export const HomeAssetApyBadge = (props: HomeAssetApyBadgeProps) => {
 
     // A Home row stands for every account holding the asset, so whether one of them already
     // earns this rate is not known here: the badge is always the offer, as on the token list.
-    return <YieldBadge apy={apy} variant="inactive" />;
+    return <YieldBadge rate={apy} rateKind={rateKind ?? 'apy'} variant="inactive" />;
 };

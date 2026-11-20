@@ -4,6 +4,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
+import { type StakingRateKind } from '@suite-common/earn-staking-common';
 import { type Account } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps, commonFocusStyles } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -43,21 +44,39 @@ type YieldBadgeVariantConfig = {
     shouldAnchorAtVaultRow: boolean;
 };
 
-const variantConfigMap: Record<YieldBadgeVariant, YieldBadgeVariantConfig> = {
-    inactive: {
-        translationId: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
-        priority: 'secondary',
-        shouldAnchorAtVaultRow: true,
-    },
-    active: {
-        translationId: 'TR_EARN_YIELD_BADGE_RATE',
-        shouldAnchorAtVaultRow: true,
-    },
-    promo: {
-        translationId: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
-        iconLeft: TrendUpIcon,
-        shouldAnchorAtVaultRow: false,
-    },
+type GetVariantConfigParams = {
+    variant: YieldBadgeVariant;
+    rateKind: StakingRateKind;
+};
+
+const getVariantConfig = ({ variant, rateKind }: GetVariantConfigParams) => {
+    const variantConfigMap: Record<YieldBadgeVariant, YieldBadgeVariantConfig> = {
+        inactive: {
+            translationId:
+                rateKind === 'apy'
+                    ? 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APY'
+                    : 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APR',
+            priority: 'secondary',
+            shouldAnchorAtVaultRow: true,
+        },
+        active: {
+            translationId:
+                rateKind === 'apy'
+                    ? 'TR_EARN_YIELD_BADGE_RATE_APY'
+                    : 'TR_EARN_YIELD_BADGE_RATE_APR',
+            shouldAnchorAtVaultRow: true,
+        },
+        promo: {
+            translationId:
+                rateKind === 'apy'
+                    ? 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APY'
+                    : 'TR_EARN_YIELD_BADGE_UP_TO_RATE_APR',
+            iconLeft: TrendUpIcon,
+            shouldAnchorAtVaultRow: false,
+        },
+    };
+
+    return variantConfigMap[variant];
 };
 
 /** Without an account the badge is a plain label: nothing to open on the Earn page for it. */
@@ -70,16 +89,27 @@ type YieldBadgeNavigationProps =
     | { account?: undefined; vaultId?: undefined; analyticsFrom?: undefined };
 
 type YieldBadgeProps = YieldBadgeNavigationProps & {
-    apy: number;
+    rate: number;
+    rateKind: StakingRateKind;
     /** `inactive` = eligible but not yielding, `active` = already yielding, `promo` = trade box teaser. */
     variant: YieldBadgeVariant;
 };
 
-export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: YieldBadgeProps) => {
+export const YieldBadge = ({
+    rate,
+    rateKind,
+    variant,
+    account,
+    vaultId,
+    analyticsFrom,
+}: YieldBadgeProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const formatApyValue = useFormatApy();
 
-    const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = variantConfigMap[variant];
+    const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = getVariantConfig({
+        variant,
+        rateKind,
+    });
 
     const badge = (
         <Badge
@@ -90,7 +120,7 @@ export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: Yi
             // Tests reach the badge by this id: the button around it carries it when there is one.
             data-testid={account === undefined ? YIELD_BADGE_TEST_ID : undefined}
         >
-            <Translation id={translationId} values={{ apy: formatApyValue(apy) }} />
+            <Translation id={translationId} values={{ rate: formatApyValue(rate) }} />
         </Badge>
     );
 
