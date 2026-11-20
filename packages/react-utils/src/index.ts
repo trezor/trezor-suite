@@ -1,4 +1,4 @@
-export { useDebounce } from './hooks/useDebounce';
+export { type DebounceOptions, useDebounce } from './hooks/useDebounce';
 export { useDebouncedValue } from './hooks/useDebouncedValue';
 export { useDidUpdate } from './hooks/useDidUpdate';
 export { useAsyncMemo } from './hooks/useAsyncMemo';
