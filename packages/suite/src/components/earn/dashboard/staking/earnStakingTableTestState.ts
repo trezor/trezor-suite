@@ -11,12 +11,14 @@ import {
 } from '@suite-common/earn-staking-common/mocks';
 import { Feature, type MessageSystemState } from '@suite-common/message-system';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type CurrentRate } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { type VersionArray } from '@trezor/utils';
 
 import { type MockSuiteState, mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 
@@ -76,6 +78,13 @@ export const trxProduct = mockStakingProductDescriptor({
     options: [],
     limits: limits('1000000'),
     messageSystemFeatures: { stake: Feature.stake.trx, withdraw: Feature.withdraw.trx },
+    minFirmware: {
+        stake: '2.12.2',
+        unstake: '2.12.2',
+        withdraw: '2.12.2',
+        claim: '2.12.2',
+        vote: '2.12.2',
+    },
 });
 export const thodProduct = mockStakingProductDescriptor({ networkSymbol: THOD });
 
@@ -155,12 +164,36 @@ export const messageSystemWithStakeOff = (domain: string): MessageSystemState =>
         },
     }) as unknown as MessageSystemState;
 
+type UnavailableCapabilities = Partial<Record<NetworkSymbol, 'no-support'>>;
+
+const createDevice = (
+    firmware: VersionArray,
+    unavailableCapabilities: UnavailableCapabilities,
+): TrezorDevice => {
+    const device = mockSuiteDevice({
+        state: { staticSessionId: DEVICE_STATE },
+        unavailableCapabilities,
+    });
+
+    if (device.type !== 'acquired') {
+        throw new Error('Expected an acquired device');
+    }
+
+    const [major_version, minor_version, patch_version] = firmware;
+
+    return {
+        ...device,
+        features: { ...device.features, major_version, minor_version, patch_version },
+    };
+};
+
 type CreateStateParams = {
     accounts?: Account[];
     positions?: Partial<Record<AccountKey, readonly StakingPosition[]>>;
-    unavailableCapabilities?: Partial<Record<NetworkSymbol, 'no-support'>>;
+    unavailableCapabilities?: UnavailableCapabilities;
     messageSystem?: MessageSystemState;
     descriptors?: readonly StakingProductDescriptor[];
+    firmware?: VersionArray;
 };
 
 export const createEarnStakingTableState = ({
@@ -169,6 +202,7 @@ export const createEarnStakingTableState = ({
     unavailableCapabilities = {},
     messageSystem = mockInitialAppState.messageSystem,
     descriptors = products,
+    firmware = [2, 12, 2],
 }: CreateStateParams = {}): MockSuiteState => ({
     ...mockInitialAppState,
     messageSystem,
@@ -176,10 +210,7 @@ export const createEarnStakingTableState = ({
     earn: { staking: mockStakingState({ descriptors, positions }) },
     device: {
         ...mockInitialAppState.device,
-        selectedDevice: mockSuiteDevice({
-            state: { staticSessionId: DEVICE_STATE },
-            unavailableCapabilities,
-        }),
+        selectedDevice: createDevice(firmware, unavailableCapabilities),
     },
     wallet: {
         ...mockInitialAppState.wallet,

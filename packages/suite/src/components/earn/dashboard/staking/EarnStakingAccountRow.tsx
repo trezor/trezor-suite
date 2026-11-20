@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { AssetSymbol } from '@suite/assets';
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import {
@@ -13,6 +13,7 @@ import {
     selectStakingAccountAmount,
     settleTronUnlocks,
     useNetworkStakingRate,
+    useStakingAccess,
     useStakingAccountPosition,
 } from '@suite-common/earn-staking';
 import { type StakingOperation } from '@suite-common/earn-staking-common';
@@ -29,6 +30,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useStakingOperationSwitch } from '#src/hooks/earn/useStakingOperationSwitch';
+import { useTronFirmwareUpgradeModal } from '#src/hooks/earn/useTronFirmwareUpgradeModal';
 import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -42,12 +44,35 @@ import { getEarnStakingPotentialRewards } from './getEarnStakingPotentialRewards
 import { EarnAccountCell } from '../common/EarnAccountCell';
 import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
 
-type TronFlowRoute = 'earn-tron-stake' | 'earn-tron-vote' | 'earn-tron-withdraw';
+type TronEarnFlow = 'stake' | 'vote' | 'withdraw';
 
-type TronFlowEvent =
-    | typeof events.stakingStakeEvent.name
-    | typeof events.stakingUnstakeEvent.name
-    | typeof events.stakingUpdateProviderEvent.name;
+type TronEarnFlowConfig = {
+    routeName: 'earn-tron-stake' | 'earn-tron-vote' | 'earn-tron-withdraw';
+    eventType:
+        | typeof events.stakingStakeEvent.name
+        | typeof events.stakingUnstakeEvent.name
+        | typeof events.stakingUpdateProviderEvent.name;
+    /** Names the flow in the firmware prompt. */
+    featureName: TranslationKey;
+};
+
+const TRON_EARN_FLOWS: Record<TronEarnFlow, TronEarnFlowConfig> = {
+    stake: {
+        routeName: 'earn-tron-stake',
+        eventType: events.stakingStakeEvent.name,
+        featureName: 'TR_EARN_TRON_STAKE_TITLE',
+    },
+    vote: {
+        routeName: 'earn-tron-vote',
+        eventType: events.stakingUpdateProviderEvent.name,
+        featureName: 'TR_EARN_TRON_VOTE',
+    },
+    withdraw: {
+        routeName: 'earn-tron-withdraw',
+        eventType: events.stakingUnstakeEvent.name,
+        featureName: 'TR_EARN_TRON_WITHDRAW_TITLE',
+    },
+};
 
 interface EarnStakingAccountRowProps {
     account: Account;
@@ -70,11 +95,15 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isTronNetworkType = account.networkType === 'tron';
 
-    const { productId, descriptor, position, totals } = useStakingAccountPosition(account.key);
+    const { productId, descriptor, position, totals, access } = useStakingAccountPosition(
+        account.key,
+    );
 
     const stakeableDescriptor = useSelector(state =>
         selectStakeableStakingProductDescriptorBySymbol(state, account.symbol),
     );
+    const stakeableAccess = useStakingAccess(stakeableDescriptor?.id ?? null);
+    const { openFirmwareModal, firmwareModal } = useTronFirmwareUpgradeModal();
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
     const stakingAmount = useSelector(state => selectStakingAccountAmount(state, account.key));
 
@@ -282,12 +311,22 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         </Paragraph>
     );
 
-    const navigateToTronFlow = (
-        event: React.MouseEvent<HTMLButtonElement>,
-        routeName: TronFlowRoute,
-        eventType: TronFlowEvent,
-    ) => {
+    // A first stake is gated on the product the network stakes on, the other flows on the
+    // position's product.
+    const tronFlowAccess = { stake: stakeableAccess, vote: access, withdraw: access };
+
+    // A Tron flow that firmware withholds stays reachable and asks for the update instead, as on
+    // the account's staking tab.
+    const openTronFlow = (event: React.MouseEvent<HTMLButtonElement>, flow: TronEarnFlow) => {
         event.stopPropagation();
+
+        const { routeName, eventType, featureName } = TRON_EARN_FLOWS[flow];
+
+        if (tronFlowAccess[flow].disabled[flow]?.kind === 'firmware') {
+            openFirmwareModal(featureName);
+
+            return;
+        }
 
         dispatch(
             gotoThunk({
@@ -315,7 +354,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             return;
         }
 
-        navigateToTronFlow(event, 'earn-tron-stake', events.stakingStakeEvent.name);
+        openTronFlow(event, 'stake');
     };
 
     const onTronVote = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -323,7 +362,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             return;
         }
 
-        navigateToTronFlow(event, 'earn-tron-vote', events.stakingUpdateProviderEvent.name);
+        openTronFlow(event, 'vote');
     };
 
     const onTronWithdraw = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -331,7 +370,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             return;
         }
 
-        navigateToTronFlow(event, 'earn-tron-withdraw', events.stakingUnstakeEvent.name);
+        openTronFlow(event, 'withdraw');
     };
 
     const apyAvailable =
@@ -356,203 +395,213 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         onClaim: isTronNetworkType ? onTronWithdraw : openClaimModal,
     } as const;
 
+    // The prompt sits outside the clickable card and row, or its clicks would bubble into them.
     if (isCardLayout) {
         return (
-            <Card paddingType="small" onClick={navigateToStaking} data-testid={rowTestId}>
-                <Column gap={12} width="100%">
-                    <Row justifyContent="space-between" alignItems="flex-start">
-                        <EarnAccountCell account={account} />
+            <>
+                {firmwareModal}
 
-                        {apyAvailable ? (
-                            <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
-                        ) : (
-                            <Text typographyStyle="body-sm">
-                                <Translation id="TR_EARN_NOT_AVAILABLE" />
-                            </Text>
+                <Card paddingType="small" onClick={navigateToStaking} data-testid={rowTestId}>
+                    <Column gap={12} width="100%">
+                        <Row justifyContent="space-between" alignItems="flex-start">
+                            <EarnAccountCell account={account} />
+
+                            {apyAvailable ? (
+                                <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
+                            ) : (
+                                <Text typographyStyle="body-sm">
+                                    <Translation id="TR_EARN_NOT_AVAILABLE" />
+                                </Text>
+                            )}
+                        </Row>
+
+                        {stakingStatus === 'insufficient-funds' && minStakeParagraph}
+
+                        {stakingStatus === 'staking-outdated-provider' && (
+                            <EarnStakingOutdatedProvider apy={newProviderApy} />
                         )}
-                    </Row>
 
-                    {stakingStatus === 'insufficient-funds' && minStakeParagraph}
+                        {stakingStatus === 'staking-remaining-votes' && (
+                            <EarnStakingRemainingVotes apr={rate} />
+                        )}
 
-                    {stakingStatus === 'staking-outdated-provider' && (
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        {(stakingStatus === 'staking-active' ||
+                            stakingStatus === 'staking-inactive') &&
+                            (isBelowMobile ? (
+                                <Column gap={4}>
+                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                    {rate && (
+                                        <Icon
+                                            as={ArrowDownIcon}
+                                            intent="neutral"
+                                            priority="secondary"
+                                            size={20}
+                                        />
+                                    )}
+                                    <EarnStakingPotentialRewards {...potentialRewardsProps} />
+                                </Column>
+                            ) : (
+                                <Row alignItems="center">
+                                    <Column flex="2">
+                                        <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                    </Column>
+                                    {rate && (
+                                        <Column flex="1" alignItems="center">
+                                            <Icon
+                                                as={ArrowRightIcon}
+                                                intent="neutral"
+                                                priority="secondary"
+                                                size={20}
+                                            />
+                                        </Column>
+                                    )}
+                                    <Column flex="2">
+                                        <EarnStakingPotentialRewards {...potentialRewardsProps} />
+                                    </Column>
+                                </Row>
+                            ))}
+
+                        {stakingStatus === 'staking-max' &&
+                            (isBelowMobile ? (
+                                <Column gap={4}>
+                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                    {maxStakeParagraph}
+                                </Column>
+                            ) : (
+                                <Row gap={16} alignItems="center">
+                                    <Column flex="1">
+                                        <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                    </Column>
+                                    <Column flex="1">{maxStakeParagraph}</Column>
+                                </Row>
+                            ))}
+
+                        {stakingStatus === 'staked-but-insufficient-funds' &&
+                            (isBelowMobile ? (
+                                <Column gap={4}>
+                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                    {minStakeParagraph}
+                                </Column>
+                            ) : (
+                                <Row gap={16} alignItems="center">
+                                    <Column flex="1">
+                                        <EarnStakingCurrentRewards {...currentRewardsProps} />
+                                    </Column>
+                                    <Column flex="1">{minStakeParagraph}</Column>
+                                </Row>
+                            ))}
+
+                        <Row gap={8}>
+                            <EarnStakingActionButtons {...actionButtonsProps} />
+                        </Row>
+                    </Column>
+                </Card>
+            </>
+        );
+    }
+
+    return (
+        <>
+            {firmwareModal}
+
+            <Table.Row onClick={navigateToStaking} data-testid={rowTestId}>
+                <Table.Cell>
+                    <EarnAccountCell account={account} />
+                </Table.Cell>
+
+                <Table.Cell>
+                    {apyAvailable ? (
+                        <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
+                    ) : (
+                        <Text typographyStyle="body-sm">
+                            <Translation id="TR_EARN_NOT_AVAILABLE" />
+                        </Text>
                     )}
+                </Table.Cell>
 
-                    {stakingStatus === 'staking-remaining-votes' && (
-                        <EarnStakingRemainingVotes apr={rate} />
-                    )}
+                {stakingStatus === 'insufficient-funds' && (
+                    <>
+                        <Table.Cell colSpan={2}>{minStakeParagraph}</Table.Cell>
+                        <Table.Cell align="end">
+                            <EarnStakingActionButtons {...actionButtonsProps} />
+                        </Table.Cell>
+                    </>
+                )}
 
-                    {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') &&
-                        (isBelowMobile ? (
-                            <Column gap={4}>
+                {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') && (
+                    <>
+                        <Table.Cell>
+                            <Row width="100%" alignItems="center" justifyContent="space-between">
                                 <EarnStakingCurrentRewards {...currentRewardsProps} />
                                 {rate && (
                                     <Icon
-                                        as={ArrowDownIcon}
+                                        as={ArrowRightIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         size={20}
                                     />
                                 )}
-                                <EarnStakingPotentialRewards {...potentialRewardsProps} />
-                            </Column>
-                        ) : (
-                            <Row alignItems="center">
-                                <Column flex="2">
-                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
-                                </Column>
-                                {rate && (
-                                    <Column flex="1" alignItems="center">
-                                        <Icon
-                                            as={ArrowRightIcon}
-                                            intent="neutral"
-                                            priority="secondary"
-                                            size={20}
-                                        />
-                                    </Column>
-                                )}
-                                <Column flex="2">
-                                    <EarnStakingPotentialRewards {...potentialRewardsProps} />
-                                </Column>
                             </Row>
-                        ))}
-
-                    {stakingStatus === 'staking-max' &&
-                        (isBelowMobile ? (
-                            <Column gap={4}>
-                                <EarnStakingCurrentRewards {...currentRewardsProps} />
-                                {maxStakeParagraph}
-                            </Column>
-                        ) : (
-                            <Row gap={16} alignItems="center">
-                                <Column flex="1">
-                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
-                                </Column>
-                                <Column flex="1">{maxStakeParagraph}</Column>
-                            </Row>
-                        ))}
-
-                    {stakingStatus === 'staked-but-insufficient-funds' &&
-                        (isBelowMobile ? (
-                            <Column gap={4}>
-                                <EarnStakingCurrentRewards {...currentRewardsProps} />
-                                {minStakeParagraph}
-                            </Column>
-                        ) : (
-                            <Row gap={16} alignItems="center">
-                                <Column flex="1">
-                                    <EarnStakingCurrentRewards {...currentRewardsProps} />
-                                </Column>
-                                <Column flex="1">{minStakeParagraph}</Column>
-                            </Row>
-                        ))}
-
-                    <Row gap={8}>
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Row>
-                </Column>
-            </Card>
-        );
-    }
-
-    return (
-        <Table.Row onClick={navigateToStaking} data-testid={rowTestId}>
-            <Table.Cell>
-                <EarnAccountCell account={account} />
-            </Table.Cell>
-
-            <Table.Cell>
-                {apyAvailable ? (
-                    <EarnStakingRateTooltip rateKind={rateKind} rate={rate} />
-                ) : (
-                    <Text typographyStyle="body-sm">
-                        <Translation id="TR_EARN_NOT_AVAILABLE" />
-                    </Text>
+                        </Table.Cell>
+                        <Table.Cell>
+                            <EarnStakingPotentialRewards {...potentialRewardsProps} />
+                        </Table.Cell>
+                        <Table.Cell align="end">
+                            <EarnStakingActionButtons {...actionButtonsProps} />
+                        </Table.Cell>
+                    </>
                 )}
-            </Table.Cell>
 
-            {stakingStatus === 'insufficient-funds' && (
-                <>
-                    <Table.Cell colSpan={2}>{minStakeParagraph}</Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
-                </>
-            )}
+                {stakingStatus === 'staking-max' && (
+                    <>
+                        <Table.Cell>
+                            <Row width="100%" alignItems="center" justifyContent="space-between">
+                                <EarnStakingCurrentRewards {...currentRewardsProps} />
+                            </Row>
+                        </Table.Cell>
+                        <Table.Cell>{maxStakeParagraph}</Table.Cell>
+                        <Table.Cell align="end">
+                            <EarnStakingActionButtons {...actionButtonsProps} />
+                        </Table.Cell>
+                    </>
+                )}
 
-            {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') && (
-                <>
-                    <Table.Cell>
-                        <Row width="100%" alignItems="center" justifyContent="space-between">
-                            <EarnStakingCurrentRewards {...currentRewardsProps} />
-                            {rate && (
-                                <Icon
-                                    as={ArrowRightIcon}
-                                    intent="neutral"
-                                    priority="secondary"
-                                    size={20}
-                                />
-                            )}
-                        </Row>
-                    </Table.Cell>
-                    <Table.Cell>
-                        <EarnStakingPotentialRewards {...potentialRewardsProps} />
-                    </Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
-                </>
-            )}
+                {stakingStatus === 'staked-but-insufficient-funds' && (
+                    <>
+                        <Table.Cell>
+                            <Row width="100%" alignItems="center" justifyContent="space-between">
+                                <EarnStakingCurrentRewards {...currentRewardsProps} />
+                            </Row>
+                        </Table.Cell>
+                        <Table.Cell>{minStakeParagraph}</Table.Cell>
+                        <Table.Cell align="end">
+                            <EarnStakingActionButtons {...actionButtonsProps} />
+                        </Table.Cell>
+                    </>
+                )}
 
-            {stakingStatus === 'staking-max' && (
-                <>
-                    <Table.Cell>
-                        <Row width="100%" alignItems="center" justifyContent="space-between">
-                            <EarnStakingCurrentRewards {...currentRewardsProps} />
-                        </Row>
-                    </Table.Cell>
-                    <Table.Cell>{maxStakeParagraph}</Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
-                </>
-            )}
+                {stakingStatus === 'staking-outdated-provider' && (
+                    <>
+                        <Table.Cell colSpan={2}>
+                            <EarnStakingOutdatedProvider apy={newProviderApy} />
+                        </Table.Cell>
+                        <Table.Cell align="end">
+                            <EarnStakingActionButtons {...actionButtonsProps} />
+                        </Table.Cell>
+                    </>
+                )}
 
-            {stakingStatus === 'staked-but-insufficient-funds' && (
-                <>
-                    <Table.Cell>
-                        <Row width="100%" alignItems="center" justifyContent="space-between">
-                            <EarnStakingCurrentRewards {...currentRewardsProps} />
-                        </Row>
-                    </Table.Cell>
-                    <Table.Cell>{minStakeParagraph}</Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
-                </>
-            )}
-
-            {stakingStatus === 'staking-outdated-provider' && (
-                <>
-                    <Table.Cell colSpan={2}>
-                        <EarnStakingOutdatedProvider apy={newProviderApy} />
-                    </Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
-                </>
-            )}
-
-            {stakingStatus === 'staking-remaining-votes' && (
-                <>
-                    <Table.Cell colSpan={2}>
-                        <EarnStakingRemainingVotes apr={rate} />
-                    </Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
-                </>
-            )}
-        </Table.Row>
+                {stakingStatus === 'staking-remaining-votes' && (
+                    <>
+                        <Table.Cell colSpan={2}>
+                            <EarnStakingRemainingVotes apr={rate} />
+                        </Table.Cell>
+                        <Table.Cell align="end">
+                            <EarnStakingActionButtons {...actionButtonsProps} />
+                        </Table.Cell>
+                    </>
+                )}
+            </Table.Row>
+        </>
     );
 };
