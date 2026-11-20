@@ -17,8 +17,12 @@ type TxContentUtxo = {
         data_hash: string | null;
         /** Whether the input is a collateral consumed on script validation failure */
         collateral: boolean;
+        /** Whether the input is referenced without being spent. */
+        reference?: boolean;
     }[];
     outputs: {
+        /** Whether this is a supplemental collateral return entry. */
+        collateral?: boolean;
         /** Output address */
         address: string;
         amount: AssetBalance[];
