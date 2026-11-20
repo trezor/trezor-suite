@@ -1,7 +1,10 @@
 import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
+import type { TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { mockTronResources } from '@suite-common/wallet-core/mocks';
+import type { Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { localeReducer } from '@suite-native/intl';
 import {
@@ -22,14 +25,20 @@ import { sendFormInitialState, transactionManagementActions } from '../../sendFo
 
 const ethSymbol = asNetworkSymbol('eth');
 const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
+const USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t' as TokenAddress;
 
 describe('useFeesForm', () => {
     describe('Tron fee limit sync', () => {
-        const renderTronFeesForm = async () => {
+        const renderTronFeesForm = async (
+            tronAccount: Partial<Account> = {},
+            props: Partial<UseFeesFormProps> = {},
+        ) => {
             const wallet = getWalletState();
             const initialSendState: typeof sendFormInitialState = {
                 ...sendFormInitialState,
-                feeLevels: { normal: createFeeLevel({ estimatedFeeLimit: '13000000' }) },
+                feeLevels: {
+                    normal: createFeeLevel({ estimatedFeeLimit: '13000000', feePerByte: '100' }),
+                },
             };
             const store = createLightStore({
                 reducer: {
@@ -42,6 +51,7 @@ describe('useFeesForm', () => {
                                 ...getEthAccount(),
                                 symbol: asNetworkSymbol('trx'),
                                 networkType: 'tron',
+                                ...tronAccount,
                             },
                         ]),
                         fees: createStaticReducer(wallet.fees),
@@ -53,7 +63,11 @@ describe('useFeesForm', () => {
                 },
             });
             const rendered = await renderHookWithStoreProvider(useFeesForm, {
-                initialProps: { accountKey: FIXTURE_ACCOUNT_KEY, defaultFeeLevel: 'normal' },
+                initialProps: {
+                    accountKey: FIXTURE_ACCOUNT_KEY,
+                    defaultFeeLevel: 'normal',
+                    ...props,
+                },
                 services: { store },
             });
             const recompose = () =>
@@ -78,6 +92,27 @@ describe('useFeesForm', () => {
 
             expect(result.current.getValues('customFeeLimit')).toBe('14000000');
         });
+
+        it.each([
+            { customFeeLimit: '16000000', isValid: true },
+            { customFeeLimit: '16000001', isValid: false },
+        ])(
+            'lets staked energy raise the TRC-20 limit above the TRX balance ($customFeeLimit SUN)',
+            async ({ customFeeLimit, isValid }) => {
+                const { result } = await renderTronFeesForm(
+                    {
+                        availableBalance: '1000000',
+                        misc: { tronResources: mockTronResources({ availableEnergy: 150000 }) },
+                    },
+                    { tokenContract: USDT_CONTRACT },
+                );
+
+                await act(async () => {
+                    result.current.setValue('customFeeLimit', customFeeLimit);
+                    expect(await result.current.trigger('customFeeLimit')).toBe(isValid);
+                });
+            },
+        );
     });
 
     it('allows Custom EIP-1559 inputs when every Standard level failed before a rate was saved', async () => {
