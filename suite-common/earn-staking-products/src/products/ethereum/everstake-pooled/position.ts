@@ -15,6 +15,7 @@ import {
     getPositionStatus,
     getPositionTargets,
     getPositionUnlocks,
+    isEverstakeStakeQueued,
     isStakingOperationPending,
 } from './utils';
 
@@ -52,7 +53,7 @@ export const getEthereumEverstakePooledProductPosition = ({
 
     const activations = getPositionActivations({
         balances,
-        startedAt: stakeStartedAt,
+        startedAt: pool !== undefined && isEverstakeStakeQueued(pool) ? stakeStartedAt : null,
         availableAt: getPeriodEnd({
             startedAt: stakeStartedAt,
             periodDays: productInfo?.entryPeriodDays ?? null,
