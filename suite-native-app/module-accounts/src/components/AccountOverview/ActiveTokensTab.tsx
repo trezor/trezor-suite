@@ -1,8 +1,11 @@
 import { useCallback, useMemo } from 'react';
+import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { type AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     AccountsListItem,
@@ -12,12 +15,19 @@ import {
     type OnSelectAccount,
     selectAccountListSectionsWithZeroBalanceGroup,
 } from '@suite-native/accounts';
+import { Button } from '@suite-native/atoms';
 import {
     StakingApyBadge,
     TokenYieldRateBadge,
     useStakingDetailNavigation,
     useStakingNavigateAnalytics,
 } from '@suite-native/earn';
+import { Translation } from '@suite-native/intl';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';
@@ -28,10 +38,15 @@ const listStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
+const listFooterStyle = prepareNativeStyle(utils => ({
+    paddingTop: utils.spacings.sp16,
+}));
+
 type ActiveTokensTabProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
     onSelect: OnSelectAsset;
     isStakingDisplayed: boolean;
+    isAddTokenDisplayed: boolean;
 };
 
 type SectionItem = ReturnType<typeof selectAccountListSectionsWithZeroBalanceGroup>[number];
@@ -54,10 +69,16 @@ export const ActiveTokensTab = ({
     accountKey,
     onSelect,
     isStakingDisplayed,
+    isAddTokenDisplayed,
     ListHeaderComponent,
     onScroll,
 }: ActiveTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
+    const navigation =
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountOverview>>();
+    const networkType = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkType(state, accountKey),
+    );
     const listContentStyle = useAccountOverviewListContentStyle();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
     const reportStakingNavigate = useStakingNavigateAnalytics();
@@ -162,6 +183,23 @@ export const ActiveTokensTab = ({
             getItemType={item => item.type}
             renderItem={renderItem}
             ListHeaderComponent={ListHeaderComponent}
+            ListFooterComponent={
+                isAddTokenDisplayed && networkType === 'ethereum' ? (
+                    <View style={applyStyle(listFooterStyle)}>
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            iconLeft="plus"
+                            onPress={() =>
+                                navigation.navigate(RootStackRoutes.AddCustomToken, { accountKey })
+                            }
+                            testID="@account-overview/add-custom-token-button"
+                        >
+                            <Translation id="moduleAccounts.addCustomToken.entryButton" />
+                        </Button>
+                    </View>
+                ) : undefined
+            }
             onScroll={onScroll}
         />
     );

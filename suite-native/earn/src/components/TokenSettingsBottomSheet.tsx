@@ -8,6 +8,7 @@ import { useAtomValue } from 'jotai';
 
 import { events } from '@suite-common/analytics';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import { useFormatters } from '@suite-common/formatters';
 import {
     DefinitionType,
     type TokenDefinitionsRootState,
@@ -18,10 +19,13 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type CustomTokensRootState,
     type TokensRootState,
+    removeCustomTokenThunk,
     selectAccountByKey,
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
+    selectCustomToken,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
@@ -111,6 +115,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { applyStyle } = useNativeStyles();
+        const { DateFormatter } = useFormatters();
         const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
         const navigation =
             useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -129,6 +134,11 @@ export const TokenSettingsBottomSheet = forwardRef(
         );
         const isUnrecognized = useSelector((state: TokenDefinitionsRootState & AccountsRootState) =>
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
+        );
+        const customTokenAddedAt = useSelector((state: CustomTokensRootState) =>
+            account && tokenContract
+                ? selectCustomToken(state, account, tokenContract)?.addedAt
+                : undefined,
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
         const isDevUtilsEnabled = useAtomValue(isDevUtilsEnabledAtom);
@@ -166,6 +176,14 @@ export const TokenSettingsBottomSheet = forwardRef(
                     contractAddress: tokenContract,
                 }),
             );
+        };
+
+        const handleRemoveCustomToken = () => {
+            if (!tokenContract) return;
+
+            dispatch(removeCustomTokenThunk({ accountKey, contract: tokenContract }));
+            onNavigateAway?.();
+            navigation.goBack();
         };
 
         const { unwrap: unwrapEntry, wrap: wrapEntry } = getWrappedNativeTokenEntries({
@@ -332,6 +350,20 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     </VStack>
                                 </Box>
                             </DetailRow>
+                            {customTokenAddedAt !== undefined && (
+                                <>
+                                    <CardDivider />
+                                    <DetailRow
+                                        label={
+                                            <Translation id="moduleAccountManagement.tokenSettings.addedByYou" />
+                                        }
+                                    >
+                                        <Text variant="body-sm">
+                                            <DateFormatter value={customTokenAddedAt} />
+                                        </Text>
+                                    </DetailRow>
+                                </>
+                            )}
                         </VStack>
                     </Card>
 
@@ -346,6 +378,16 @@ export const TokenSettingsBottomSheet = forwardRef(
                             onChange={handleToggleHide}
                             testID="@token-detail/hide-token-switch"
                         />
+                    )}
+                    {customTokenAddedAt !== undefined && (
+                        <Button
+                            intent="critical"
+                            priority="secondary"
+                            onPress={handleRemoveCustomToken}
+                            testID="@token-detail/remove-custom-token-button"
+                        >
+                            <Translation id="moduleAccountManagement.tokenSettings.removeToken" />
+                        </Button>
                     )}
                     {unwrapEntry.isDisplayed && (
                         <VStack spacing="sp12">
