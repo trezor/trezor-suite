@@ -123,7 +123,8 @@ export const TokenRow = ({
                         </AssetDetailLink>
                         {yieldBadge && (
                             <YieldBadge
-                                apy={yieldBadge.apy}
+                                rate={yieldBadge.apy}
+                                rateKind="apy"
                                 variant={yieldBadge.hasVaultPosition ? 'active' : 'inactive'}
                                 account={account}
                                 vaultId={yieldBadge.vaultId}
