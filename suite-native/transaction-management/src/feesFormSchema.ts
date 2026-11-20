@@ -11,6 +11,7 @@ export type FeesFormContext = {
     symbol?: NetworkSymbol;
     networkFeeInfo?: FeeInfo;
     minimalFeeLimit?: string;
+    availableBalance?: string;
     translate?: Translate;
     isEip1559Fee: boolean;
     isTrc20?: boolean;
@@ -160,7 +161,21 @@ export const feesFormValidationSchema = yup.object({
 
                 return true;
             },
-        ),
+        )
+        .test('fee-limit-above-balance', 'Insufficient balance.', function (value) {
+            const { isTrc20, availableBalance, translate } = this.options
+                .context as FeesFormContext;
+
+            if (!value || !isTrc20 || !availableBalance) return true;
+
+            if (new BigNumber(value).isGreaterThan(availableBalance)) {
+                return this.createError({
+                    message: translate!('transactionManagement.fees.error'),
+                });
+            }
+
+            return true;
+        }),
     // EIP1559 only validations
     customMaxFeePerGas: yup
         .string()
