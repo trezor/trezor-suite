@@ -279,8 +279,10 @@ broken/untestable · `blocked` environment prevented testing (reason in
 `summary`). No tools on that turn.
 
 - `summary`: 1–2 sentences of what was tested (feature/flow + device). Not a walkthrough.
-- Lead with PR coverage/blockers; label unrelated issues in their descriptions.
-  Claim PR regressions only with baseline evidence.
+- Lead with PR coverage/blockers. Set each issue's `relevance`: `pr-related` for
+  the changed behavior, `unrelated` for other flows, `uncertain` when the link is
+  unclear. Relevance is separate from severity; claim PR regressions only with
+  baseline evidence.
 - `unfinished`: see rule 6 above.
 - `issues[]` (empty on `pass`): `title` noun phrase · `description` one sentence, no root cause · `reproSteps` 3–8 short imperatives · `screenshots` basenames, ≥1.
 
@@ -290,6 +292,7 @@ unfinished: []
 issues:
   - id: BUG-1
     severity: high
+    relevance: pr-related
     title: "Fee picker ignores custom sat/vB"
     description: "Custom fee is ignored; the tx still uses the Economy preset."
     reproSteps:
