@@ -2,12 +2,13 @@ import { type MouseEventHandler } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { deviceActions } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { EjectIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
+
+import { ejectWalletThunk } from '#src/actions/suite/ejectWalletThunk';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
@@ -19,7 +20,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice({ device: instance }));
+        dispatch(ejectWalletThunk({ device: instance }));
 
         analytics.report({
             type: events.switchDeviceEjectEvent.name,
