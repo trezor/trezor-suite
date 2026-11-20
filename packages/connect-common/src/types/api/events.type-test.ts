@@ -2,8 +2,6 @@ import { ThpPairingMethod } from '@trezor/protocol';
 
 import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
 import {
-    BLOCKCHAIN,
-    BLOCKCHAIN_EVENT,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
@@ -220,34 +218,4 @@ export const events = (api: TrezorConnect) => {
     });
     api.off(UI_EVENTS.BUTTON_REQUEST, () => {});
     api.removeAllListeners(UI_EVENTS.BUNDLE_PROGRESS);
-
-    api.on(BLOCKCHAIN_EVENT, event => {
-        if (event.type === BLOCKCHAIN.CONNECT) {
-            if (event.payload.testnet) {
-                event.payload.blockHash.toLowerCase();
-                event.payload.shortcut.toLowerCase();
-            }
-        }
-        if (event.type === BLOCKCHAIN.BLOCK) {
-            event.payload.blockHash.toLowerCase();
-            // event.payload.blockHeight as number;
-        }
-        if (event.type === BLOCKCHAIN.NOTIFICATION) {
-            event.payload.notification.descriptor.toLowerCase();
-            event.payload.notification.tx.targets.map(t => (t.isAddress ? t.amount : t.n));
-        }
-    });
-    api.off(BLOCKCHAIN_EVENT, () => {});
-
-    api.on(BLOCKCHAIN.CONNECT, payload => {
-        payload.blockHash.toLowerCase();
-        payload.shortcut.toLowerCase();
-    });
-
-    // @ts-expect-error callback payload must match the selected event
-    api.on(BLOCKCHAIN.CONNECT, (_payload: string) => {});
-
-    api.on(BLOCKCHAIN.FIAT_RATES_UPDATE, payload => {
-        payload.rates.usd?.toFixed();
-    });
 };

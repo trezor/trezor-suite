@@ -96,7 +96,7 @@ Skip any item whose API you do not use.
 
 - [ ] **`coin` accepts the coin shortcut only.** Replace names and labels: `'Bitcoin'` → `'btc'`, `'Bitcoin Cash'` → `'bch'`, `'cardano'` → `'ada'`. Pass lowercase so TypeScript type-checks, even though runtime matching is case-insensitive. The [supported coins reference](/details/coins) lists every accepted shortcut.
     - Path-taking methods (`getAddress`, `getPublicKey`, …) fall back to deriving the network from `path`.
-    - These throw `Method_UnknownCoin` with no fallback: `getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, and the `blockchain*` family.
+    - These throw `Method_UnknownCoin` with no fallback: `getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, and `getOwnershipProof`.
 
 - [ ] **Check that the coins you use are still supported.** Coins whose networks are dead, abandoned or obsolete have been dropped from Connect's coin definitions, even where Trezor firmware still supports some of them. Naming one behaves exactly like naming an unknown coin. [Supported coins](/details/coins) is the current list.
 
@@ -131,7 +131,7 @@ Skip any item whose API you do not use.
 
 This section is for apps that import `@trezor/connect` and run the Connect core in their own process: a Node script or server, the main process of an Electron app, or a React Native app that talks to the device itself. Apps built on `@trezor/connect-web` or `@trezor/connect-webextension` can skip it. React Native apps built on `@trezor/connect-mobile` can skip it too. They do not run the core. They open the Trezor Suite mobile app with a deep link, and the app has to be version 26.3.1 or newer.
 
-Unlike the client packages, `@trezor/connect` keeps `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`, so keep your listeners and your `uiResponse` handling. The 10.0.0 entry in the [changelog](/changelog) describes the other changes in its "UI events & fee selection" and "Transports" sections. The checklist below collects them and adds what the changelog leaves out: the replacement for `setTransports()` and `setProxy()`, the default Bridge port, and why a listener on `UI_EVENT` alone misses PIN and passphrase requests.
+Unlike the client packages, `@trezor/connect` keeps `on`, `off`, `removeAllListeners`, `uiResponse` and `updateConnectSettings`, so keep your listeners and your `uiResponse` handling. The 10.0.0 entry in the [changelog](/changelog) describes the other changes in its "UI events & fee selection" and "Transports" sections. The checklist below collects them and adds what the changelog leaves out: the replacement for `setTransports()`, the default Bridge port, and why a listener on `UI_EVENT` alone misses PIN and passphrase requests.
 
 - [ ] **Pass transports as instances.** Strings such as `'BridgeTransport'` and transport classes are rejected. Construct the transports yourself: `BridgeTransport` from `@trezor/transport-common`, `WebUsbTransport` from `@trezor/transport-web`, and `NodeUsbTransport` or `UdpTransport` from `@trezor/transport` (Node only).
 
@@ -139,7 +139,7 @@ Unlike the client packages, `@trezor/connect` keeps `on`, `off`, `removeAllListe
 
 - [ ] **Bridge listens on port 21328.** `BridgeTransport` connects to `127.0.0.1:21328` by default, where Trezor Suite desktop runs its built-in Bridge. The old trezord-go Bridge on port 21325 is not supported, and current Suite desktop releases no longer serve anything on that port. Remove any `port: 21325` from your setup.
 
-- [ ] **Replace `setTransports()` and `setProxy()`** with `TrezorConnect.updateConnectSettings({ transports })` and `TrezorConnect.updateConnectSettings({ proxy })`. Both methods are removed, like `manifest()`. The browser build does not accept `proxy`.
+- [ ] **Replace `setTransports()`** with `TrezorConnect.updateConnectSettings({ transports })` and drop `setProxy()`. Both methods are removed, like `manifest()`. Connect no longer connects to blockchain backends, so it has no proxy setting.
 
 - [ ] **Listen on both UI channels if you render your own device prompts.** `UI_REQUEST` is no longer the map of message types but the name of a separate event channel. Requests that wait for your `uiResponse` (PIN, passphrase, account, fee and others) are listed in `UI_REQUESTS` and arrive on `UI_REQUEST`. Notifications are listed in `UI_EVENTS` and arrive on `UI_EVENT`. A listener on `UI_EVENT` alone no longer sees the PIN or passphrase request.
 

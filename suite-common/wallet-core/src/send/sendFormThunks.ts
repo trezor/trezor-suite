@@ -387,7 +387,7 @@ export const synchronizeSentTransactionThunk = createThunk<
                 // EVM cancel/bump: when the precomposed tx replaces a prior pending tx (identified by
                 // prevTxid), evict the old tx from the store immediately. The backend notification is
                 // delayed, and keeping the replaced tx visible would show the user a stale pending entry.
-                // blockchainGetTransactions is called to confirm the old tx is truly gone from the
+                // TrezorBlockchain.getTransactions is called to confirm the old tx is truly gone from the
                 // mempool before the local removal takes effect; its response is not awaited because we
                 // dispatch removeTransaction optimistically and the backend will correct any discrepancy
                 // on the next account sync.

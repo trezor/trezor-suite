@@ -38,7 +38,7 @@ const groups = {
         name: 'btc-others',
         pattern: 'methods',
         includeFilter:
-            'getAccountInfo,getAddress,getPublicKey,signMessage,verifyMessage,composePsbt,composeTransaction,getOwnershipId,getOwnershipProof',
+            'getAddress,getPublicKey,signMessage,verifyMessage,composePsbt,composeTransaction,getOwnershipId,getOwnershipProof',
     },
     stellar: {
         name: 'stellar',
@@ -119,10 +119,6 @@ const inputs = [
         value: ['node', 'web'],
     },
     {
-        key: 'disable_cache_tx',
-        value: ['true', 'false'],
-    },
-    {
         key: 'key',
         value: [' '],
     },
@@ -151,7 +147,7 @@ args.forEach(arg => {
 log('parsedArgs', parsedArgs);
 
 const validateArgs = () => {
-    const requiredArgs = ['model', 'firmware', 'env', 'groups', 'disable_cache_tx', 'transport'];
+    const requiredArgs = ['model', 'firmware', 'env', 'groups', 'transport'];
 
     requiredArgs.forEach(arg => {
         if (!parsedArgs[arg]) {

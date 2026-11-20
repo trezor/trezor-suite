@@ -14,13 +14,13 @@
         { "path": "../protocol" },
         { "path": "../type-utils" },
         { "path": "../utils" },
-        { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
         { "path": "../eslint" },
         {
             "path": "../../networks/cardano/network-cardano"
         },
+        { "path": "../requirements" },
         { "path": "../transport-common" },
         { "path": "../utxo-lib" }
     ]

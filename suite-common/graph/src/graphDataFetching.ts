@@ -318,7 +318,7 @@ const getAccountBalanceHistory = async ({
         },
     );
 
-    // Last point must be balance from getAccountInfo because blockchainGetAccountBalanceHistory it's not always reliable for coins like ETH.
+    // Last point must be balance from getAccountInfo because TrezorBlockchain.getAccountBalanceHistory it's not always reliable for coins like ETH.
     // TODO: We can get value from redux account info instead of fetching it again which could cause minor inconsistency.
     accountMovementHistoryWithBalance.push({
         time: endTimeFrameTimestamp,
@@ -490,7 +490,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         }
     }
 
-    // Last timestamp must be endOfTimeFrameDate because blockchainGetAccountBalanceHistory it's not always reliable for coins like ETH.
+    // Last timestamp must be endOfTimeFrameDate because TrezorBlockchain.getAccountBalanceHistory it's not always reliable for coins like ETH.
     // So we manually add balance from getAccountInfo for last point in getAccountBalanceHistory.
     const timestamps = [
         ...getTimestampsInTimeFrame(startOfTimeFrameDate, endOfTimeFrameDate, numberOfPoints - 1),

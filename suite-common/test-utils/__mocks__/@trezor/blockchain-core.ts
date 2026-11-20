@@ -1,8 +1,7 @@
 // Usage: like the `@trezor/connect` mock next to it, `@trezor/blockchain-core` is mocked in all
 // tests of the projects listing this directory in the roots of their jest config.
-// TrezorBlockchain answers as the Connect mock answered the blockchain methods TrezorBlockchain
-// took over, so tests script backend and device calls with one sequence of fixtures, and
-// `emitTestEvent` emits its events too.
+// TrezorBlockchain answers through the Connect mock, so tests script backend and device calls
+// with one sequence of fixtures, and `emitTestEvent` emits its events too.
 
 import type * as BlockchainCore from '@trezor/blockchain-core';
 
@@ -22,24 +21,24 @@ export const TrezorBlockchain = {
     on: (...args: unknown[]) => getConnectMock().default.on(...args),
     off: (...args: unknown[]) => getConnectMock().default.off(...args),
     removeAllListeners: jest.fn(),
-    getInfo: call('blockchainGetInfo'),
-    getDefaultBackend: call('blockchainGetDefaultBackend'),
-    setCustomBackend: call('blockchainSetCustomBackend'),
-    disconnect: call('blockchainDisconnect'),
-    subscribe: call('blockchainSubscribe'),
-    unsubscribe: call('blockchainUnsubscribe'),
-    subscribeFiatRates: call('blockchainSubscribeFiatRates'),
-    unsubscribeFiatRates: call('blockchainUnsubscribeFiatRates'),
-    getCurrentFiatRates: call('blockchainGetCurrentFiatRates'),
-    getFiatRatesForTimestamps: call('blockchainGetFiatRatesForTimestamps'),
-    getAccountBalanceHistory: call('blockchainGetAccountBalanceHistory'),
+    getInfo: call('getInfo'),
+    getDefaultBackend: call('getDefaultBackend'),
+    setCustomBackend: call('setCustomBackend'),
+    disconnect: call('disconnect'),
+    subscribe: call('subscribe'),
+    unsubscribe: call('unsubscribe'),
+    subscribeFiatRates: call('subscribeFiatRates'),
+    unsubscribeFiatRates: call('unsubscribeFiatRates'),
+    getCurrentFiatRates: call('getCurrentFiatRates'),
+    getFiatRatesForTimestamps: call('getFiatRatesForTimestamps'),
+    getAccountBalanceHistory: call('getAccountBalanceHistory'),
     getAccountInfo: call('getAccountInfo'),
-    getTransactions: call('blockchainGetTransactions'),
-    getRawTransactions: call('blockchainGetTransactions'),
-    getContractInfo: call('blockchainGetContractInfo'),
-    estimateFee: call('blockchainEstimateFee'),
-    estimateFeeLevels: call('blockchainEstimateFee'),
-    evmRpcCall: call('blockchainEvmRpcCall'),
-    evmRpcGetChainId: call('blockchainEvmRpcGetChainId'),
+    getTransactions: call('getTransactions'),
+    getRawTransactions: call('getRawTransactions'),
+    getContractInfo: call('getContractInfo'),
+    estimateFee: call('estimateFee'),
+    estimateFeeLevels: call('estimateFeeLevels'),
+    evmRpcCall: call('evmRpcCall'),
+    evmRpcGetChainId: call('evmRpcGetChainId'),
     pushTransaction: call('pushTransaction'),
 };

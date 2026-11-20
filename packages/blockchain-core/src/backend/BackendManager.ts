@@ -1,12 +1,11 @@
-import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
-import type { Proxy } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TimerId } from '@trezor/type-utils';
 import { deepEqual } from '@trezor/utils';
 
-import type { BlockchainOptions } from './Blockchain';
+import type { BlockchainOptions, Proxy } from './Blockchain';
 import { Blockchain } from './Blockchain';
 import type { BackendCoinInfo, BlockchainLinkSettings } from '../data/coinInfo';
+import { BLOCKCHAIN, createBlockchainMessage } from '../events';
 
 type CoinShortcut = BackendCoinInfo['shortcut'];
 type Identity = string;

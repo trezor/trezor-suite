@@ -19365,11 +19365,6 @@ __metadata:
     "@trezor/schema-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-  peerDependencies:
-    "@trezor/ipc-proxy": "workspace:*"
-  peerDependenciesMeta:
-    "@trezor/ipc-proxy":
-      optional: true
   languageName: unknown
   linkType: soft
 
@@ -19403,7 +19398,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:^, @trezor/blockchain-link@workspace:packages/blockchain-link":
+"@trezor/blockchain-link@workspace:*, @trezor/blockchain-link@workspace:packages/blockchain-link":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
@@ -19541,7 +19536,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
-    "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:^"
@@ -19551,6 +19545,7 @@ __metadata:
     "@trezor/network-cardano": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:^"
+    "@trezor/requirements": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -19573,7 +19568,6 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
     "@scure/bip39": "npm:^1.5.1"
-    "@trezor/blockchain-core": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"
@@ -19611,7 +19605,6 @@ __metadata:
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.10"
     vm-browserify: "npm:^1.1.2"
-    ws: "npm:^8.20.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
