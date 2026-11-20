@@ -3,12 +3,9 @@
     "compilerOptions": { "outDir": "./libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        {
-            "path": "../../suite-common/sign-verify"
-        },
+        { "path": "../networks" },
         { "path": "../../suite/account" },
         { "path": "../../suite/device" },
-        { "path": "../../suite/sign-verify" },
         {
             "path": "../../packages/dependency-injection"
         },

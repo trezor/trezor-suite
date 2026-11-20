@@ -1,7 +1,9 @@
+import { type SignVerifyReporterDep } from '@suite-common/sign-verify';
 import {
     type CardanoSuiteCommonNetworkModule,
-    type CardanoSuiteCommonNetworkModuleDeps,
+    type SignCardanoMessageDeps,
     createCardanoSuiteCommonNetworkModule,
+    createSignCardanoMessage,
 } from '@trezor/network-cardano-suite-common';
 import { supportedCardanoNetworks } from '@trezor/network-cardano-types';
 import {
@@ -9,7 +11,9 @@ import {
     createNetworkModuleSuiteNative,
 } from '@trezor/network-module-suite-native-types';
 
-export type CardanoSuiteNativeNetworkModuleDeps = CardanoSuiteCommonNetworkModuleDeps;
+import { createCardanoSignVerifyComponent } from './signVerify/createCardanoSignVerifyComponent';
+
+export type CardanoSuiteNativeNetworkModuleDeps = SignCardanoMessageDeps & SignVerifyReporterDep;
 
 export type CardanoSuiteNativeNetworkModule =
     SuiteNativeNetworkModule<CardanoSuiteCommonNetworkModule>;
@@ -18,7 +22,14 @@ export const createCardanoSuiteNativeNetworkModule = (
     deps: CardanoSuiteNativeNetworkModuleDeps,
 ): CardanoSuiteNativeNetworkModule =>
     createNetworkModuleSuiteNative(
-        createCardanoSuiteCommonNetworkModule(deps),
+        createCardanoSuiteCommonNetworkModule(),
         supportedCardanoNetworks,
-        {},
+        {
+            signVerify: {
+                Component: createCardanoSignVerifyComponent({
+                    signCardanoMessage: createSignCardanoMessage(deps),
+                    signVerifyReporter: deps.signVerifyReporter,
+                }),
+            },
+        },
     );

@@ -14,7 +14,7 @@ import {
 } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createQueryClient } from '@suite-common/react-query';
-import { createSignVerify } from '@suite-common/sign-verify';
+import { createSignVerifyReporter } from '@suite-common/sign-verify';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { analytics } from '@suite-native/analytics';
@@ -100,11 +100,15 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
+    const networkModuleDeps = {
+        ...deps,
+        signVerifyReporter: createSignVerifyReporter({ analytics, dispatch: deps.dispatch }),
+    };
     const suiteNativeNetworkModules: SuiteNativeNetworkModule[] = [
-        createBitcoinSuiteNativeNetworkModule(deps),
-        createEthereumSuiteNativeNetworkModule(deps),
+        createBitcoinSuiteNativeNetworkModule(networkModuleDeps),
+        createEthereumSuiteNativeNetworkModule(networkModuleDeps),
         createRippleSuiteNativeNetworkModule(),
-        createCardanoSuiteNativeNetworkModule(deps),
+        createCardanoSuiteNativeNetworkModule(networkModuleDeps),
         createSolanaSuiteNativeNetworkModule(),
         createStellarSuiteNativeNetworkModule(),
         createTronSuiteNativeNetworkModule(),
@@ -138,11 +142,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     return {
         networks,
-        signVerify: createSignVerify({
-            networkModuleRepository,
-            analytics,
-            dispatch: deps.dispatch,
-        }),
         getSignVerify: createGetSignVerify({ suiteNativeNetworkModuleRepository }),
         staking,
         queryClient,

@@ -15,10 +15,9 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/sign-verify": "workspace:*",
+        "@suite-app/networks": "workspace:*",
         "@suite/account": "workspace:*",
         "@suite/device": "workspace:*",
-        "@suite/sign-verify": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/suite": "workspace:*",
         "react": "19.3.0"

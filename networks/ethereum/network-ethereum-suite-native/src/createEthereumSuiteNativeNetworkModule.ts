@@ -1,7 +1,12 @@
+import { type SignVerifyReporterDep } from '@suite-common/sign-verify';
 import {
     type EthereumSuiteCommonNetworkModule,
     type EthereumSuiteCommonNetworkModuleDeps,
+    type SignEthereumMessageDeps,
+    type VerifyEthereumMessageDeps,
     createEthereumSuiteCommonNetworkModule,
+    createSignEthereumMessage,
+    createVerifyEthereumMessage,
 } from '@trezor/network-ethereum-suite-common';
 import { supportedEthereumNetworks } from '@trezor/network-ethereum-types';
 import {
@@ -9,7 +14,12 @@ import {
     createNetworkModuleSuiteNative,
 } from '@trezor/network-module-suite-native-types';
 
-export type EthereumSuiteNativeNetworkModuleDeps = EthereumSuiteCommonNetworkModuleDeps;
+import { createEthereumSignVerifyComponent } from './signVerify/createEthereumSignVerifyComponent';
+
+export type EthereumSuiteNativeNetworkModuleDeps = EthereumSuiteCommonNetworkModuleDeps &
+    SignEthereumMessageDeps &
+    VerifyEthereumMessageDeps &
+    SignVerifyReporterDep;
 
 export type EthereumSuiteNativeNetworkModule =
     SuiteNativeNetworkModule<EthereumSuiteCommonNetworkModule>;
@@ -20,5 +30,13 @@ export const createEthereumSuiteNativeNetworkModule = (
     createNetworkModuleSuiteNative(
         createEthereumSuiteCommonNetworkModule(deps),
         supportedEthereumNetworks,
-        {},
+        {
+            signVerify: {
+                Component: createEthereumSignVerifyComponent({
+                    signEthereumMessage: createSignEthereumMessage(deps),
+                    verifyEthereumMessage: createVerifyEthereumMessage(deps),
+                    signVerifyReporter: deps.signVerifyReporter,
+                }),
+            },
+        },
     );

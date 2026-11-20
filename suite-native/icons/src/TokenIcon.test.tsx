@@ -21,7 +21,7 @@ import { TokenIcon } from './TokenIcon';
 const ethSymbol = asNetworkSymbol('eth');
 const networkModuleRepository = createNetworkModuleRepository({
     networkModules: [
-        createBitcoinSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
+        createBitcoinSuiteCommonNetworkModule(),
         createEthereumSuiteCommonNetworkModule({ getTrezorConnect: mock() }),
     ],
 });

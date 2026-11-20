@@ -32,13 +32,12 @@ type TranslationValues = Record<string, string | number | RegExp>;
 const DISPLAY_CHAR_LIMIT_T3T1 = 18;
 const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 
-const networkModuleDeps = { getTrezorConnect: mockGetTrezorConnect };
 const networkModuleRepository = createNetworkModuleRepository({
     networkModules: [
-        createBitcoinSuiteCommonNetworkModule(networkModuleDeps),
-        createEthereumSuiteCommonNetworkModule(networkModuleDeps),
+        createBitcoinSuiteCommonNetworkModule(),
+        createEthereumSuiteCommonNetworkModule({ getTrezorConnect: mockGetTrezorConnect }),
         createRippleSuiteCommonNetworkModule(),
-        createCardanoSuiteCommonNetworkModule(networkModuleDeps),
+        createCardanoSuiteCommonNetworkModule(),
         createSolanaSuiteCommonNetworkModule(),
         createStellarSuiteCommonNetworkModule(),
         createTronSuiteCommonNetworkModule(),

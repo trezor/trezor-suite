@@ -9,18 +9,26 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
-import { SignVerifyForms } from '@suite-native/sign-verify';
+import { injectGetSignVerify } from '@suite-native-app/networks';
+import { useServices } from '@trezor/dependency-injection';
 
 export const SignVerifyScreen = ({
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.SignVerify>) => {
     const { accountKey } = route.params;
+    const { getSignVerify } = useServices(injectGetSignVerify);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
     if (!account) {
+        return null;
+    }
+
+    const signVerify = getSignVerify(account);
+
+    if (signVerify === null) {
         return null;
     }
 
@@ -33,7 +41,7 @@ export const SignVerifyScreen = ({
                 />
             }
         >
-            <SignVerifyForms account={account} />
+            <signVerify.Component account={account} />
         </Screen>
     );
 };

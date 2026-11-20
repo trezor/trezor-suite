@@ -7,22 +7,13 @@ import {
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
-import {
-    type BitcoinSignVerifyDeps,
-    createBitcoinSignVerify,
-} from './signVerify/createBitcoinSignVerify';
-
-export type BitcoinSuiteCommonNetworkModuleDeps = BitcoinSignVerifyDeps;
 
 export type BitcoinSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
-export const createBitcoinSuiteCommonNetworkModule = (
-    deps: BitcoinSuiteCommonNetworkModuleDeps,
-): BitcoinSuiteCommonNetworkModule =>
+export const createBitcoinSuiteCommonNetworkModule = (): BitcoinSuiteCommonNetworkModule =>
     createNetworkModule(supportedBitcoinNetworks, {
         icon: bitcoinAssets,
         addressValidator: bitcoinValidator,
         getNetworkConfig,
         getAccountSyncInterval,
-        signVerify: createBitcoinSignVerify(deps),
     });
