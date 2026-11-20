@@ -819,7 +819,67 @@ export const findChainedTransactions = [
     },
 ];
 
-export const getRbfParams = [
+type OpReturnRbfParamsFixture = {
+    description: string;
+    opReturn: { addresses: string[]; hex?: string };
+    data?: { dataHex: string; dataAscii: string };
+};
+
+const getOpReturnRbfParams = ({ description, opReturn, data }: OpReturnRbfParamsFixture) => ({
+    description,
+    account: {
+        networkType: 'bitcoin',
+        addresses: {
+            change: [{ address: '1234', path: 'm/44/1' }],
+            used: [{ address: 'abcd', path: 'm/44/0' }],
+            unused: [],
+        },
+    },
+    tx: {
+        type: 'sent',
+        txid: '1A2b',
+        rbf: true,
+        fee: '366',
+        details: {
+            size: 100,
+            vin: [{ txid: 'prevTxid', value: '1', addresses: ['abcd'] }],
+            vout: [
+                { isAddress: true, addresses: ['xyz0'] },
+                { isAddress: false, ...opReturn },
+            ],
+        },
+    },
+    result: data && {
+        type: 'bitcoin',
+        txid: '1A2b',
+        baseFee: 366,
+        feeRate: '4',
+        utxo: [
+            {
+                address: 'abcd',
+                path: 'm/44/0',
+                blockHeight: 0,
+                confirmations: 0,
+                txid: 'prevTxid',
+                amount: '1',
+                vout: 0,
+                required: true,
+            },
+        ],
+        outputs: [
+            { type: 'payment', address: 'xyz0' },
+            { type: 'opreturn', ...data },
+        ],
+    },
+});
+
+// Explicitly typed so the generated declaration does not inline every literal and exceed the size limit.
+export const getRbfParams: {
+    description: string;
+    account: unknown;
+    tx: unknown;
+    result: unknown;
+}[] = [
     {
         description: 'invalid account',
         account: { networkType: 'ethereum' },
@@ -1119,6 +1179,7 @@ export const getRbfParams = [
                     {
                         isAddress: false,
                         addresses: ['OP_RETURN (foobar)'],
+                        hex: '6a06666f6f626172',
                     },
                     {
                         isAddress: true,
@@ -1165,6 +1226,35 @@ export const getRbfParams = [
             ],
         },
     },
+    getOpReturnRbfParams({
+        description: 'with non-ASCII OP_RETURN output',
+        opReturn: { addresses: ['OP_RETURN 000102ff8089abcd'], hex: '6a08000102ff8089abcd' },
+        data: {
+            dataHex: '000102ff8089abcd',
+            dataAscii: '\u0000\u0001\u0002\ufffd\ufffd\ufffd\ufffd\ufffd',
+        },
+    }),
+    getOpReturnRbfParams({
+        description: 'with OP_PUSHDATA1 (80 byte) OP_RETURN output',
+        opReturn: {
+            addresses: [`OP_RETURN (${'a'.repeat(80)})`],
+            hex: `6a4c50${'61'.repeat(80)}`,
+        },
+        data: { dataHex: '61'.repeat(80), dataAscii: 'a'.repeat(80) },
+    }),
+    getOpReturnRbfParams({
+        description: 'with one-byte OP_RETURN output that decompiles to an opcode',
+        opReturn: { addresses: ['OP_RETURN 01'], hex: '6a0101' },
+        data: { dataHex: '01', dataAscii: '\u0001' },
+    }),
+    getOpReturnRbfParams({
+        description: 'with OP_RETURN output without script (not replaceable)',
+        opReturn: { addresses: ['OP_RETURN (foobar)'] },
+    }),
+    getOpReturnRbfParams({
+        description: 'with multi-push OP_RETURN output (not replaceable)',
+        opReturn: { addresses: ['OP_RETURN 0102 03'], hex: '6a02010201ff' },
+    }),
 ];
 
 export const getAccountTransactions = [
