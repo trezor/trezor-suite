@@ -67,6 +67,8 @@ export class FakeDevice {
     readonly wardId: Uint8Array;
     head: Head = { counter: 0, root: EMPTY_ROOT };
     online = false;
+    /** the head `WardCatchUp` reached, for this session only; never `head` */
+    provisional: Head | null = null;
     queue: { entryKey: Uint8Array; leaf: WardLeaf | null }[] = [];
     private headNonce: Uint8Array = NO_HEAD_NONCE;
     private nonce: Uint8Array | null = null;
@@ -252,6 +254,21 @@ export class FakeDevice {
             ...wireRoot('new_root', this.head.root),
             reverts_crossed: 0,
         });
+    }
+
+    /** WardCatchUp: walks back like the firmware; the fake keeps the head it reads from apart. */
+    *onWardCatchUp(m: Json): Workflow {
+        const to = { counter: m.to_counter as number, root: fromWire(m.to_root) };
+        if (to.counter < this.head.counter) {
+            throw new Error(
+                `the host offered head #${to.counter}, older than #${this.head.counter}`,
+            );
+        }
+        const landed = yield* this.walk(to, this.head.counter);
+        if (!same(landed, this.head)) throw new Error('that head does not descend');
+        this.provisional = to;
+
+        return msg('WardCatchUpAck', { counter: to.counter, reverts_crossed: 0 });
     }
 
     *onWardRejoin(m: Json): Workflow {

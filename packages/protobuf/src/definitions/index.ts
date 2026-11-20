@@ -334,6 +334,8 @@ import {
     WardSetPointer,
 } from './messages-ward';
 import {
+    WardCatchUp,
+    WardCatchUpAck,
     WardChainLinkAck,
     WardChainRequest,
     WardEntryRequest,
@@ -716,6 +718,8 @@ export const MessageType = Type.Object(
         WardRejoin,
         WardRejoinAck,
         WardSetPointer,
+        WardCatchUp,
+        WardCatchUpAck,
         WardSync,
         WardSyncAck,
         WardIngestAttestation,
@@ -942,7 +946,8 @@ export type WireInMessage =
     | 'WardPublishAck'
     | 'WardPublishConflict'
     | 'WardResetService'
-    | 'WardSetPointer';
+    | 'WardSetPointer'
+    | 'WardCatchUp';
 
 export type WireOutMessage =
     | 'Success'
@@ -1057,6 +1062,7 @@ export type WireOutMessage =
     | 'WardFlushQueueAck'
     | 'WardChainRequest'
     | 'WardVerifyChainAck'
+    | 'WardCatchUpAck'
     | 'WardRejoinAck'
     | 'WardSyncAck'
     | 'WardIngestAttestationAck'

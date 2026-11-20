@@ -86,6 +86,7 @@ export default class WardRelay extends AbstractMethod<'wardRelay', WardRelaySche
             if (op === 'flush') {
                 return await client.call('flush', { maxBatch: this.params.maxBatch }, device);
             }
+            if (op === 'catchUp') return await client.call('catchUp', {}, device);
 
             return await client.call('status');
         } catch (error) {

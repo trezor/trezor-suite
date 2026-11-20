@@ -131,6 +131,26 @@ describe('Connect wardRelay against wardd', () => {
         ).resolves.toMatchObject({ counter: 2, wmCounter: 2 });
     });
 
+    it('walks a second device up the chain with catchUp, persisting nothing', async () => {
+        const keys = newWallet();
+        const a = new FakeDevice(keys);
+        a.enqueue('x', '1');
+        a.enqueue('y', '2');
+        await relay(a, url, { op: 'flush' }).run();
+        const b = new FakeDevice(keys);
+        const { run, relayCall } = relay(b, url, { op: 'catchUp' });
+        await expect(run()).resolves.toMatchObject({ counter: 2 });
+        // WardCatchUp through Connect's codec, then the chain walk it asks for
+        expect(relayCall.mock.calls.map(([name]) => name)).toEqual([
+            'WardSync',
+            'WardCatchUp',
+            'WardChainLinkAck',
+        ]);
+        expect(b.provisional?.counter).toBe(2);
+        expect(b.head.counter).toBe(0);
+        expect(b.online).toBe(false);
+    });
+
     it("keeps wardd's refusal code in Connect's error", async () => {
         const device = new FakeDevice();
         const other = new FakeDevice();

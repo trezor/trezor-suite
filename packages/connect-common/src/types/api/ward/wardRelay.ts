@@ -15,6 +15,9 @@ import type { Params, Response } from '../../params';
  *   answers `needs_rejoin`.
  * - `flush`: publish everything the device holds in its queue -- one change per transition, or up
  *   to `maxBatch` folded into one -- syncing after each.
+ * - `catchUp`: with no WM, walk the device along the wallet's chain to the replica's head
+ *   (`WardCatchUp`). It reads from that head for this session only, shown as not proven current,
+ *   and persists nothing; a head older than the device's is refused.
  * - `status`: the replica's head and the WM's, with no device involved.
  *
  * THE WALLET. `wardId` names it; when omitted the device is asked (`WardSync`). The replica is
@@ -28,7 +31,12 @@ import type { Params, Response } from '../../params';
 export const WardRelay = Type.Object({
     url: Type.Optional(Type.String()),
     token: Type.String(),
-    op: Type.Union([Type.Literal('sync'), Type.Literal('flush'), Type.Literal('status')]),
+    op: Type.Union([
+        Type.Literal('sync'),
+        Type.Literal('flush'),
+        Type.Literal('catchUp'),
+        Type.Literal('status'),
+    ]),
     rejoin: Type.Optional(Type.Boolean()),
     maxBatch: Type.Optional(Type.Number()),
     wardId: Type.Optional(Type.String()),

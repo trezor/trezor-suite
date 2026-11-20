@@ -97,8 +97,6 @@ const MAX_FLUSH_ROUNDS = 1000;
 
 export class WardHost {
     private queue: Promise<unknown> = Promise.resolve();
-    /** The WM head last read, to pick the replica's head while the WM cannot be reached. */
-    private lastWmHead: { counter: number; root: Uint8Array | null } | null = null;
 
     constructor(
         readonly wardId: Uint8Array,
@@ -128,23 +126,25 @@ export class WardHost {
         return run;
     }
 
-    /** The WM's head, or -- while it cannot be reached -- the one it last reported. */
+    /** The WM's head, or none while it cannot be reached. */
     private async wmHead(): Promise<{
         head: { counter: number; root: Uint8Array | null } | null;
         available: boolean;
     }> {
         try {
-            this.lastWmHead = await this.wm.head(this.wardId);
-
-            return { head: this.lastWmHead, available: true };
+            return { head: await this.wm.head(this.wardId), available: true };
         } catch (e) {
             if (!(e instanceof WmUnavailable)) throw e;
 
-            return { head: this.lastWmHead, available: false };
+            return { head: null, available: false };
         }
     }
 
-    /** Served from the WM's head; while the WM is down, from the last head it reported. */
+    /**
+     * Served from the WM's head. While the WM is down, from the highest head the stored rows
+     * build -- rows the relay brings in meanwhile included -- which is what a device catches up to
+     * (`catchUp`); the device itself checks that it descends from the head it stored.
+     */
     async replica(): Promise<Replica> {
         const links = await this.backend.load();
         const { head } = await this.wmHead();
@@ -191,6 +191,34 @@ export class WardHost {
 
     sync(device: Device, opts: { rejoin?: boolean } = {}) {
         return this.exclusive(() => this.syncInner(device, opts));
+    }
+
+    /**
+     * Walk the device up to this replica's head WITHOUT the WM -- what a host can do while the WM
+     * is down. The device proves the chain back to its stored head and reads from this head for
+     * the session only, under the "not proven current" warning; it persists nothing.
+     */
+    catchUp(device: Device) {
+        return this.exclusive(async () => {
+            const { trie, head } = await this.replica();
+            const ack = expectReply(
+                await this.answerChain(
+                    device,
+                    trie,
+                    await device({
+                        name: 'WardCatchUp',
+                        message: { to_counter: head.counter, ...opt('to_root', head.root) },
+                    }),
+                ),
+                'WardCatchUpAck',
+            );
+
+            return {
+                counter: ack.counter ?? head.counter,
+                root: hexOrNull(head.root),
+                reverts: ack.reverts_crossed ?? 0,
+            };
+        });
     }
 
     flush(device: Device, opts: { maxBatch?: number } = {}) {

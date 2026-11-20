@@ -159,6 +159,8 @@ export const startServer = async (opts: ServerOptions) => {
                     return host.applyResult(p);
                 case 'sync':
                     return { ...(await host.sync(device, { rejoin: !!p.rejoin })) };
+                case 'catchUp':
+                    return { ...(await host.catchUp(device)) };
                 case 'flush':
                     return { ...(await host.flush(device, { maxBatch: p.maxBatch })) };
                 case 'status':

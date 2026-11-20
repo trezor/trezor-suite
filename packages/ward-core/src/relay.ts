@@ -37,6 +37,11 @@ export type RelayMethod =
     | 'applyResult'
     /** Conversation: sync the device's head with the WM (reconcile, or catch up via the chain). */
     | 'sync'
+    /**
+     * Conversation, WITHOUT the WM: walk the device up to the replica's head for its session only
+     * (`WardCatchUp`). Reads stay "not proven current"; nothing is persisted on the device.
+     */
+    | 'catchUp'
     /** Conversation: flush the offline queue, `{ maxBatch? }`, then publish and sync. */
     | 'flush'
     /** `{}` -> `{ counter, root, wmCounter, wmRoot }`. */

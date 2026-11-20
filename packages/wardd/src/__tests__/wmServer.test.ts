@@ -127,8 +127,30 @@ describe('wardd while the WARD Manager is down', () => {
             expect.objectContaining({ code: 'wm_unavailable' }),
         );
         await expect(host.sync(a.call)).rejects.toBeInstanceOf(RelayFailure);
-        // the replica still answers pulls against the head the WM last reported
+        // the replica still answers pulls, from the highest head its rows build
         const { trie } = await host.replica();
         expect(trie.size).toBe(1);
+    });
+
+    it('walks a device that never synced up to its head, without the WM', async () => {
+        const { server, wm } = await withWm();
+        const keys = newWallet();
+        const first = new FakeDevice(keys);
+        const wardd = await Wardd.create({ dataDir: null, memory: true, wm });
+        const host = await wardd.openStore({ wardId: toHex(first.wardId) });
+        first.enqueue('alice', 'v1');
+        first.enqueue('bob', 'v2');
+        await host.flush(first.call);
+        await server.close();
+
+        // a second device of the same wallet, never synced, while the WM is down
+        const second = new FakeDevice(keys);
+        await expect(host.sync(second.call)).rejects.toEqual(
+            expect.objectContaining({ code: 'wm_unavailable' }),
+        );
+        await expect(host.catchUp(second.call)).resolves.toMatchObject({ counter: 2 });
+        expect(second.provisional?.counter).toBe(2);
+        expect(second.head.counter).toBe(0); // nothing persisted
+        expect(second.online).toBe(false);
     });
 });

@@ -15,6 +15,24 @@ export const WardBatchedLeaf = Type.Object(
     { $id: 'WardBatchedLeaf' },
 );
 
+export type WardCatchUp = Static<typeof WardCatchUp>;
+export const WardCatchUp = Type.Object(
+    {
+        to_counter: Type.Number(),
+        to_root: Type.Optional(Type.String()),
+    },
+    { $id: 'WardCatchUp' },
+);
+
+export type WardCatchUpAck = Static<typeof WardCatchUpAck>;
+export const WardCatchUpAck = Type.Object(
+    {
+        counter: Type.Optional(Type.Number()),
+        reverts_crossed: Type.Optional(Type.Number()),
+    },
+    { $id: 'WardCatchUpAck' },
+);
+
 export type WardChainLinkAck = Static<typeof WardChainLinkAck>;
 export const WardChainLinkAck = Type.Object(
     {
