@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@trezor/zod';
 
 /**
  * What Serwist's `BroadcastUpdatePlugin` sends to every tab once the worker has stored a newer copy

@@ -18482,11 +18482,11 @@ __metadata:
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@trezor/zod": "workspace:*"
     react: "npm:19.3.0"
     serwist: "npm:9.5.13"
     vite: "npm:^8.3.3"
     webpack: "npm:5.111.1"
-    zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
 

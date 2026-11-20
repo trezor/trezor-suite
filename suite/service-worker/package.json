@@ -25,9 +25,9 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "@trezor/zod": "workspace:*",
         "react": "19.3.0",
-        "serwist": "9.5.13",
-        "zod": "4.6.7"
+        "serwist": "9.5.13"
     },
     "devDependencies": {
         "@serwist/vite": "9.5.13",
