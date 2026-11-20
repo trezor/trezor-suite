@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/networks" },
-        { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/sign-verify"
         },

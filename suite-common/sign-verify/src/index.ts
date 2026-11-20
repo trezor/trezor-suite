@@ -8,3 +8,10 @@ export {
     type SignVerifyDeps,
 } from './createSignVerify';
 export { type VerifyParams } from './createVerifyMessage';
+export {
+    selectAccountSignAddresses,
+    type SignAddress,
+    type SignAddressCategory,
+    type SignAddressGroup,
+    type SignAddressesRootState,
+} from './signVerifySelectors';
