@@ -7,7 +7,7 @@ describe.skip('Manual', () => {
         'MEV protection',
         {
             testCase: 'MEV protection can be toggled and is applied to Ethereum transactions',
-            prerequisites: ['connected device', 'seed with ETH funds on it'],
+            prerequisites: ['connected device', 'seed with ETH and BTC funds on it'],
             steps: [
                 'Navigate to Settings > Security and locate the MEV protection toggle',
                 'Enable MEV protection',
@@ -15,6 +15,7 @@ describe.skip('Manual', () => {
                 'Send a transaction and check that it was sent through MEV',
                 'Go back to Settings > Security and disable MEV protection',
                 'Repeat the send flow and verify that this transaction was sent without the MEV',
+                'With MEV protection still disabled, send a transaction from a BTC account and verify it is broadcast successfully',
             ],
             category: TestCategory.MEV,
             priority: TestPriority.High,
