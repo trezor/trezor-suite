@@ -2,7 +2,13 @@ import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import { TokenStructureType } from '../../src/tokenDefinitionsTypes';
-import { REQUEST_RETRIES, REQUEST_TIMEOUT_MS } from '../constants';
+import {
+    QUOTA_RETRY_DELAY_MS,
+    REQUEST_RETRIES,
+    REQUEST_TIMEOUT_MS,
+    STELLAR_EXPERT_MIN_REQUEST_GAP_MS,
+    STELLAR_EXPERT_QUOTA_EXCEEDED_STATUS,
+} from '../constants';
 
 jest.mock('@trezor/blockchain-link-utils', () => ({
     ...jest.requireActual('@trezor/blockchain-link-utils'),
@@ -12,6 +18,12 @@ jest.mock('@trezor/blockchain-link-utils', () => ({
             jest.requireActual('@trezor/blockchain-link-utils').blockfrostUtils.parseAsset,
         ),
     },
+}));
+
+// The real gap would make every StellarExpert lookup in this file wait seconds of real time.
+jest.mock('../constants', () => ({
+    ...jest.requireActual('../constants'),
+    STELLAR_EXPERT_MIN_REQUEST_GAP_MS: 300,
 }));
 
 const fetchMock = jest.fn();
@@ -239,6 +251,49 @@ describe('getContractAddress', () => {
             expect(fetchMock).toHaveBeenCalledTimes(2);
             // Without the faked timeout in play, this test would pass with the bug as well.
             expect(AbortSignal.timeout).toHaveBeenCalledWith(REQUEST_TIMEOUT_MS);
+        });
+
+        it('should retry a lookup refused for exceeding the free quota after the minute window', async () => {
+            jest.useFakeTimers();
+            jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+            mockStellarExpert(
+                new Response('Payment Required', {
+                    status: STELLAR_EXPERT_QUOTA_EXCEEDED_STATUS,
+                }),
+                assetResponse(),
+            );
+
+            const resultPromise = getContractAddress('stellar', { stellar: sorobanAddress });
+            await jest.advanceTimersByTimeAsync(QUOTA_RETRY_DELAY_MS - 1);
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            await jest.runAllTimersAsync();
+
+            expect(await resultPromise).toEqual(ok(usdc));
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        it('should space StellarExpert requests to stay within the free quota', async () => {
+            jest.useFakeTimers();
+            const requestedAt: number[] = [];
+            fetchMock.mockImplementation(() => {
+                requestedAt.push(Date.now());
+
+                return Promise.resolve(assetResponse());
+            });
+
+            const lookups = (async () => {
+                await getContractAddress('stellar', { stellar: sorobanAddress });
+                await getContractAddress('stellar', { stellar: sorobanAddress });
+            })();
+            await jest.runAllTimersAsync();
+            await lookups;
+
+            expect(requestedAt).toHaveLength(2);
+            expect(requestedAt[1] - requestedAt[0]).toBeGreaterThanOrEqual(
+                STELLAR_EXPERT_MIN_REQUEST_GAP_MS,
+            );
         });
 
         it('should report a failed lookup, so the asset is never silently dropped', async () => {
