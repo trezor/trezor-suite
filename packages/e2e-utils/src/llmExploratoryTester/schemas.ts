@@ -38,6 +38,9 @@ export const ScreenshotBasenameSchema = z
 export const IssueSchema = z.object({
     id: z.string(),
     severity: z.enum(['critical', 'high', 'medium', 'low', 'info']),
+    relevance: z
+        .enum(['pr-related', 'unrelated', 'uncertain'])
+        .describe('Relation to the PR changes. PR-related does not mean introduced by the PR.'),
     title: z.string().describe('Short noun phrase. No analysis.'),
     description: z.string().describe('One sentence of the defect. No root cause.'),
     reproSteps: z.array(z.string()).describe('3–8 short imperative steps. No commentary.'),
