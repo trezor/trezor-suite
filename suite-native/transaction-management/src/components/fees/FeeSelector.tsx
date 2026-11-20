@@ -33,9 +33,12 @@ export const FeeSelector = (props: FeeSelectorProps) => {
     } = useFeeSelector(props);
 
     const { accountKey, tokenContract, formDraft } = props;
-    const areFeesLoading = areNetworkFeesLoading || !!props.isLoading;
 
-    if (!symbol || !networkType) return null;
+    if (!symbol || !networkType) {
+        return null;
+    }
+
+    const areFeesLoading = areNetworkFeesLoading || !!props.isLoading;
 
     return (
         <>
