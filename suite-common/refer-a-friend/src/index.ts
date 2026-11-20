@@ -17,12 +17,19 @@ export {
     referAFriendInitialState,
     referAFriendPersistedKeys,
     referAFriendReducer,
+} from './referAFriendSlice';
+export {
+    selectIsReferralWalletDescriptorAvailable,
+    selectReferAFriendApiCustomUrl,
+    selectReferAFriendApiUrl,
     selectReferAFriendSettings,
     selectReferAFriendWallets,
     selectReferralAccountState,
+    selectReferralAccountStateByWalletDescriptor,
     selectReferralProgram,
     selectReferralWalletRecord,
-} from './referAFriendSlice';
+    selectReferralWalletRecordByWalletDescriptor,
+} from './referAFriendSelectors';
 export {
     deriveReferralKeyThunk,
     fetchReferralAccountThunk,
@@ -42,8 +49,5 @@ export {
     LOCAL_REFER_A_FRIEND_API_URL,
     getReferAFriendApiDefaultUrl,
     getReferAFriendApiUrl,
-    selectReferAFriendApiCustomUrl,
-    selectReferAFriendApiUrl,
 } from './referAFriendUrl';
 export { type ReferralKey, isReferralKey } from './referralKey';
-export { selectIsReferralWalletDescriptorAvailable } from './selectIsReferralWalletDescriptorAvailable';

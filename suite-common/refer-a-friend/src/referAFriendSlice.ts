@@ -81,7 +81,7 @@ export const referAFriendInitialState: ReferAFriendState = {
     accounts: {},
 };
 
-const initialAccountState: ReferralAccountState = {
+export const initialAccountState: ReferralAccountState = {
     status: 'idle',
     account: null,
     vouchers: null,
@@ -222,29 +222,3 @@ const referAFriendSlice = createSlice({
 
 export const referAFriendActions = referAFriendSlice.actions;
 export const referAFriendReducer = referAFriendSlice.reducer;
-
-export const selectReferAFriendSettings = (state: ReferAFriendRootState) =>
-    state.referAFriend.settings;
-
-export const selectReferAFriendWallets = (state: ReferAFriendRootState) =>
-    state.referAFriend.wallets;
-
-export const selectReferralWalletRecord = (
-    state: ReferAFriendRootState,
-    walletDescriptor: WalletDescriptor | null,
-): ReferralWalletRecord | null =>
-    walletDescriptor === null ? null : (state.referAFriend.wallets[walletDescriptor] ?? null);
-
-export const selectEncryptedReferralKey = (
-    state: ReferAFriendRootState,
-    walletDescriptor: WalletDescriptor,
-) => state.referAFriend.wallets[walletDescriptor]?.encryptedKey ?? null;
-
-export const selectReferralProgram = (state: ReferAFriendRootState) => state.referAFriend.program;
-
-export const selectReferralAccountState = (
-    state: ReferAFriendRootState,
-    walletDescriptor: WalletDescriptor | null,
-): ReferralAccountState =>
-    (walletDescriptor === null ? undefined : state.referAFriend.accounts[walletDescriptor]) ??
-    initialAccountState;

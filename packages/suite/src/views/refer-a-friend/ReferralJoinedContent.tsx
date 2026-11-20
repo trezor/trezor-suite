@@ -2,11 +2,6 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 
 import {
-    type DeviceRootState,
-    selectStandardWalletDescriptorByDeviceId,
-} from '@suite-common/device';
-import {
-    type ReferAFriendRootState,
     type ReferralProgram,
     fetchReferralAccountThunk,
     getReferralRewardsSummary,
@@ -34,12 +29,7 @@ export const ReferralJoinedContent = ({
     shareUrl,
     program,
 }: ReferralJoinedContentProps) => {
-    const walletDescriptor = useSelector((state: DeviceRootState) =>
-        selectStandardWalletDescriptorByDeviceId(state, deviceId),
-    );
-    const accountState = useSelector((state: ReferAFriendRootState) =>
-        selectReferralAccountState(state, walletDescriptor),
-    );
+    const accountState = useSelector(selectReferralAccountState);
 
     const { dispatch } = useServices(injectDispatch);
     const { formatNumber, formatDate } = useIntl();
