@@ -235,7 +235,7 @@ test('rejects the web application scope in network packages', async () => {
     });
 
     assert.equal(errors.length, 1);
-    assert.match(errors[0].message, /Network packages may only depend on @trezor/);
+    assert.match(errors[0].message, /but not app code/);
 });
 
 for (const filename of [
