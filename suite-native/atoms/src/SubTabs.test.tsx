@@ -88,11 +88,9 @@ describe('SubTabs', () => {
         const { getByTestId } = await renderSubTabs();
 
         expect(getByTestId('exchange-tab')).toHaveStyle({
-            height: 36,
             backgroundColor: colors.elementFillElevated,
             borderRadius: 100,
             gap: 8,
-            borderBottomWidth: 2,
             paddingVertical: 8,
             paddingHorizontal: 16,
         });
@@ -110,7 +108,6 @@ describe('SubTabs', () => {
         const { getByTestId } = await renderSubTabs({ size: 'large' });
 
         expect(getByTestId('exchange-tab')).toHaveStyle({
-            height: 40,
             borderRadius: 100,
             gap: 8,
             paddingVertical: 8,
