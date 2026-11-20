@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { useStakingActivationDays } from '@suite-common/earn';
 import {
@@ -10,8 +10,6 @@ import {
 } from '@suite-common/earn-staking';
 import {
     fetchAllTransactionsForAccountThunk,
-    selectAccountStakeTransactions,
-    selectAccountUnstakeTransactions,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -25,6 +23,7 @@ import { useLayoutSize } from '#src/hooks/suite/useLayoutSize';
 import { useSelector } from '#src/hooks/suite/useSelector';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
+import { selectAccountInstantStakeTransactions } from './ethStakingDashboardSelectors';
 import { StakingDashboard } from '../StakingDashboard/StakingDashboard';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
@@ -56,9 +55,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const daysToAddToPool = daysUntilActivation ?? entryPeriodDays;
     const daysToUnstake = daysUntilUnlock ?? exitPeriodDays;
 
-    // The instant-stake banner diffs the internal transfers of the staking transactions.
-    const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, accountKey));
-    const unstakeTxs = useSelector(state => selectAccountUnstakeTransactions(state, accountKey));
+    const txs = useSelector(state => selectAccountInstantStakeTransactions(state, accountKey));
 
     const { dispatch } = useServices(injectDispatch);
 
@@ -72,8 +69,6 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
             );
         }
     }, [accountKey, dispatch]);
-
-    const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
 
     const canClaim = isPositiveBalance(totals.withdrawable);
 
