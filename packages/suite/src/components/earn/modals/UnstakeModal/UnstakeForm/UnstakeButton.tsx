@@ -2,7 +2,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
@@ -31,7 +30,7 @@ export const UnstakeButton = () => {
         watch,
         signTx,
         currency,
-        unstakableBalance,
+        isCardanoBalanceEmpty,
     } = useWithdrawalFormContext();
     const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
         network.symbol,
@@ -43,9 +42,6 @@ export const UnstakeButton = () => {
     const formIsValid = Object.keys(errors).length === 0;
 
     const isDeviceConnected = device?.connected && device?.available;
-
-    const isCardanoBalanceEmpty =
-        account.networkType === 'cardano' && !isPositiveBalance(unstakableBalance);
 
     const isDisabled =
         !(formIsValid && hasValues) ||
