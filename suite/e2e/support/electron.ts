@@ -16,6 +16,8 @@ const exposeStoreArgument = '--expose-store';
 
 export type LaunchSuiteParams = {
     keepUserData?: boolean;
+    remoteDebuggingPort?: number;
+    skipVideoRecording?: boolean;
     bridgeDaemon?: 'with-ui' | 'without-ui';
     exposeConnectWs?: boolean;
     offlineMode?: boolean;
@@ -54,6 +56,10 @@ const buildArgs = (params: LaunchSuiteParams) => {
         disableHWAccelerationArgument,
         showConnectLogsArgument,
     ];
+
+    if (params.remoteDebuggingPort) {
+        args.push(`--remote-debugging-port=${params.remoteDebuggingPort}`);
+    }
 
     if (params.bridgeDaemon) {
         args.push(
@@ -96,6 +102,14 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     }
 
+    let recordVideo;
+    if (!params.skipVideoRecording) {
+        recordVideo = {
+            dir: params.artefactFolder,
+            size: params.viewport,
+        };
+    }
+
     const electronApp = await electron.launch({
         cwd: appDir,
         args: buildArgs(params),
@@ -105,7 +119,7 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         },
         colorScheme: params.colorScheme,
         locale: params.locale,
-        recordVideo: { dir: params.artefactFolder, size: params.viewport },
+        recordVideo,
     });
 
     setupLoggingToFile(electronApp, params);

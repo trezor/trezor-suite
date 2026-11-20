@@ -11,7 +11,10 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 // nightly/PR discovery never picks these specs up.
 // Uses main (canary) firmware — same as local canary runs — so the agent exercises
 // the newest FW features available in trezor-user-env.
-const target = PlaywrightTarget.Web;
+const platform =
+    process.env.LLM_EXPLORATORY_TESTER_PLATFORM === 'desktop'
+        ? PlaywrightTarget.Desktop
+        : PlaywrightTarget.Web;
 const definition: PlaywrightProjectDefinition[] = [
     { model: Model.T3W1, firmware: '2-main' },
     { model: Model.T3T1, firmware: '2-main' },
@@ -28,7 +31,7 @@ const config = defineConfig({
     // The passphrase modal stays open until the device asks to confirm, which
     // can exceed the default 5s expect timeout during hidden-wallet setup.
     expect: { timeout: 15_000 },
-    projects: PlaywrightProjectBuilder.buildFromDefinitions(target, definition),
+    projects: PlaywrightProjectBuilder.buildFromDefinitions(platform, definition),
     use: {
         ...baseConfig.use,
         baseURL: process.env.BASE_URL,

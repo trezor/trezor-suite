@@ -10,6 +10,8 @@ const toJsonSchema = (schema: z.ZodType) => {
 
 export const DEVICE_MODELS = ['T2T1', 'T3B1', 'T3T1', 'T3W1'] as const;
 
+export const PlatformSchema = z.enum(['web', 'desktop']);
+
 export const DeviceModelSchema = z.enum(DEVICE_MODELS);
 
 const GithubItemSchema = z.object({
@@ -20,6 +22,7 @@ const GithubItemSchema = z.object({
 });
 
 export const PrContextSchema = z.object({
+    platform: PlatformSchema.default('web'),
     prNumber: z.number().int().positive(),
     prUrl: z.string(),
     prTitle: z.string(),

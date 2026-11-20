@@ -1,6 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev",
+        "allowImportingTsExtensions": true
+    },
     "references": [
         { "path": "../node-utils" },
         { "path": "../trezor-user-env-link" },
