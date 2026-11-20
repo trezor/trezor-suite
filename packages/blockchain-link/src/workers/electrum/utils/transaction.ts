@@ -38,12 +38,13 @@ const parseAddresses = ({ address, addresses, type, hex }: TxOut['scriptPubKey']
 
 type GetVout = (txid: string, vout: number) => TransactionVerbose['vout'][number];
 type GetSpent = (txid: string, n: number) => boolean;
+type GetBlockHeight = (tx: TransactionVerbose) => number;
 
 const isNotCoinbase = (item: TxIn | TxCoinbase): item is TxIn =>
     'txid' in item && item.txid !== undefined;
 
 const formatTransaction =
-    (getVout: GetVout, getSpent: GetSpent, currentHeight: number) =>
+    (getVout: GetVout, getSpent: GetSpent, getBlockHeight: GetBlockHeight) =>
     (tx: TransactionVerbose): BlockbookTransaction => {
         const {
             txid,
@@ -72,7 +73,7 @@ const formatTransaction =
             lockTime: locktime,
             blockTime: blocktime,
             blockHash: blockhash,
-            blockHeight: currentHeight && confirmations ? currentHeight - confirmations + 1 : -1,
+            blockHeight: getBlockHeight(tx),
             value: btcToSat(value),
             valueIn: btcToSat(valueIn),
             fees: btcToSat(valueIn - value),
@@ -161,6 +162,17 @@ export const getTransactions = async (
     };
 
     const currentHeight = client.getInfo()?.block?.height || 0;
+    const historyHeights = new Map(history.map(({ tx_hash, height }) => [tx_hash, height]));
+    // Height from the history is exact, confirmations of a verbose transaction are counted by
+    // the node of the server from its own tip, which may differ from the one known here.
+    const getBlockHeight = ({ txid, confirmations }: TransactionVerbose) => {
+        if (!currentHeight || !confirmations) return -1;
+        const historyHeight = historyHeights.get(txid);
 
-    return Object.values(origTxs).map(formatTransaction(getVout, getSpent, currentHeight));
+        return historyHeight && historyHeight > 0
+            ? historyHeight
+            : currentHeight - confirmations + 1;
+    };
+
+    return Object.values(origTxs).map(formatTransaction(getVout, getSpent, getBlockHeight));
 };
