@@ -12,3 +12,4 @@ export { mockYieldSessionState } from './mockYieldSessionState';
 export { mockEthereumStakingTransaction } from './mockEthereumStakingTransaction';
 export { mockStakeData, mockStakeRootState } from './mockStakeRootState';
 export { mockTronUnfreezeTransaction } from './mockTronUnfreezeTransaction';
+export { mockTronResources } from './mockTronResources';

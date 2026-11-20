@@ -16,6 +16,7 @@ import {
     composeTronTransactionFeeLevelsThunk,
     signTronSendFormTransactionThunk,
 } from './sendFormTronThunks';
+import { mockTronResources } from '../../../mocks';
 import { type WalletSettingsRootState } from '../../settings/walletSettingsReducer';
 
 const OWNER = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
@@ -139,14 +140,14 @@ describe('composeTronTransactionFeeLevelsThunk – custom fee limit level', () =
         ...overrides,
     });
 
-    const dispatchTokenCompose = (tokenFormState: FormState) => {
+    const dispatchTokenCompose = (tokenFormState: FormState, composeAccount = tokenAccount) => {
         const { store } = createTestCompositionRoot<void, unknown>({}).services;
 
         return store
             .dispatch(
                 composeTronTransactionFeeLevelsThunk({
                     formState: tokenFormState,
-                    composeContext: { ...composeContext(), account: tokenAccount },
+                    composeContext: { ...composeContext(), account: composeAccount },
                 }),
             )
             .unwrap();
@@ -232,6 +233,24 @@ describe('composeTronTransactionFeeLevelsThunk – custom fee limit level', () =
         assertComposed(normal);
         expect(normal.type).toBe('final');
         expect(custom).toMatchObject({ type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' });
+    });
+
+    it('lets staked energy cover the fee on an account without TRX', async () => {
+        const stakedEnergyAccount = {
+            ...tokenAccount,
+            availableBalance: '0',
+            misc: { tronResources: mockTronResources({ availableEnergy: ESTIMATED_ENERGY }) },
+        } as unknown as Account;
+
+        const { normal } = await dispatchTokenCompose(
+            buildFormState({ selectedFee: 'normal' }),
+            stakedEnergyAccount,
+        );
+
+        assertComposed(normal);
+        expect(normal.burnedFee).toBe('0');
+        expect(normal.fee).toBe(ESTIMATED_FEE);
+        expect(normal.estimatedFeeLimit).toBe(ESTIMATED_FEE);
     });
 
     it('falls back to the estimate when the typed limit is empty', async () => {

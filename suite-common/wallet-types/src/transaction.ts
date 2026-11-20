@@ -164,6 +164,7 @@ type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFi
     energyConsumed?: number;
     accountActivationFee?: string;
     memoFee?: string;
+    burnedFee?: string;
     solanaTxMeta?: SolanaTxMeta;
     isDeviceReviewOnly?: boolean;
 };
@@ -177,6 +178,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     energyConsumed?: number;
     accountActivationFee?: string;
     memoFee?: string;
+    burnedFee?: string;
     /** override the network's native token
      * used with EVMs that are used via Connect, but not natively supported in Suite */
     nativeToken?: TokenInfo;

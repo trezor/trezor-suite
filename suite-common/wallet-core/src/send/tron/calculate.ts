@@ -1,5 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
+import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { type TokenInfo } from '@trezor/connect';
 
 import { calculateRawContractCall } from './calculateRawContractCall';
@@ -17,6 +18,7 @@ export const calculate = (
     token?: TokenInfo,
     isNewAccount?: boolean,
     userCallDataHex?: string,
+    tronResources?: TronAccountExtraData,
 ): PrecomposedTransaction => {
     if (token) {
         return calculateTrc20Transfer(
@@ -27,6 +29,7 @@ export const calculate = (
             networkSymbol,
             bytes,
             hasMemo,
+            tronResources,
         );
     }
     if (userCallDataHex) {
@@ -37,6 +40,7 @@ export const calculate = (
             networkSymbol,
             bytes,
             hasMemo,
+            tronResources,
         );
     }
 
