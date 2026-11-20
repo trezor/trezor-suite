@@ -40,6 +40,10 @@ useEffect(() => {
 }, []);
 ```
 
+The host application should route only its registered callback URLs to `handleDeeplink`.
+Invalid callbacks resolve affected pending calls with a `Method_InvalidParameter` error.
+`cancel()` and `dispose()` settle pending calls locally.
+
 ## Example
 
 The [Connect mobile example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/mobile-expo) shows how to use the library in a React Native + Expo app.
