@@ -1,6 +1,11 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { type DeviceRootState } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectStandardWalletByDeviceId,
+    selectStandardWalletDescriptorByDeviceId,
+} from '@suite-common/device';
+import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
@@ -20,10 +25,6 @@ import {
     type ReferralVouchersResponse,
 } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
-import {
-    type ReferralStandardWallet,
-    selectReferralStandardWallet,
-} from './selectReferralStandardWallet';
 
 const REFER_A_FRIEND_MODULE = '@suite-common/refer-a-friend';
 
@@ -43,6 +44,21 @@ type ReferralActionResult = Result<void, ReferralError>;
 
 // The page is blocked without a standard wallet, so the actions should never get here without it.
 const standardWalletUnavailableError: ReferralError = { message: 'Standard wallet unavailable' };
+
+type ReferralStandardWallet = WalletDescriptorParams & {
+    device: TrezorDeviceWithState;
+};
+
+// Both resolve from the same standard wallet instance, so they are null together.
+const selectReferralStandardWallet = (
+    state: DeviceRootState,
+    deviceId: string,
+): ReferralStandardWallet | null => {
+    const device = selectStandardWalletByDeviceId(state, deviceId);
+    const walletDescriptor = selectStandardWalletDescriptorByDeviceId(state, deviceId);
+
+    return device === null || walletDescriptor === null ? null : { device, walletDescriptor };
+};
 
 type ObtainReferralKeyParams = {
     standardWallet: ReferralStandardWallet;
@@ -253,14 +269,11 @@ export const fetchReferralAccountThunk = createThunk<
     `${REFER_A_FRIEND_MODULE}/fetchReferralAccountThunk`,
     async ({ deviceId }, { dispatch, getState, extra }) => {
         const { referAFriend } = extra.services;
-        const walletDescriptor = selectReferralStandardWallet(
-            getState(),
-            deviceId,
-        )?.walletDescriptor;
+        const walletDescriptor = selectStandardWalletDescriptorByDeviceId(getState(), deviceId);
 
         // Without a standard wallet the page is blocked, without a link it offers joining.
         if (
-            walletDescriptor === undefined ||
+            walletDescriptor === null ||
             !selectReferralWalletRecord(getState(), walletDescriptor)?.shareUrl
         ) {
             return;

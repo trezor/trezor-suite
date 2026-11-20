@@ -24,10 +24,12 @@ import {
 import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
+    type WalletDescriptor,
     getFirmwareRevision,
     getFirmwareVersion,
     getFirmwareVersionArray,
     hasBitcoinOnlyFirmware,
+    parseStaticSessionId,
 } from '@trezor/device-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -303,6 +305,28 @@ export const selectIsDeviceThpLocked = createMemoizedSelector(
 export const selectDeviceById = createMemoizedSelector(
     [state => state.device.devices, (_state, deviceId: TrezorDevice['id']) => deviceId],
     (devices, deviceId) => devices.find(device => device.id === deviceId),
+);
+
+/**
+ * Selects a discovered standard wallet session, or null if it doesn't exist / exists without `staticSessionId`.
+ */
+export const selectStandardWalletByDeviceId = createMemoizedSelector(
+    [selectDevices, (_state, deviceId: string | undefined) => deviceId],
+    (devices, deviceId): TrezorDeviceWithState | null =>
+        devices.find(
+            (instance): instance is TrezorDeviceWithState =>
+                instance.id === deviceId &&
+                instance.useEmptyPassphrase === true &&
+                isTrezorDeviceWithState(instance),
+        ) ?? null,
+);
+
+export const selectStandardWalletDescriptorByDeviceId = createMemoizedSelector(
+    [selectStandardWalletByDeviceId],
+    (standardWallet): WalletDescriptor | null =>
+        standardWallet === null
+            ? null
+            : parseStaticSessionId(standardWallet.state.staticSessionId).walletDescriptor,
 );
 
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(

@@ -12,9 +12,13 @@ import {
 import { type ReferralKey } from './referralKey';
 
 /**
- * Persisted per standard wallet descriptor: the seed is the referral identity, so the record
- * follows it across devices, and hidden wallets reach it through the standard wallet instance.
- * Without a standard wallet in Suite, the record is not accessible.
+ * Persisted per standard wallet descriptor: referral identity is scoped to the wallet **seed**,
+ * so that standard and passphrase wallets shared the same referral account and its vouchers.
+ * Since the identity comes from HD wallet, it follows the user across devices that share the same seed.
+ * If a passphrase wallet is selected, the standard one must be available (discovered) in order to access the referral.
+ *
+ * Edge case: With `passphrase_always_on_device`, all wallets look like passhprase; Suite cannot find the standard one.
+ * This case is intentionally handled same as if there was no standard wallet available.
  */
 export type ReferralWalletRecord = {
     // Null when the platform encryption is unavailable, the key then lives only in memory.
@@ -227,9 +231,9 @@ export const selectReferAFriendWallets = (state: ReferAFriendRootState) =>
 
 export const selectReferralWalletRecord = (
     state: ReferAFriendRootState,
-    walletDescriptor: WalletDescriptor | undefined,
+    walletDescriptor: WalletDescriptor | null,
 ): ReferralWalletRecord | null =>
-    walletDescriptor === undefined ? null : (state.referAFriend.wallets[walletDescriptor] ?? null);
+    walletDescriptor === null ? null : (state.referAFriend.wallets[walletDescriptor] ?? null);
 
 export const selectEncryptedReferralKey = (
     state: ReferAFriendRootState,
@@ -240,7 +244,7 @@ export const selectReferralProgram = (state: ReferAFriendRootState) => state.ref
 
 export const selectReferralAccountState = (
     state: ReferAFriendRootState,
-    walletDescriptor: WalletDescriptor | undefined,
+    walletDescriptor: WalletDescriptor | null,
 ): ReferralAccountState =>
-    (walletDescriptor === undefined ? undefined : state.referAFriend.accounts[walletDescriptor]) ??
+    (walletDescriptor === null ? undefined : state.referAFriend.accounts[walletDescriptor]) ??
     initialAccountState;

@@ -117,8 +117,7 @@ describe('referAFriendSlice', () => {
 
     it('returns an idle account state for an unknown wallet', () => {
         expect(
-            selectReferralAccountState({ referAFriend: referAFriendInitialState }, undefined)
-                .status,
+            selectReferralAccountState({ referAFriend: referAFriendInitialState }, null).status,
         ).toBe('idle');
     });
 });

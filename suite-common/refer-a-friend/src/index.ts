@@ -46,7 +46,4 @@ export {
     selectReferAFriendApiUrl,
 } from './referAFriendUrl';
 export { type ReferralKey, isReferralKey } from './referralKey';
-export {
-    type ReferralStandardWallet,
-    selectReferralStandardWallet,
-} from './selectReferralStandardWallet';
+export { selectIsReferralWalletDescriptorAvailable } from './selectIsReferralWalletDescriptorAvailable';
