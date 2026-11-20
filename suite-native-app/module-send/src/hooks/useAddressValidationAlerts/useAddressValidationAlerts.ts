@@ -50,7 +50,7 @@ export const useAddressValidationAlerts = ({
     const { handleTokenAlert, wasTokenAlertDisplayed, resetTokenAlert } = useTokenAlert();
 
     const isFilledValidAddress =
-        !!checkedAddress && !!symbol && addressValidator.isAddressValid(checkedAddress, symbol);
+        !!checkedAddress && !!symbol && addressValidator.isAddressValid(symbol, checkedAddress);
 
     const networkType = symbol ? getNetworkType(symbol) : null;
 

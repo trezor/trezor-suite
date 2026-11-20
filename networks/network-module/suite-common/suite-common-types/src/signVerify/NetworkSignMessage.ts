@@ -14,9 +14,8 @@ import type { SignVerifyNotSupportedErrorType } from './signVerifyErrors';
 // progresses.
 export type SignatureFormat = 'trezor' | 'electrum' | 'raw' | 'cose';
 
-export type SignMessageParams<TNetworkSymbol extends string> = {
+export type SignMessageParams = {
     device: DeviceIdentity;
-    symbol: TNetworkSymbol;
     accountIndex: number;
     accountType: AccountType;
     path: string;
@@ -47,9 +46,13 @@ export type SignError =
     | SignatureFormatNotSupportedErrorType;
 
 export type NetworkSignMessage<TNetworkSymbol extends string> = {
-    getFormats?: (symbol: TNetworkSymbol, accountType: AccountType) => readonly SignatureFormat[];
-    getDefaultFormat?: (symbol: TNetworkSymbol, accountType: AccountType) => SignatureFormat;
+    getFormats?: (
+        networkSymbol: TNetworkSymbol,
+        accountType: AccountType,
+    ) => readonly SignatureFormat[];
+    getDefaultFormat?: (networkSymbol: TNetworkSymbol, accountType: AccountType) => SignatureFormat;
     signMessage: (
-        params: SignMessageParams<TNetworkSymbol>,
+        networkSymbol: TNetworkSymbol,
+        params: SignMessageParams,
     ) => Promise<Result<SignedMessage, SignError>>;
 };

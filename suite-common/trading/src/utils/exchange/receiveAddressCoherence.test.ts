@@ -14,7 +14,7 @@ const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
 
 const isAddressValid = jest.fn(
-    (address: string, symbol: string) => address === VALID_ETH_ADDRESS && symbol === 'eth',
+    (symbol: string, address: string) => address === VALID_ETH_ADDRESS && symbol === 'eth',
 );
 const addressValidator: AddressValidator = {
     isAddressValid,

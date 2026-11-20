@@ -20,8 +20,9 @@ const createTestResolver = () => {
             supportsNamedAddress: symbol => symbol === 'aaa',
             isNameLike: value => value.endsWith('.name'),
             isAddressLike: value => value.startsWith('0x'),
-            resolveNamedAddress: value => Promise.resolve(value === 'alice.name' ? '0x123' : null),
-            reverseResolveAddress: value =>
+            resolveNamedAddress: (_symbol, value) =>
+                Promise.resolve(value === 'alice.name' ? '0x123' : null),
+            reverseResolveAddress: (_symbol, value) =>
                 Promise.resolve(value === '0x123' ? 'alice.name' : null),
         },
     };
@@ -44,20 +45,20 @@ describe('createNetworkModule named address resolver', () => {
         const resolver = createTestResolver();
         const symbol = asNetworkSymbol('aaa');
 
-        await expect(resolver.resolveNamedAddress('alice.name', symbol)).resolves.toBe('0x123');
-        await expect(resolver.resolveNamedAddress('missing.name', symbol)).resolves.toBeNull();
-        await expect(resolver.reverseResolveAddress('0x123', symbol)).resolves.toBe('alice.name');
-        await expect(resolver.reverseResolveAddress('0x456', symbol)).resolves.toBeNull();
+        await expect(resolver.resolveNamedAddress(symbol, 'alice.name')).resolves.toBe('0x123');
+        await expect(resolver.resolveNamedAddress(symbol, 'missing.name')).resolves.toBeNull();
+        await expect(resolver.reverseResolveAddress(symbol, '0x123')).resolves.toBe('alice.name');
+        await expect(resolver.reverseResolveAddress(symbol, '0x456')).resolves.toBeNull();
     });
 
     it('rejects foreign symbols through the returned promises', async () => {
         const resolver = createTestResolver();
         const symbol = asNetworkSymbol('zzz');
 
-        await expect(resolver.resolveNamedAddress('alice.name', symbol)).rejects.toThrow(
+        await expect(resolver.resolveNamedAddress(symbol, 'alice.name')).rejects.toThrow(
             'Unsupported network symbol: zzz',
         );
-        await expect(resolver.reverseResolveAddress('0x123', symbol)).rejects.toThrow(
+        await expect(resolver.reverseResolveAddress(symbol, '0x123')).rejects.toThrow(
             'Unsupported network symbol: zzz',
         );
     });

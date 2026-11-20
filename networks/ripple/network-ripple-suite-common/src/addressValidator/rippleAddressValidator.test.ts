@@ -90,7 +90,7 @@ describe('ripple validator', () => {
     it.each(rippleIsAddressValidCases)('validates $symbol address $address', testCase => {
         const { address, expected, symbol } = testCase;
 
-        expect(rippleValidator.isAddressValid(address, symbol)).toBe(expected);
+        expect(rippleValidator.isAddressValid(symbol, address)).toBe(expected);
     });
 
     it.each(rippleAddressTypeCases)(
@@ -98,7 +98,7 @@ describe('ripple validator', () => {
         testCase => {
             const { address, expectedAddressType, symbol } = testCase;
 
-            expect(rippleValidator.getAddressType(address, symbol)).toBe(expectedAddressType);
+            expect(rippleValidator.getAddressType(symbol, address)).toBe(expectedAddressType);
         },
     );
 });

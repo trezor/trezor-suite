@@ -15,7 +15,7 @@ export type ResolveNamedAddressViaBlockbookDeps = GetTrezorConnectDep<'getAccoun
  */
 export const createResolveNamedAddressViaBlockbook =
     (deps: ResolveNamedAddressViaBlockbookDeps): ResolveNamedAddress =>
-    async (value, symbol, options) => {
+    async (symbol, value, options) => {
         const result = await deps.getTrezorConnect().getAccountInfo({
             descriptor: value,
             coin: symbol,

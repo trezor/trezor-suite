@@ -14,7 +14,12 @@ export type EthereumSignVerifyDeps = SignEthereumMessageDeps & VerifyEthereumMes
 
 export const createEthereumSignVerify = (
     deps: EthereumSignVerifyDeps,
-): NetworkSignVerify<EthereumNetworkSymbol> => ({
-    signMessage: createSignEthereumMessage(deps),
-    verifyMessage: createVerifyEthereumMessage(deps),
-});
+): NetworkSignVerify<EthereumNetworkSymbol> => {
+    const signEthereumMessage = createSignEthereumMessage(deps);
+    const verifyEthereumMessage = createVerifyEthereumMessage(deps);
+
+    return {
+        signMessage: (_networkSymbol, params) => signEthereumMessage(params),
+        verifyMessage: (_networkSymbol, params) => verifyEthereumMessage(params),
+    };
+};

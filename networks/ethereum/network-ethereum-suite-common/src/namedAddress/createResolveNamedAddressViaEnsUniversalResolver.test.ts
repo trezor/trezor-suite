@@ -83,7 +83,7 @@ describe('resolveNamedAddressOnchain', () => {
     it('resolves a name to its address in a single request', async () => {
         succeedWith(ADDRESS_PROFILE);
 
-        await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).resolves.toBe(
+        await expect(resolveNamedAddressOnchain('eth', 'vitalik.eth')).resolves.toBe(
             VITALIK_ADDRESS,
         );
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
@@ -92,7 +92,7 @@ describe('resolveNamedAddressOnchain', () => {
     it('calls the UniversalResolver on the requested network', async () => {
         succeedWith(ADDRESS_PROFILE);
 
-        await resolveNamedAddressOnchain('vitalik.eth', 'tsep');
+        await resolveNamedAddressOnchain('tsep', 'vitalik.eth');
 
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -105,7 +105,7 @@ describe('resolveNamedAddressOnchain', () => {
     it('sends the lookup on the given backend identity', async () => {
         succeedWith(ADDRESS_PROFILE);
 
-        await resolveNamedAddressOnchain('vitalik.eth', 'eth', { identity: 'deviceState' });
+        await resolveNamedAddressOnchain('eth', 'vitalik.eth', { identity: 'deviceState' });
 
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
             expect.objectContaining({ identity: 'deviceState' }),
@@ -115,10 +115,10 @@ describe('resolveNamedAddressOnchain', () => {
     it('normalizes the name before hashing it', async () => {
         succeedWith(ADDRESS_PROFILE, ADDRESS_PROFILE);
 
-        await resolveNamedAddressOnchain('VITALIK.eth', 'eth');
+        await resolveNamedAddressOnchain('eth', 'VITALIK.eth');
         const upperCaseCallData = mockBlockchainEvmRpcCall.mock.calls[0]?.[0].data;
 
-        await resolveNamedAddressOnchain('vitalik.eth', 'eth');
+        await resolveNamedAddressOnchain('eth', 'vitalik.eth');
         const lowerCaseCallData = mockBlockchainEvmRpcCall.mock.calls[1]?.[0].data;
 
         expect(upperCaseCallData).toBe(lowerCaseCallData);
@@ -127,7 +127,7 @@ describe('resolveNamedAddressOnchain', () => {
     it('returns null when the name has no address record', async () => {
         succeedWith(ADDRESS_PROFILE_ZERO);
 
-        await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddressOnchain('eth', 'vitalik.eth')).resolves.toBeNull();
     });
 
     // A resolver holding the record answers with the zero address instead of reverting, so
@@ -139,7 +139,7 @@ describe('resolveNamedAddressOnchain', () => {
     ])('returns null in one request when %s', async (_case, revertData) => {
         revertWith(revertData);
 
-        await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddressOnchain('eth', 'nope.eth')).resolves.toBeNull();
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
@@ -149,14 +149,14 @@ describe('resolveNamedAddressOnchain', () => {
     it('returns null when the revert carries no data', async () => {
         failWith('execution reverted');
 
-        await expect(resolveNamedAddressOnchain('cult.et', 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddressOnchain('eth', 'cult.et')).resolves.toBeNull();
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
     it('returns null for revert data no known resolver error matches', async () => {
         failWith('reverted: 0xdeadbeefdeadbeef');
 
-        await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddressOnchain('eth', 'nope.eth')).resolves.toBeNull();
     });
 
     // A direct-RPC backend surfaces viem's `call` error, which quotes the resolver address
@@ -175,7 +175,7 @@ describe('resolveNamedAddressOnchain', () => {
             ].join('\n'),
         );
 
-        await expect(resolveNamedAddressOnchain('nope.eth', 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddressOnchain('eth', 'nope.eth')).resolves.toBeNull();
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
     });
 
@@ -184,7 +184,7 @@ describe('resolveNamedAddressOnchain', () => {
     it('throws when the call never reached a resolver', async () => {
         failWith('Backend not connected');
 
-        await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).rejects.toThrow(
+        await expect(resolveNamedAddressOnchain('eth', 'vitalik.eth')).rejects.toThrow(
             'Backend not connected',
         );
         expect(mockBlockchainEvmRpcCall).toHaveBeenCalledTimes(1);
@@ -205,13 +205,13 @@ describe('resolveNamedAddressOnchain', () => {
     ])('throws on %s so the fallback can follow the hop', async (_case, revertData) => {
         revertWith(revertData);
 
-        await expect(resolveNamedAddressOnchain('offchain.eth', 'eth')).rejects.toThrow();
+        await expect(resolveNamedAddressOnchain('eth', 'offchain.eth')).rejects.toThrow();
     });
 
     // `isNameLike` admits shapes ENSIP-15 normalization rejects. No resolver could
     // hold them, so spending a request — here or on the Blockbook fallback — buys nothing.
     it.each([['.eth'], ['foo_bar.eth']])('answers %s without a request', async invalidName => {
-        await expect(resolveNamedAddressOnchain(invalidName, 'eth')).resolves.toBeNull();
+        await expect(resolveNamedAddressOnchain('eth', invalidName)).resolves.toBeNull();
         expect(mockBlockchainEvmRpcCall).not.toHaveBeenCalled();
     });
 });
@@ -251,7 +251,7 @@ describe('universalResolver mainnet vectors', () => {
     });
 
     it('sends the DNS-encoded name and addr profile captured from mainnet', async () => {
-        await resolveNamedAddressOnchain('vitalik.eth', 'eth');
+        await resolveNamedAddressOnchain('eth', 'vitalik.eth');
 
         const sentCalldata = mockBlockchainEvmRpcCall.mock.calls[0]?.[0].data;
         const { args } = decodeFunctionData({ abi: resolveAbi, data: sentCalldata });
@@ -262,7 +262,7 @@ describe('universalResolver mainnet vectors', () => {
     });
 
     it('decodes the mainnet response to the expected address', async () => {
-        await expect(resolveNamedAddressOnchain('vitalik.eth', 'eth')).resolves.toBe(
+        await expect(resolveNamedAddressOnchain('eth', 'vitalik.eth')).resolves.toBe(
             VITALIK_ADDRESS,
         );
     });

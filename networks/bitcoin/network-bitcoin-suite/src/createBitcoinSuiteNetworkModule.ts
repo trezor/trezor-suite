@@ -3,6 +3,7 @@ import {
     type BitcoinSuiteCommonNetworkModuleDeps,
     createBitcoinSuiteCommonNetworkModule,
 } from '@trezor/network-bitcoin-suite-common';
+import { supportedBitcoinNetworks } from '@trezor/network-bitcoin-types';
 import {
     type SuiteNetworkModule,
     createNetworkModuleSuite,
@@ -15,4 +16,8 @@ export type BitcoinSuiteNetworkModule = SuiteNetworkModule<BitcoinSuiteCommonNet
 export const createBitcoinSuiteNetworkModule = (
     deps: BitcoinSuiteNetworkModuleDeps,
 ): BitcoinSuiteNetworkModule =>
-    createNetworkModuleSuite(createBitcoinSuiteCommonNetworkModule(deps));
+    createNetworkModuleSuite(
+        createBitcoinSuiteCommonNetworkModule(deps),
+        supportedBitcoinNetworks,
+        {},
+    );

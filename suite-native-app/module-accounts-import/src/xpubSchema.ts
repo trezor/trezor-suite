@@ -25,7 +25,7 @@ export const xpubFormValidationSchema = yup.object({
             return (
                 isNotNullOrUndefined(value) &&
                 isNotNullOrUndefined(symbol) &&
-                context.addressValidator.isAddressValid(value, symbol)
+                context.addressValidator.isAddressValid(symbol, value)
             );
         }),
 });

@@ -14,7 +14,13 @@
         ".": "./src/index.ts"
     },
     "dependencies": {
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
-        "@trezor/network-module-types": "workspace:*"
+        "@trezor/network-module-types": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@types/react": "19.3.0"
     }
 }

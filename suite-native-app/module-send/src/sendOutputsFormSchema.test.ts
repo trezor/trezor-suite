@@ -33,7 +33,7 @@ const formValues = {
 } satisfies SendOutputsFormValues;
 
 const addressValidator = {
-    isAddressValid: (address: string) => EVM_ADDRESS_REGEX.test(address),
+    isAddressValid: (_symbol: string, address: string) => EVM_ADDRESS_REGEX.test(address),
     getAddressType: () => 'p2pkh',
 } as unknown as AddressValidator;
 

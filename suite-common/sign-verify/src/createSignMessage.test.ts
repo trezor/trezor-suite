@@ -43,8 +43,8 @@ describe('signVerify.sign', () => {
                 get: () =>
                     mockNetworkModule({
                         signVerify: {
-                            getFormats: (symbol, accountType) =>
-                                symbol === 'btc' && accountType !== 'legacy'
+                            getFormats: (networkSymbol, accountType) =>
+                                networkSymbol === 'btc' && accountType !== 'legacy'
                                     ? ['trezor', 'electrum']
                                     : [],
                             getDefaultFormat: () => 'trezor',

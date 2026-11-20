@@ -187,8 +187,8 @@ export const useTradingReceiveAddress = ({
 
             try {
                 isValidForCurrentSymbol = addressValidator.isAddressValid(
-                    persistedReceiveAddress,
                     symbol,
+                    persistedReceiveAddress,
                 );
             } catch {
                 isValidForCurrentSymbol = false;

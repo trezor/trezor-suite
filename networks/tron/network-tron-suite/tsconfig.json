@@ -5,6 +5,9 @@
         {
             "path": "../../network-module/suite/suite-types"
         },
-        { "path": "../network-tron-suite-common" }
+        {
+            "path": "../network-tron-suite-common"
+        },
+        { "path": "../network-tron-types" }
     ]
 }

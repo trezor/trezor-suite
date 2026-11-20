@@ -7,6 +7,7 @@
         },
         {
             "path": "../network-solana-suite-common"
-        }
+        },
+        { "path": "../network-solana-types" }
     ]
 }

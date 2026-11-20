@@ -17,7 +17,7 @@ export const isAddressDeprecated = ({
     if (
         symbol === 'ltc' &&
         address.startsWith('3') &&
-        addressValidator.isAddressValid(address, asNetworkSymbol('btc'))
+        addressValidator.isAddressValid(asNetworkSymbol('btc'), address)
     ) {
         return 'LTC_ADDRESS_INFO_URL';
     }
@@ -25,7 +25,7 @@ export const isAddressDeprecated = ({
     if (
         symbol === 'bch' &&
         address.startsWith('1') &&
-        addressValidator.isAddressValid(address, asNetworkSymbol('btc'))
+        addressValidator.isAddressValid(asNetworkSymbol('btc'), address)
     ) {
         return 'HELP_CENTER_CASHADDR_URL';
     }

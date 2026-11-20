@@ -12,6 +12,10 @@ export type SuiteNetworkModuleRepository = {
     isSupportedNetwork: (symbol: string) => symbol is NetworkSymbol;
 };
 
+export type SuiteNetworkModuleRepositoryDep = {
+    suiteNetworkModuleRepository: SuiteNetworkModuleRepository;
+};
+
 export const createSuiteNetworkModuleRepository = (
     deps: SuiteNetworkModuleRepositoryDeps,
 ): SuiteNetworkModuleRepository => {

@@ -98,11 +98,11 @@ function validateAddress(address: string): boolean {
     return verifyChecksum(CASHADDR_PREFIX, normalized);
 }
 
-export const isAddressValid = (address: string, _symbol: BitcoinCashNetworkSymbol): boolean =>
+export const isAddressValid = (_symbol: BitcoinCashNetworkSymbol, address: string): boolean =>
     validateAddress(address);
 
-export const getAddressType = (address: string, symbol: BitcoinCashNetworkSymbol) => {
-    if (isAddressValid(address, symbol)) {
+export const getAddressType = (symbol: BitcoinCashNetworkSymbol, address: string) => {
+    if (isAddressValid(symbol, address)) {
         return addressType.ADDRESS;
     }
 

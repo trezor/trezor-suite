@@ -39,7 +39,7 @@ export const useRecipientHistoryNote = ({
         !account ||
         !history ||
         !recipientAddress ||
-        !addressValidator.isAddressValid(recipientAddress, account.symbol)
+        !addressValidator.isAddressValid(account.symbol, recipientAddress)
     ) {
         return undefined;
     }

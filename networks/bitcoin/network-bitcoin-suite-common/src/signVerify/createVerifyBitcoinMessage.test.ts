@@ -29,9 +29,8 @@ describe(createVerifyBitcoinMessage.name, () => {
         it('verifies against the same reading of the message', async () => {
             verifyMessage.mockResolvedValue({ success: true, payload: { message: MESSAGE } });
 
-            await createVerifyBitcoinMessage(deps)({
+            await createVerifyBitcoinMessage(deps)('btc', {
                 device: DEVICE,
-                symbol: 'btc',
                 address: ADDRESS,
                 message: MESSAGE,
                 signature: SIGNATURE,

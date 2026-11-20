@@ -24,7 +24,7 @@ function verifyChecksum(address: string): boolean {
     return true;
 }
 
-export const isAddressValid = (address: string, _symbol: EthereumNetworkSymbol): boolean => {
+export const isAddressValid = (_symbol: EthereumNetworkSymbol, address: string): boolean => {
     if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
         // Check if it has the basic requirements of an address
         return false;
@@ -38,8 +38,8 @@ export const isAddressValid = (address: string, _symbol: EthereumNetworkSymbol):
     return verifyChecksum(address);
 };
 
-export const getAddressType = (address: string, _symbol: EthereumNetworkSymbol) => {
-    if (isAddressValid(address, _symbol)) {
+export const getAddressType = (_symbol: EthereumNetworkSymbol, address: string) => {
+    if (isAddressValid(_symbol, address)) {
         return addressType.ADDRESS;
     }
 

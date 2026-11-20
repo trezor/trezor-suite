@@ -3,8 +3,8 @@ import type { NamedAddressResolveOptions } from '@trezor/network-module-suite-co
 
 /** @serviceContract */
 export type ReverseResolveAddress = (
-    address: string,
     symbol: EthereumNetworkSymbol,
+    address: string,
     options?: NamedAddressResolveOptions,
 ) => Promise<string | null>;
 

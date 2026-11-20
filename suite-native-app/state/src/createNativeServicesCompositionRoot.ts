@@ -28,6 +28,10 @@ import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-shared';
+import {
+    createGetSignVerify,
+    createSuiteNativeNetworkModuleRepository,
+} from '@suite-native-app/networks';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native-app/suite-sync';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
 import { asGetter, toGetter } from '@trezor/dependency-injection';
@@ -117,6 +121,9 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     const networkModuleRepository = createNetworkModuleRepository({
         networkModules: suiteNativeNetworkModules.map(networkModule => networkModule.getCommon()),
     });
+    const suiteNativeNetworkModuleRepository = createSuiteNativeNetworkModuleRepository({
+        suiteNativeNetworkModules,
+    });
     const networks = createNetworksCompositionRoot({
         networkModuleRepository,
         dispatch: deps.dispatch,
@@ -145,6 +152,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             analytics,
             dispatch: deps.dispatch,
         }),
+        getSignVerify: createGetSignVerify({ suiteNativeNetworkModuleRepository }),
         staking,
         queryClient,
         suiteSync,

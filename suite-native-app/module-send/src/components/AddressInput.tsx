@@ -229,7 +229,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         onQrNetworkMismatch?.(null);
         const corrected = correctAddress(qrCodeData);
         setValue(addressFieldName, corrected, { shouldValidate: true });
-        if (symbol && addressValidator.isAddressValid(corrected, symbol)) {
+        if (symbol && addressValidator.isAddressValid(symbol, corrected)) {
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
                 payload: { method: 'qr' },
@@ -243,7 +243,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
         if (corrected !== newValue) {
             setValue(addressFieldName, corrected, { shouldValidate: true });
         }
-        if (symbol && addressValidator.isAddressValid(corrected, symbol)) {
+        if (symbol && addressValidator.isAddressValid(symbol, corrected)) {
             analytics.report({
                 type: events.sendAddressFilledEvent.name,
                 payload: { method: 'manual' },

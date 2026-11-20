@@ -24,13 +24,13 @@ export type ResolveNamedAddressDeps = {
  */
 export const createResolveNamedAddress =
     (deps: ResolveNamedAddressDeps): ResolveNamedAddress =>
-    (value, symbol, options) =>
+    (symbol, value, options) =>
         scheduleAction(
             async () => {
                 try {
-                    return await deps.resolveNamedAddressOnchain(value, symbol, options);
+                    return await deps.resolveNamedAddressOnchain(symbol, value, options);
                 } catch {
-                    return deps.resolveViaBlockbook(value, symbol, options);
+                    return deps.resolveViaBlockbook(symbol, value, options);
                 }
             },
             // One attempt: retrying is the query layer's job, and doing it here would multiply

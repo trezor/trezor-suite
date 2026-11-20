@@ -17,7 +17,6 @@ export type SignBitcoinMessageDeps = GetTrezorConnectDep<'signMessage'>;
 
 export type SignBitcoinMessageParams = {
     device: DeviceIdentity;
-    symbol: BitcoinNetworkSymbol;
     path: string;
     message: string;
     hex: boolean;
@@ -25,6 +24,7 @@ export type SignBitcoinMessageParams = {
 };
 
 export type SignBitcoinMessage = (
+    networkSymbol: BitcoinNetworkSymbol,
     params: SignBitcoinMessageParams,
 ) => Promise<Result<SignedMessage, SignError>>;
 
@@ -34,7 +34,7 @@ export type SignBitcoinMessageDep = {
 
 export const createSignBitcoinMessage =
     (deps: SignBitcoinMessageDeps): SignBitcoinMessage =>
-    async ({ device, symbol, path, message, hex, format }) => {
+    async (networkSymbol, { device, path, message, hex, format }) => {
         const signatureFormat = toBitcoinSignatureFormat(format);
 
         if (!signatureFormat.success) {
@@ -44,7 +44,7 @@ export const createSignBitcoinMessage =
         const response = await deps.getTrezorConnect().signMessage({
             device,
             path,
-            coin: asCoinSymbol(symbol),
+            coin: asCoinSymbol(networkSymbol),
             message,
             hex,
             no_script_type: signatureFormat.payload === 'electrum',

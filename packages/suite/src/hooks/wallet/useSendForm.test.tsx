@@ -133,7 +133,8 @@ const extraServices: SendFormTestServices = {
     migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
     networks: {
         addressValidator: mockAddressValidator({
-            isAddressValid: address => address !== '' && address !== 'X' && address !== 'FOO',
+            isAddressValid: (_symbol, address) =>
+                address !== '' && address !== 'X' && address !== 'FOO',
         }),
         getNamedAddressSupport: mockGetNamedAddressSupport(),
         networkModuleRepository: mockNetworkModuleRepository({ get: () => mockNetworkModule() }),

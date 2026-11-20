@@ -98,7 +98,7 @@ export const TronSelectRepresentativesModal = ({
             return undefined;
         }
 
-        if (!addressValidator.isAddressValid(trimmedAddress, symbol)) {
+        if (!addressValidator.isAddressValid(symbol, trimmedAddress)) {
             return translationString('RECIPIENT_IS_NOT_VALID');
         }
 

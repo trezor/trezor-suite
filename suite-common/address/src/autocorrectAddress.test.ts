@@ -131,8 +131,8 @@ describe('autocorrectAddress', () => {
             }),
         ).toBeNull();
         expect(deps.addressValidator.isAddressValid).toHaveBeenCalledWith(
-            'bc1sw50qa3jx3s',
             ethSymbol,
+            'bc1sw50qa3jx3s',
         );
     });
 });

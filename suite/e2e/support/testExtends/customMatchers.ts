@@ -340,7 +340,7 @@ export const expect = baseExpect.extend({
         const stripped = text.replace(/\s/g, '');
 
         return {
-            pass: addressValidator.isAddressValid(stripped, symbol),
+            pass: addressValidator.isAddressValid(symbol, stripped),
             message: () =>
                 `expected locator text to be a valid '${symbol}' address, but got '${text}' (stripped: '${stripped}')`,
         };

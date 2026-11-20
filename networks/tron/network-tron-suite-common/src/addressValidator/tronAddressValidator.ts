@@ -38,7 +38,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
     return false;
 }
 
-export const isAddressValid = (mainAddress: string, _symbol: TronNetworkSymbol): boolean => {
+export const isAddressValid = (_symbol: TronNetworkSymbol, mainAddress: string): boolean => {
     const address = decodeBase58Address(mainAddress);
 
     if (!address) {
@@ -52,8 +52,8 @@ export const isAddressValid = (mainAddress: string, _symbol: TronNetworkSymbol):
     return TRON_ADDRESS_TYPE === address[0];
 };
 
-export const getAddressType = (address: string, symbol: TronNetworkSymbol) => {
-    if (isAddressValid(address, symbol)) {
+export const getAddressType = (symbol: TronNetworkSymbol, address: string) => {
+    if (isAddressValid(symbol, address)) {
         return addressType.ADDRESS;
     }
 

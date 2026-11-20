@@ -86,8 +86,8 @@ export const getResolveNamedAddressQueryOptions = ({
             }
 
             return mode === 'forward'
-                ? support.resolver.resolveNamedAddress(trimmedValue, symbol, { identity })
-                : support.resolver.reverseResolveAddress(trimmedValue, symbol, { identity });
+                ? support.resolver.resolveNamedAddress(symbol, trimmedValue, { identity })
+                : support.resolver.reverseResolveAddress(symbol, trimmedValue, { identity });
         },
         staleTime: STALE_TIME_MS,
         gcTime: GC_TIME_MS,

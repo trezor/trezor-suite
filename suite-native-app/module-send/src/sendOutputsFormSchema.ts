@@ -139,7 +139,7 @@ const outputSchema = yup.object({
                 }
 
                 return (
-                    addressValidator.isAddressValid(value, symbol) &&
+                    addressValidator.isAddressValid(symbol, value) &&
                     !isAddressDeprecated({ addressValidator, address: value, symbol }) &&
                     !isBech32AddressUppercase(value) // bech32 addresses are valid as uppercase but are not accepted by Trezor
                 );
@@ -162,7 +162,7 @@ const outputSchema = yup.object({
                 // while a name is still resolving would flash on every keystroke.
                 if (resolvedAddress === undefined) return true;
 
-                return addressValidator.isAddressValid(resolvedAddress, symbol);
+                return addressValidator.isAddressValid(symbol, resolvedAddress);
             },
         )
         .test(
