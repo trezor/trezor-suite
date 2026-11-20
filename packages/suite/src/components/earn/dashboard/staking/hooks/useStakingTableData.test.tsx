@@ -10,14 +10,25 @@ import {
     ETH,
     SOL,
     TRX,
+    ZERO_BALANCES,
+    amount,
     createEarnStakingTableState,
     ethProduct,
     mockAccount,
     mockStakedPosition,
+    trxProduct,
 } from '../earnStakingTableTestState';
 
 const ONE_ETH = '1000000000000000000';
 const HUNDREDTH_ETH = '10000000000000000';
+const FIVE_TRX = '5000000';
+
+// A Tron account that unfroze everything but has not claimed its voting rewards yet.
+const rewardsOnlyTronPosition = () =>
+    mockStakedPosition(trxProduct.id, '0', {
+        balances: { ...ZERO_BALANCES, rewards: amount(FIVE_TRX) },
+        operations: ['stake', 'claim'],
+    });
 
 type RenderParams = Parameters<typeof createEarnStakingTableState>[0];
 
@@ -35,6 +46,8 @@ const sol = (descriptor: string, overrides: Partial<Parameters<typeof mockAccoun
     mockAccount({ symbol: SOL, descriptor, ...overrides });
 const ada = (descriptor: string, overrides: Partial<Parameters<typeof mockAccount>[0]> = {}) =>
     mockAccount({ symbol: ADA, descriptor, ...overrides });
+const trx = (descriptor: string, overrides: Partial<Parameters<typeof mockAccount>[0]> = {}) =>
+    mockAccount({ symbol: TRX, descriptor, ...overrides });
 
 const keysOf = (accounts: Account[]) => accounts.map(({ key }) => key);
 
@@ -79,9 +92,31 @@ describe('useStakingTableData', () => {
             expect(result.current.hasAnyRewardsData).toBe(true);
             expect(result.current.hasStakingPosition).toBe(true);
         });
+
+        it('is true once an account holds unclaimed rewards alone', () => {
+            const rewardsOnly = trx('trxrewards');
+            const { result } = renderTableData({
+                accounts: [rewardsOnly],
+                positions: { [rewardsOnly.key]: [rewardsOnlyTronPosition()] },
+            });
+
+            expect(result.current.hasAnyRewardsData).toBe(true);
+            expect(result.current.hasStakingPosition).toBe(true);
+        });
     });
 
     describe('the collapsed table', () => {
+        it('shows a rewards-only account ahead of an empty one of its network', () => {
+            const rewardsOnly = trx('trxrewards', { index: 1 });
+            const { result } = renderTableData({
+                accounts: [trx('trxempty', { index: 0 }), rewardsOnly],
+                positions: { [rewardsOnly.key]: [rewardsOnlyTronPosition()] },
+            });
+
+            expect(keysOf(result.current.displayedAccounts)).toEqual([rewardsOnly.key]);
+            expect(result.current.isExpandable).toBe(true);
+        });
+
         it('shows one underfunded account per network, the lowest index first', () => {
             const { result } = renderTableData({
                 accounts: [

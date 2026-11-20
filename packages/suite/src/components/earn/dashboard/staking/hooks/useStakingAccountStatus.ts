@@ -3,7 +3,6 @@ import {
     selectIsStakingAccountActive,
     selectIsStakingAccountDelegatedOutside,
     selectStakeableStakingProductDescriptorBySymbol,
-    selectStakingAccountAmount,
     selectStakingAccountPositionDetails,
     selectStakingAccountPositionEntry,
 } from '@suite-common/earn-staking';
@@ -25,7 +24,6 @@ export type StakingAccountStatus =
 
 export const useStakingAccountStatus = (account: Account): StakingAccountStatus => {
     const isStakingActive = useSelector(state => selectIsStakingAccountActive(state, account.key));
-    const stakingAmount = useSelector(state => selectStakingAccountAmount(state, account.key));
 
     const hasOutdatedProvider = useSelector(state =>
         selectHasStakingAccountWarning(state, account.key, 'outdated-provider'),
@@ -59,16 +57,16 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
         return 'staking-outdated-provider';
     }
 
-    const hasStake = isPositiveBalance(stakingAmount);
-
-    if (hasStake && unallocatedVotingPower !== null && isPositiveBalance(unallocatedVotingPower)) {
+    // The active flag is the account menu's reading, so a rewards-only Tron account is staked here too.
+    if (
+        isStakingActive &&
+        unallocatedVotingPower !== null &&
+        isPositiveBalance(unallocatedVotingPower)
+    ) {
         return 'staking-remaining-votes';
     }
 
-    if (
-        (hasStake && !isPositiveBalance(account.availableBalance)) ||
-        (isStakingActive && isLiquidPosition)
-    ) {
+    if (isStakingActive && (!isPositiveBalance(account.availableBalance) || isLiquidPosition)) {
         return 'staking-max';
     }
 
@@ -76,7 +74,7 @@ export const useStakingAccountStatus = (account: Account): StakingAccountStatus 
         minStakeAmountForDashboard !== null &&
         new BigNumber(account.availableBalance).gte(minStakeAmountForDashboard);
 
-    if (hasStake) {
+    if (isStakingActive) {
         return hasEnoughBalanceForStaking ? 'staking-active' : 'staked-but-insufficient-funds';
     }
 
