@@ -13,6 +13,10 @@ export const toTokenSymbol = (value: string) => value as TokenSymbol;
 export type TokenAddress = string & Branded<'TokenAddress'>;
 export const toTokenAddress = (value: string) => value as TokenAddress;
 
+/** Canonicalizes EVM hex addresses while preserving case-sensitive mints and full asset identifiers. */
+export const normalizeTokenAddress = (value: string): TokenAddress =>
+    toTokenAddress(/^0x[\da-f]{40}$/i.test(value) ? value.toLowerCase() : value);
+
 /**
  * A non-native asset issued on a network, such as USDC on Ethereum, with branded symbol and address.
  * Identify it by its network and TokenAddress; its ticker alone is insufficient.

@@ -1,15 +1,15 @@
-import { getCryptoId } from '@suite-common/trading';
+import { getAssetKey, toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol, getMainnets, getNetwork } from '@suite-common/wallet-config';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { getGlobalReceiveAssetIdsWithHistory } from './getGlobalReceiveAssetIdsWithHistory';
+import { getGlobalReceiveAssetKeysWithHistory } from './getGlobalReceiveAssetKeysWithHistory';
 
 const networks = getMainnets();
 const USDC_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
-describe('getGlobalReceiveAssetIdsWithHistory', () => {
+describe('getGlobalReceiveAssetKeysWithHistory', () => {
     it('includes used native assets but not newly created or unfunded unknown-history accounts', () => {
-        const assetIds = getGlobalReceiveAssetIdsWithHistory({
+        const assetKeys = getGlobalReceiveAssetKeysWithHistory({
             networks,
             accounts: [
                 mockWalletAccount({
@@ -36,8 +36,11 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
             transactions: {},
         });
 
-        expect(assetIds).toEqual(
-            new Set([getCryptoId(asNetworkSymbol('btc')), getCryptoId(asNetworkSymbol('xrp'))]),
+        expect(assetKeys).toEqual(
+            new Set([
+                getAssetKey({ networkSymbol: asNetworkSymbol('btc') }),
+                getAssetKey({ networkSymbol: asNetworkSymbol('xrp') }),
+            ]),
         );
     });
 
@@ -59,14 +62,20 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
                 }),
             ],
         });
-        const assetIds = getGlobalReceiveAssetIdsWithHistory({
+        const assetKeys = getGlobalReceiveAssetKeysWithHistory({
             networks,
             accounts: [account],
             transactions: {},
         });
 
-        expect(assetIds).toEqual(
-            new Set([getCryptoId(account.symbol), getCryptoId(account.symbol, USDC_CONTRACT)]),
+        expect(assetKeys).toEqual(
+            new Set([
+                getAssetKey({ networkSymbol: account.symbol }),
+                getAssetKey({
+                    networkSymbol: account.symbol,
+                    contractAddress: toTokenAddress(USDC_CONTRACT),
+                }),
+            ]),
         );
     });
 
@@ -77,7 +86,7 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
             history: { total: 0, unconfirmed: 0 },
             tokens: [],
         });
-        const assetIds = getGlobalReceiveAssetIdsWithHistory({
+        const assetKeys = getGlobalReceiveAssetKeysWithHistory({
             networks,
             accounts: [account],
             transactions: {
@@ -99,14 +108,20 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
             },
         });
 
-        expect(assetIds).toEqual(
-            new Set([getCryptoId(account.symbol), getCryptoId(account.symbol, USDC_CONTRACT)]),
+        expect(assetKeys).toEqual(
+            new Set([
+                getAssetKey({ networkSymbol: account.symbol }),
+                getAssetKey({
+                    networkSymbol: account.symbol,
+                    contractAddress: toTokenAddress(USDC_CONTRACT),
+                }),
+            ]),
         );
     });
 
     it('excludes unsupported networks and testnets before creating asset IDs', () => {
         const bitcoin = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
-        const assetIds = getGlobalReceiveAssetIdsWithHistory({
+        const assetKeys = getGlobalReceiveAssetKeysWithHistory({
             networks: [getNetwork('btc')],
             accounts: [
                 bitcoin,
@@ -116,7 +131,7 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
             transactions: {},
         });
 
-        expect(assetIds).toEqual(new Set([getCryptoId(bitcoin.symbol)]));
+        expect(assetKeys).toEqual(new Set([getAssetKey({ networkSymbol: bitcoin.symbol })]));
     });
 
     it.each([
@@ -128,12 +143,12 @@ describe('getGlobalReceiveAssetIdsWithHistory', () => {
             empty: true,
             history,
         });
-        const assetIds = getGlobalReceiveAssetIdsWithHistory({
+        const assetKeys = getGlobalReceiveAssetKeysWithHistory({
             networks,
             accounts: [account],
             transactions: {},
         });
 
-        expect(assetIds.has(getCryptoId(account.symbol))).toBe(true);
+        expect(assetKeys.has(getAssetKey({ networkSymbol: account.symbol }))).toBe(true);
     });
 });

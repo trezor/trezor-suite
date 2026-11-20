@@ -66,6 +66,8 @@ export const GhostContainer = ({
                 isActive || isDisabled ? undefined : backgroundColorOnInteraction
             }
             as={as}
+            type={as === 'button' ? 'button' : undefined}
+            disabled={as === 'button' ? isDisabled : undefined}
             data-testid={dataTestId}
             data-component={dataComponent}
             tabIndex={tabIndex}

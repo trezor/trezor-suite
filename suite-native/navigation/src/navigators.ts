@@ -2,8 +2,8 @@ import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
 import { type BackupType } from '@suite-common/suite-types';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type TradingAssetOption, type TradingType } from '@suite-common/trading';
+import { type AssetId, type TokenAddress } from '@suite-common/tokens';
+import { type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -246,9 +246,9 @@ export type SettingsStackParamList = {
 
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveCrossroads]: undefined;
-    [ReceiveStackRoutes.ReceiveDiscovery]: { asset: TradingAssetOption };
+    [ReceiveStackRoutes.ReceiveDiscovery]: { assetId: AssetId };
     [ReceiveStackRoutes.ReceiveAccounts]: {
-        asset: TradingAssetOption;
+        assetId: AssetId;
         closeActionType: CloseActionType;
     };
     [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;

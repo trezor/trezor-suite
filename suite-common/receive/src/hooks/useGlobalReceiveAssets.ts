@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { type TradingAssetOption, selectTradeableAssetBalances } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
 import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -11,13 +11,13 @@ import {
 } from '@suite-common/wallet-core';
 
 import { useRankedTokenDefinitions } from './useRankedTokenDefinitions';
-import { getGlobalReceiveAssetIdsWithHistory } from '../getGlobalReceiveAssetIdsWithHistory';
+import { getGlobalReceiveAssetKeysWithHistory } from '../getGlobalReceiveAssetKeysWithHistory';
 import {
     type GlobalReceiveAssetSections,
-    buildGlobalReceiveAssetOptions,
-    buildGlobalReceiveAssetSearchIndex,
+    buildGlobalReceiveAssetCatalog,
     getGlobalReceiveAssetSections,
 } from '../globalReceiveAssetUtils';
+import { selectReceiveAssetBalances } from '../receiveAssetSelectors';
 
 export type GlobalReceiveAssetCatalogStatus = 'loading' | 'ready' | 'error';
 
@@ -28,7 +28,7 @@ export type UseGlobalReceiveAssetsParams = {
 };
 
 type UseGlobalReceiveAssetsReturn = GlobalReceiveAssetSections & {
-    assets: TradingAssetOption[];
+    assetIds: readonly AssetId[];
     networks: NetworkSymbol[];
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     retry: () => void;
@@ -53,7 +53,7 @@ export const useGlobalReceiveAssets = ({
 }: UseGlobalReceiveAssetsParams): UseGlobalReceiveAssetsReturn => {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const supportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
-    const balances = useSelector(selectTradeableAssetBalances);
+    const balances = useSelector(selectReceiveAssetBalances);
     const accounts = useSelector(selectAllAccountsToList);
     const transactions = useSelector(selectTransactions);
     const {
@@ -74,18 +74,17 @@ export const useGlobalReceiveAssets = ({
 
         return getMainnets().filter(network => supportedSymbols.has(network.symbol));
     }, [isBitcoinOnlyFirmware, supportedNetworkSymbols]);
-    const assets = useMemo(
+    const catalog = useMemo(
         () =>
-            buildGlobalReceiveAssetOptions({
+            buildGlobalReceiveAssetCatalog({
                 networks: supportedMainnets,
                 definitions: definitions ?? [],
             }),
         [definitions, supportedMainnets],
     );
-    const assetSearchIndex = useMemo(() => buildGlobalReceiveAssetSearchIndex(assets), [assets]);
-    const assetIdsWithHistory = useMemo(
+    const assetKeysWithHistory = useMemo(
         () =>
-            getGlobalReceiveAssetIdsWithHistory({
+            getGlobalReceiveAssetKeysWithHistory({
                 accounts,
                 networks: supportedMainnets,
                 transactions,
@@ -95,23 +94,14 @@ export const useGlobalReceiveAssets = ({
     const assetSections = useMemo(
         () =>
             getGlobalReceiveAssetSections({
-                assets,
+                catalog,
                 balances,
-                assetIdsWithHistory,
+                assetKeysWithHistory,
                 search,
-                searchIndex: assetSearchIndex,
                 networkSymbols,
                 otherAssetsLimit,
             }),
-        [
-            assets,
-            balances,
-            assetIdsWithHistory,
-            search,
-            assetSearchIndex,
-            networkSymbols,
-            otherAssetsLimit,
-        ],
+        [catalog, balances, assetKeysWithHistory, search, networkSymbols, otherAssetsLimit],
     );
     const networks = useMemo(
         () => supportedMainnets.map(network => network.symbol),
@@ -119,7 +109,7 @@ export const useGlobalReceiveAssets = ({
     );
 
     return {
-        assets,
+        assetIds: catalog.assetIds,
         ...assetSections,
         networks,
         catalogStatus: getCatalogStatus(

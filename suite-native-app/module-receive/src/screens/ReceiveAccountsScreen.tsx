@@ -16,7 +16,7 @@ import { useReceiveNavigation } from '../hooks/useReceiveNavigation';
 export const ReceiveAccountsScreen = ({
     route,
 }: StackProps<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAccounts>) => {
-    const { asset, closeActionType } = route.params;
+    const { assetId, closeActionType } = route.params;
 
     const { navigateToReceiveAddressScreen } = useReceiveNavigation();
 
@@ -28,11 +28,11 @@ export const ReceiveAccountsScreen = ({
         return <ReceiveBlockedDeviceCompromisedScreen />;
     }
 
-    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
+    const { networkSymbol, contractAddress } = assetId;
 
     return (
         <Screen
-            header={<ReceiveAccountsHeader asset={asset} closeActionType={closeActionType} />}
+            header={<ReceiveAccountsHeader assetId={assetId} closeActionType={closeActionType} />}
             isScrollable={false}
             noHorizontalPadding
             noBottomPadding
@@ -40,8 +40,8 @@ export const ReceiveAccountsScreen = ({
         >
             <AccountsList
                 onSelectAccount={navigateToReceiveAddressScreen}
-                networkFilter={[asset.networkSymbol]}
-                tokenContract={tokenContract}
+                networkFilter={[networkSymbol]}
+                tokenContract={contractAddress}
             />
         </Screen>
     );

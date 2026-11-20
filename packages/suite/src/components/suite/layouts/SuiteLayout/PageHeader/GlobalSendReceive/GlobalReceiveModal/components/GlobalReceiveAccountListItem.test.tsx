@@ -7,12 +7,7 @@ import { ReceiveTokenMetadataProvider } from '@suite-common/receive';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type RankedTokenStructure } from '@suite-common/token-definitions';
-import { type TokenAddress } from '@suite-common/tokens';
-import {
-    type TradingAssetOption,
-    createAssetNativeTokenOption,
-    createAssetTokenOption,
-} from '@suite-common/trading';
+import { type AssetId, type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type CurrentRate, type Timestamp, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -94,7 +89,7 @@ const state: MockSuiteState = {
     },
 };
 
-const renderListItem = (asset?: TradingAssetOption) => {
+const renderListItem = (assetId?: AssetId) => {
     const { services } = createTestCompositionRoot<void, MockSuiteState>({ preloadedState: state });
     const queryClient = new QueryClient();
     queryClient.setQueryData(desktopQueryKeys.rankedTokenDefinitions(), rankedTokenDefinitions);
@@ -106,7 +101,7 @@ const renderListItem = (asset?: TradingAssetOption) => {
             <ReceiveTokenMetadataProvider>
                 <GlobalReceiveAccountListItem
                     account={ethAccount}
-                    asset={asset}
+                    assetId={assetId}
                     iconSize={24}
                     onClick={() => {}}
                     variant="card"
@@ -118,11 +113,7 @@ const renderListItem = (asset?: TradingAssetOption) => {
 
 describe('an account in the receive list', () => {
     it('shows what the account holds of the token being received', () => {
-        const usdt = createAssetTokenOption(ETH, {
-            contract: USDT,
-            symbol: 'USDT',
-            name: 'Tether USD',
-        });
+        const usdt = { networkSymbol: ETH, contractAddress: USDT };
 
         const { container } = renderListItem(usdt);
 
@@ -132,11 +123,7 @@ describe('an account in the receive list', () => {
     });
 
     it('shows no token at all for an account that holds none of it yet', () => {
-        const usdc = createAssetTokenOption(ETH, {
-            contract: USDC,
-            symbol: 'USDC',
-            name: 'USD Coin',
-        });
+        const usdc = { networkSymbol: ETH, contractAddress: USDC };
 
         const { container } = renderListItem(usdc);
 
@@ -145,7 +132,7 @@ describe('an account in the receive list', () => {
     });
 
     it('shows the coin alone when the coin itself is being received', () => {
-        const { container } = renderListItem(createAssetNativeTokenOption(ETH));
+        const { container } = renderListItem({ networkSymbol: ETH });
 
         expect(container).toHaveTextContent('1.00 ETH');
         expect(container).toHaveTextContent('$2,000');

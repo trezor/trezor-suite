@@ -12,7 +12,7 @@ import {
     type GlobalReceiveAssetCatalogStatus,
     type GlobalReceiveAssetSections,
 } from '@suite-common/receive';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Link, SubTabs } from '@trezor/components';
@@ -34,10 +34,10 @@ type GlobalReceiveSearchStepProps = Omit<GlobalReceiveAssetSections, 'hasMoreOth
     assetNetworks: readonly NetworkSymbol[];
     accountNetworks: readonly NetworkSymbol[];
     catalogStatus: GlobalReceiveAssetCatalogStatus;
-    isAssetDisabled: (asset: TradingAssetOption) => boolean;
+    isAssetDisabled: (assetId: AssetId) => boolean;
     onAccountClick: (account: Account) => void;
     onAddAccountClick: () => void;
-    onAssetClick: (asset: TradingAssetOption) => void;
+    onAssetClick: (assetId: AssetId) => void;
     onCancel: () => void;
     onRetry: () => void;
     onTabChange: (tab: GlobalReceiveTab) => void;

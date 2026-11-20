@@ -1,4 +1,4 @@
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, normalizeTokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
@@ -30,8 +30,9 @@ export const consolidateTokenMetadata = ({
             tokensByNetwork.set(source.networkSymbol, tokens);
         }
         for (const token of source.tokens.toReversed()) {
-            const inherited = tokens.get(token.contract);
-            tokens.set(token.contract, {
+            const contractKey = normalizeTokenAddress(token.contract);
+            const inherited = tokens.get(contractKey);
+            tokens.set(contractKey, {
                 contract: token.contract,
                 name: token.name ?? inherited?.name,
                 symbol: token.symbol ?? inherited?.symbol,

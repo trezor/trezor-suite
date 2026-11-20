@@ -2,6 +2,7 @@ import React, { type ReactElement, useCallback } from 'react';
 
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
+import { getAssetKey } from '@suite-common/tokens';
 import { Box, Text, useScrollDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -52,7 +53,7 @@ export const AssetList = ({
                 contentContainerStyle={applyStyle(contentStyle)}
                 data={items}
                 renderItem={renderItem}
-                keyExtractor={item => (typeof item === 'string' ? item : item.asset.id)}
+                keyExtractor={item => (typeof item === 'string' ? item : getAssetKey(item.assetId))}
                 getItemType={item => (typeof item === 'string' ? 'header' : 'asset')}
                 ListEmptyComponent={ListEmptyComponent}
                 keyboardShouldPersistTaps="handled"

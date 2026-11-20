@@ -7,7 +7,6 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetNetworkSymbol,
 } from '@suite-common/assets';
-import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 
@@ -48,7 +47,7 @@ export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
         return null;
     }
 
-    const asset = buildGlobalReceiveAssetOption({ symbol: networkSymbol, contractAddress });
+    const assetId = { networkSymbol, contractAddress };
 
     const handleOpen = (modal: NonNullable<GlobalSendReceiveType>) => {
         const sendTarget = modal === 'send' ? getOnlyItem(sendTargets) : undefined;
@@ -75,7 +74,7 @@ export const AssetSendReceive = ({ assetKey }: AssetSendReceiveProps) => {
             activeModal={activeModal}
             onOpen={handleOpen}
             onClose={() => setActiveModal(null)}
-            asset={asset}
+            assetId={assetId}
             sendTargets={sendTargets}
         />
     );

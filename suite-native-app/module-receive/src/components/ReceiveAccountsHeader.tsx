@@ -1,5 +1,5 @@
-import { getGlobalReceiveAssetDescriptionValues } from '@suite-common/receive';
-import type { TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AssetName } from '@suite-native/assets';
 import { Text } from '@suite-native/atoms';
@@ -12,21 +12,17 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 
 type ReceiveAccountsHeaderProps = {
-    asset: TradingAssetOption;
+    assetId: AssetId;
     closeActionType: CloseActionType;
 };
 
-export const ReceiveAccountsHeader = ({ asset, closeActionType }: ReceiveAccountsHeaderProps) => {
+export const ReceiveAccountsHeader = ({ assetId, closeActionType }: ReceiveAccountsHeaderProps) => {
     const { analytics } = useServices(injectNativeAnalytics);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
-    const { networkName } = getGlobalReceiveAssetDescriptionValues(asset);
-    const assetName = (
-        <AssetName
-            networkSymbol={asset.networkSymbol}
-            contractAddress={asset.isNativeToken ? undefined : asset.contractAddress}
-        />
-    );
+    const { networkSymbol, contractAddress } = assetId;
+    const networkName = contractAddress ? getNetwork(networkSymbol).name : undefined;
+    const assetName = <AssetName networkSymbol={networkSymbol} contractAddress={contractAddress} />;
 
     const closeAction = () => {
         analytics.report({

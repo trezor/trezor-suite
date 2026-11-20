@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Text } from '@trezor/components';
 
@@ -11,7 +11,7 @@ import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 
 type GlobalReceiveAccountStepProps = {
     accounts: Account[];
-    asset: TradingAssetOption | undefined;
+    assetId: AssetId | undefined;
     onAccountClick: (account: Account) => void;
     onBack?: () => void;
     onCancel: () => void;
@@ -19,14 +19,14 @@ type GlobalReceiveAccountStepProps = {
 
 export const GlobalReceiveAccountStep = ({
     accounts,
-    asset,
+    assetId,
     onAccountClick,
     onBack,
     onCancel,
 }: GlobalReceiveAccountStepProps) => (
     <AssetsModal
         heading={<Translation id="TR_RECEIVE" />}
-        description={<GlobalSendReceiveAssetDescription asset={asset} />}
+        description={<GlobalSendReceiveAssetDescription assetId={assetId} />}
         onBackClick={onBack}
         onClose={onCancel}
         maxHeight={GLOBAL_RECEIVE_MODAL_HEIGHT}
@@ -42,7 +42,7 @@ export const GlobalReceiveAccountStep = ({
                     <GlobalReceiveAccountListItem
                         key={account.key}
                         account={account}
-                        asset={asset}
+                        assetId={assetId}
                         iconSize={24}
                         onClick={onAccountClick}
                         variant="card"

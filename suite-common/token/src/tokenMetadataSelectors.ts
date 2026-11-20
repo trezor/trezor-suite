@@ -1,4 +1,4 @@
-import { type TokenAddress } from '@suite-common/tokens';
+import { type TokenAddress, normalizeTokenAddress } from '@suite-common/tokens';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type NetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
@@ -15,13 +15,15 @@ export const selectTokenByNetworkAndContract = createMemoizedSelector(
             tokenContract,
     ],
     (accounts, networkSymbol, tokenContract) => {
+        const contractKey = normalizeTokenAddress(tokenContract);
+
         for (const account of accounts) {
             if (account.symbol !== networkSymbol) continue;
 
             // The stored token itself, so its labels re-render only when that token changes.
             const token = account.tokens?.find(
                 (candidate): candidate is AccountToken & { contract: TokenAddress } =>
-                    candidate.contract === tokenContract,
+                    normalizeTokenAddress(candidate.contract) === contractKey,
             );
 
             if (token) return token;

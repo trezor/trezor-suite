@@ -7,7 +7,7 @@ import { useDevice } from '@suite/device';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { ReceiveTokenMetadataProvider, useGlobalReceiveAssets } from '@suite-common/receive';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
 import { selectAccounts, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
@@ -35,13 +35,13 @@ const isNetworkSetupRequired = ({
 }: IsNetworkSetupRequiredParams) => !isNetworkEnabled || eligibleAccountCount === 0;
 
 type GlobalReceiveModalProps = {
-    initialAsset?: TradingAssetOption;
+    initialAssetId?: AssetId;
     onCancel: (filledSearch: boolean) => void;
     onSubmit: (account: Account, filledSearch: boolean) => void;
 };
 
 export const GlobalReceiveModal = ({
-    initialAsset,
+    initialAssetId,
     onCancel,
     onSubmit,
 }: GlobalReceiveModalProps) => {
@@ -66,17 +66,17 @@ export const GlobalReceiveModal = ({
         !!device.path &&
         !!staticSessionId &&
         !isDiscoveryRunning;
-    const hasSearchStep = initialAsset === undefined;
+    const hasSearchStep = initialAssetId === undefined;
 
     const [activeTab, setActiveTab] = useState<GlobalReceiveTab>(
         isBitcoinOnlyFirmware ? 'accounts' : 'assets',
     );
-    const [selectedAsset, setSelectedAsset] = useState(initialAsset);
+    const [selectedAssetId, setSelectedAssetId] = useState(initialAssetId);
     const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(
-        initialAsset !== undefined && !enabledNetworks.includes(initialAsset.networkSymbol),
+        initialAssetId !== undefined && !enabledNetworks.includes(initialAssetId.networkSymbol),
     );
     const selectedAssetAccounts = useMemo(() => {
-        if (!selectedAsset || !staticSessionId) {
+        if (!selectedAssetId || !staticSessionId) {
             return [];
         }
 
@@ -84,17 +84,17 @@ export const GlobalReceiveModal = ({
             accounts,
             supportedNetworks,
             deviceState: staticSessionId,
-            symbol: selectedAsset.networkSymbol,
+            symbol: selectedAssetId.networkSymbol,
             isDebug,
         });
-    }, [accounts, isDebug, selectedAsset, staticSessionId, supportedNetworks]);
+    }, [accounts, isDebug, selectedAssetId, staticSessionId, supportedNetworks]);
     const [receiveStep, setReceiveStep] = useState<GlobalReceiveStep>(() => {
-        if (initialAsset === undefined) {
+        if (initialAssetId === undefined) {
             return 'search';
         }
 
         const isSetupRequired = isNetworkSetupRequired({
-            isNetworkEnabled: enabledNetworks.includes(initialAsset.networkSymbol),
+            isNetworkEnabled: enabledNetworks.includes(initialAssetId.networkSymbol),
             eligibleAccountCount: selectedAssetAccounts.length,
         });
 
@@ -116,16 +116,16 @@ export const GlobalReceiveModal = ({
     const handleAccountSelectionRequired = useCallback(() => setReceiveStep('account'), []);
 
     const continueWithAsset = useCallback(
-        (asset: TradingAssetOption) => {
+        (assetId: AssetId) => {
             const eligibleAccounts = filterReceiveAccounts({
                 accounts,
                 supportedNetworks,
                 deviceState: staticSessionId,
-                symbol: asset.networkSymbol,
+                symbol: assetId.networkSymbol,
                 isDebug,
             });
             const [onlyAccount] = eligibleAccounts;
-            const isNetworkEnabled = enabledNetworks.includes(asset.networkSymbol);
+            const isNetworkEnabled = enabledNetworks.includes(assetId.networkSymbol);
             const isSetupRequired = isNetworkSetupRequired({
                 isNetworkEnabled,
                 eligibleAccountCount: eligibleAccounts.length,
@@ -135,7 +135,7 @@ export const GlobalReceiveModal = ({
                 return;
             }
 
-            setSelectedAsset(asset);
+            setSelectedAssetId(assetId);
             setWasSelectedAssetNetworkInactive(!isNetworkEnabled);
 
             if (isSetupRequired) {
@@ -164,7 +164,7 @@ export const GlobalReceiveModal = ({
     );
 
     const isAssetDisabled = useCallback(
-        (asset: TradingAssetOption) => {
+        (assetId: AssetId) => {
             if (isNetworkSetupAvailable) {
                 return false;
             }
@@ -173,12 +173,12 @@ export const GlobalReceiveModal = ({
                 accounts,
                 supportedNetworks,
                 deviceState: staticSessionId,
-                symbol: asset.networkSymbol,
+                symbol: assetId.networkSymbol,
                 isDebug,
             });
 
             return isNetworkSetupRequired({
-                isNetworkEnabled: enabledNetworks.includes(asset.networkSymbol),
+                isNetworkEnabled: enabledNetworks.includes(assetId.networkSymbol),
                 eligibleAccountCount: eligibleAccounts.length,
             });
         },
@@ -197,7 +197,7 @@ export const GlobalReceiveModal = ({
     };
 
     const handleBack = useCallback(() => {
-        setSelectedAsset(undefined);
+        setSelectedAssetId(undefined);
         setReceiveStep('search');
     }, []);
 
@@ -246,7 +246,7 @@ export const GlobalReceiveModal = ({
                 return (
                     <GlobalReceiveAccountStep
                         accounts={selectedAssetAccounts}
-                        asset={selectedAsset}
+                        assetId={selectedAssetId}
                         onAccountClick={submitSelection}
                         onBack={hasSearchStep ? handleBack : undefined}
                         onCancel={handleCancel}
@@ -255,7 +255,7 @@ export const GlobalReceiveModal = ({
             case 'network-setup':
                 return (
                     <GlobalReceiveNetworkSetupStep
-                        asset={selectedAsset}
+                        assetId={selectedAssetId}
                         assetAccounts={selectedAssetAccounts}
                         wasAssetNetworkInactive={wasSelectedAssetNetworkInactive}
                         onAccountSelectionRequired={handleAccountSelectionRequired}

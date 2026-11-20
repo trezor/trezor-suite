@@ -1,10 +1,8 @@
 import { TokenSymbol } from '@suite/token';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type AssetId } from '@suite-common/tokens';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
-type AssetSymbolProps = {
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
+type AssetSymbolProps = AssetId & {
     isTruncated?: boolean;
 };
 

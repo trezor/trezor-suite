@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H4, Paragraph, Spinner } from '@trezor/components';
 
@@ -10,7 +11,7 @@ import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 import { useGlobalReceiveNetworkSetup } from '../hooks/useGlobalReceiveNetworkSetup';
 
 type GlobalReceiveNetworkSetupStepProps = {
-    asset: TradingAssetOption | undefined;
+    assetId: AssetId | undefined;
     assetAccounts: Account[];
     wasAssetNetworkInactive: boolean;
     onAccountSelectionRequired: () => void;
@@ -21,7 +22,7 @@ type GlobalReceiveNetworkSetupStepProps = {
 };
 
 export const GlobalReceiveNetworkSetupStep = ({
-    asset,
+    assetId,
     assetAccounts,
     wasAssetNetworkInactive,
     onAccountSelectionRequired,
@@ -31,7 +32,7 @@ export const GlobalReceiveNetworkSetupStep = ({
     onSubmit,
 }: GlobalReceiveNetworkSetupStepProps) => {
     useGlobalReceiveNetworkSetup({
-        selectedAsset: asset,
+        selectedAssetId: assetId,
         selectedAssetAccounts: assetAccounts,
         wasSelectedAssetNetworkInactive: wasAssetNetworkInactive,
         onAccountSelectionRequired,
@@ -42,7 +43,7 @@ export const GlobalReceiveNetworkSetupStep = ({
     return (
         <AssetsModal
             heading={<Translation id="TR_RECEIVE" />}
-            description={<GlobalSendReceiveAssetDescription asset={asset} />}
+            description={<GlobalSendReceiveAssetDescription assetId={assetId} />}
             onBackClick={onBack}
             onClose={onCancel}
             maxHeight={GLOBAL_RECEIVE_MODAL_HEIGHT}
@@ -63,7 +64,9 @@ export const GlobalReceiveNetworkSetupStep = ({
                     >
                         <Translation
                             id="TR_GLOBAL_RECEIVE_SETUP_DESCRIPTION"
-                            values={{ network: asset?.networkName ?? '' }}
+                            values={{
+                                network: assetId ? getNetwork(assetId.networkSymbol).name : '',
+                            }}
                         />
                     </Paragraph>
                 </Column>

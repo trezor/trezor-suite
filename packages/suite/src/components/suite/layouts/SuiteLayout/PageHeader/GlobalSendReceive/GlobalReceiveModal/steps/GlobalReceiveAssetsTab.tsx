@@ -6,7 +6,7 @@ import {
     type GlobalReceiveAssetCatalogStatus,
     type GlobalReceiveAssetSections,
 } from '@suite-common/receive';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
 import { Button, Column, H4, Link, Paragraph, Row, Skeleton } from '@trezor/components';
 
 import { useDiscovery } from '#src/hooks/suite';
@@ -69,9 +69,9 @@ const AssetsNoResults = ({ onViewAccountsClick }: AssetsNoResultsProps) => (
 
 type GlobalReceiveAssetsTabProps = Omit<GlobalReceiveAssetSections, 'hasMoreOtherAssets'> & {
     catalogStatus: GlobalReceiveAssetCatalogStatus;
-    isAssetDisabled: (asset: TradingAssetOption) => boolean;
+    isAssetDisabled: (assetId: AssetId) => boolean;
     listRef: RefObject<HTMLDivElement | null>;
-    onAssetClick: (asset: TradingAssetOption) => void;
+    onAssetClick: (assetId: AssetId) => void;
     onRetry: () => void;
     onViewAccountsClick: () => void;
 };

@@ -5,7 +5,7 @@ import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { type TokenAddress } from '@suite-common/tokens';
+import { type AssetId, type TokenAddress } from '@suite-common/tokens';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 
@@ -13,10 +13,7 @@ import { NativeTokenName } from './NativeTokenName';
 
 type AssetNameTextRootState = AccountsRootState & NetworksRootState & TokenDefinitionsRootState;
 
-type AssetNameProps = {
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
-};
+type AssetNameProps = AssetId;
 
 /** The name of a native token or a token; an unrecognized token's name has its URLs masked. */
 export const AssetName = ({ networkSymbol, contractAddress }: AssetNameProps) =>
