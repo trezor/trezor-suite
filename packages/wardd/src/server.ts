@@ -66,6 +66,7 @@ const outcome = (method: string, result: Record<string, unknown>): string => {
     if ('counter' in result) parts.push(`counter=${String(result.counter)}`);
     if ('root' in result) parts.push(`root=${short(result.root)}`);
     if ('remaining' in result) parts.push(`remaining=${String(result.remaining)}`);
+    if (result.wmAvailable === false) parts.push('(WM unavailable)');
 
     return parts.join(' ') || 'ok';
 };
@@ -134,9 +135,9 @@ export const startServer = async (opts: ServerOptions) => {
             if (call.method === 'openStore') {
                 if (typeof p.wardId !== 'string') throw new RelayFailure('bad_request', 'wardId');
                 host = await opts.wardd.openStore({ wardId: p.wardId, evoluNode: p.evoluNode });
-                const { counter, root } = await host.status();
+                const { counter, root, wmAvailable } = await host.status();
 
-                return { counter, root };
+                return { counter, root, wmAvailable };
             }
             if (!host) throw new RelayFailure('no_store', 'openStore first');
             const device: Device = message =>

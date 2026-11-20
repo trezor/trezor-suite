@@ -2,6 +2,8 @@
 /**
  * wardd --port 21329 --data-dir ~/.trezor-ward [--token-file F] [--memory] [--relay URL] [--origin O]...
  *       [--verbose]   log every call, its outcome and the device messages it exchanged
+ *       [--wm URL]    the WARD Manager to use (`wm` process, see wmCli.ts); without it, an
+ *                     in-process development WM persisted in the data dir
  *
  * With no --token-file, a token is generated into `<data-dir>/token` (mode 0600) and reused.
  *
@@ -14,6 +16,8 @@ import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
+
+import { HttpWm } from '@trezor/ward-core';
 
 import { DEFAULT_ORIGINS, DEFAULT_PORT, startServer } from './server';
 import { Wardd } from './service';
@@ -73,6 +77,7 @@ const main = async () => {
         dataDir: memory ? null : dataDir,
         memory,
         relayUrl: value('relay'),
+        wm: value('wm') ? new HttpWm(value('wm')!) : undefined,
         log: verbose ? log : undefined,
     });
     const origins = values('origin');
@@ -85,7 +90,8 @@ const main = async () => {
     });
     console.log(
         `wardd listening on ws://127.0.0.1:${server.port} (data: ${memory ? 'memory' : dataDir}` +
-            `${value('relay') ? `, relay: ${value('relay')}` : ''})`,
+            `${value('relay') ? `, relay: ${value('relay')}` : ''}` +
+            `, WM: ${value('wm') ?? 'in-process'})`,
     );
     const stop = async () => {
         await server.close();

@@ -4,3 +4,4 @@ export * from './store';
 export * from './serve';
 export * from './wm';
 export * from './relay';
+export * from './wmHttp';

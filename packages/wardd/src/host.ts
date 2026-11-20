@@ -19,6 +19,7 @@ import {
     type WardTrie,
     type WmClient,
     WmConflict,
+    WmUnavailable,
     applyResult as applyToTrie,
     equalBytes,
     leafFromWire,
@@ -96,6 +97,8 @@ const MAX_FLUSH_ROUNDS = 1000;
 
 export class WardHost {
     private queue: Promise<unknown> = Promise.resolve();
+    /** The WM head last read, to pick the replica's head while the WM cannot be reached. */
+    private lastWmHead: { counter: number; root: Uint8Array | null } | null = null;
 
     constructor(
         readonly wardId: Uint8Array,
@@ -109,17 +112,42 @@ export class WardHost {
     /** What the last narrated rebuild was built from, so an unchanged replica is not retold. */
     private rebuilt = '';
 
-    /** Run `fn` with this wallet to itself. */
+    /**
+     * Run `fn` with this wallet to itself. A WM that cannot be reached fails the call as
+     * `wm_unavailable`: the device then keeps its last head, and shows what it reads as unproven.
+     */
     exclusive<T>(fn: () => Promise<T>): Promise<T> {
-        const run = this.queue.then(fn, fn);
+        const guarded = () =>
+            fn().catch((e: unknown) => {
+                if (e instanceof WmUnavailable) throw new RelayFailure('wm_unavailable', e.message);
+                throw e;
+            });
+        const run = this.queue.then(guarded, guarded);
         this.queue = run.catch(() => {});
 
         return run;
     }
 
+    /** The WM's head, or -- while it cannot be reached -- the one it last reported. */
+    private async wmHead(): Promise<{
+        head: { counter: number; root: Uint8Array | null } | null;
+        available: boolean;
+    }> {
+        try {
+            this.lastWmHead = await this.wm.head(this.wardId);
+
+            return { head: this.lastWmHead, available: true };
+        } catch (e) {
+            if (!(e instanceof WmUnavailable)) throw e;
+
+            return { head: this.lastWmHead, available: false };
+        }
+    }
+
+    /** Served from the WM's head; while the WM is down, from the last head it reported. */
     async replica(): Promise<Replica> {
         const links = await this.backend.load();
-        const head = await this.wm.head(this.wardId);
+        const { head } = await this.wmHead();
         // the replica is rebuilt on every call; narrate it only when what it is built from changed
         const from = `${links.length}/${head?.counter ?? '-'}/${head?.root ? toHex(head.root) : ''}`;
         const narrate = this.log && from !== this.rebuilt;
@@ -131,13 +159,14 @@ export class WardHost {
     status() {
         return this.exclusive(async () => {
             const { head, behind } = await this.replica();
-            const wmHead = await this.wm.head(this.wardId);
+            const wm = await this.wmHead();
 
             return {
                 counter: head.counter,
                 root: hexOrNull(head.root),
-                wmCounter: wmHead?.counter ?? null,
-                wmRoot: hexOrNull(wmHead?.root),
+                wmCounter: wm.available ? (wm.head?.counter ?? null) : null,
+                wmRoot: wm.available ? hexOrNull(wm.head?.root) : null,
+                wmAvailable: wm.available,
                 behind,
             };
         });

@@ -74,6 +74,8 @@ export type RelayErrorCode =
     | 'wm_behind'
     /** The device's head is off the WM's history (a fork); `sync` with `{ rejoin: true }`. */
     | 'needs_rejoin'
+    /** The WM did not answer; the device keeps its last head and shows reads as unproven. */
+    | 'wm_unavailable'
     | 'internal';
 
 export interface RelayError {
