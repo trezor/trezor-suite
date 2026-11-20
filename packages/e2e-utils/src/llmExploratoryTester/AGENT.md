@@ -67,7 +67,8 @@ mocking/dropping. Items needing those are environment-blocked: list them in
 1. **Device prompts → emulator, never the browser.** Screenshot before every
    emulator action: `emulator_screenshot` → `emulator_press_yes`/`press_no`
    (preferred over `emulator_click`; use `emulator_swipe` for Safe 5/7
-   navigation) → `emulator_screenshot` to confirm.
+   navigation) → `emulator_screenshot` to confirm. Exception: Solana rapid
+   confirmation below.
 2. **Sidebar navigation only.** No reload, no `browser_navigate*`, no new tabs,
    no `browser_close` — they destroy the session. (The harness blocks leaving
    `dev.suite.sldev.cz`.)
@@ -123,10 +124,9 @@ mocking/dropping. Items needing those are environment-blocked: list them in
 - Require a screenshot proving a mismatch with the PR/issue or the UI's own
   promises, not personal preferences. Reproduce once through supported UI when
   safe; deduplicate symptoms. State verification limits, never invent causes.
-- Check Settings → Debug → Message system experiments even without PR setup
-  notes. Enable only relevant experiments; verify the variant and visible UI.
-  Asset detail / home assets table / NFT navigation may need `assetFirstHomeTable`.
-  Missing toggles or forbidden reloads mean `unfinished`, not "unreachable" bugs.
+- If the UI looks or behaves substantially differently from the PR/issue
+  description, check Settings → Debug → Message system experiments. Enable the
+  relevant experiment and verify its variant before treating the mismatch as a bug.
 - Modals, especially device prompts, need not support Escape/backdrop dismissal.
   X/cancel/device rejection is valid. Report only broken intended exits or
   dismissal explicitly required by the PR.
@@ -201,8 +201,12 @@ Trade history starts empty — post-trade screens exist only after a real trade.
   exercise a generic send flow.
 - **SOL transactions**: the usual ~24 s deadline starts at transaction creation,
   INCLUDING device review. Swap deadlines may differ; follow the UI timer.
-  Prepare recipient/amount before review, inspect and confirm each device prompt
-  promptly, and save browser evidence after the outcome. Slow tool/model calls
+  Verify recipient/amount/fee in Suite before review. For routine flow tests,
+  confirm known emulator prompts promptly without per-screen screenshots; capture
+  the outcome and mark device-content verification skipped in `unfinished`.
+  If device contents are under test, keep screenshots and comparison. Unexpected
+  prompts or failed actions require inspection, not repeated blind confirmation.
+  Save browser evidence after the outcome. Slow tool/model calls
   causing "Transaction confirmation expired" are tester limits, even repeatedly.
   Retry once only if you can meet the timer; otherwise record the flow/timing
   blocker in `unfinished`. Report only proven premature expiry or broken
@@ -217,7 +221,7 @@ Trade history starts empty — post-trade screens exist only after a real trade.
   that confirm within the run.
 - **Device review**: expect several pages (recipient, amount, fee/total);
   step through each one and match it against the browser summary before the
-  final hold/confirm.
+  final hold/confirm, except when using the Solana rapid-confirmation path above.
 - **Network reserve banner**: on Base, Optimism and SOL Send/Swap/Sell screens
   Suite keeps a small fee reserve and shows a banner with a Manage link
   (Settings → Application → Networks). Expected behavior, not a bug; "Max"
@@ -254,9 +258,11 @@ Trade history starts empty — post-trade screens exist only after a real trade.
 Omit `filename` to see the image. Pass
 `filename="packages/e2e-utils/src/llmExploratoryTester/reports/browser/<slug>.png"`
 (kebab-case) to save evidence — that write is invisible to you; `read` the PNG
-if needed. Save meaningful outcomes, errors, and findings, not every click;
-defer browser captures during timed review until the outcome. Emulator:
-`emulator_screenshot()` at every device prompt. Every issue needs ≥1 proving
+if you need to look at it. Save evidence before each distinct interaction, after
+each state change, and for every error, modal, dropdown, and bug. Only during
+Solana's timed transaction review, defer saved browser screenshots until the
+outcome. Emulator: `emulator_screenshot()` at every device prompt except the
+Solana rapid-confirmation path above. Every issue needs ≥1 proving
 screenshot, listed as basenames in its `screenshots` array.
 
 Severity: **critical** blocks core functionality / data loss / security ·
