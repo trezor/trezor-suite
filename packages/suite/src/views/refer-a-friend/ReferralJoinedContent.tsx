@@ -26,14 +26,12 @@ import { useReferralActions } from './useReferralActions';
 type ReferralJoinedContentProps = {
     deviceId: string;
     shareUrl: string;
-    isDeviceConnected: boolean;
     program: ReferralProgram;
 };
 
 export const ReferralJoinedContent = ({
     deviceId,
     shareUrl,
-    isDeviceConnected,
     program,
 }: ReferralJoinedContentProps) => {
     const walletDescriptor = useSelector((state: DeviceRootState) =>
@@ -90,7 +88,6 @@ export const ReferralJoinedContent = ({
             )}
             {accountState.status === 'keyMissing' && (
                 <ReferralRewardsKeyMissing
-                    isDeviceConnected={isDeviceConnected}
                     isDerivingKey={accountState.pendingAction === 'deriveKey'}
                     onDeriveKey={deriveKey}
                 />

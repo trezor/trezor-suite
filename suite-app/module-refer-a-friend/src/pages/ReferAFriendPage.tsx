@@ -281,7 +281,6 @@ export const ReferAFriendPage = () => {
                 <ReferralJoinedContent
                     deviceId={deviceId}
                     shareUrl={shareUrl}
-                    isDeviceConnected={isDeviceConnected}
                     program={program.data}
                 />
             ) : (
