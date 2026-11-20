@@ -8,13 +8,21 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "exports": {
         ".": "./src/index.ts"
     },
     "dependencies": {
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
-        "@trezor/network-module-types": "workspace:*"
+        "@trezor/network-module-types": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@types/react": "19.3.0"
     }
 }

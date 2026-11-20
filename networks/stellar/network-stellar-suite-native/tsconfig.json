@@ -2,6 +2,7 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../network-stellar-types" },
         {
             "path": "../../network-module/suite-native/suite-native-types"
         },

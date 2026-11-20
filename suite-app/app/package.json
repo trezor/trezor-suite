@@ -24,6 +24,7 @@
         "@suite-app/app-modal": "workspace:*",
         "@suite-app/apps-embedding-demo": "workspace:*",
         "@suite-app/module-onboarding": "workspace:*",
+        "@suite-app/networks": "workspace:*",
         "@suite-app/suite-sync": "workspace:*",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/bip329": "workspace:*",

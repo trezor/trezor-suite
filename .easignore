@@ -283,6 +283,7 @@
 !/suite-native-app/module-stellar-token-management
 !/suite-native-app/module-trading
 !/suite-native-app/module-transactions
+!/suite-native-app/networks
 !/suite-native-app/state
 !/suite-native-app/storybook
 !/suite-native-app/suite-sync

@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@trezor/network-bitcoin-suite-common": "workspace:*",
+        "@trezor/network-bitcoin-types": "workspace:*",
         "@trezor/network-module-suite-types": "workspace:*"
     }
 }
