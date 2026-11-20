@@ -39,10 +39,6 @@ export type ScreenProps = {
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
-    /**
-     * Animates the content area when its frame changes, e.g. when the header mounts or unmounts.
-     * Without it, the content jumps to its new position.
-     */
     contentLayoutTransition?: ComponentProps<typeof AnimatedView>['layout'];
 } & RequireOneOrNone<{
     keyboardToolbarComponent?: ReactNode;
