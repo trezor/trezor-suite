@@ -1,11 +1,10 @@
-import { type SignMessage, type SignMessageDeps, createSignMessage } from './createSignMessage';
-import {
-    type VerifyMessage,
-    type VerifyMessageDeps,
-    createVerifyMessage,
-} from './createVerifyMessage';
+import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 
-export type SignVerifyDeps = SignMessageDeps & VerifyMessageDeps;
+import { type SignMessage, createSignMessage } from './createSignMessage';
+import { type SignVerifyReporterDeps, createSignVerifyReporter } from './createSignVerifyReporter';
+import { type VerifyMessage, createVerifyMessage } from './createVerifyMessage';
+
+export type SignVerifyDeps = NetworkModuleRepositoryDep & SignVerifyReporterDeps;
 
 export type SignVerify = SignMessage & VerifyMessage;
 
@@ -17,7 +16,14 @@ export const injectSignVerify = (services: any): SignVerifyDep => ({
     signVerify: services.signVerify,
 });
 
-export const createSignVerify = (deps: SignVerifyDeps): SignVerify => ({
-    ...createSignMessage(deps),
-    ...createVerifyMessage(deps),
-});
+export const createSignVerify = (deps: SignVerifyDeps): SignVerify => {
+    const serviceDeps = {
+        networkModuleRepository: deps.networkModuleRepository,
+        signVerifyReporter: createSignVerifyReporter(deps),
+    };
+
+    return {
+        ...createSignMessage(serviceDeps),
+        ...createVerifyMessage(serviceDeps),
+    };
+};
