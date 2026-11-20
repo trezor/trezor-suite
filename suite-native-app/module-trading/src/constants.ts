@@ -1,4 +1,5 @@
 import { type Insets } from 'react-native';
+import { Easing, FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import type { CryptoId } from 'invity-api';
 
@@ -26,3 +27,12 @@ export const CRYPTO_AMOUNT_INPUT_HIT_SLOP: Insets = {
     top: nativeSpacings.sp16,
     left: nativeSpacings.sp20,
 };
+
+const TRADING_HEADER_ENTERING_DURATION = 250;
+const TRADING_HEADER_EXITING_DURATION = 150;
+
+export const TRADING_HEADER_ENTERING = FadeIn.duration(TRADING_HEADER_ENTERING_DURATION);
+export const TRADING_HEADER_EXITING = FadeOut.duration(TRADING_HEADER_EXITING_DURATION);
+export const TRADING_CONTENT_LAYOUT_TRANSITION = LinearTransition.duration(
+    TRADING_HEADER_ENTERING_DURATION,
+).easing(Easing.out(Easing.cubic));

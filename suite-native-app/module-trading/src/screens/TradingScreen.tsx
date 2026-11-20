@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { TradingTokenMetadataProvider } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
-import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackRoutes, Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import { Footer } from '@suite-native/trading-provider-utils';
@@ -21,8 +20,9 @@ import { TRADING_KEYBOARD_TOOLBAR_HOST } from '../components/general/CryptoAmoun
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
+import { TradingScreenHeader } from '../components/general/TradingScreenHeader';
 import { TradingTabContent } from '../components/general/TradingTabContent';
-import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
+import { TRADING_CONTENT_LAYOUT_TRANSITION } from '../constants';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
 
 const TradingScreenContent = () => {
@@ -72,12 +72,8 @@ export const TradingScreen = () => {
         <Screen
             keyboardToolbarHostName={TRADING_KEYBOARD_TOOLBAR_HOST}
             noHorizontalPadding
-            header={
-                <>
-                    <DeviceManagerScreenHeader />
-                    <TradingTypeAwareContextMessage marginHorizontal="sp16" marginBottom="sp16" />
-                </>
-            }
+            header={<TradingScreenHeader />}
+            contentLayoutTransition={TRADING_CONTENT_LAYOUT_TRANSITION}
         >
             <TradingScreenContent />
             <LegalGatewayContextMessage marginVertical="sp16" marginHorizontal="sp16" />
