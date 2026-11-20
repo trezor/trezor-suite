@@ -2,12 +2,14 @@ import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
 import {
+    selectReferralAccountStateByWalletDescriptor,
+    selectReferralWalletRecordByWalletDescriptor,
+} from './referAFriendSelectors';
+import {
     type ReferAFriendState,
     referAFriendActions,
     referAFriendInitialState,
     referAFriendReducer,
-    selectReferralAccountState,
-    selectReferralWalletRecord,
 } from './referAFriendSlice';
 import { type ReferralAccount } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
@@ -44,7 +46,12 @@ describe('referAFriendSlice', () => {
             }),
         ]);
 
-        expect(selectReferralWalletRecord({ referAFriend: state }, WALLET_DESCRIPTOR)).toEqual({
+        expect(
+            selectReferralWalletRecordByWalletDescriptor(
+                { referAFriend: state },
+                WALLET_DESCRIPTOR,
+            ),
+        ).toEqual({
             encryptedKey,
             code: 'K7M2Q9WX',
             shareUrl: 'https://trezor.io/ref/K7M2Q9WX',
@@ -85,10 +92,16 @@ describe('referAFriendSlice', () => {
         );
 
         expect(
-            selectReferralAccountState({ referAFriend: loadingState }, WALLET_DESCRIPTOR).status,
+            selectReferralAccountStateByWalletDescriptor(
+                { referAFriend: loadingState },
+                WALLET_DESCRIPTOR,
+            ).status,
         ).toBe('loading');
         expect(
-            selectReferralAccountState({ referAFriend: loadedState }, WALLET_DESCRIPTOR),
+            selectReferralAccountStateByWalletDescriptor(
+                { referAFriend: loadedState },
+                WALLET_DESCRIPTOR,
+            ),
         ).toEqual({
             status: 'loaded',
             account: activeAccount,
@@ -117,7 +130,10 @@ describe('referAFriendSlice', () => {
 
     it('returns an idle account state for an unknown wallet', () => {
         expect(
-            selectReferralAccountState({ referAFriend: referAFriendInitialState }, null).status,
+            selectReferralAccountStateByWalletDescriptor(
+                { referAFriend: referAFriendInitialState },
+                null,
+            ).status,
         ).toBe('idle');
     });
 });

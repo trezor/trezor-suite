@@ -11,7 +11,7 @@ import { Column, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { GearSixIcon, GiftIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
-import { selectIsReferralAvailable, useResponsiveContext } from '@trezor/suite';
+import { selectIsReferAFriendAvailableInApp, useResponsiveContext } from '@trezor/suite';
 
 import { NavigationItem } from './NavigationItem';
 
@@ -26,7 +26,7 @@ const SETTINGS_ROUTES: Route['name'][] = [
 export const BottomNavigation = () => {
     const { isSidebarCollapsed } = useResponsiveContext();
     const { dispatch } = useServices(injectDispatch);
-    const isReferralAvailable = useSelector(selectIsReferralAvailable);
+    const isReferralAvailable = useSelector(selectIsReferAFriendAvailableInApp);
     const routeName = useSelector(selectRouteName);
     const isReferralNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.ReferAFriend26_10),

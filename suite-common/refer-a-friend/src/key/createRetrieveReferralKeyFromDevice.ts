@@ -9,7 +9,7 @@ import { REFERRAL_KEY_CIPHER_PARAMS } from '../referralKeyConstants';
 export type RetrieveReferralKeyFromDeviceDeps = GetTrezorConnectDep<'cipherKeyValue'>;
 
 export type RetrieveReferralKeyFromDeviceParams = {
-    // Must be the standard (no passphrase) wallet, see `selectReferralStandardWallet`.
+    // Expected to be the standard (not passphrase) wallet.
     device: Pick<TrezorDeviceWithState, 'path' | 'state' | 'instance' | 'connected'>;
 };
 
