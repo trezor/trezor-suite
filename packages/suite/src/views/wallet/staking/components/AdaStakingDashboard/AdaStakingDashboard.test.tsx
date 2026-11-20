@@ -13,6 +13,7 @@ import { AdaStakingDashboard } from './AdaStakingDashboard';
 import {
     adaAccount,
     adaEverstakeProduct,
+    adaExternalProduct,
     adaFiveBinariesProduct,
     amount,
     createStakingDashboardState,
@@ -32,9 +33,15 @@ jest.mock('../StakingDashboard/StakingDashboard', () => ({
 }));
 jest.mock('./CardanoNewProviderCard', () => ({ CardanoNewProviderCard: () => null }));
 jest.mock('../StakingDashboard/components/ApyCard', () => ({
-    ApyCard: ({ apy }: { apy: number | null }) => (
-        <div data-testid="@staking/apy-card">{apy === null ? 'none' : apy}</div>
-    ),
+    ApyCard: ({ apy, isNotEarning }: { apy: number | null; isNotEarning: boolean }) => {
+        const getLabel = () => {
+            if (isNotEarning) return 'not earning';
+
+            return apy === null ? 'none' : apy;
+        };
+
+        return <div data-testid="@staking/apy-card">{getLabel()}</div>;
+    },
 }));
 jest.mock('../StakingDashboard/components/DebugOnlyCardanoStakingCard', () => ({
     DebugOnlyCardanoStakingCard: () => null,
@@ -71,6 +78,7 @@ const stakedPositionWithRewards = mockPosition(adaEverstakeProduct.id, {
 
 const EVERSTAKE_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
 const OUTSIDE_POOL_ID = 'pool1outside';
+const RETIRED_POOL_ID = 'pool1retired';
 
 const EVERSTAKE_RATE = 3.2;
 
@@ -139,9 +147,20 @@ describe('AdaStakingDashboard', () => {
         });
 
         it('shows no rate for a delegation to a pool Suite does not offer', () => {
-            renderAdaStakingDashboard(delegatedTo(OUTSIDE_POOL_ID, adaFiveBinariesProduct));
+            renderAdaStakingDashboard(delegatedTo(OUTSIDE_POOL_ID, adaExternalProduct));
 
             expect(screen.getByTestId('@staking/apy-card')).toHaveTextContent('none');
+        });
+
+        it('shows a zero rate for a delegation to a retired provider', () => {
+            renderAdaStakingDashboard({
+                ...delegatedTo(RETIRED_POOL_ID, adaFiveBinariesProduct),
+                warnings: [
+                    { code: 'outdated-provider', providerId: adaFiveBinariesProduct.providerId },
+                ],
+            });
+
+            expect(screen.getByTestId('@staking/apy-card')).toHaveTextContent('not earning');
         });
     });
 });

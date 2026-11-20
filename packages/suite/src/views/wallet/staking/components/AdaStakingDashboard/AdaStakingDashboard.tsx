@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import {
+    selectHasStakingAccountWarning,
     selectIsStakingAccountActive,
     selectIsStakingAccountDelegatedOutside,
     useNetworkStakingRate,
@@ -62,6 +63,10 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
     const isDelegatedOutside = useSelector(state =>
         selectIsStakingAccountDelegatedOutside(state, accountKey),
     );
+    // A retired provider pays nothing, which reads as a zero rate, as on mobile.
+    const hasOutdatedProvider = useSelector(state =>
+        selectHasStakingAccountWarning(state, accountKey, 'outdated-provider'),
+    );
     const hasPendingOperation = position !== null && hasPendingStakingOperation(position);
 
     // The rate belongs to a delegation Suite offers; a registered key without a pool has none to
@@ -85,7 +90,7 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
                                 <CardanoNewProviderCard account={account} />
 
                                 <Flex gap={12}>
-                                    <ApyCard apy={shownRate} />
+                                    <ApyCard apy={shownRate} isNotEarning={hasOutdatedProvider} />
 
                                     <PayoutCardFrequencyRewards
                                         rewardFrequency={rewardPeriodDays}
