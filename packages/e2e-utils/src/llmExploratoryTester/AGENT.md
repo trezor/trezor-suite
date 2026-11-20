@@ -103,20 +103,37 @@ mocking/dropping. Items needing those are environment-blocked: list them in
    (each coin/format/state), applicable testing-checklist rows below. Never
    rely on the PR's QA notes existing or being complete. This checklist is your
    source of truth for coverage; keep it updated.
-3. Work the checklist. Every item is owed an attempt; before you stop, re-audit
-   it item by item. The timeout is generous; thoroughness is the job. When you
-   are done, stop calling tools — the harness then asks for the verdict.
+3. Attempt every PR-specific item before unrelated exploration. Re-audit the
+   checklist before stopping; the timeout allows thorough testing. When done,
+   stop calling tools — the harness asks for the verdict.
 4. Be curious. The checklist is the floor, not the ceiling: when something
    looks odd, slow, misaligned or unexpectedly changed, follow it — click it,
    compare it with the neighbouring screen, try the path the PR did not
    mention. Bugs hide next to the change, not only in it. Add what you find to
-   the checklist and report it, even when it is outside the PR's stated scope.
-5. A tool error can be a finding: if the UI blocks something the PR says should
-   work (field not editable, control missing, timeout on a visible element),
-   screenshot it and file an issue instead of retrying past it.
+   the checklist. Report reproducible unrelated defects too; label them as such.
+5. Tool errors alone are not defects. For missing controls, timeouts, or blocked
+   clicks, check overlays, account/network, and prerequisites. Require UI evidence
+   of incorrect behavior; otherwise record the blocker in `unfinished`.
 6. Unfinished items go in `unfinished` with their concrete blocker. There is
    no second pass — list only what is genuinely blocked, and never a silent
    `pass` over uncovered variants.
+
+## Finding quality
+
+- Require a screenshot proving a mismatch with the PR/issue or the UI's own
+  promises, not personal preferences. Reproduce once through supported UI when
+  safe; deduplicate symptoms. State verification limits, never invent causes.
+- Check Settings → Debug → Message system experiments even without PR setup
+  notes. Enable only relevant experiments; verify the variant and visible UI.
+  Asset detail / home assets table / NFT navigation may need `assetFirstHomeTable`.
+  Missing toggles or forbidden reloads mean `unfinished`, not "unreachable" bugs.
+- Modals, especially device prompts, need not support Escape/backdrop dismissal.
+  X/cancel/device rejection is valid. Report only broken intended exits or
+  dismissal explicitly required by the PR.
+- Preview CSP, missing images/assets, chunk-load errors, firmware/chart 404s, and
+  token-definition warnings need evidence of broken tested behavior. Console
+  errors alone prove no regression; environment blockers go in `unfinished`.
+  Still investigate when the PR changes CSP/assets or the affected flow.
 
 ## How Suite works
 
@@ -182,13 +199,14 @@ Trade history starts empty — post-trade screens exist only after a real trade.
 - **Coin choice**: prefer Base, RHC, ETH, SOL, etc... networks for sends unless the PR is about BTC or other coins. BTC
   transactions are slow to confirm and clutter the run; do not send BTC just to
   exercise a generic send flow.
-- **SOL sends**: after the device confirms, Suite has ~40 s to broadcast before
-  the blockhash expires and the tx fails. Do not idle between the device
-  confirmation and the broadcast: have the emulator screenshot/press calls
-  ready, skip re-snapshots, and take evidence only after the "sent" state
-  appears. A blockhash-expiry failure caused by your own delay is not a bug —
-  retry once, promptly; report it only if it repeats when you acted without
-  pause.
+- **SOL transactions**: the usual ~24 s deadline starts at transaction creation,
+  INCLUDING device review. Swap deadlines may differ; follow the UI timer.
+  Prepare recipient/amount before review, inspect and confirm each device prompt
+  promptly, and save browser evidence after the outcome. Slow tool/model calls
+  causing "Transaction confirmation expired" are tester limits, even repeatedly.
+  Retry once only if you can meet the timer; otherwise record the flow/timing
+  blocker in `unfinished`. Report only proven premature expiry or broken
+  PR-promised expiry/recovery. No deliberate pause does not prove timely action.
 - **Recipient address**: take it from another account of the open wallet via
   its Receive tab; revealing the full address asks the device to confirm, and
   the snapshot then shows the full string to copy.
@@ -225,7 +243,8 @@ Trade history starts empty — post-trade screens exist only after a real trade.
 - **Inputs**: empty/blank, typical valid, zero/negative/non-numeric, boundaries, decimal precision, paste + max-length.
 - **Selectors/dropdowns**: open/close, search/filter, all options, correct default, dependent fields update.
 - **Buttons**: enabled/disabled, loading state, expected action, double-click protection.
-- **Modals/overlays**: open, close via X / backdrop / Escape, content correct.
+- **Modals/overlays**: open, content correct, intended close/cancel controls work;
+  check backdrop / Escape where supported or explicitly required by the PR.
 - **Device interactions**: browser prompt ↔ emulator data match (address, amount, fee); confirm advances; reject cancels gracefully.
 - **Navigation**: tab state preserved/reset; back button; sidebar during flows.
 - **Error states**: validation messages, network errors, insufficient balance.
@@ -235,8 +254,8 @@ Trade history starts empty — post-trade screens exist only after a real trade.
 Omit `filename` to see the image. Pass
 `filename="packages/e2e-utils/src/llmExploratoryTester/reports/browser/<slug>.png"`
 (kebab-case) to save evidence — that write is invisible to you; `read` the PNG
-if you need to look at it. Save evidence before each distinct interaction, after
-each state change, and for every error, modal, dropdown, and bug. Emulator:
+if needed. Save meaningful outcomes, errors, and findings, not every click;
+defer browser captures during timed review until the outcome. Emulator:
 `emulator_screenshot()` at every device prompt. Every issue needs ≥1 proving
 screenshot, listed as basenames in its `screenshots` array.
 
@@ -254,6 +273,8 @@ broken/untestable · `blocked` environment prevented testing (reason in
 `summary`). No tools on that turn.
 
 - `summary`: 1–2 sentences of what was tested (feature/flow + device). Not a walkthrough.
+- Lead with PR coverage/blockers; label unrelated issues in their descriptions.
+  Claim PR regressions only with baseline evidence.
 - `unfinished`: see rule 6 above.
 - `issues[]` (empty on `pass`): `title` noun phrase · `description` one sentence, no root cause · `reproSteps` 3–8 short imperatives · `screenshots` basenames, ≥1.
 
