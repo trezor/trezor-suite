@@ -1,44 +1,58 @@
 import { type ReactNode, useState } from 'react';
 
-import { useDevice } from '@suite/device';
-import { injectSignVerify } from '@suite-common/sign-verify';
-import { type Network } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
-import { useServices } from '@trezor/dependency-injection';
+import { Card } from '@trezor/components';
 
-import { SignVerifyForm } from './SignVerifyForm';
-import { type SignVerifyPage } from './types';
+import { SignVerifyAddressInput } from './SignVerifyAddressInput';
+import { SignVerifyAddressSelect } from './SignVerifyAddressSelect';
+import {
+    SignVerifyContext,
+    type SignVerifyOutcome,
+    type SignVerifyPage,
+} from './SignVerifyContext';
+import { SignVerifyFormat } from './SignVerifyFormat';
+import { SignVerifyMessage } from './SignVerifyMessage';
+import { SignVerifyPublicKey } from './SignVerifyPublicKey';
+import { SignVerifySignForm } from './SignVerifySignForm';
+import { SignVerifySignature } from './SignVerifySignature';
+import { SignVerifyTab } from './SignVerifyTab';
+import { SignVerifyTabs } from './SignVerifyTabs';
+import { SignVerifyVerifyForm } from './SignVerifyVerifyForm';
 
-type SignVerifyShellProps = {
-    title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
-    isDeviceConnected: boolean | undefined;
+type SignVerifyProps = {
     children: ReactNode;
 };
 
-type SignVerifyProps = {
-    account: Account;
-    network?: Network;
-    renderShell: (props: SignVerifyShellProps) => ReactNode;
-};
-
-export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
+/**
+ * Sign & Verify card composed from its parts, the way `Modal` is: each part reads the state it
+ * needs from context, so a network renders only the parts it supports.
+ */
+const SignVerify = ({ children }: SignVerifyProps) => {
     const [page, setPage] = useState<SignVerifyPage>('sign');
-    const { device } = useDevice();
-    const { signVerify } = useServices(injectSignVerify);
+    const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
-    return renderShell({
-        title: signVerify.isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
-        isDeviceConnected: device?.connected && device?.available,
-        children: (
-            // Each tab of each account is a form of its own: keying it throws away everything the
-            // previous one was in the middle of, including the outcome it had reached.
-            <SignVerifyForm
-                key={`${page}-${account.key}`}
-                account={account}
-                network={network}
-                page={page}
-                onPageChange={setPage}
-            />
-        ),
-    });
+    const changePage = (nextPage: SignVerifyPage) => {
+        setPage(nextPage);
+        setOutcome('idle');
+    };
+
+    return (
+        <Card>
+            <SignVerifyContext value={{ page, changePage, outcome, setOutcome }}>
+                {children}
+            </SignVerifyContext>
+        </Card>
+    );
 };
+
+SignVerify.Tabs = SignVerifyTabs;
+SignVerify.Tab = SignVerifyTab;
+SignVerify.SignForm = SignVerifySignForm;
+SignVerify.VerifyForm = SignVerifyVerifyForm;
+SignVerify.AddressSelect = SignVerifyAddressSelect;
+SignVerify.AddressInput = SignVerifyAddressInput;
+SignVerify.Message = SignVerifyMessage;
+SignVerify.Signature = SignVerifySignature;
+SignVerify.PublicKey = SignVerifyPublicKey;
+SignVerify.Format = SignVerifyFormat;
+
+export { SignVerify };
