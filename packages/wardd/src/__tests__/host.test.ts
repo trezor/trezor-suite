@@ -70,6 +70,27 @@ describe('wardd conversations', () => {
         expect(r.root).toBe(toHex(a.head.root));
     });
 
+    it('adding and then deleting an entry leaves the root from before the add', async () => {
+        const { a, host } = await setup();
+        a.enqueue('alice', 'v1');
+        a.enqueue('bob', 'v1');
+        await host.flush(a.call);
+        const before = (await host.status()).root;
+
+        a.enqueue('temp', 'short-lived');
+        await host.flush(a.call);
+        expect((await host.status()).root).not.toBe(before);
+        a.enqueue('temp', null);
+        const r = await host.flush(a.call);
+
+        expect(r).toMatchObject({ counter: 4, root: before });
+        expect(toHex(a.head.root)).toBe(before);
+        // and the replica rebuilt from every stored row, the add and the delete included
+        const links = await (host as unknown as { backend: InMemoryWardBackend }).backend.load();
+        expect(links).toHaveLength(4);
+        expect(toHex(materialize(links).trie.root()!)).toBe(before);
+    });
+
     it('folds a batch into ONE transition, stored as one link', async () => {
         const { a, host } = await setup();
         for (const name of ['a', 'b', 'c']) a.enqueue(name, `addr-${name}`);
