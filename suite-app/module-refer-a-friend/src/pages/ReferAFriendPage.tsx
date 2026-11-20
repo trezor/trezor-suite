@@ -3,13 +3,8 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
-    type DeviceRootState,
-    selectSelectedDevice,
-    selectStandardWalletDescriptorByDeviceId,
-} from '@suite-common/device';
-import {
-    type ReferAFriendRootState,
     fetchReferralAccountThunk,
     fetchReferralProgramThunk,
     selectIsReferralWalletDescriptorAvailable,
@@ -41,7 +36,7 @@ import {
     ReferralJoinedContent,
     ReferralLoading,
     ReferralUnavailable,
-    selectIsReferralAvailable,
+    selectIsReferAFriendAvailableInApp,
     useLayout,
     useModal,
     useReferralActions,
@@ -63,20 +58,13 @@ type ReferralFAQ = {
 export const ReferAFriendPage = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceId = device?.id ?? undefined;
-    const isReferralAvailable = useSelector(selectIsReferralAvailable);
+    const isReferralAvailable = useSelector(selectIsReferAFriendAvailableInApp);
     const program = useSelector(selectReferralProgram);
-    const isReferralWalletDescriptorAvailable = useSelector((state: DeviceRootState) =>
-        selectIsReferralWalletDescriptorAvailable(state, deviceId),
+    const isReferralWalletDescriptorAvailable = useSelector(
+        selectIsReferralWalletDescriptorAvailable,
     );
-    const walletDescriptor = useSelector((state: DeviceRootState) =>
-        selectStandardWalletDescriptorByDeviceId(state, deviceId),
-    );
-    const walletRecord = useSelector((state: ReferAFriendRootState) =>
-        selectReferralWalletRecord(state, walletDescriptor),
-    );
-    const accountState = useSelector((state: ReferAFriendRootState) =>
-        selectReferralAccountState(state, walletDescriptor),
-    );
+    const walletRecord = useSelector(selectReferralWalletRecord);
+    const accountState = useSelector(selectReferralAccountState);
 
     const leaveModal = useModal();
     const { dispatch } = useServices(injectDispatch);

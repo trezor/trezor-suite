@@ -6,8 +6,6 @@ import {
     referAFriendActions,
     referAFriendInitialState,
     referAFriendReducer,
-    selectReferralAccountState,
-    selectReferralWalletRecord,
 } from './referAFriendSlice';
 import { type ReferralAccount } from './referAFriendTypes';
 import { type ReferralKey } from './referralKey';
@@ -44,7 +42,7 @@ describe('referAFriendSlice', () => {
             }),
         ]);
 
-        expect(selectReferralWalletRecord({ referAFriend: state }, WALLET_DESCRIPTOR)).toEqual({
+        expect(state.wallets[WALLET_DESCRIPTOR]).toEqual({
             encryptedKey,
             code: 'K7M2Q9WX',
             shareUrl: 'https://trezor.io/ref/K7M2Q9WX',
@@ -84,12 +82,8 @@ describe('referAFriendSlice', () => {
             loadingState,
         );
 
-        expect(
-            selectReferralAccountState({ referAFriend: loadingState }, WALLET_DESCRIPTOR).status,
-        ).toBe('loading');
-        expect(
-            selectReferralAccountState({ referAFriend: loadedState }, WALLET_DESCRIPTOR),
-        ).toEqual({
+        expect(loadingState.accounts[WALLET_DESCRIPTOR]?.status).toBe('loading');
+        expect(loadedState.accounts[WALLET_DESCRIPTOR]).toEqual({
             status: 'loaded',
             account: activeAccount,
             vouchers: [],
@@ -113,11 +107,5 @@ describe('referAFriendSlice', () => {
         expect(state.program).toEqual(referAFriendInitialState.program);
         expect(state.accounts).toEqual({});
         expect(state.wallets[WALLET_DESCRIPTOR]?.encryptedKey).toBe(encryptedKey);
-    });
-
-    it('returns an idle account state for an unknown wallet', () => {
-        expect(
-            selectReferralAccountState({ referAFriend: referAFriendInitialState }, null).status,
-        ).toBe('idle');
     });
 });
