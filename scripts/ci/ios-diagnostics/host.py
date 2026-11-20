@@ -29,4 +29,4 @@ while True:
         except (OSError, subprocess.TimeoutExpired) as error:
             sample[name] = {"error": type(error).__name__}
     print(json.dumps(sample), flush=True)
-    time.sleep(15)
+    time.sleep(1)

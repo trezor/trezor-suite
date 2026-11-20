@@ -52,7 +52,7 @@ childProcess.spawn = function (...args) {
     return child;
 };
 
-const memoryInterval = setInterval(() => emit('process-memory', memory()), 15_000);
+const memoryInterval = setInterval(() => emit('process-memory', memory()), 1_000);
 memoryInterval.unref();
 
 process.once('exit', code => emit('process-exit', { code, ...memory() }));

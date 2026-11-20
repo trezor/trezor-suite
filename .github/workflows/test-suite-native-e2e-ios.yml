@@ -3,7 +3,7 @@ name: "[Diagnostic] iOS Jest termination"
 on:
   push:
     branches:
-      - investigate/ios-jest-termination
+      - investigate/ios-jest-termination-repeat
   workflow_dispatch:
     inputs:
       diagnostic_build_run_id:
@@ -33,6 +33,7 @@ env:
 
 jobs:
   run_ios_e2e_tests:
+    timeout-minutes: 60
     runs-on: macos-latest
     strategy:
       fail-fast: false
