@@ -548,6 +548,7 @@ export type RootStackParamList = {
         tab?: AccountOverviewTab;
         flowType?: AccountOverviewFlow;
     } & AccountIdentityParams;
+    [RootStackRoutes.AddCustomToken]: { accountKey: AccountKey };
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;

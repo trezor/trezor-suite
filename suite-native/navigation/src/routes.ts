@@ -2,6 +2,7 @@ export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     AccountDetailStack = 'AccountDetailStack',
     AccountOverview = 'AccountOverview',
+    AddCustomToken = 'AddCustomToken',
     AssetsStack = 'AssetsStack',
     OnboardingStack = 'OnboardingStack',
     DeviceOnboardingStack = 'DeviceOnboardingStack',
