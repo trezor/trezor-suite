@@ -75,7 +75,7 @@ export const trxProduct = mockStakingProductDescriptor({
     operations: ['stake', 'unstake', 'withdraw', 'claim', 'vote'],
     options: [],
     limits: limits('1000000'),
-    messageSystemFeatures: { stake: Feature.stake.trx },
+    messageSystemFeatures: { stake: Feature.stake.trx, withdraw: Feature.withdraw.trx },
 });
 export const thodProduct = mockStakingProductDescriptor({ networkSymbol: THOD });
 
