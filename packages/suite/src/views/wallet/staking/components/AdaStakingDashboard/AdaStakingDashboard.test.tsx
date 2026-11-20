@@ -77,10 +77,13 @@ const stakedPositionWithRewards = mockPosition(adaEverstakeProduct.id, {
 });
 
 const EVERSTAKE_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
+const OTHER_EVERSTAKE_POOL_ID = 'pool1other';
 const OUTSIDE_POOL_ID = 'pool1outside';
 const RETIRED_POOL_ID = 'pool1retired';
 
 const EVERSTAKE_RATE = 3.2;
+const DELEGATED_POOL_RATE = 2.1;
+const PROMOTED_POOL_RATE = 5.4;
 
 const delegatedTo = (poolId: string, product = adaEverstakeProduct): StakingPosition =>
     mockPosition(product.id, {
@@ -90,7 +93,39 @@ const delegatedTo = (poolId: string, product = adaEverstakeProduct): StakingPosi
         details: { kind: 'cardano-delegation', poolId, drep: null },
     });
 
-const renderAdaStakingDashboard = (position: StakingPosition = stakedPositionWithRewards) => {
+// A registered key keeps its pool while the account holds nothing.
+const emptyDelegationTo = (poolId: string): StakingPosition => ({
+    ...delegatedTo(poolId),
+    balances: {
+        staked: amount('0'),
+        pending: amount('0'),
+        unstaking: amount('0'),
+        withdrawable: amount('0'),
+        rewards: amount('0'),
+    },
+    targets: [{ address: poolId, providerId: adaEverstakeProduct.providerId, amount: amount('0') }],
+});
+
+const everstakeTarget = (address: string, rate: number, saturation: number) => ({
+    address,
+    providerId: adaEverstakeProduct.providerId,
+    name: 'Everstake',
+    rate,
+    saturation,
+});
+
+const twoPoolsProductInfo = mockStakingProductInfo({
+    rate: PROMOTED_POOL_RATE,
+    targets: [
+        everstakeTarget(EVERSTAKE_POOL_ID, DELEGATED_POOL_RATE, 80),
+        everstakeTarget(OTHER_EVERSTAKE_POOL_ID, PROMOTED_POOL_RATE, 40),
+    ],
+});
+
+const renderAdaStakingDashboard = (
+    position: StakingPosition = stakedPositionWithRewards,
+    productInfo = mockStakingProductInfo({ rate: EVERSTAKE_RATE }),
+) => {
     const selectedAccount: SelectedAccountLoaded = {
         status: 'loaded',
         account: adaAccount,
@@ -103,9 +138,7 @@ const renderAdaStakingDashboard = (position: StakingPosition = stakedPositionWit
             accounts: [adaAccount],
             positions: { [adaAccount.key]: [position] },
         }),
-        productInfo: {
-            [adaEverstakeProduct.id]: mockStakingProductInfo({ rate: EVERSTAKE_RATE }),
-        },
+        productInfo: { [adaEverstakeProduct.id]: productInfo },
     });
 };
 
@@ -124,6 +157,14 @@ describe('AdaStakingDashboard', () => {
 
             expect(screen.getByTestId('@staking/apy-card')).toHaveTextContent(
                 String(EVERSTAKE_RATE),
+            );
+        });
+
+        it('shows the rate of its own pool for an empty delegation, not the promoted one', () => {
+            renderAdaStakingDashboard(emptyDelegationTo(EVERSTAKE_POOL_ID), twoPoolsProductInfo);
+
+            expect(screen.getByTestId('@staking/apy-card')).toHaveTextContent(
+                String(DELEGATED_POOL_RATE),
             );
         });
 
