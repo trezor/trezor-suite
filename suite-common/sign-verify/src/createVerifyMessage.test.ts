@@ -1,11 +1,9 @@
-import { events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { mockNetworkModule, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { mock } from '@trezor/dependency-injection';
 import {
     type NetworkSignVerify,
@@ -28,15 +26,14 @@ const CONNECTED_DEVICE = mockSuiteDevice({
 type VerifyMessage = NonNullable<NetworkSignVerify<NetworkSymbol>['verifyMessage']>;
 
 describe('signVerify.verify', () => {
-    let dispatch: jest.Mock;
     let verifyMessage: jest.MockedFunction<VerifyMessage>;
-    let deps: VerifyMessageDeps & { analytics: ReturnType<typeof mockAnalytics> };
+    let reportVerify: jest.Mock;
+    let deps: VerifyMessageDeps;
 
     beforeEach(() => {
-        dispatch = jest.fn();
         verifyMessage = mock<VerifyMessage>();
+        reportVerify = jest.fn();
         deps = {
-            analytics: mockAnalytics(),
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
@@ -44,7 +41,7 @@ describe('signVerify.verify', () => {
                     }),
                 isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
             }),
-            dispatch,
+            signVerifyReporter: { reportSign: jest.fn(), reportVerify },
         };
     });
 
@@ -66,11 +63,6 @@ describe('signVerify.verify', () => {
             hex,
         });
 
-    const dispatchedToastTypes = () =>
-        dispatch.mock.calls
-            .map(([action]) => action?.payload?.type)
-            .filter((type): type is string => typeof type === 'string');
-
     it('verify', async () => {
         setVerifyResponse({
             success: true,
@@ -80,62 +72,17 @@ describe('signVerify.verify', () => {
         expect(res.success).toBe(true);
     });
 
-    describe('analytics', () => {
-        it('reports a successful verify', async () => {
+    describe('reporting', () => {
+        it('reports a verify with the input format', async () => {
             setVerifyResponse({
                 success: true,
                 payload: { message: MESSAGE },
             });
 
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true);
+            const result = await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE, true);
 
-            expect(deps.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.analytics.report).toHaveBeenCalledWith({
-                type: events.coinVerifyMessageEvent.name,
-                payload: { status: 'success', symbol: 'btc', hex: true },
-            });
-        });
-
-        it('reports a failed verify with the error code', async () => {
-            setVerifyResponse({
-                success: false,
-                error: connectErrorToSignVerifyError({
-                    message: 'Invalid signature',
-                    code: 'Failure_DataError',
-                }),
-            });
-
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE);
-
-            expect(deps.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.analytics.report).toHaveBeenCalledWith({
-                type: events.coinVerifyMessageEvent.name,
-                payload: {
-                    status: 'error',
-                    error: 'Failure_DataError',
-                    symbol: 'btc',
-                    hex: false,
-                },
-            });
-        });
-
-        it('reports a verify rejected on the device as cancelled', async () => {
-            setVerifyResponse({
-                success: false,
-                error: connectErrorToSignVerifyError({
-                    message: 'Canceled',
-                    code: 'Failure_ActionCancelled',
-                }),
-            });
-
-            await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE);
-
-            expect(deps.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.analytics.report).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    payload: expect.objectContaining({ status: 'cancelled' }),
-                }),
-            );
+            expect(reportVerify).toHaveBeenCalledTimes(1);
+            expect(reportVerify).toHaveBeenCalledWith({ symbol: 'btc', hex: true }, result);
         });
 
         it.each(['Method_Cancel', 'Failure_ActionCancelled'])(
@@ -152,12 +99,10 @@ describe('signVerify.verify', () => {
                     success: false,
                     error: { type: 'DeviceCancelled' },
                 });
-                // Said out loud, but as a cancellation — never as a failed verification.
-                expect(dispatchedToastTypes()).toEqual(['verify-message-cancelled']);
             },
         );
 
-        it('settles a signature that does not verify as failed, and says so', async () => {
+        it('settles a signature that does not verify as failed', async () => {
             setVerifyResponse({
                 success: false,
                 error: connectErrorToSignVerifyError({
@@ -172,7 +117,6 @@ describe('signVerify.verify', () => {
                 success: false,
                 error: { type: 'DeviceError' },
             });
-            expect(dispatchedToastTypes()).toEqual(['verify-message-error']);
         });
 
         it('never reports the message, the address or the signature', async () => {
@@ -183,7 +127,7 @@ describe('signVerify.verify', () => {
 
             await verify(ACCOUNT, ADDRESS, MESSAGE, SIGNATURE);
 
-            const reported = JSON.stringify(deps.analytics.report.mock.calls);
+            const reported = JSON.stringify(reportVerify.mock.calls.map(([params]) => params));
 
             expect(reported).not.toContain(MESSAGE);
             expect(reported).not.toContain(ADDRESS);

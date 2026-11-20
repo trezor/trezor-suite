@@ -1,11 +1,9 @@
-import { events } from '@suite-common/analytics';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { mockNetworkModule, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { mock } from '@trezor/dependency-injection';
 import {
     type NetworkSignVerify,
@@ -33,15 +31,14 @@ const CONNECTED_DEVICE = mockSuiteDevice({
 });
 
 describe('signVerify.sign', () => {
-    let dispatch: jest.Mock;
     let signMessage: jest.MockedFunction<NetworkSignVerify<NetworkSymbol>['signMessage']>;
-    let deps: SignMessageDeps & { analytics: ReturnType<typeof mockAnalytics> };
+    let reportSign: jest.Mock;
+    let deps: SignMessageDeps;
 
     beforeEach(() => {
-        dispatch = jest.fn();
         signMessage = mock<NetworkSignVerify<NetworkSymbol>['signMessage']>();
+        reportSign = jest.fn();
         deps = {
-            analytics: mockAnalytics(),
             networkModuleRepository: mockNetworkModuleRepository({
                 get: () =>
                     mockNetworkModule({
@@ -56,7 +53,7 @@ describe('signVerify.sign', () => {
                     }),
                 isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
             }),
-            dispatch,
+            signVerifyReporter: { reportSign, reportVerify: jest.fn() },
         };
     });
 
@@ -93,40 +90,20 @@ describe('signVerify.sign', () => {
         });
     });
 
-    describe('hex format', () => {
-        it('reports which reading was used', async () => {
+    describe('reporting', () => {
+        it('reports the input format and the signature format', async () => {
             setSignResponse({
                 success: true,
                 payload: { address: ADDRESS, signature: SIGNATURE },
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE, true);
+            const result = await sign(ACCOUNT, PATH, MESSAGE, true, 'electrum');
 
-            expect(deps.analytics.report).toHaveBeenCalledWith(
-                expect.objectContaining({ payload: expect.objectContaining({ hex: true }) }),
+            expect(reportSign).toHaveBeenCalledTimes(1);
+            expect(reportSign).toHaveBeenCalledWith(
+                { symbol: 'btc', hex: true, signatureFormat: 'electrum' },
+                result,
             );
-        });
-    });
-
-    describe('analytics', () => {
-        it('reports a successful sign with the input format and the signature format', async () => {
-            setSignResponse({
-                success: true,
-                payload: { address: ADDRESS, signature: SIGNATURE },
-            });
-
-            await sign(ACCOUNT, PATH, MESSAGE, true, 'electrum');
-
-            expect(deps.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.analytics.report).toHaveBeenCalledWith({
-                type: events.coinSignMessageEvent.name,
-                payload: {
-                    status: 'success',
-                    symbol: 'btc',
-                    hex: true,
-                    signatureFormat: 'electrum',
-                },
-            });
         });
 
         it.each([
@@ -140,13 +117,13 @@ describe('signVerify.sign', () => {
 
             await sign(account, PATH, MESSAGE);
 
-            expect(deps.analytics.report).toHaveBeenCalledWith({
-                type: events.coinSignMessageEvent.name,
-                payload: { status: 'success', symbol: account.symbol, hex: false },
-            });
+            expect(reportSign).toHaveBeenCalledWith(
+                { symbol: account.symbol, hex: false, signatureFormat: undefined },
+                expect.anything(),
+            );
         });
 
-        it('reports a failed sign with the error code', async () => {
+        it('reports a failed sign with the default signature format', async () => {
             setSignResponse({
                 success: false,
                 error: connectErrorToSignVerifyError({
@@ -155,45 +132,16 @@ describe('signVerify.sign', () => {
                 }),
             });
 
-            await sign(ACCOUNT, PATH, MESSAGE);
+            const result = await sign(ACCOUNT, PATH, MESSAGE);
 
-            expect(deps.analytics.report).toHaveBeenCalledTimes(1);
-            expect(deps.analytics.report).toHaveBeenCalledWith({
-                type: events.coinSignMessageEvent.name,
-                payload: {
-                    status: 'error',
-                    error: 'Failure_DataError',
-                    symbol: 'btc',
-                    hex: false,
-                    signatureFormat: 'trezor',
-                },
-            });
+            expect(reportSign).toHaveBeenCalledTimes(1);
+            expect(reportSign).toHaveBeenCalledWith(
+                { symbol: 'btc', hex: false, signatureFormat: 'trezor' },
+                result,
+            );
         });
 
-        it.each(['Method_Cancel', 'Failure_ActionCancelled'])(
-            'reports a sign rejected with %s as cancelled',
-            async code => {
-                setSignResponse({
-                    success: false,
-                    error: connectErrorToSignVerifyError({ message: 'Canceled', code }),
-                });
-
-                await sign(ACCOUNT, PATH, MESSAGE);
-
-                expect(deps.analytics.report).toHaveBeenCalledTimes(1);
-                expect(deps.analytics.report).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        type: events.coinSignMessageEvent.name,
-                        payload: expect.objectContaining({
-                            status: 'cancelled',
-                            error: 'DeviceCancelled',
-                        }),
-                    }),
-                );
-            },
-        );
-
-        it('never reports the message, the address or the signature', async () => {
+        it('never reports the message or the path', async () => {
             setSignResponse({
                 success: true,
                 payload: { address: ADDRESS, signature: SIGNATURE },
@@ -201,11 +149,9 @@ describe('signVerify.sign', () => {
 
             await sign(ACCOUNT, PATH, MESSAGE);
 
-            const reported = JSON.stringify(deps.analytics.report.mock.calls);
+            const reported = JSON.stringify(reportSign.mock.calls);
 
             expect(reported).not.toContain(MESSAGE);
-            expect(reported).not.toContain(ADDRESS);
-            expect(reported).not.toContain(SIGNATURE);
             expect(reported).not.toContain(PATH);
         });
     });
