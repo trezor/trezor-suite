@@ -1,5 +1,6 @@
 import { stakingProviderIdSchema } from '@suite-common/earn-staking-common';
 import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import {
     selectEarnStakingActivateSymbols,
@@ -22,6 +23,7 @@ import {
     ethProduct,
     messageSystemWithStakeOff,
     mockAccount,
+    mockRate,
     mockStakedPosition,
     products,
     thodProduct,
@@ -186,5 +188,27 @@ describe('selectEarnStakingFiatAmountsByAccountKey', () => {
         expect(selectEarnStakingFiatAmountsByAccountKey({ ...state })).toBe(
             selectEarnStakingFiatAmountsByAccountKey(state),
         );
+    });
+
+    it('keeps the previous map alone, so a valuation is let go once the rate moves on', () => {
+        const state = createState();
+        const withEthRate = (rate: number): typeof state => ({
+            ...state,
+            wallet: {
+                ...state.wallet,
+                fiat: {
+                    ...state.wallet.fiat,
+                    current: { [getFiatRateKey(ETH, 'usd')]: mockRate(rate) },
+                },
+            },
+        });
+
+        const valuedAt3000 = selectEarnStakingFiatAmountsByAccountKey(state);
+        const valuedAt3100 = selectEarnStakingFiatAmountsByAccountKey(withEthRate(3100));
+        const valuedAt3000Again = selectEarnStakingFiatAmountsByAccountKey(withEthRate(3000));
+
+        expect(valuedAt3100[ethStaked.key]).toBe('6200');
+        expect(valuedAt3000Again).toEqual(valuedAt3000);
+        expect(valuedAt3000Again).not.toBe(valuedAt3000);
     });
 });

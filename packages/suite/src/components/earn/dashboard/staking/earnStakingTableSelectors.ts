@@ -22,6 +22,7 @@ import { type Account, type AccountKey, type RatesByKey } from '@suite-common/wa
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
 import {
     createWeakMapSelector,
+    lruMemoize,
     returnStableArrayIfEmpty,
     weakMapMemoize,
 } from '@trezor/redux-utils';
@@ -37,8 +38,9 @@ const createStableAccounts = weakMapMemoize((...accounts: Account[]) => accounts
 
 const createStableSymbols = weakMapMemoize((...symbols: NetworkSymbol[]) => symbols);
 
-// Interned on its content: the keys and amounts, as strings, in order.
-const createStableFiatAmounts = weakMapMemoize(
+// Keeps the previous map while its content, the keys and amounts as strings in order, is the same.
+// Only the previous one: a weak map holds strings strongly, and every price tick makes new ones.
+const createStableFiatAmounts = lruMemoize(
     (...keysAndAmounts: string[]): Partial<Record<AccountKey, string>> => {
         const amounts: Partial<Record<AccountKey, string>> = {};
 
