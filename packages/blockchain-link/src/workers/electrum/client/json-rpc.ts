@@ -37,7 +37,6 @@ export class JsonRpcClient {
 
     close() {
         this.socket?.close();
-        this.socket = undefined;
         this.onClose();
     }
 
@@ -54,7 +53,7 @@ export class JsonRpcClient {
                 if (err) reject(err);
                 else resolve(result);
             };
-            this.send(id, request);
+            this.send([id], request);
         });
     }
 
@@ -66,12 +65,12 @@ export class JsonRpcClient {
         this.emitter.off(event, listener);
     }
 
-    protected send(id: number, message: string) {
+    protected send(ids: number[], message: string) {
         if (this.socket) {
             this.log('SENDING:', message);
             this.socket.send(`${message}\n`);
         } else {
-            this.processCallback(id, new Error('Connection not established'));
+            ids.forEach(id => this.processCallback(id, new Error('Connection not established')));
         }
     }
 
@@ -120,8 +119,12 @@ export class JsonRpcClient {
 
     onClose() {
         this.log('onClose');
+        // The server may close the connection as well, nothing may be written into it since then.
+        const wasConnected = !!this.socket;
+        this.socket = undefined;
         Object.values(this.callbacks).forEach(cb => cb(new Error('Connection closed')));
         this.callbacks = {};
+        if (wasConnected) this.emitter.emit('disconnected');
         this.emitter.removeAllListeners();
     }
 

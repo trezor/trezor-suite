@@ -113,7 +113,8 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
             .flat();
     }
 
-    const txs = await getTransactions(client, history).then(txs =>
+    // Only the account's own amounts are aggregated, the foreign inputs don't matter.
+    const txs = await getTransactions(client, history, { withForeignParents: false }).then(txs =>
         txs
             .filter(
                 ({ blockTime }) =>
