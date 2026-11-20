@@ -1,8 +1,19 @@
-def section($heading):
-  if length > 0 then
-    "\n### \($heading)\n",
-    (.[] | "- **\(.id)** [\(.severity)]\(if .relevance == "uncertain" then " [relevance uncertain]" else "" end) \(.title)")
-  else empty end;
+def format_issue:
+  if .relevance == "uncertain" then
+    "- **\(.id)** [\(.severity)] [relevance uncertain] \(.title)"
+  else
+    "- **\(.id)** [\(.severity)] \(.title)"
+  end;
 
-(.issues | map(select(.relevance == "pr-related")) | section("PR-related")),
-(.issues | map(select(.relevance != "pr-related")) | section("Other observations"))
+def section($heading; $issues):
+  if ($issues | length) > 0 then
+    "\n### \($heading)\n",
+    ($issues[] | format_issue)
+  else
+    empty
+  end;
+
+(.issues | map(select(.relevance == "pr-related"))) as $pr_related |
+(.issues | map(select(.relevance != "pr-related"))) as $other_observations |
+section("PR-related"; $pr_related),
+section("Other observations"; $other_observations)
