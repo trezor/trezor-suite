@@ -13,6 +13,7 @@ import {
 
 export const allowedLinkTextProps = [
     'typographyStyle',
+    'isAllCaps',
     'textWrap',
     'wordBreak',
     'overflowWrap',
