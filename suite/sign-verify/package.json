@@ -14,8 +14,8 @@
         "@hookform/resolvers": "^5.9.2",
         "@suite-common/networks": "workspace:*",
         "@suite-common/sign-verify": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite/address": "workspace:*",
         "@suite/device": "workspace:*",
@@ -32,8 +32,7 @@
         "@trezor/zod": "workspace:*",
         "react": "19.3.0",
         "react-hook-form": "^7.91.0",
-        "react-redux": "9.3.1",
-        "redux": "^5.0.1"
+        "react-redux": "9.3.1"
     },
     "devDependencies": {
         "@types/react": "19.3.0"
