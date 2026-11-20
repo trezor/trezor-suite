@@ -4,11 +4,14 @@ import { resolveAfter } from '@trezor/utils';
 
 import {
     COINGECKO_API_URL,
+    QUOTA_RETRY_DELAY_MS,
     REQUEST_MIN_GAP_MS,
     REQUEST_RETRIES,
     REQUEST_RETRY_BASE_DELAY_MS,
     REQUEST_RETRY_MAX_DELAY_MS,
     REQUEST_TIMEOUT_MS,
+    STELLAR_EXPERT_MIN_REQUEST_GAP_MS,
+    STELLAR_EXPERT_QUOTA_EXCEEDED_STATUS,
     STELLAR_EXPERT_URL,
     STELLAR_HORIZON_URL,
 } from '../constants';
@@ -28,22 +31,24 @@ const lastRequestAt = new Map<string, number>();
  * of coins in sequence, which is fast enough to exhaust the rate limit of an API such as
  * StellarExpert within a few seconds.
  */
-const paceRequestsPerHost: NonNullable<ApiClientOptions['onRequest']> = async ({ url }) => {
-    const { host } = new URL(url);
+const paceRequestsPerHost =
+    (minRequestGapMs: number): NonNullable<ApiClientOptions['onRequest']> =>
+    async ({ url }) => {
+        const { host } = new URL(url);
 
-    // Clamped, because a clock that moves backwards mid-run would otherwise park the build for as
-    // long as the jump lasted.
-    const waitFor = Math.min(
-        (lastRequestAt.get(host) ?? 0) + REQUEST_MIN_GAP_MS - Date.now(),
-        REQUEST_MIN_GAP_MS,
-    );
+        // Clamped, because a clock that moves backwards mid-run would otherwise park the build
+        // for as long as the jump lasted.
+        const waitFor = Math.min(
+            (lastRequestAt.get(host) ?? 0) + minRequestGapMs - Date.now(),
+            minRequestGapMs,
+        );
 
-    if (waitFor > 0) {
-        await resolveAfter(waitFor);
-    }
+        if (waitFor > 0) {
+            await resolveAfter(waitFor);
+        }
 
-    lastRequestAt.set(host, Date.now());
-};
+        lastRequestAt.set(host, Date.now());
+    };
 
 /**
  * How long a server asked us to wait, from its `Retry-After` header: either a number of seconds or
@@ -65,44 +70,60 @@ const retryAfterMs = (response: Response | undefined) => {
 
 // Rate limits and server errors pass with a retry, and so may a request that never got a response.
 // Any other status is an answer the server means, so repeating it would only waste the quota.
-const retryTransientFailures: NonNullable<ApiClientOptions['retry']> = {
+const retryTransientFailures = (
+    quotaExceededStatus: number | undefined,
+): NonNullable<ApiClientOptions['retry']> => ({
     attempts: REQUEST_RETRIES,
     // up-fetch runs `delay` under the timeout of the attempt that failed, so a wait longer than what
     // is left of REQUEST_TIMEOUT_MS would abort the request instead of retrying it. `waitBeforeRetry`
     // waits instead, and the retry then starts with a timeout of its own.
     delay: 0,
-    when: ({ response }) => !response || response.status === 429 || response.status >= 500,
-};
+    when: ({ response }) =>
+        !response ||
+        response.status === 429 ||
+        response.status === quotaExceededStatus ||
+        response.status >= 500,
+});
 
-const waitBeforeRetry: NonNullable<ApiClientOptions['onRetry']> = async ({
-    attempt,
-    request,
-    response,
-}) => {
-    const cause = response ? `status ${response.status}` : 'no response';
-    const waitFor = retryAfterMs(response) ?? REQUEST_RETRY_BASE_DELAY_MS * 3 ** (attempt - 1);
+const waitBeforeRetry =
+    (quotaExceededStatus: number | undefined): NonNullable<ApiClientOptions['onRetry']> =>
+    async ({ attempt, request, response }) => {
+        const cause = response ? `status ${response.status}` : 'no response';
+        const backoff =
+            response?.status === quotaExceededStatus
+                ? QUOTA_RETRY_DELAY_MS
+                : REQUEST_RETRY_BASE_DELAY_MS * 3 ** (attempt - 1);
+        const waitFor = retryAfterMs(response) ?? backoff;
 
-    console.warn(`Request to ${request.url} failed (${cause}), retrying in ${waitFor} ms.`);
+        console.warn(`Request to ${request.url} failed (${cause}), retrying in ${waitFor} ms.`);
 
-    await resolveAfter(waitFor);
-};
+        await resolveAfter(waitFor);
+    };
 
 type CreateApiClientParams = {
     baseUrl?: string;
     headers?: Record<string, string>;
+    minRequestGapMs?: number;
+    /** A status other than 429 the API uses to refuse a request over its quota. */
+    quotaExceededStatus?: number;
 };
 
 /**
  * A client for one API, paced and retried the same way everywhere.
  */
-const createApiClient = ({ baseUrl, headers }: CreateApiClientParams) =>
+const createApiClient = ({
+    baseUrl,
+    headers,
+    minRequestGapMs = REQUEST_MIN_GAP_MS,
+    quotaExceededStatus,
+}: CreateApiClientParams) =>
     createHttpClient({ fetch })({
         baseUrl,
         headers,
         timeout: REQUEST_TIMEOUT_MS,
-        retry: retryTransientFailures,
-        onRequest: paceRequestsPerHost,
-        onRetry: waitBeforeRetry,
+        retry: retryTransientFailures(quotaExceededStatus),
+        onRequest: paceRequestsPerHost(minRequestGapMs),
+        onRetry: waitBeforeRetry(quotaExceededStatus),
     });
 
 export const coinGeckoApi = createApiClient({ baseUrl: COINGECKO_API_URL });
@@ -117,7 +138,11 @@ export const getCoinGeckoHeaders = () => {
     return { 'x-cg-pro-api-key': apiKey };
 };
 
-export const stellarExpertApi = createApiClient({ baseUrl: STELLAR_EXPERT_URL });
+export const stellarExpertApi = createApiClient({
+    baseUrl: STELLAR_EXPERT_URL,
+    minRequestGapMs: STELLAR_EXPERT_MIN_REQUEST_GAP_MS,
+    quotaExceededStatus: STELLAR_EXPERT_QUOTA_EXCEEDED_STATUS,
+});
 
 export const stellarHorizonApi = createApiClient({ baseUrl: STELLAR_HORIZON_URL });
 
