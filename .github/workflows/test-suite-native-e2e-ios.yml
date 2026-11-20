@@ -1,16 +1,16 @@
-name: "[Test] suite-native iOS E2E"
+name: "[Diagnostic] iOS Jest termination"
 
 on:
-  schedule:
-    - cron: "0 0 * * 1-5"
   push:
     branches:
-      - release-native/*
-  pull_request:
-    paths:
-      - .github/workflows/test-suite-native-e2e-ios.yml
+      - investigate/ios-jest-termination
   workflow_dispatch:
     inputs:
+      diagnostic_build_run_id:
+        description: "Reuse an existing app build to keep the native binary identical"
+        required: true
+        default: "44642410579"
+        type: string
       publish_results_to_github:
         description: "Publish test report to GitHub Project"
         required: false
@@ -23,6 +23,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 env:
   NODE_ENV: "test"
@@ -31,89 +32,12 @@ env:
   RN_SRC_EXT: "e2e.ts,e2e.tsx"
 
 jobs:
-  prepare_ios_test_app:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: macos-latest
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-        with:
-          submodules: "true"
-          lfs: true
-
-      - name: Install node and yarn
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Setup node_modules cache
-        id: node-modules-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: |
-            node_modules
-            suite-native-app/app/node_modules
-          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
-
-      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
-      - name: Disable Yarn hardened mode
-        run: |
-          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-
-      - name: Install Yarn dependencies
-        run: yarn install --immutable
-
-      - name: Use latest stable Xcode
-        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
-        with:
-          xcode-version: "26.5"
-
-      - name: Prebuild native expo project
-        working-directory: ./suite-native-app/app
-        run: yarn prebuild:e2e --platform ios
-
-      # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
-      - name: Sign message system config
-        working-directory: ./suite-common/message-system
-        run: yarn sign-config
-
-      - name: Cache CocoaPods
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: suite-native-app/app/ios/Pods
-          key: pods-${{ hashFiles('suite-native-app/app/ios/Podfile.lock') }}
-
-      - name: Cache Xcode DerivedData
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: suite-native-app/app/ios/build
-          key: xcode-derived-${{ hashFiles('suite-native-app/app/ios/Podfile.lock') }}-${{ github.sha }}
-          restore-keys: xcode-derived-${{ hashFiles('suite-native-app/app/ios/Podfile.lock') }}-
-
-      - name: Build a Detox test app
-        working-directory: ./suite-native-app/app
-        # Composing the Hermes source map of the Cardano Serialization Lib asm.js file exceeds the
-        # default Node heap of the macOS runner.
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-        run: yarn exec detox build --configuration ios.sim.release
-
-      - name: Store build artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: ios-test-build
-          path: |
-            suite-native-app/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
-          retention-days: 7
-
   run_ios_e2e_tests:
     runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [0, 1]
-    needs: prepare_ios_test_app
+        TEST_GROUP: [0]
     steps:
       - name: Checkout project
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -186,6 +110,8 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: ios-test-build
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.diagnostic_build_run_id || '44642410579' }}
           path: |
             suite-native-app/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
 
@@ -204,7 +130,26 @@ jobs:
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
-        run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless --quarantine
+        run: |
+          export NODE_OPTIONS="${NODE_OPTIONS:-} --require=$GITHUB_WORKSPACE/scripts/ci/ios-diagnostics/node.cjs"
+          python3 "$GITHUB_WORKSPACE/scripts/ci/ios-diagnostics/host.py" > "$RUNNER_TEMP/ios-host-resources.log" 2>&1 &
+          observer_pid=$!
+          trap 'kill "$observer_pid" 2>/dev/null || true' EXIT
+          yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless --quarantine
+
+      - name: Extract process termination diagnostics
+        if: always()
+        run: python3 scripts/ci/ios-diagnostics/crashes.py
+
+      - name: Upload process diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ios-process-diagnostics-${{ matrix.TEST_GROUP }}
+          path: |
+            ${{ runner.temp }}/ios-host-resources.log
+            ${{ runner.temp }}/ios-crash-signatures.json
+          retention-days: 7
 
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest
