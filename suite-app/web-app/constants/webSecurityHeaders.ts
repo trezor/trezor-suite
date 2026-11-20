@@ -7,7 +7,8 @@ const SENTRY_REPORT_URL =
 
 /**
  * Response security headers applied during `yarn build:preview` / `yarn preview` command.
- * - There's equal to the ones deployed in production (https://suite.trezor.io).
+ * - There should be equal to the ones deployed in production (https://suite.trezor.io) and staging (https://staging-suite.trezor.io/web) environments.
+ * - The environments get them only by a manual deployment, so change them by the process in `skills/security-headers/SKILL.md`.
  */
 const PRODUCTION_SECURITY_HEADERS = {
     /**
@@ -66,7 +67,7 @@ const PRODUCTION_SECURITY_HEADERS = {
         // Note that connect-src is a CSP policy that has nothing to do with the former TrezorConnect parameter of the same name
         'connect-src': ['data:', '*'],
         'upgrade-insecure-requests': true,
-        'script-src': ['self'],
+        'script-src': ['self', 'wasm-unsafe-eval'],
         'form-action': ['self'],
         'frame-ancestors': ['self'],
         'base-uri': ['none'],
