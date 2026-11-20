@@ -59,6 +59,7 @@ const TokensTab = ({
                     accountKey={accountKey}
                     onSelect={onSelect}
                     isStakingDisplayed={flowType === 'overview'}
+                    isAddTokenDisplayed={flowType === 'overview'}
                     ListHeaderComponent={ListHeaderComponent}
                     onScroll={onScroll}
                 />

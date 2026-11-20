@@ -18,10 +18,13 @@ import { type TokenAddress } from '@suite-common/tokens';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type CustomTokensRootState,
     type TokensRootState,
+    removeCustomTokenThunk,
     selectAccountByKey,
     selectAccountHiddenTokens,
     selectAccountNetworkSymbol,
+    selectIsCustomToken,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
@@ -130,6 +133,10 @@ export const TokenSettingsBottomSheet = forwardRef(
         const isUnrecognized = useSelector((state: TokenDefinitionsRootState & AccountsRootState) =>
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
+        const isCustomToken = useSelector(
+            (state: CustomTokensRootState) =>
+                !!account && !!tokenContract && selectIsCustomToken(state, account, tokenContract),
+        );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
         const isDevUtilsEnabled = useAtomValue(isDevUtilsEnabledAtom);
         const { isFirmwareSupported, showFirmwareUpdateAlert } =
@@ -166,6 +173,14 @@ export const TokenSettingsBottomSheet = forwardRef(
                     contractAddress: tokenContract,
                 }),
             );
+        };
+
+        const handleRemoveCustomToken = () => {
+            if (!tokenContract) return;
+
+            dispatch(removeCustomTokenThunk({ accountKey, contract: tokenContract }));
+            onNavigateAway?.();
+            navigation.goBack();
         };
 
         const { unwrap: unwrapEntry, wrap: wrapEntry } = getWrappedNativeTokenEntries({
@@ -249,6 +264,16 @@ export const TokenSettingsBottomSheet = forwardRef(
                 <VStack spacing="sp16" paddingBottom="sp16">
                     <Card style={applyStyle(cardStyle)}>
                         <VStack>
+                            {isCustomToken && (
+                                <>
+                                    <Box paddingVertical="sp8">
+                                        <Text variant="body-sm" color="contentSecondary">
+                                            <Translation id="moduleAccountManagement.tokenSettings.addedByYou" />
+                                        </Text>
+                                    </Box>
+                                    <CardDivider />
+                                </>
+                            )}
                             {tokenContract && (
                                 <>
                                     <DetailRow
@@ -346,6 +371,16 @@ export const TokenSettingsBottomSheet = forwardRef(
                             onChange={handleToggleHide}
                             testID="@token-detail/hide-token-switch"
                         />
+                    )}
+                    {isCustomToken && (
+                        <Button
+                            intent="critical"
+                            priority="secondary"
+                            onPress={handleRemoveCustomToken}
+                            testID="@token-detail/remove-custom-token-button"
+                        >
+                            <Translation id="moduleAccountManagement.tokenSettings.removeToken" />
+                        </Button>
                     )}
                     {unwrapEntry.isDisplayed && (
                         <VStack spacing="sp12">

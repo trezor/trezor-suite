@@ -28,7 +28,7 @@ import { TradingLocationModalScreen } from '@suite-native/trading-residence';
 import { selectShouldDisplayTradingResidenceOnboarding } from '@suite-native/trading-shared';
 import { AppsEmbeddingScreen } from '@suite-native-app/apps-embedding-demo';
 import { AccountDetailStackNavigator } from '@suite-native-app/module-account-detail';
-import { AccountOverviewScreen } from '@suite-native-app/module-accounts';
+import { AccountOverviewScreen, AddCustomTokenScreen } from '@suite-native-app/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native-app/module-accounts-import';
 import { ActivityCenterStackNavigator } from '@suite-native-app/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native-app/module-add-accounts';
@@ -108,6 +108,10 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.AccountOverview }}
                 name={RootStackRoutes.AccountOverview}
                 component={AccountOverviewScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.AddCustomToken}
+                component={AddCustomTokenScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.TransactionDetailStack}

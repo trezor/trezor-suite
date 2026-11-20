@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/address" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -47,6 +48,7 @@
         {
             "path": "../../suite-native/performance-metrics"
         },
+        { "path": "../../suite-native/toasts" },
         { "path": "../../suite-native/tokens" },
         {
             "path": "../../packages/dependency-injection"
