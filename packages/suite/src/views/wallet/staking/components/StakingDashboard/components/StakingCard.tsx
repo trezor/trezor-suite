@@ -142,11 +142,20 @@ export const StakingCard = ({
     const totalPendingStakeBalance = formatAmount(totals.pending);
     const unstakingBalance = formatAmount(totals.unstaking);
 
-    const isStakePending = isPositiveBalance(totalPendingStakeBalance);
+    const isCardanoNetworkType = account.networkType === 'cardano';
+    const isStakedWithProvider =
+        position !== null && position.targets.length > 0 && !isDelegatedOutside;
+
+    // A registered Cardano key reports no pending balance; legacy read a delegation as activating
+    // until its first reward, which keeps the timeline on the tab until then.
+    const isCardanoActivating =
+        isCardanoNetworkType && isStakedWithProvider && !isPositiveBalance(totals.rewards);
+
+    const isStakePending = isPositiveBalance(totalPendingStakeBalance) || isCardanoActivating;
     const isPendingUnstakeShown = isPositiveBalance(unstakingBalance);
 
     const { isTxStatusShown } = useIsTxStatusShown(
-        new BigNumber(totalPendingStakeBalance),
+        new BigNumber(isCardanoActivating ? depositedBalance : totalPendingStakeBalance),
         account.descriptor,
     );
 
@@ -158,10 +167,6 @@ export const StakingCard = ({
         account.networkType !== 'solana' &&
         position !== null &&
         hasPendingStakingOperation(position);
-
-    const isCardanoNetworkType = account.networkType === 'cardano';
-    const isStakedWithProvider =
-        position !== null && position.targets.length > 0 && !isDelegatedOutside;
 
     const isStakingDisabled = !isAvailable('stake');
     const isUnstakeDisabled = !isAvailable('unstake');

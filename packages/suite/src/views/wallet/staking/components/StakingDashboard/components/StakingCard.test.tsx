@@ -9,6 +9,7 @@ import { type StakingPosition } from '@suite-common/earn-staking-common';
 import { mockStakingProductDescriptor } from '@suite-common/earn-staking-common/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { BigNumber } from '@trezor/utils';
 
 import { StakingCard } from './StakingCard';
 import {
@@ -52,6 +53,27 @@ const adaPosition = (overrides: Partial<StakingPosition> = {}) =>
         operations: ['unstake', 'claim', 'vote'],
         details: { kind: 'cardano-delegation', poolId: null, drep: null },
         ...overrides,
+    });
+
+const EVERSTAKE_POOL_ID = 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj';
+
+const adaDelegation = (rewards: string) =>
+    adaPosition({
+        balances: {
+            staked: amount(new BigNumber('100000000').plus(rewards).toFixed()),
+            pending: amount('0'),
+            unstaking: amount('0'),
+            withdrawable: amount('0'),
+            rewards: amount(rewards),
+        },
+        targets: [
+            {
+                address: EVERSTAKE_POOL_ID,
+                providerId: adaEverstakeProduct.providerId,
+                amount: amount('100000000'),
+            },
+        ],
+        details: { kind: 'cardano-delegation', poolId: EVERSTAKE_POOL_ID, drep: null },
     });
 
 const DSOL = asNetworkSymbol('dsol');
@@ -267,6 +289,21 @@ describe('StakingCard', () => {
 
             expect(screen.getByTestId('@account/staking/change-delegate-button')).toBeDisabled();
             expect(screen.getByTestId('@account/staking/claim-rewards-button')).toBeEnabled();
+        });
+
+        it('keeps the activation timeline on a delegation until its first reward', () => {
+            renderAdaCard({ position: adaDelegation('0') });
+
+            expect(screen.getByTestId('@staking/progress-labels')).toBeInTheDocument();
+            expect(
+                screen.getByText(messages.TR_STAKE_ACTIVATION_PERIOD.defaultMessage),
+            ).toBeInTheDocument();
+        });
+
+        it('shows no timeline once the delegation has earned a reward', () => {
+            renderAdaCard({ position: adaDelegation('56398') });
+
+            expect(screen.queryByTestId('@staking/progress-labels')).not.toBeInTheDocument();
         });
     });
 
