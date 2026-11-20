@@ -20,12 +20,6 @@ To give another path its own headers, add a function for its set and an entry in
 
 A change to the shared headers changes every set, so test the connect popup flows too and send every set for deployment.
 
-Deployed differences found on 2026-11-20 (check with `curl -s -D - -o /dev/null <url>` before relying on them):
-
-- Production `script-src` is `'self' 'unsafe-eval'`, development `'self' 'wasm-unsafe-eval'`.
-- Development serves `connect-popup/bootstrap.html` without any security headers.
-- Staging returned 403 to unauthenticated requests.
-
 ## Process of editing security headers (for any environment)
 
 The goal is to have consistent security headers across all environments.

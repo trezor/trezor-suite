@@ -13,6 +13,7 @@
         "build": "yarn rimraf ./build && NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts",
         "preview": "vite preview -c ./preview.vite.config.mts --outDir ./build --mode production",
         "build:preview": "yarn build && yarn preview",
+        "print-security-headers": "yarn g:tsx ./scripts/printSecurityHeaders.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
