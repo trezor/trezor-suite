@@ -6,16 +6,17 @@ import { ApyValue } from '../../ApyValue';
 
 interface ApyCardProps {
     apy?: number | null;
+    isNotEarning?: boolean;
 }
 
-export const ApyCard = ({ apy }: ApyCardProps) => (
+export const ApyCard = ({ apy, isNotEarning }: ApyCardProps) => (
     <Card paddingType="small" flex="1">
         <Column alignItems="flex-start" flex="1" gap={20}>
             <Icon as={PercentIcon} intent="neutral" priority="secondary" />
 
             <Column margin={{ top: 'auto' }}>
                 <Paragraph typographyStyle="headline-md">
-                    <ApyValue apy={apy} />
+                    <ApyValue apy={apy} isNotEarning={isNotEarning} />
                 </Paragraph>
                 <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_STAKE_APY" />
