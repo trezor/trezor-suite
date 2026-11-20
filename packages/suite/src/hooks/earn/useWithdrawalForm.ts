@@ -18,6 +18,7 @@ import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
+    isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -40,6 +41,8 @@ import { useStakeCompose } from '../wallet/form/useStakeCompose';
 type WithdrawalContextValues = WithdrawalContextValuesBase & {
     /** What the position holds to unstake, in the network's main unit. */
     unstakableBalance: string;
+    /** A Cardano account with nothing spendable cannot pay the deregistration fee. */
+    isCardanoBalanceEmpty: boolean;
     amountLimits: AmountLimitProps;
     approximatedInstantEthAmount?: string | null;
     setRatioAmount: (divisor: number) => void;
@@ -79,6 +82,11 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
     // The form validates against the amount it shows: the staked balance of the position.
     const { totals } = useStakingAccountPosition(account.key);
     const unstakableBalance = formatStakingAmount({ amount: totals.staked, networkSymbol: symbol });
+
+    // The staked balance includes the reward balance, which the deregistration withdraws in the
+    // same transaction, so the fee check reads the spendable balance alone.
+    const isCardanoBalanceEmpty =
+        account.networkType === 'cardano' && !isPositiveBalance(account.availableBalance);
 
     const amountLimits: AmountLimitProps = {
         currency: symbol,
@@ -320,6 +328,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         formState,
         register,
         unstakableBalance,
+        isCardanoBalanceEmpty,
         amountLimits,
         onCryptoAmountChange,
         onFiatAmountChange,
