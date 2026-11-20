@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../networks" },
         { "path": "../../suite-native/accounts" },
         { "path": "../../suite-native/device" },
         {
@@ -14,7 +15,7 @@
             "path": "../../suite-native/navigation"
         },
         {
-            "path": "../../suite-native/sign-verify"
+            "path": "../../packages/dependency-injection"
         }
     ],
     "include": [".", "**/*.json"]

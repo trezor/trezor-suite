@@ -5,11 +5,5 @@ import type { GetTrezorConnectDep } from '@trezor/connect-common';
  * Apps choose their Connect implementation; modules must not import its runtime themselves.
  */
 export type NetworkSuiteCommonModuleApi = GetTrezorConnectDep<
-    | 'getAccountInfo'
-    | 'blockchainEvmRpcCall'
-    | 'signMessage'
-    | 'verifyMessage'
-    | 'ethereumSignMessage'
-    | 'ethereumVerifyMessage'
-    | 'cardanoSignMessage'
+    'getAccountInfo' | 'blockchainEvmRpcCall'
 >;

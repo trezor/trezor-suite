@@ -1,8 +1,6 @@
 {
     "extends": "../../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
             "path": "../../../packages/blockchain-link-utils"
@@ -13,26 +11,18 @@
         {
             "path": "../../../packages/device-utils"
         },
-        {
-            "path": "../network-cardano"
-        },
-        {
-            "path": "../network-cardano-assets"
-        },
-        {
-            "path": "../network-cardano-types"
-        },
+        { "path": "../network-cardano" },
+        { "path": "../network-cardano-assets" },
+        { "path": "../network-cardano-types" },
         {
             "path": "../../network-module/suite-common/suite-common-types"
         },
-        {
-            "path": "../../../packages/protobuf"
-        },
+        { "path": "../../../packages/protobuf" },
         {
             "path": "../../../packages/type-utils"
         },
         {
-            "path": "../../../packages/utils"
+            "path": "../../../packages/dependency-injection"
         }
     ]
 }

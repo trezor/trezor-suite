@@ -14,8 +14,14 @@
         ".": "./src/index.ts"
     },
     "dependencies": {
+        "@suite-common/sign-verify": "workspace:*",
+        "@suite-native/sign-verify": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-ethereum-types": "workspace:*",
-        "@trezor/network-module-suite-native-types": "workspace:*"
+        "@trezor/network-module-suite-native-types": "workspace:*",
+        "react": "19.3.0"
+    },
+    "devDependencies": {
+        "@types/react": "19.3.0"
     }
 }

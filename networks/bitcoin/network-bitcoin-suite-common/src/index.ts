@@ -1,10 +1,15 @@
 export {
     type BitcoinSuiteCommonNetworkModule,
-    type BitcoinSuiteCommonNetworkModuleDeps,
     createBitcoinSuiteCommonNetworkModule,
 } from './BitcoinNetworkSuiteCommonNetworkModule';
 
 export { networkConfigBySymbol } from './networkConfig';
+
+export {
+    BITCOIN_DEFAULT_SIGNATURE_FORMAT,
+    type BitcoinSignatureFormat,
+    getBitcoinSignatureFormats,
+} from './signVerify/bitcoinSignatureFormats';
 
 export {
     createSignBitcoinMessage,

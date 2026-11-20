@@ -2,9 +2,17 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../network-ethereum-types" },
+        {
+            "path": "../../../suite-common/sign-verify"
+        },
+        {
+            "path": "../../../suite/sign-verify"
+        },
         {
             "path": "../network-ethereum-suite-common"
+        },
+        {
+            "path": "../network-ethereum-types"
         },
         {
             "path": "../../network-module/suite/suite-types"
