@@ -16,12 +16,10 @@ import { TradingBalance } from '#src/views/wallet/trading/common/TradingBalance'
 
 export interface AssetPickerInputBalanceProps {
     name: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
-    showOnlyAmount?: boolean;
 }
 
 export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     name,
-    showOnlyAmount,
 }: AssetPickerInputBalanceProps) {
     // React Compiler: `getValues` and `watch` keep one identity for the form's whole life, so a
     // compiled render-time read of them freezes on the first render. Remove once these reads move
@@ -74,7 +72,6 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
                 symbol={fiatValues.symbol}
                 tokenAddress={fiatValues.tokenAddress}
                 decimals={assetDecimals}
-                showOnlyAmount={showOnlyAmount}
             />
         </Row>
     );

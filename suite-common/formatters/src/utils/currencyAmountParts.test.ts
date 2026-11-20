@@ -1,6 +1,23 @@
-import { getCurrencyAmountParts } from './currencyAmountParts';
+import { getCurrencyAmountParts, getFormattedCurrencySymbol } from './currencyAmountParts';
 
 const usd = { locale: 'en', currency: 'usd', isSatsValue: false };
+
+describe(getFormattedCurrencySymbol.name, () => {
+    it.each([
+        { locale: 'en', currency: 'usd', expected: '$' },
+        { locale: 'cs', currency: 'usd', expected: 'US$' },
+        { locale: 'cs', currency: 'czk', expected: 'Kč' },
+        { locale: 'cs', currency: 'btc', expected: 'BTC' },
+    ])('returns $expected for $currency in the $locale locale', ({ expected, ...params }) => {
+        expect(getFormattedCurrencySymbol({ ...params, isSatsValue: false })).toBe(expected);
+    });
+
+    it('returns sat for a sats value', () => {
+        expect(
+            getFormattedCurrencySymbol({ locale: 'cs', currency: 'btc', isSatsValue: true }),
+        ).toBe('sat');
+    });
+});
 
 describe(getCurrencyAmountParts.name, () => {
     it('keeps cents only by default', () => {

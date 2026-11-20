@@ -63,7 +63,11 @@ const isCurrencySymbolFirstInLocale = ({ locale, currency, isSatsValue }: Curren
     return formatted.indexOf('0') > 0;
 };
 
-const getFormattedCurrencySymbol = ({ locale, currency, isSatsValue }: CurrencySymbolParams) => {
+export const getFormattedCurrencySymbol = ({
+    locale,
+    currency,
+    isSatsValue,
+}: CurrencySymbolParams) => {
     if (isSatsValue) {
         return 'sat';
     }
