@@ -16,7 +16,7 @@ type AuthenticateDeviceModalProps = {
 };
 
 export const AuthenticateDeviceModal = ({ handleClose }: AuthenticateDeviceModalProps) => {
-    // Intentionally using only local state: the checkDeviceAuthenticityThunk always sets the global state, but if we
+    // Intentionally using only local state: the checkDeviceAuthenticityThunk sets the global state on a conclusive result, but if we
     // relied on it, user wouldn't be able to retry the check (would be DeviceCompromised right when you open the modal)
     const [result, setResult] = useState<StoredAuthenticateDeviceResult | null>(null);
     const [isLoading, setIsLoading] = useState(false);

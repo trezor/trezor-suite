@@ -1,10 +1,17 @@
+import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import {
+    type PersistentDeviceDataRootState,
+    persistentDeviceDataActions,
+    preparePersistentDeviceDataReducer,
+    selectDeviceAuthenticityByDeviceId,
+} from '@suite-common/persistent-device-data';
 import type { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import type { AuthenticateDeviceResult, Response } from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import type { Err, Ok } from '@trezor/type-utils';
 
 import {
@@ -79,6 +86,8 @@ type Fixture = {
     mockedConnectResponse?: Awaited<Response<AuthenticateDeviceResult>>;
     expectedFulfilled: boolean;
     expectedToastType?: ToastPayload['type'];
+    // Inconclusive result is not persisted, so that the result of a previous check is kept.
+    expectedIsResultPersisted: boolean;
     expectedResult?: StoredAuthenticateDeviceResult;
 };
 
@@ -89,6 +98,7 @@ const fixtures: Fixture[] = [
         mockedConnectResponse: verificationSuccessResponse,
         expectedFulfilled: true,
         expectedToastType: 'device-authenticity-success',
+        expectedIsResultPersisted: true,
         expectedResult: { valid: true, ...verificationSuccessResponse.payload },
     },
     {
@@ -96,12 +106,14 @@ const fixtures: Fixture[] = [
         device: deviceWithLockedBootloader,
         mockedConnectResponse: verificationSuccessResponse,
         expectedFulfilled: true,
+        expectedIsResultPersisted: true,
         expectedResult: { valid: true, ...verificationSuccessResponse.payload },
     },
     {
         description: 'Exception - missing device',
         device: undefined,
         expectedFulfilled: false,
+        expectedIsResultPersisted: false,
     },
     {
         description: 'No result - aborted on device or some other error',
@@ -109,7 +121,7 @@ const fixtures: Fixture[] = [
         mockedConnectResponse: connectCallFailResponse,
         expectedFulfilled: false,
         expectedToastType: 'error',
-        expectedResult: undefined,
+        expectedIsResultPersisted: false,
     },
     {
         description: 'Error - root pub key not found',
@@ -117,6 +129,7 @@ const fixtures: Fixture[] = [
         mockedConnectResponse: verifyFailureResponseNotFound,
         expectedFulfilled: false,
         expectedToastType: 'device-authenticity-error',
+        expectedIsResultPersisted: true,
         expectedResult: { valid: false, ...verifyFailureResponseNotFound.payload },
     },
     {
@@ -125,6 +138,7 @@ const fixtures: Fixture[] = [
         mockedConnectResponse: verifyFailureResponseBlacklisted,
         expectedFulfilled: false,
         expectedToastType: 'device-authenticity-error',
+        expectedIsResultPersisted: true,
         expectedResult: { valid: false, ...verifyFailureResponseBlacklisted.payload },
     },
     {
@@ -133,6 +147,7 @@ const fixtures: Fixture[] = [
         mockedConnectResponse: connectCallFailResponse,
         expectedFulfilled: false,
         expectedToastType: 'error',
+        expectedIsResultPersisted: true,
         expectedResult: { valid: false, error: 'error' },
     },
 ];
@@ -155,29 +170,96 @@ describe('Check device authenticity', () => {
             // expected to have emitted toast
             if (f.expectedToastType) {
                 expectedActions.splice(1, 0, notificationsActions.addToast.type);
-                const toastAction = actions[actions.length - 3];
-                expect(notificationsActions.addToast.match(toastAction)).toBe(true);
-                if (notificationsActions.addToast.match(toastAction)) {
-                    expect(toastAction.payload.type).toBe(f.expectedToastType);
-                }
+                const toastAction = actions.find(notificationsActions.addToast.match);
+                expect(toastAction?.payload.type).toBe(f.expectedToastType);
             }
             // thunk is expected to fail fast if there is no device, and not emit a result, which is always bound to device
-            if (f.device) {
+            if (f.expectedIsResultPersisted) {
                 expectedActions.push(persistentDeviceDataActions.setDeviceAuthenticityResult.type);
+                const resultAction = actions.find(
+                    persistentDeviceDataActions.setDeviceAuthenticityResult.match,
+                );
+                expect(resultAction?.payload.result).toEqual(f.expectedResult);
             }
             if (f.expectedFulfilled) {
                 expectedActions.push(checkDeviceAuthenticityThunk.fulfilled.type);
-                const resultAction = actions[actions.length - 2];
-                expect(
-                    persistentDeviceDataActions.setDeviceAuthenticityResult.match(resultAction),
-                ).toBe(true);
-                if (persistentDeviceDataActions.setDeviceAuthenticityResult.match(resultAction)) {
-                    expect(resultAction.payload.result).toEqual(f.expectedResult);
-                }
             } else {
                 expectedActions.push(checkDeviceAuthenticityThunk.rejected.type);
             }
             expect(actions.map(action => action.type)).toEqual(expectedActions);
         });
+    });
+});
+
+describe('Check device authenticity: persisted result of a previous check', () => {
+    const persistentDeviceDataReducer = preparePersistentDeviceDataReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+        reducers: { storageLoadPersistentDeviceData: mockReducer() },
+    });
+    type State = CheckDeviceAuthenticityThunkState & PersistentDeviceDataRootState;
+
+    const DEVICE_ID = 'device-id';
+
+    // Only the persisted device data is processed by a real reducer, other slices stay static.
+    const createReducer =
+        (initialState: State) =>
+        (
+            state = initialState,
+            action: Parameters<typeof persistentDeviceDataReducer>[1],
+        ): State => ({
+            ...state,
+            persistentDeviceData: persistentDeviceDataReducer(state.persistentDeviceData, action),
+        });
+
+    const checkWithPersistedResult = async (
+        persistedResult: StoredAuthenticateDeviceResult,
+        mockedConnectResponse: Awaited<Response<AuthenticateDeviceResult>>,
+    ) => {
+        const device = mockSuiteDevice({ id: DEVICE_ID }, { bootloader_locked: true });
+        const initialState: State = {
+            device: { ...deviceInitialState, selectedDevice: device, devices: [device] },
+            messageSystem: messageSystemInitialState,
+            persistentDeviceData: {
+                devices: [
+                    {
+                        ...defaultDevicePersistentData,
+                        device_id: DEVICE_ID,
+                        authenticityResult: persistedResult,
+                    },
+                ],
+            },
+        };
+        const { store } = createTestCompositionRoot<void, State>({
+            reducer: createReducer(initialState),
+            preloadedState: initialState,
+        }).services;
+        testMocks.setTrezorConnectFixtures(mockedConnectResponse);
+        await store.dispatch(checkDeviceAuthenticityThunk({ allowDebugKeys: false }));
+
+        return selectDeviceAuthenticityByDeviceId(store.getState(), DEVICE_ID);
+    };
+
+    it('keeps the persisted success when the check is inconclusive', async () => {
+        const persistedResult = { valid: true, ...verificationSuccessResponse.payload };
+
+        expect(await checkWithPersistedResult(persistedResult, connectCallFailResponse)).toEqual(
+            persistedResult,
+        );
+    });
+
+    it('keeps the persisted failure when the check is inconclusive', async () => {
+        const persistedResult = { valid: false, ...verifyFailureResponseNotFound.payload };
+
+        expect(await checkWithPersistedResult(persistedResult, connectCallFailResponse)).toEqual(
+            persistedResult,
+        );
+    });
+
+    it('overwrites the persisted failure with a conclusive result', async () => {
+        const persistedResult = { valid: false, ...verifyFailureResponseNotFound.payload };
+
+        expect(
+            await checkWithPersistedResult(persistedResult, verificationSuccessResponse),
+        ).toEqual({ valid: true, ...verificationSuccessResponse.payload });
     });
 });
