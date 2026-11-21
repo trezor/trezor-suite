@@ -883,10 +883,6 @@
                 flex: none;
                 line-height: 16px;
             }
-            .tag.new {
-                border-color: var(--accent);
-                color: var(--accent);
-            }
             .team {
                 font-size: 11.5px;
                 color: var(--ink-3);
@@ -2954,6 +2950,7 @@
                     f.description,
                     (f.breadcrumb || []).join(' '),
                     f.team,
+                    f.backend_team,
                     ...Object.values(f.navigation || {}),
                     ...(f.roots || []).map(r => r.path + ' ' + (r.symbol || '')),
                 ]
@@ -2967,7 +2964,9 @@
                 adj.get(l.a).push({ id: l.b, type: l.type, via: l.via });
                 adj.get(l.b).push({ id: l.a, type: l.type, via: l.via });
             }
-            const TEAMS = [...new Set(F.map(f => f.team))].sort((a, b) => a.localeCompare(b));
+            const TEAMS = [...new Set(F.flatMap(f => [f.team, f.backend_team]))].sort((a, b) =>
+                a.localeCompare(b),
+            );
             const SCREEN_LIST = Object.entries(DATA.screens).map(([id, s]) => ({ id, ...s }));
             /* Device variants: captures of one screen on several simulators share a group; one variant shows at a time. */
             const PREFERRED_DEVICES = DATA.preferred_devices || [];
@@ -3066,7 +3065,7 @@
                     s.levels = p
                         .get('l')
                         .split(',')
-                        .filter(l => ['area', 'feature', 'option'].includes(l));
+                        .filter(l => ['area', 'feature', 'intent'].includes(l));
                 if (['with', 'without'].includes(p.get('s'))) s.shots = p.get('s');
                 if (AXIS[p.get('ax')]) s.axis = p.get('ax');
                 if (['off', 'small', 'large'].includes(p.get('th'))) s.thumbs = p.get('th');
@@ -3223,7 +3222,12 @@
                 const t = terms();
                 if (t.length && !t.every(x => f.searchText.includes(x))) return false;
                 if (!state.plat.some(p => availOn(f, p))) return false;
-                if (state.teams.length && !state.teams.includes(f.team)) return false;
+                if (
+                    state.teams.length &&
+                    !state.teams.includes(f.team) &&
+                    !state.teams.includes(f.backend_team)
+                )
+                    return false;
                 if (state.levels.length && !state.levels.includes(f.level)) return false;
                 if (state.shots !== 'any' && (state.shots === 'with') !== screensFor(f).length > 0)
                     return false;
@@ -3370,7 +3374,8 @@
             function renderFilters() {
                 const counts = new Map();
                 for (const f of F) {
-                    for (const t of [f.team]) counts.set('t:' + t, (counts.get('t:' + t) || 0) + 1);
+                    for (const t of new Set([f.team, f.backend_team]))
+                        counts.set('t:' + t, (counts.get('t:' + t) || 0) + 1);
                     counts.set('l:' + f.level, (counts.get('l:' + f.level) || 0) + 1);
                 }
                 const seg = (name, value, options) =>
@@ -3404,7 +3409,7 @@
                         .join('')}</div>`,
                 );
                 html.push(
-                    `<div class="fgroup"><h2>Level</h2>${['area', 'feature', 'option']
+                    `<div class="fgroup"><h2>Level</h2>${['area', 'feature', 'intent']
                         .map(
                             l =>
                                 `<label class="check"><input type="checkbox" data-level="${l}" ${state.levels.includes(l) ? 'checked' : ''}> ${{ area: 'Area', feature: 'Feature', option: 'Option / sub-feature' }[l]}<span class="n num">${counts.get('l:' + l) || 0}</span></label>`,
@@ -3507,9 +3512,13 @@
             }
             const showsKids = f =>
                 (kids.get(f.id) || []).some(k => MATCH.has(k.id) || CONTEXT.has(k.id));
+            const teamLabel = f =>
+                f.backend_team && f.backend_team !== f.team
+                    ? f.team + ' / ' + f.backend_team
+                    : f.team;
             function rowTeam(f) {
-                const t = f.team;
-                const parent = f.parent ? byId.get(f.parent).team : null;
+                const t = teamLabel(f);
+                const parent = f.parent ? teamLabel(byId.get(f.parent)) : null;
                 return t !== parent ? t : '';
             }
             function treeRow(f, focusId) {
@@ -3538,9 +3547,8 @@
                         <button class="twisty${hasKids ? '' : ' leaf'}" data-toggle="${esc(f.id)}" aria-hidden="true" tabindex="-1">${ICON.chevron}</button>
                         <span class="label" title="${esc(f.name)}">${hl(f.name)}</span>
                         ${kidN ? `<span class="kids num" aria-hidden="true">${kidN}</span>` : ''}
-                        ${f.runtime_added ? '<span class="tag new" title="Added from the runtime walkthrough">runtime</span>' : ''}
                         ${f.scope === 'internal-reference' ? '<span class="tag">internal</span>' : ''}
-                        ${team ? `<span class="team">${esc(team)}</span>` : ''}
+                        ${team ? `<span class="team"${team.includes(' / ') ? ' title="Frontend team / backend team"' : ''}>${esc(team)}</span>` : ''}
                     </div></div>
                     <div class="plats">${plats}</div>
                     <div class="covs">${covs}</div>
@@ -3774,7 +3782,8 @@
             const COLS = [
                 { k: 'tree', label: 'Feature', get: f => dfsIndex.get(f.id) },
                 { k: 'level', label: 'Level', get: f => f.level },
-                { k: 'team', label: 'Team', get: f => f.team },
+                { k: 'team', label: 'Frontend team', get: f => f.team },
+                { k: 'backend_team', label: 'Backend team', get: f => f.backend_team },
                 ...PLATFORMS.map(p => ({
                     k: 'p:' + p,
                     label: PLATFORM_LABEL[p],
@@ -3843,6 +3852,8 @@
                                     return `<td class="muted col-level">${f.level}</td>`;
                                 if (c.k === 'team')
                                     return `<td class="col-team" style="white-space:nowrap">${esc(f.team)}</td>`;
+                                if (c.k === 'backend_team')
+                                    return `<td class="col-team" style="white-space:nowrap">${esc(f.backend_team)}</td>`;
                                 if (c.plat)
                                     return `<td><span data-tip-av="${esc(f.id)}|${c.plat}">${avGlyph(f.platforms?.[c.plat], PLATFORM_LABEL[c.plat])}</span></td>`;
                                 if (c.axis) return `<td>${scoreCell(f, c.axis)}</td>`;
@@ -3866,7 +3877,8 @@
                     'name',
                     'breadcrumb',
                     'level',
-                    'team',
+                    'frontend_team',
+                    'backend_team',
                     ...PLATFORMS,
                     ...AXES.map(a => a + '_score'),
                     'screenshots',
@@ -3882,6 +3894,7 @@
                             f.breadcrumb.join(' > '),
                             f.level,
                             f.team,
+                            f.backend_team,
                             ...PLATFORMS.map(p => f.platforms?.[p]),
                             ...AXES.map(a => (isNA(f.coverage[a]) ? '' : f.coverage[a].score)),
                             screensFor(f).length,
@@ -4211,7 +4224,7 @@
                     <div class="dnav"><button class="icon-btn" data-act="prev" ${pos <= 0 ? 'disabled' : ''} aria-label="Previous feature" title="Previous (k)">${ICON.up}</button><button class="icon-btn" data-act="next" ${pos < 0 || pos >= list.length - 1 ? 'disabled' : ''} aria-label="Next feature" title="Next (j)">${ICON.down}</button><button class="icon-btn" data-act="close" aria-label="Close detail" title="Close (Esc)">${ICON.x}</button></div>
                     <nav class="crumbs" aria-label="Breadcrumb">${crumbs}</nav>
                     <h2 tabindex="-1" id="detailTitle">${esc(f.name)}</h2>
-                    <div class="dmeta"><button class="copy mono" data-copy="${esc(f.id)}" title="Copy ID">${esc(f.id)} ${ICON.copy}</button><span class="tag">${esc(f.level)}</span><span>${ICON.team} ${esc(f.team)}</span>${f.runtime_added ? '<span class="tag new">added at runtime</span>' : ''}</div>
+                    <div class="dmeta"><button class="copy mono" data-copy="${esc(f.id)}" title="Copy ID">${esc(f.id)} ${ICON.copy}</button><span class="tag">${esc(f.level)}</span><span title="Frontend team / backend team">${ICON.team} ${esc(teamLabel(f))}</span></div>
                 </div>
                 <div class="dbody">
                     <p class="desc">${esc(f.description)}</p>
@@ -4224,7 +4237,7 @@
                     </div>
                     ${childHtml}
                     <div class="dsec"><h3>${ICON.code} Root components <span class="muted num">${(f.roots || []).length}</span></h3><div class="roots">${roots || '<p class="muted" style="margin:0">No dedicated root component; see evidence.</p>'}</div></div>
-                    <div class="dsec"><h3>${ICON.team} Ownership</h3><dl class="kv"><dt>Team</dt><dd>${esc(f.team)}</dd><dt>Confidence</dt><dd>${esc(own.confidence || '–')}</dd></dl><p class="hint">${esc(own.basis || '')}</p></div>
+                    <div class="dsec"><h3>${ICON.team} Ownership</h3><dl class="kv"><dt>Frontend team</dt><dd>${esc(f.team)}</dd><dt>Backend team</dt><dd>${esc(f.backend_team)}</dd><dt>Confidence</dt><dd>${esc(own.confidence || '–')}</dd></dl><p class="hint">${esc(own.basis || '')}</p>${own.backend_basis && f.backend_team !== f.team ? `<p class="hint">Backend: ${esc(own.backend_basis)}</p>` : ''}</div>
                     <div class="dsec"><h3>More evidence</h3>
                         ${obs ? `<details class="more"><summary>Runtime observations (${f.observations.length}${f.observations.some(o => o.superseded) ? `, ${f.observations.filter(o => o.superseded).length} with corrected screenshot scope` : ''})</summary><ul>${obs}</ul></details>` : ''}
                         ${errata ? `<details class="more"><summary>Other screenshot errata (${(f.errata || []).filter(e => !obsIds.has(e.observation_id)).length})</summary><ul>${errata}</ul></details>` : ''}
@@ -4685,7 +4698,7 @@
                     .map(g => `<span class="pair">${g.map(a => scoreCell(f, a)).join('')}</span>`)
                     .join('');
                 return `<div class="mnode ${n.side > 0 ? 'r' : 'l'} ${b}${f.level === 'area' ? ' area' : ''}${sel ? ' sel' : ''}${ctx ? ' ctx' : ''}" role="treeitem" aria-level="${f.depth + 1}" aria-selected="${sel}"${ks.length ? ` aria-expanded="${open}"` : ''} aria-label="${esc(f.name)}${ctx ? ' (context)' : ''}, ${AXIS[state.axis].label} ${scoreText(c)}" tabindex="${focusId === f.id ? 0 : -1}" data-id="${esc(f.id)}" style="left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px">
-                    <div class="mn-name"><span class="label" data-tip-feature="${esc(f.id)}">${hl(f.name)}</span>${f.runtime_added ? '<span class="tag new" title="Added from the runtime walkthrough">runtime</span>' : ''}${f.scope === 'internal-reference' ? '<span class="tag">internal</span>' : ''}</div>
+                    <div class="mn-name"><span class="label" data-tip-feature="${esc(f.id)}">${hl(f.name)}</span>${f.scope === 'internal-reference' ? '<span class="tag">internal</span>' : ''}</div>
                     <div class="mn-meta"><span class="plats">${plats}</span><span class="covs">${covs}</span>${linkCell(f)}</div>
                     ${mapThumbs(f)}
                     ${ks.length ? `<button class="mtog" data-toggle="${esc(f.id)}" tabindex="-1" aria-hidden="true" title="${open ? 'Collapse' : 'Expand'} ${ks.length} sub-feature${ks.length === 1 ? '' : 's'}">${open ? ICON.minus : ks.length}</button>` : ''}

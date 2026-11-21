@@ -156,7 +156,15 @@
         "earn.opportunities.expand",
         "earn.yield.retry",
         "earn.feedback",
-        "trade.swap.risk-review"
+        "trade.swap.risk-review",
+        "trade.history.rate",
+        "trade.form-resume",
+        "connect.walletconnect.transaction.insufficient-gas",
+        "trade.swap.simulation",
+        "earn.staking.trx.transactions",
+        "earn.staking.ada.voting.convert-drep",
+        "trade.preview-fiat-value",
+        "trade.swap.source-asset-filter"
     ],
     "files_reviewed": [
         "docs/features/feature-map/features.json",
@@ -10447,6 +10455,599 @@
                 "covered_intents": [],
                 "gaps": [
                     "Review high-risk, price-impact or low-slippage warnings and decide whether to continue or return to the trade form."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "trade.history.rate",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test under suite/e2e/tests checks the trading feedback card or survey card. The trading detail tests (for example swap-history and sell-solana) open order detail pages, but none assigns the tradingFeedbackForm variant or asserts the rating, submit or survey CTA. With the default variant A the card does not render at all.",
+                "covered_intents": [],
+                "gaps": [
+                    "Rate an order and submit a comment (variant B), including submit blocked without text and the success state",
+                    "Survey card (variant C) rendering and CTA opening",
+                    "Hidden by default when the experiment is inactive (variant A)",
+                    "Feedback payload (category trade, order status, provider, id) sent through sendFeedbackThunk"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test under suite-native-app/app/e2e/tests references the trading feedback card, the @trading-history/detail/survey test IDs or the tradingFeedbackForm experiment. The trading flow tests reach the order detail screen (tradingHistoryActions waits for @screen/TradingHistoryDetail) without checking feedback.",
+                "covered_intents": [],
+                "gaps": [
+                    "Tap a rating, enter text in the bottom sheet and submit (variant B)",
+                    "Survey card visibility and CTA link (variant C)",
+                    "Hidden by default without an experiment assignment"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The manual trading procedures in suite/e2e/tests/manual/trading (for example trading-flow and trading-backends) cover history and order details but contain no step for the after-trade rating, feedback submission or trading survey.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written procedure for rating a trade, sending feedback or opening the trading survey from the order detail"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The Android manual procedures in suite-native-app/app/e2e/tests/manual/trading cover form inputs, offer selection and buy, sell and swap transactions, including Trade history checks (btc-transactions-buy, btc-transactions-sell, eth-transactions-swap-ETH, solana-transactions-swap-cex, swap-cross-chain-*). None has a step for the order-detail feedback card or survey banner.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written procedure for rating a trade, sending feedback or opening the trading survey from the mobile order detail"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "trade.form-resume",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright trading test goes back from the confirm or approval page to the form and checks the earlier values. The only tradingPage.backButton use (swap-history.test.ts:189) returns from an order detail to the transaction list.",
+                "covered_intents": [],
+                "gaps": [
+                    "Back from the Buy/Sell/Swap confirm page restoring the amount, assets and country",
+                    "Saved values cleared after a tab switch or on re-entering Trade"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 1,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "incidental",
+                "rationale": "The Sell and Swap flows close the Connect Trezor sheet after Continue and only wait for the form container to be visible (waitForTradeDataToLoad); no entered value is asserted after the return.",
+                "covered_intents": [
+                    "Return to the trade form after leaving the preflow (form visible only)"
+                ],
+                "gaps": [
+                    "No check that the amount, assets or account remain filled after returning",
+                    "Buy preview back navigation not exercised",
+                    "Reset after a cancelled signing review not checked"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
+                        "line": 62,
+                        "scenario": "should request trezor connect before preview",
+                        "verification": "After Continue, cancelConnectTrezorInfo taps the close button and waitForTradeDataToLoad waits for the form testID; no value assertion.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
+                        "line": 61,
+                        "scenario": "should request trezor connect before preview",
+                        "verification": "Same pattern for Swap: closes the Connect Trezor sheet and waits for the form to be visible; values not checked.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No manual procedure in suite/e2e/tests/manual/trading goes back from an offer or confirm page and checks that the form values remain.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written check that the Buy/Sell/Swap form keeps its values after going back from the confirm page"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No native manual trading procedure covers returning to an unfinished form and checking that the earlier values remain.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written check that the form keeps its values after closing the preview"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "connect.walletconnect.transaction.insufficient-gas",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test in suite/e2e/tests triggers a WalletConnect or Connect ethereumSignTransaction simulation review with an underfunded account, and none references @tx-simulation-modal/insufficient-gas-banner. The yield tests that use the txSimulationModal page object go through a different modal that does not mount EvmInsufficientGasWarning.",
+                "covered_intents": [],
+                "gaps": [
+                    "No check that the warning appears when the balance is below the selected fee",
+                    "No check that the warning is absent with sufficient funds or appears/disappears when the fee level changes",
+                    "No check of the suppression for placeholder accounts with an empty balance"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test in suite-native-app/app/e2e/tests exercises the native Connect popup transaction simulation or WalletConnect transaction review.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification that the insufficient-gas BannerFull appears for an underfunded ethereumSignTransaction after simulation loads"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The WalletConnect manual procedures in suite/e2e/tests/manual/connect (Uniswap, 1inch, Morpho, Hyperliquid, Safe, Jupiter) require a funded wallet and only confirm successful transactions. No step creates an insufficient-gas state or checks a fee warning.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step requests a dApp transaction from an account that cannot cover the gas fee and verifies the warning text",
+                    "No manual step switches fee levels to verify that the warning updates"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No WalletConnect or Connect popup transaction review procedure exists in suite-native-app/app/e2e/tests/manual. The fee and insufficient-balance steps there cover send, trading and yield, not this warning.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual procedure for a dApp transaction review with an insufficient gas balance on Android"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "trade.swap.simulation",
+            "desktop_automated": {
+                "score": 5,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "One active Playwright DEX swap (LI.FI ETH->USDC) waits for the 'Simulation powered by Blockaid' subtitle and checks that the review receive amount exactly matches the amount derived from the captured live Blockaid scan, with no issue banner. That is a basic complete happy path with meaningful outcome checks. Loading, suppression and fallback variants are verified only by unit tests.",
+                "covered_intents": [
+                    "Blockaid simulation subtitle shown after the simulation settles on the same-chain DEX review",
+                    "Simulated receive amount replaces the quoted amount on the review screen"
+                ],
+                "gaps": [
+                    "No E2E check of the 'Simulating transaction' loading state or the disabled confirmation while simulating",
+                    "No E2E check that the subtitle is suppressed for cross-chain swaps or after a simulation error, or that the quote amount is used as fallback",
+                    "No E2E with trading.txSimulation disabled",
+                    "No E2E for EIP-712 sign-data (ethereumSignTypedData) DEX quotes or token-to-token swaps after approval"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi.test.ts",
+                        "line": 169,
+                        "scenario": "User can swap ETH to USDC via LI.FI DEX",
+                        "verification": "Asserts the dexSimulationSubtitle translation TR_SIMULATION_POWERED_BY with provider Blockaid. Then, with retries, checks that receiveCryptoAmount equals the localized getSimulatedReceiveAmount of the scan captured by tradingMock.captureTxSimulation (live scan passed through), and that the issue banner is hidden.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The only Android DEX Detox test (tradingDexExchangeFlow) stops at the approval/revoke review and never reaches the swap preview header or the simulated receive amount. No Detox code references simulation.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of the Blockaid status in the TradingExchangePreview header",
+                    "No verification of the simulated receive amount in the 'to' account card or slippage picker",
+                    "No coverage of the loading, error or cross-chain suppression states"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Manual DEX procedures (e.g. 'Swap DEX full flow' in suite/e2e/tests/manual/trading/trading-flow.test.ts:129) pass through the review step, but none checks the Blockaid subtitle or the simulated receive amount.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written check of the simulation subtitle, loading state or simulated receive amount on the Review your swap page",
+                    "No written check of cross-chain or error suppression"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Android manual swap procedures (swap-cross-chain-evm-dex, eth-transactions-swap-ETH) only proceed to confirmation and never check the preview header simulation status or the simulated receive amount.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written check of 'Simulation powered by Blockaid' or 'Simulating transaction' in the swap preview header",
+                    "No written check of the simulated receive amount on the preview"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "earn.staking.trx.transactions",
+            "desktop_automated": {
+                "score": 1,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "incidental",
+                "rationale": "The web-only TRX staking Playwright tests open the Tron Staking tab with mocked freeze/vote (and later unfreeze/withdraw/claim) history, so the 'Staking transactions' list renders, but no step or page-object helper asserts its heading, rows, ordering or filtering. The pending-transaction title they check belongs to the flow modal (TronStakePendingTransaction), not to the list. This is only an incidental pass through the screen.",
+                "covered_intents": [
+                    "Staking tab with Tron staking history is opened (list rendered, not checked)"
+                ],
+                "gaps": [
+                    "No assertion that the 'Staking transactions' heading and rows appear for freeze/vote/unfreeze/withdraw/claim transactions",
+                    "No check that non-staking Tron transactions (transfers, DelegateResource) are excluded",
+                    "No check that the section is hidden without staking history or that a newly broadcast staking tx appears in the list",
+                    "Desktop Electron not exercised (tests are @webOnly)"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/staking/trx/claim.test.ts",
+                        "line": 86,
+                        "scenario": "Claim Tron voting rewards: open Staking tab with rewarded (freeze+vote history) account",
+                        "verification": "Asserts balance, staked amount, rewards and claim flow only; the staking transaction list is rendered but not verified.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/staking/trx/unstake.test.ts",
+                        "line": 81,
+                        "scenario": "Unstake TRX: open Staking tab with voted account history",
+                        "verification": "Asserts staked amount and unstaking card visibility; no transaction list assertion.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test under suite-native-app/app/e2e/tests references Tron staking or the StakingManagement transaction list.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of the TRX staking detail transaction list (staking filter) on Android"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The manual TRX staking lifecycle procedure opens the Staking tab and checks balances, votes, rewards and unfreezing, but has no step that checks the staking transaction list.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step verifying that freeze/vote/claim/unfreeze/withdraw transactions appear in 'Staking transactions' and non-staking transactions do not"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Android manual procedures cover ETH and SOL staking and a TRX send form, but none covers TRX staking detail or its transaction list.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual procedure for the TRX staking detail transaction list on Android"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "earn.staking.ada.voting.convert-drep",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test enters a DRep ID. The only active ADA voting check, outdated-provider.test.ts:164, asserts the voting heading and option labels, and the page object exposes only votingPreferenceHeading and votingPreferenceOptionLabels. Conversion is covered only by co-located component unit tests, which are outside the E2E scope.",
+                "covered_intents": [],
+                "gaps": [
+                    "No E2E enters a legacy CIP-105 DRep ID or checks the legacy-format error and the 'Convert to new format' button",
+                    "No E2E checks the converted CIP-129 value, the converted message, or that Stake/Continue becomes enabled after conversion",
+                    "No E2E checks the current-delegate legacy ID case (has_script credential preserved)"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Unavailable on Android: Cardano staking is view-only on mobile and has no DRep input.",
+                "covered_intents": [],
+                "gaps": ["Feature not available on mobile"],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The only related manual procedure, 'ADA change delegate and update provider', says to select a different DRep. It never mentions legacy-format IDs, the convert button or the converted result, so it has no feature-specific verification.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual procedure for entering a legacy DRep ID, converting it and confirming the CIP-129 result before signing"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Unavailable on Android: Cardano staking is view-only on mobile and has no DRep input.",
+                "covered_intents": [],
+                "gaps": ["Feature not available on mobile"],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "trade.preview-fiat-value",
+            "desktop_automated": {
+                "score": 1,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "incidental",
+                "rationale": "Playwright buy, sell and swap tests open the selected-offer review and assert the crypto amount in the same TradingInfoItem card. Their locator is @trading/form/info/crypto-amount (TradingCryptoAmount). None of them reads or checks the BaseCurrencyValue rendered beneath it. The fiat amount asserted in buy-bitcoin is the provider fiat quote (TradingFiatAmountInfoItem), not this feature. This is incidental exposure only.",
+                "covered_intents": [
+                    "Open the buy, sell or swap offer review where the fiat value is rendered (incidental exposure only)"
+                ],
+                "gaps": [
+                    "No assertion of the fiat value under the send/receive crypto amount for buy, sell or swap",
+                    "Missing-rate (hidden value) and DEX simulation loading states are not checked"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/trading/buy-bitcoin.test.ts",
+                        "line": 136,
+                        "scenario": "Buy offer confirmation",
+                        "verification": "Asserts the exact receive crypto amount on the selected offer; the fiat equivalent under it is not asserted.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi.test.ts",
+                        "line": 163,
+                        "scenario": "Verify DEX details on the Confirm & send screen",
+                        "verification": "Asserts the send crypto amount and the fiat format of the network fee; the swap amounts' fiat equivalents are not asserted.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 1,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "incidental",
+                "rationale": "The Detox buy, sell and swap flows reach the preview screens where the fiat badge renders. They only check screen visibility, or tap continue directly, before moving on. Nothing checks the fiat value.",
+                "covered_intents": [
+                    "Open the buy, sell or swap preview where the fiat badge is rendered (incidental exposure only)"
+                ],
+                "gaps": [
+                    "No check of the CryptoToFiatValueBadge value on the buy, sell or swap preview cards",
+                    "No check of the empty badge when no fiat value is available, or of the swap receive skeleton during simulation"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingBuyFlow.test.ts",
+                        "line": 38,
+                        "scenario": "Basic buy for 100 PLN flow",
+                        "verification": "Checks only that the buy preview screen is visible, then taps continue.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingSellFlow.test.ts",
+                        "line": 110,
+                        "scenario": "Basic sell USDC for EUR",
+                        "verification": "Passes through the sell preview and taps continue to the provider; preview card amounts and fiat values are not asserted.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
+                        "line": 109,
+                        "scenario": "Swap flow to transaction signing",
+                        "verification": "Checks only that the exchange preview is visible, waits for fees and scrolls; preview card amounts and fiat values are not asserted.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The desktop manual trading procedures cover fiat inputs and currency switching in the forms. None tells the tester to check the fiat equivalent shown in the selected-offer review.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step verifies the fiat value under the quoted crypto amounts in the buy, sell or swap offer review"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The Android manual trading procedures mention filling fiat amount inputs in the forms. None checks the fiat badge on the preview cards.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step verifies the fiat badge beside the crypto amount on the Buy, Sell or Swap preview"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "trade.swap.source-asset-filter",
+            "desktop_automated": {
+                "score": 4,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "One web-only test directly checks the search outcome: searching 'USDC' in the Swap From picker shows the USDC token and hides the ETH account. Several active device swap tests apply the network filter, an account-label search, or both combined before selecting the source. None of them checks that other assets disappear, so the network filter outcome is unverified. This is a partial happy path.",
+                "covered_intents": [
+                    "Search the Swap source picker by token symbol and exclude non-matching account rows (web)",
+                    "Apply a network filter, an account-label search, or both combined before selecting the source (incidental)"
+                ],
+                "gaps": [
+                    "No check that the network filter hides other networks' accounts or that 'All networks' restores them",
+                    "No combined search plus network outcome check, no empty-result or clear-search check",
+                    "Direct search check is web-only and tagged @optional; no Electron desktop coverage"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/trading/swap-inputs.test.ts",
+                        "line": 124,
+                        "scenario": "Swap form inputs validation: Select sell asset USDC@ETH",
+                        "verification": "Opens the From picker, ETH option visible, searchAsset('USDC'), USDC token option visible and ETH option hidden, then selects USDC.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-fees-bitcoin.test.ts",
+                        "line": 45,
+                        "scenario": "Swap custom fees for Bitcoin: fill Swap form",
+                        "verification": "selectSellAsset filters by network 'btc' through the dropdown and clicks the BTC account; no assertion that the list was filtered.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-sol-token-to-eth.test.ts",
+                        "line": 47,
+                        "scenario": "Swap Solana token to ETH: fill Swap form",
+                        "verification": "Network filter 'sol' then clicks the SPL token row; incidental.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-dex-lifi-approval.test.ts",
+                        "line": 53,
+                        "scenario": "DEX swap approval (LI.FI): Select USDC to ETH LI.FI DEX offer",
+                        "verification": "selectSellAsset applies network filter 'eth' and search 'USDC' together, then clicks the ETH #3 USDC token row; no filtered-out assertion.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/trading/swap-sol-to-btc.test.ts",
+                        "line": 55,
+                        "scenario": "Swap SOL to BTC: fill Swap form",
+                        "verification": "Searches the From picker by account label 'Solana #4' and selects account index 3; fillSwapForm only asserts the resulting You pay symbol.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 2,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "incidental",
+                "rationale": "Android Detox swap tests type 'USD Coin' into the Your assets search. The DEX flow also chooses Ethereum in the network sheet before tapping USDC. The tests assert only the selected From symbol, not which assets the filters show or hide.",
+                "covered_intents": [
+                    "Search Your assets and pick a network in the network sheet while selecting the Swap source (incidental)"
+                ],
+                "gaps": [
+                    "No assertion that non-matching assets or other networks' sections are hidden",
+                    "No empty-state ('No assets found'), clear-search or 'All networks' reset check"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingDexExchangeFlow.test.ts",
+                        "line": 26,
+                        "scenario": "prepareDexExchangeForm (approval and revoke tests)",
+                        "verification": "selectSendAsset('USDC','Ethereum','USD Coin',0): replaceText search, taps the send-asset-screen network picker and the 'Ethereum' option, taps USDC; asserts asset-send-button/symbol is USDC.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite-native-app/app/e2e/tests/tradingExchangeFlow.test.ts",
+                        "line": 98,
+                        "scenario": "Basic exchange USDC to USDT",
+                        "verification": "selectSendAsset searches 'USD Coin' without a network and taps the USDC match; asserts only the selected symbol.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "desktop_manual": {
+                "score": 3,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "A manual Swap procedure has the tester confirm the search placeholder and the 'All networks' default. The tester then filters by a network and confirms that the list updates. The procedure does not describe search results or the expected filtered contents.",
+                "covered_intents": [
+                    "From picker shows 'Search coin or token' and 'All networks'",
+                    "Network filter updates the From asset list"
+                ],
+                "gaps": [
+                    "No search-text step or expected result",
+                    "No expected contents after filtering (other networks hidden), no reset or combined-filter step"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-buy-sell-swap-forms.test.ts",
+                        "line": 72,
+                        "scenario": "Swap form inputs and network filter",
+                        "verification": "Steps: open From picker, confirm 'Search coin or token' and 'All networks'; filter by a network and confirm the asset list updates.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/trading/trading-flow.test.ts",
+                        "line": 224,
+                        "scenario": "Classic SPL token Swap from Solana",
+                        "verification": "Open From picker, filter network to Solana and confirm the SPL token appears under Your assets; incidental to the swap flow.",
+                        "execution": "manual-procedure"
+                    }
+                ]
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The Android manual trading procedures only say 'Select token to swap from'. None of them exercises search or the network filter on the Your assets screen. searchAssets.test.ts covers the wallet My assets search, not the trading picker.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of narrowing the Swap Your assets screen by search text or network"
                 ],
                 "evidence": []
             }

@@ -140,8 +140,14 @@ export const preserveBaseline = (features: readonly JsonObject[]): JsonObject =>
     for (const feature of features) byId.set(getItem(feature, 'id'), feature);
     for (const [featureId, expected] of pyEntries(asObject(getItem(baseline, 'feature_hashes')))) {
         pyAssert(byId.has(featureId), ['Existing feature removed', featureId]);
-        // runtime_order is the derived tree position; ownership is curated in parts/team-ownership.json.
-        const excluded = ['test_coverage', 'runtime_order', 'ownership', 'ownership_by_platform'];
+        // runtime_order and current_is_leaf are derived from the tree; ownership is curated in parts/team-ownership.json.
+        const excluded = [
+            'test_coverage',
+            'runtime_order',
+            'current_is_leaf',
+            'ownership',
+            'ownership_by_platform',
+        ];
         const original = pyDict(
             pyEntries(byId.get(featureId) as JsonObject).filter(([key]) => !excluded.includes(key)),
         );

@@ -218,7 +218,18 @@
         "wallet.tokens.stellar.remove-contract",
         "wallet.sign-verify.clear",
         "wallet.tokens.stellar.fees",
-        "wallet.tokens.stellar.manual.contract-resolution"
+        "wallet.tokens.stellar.manual.contract-resolution",
+        "wallet.send.fees.adjusted-rate-notice",
+        "wallet.accounts.add.evm-after-empty",
+        "wallet.transactions.cancel-btc",
+        "labeling.remove",
+        "wallet.receive.qr-image-actions",
+        "wallet.send.network-safety.contract-recipient",
+        "wallet.transactions.details.copy-id",
+        "wallet.sign-verify.copy-inputs",
+        "wallet.send.form.recipient-warning",
+        "wallet.send.network-safety.xrp-reserve",
+        "wallet.transactions.details.internal-transfers"
     ],
     "files_reviewed": [
         "suite-native-app/app/e2e/jest.config.js",
@@ -15026,6 +15037,654 @@
                 "covered_intents": [],
                 "gaps": [
                     "Paste a Stellar asset contract ID to resolve its classic asset code and issuer; show an unknown-contract error if lookup fails."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.send.fees.adjusted-rate-notice",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Adjusted fee rate notice.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Adjusted fee rate notice user outcomes on this platform.",
+                    "The trading and ADA staking fee page object (suite/e2e/support/pageObjects/trading/feeSection.ts) reads the notice only to pick the effective fee rate; it does not assert the notice."
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "This feature is unavailable on this platform; no verification of an unsupported-state intent was found.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Adjusted fee rate notice user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Adjusted fee rate notice.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Adjusted fee rate notice user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "This feature is unavailable on this platform; no verification of an unsupported-state intent was found.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Adjusted fee rate notice user outcomes on this platform."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.accounts.add.evm-after-empty",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Add EVM account after an empty one.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Add EVM account after an empty one user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Add EVM account after an empty one.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Add EVM account after an empty one user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Add EVM account after an empty one.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Add EVM account after an empty one user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Add EVM account after an empty one.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Add EVM account after an empty one user outcomes on this platform."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.transactions.cancel-btc",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Cancel BTC transaction.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Cancel BTC transaction user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "This feature is unavailable on this platform; no verification of an unsupported-state intent was found.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Cancel BTC transaction user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Cancel BTC transaction.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Cancel BTC transaction user outcomes on this platform.",
+                    "suite/e2e/tests/manual/account/transactions.test.ts 'Speed up and cancel a pending transaction' runs the cancel step for ETH only."
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "This feature is unavailable on this platform; no verification of an unsupported-state intent was found.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Cancel BTC transaction user outcomes on this platform."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "labeling.remove",
+            "desktop_automated": {
+                "score": 6,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "Remove a label: Suite Sync E2E removes account, wallet, address and output labels, checks the restored default names for account, wallet and address in the UI and null values in the relay; the legacy account test checks that clearing restores the default name.",
+                "covered_intents": [
+                    "Remove account, wallet, address and output labels with Suite Sync",
+                    "Clear an account label with a legacy provider"
+                ],
+                "gaps": [
+                    "The output label removal is checked only in the relay, not in the UI",
+                    "Legacy-provider removal of address, output and wallet labels is not checked"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/metadata/suite-sync/update-and-remove-labels.test.ts",
+                        "line": 152,
+                        "scenario": "Update and remove labels syncs correctly to relay",
+                        "verification": "Removed account, wallet and address labels show default names; relay rows for account, wallet, address and output have null labels.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/metadata/legacy/account-metadata.test.ts",
+                        "line": 41,
+                        "scenario": "Edit label with Enter",
+                        "verification": "Clearing the account label restores the default account name.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "This feature is unavailable on this platform; no verification of an unsupported-state intent was found.",
+                "covered_intents": [],
+                "gaps": ["No verification of Remove a label user outcomes on this platform."],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Remove a label.",
+                "covered_intents": [],
+                "gaps": ["No verification of Remove a label user outcomes on this platform."],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "This feature is unavailable on this platform; no verification of an unsupported-state intent was found.",
+                "covered_intents": [],
+                "gaps": ["No verification of Remove a label user outcomes on this platform."],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.receive.qr-image-actions",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Desktop/web has no QR image share, save or copy actions; the receive QR there is only displayed and checked for its value.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Receive QR code image actions user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "The QR image actions exist only in the iOS .ios variants. On Android the unsuffixed ReceiveQRCodeCard only copies the address on long-press. No Detox test touches the QR context menu (tokenReceive.test.ts only checks the QR token icon).",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Receive QR code image actions user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Not available on desktop/web. suite/e2e/tests/manual/account/receive.test.ts only checks that the QR code is displayed.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Receive QR code image actions user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "Not available on Android. No native manual procedure covers sharing, saving or copying the QR image (generateANewBtcAddressAndCopyIt.test.ts only checks that the QR is visible and copies the address).",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Receive QR code image actions user outcomes on this platform."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.send.network-safety.contract-recipient",
+            "desktop_automated": {
+                "score": 5,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "Warn about contract recipients: an active no-device Playwright test enters the USDT contract on an Ethereum account, checks the exact TR_EVM_ADDRESS_IS_CONTRACT hint and 'I understand the risk' button, and checks that dismissing it hides the button. This is a basic complete happy path. Variants and what follows the dismissal are not checked.",
+                "covered_intents": [
+                    "Ethereum contract recipient shows the contract warning",
+                    "Acknowledging the risk dismisses the warning"
+                ],
+                "gaps": [
+                    "Tron contract recipient not automated",
+                    "No check that the form composes or can be reviewed after dismissal, or that the warning returns after changing the address",
+                    "Learn more link, ENS name resolving to a contract and lookup-failure/offline states not checked",
+                    "Tagged @optional, so PR runs skip it unless the file changes"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/wallet/send-address-validation.test.ts",
+                        "line": 91,
+                        "scenario": "User sees Ethereum checksum and contract warnings > Warn when sending to a contract, then dismiss it",
+                        "verification": "sendAddressHint contains TR_EVM_ADDRESS_IS_CONTRACT; hint button has TR_I_UNDERSTAND_THE_RISK; after click the button is hidden.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test enters a contract recipient or asserts the smart-contract alert; send.test.ts covers only the regtest Bitcoin flow and input errors.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of the smart-contract alert for Ethereum or Tron recipients"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 3,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "The manual Recipient address validation procedure has one step that enters a contract address on a Tron account and confirms that a contract warning appears. It covers only the Tron variant that the automated test misses, with no expected text, acknowledgement or later outcome.",
+                "covered_intents": ["Tron contract recipient shows a warning"],
+                "gaps": [
+                    "No acknowledgement/dismissal or continuation step",
+                    "No expected wording or Learn more check",
+                    "Ethereum is delegated to the automated test"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/manual/account/send.test.ts",
+                        "line": 51,
+                        "scenario": "Recipient address validation",
+                        "verification": "On a Tron account, enter a contract address and confirm a warning about sending to a contract is shown.",
+                        "execution": "manual-procedure"
+                    }
+                ]
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The ETH, TRX, BNB and POL manual send checklists do not mention contract recipients or the smart-contract alert.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual procedure for the smart-contract alert on Ethereum-family or Tron accounts"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.transactions.details.copy-id",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test clicks the Tx ID tooltip copy button or reads the clipboard for a txid; pending-transactions.test.ts only reads the @tx-detail/txid-value text, which is not copy verification.",
+                "covered_intents": [],
+                "gaps": [
+                    "Copy icon in the Tx ID tooltip never clicked",
+                    "Clipboard content equal to full txid and copy toast not verified"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test opens the Parameters sheet or triggers the Transaction ID copy button or long-press.",
+                "covered_intents": [],
+                "gaps": [
+                    "Parameters sheet copy button and long-press copy not exercised",
+                    "'Transaction ID copied' toast and clipboard content not verified"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The manual transaction detail procedure only asks to confirm the txid value is correct; it has no step to copy the txid or check clipboard/toast.",
+                "covered_intents": [],
+                "gaps": ["No manual step to copy the txid from the tooltip and paste/compare it"],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The manual transaction detail checklist opens the parameters sheet and verifies the txid is correct but never copies it.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step to copy the Transaction ID (button or long-press) and verify clipboard contents or toast"
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.sign-verify.copy-inputs",
+            "desktop_automated": {
+                "score": 5,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "The BTC standard-format signing E2E clicks copy-address and copy-message and checks the exact clipboard text plus the copy toast. After Clear it checks that both copy buttons are hidden. Copying after a successful verification is never exercised, so only the signing half of the intent is covered.",
+                "covered_intents": [
+                    "Copy the address after signing (exact clipboard value and toast)",
+                    "Copy the message after signing (exact clipboard value)",
+                    "Copy buttons disappear after Clear"
+                ],
+                "gaps": [
+                    "No copy of the address or message after a successful verification",
+                    "No check that copy buttons are absent after a failed verification",
+                    "No ETH, Cardano or hex-message copy variants"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/wallet/sign-and-verify.test.ts",
+                        "line": 82,
+                        "scenario": "Signs message with standard Bitcoin signature format",
+                        "verification": "copy-address puts the exact ADDRESS on the clipboard and the @toast/copy-to-clipboard toast is visible; copy-message puts the exact MESSAGE on the clipboard; after Clear, copy-address and copy-message are hidden (line 100).",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test opens the native Sign & Verify screen or uses its copy buttons.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of copying the address or message after signing or verification on Android"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The manual Sign & Verify procedure checks only that the signature can be copied. It never asks the tester to copy the message or address.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step to copy the message or address after signing or verification"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No native manual procedure covers Sign & Verify.",
+                "covered_intents": [],
+                "gaps": ["No manual procedure to copy the message or address on Android"],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.send.form.recipient-warning",
+            "desktop_automated": {
+                "score": 3,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "Warn about a new or lookalike recipient: one active Playwright test asserts the exact new-recipient warning text, but only as a side check of ENS resolution; the possible-poisoning (lookalike/phishing-only) variant, which is the main safety intent, has no E2E check. Partial happy path.",
+                "covered_intents": [
+                    "New-recipient warning text shown under the recipient field after ENS forward resolution on a mocked ETH account"
+                ],
+                "gaps": [
+                    "Lookalike / address-poisoning critical warning and its Learn more link not exercised",
+                    "Phishing-only counterparty warning not exercised",
+                    "Priority of poisoning over new-recipient and suppression for previously paid, own-account or invalid addresses not checked",
+                    "Tron accounts and unsupported networks (no warning) not checked"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/wallet/send-ens.test.ts",
+                        "line": 66,
+                        "scenario": "User can resolve an ENS name to a recipient address",
+                        "verification": "After filling vitalik.eth on a mocked ETH account, asserts the resolved-address hint and that @send/address/recipient-history-note has exact TR_ADDRESS_NEW_RECIPIENT translation.",
+                        "execution": "active"
+                    },
+                    {
+                        "path": "suite/e2e/tests/wallet/send-ens.test.ts",
+                        "line": 139,
+                        "scenario": "User can see the primary ENS name of a recipient address",
+                        "verification": "Typing a hex address asserts the reverse ENS hint and exact TR_ADDRESS_NEW_RECIPIENT note; tagged @optional, so PR configs exclude it unless the file is edited.",
+                        "execution": "not-selected"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "The mobile send flow has no recipient-history warning, so there is nothing to verify on Android.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of New or lookalike recipient warning user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No manual procedure in suite/e2e/tests/manual mentions the new-recipient or possible-poisoning warning.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual check of the new-recipient warning",
+                    "No manual check of the lookalike / address-poisoning warning with a poisoned history"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "The mobile send flow has no recipient-history warning, so there is nothing to verify on Android.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of New or lookalike recipient warning user outcomes on this platform."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.send.network-safety.xrp-reserve",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test in suite/e2e/tests sends from an XRP or Stellar account or asserts AMOUNT_IS_MORE_THAN_RESERVE. XRP and XLM appear only in discovery, coin-settings, receive and swap tests. Only a co-located unit test covers the shared validation logic.",
+                "covered_intents": [],
+                "gaps": [
+                    "No E2E check that an amount between the available and total XRP balance shows the reserve message with the correct reserve value",
+                    "No check that amounts at or above the total balance show the generic not-enough message instead"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "unknown",
+                "basis": "none",
+                "rationale": "No Detox test exercises an XRP send amount; importAltcoinAccount only imports an XRP tracker account. Whether the reserve message is visible on mobile is itself doubtful, because the generic balance error is reported first.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of the XRP reserve message, or of which amount error the mobile send form displays for an XRP account"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No manual procedure verifies the sender's unspendable reserve message. The 'Recipient address validation' step at suite/e2e/tests/manual/account/send.test.ts:52 covers the reserve needed to fund a new, unfunded XRP/XLM recipient. That is a different validation and does not count as evidence for this feature.",
+                "covered_intents": [],
+                "gaps": [
+                    "No step that enters an amount above the available balance but below the total balance on an XRP account and checks the reserve message and its value",
+                    "No step that confirms an amount at or above the total balance shows the generic not-enough message"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "unknown",
+                "basis": "none",
+                "rationale": "No native manual procedure covers XRP sends. networkReserves.test.ts covers the optional network reserve setting for Base, Optimism and SOL, which is a different feature.",
+                "covered_intents": [],
+                "gaps": ["No manual procedure for the XRP account reserve when sending on Android"],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet.transactions.details.internal-transfers",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test or page-object helper references internal transfers, the 'Internal Transfers' heading or the Inputs & outputs tab content; no feature-specific verification found.",
+                "covered_intents": [],
+                "gaps": [
+                    "No automated check that internal transfers appear in history or in the Inputs & outputs tab with from, to and amount",
+                    "Instant-stake filtering and Solana internal transfers unverified"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test opens the Inputs & outputs sheet or checks the Internal transfers group; e2e fixtures only contain empty internalTransfers arrays.",
+                "covered_intents": [],
+                "gaps": [
+                    "No automated check of the Internal transfers group in the mobile Inputs & outputs sheet",
+                    "No check of internal targets in mobile history rows"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 2,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "direct",
+                "rationale": "The manual transaction-detail procedure names an internal transaction as a prerequisite and asks to confirm internal transactions are displayed, but gives no expected sender, recipient or amount, no network or history-row check: a narrow presence check.",
+                "covered_intents": [
+                    "Internal transfers are displayed in the transaction detail of an EVM transaction"
+                ],
+                "gaps": [
+                    "No check of from, to and amount values",
+                    "History row internal amount not checked",
+                    "Solana internal transfers and instant-stake filtering not covered"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/manual/account/transactions.test.ts",
+                        "line": 75,
+                        "scenario": "Transaction detail",
+                        "verification": "For an EVM transaction with internal transfers, confirm internal transactions are displayed (prerequisite at line 66 requires an internal transaction).",
+                        "execution": "manual-procedure"
+                    }
+                ]
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The mobile manual procedures only generically ask to verify that the Inputs & outputs sheet lists all addresses and amounts on a seed with history; they do not require an EVM/Solana transaction with internal transfers or mention the Internal transfers group.",
+                "covered_intents": [],
+                "gaps": [
+                    "No manual step for the Internal transfers group in the Inputs & outputs sheet",
+                    "No prerequisite transaction with internal transfers"
                 ],
                 "evidence": []
             }

@@ -1,33 +1,33 @@
 {
-    "features": 601,
-    "leaf_features": 503,
+    "features": 623,
+    "leaf_features": 524,
     "root_areas": 22,
-    "max_depth": 3,
-    "raw_inventory_nodes": 828,
+    "max_depth": 4,
+    "raw_inventory_nodes": 850,
     "explicit_equivalences": 228,
-    "unique_evidence_files": 1292,
+    "unique_evidence_files": 1405,
     "screenshots": {
-        "not-captured": 598,
+        "not-captured": 620,
         "existing-historical": 3
     },
     "platforms": {
         "desktop": {
             "yes": 105,
-            "no": 28,
-            "conditional": 467,
+            "no": 29,
+            "conditional": 488,
             "unknown": 1
         },
         "web": {
             "yes": 92,
-            "no": 60,
-            "conditional": 448,
+            "no": 62,
+            "conditional": 468,
             "unknown": 1
         },
         "mobile": {
             "yes": 96,
-            "conditional": 346,
-            "no": 154,
-            "unknown": 5
+            "conditional": 361,
+            "no": 160,
+            "unknown": 6
         }
     },
     "manual_test_files": 148,
@@ -42,13 +42,13 @@
     },
     "desktop_routes": 68,
     "enumerated_screens_and_navigators": 341,
-    "runtime_observations": 238,
-    "runtime_observed_features": 271,
-    "runtime_captured_screenshots": 238,
-    "runtime_features_with_captures": 313,
-    "runtime_features_with_current_captures": 306,
+    "runtime_observations": 251,
+    "runtime_observed_features": 284,
+    "runtime_captured_screenshots": 251,
+    "runtime_features_with_captures": 326,
+    "runtime_features_with_current_captures": 319,
     "runtime_new_features": 9,
-    "source_added_features": 5,
-    "test_quality_assessed_features": 601,
-    "test_quality_assessment_count": 2404
+    "source_added_features": 27,
+    "test_quality_assessed_features": 623,
+    "test_quality_assessment_count": 2492
 }

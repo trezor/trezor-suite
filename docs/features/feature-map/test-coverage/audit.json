@@ -1,7 +1,7 @@
 {
     "axes": ["desktop_automated", "android_automated", "desktop_manual", "android_manual"],
-    "features_assessed": 601,
-    "assessment_count": 2404,
+    "features_assessed": 623,
+    "assessment_count": 2492,
     "methodology": "test-coverage/README.md",
     "rubric": {
         "axes": ["desktop_automated", "android_automated", "desktop_manual", "android_manual"],
@@ -38,8 +38,8 @@
     "partitions": [
         {
             "path": "test-coverage/assessment-administration.json",
-            "features": 227,
-            "sha256": "2b77a3e5bef7cc8cbec31126a6fa6a6b1b9fc463c8a9a2ce2d19080b416bcbc8",
+            "features": 230,
+            "sha256": "a9cbcdb277af9c1a11590ca4828f0e668e556090b0cef8376ef1f65035e35df3",
             "limitations": [
                 "Source-quality review only: no automated tests, app/device flows or manual procedures were executed.",
                 "Desktop scores include computer web/Electron scenarios; evidence notes web-only, desktop-only and mocked-provider limitations. Optional model-tagged tests have differing PR/nightly selection and do not imply every scenario runs on every change.",
@@ -51,8 +51,8 @@
         },
         {
             "path": "test-coverage/assessment-wallet.json",
-            "features": 218,
-            "sha256": "84d97155651d4033f2e64d4ffa97e21db838a60cc52d9fb79a7d1e67f1d490c6",
+            "features": 229,
+            "sha256": "1abcbaaf1a2ce86a2859a9dc6b893470538185fed519d1bfcd05343ad7001304",
             "limitations": [
                 "Source-quality assessment only: no application, emulator, automated suite or manual procedure was executed. Scores assess checked intents, not passing rate, flakiness or runtime availability.",
                 "Desktop includes shared computer web/Electron behavior. Web-only CSV/download/BIP329/legacy-label scenarios and Electron-only pending-mining scenarios are identified in evidence. Optional model/network cases count as maintained executable coverage but are not guaranteed on every PR run.",
@@ -65,8 +65,8 @@
         },
         {
             "path": "test-coverage/assessment-services.json",
-            "features": 156,
-            "sha256": "a3f839582955bbc23c11dce540d7ed1b364bfa91747556bb66adf6c462ff595c",
+            "features": 164,
+            "sha256": "aa2ca62c0ef83b60e2a43bb5e4b1f713593a8b166fc107eacabae6ae6640ad7f",
             "limitations": [
                 "Static source-quality review only; no tests executed. Scores do not measure pass rate, stability or execution recency.",
                 "Desktop combines computer web/Electron. Yield/TRX and some trading/history scenarios are webOnly; SDK permission scenarios desktopOnly. Scores do not imply every project runs all checks.",
@@ -362,6 +362,9 @@
         "suite/e2e/tests/trezor-connect/getAddress.test.ts": "75c60fc416b553653ee962ca5b42de17cfe7537a6176450e748cf70703663434",
         "suite/e2e/tests/analytics/wallet-connect-events.test.ts": "e7f1271b05b5de01eb7d33f474a2733d8eec0cd92506db6829d86d48afdef0a2",
         "suite/e2e/tests/manual/connect/wallet-connect-evm-uniswap.test.ts": "e4a7e27d77d55fb497bef97886b2cd930a4e9e47b1228bf228655f594fb7b321",
+        "suite/e2e/tests/trading/swap-fees-bitcoin.test.ts": "00ebd0778c5a0b3ebf6e472c41db40abb519be49edec4600a2ba4c706295c132",
+        "suite/e2e/tests/trading/swap-sol-token-to-eth.test.ts": "8a2ecbcead6ad4b54c0fe60bd62bac7b6c270ceebe946b36521e3fa46a79b510",
+        "suite/e2e/tests/trading/swap-sol-to-btc.test.ts": "5111fa66bf921d35a3acdfb83d6e875d250d2ba6ad66449eeeb152670554e12e",
         ".github/workflows/template-suite-run-e2e.yml": "1257866fc2a237fbb300900e623c40362855d734e8a1ba0c32dbe4d18f7b644e",
         "suite-native-app/AGENTS.md": "9fa6dde0544efc90e43a2ebf4cdfb91f0552ed5be346e7b1be6c8d715e0bf577",
         "suite-native-app/app/e2e/jest.config.js": "c14f80b64b379e968d3ac9c17ffb946a70f32f751d9c1e00fd068057c8e9f4d0",
@@ -451,9 +454,6 @@
         "suite/e2e/tests/trading/sell-solana.test.ts": "5b2d78bdcb4dd2842986f44925f8d2e74e510812da1e91228eb29b43bd05ed06",
         "suite/e2e/tests/trading/swap-eth-to-sol.test.ts": "b0aa0144bc22c936eb0ccea2a1b9b81ab32dc4f14eb2bcd095a4f34d647b7fce",
         "suite/e2e/tests/trading/swap-eth-token-to-sol-token.test.ts": "4367a1cffb02fc257ffaf3c21cedc2049491ba7012a4ba1a4b480f8610274553",
-        "suite/e2e/tests/trading/swap-fees-bitcoin.test.ts": "00ebd0778c5a0b3ebf6e472c41db40abb519be49edec4600a2ba4c706295c132",
-        "suite/e2e/tests/trading/swap-sol-to-btc.test.ts": "5111fa66bf921d35a3acdfb83d6e875d250d2ba6ad66449eeeb152670554e12e",
-        "suite/e2e/tests/trading/swap-sol-token-to-eth.test.ts": "8a2ecbcead6ad4b54c0fe60bd62bac7b6c270ceebe946b36521e3fa46a79b510",
         "suite/e2e/tests/trezor-connect/connectPopupWeb.test.ts": "5637134cf7a000d7478dd5e42cc86804ae19c66a080254a386b0038e030b35aa",
         "suite/e2e/tests/trezor-connect/connectPopupWebextension.test.ts": "76310d447072527d60d0ac9fada3cdae85395202ae8f5174bbcbc5f97b4de8a9",
         "suite/e2e/tests/trezor-connect/error.test.ts": "4071d8d4a734764de04b53fe29b85585f136ef9c3fc8a792591892aeaa8deb30",
@@ -471,13 +471,13 @@
     "statistics": {
         "desktop_automated": {
             "distribution": {
-                "0": 255,
-                "1": 5,
+                "0": 269,
+                "1": 7,
                 "2": 9,
-                "3": 19,
-                "4": 27,
-                "5": 50,
-                "6": 88,
+                "3": 20,
+                "4": 28,
+                "5": 53,
+                "6": 89,
                 "7": 105,
                 "8": 43,
                 "9": 0,
@@ -487,9 +487,9 @@
         },
         "android_automated": {
             "distribution": {
-                "0": 485,
-                "1": 5,
-                "2": 17,
+                "0": 504,
+                "1": 7,
+                "2": 18,
                 "3": 8,
                 "4": 18,
                 "5": 38,
@@ -503,10 +503,10 @@
         },
         "desktop_manual": {
             "distribution": {
-                "0": 320,
+                "0": 339,
                 "1": 3,
-                "2": 6,
-                "3": 8,
+                "2": 7,
+                "3": 10,
                 "4": 8,
                 "5": 52,
                 "6": 92,
@@ -519,7 +519,7 @@
         },
         "android_manual": {
             "distribution": {
-                "0": 376,
+                "0": 398,
                 "1": 0,
                 "2": 5,
                 "3": 16,

@@ -4,7 +4,7 @@ This supplement adds direct application observations to the original source inve
 
 The [audit outcome](./report.md) summarizes the current additions, platform evidence and remaining limits. Machine-readable totals are in [summary.json](../summary.json).
 
-The [offline explorer](../index.html) shows current captures in each feature's detail. The [observation manifest](../parts/runtime-observations.json) records the navigation, platform, internal device model, firmware, conditions, capture timestamp, and screenshot associations. An observation proves the described screen or interaction only; it does not mean every descendant, transaction, provider, or device variant was exercised. Explicit errata preserve an original evidence record while showing its correction and excluding the superseded claim from coverage totals.
+The [offline explorer](../index.html) shows current captures in each feature's detail. The [observation manifest](../parts/runtime-observations.json) records the navigation, platform, internal device model, firmware, conditions, capture timestamp, and screenshot associations. Later captures, such as the 2026 release-note additions, are kept in the [runtime supplement](../parts/runtime-supplement.json); the builder appends them to the pinned manifest, which stays byte-identical. An observation proves the described screen or interaction only; it does not mean every descendant, transaction, provider, or device variant was exercised. Explicit errata preserve an original evidence record while showing its correction and excluding the superseded claim from coverage totals.
 
 ## Environment and fixture interpretation
 

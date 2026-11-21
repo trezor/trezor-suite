@@ -432,6 +432,7 @@
                 "wallet.send.form.multi-recipient",
                 "wallet.send.network-safety",
                 "wallet.send.network-safety.cardano",
+                "wallet.send.network-safety.contract-recipient",
                 "wallet.send.review.outputs",
                 "wallet.send.review.signed-raw",
                 "wallet.send.review.solana-expiry"
@@ -450,6 +451,7 @@
                 "wallet.sign-verify",
                 "wallet.sign-verify.address",
                 "wallet.sign-verify.copy",
+                "wallet.sign-verify.copy-inputs",
                 "wallet.sign-verify.cose",
                 "wallet.sign-verify.format",
                 "wallet.sign-verify.hex",
@@ -507,9 +509,11 @@
                 "wallet.transactions.details",
                 "wallet.transactions.details.amount",
                 "wallet.transactions.details.chained",
+                "wallet.transactions.details.copy-id",
                 "wallet.transactions.details.data",
                 "wallet.transactions.details.explorer",
                 "wallet.transactions.details.inputs-outputs",
+                "wallet.transactions.details.internal-transfers",
                 "wallet.transactions.details.status",
                 "wallet.transactions.export",
                 "wallet.transactions.export.csv",
@@ -959,7 +963,8 @@
                 "earn.staking.trx.allocation",
                 "earn.staking.trx.representative",
                 "earn.staking.trx.resource",
-                "earn.staking.trx.resources"
+                "earn.staking.trx.resources",
+                "earn.staking.trx.transactions"
             ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
@@ -1284,7 +1289,8 @@
                 "trade.sell.payout-currency",
                 "trade.sell.residence",
                 "trade.swap.amount",
-                "trade.swap.pair"
+                "trade.swap.pair",
+                "trade.swap.source-asset-filter"
             ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
@@ -1694,6 +1700,7 @@
             "titles": ["Update and remove labels syncs correctly to relay"],
             "streams": ["Wallet"],
             "feature_ids": [
+                "labeling.remove",
                 "labeling.suite-sync",
                 "wallet-access.rename",
                 "wallet.accounts.rename",
@@ -2083,7 +2090,10 @@
             "kind": "automated-e2e",
             "titles": ["Electrum completes discovery successfully"],
             "streams": ["Network"],
-            "feature_ids": ["network-settings.backends.electrum"],
+            "feature_ids": [
+                "network-settings.backends.electrum",
+                "network-settings.backends.electrum-onion"
+            ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -2361,7 +2371,7 @@
             "kind": "automated-e2e",
             "titles": ["Claim Tron voting rewards"],
             "streams": ["Earn"],
-            "feature_ids": ["earn.staking.trx.claim"],
+            "feature_ids": ["earn.staking.trx.claim", "earn.staking.trx.transactions"],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -2536,7 +2546,8 @@
                 "trade.buy.network-filter",
                 "trade.buy.payment-method",
                 "trade.buy.provider",
-                "trade.buy.state"
+                "trade.buy.state",
+                "trade.preview-fiat-value"
             ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
@@ -2701,6 +2712,7 @@
                 "trade.swap.clear-signing",
                 "trade.swap.dex",
                 "trade.swap.minimum-received",
+                "trade.swap.simulation",
                 "trade.swap.slippage"
             ],
             "status": "mapped",
@@ -2745,7 +2757,7 @@
             "kind": "automated-e2e",
             "titles": ["Swap custom fees for Bitcoin"],
             "streams": ["Trade"],
-            "feature_ids": ["trade.swap.network-fee"],
+            "feature_ids": ["trade.swap.network-fee", "trade.swap.source-asset-filter"],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -2787,7 +2799,12 @@
             "kind": "automated-e2e",
             "titles": ["Swap form inputs validation"],
             "streams": ["Trade"],
-            "feature_ids": ["trade.swap", "trade.swap.pair", "trade.swap.reverse-pair"],
+            "feature_ids": [
+                "trade.swap",
+                "trade.swap.pair",
+                "trade.swap.reverse-pair",
+                "trade.swap.source-asset-filter"
+            ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -2803,6 +2820,7 @@
                 "trade.receive.utxo-address",
                 "trade.swap.cex",
                 "trade.swap.pair",
+                "trade.swap.source-asset-filter",
                 "trade.swap.status"
             ],
             "status": "mapped",
@@ -3246,7 +3264,10 @@
                 "User sees a Solana token-account warning, and a wallet address stays clear"
             ],
             "streams": ["Wallet"],
-            "feature_ids": ["wallet.send.form.recipient"],
+            "feature_ids": [
+                "wallet.send.form.recipient",
+                "wallet.send.network-safety.contract-recipient"
+            ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -3276,7 +3297,7 @@
                 "User can see the primary ENS name of a recipient address"
             ],
             "streams": ["Wallet"],
-            "feature_ids": ["wallet.send.form.ens"],
+            "feature_ids": ["wallet.send.form.ens", "wallet.send.form.recipient-warning"],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -3370,6 +3391,7 @@
             "feature_ids": [
                 "wallet.sign-verify.address",
                 "wallet.sign-verify.copy",
+                "wallet.sign-verify.copy-inputs",
                 "wallet.sign-verify.format",
                 "wallet.sign-verify.sign",
                 "wallet.sign-verify.verify"
@@ -4661,6 +4683,7 @@
                 "wallet.transactions",
                 "wallet.transactions.details",
                 "wallet.transactions.details.amount",
+                "wallet.transactions.details.copy-id",
                 "wallet.transactions.details.explorer",
                 "wallet.transactions.details.inputs-outputs",
                 "wallet.transactions.details.status",
@@ -4849,7 +4872,7 @@
             "kind": "automated-e2e",
             "titles": ["Basic buy for 100 PLN flow"],
             "streams": [],
-            "feature_ids": ["trade.buy", "trade.history"],
+            "feature_ids": ["trade.buy", "trade.history", "trade.preview-fiat-value"],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -4877,7 +4900,11 @@
                 "signs revoke transaction for DEX quote with existing allowance and stops before sending"
             ],
             "streams": [],
-            "feature_ids": ["trade.swap.approval", "trade.swap.revoke"],
+            "feature_ids": [
+                "trade.swap.approval",
+                "trade.swap.revoke",
+                "trade.swap.source-asset-filter"
+            ],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -4907,7 +4934,7 @@
                 "Basic sell USDC for EUR"
             ],
             "streams": [],
-            "feature_ids": ["trade.sell"],
+            "feature_ids": ["trade.form-resume", "trade.sell"],
             "status": "mapped",
             "reason": "Linked intended scenarios; not an execution result.",
             "declares_skipped_container": false
@@ -5917,6 +5944,7 @@
             "path": "suite-app/app/src/pages/SettingsCoinsPage.tsx",
             "feature_ids": [
                 "network-settings",
+                "network-settings.backends.electrum-onion",
                 "network-settings.discover",
                 "network-settings.enable",
                 "network-settings.search"
@@ -5983,7 +6011,7 @@
         },
         {
             "path": "suite-app/app/src/pages/TradingExchangeConfirmPage.tsx",
-            "feature_ids": ["trade.swap.clear-signing"],
+            "feature_ids": ["trade.swap.clear-signing", "trade.swap.simulation"],
             "status": "direct-evidence"
         },
         {
@@ -6048,7 +6076,7 @@
         },
         {
             "path": "suite-app/app/src/pages/WalletStakingPage.tsx",
-            "feature_ids": ["earn.staking"],
+            "feature_ids": ["earn.staking", "earn.staking.trx.transactions"],
             "status": "direct-evidence"
         },
         {
@@ -6207,7 +6235,8 @@
                 "earn.staking.eth",
                 "earn.staking.eth.transactions",
                 "earn.staking.sol",
-                "earn.staking.trx"
+                "earn.staking.trx",
+                "earn.staking.trx.transactions"
             ],
             "status": "direct-evidence"
         },
@@ -6593,6 +6622,7 @@
                 "wallet.accounts.details",
                 "wallet.accounts.details.nonce",
                 "wallet.accounts.details.type",
+                "wallet.sign-verify.copy-inputs",
                 "wallet.transactions.export",
                 "wallet.transactions.export.csv",
                 "wallet.transactions.export.json",
@@ -9950,7 +9980,8 @@
                 "mobile.trade.swap.preview",
                 "trade.swap.cex",
                 "trade.swap.dex",
-                "trade.swap.refresh"
+                "trade.swap.refresh",
+                "trade.swap.simulation"
             ],
             "status": "direct-evidence"
         },
@@ -9976,13 +10007,13 @@
         },
         {
             "path": "suite-native-app/module-trading/src/screens/TradingHistoryScreen.tsx",
-            "feature_ids": ["trade.history", "trade.history.export"],
+            "feature_ids": ["trade.history", "trade.history.export", "trade.history.rate"],
             "status": "direct-evidence"
         },
         {
             "path": "suite-native-app/module-trading/src/screens/TradingMyAssetScreen.tsx",
-            "feature_ids": [],
-            "status": "enumerated-only"
+            "feature_ids": ["trade.swap.source-asset-filter"],
+            "status": "direct-evidence"
         },
         {
             "path": "suite-native-app/module-trading/src/screens/TradingReceiveAccountsPickerScreen.tsx",

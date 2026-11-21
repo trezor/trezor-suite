@@ -323,6 +323,7 @@ export const projectFeature = (
         conditions: orObj(get(feature, 'conditions_by_platform')),
         ownership,
         team: req(ownership, 'team'),
+        backend_team: req(ownership, 'backend_team'),
         roots: orList(get(feature, 'roots')).map(value => {
             const r = value as JsonObject;
 
@@ -376,7 +377,6 @@ export const projectFeature = (
         parity: orList(get(feature, 'parity_audit')).map(item =>
             pick(item as JsonObject, ['platform', 'status', 'reason']),
         ),
-        runtime_added: truthy(get(feature, 'runtime_added')),
         coverage,
         evidence: [...merged.values()],
     };

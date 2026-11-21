@@ -217,7 +217,18 @@
         "wallet.tokens.stellar.remove-contract",
         "wallet.sign-verify.clear",
         "wallet.tokens.stellar.fees",
-        "wallet.tokens.stellar.manual.contract-resolution"
+        "wallet.tokens.stellar.manual.contract-resolution",
+        "wallet.send.fees.adjusted-rate-notice",
+        "wallet.accounts.add.evm-after-empty",
+        "wallet.transactions.cancel-btc",
+        "labeling.remove",
+        "wallet.receive.qr-image-actions",
+        "wallet.send.network-safety.contract-recipient",
+        "wallet.transactions.details.copy-id",
+        "wallet.sign-verify.copy-inputs",
+        "wallet.send.form.recipient-warning",
+        "wallet.send.network-safety.xrp-reserve",
+        "wallet.transactions.details.internal-transfers"
     ],
     "features": [
         {

@@ -64,7 +64,7 @@
                         "minLength": 1
                     },
                     "level": {
-                        "enum": ["area", "feature", "option"]
+                        "enum": ["area", "feature", "intent"]
                     },
                     "platforms": {
                         "type": "object",
@@ -180,10 +180,18 @@
                     },
                     "ownership": {
                         "type": "object",
-                        "required": ["team", "confidence", "basis", "source_paths"],
+                        "required": ["team", "backend_team", "confidence", "basis", "source_paths"],
                         "properties": {
                             "team": {
+                                "description": "Frontend owner.",
                                 "enum": ["Connect", "Earn", "Growth", "Network", "Trade", "Wallet"]
+                            },
+                            "backend_team": {
+                                "description": "Backend owner; equals team unless team-ownership.json splits them.",
+                                "enum": ["Connect", "Earn", "Growth", "Network", "Trade", "Wallet"]
+                            },
+                            "backend_basis": {
+                                "type": ["string", "null"]
                             },
                             "confidence": {
                                 "enum": ["codeowners", "inferred", "agreed", "unknown"]

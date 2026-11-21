@@ -227,7 +227,10 @@
         "app-settings.application.service-messages.banner",
         "app-settings.application.service-messages.context",
         "app-settings.application.service-messages.debug",
-        "connection.legacy-bridge-deprecated"
+        "connection.legacy-bridge-deprecated",
+        "connection.firmware-required",
+        "wallet-access.hidden.caps-lock",
+        "network-settings.backends.electrum-onion"
     ],
     "files_reviewed": [
         ".github/workflows/template-suite-run-e2e.yml",
@@ -14597,6 +14600,191 @@
                     "No verification of Legacy Bridge deprecation notice user outcomes on this platform."
                 ],
                 "evidence": []
+            }
+        },
+        {
+            "feature_id": "connection.firmware-required",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Required firmware update.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Required firmware update user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Required firmware update.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Required firmware update user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Required firmware update.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Required firmware update user outcomes on this platform."
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "medium",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No active feature-specific assertions were found for Required firmware update.",
+                "covered_intents": [],
+                "gaps": [
+                    "No verification of Required firmware update user outcomes on this platform."
+                ],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "wallet-access.hidden.caps-lock",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "Desktop/web E2E tests fill the passphrase input (dashboardPage.ts passphraseInput) only to open hidden wallets. No test toggles Caps Lock or checks the TR_PASSPHRASE_CAPS_LOCK_ON note; a case-insensitive 'caps' search of suite/e2e finds nothing.",
+                "covered_intents": [],
+                "gaps": [
+                    "No check that the note appears with Caps Lock on and disappears on blur or when Caps Lock is turned off",
+                    "No check that the note is hidden while a too-long or non-ASCII error is shown"
+                ],
+                "evidence": []
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "The feature does not exist in the native app, and no test checks the unsupported state.",
+                "covered_intents": [],
+                "gaps": ["Not applicable on Android"],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No manual procedure in suite/e2e/tests/manual mentions Caps Lock or the passphrase Caps Lock note.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written procedure to verify the Caps Lock note during passphrase entry"
+                ],
+                "evidence": []
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "not-supported",
+                "basis": "none",
+                "rationale": "The feature does not exist in the native app, and no manual procedure covers it.",
+                "covered_intents": [],
+                "gaps": ["Not applicable on Android"],
+                "evidence": []
+            }
+        },
+        {
+            "feature_id": "network-settings.backends.electrum-onion",
+            "desktop_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Playwright test enters an onion backend address or exercises the TorModal or disable-tor reset. The only Electrum E2E (settings/electrum.test.ts) connects to a clearnet regtest server and does not involve Tor.",
+                "covered_intents": [],
+                "gaps": [
+                    "Onion Electrum URL accepted and connected through Tor",
+                    "TorModal shown on Confirm with Tor off and onion-only URLs ('Enable Tor and confirm' and 'Use default backends' outcomes)",
+                    "Disabling Tor resets onion-only backends via the disable-tor modal",
+                    "Mixed onion and clearnet URLs saved without the Tor prompt"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/settings/electrum.test.ts",
+                        "line": 37,
+                        "scenario": "Electrum completes discovery successfully",
+                        "verification": "Clearnet regtest Electrum (127.0.0.1:50001:t); checks the account balance and fiat amount. No onion or Tor involvement, so it does not count for this intent.",
+                        "execution": "active"
+                    }
+                ]
+            },
+            "android_automated": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "No Detox test opens the network backends screen or enters an Electrum or onion address.",
+                "covered_intents": [],
+                "gaps": [
+                    "Onion Electrum address connects through Orbot",
+                    "Tor-specific 'make sure Orbot is running' error on connection failure"
+                ],
+                "evidence": []
+            },
+            "desktop_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The manual 'Custom backend' procedure is generic (Blockbook example) and has no onion or Tor step. The manual Tor discovery procedure toggles Tor but does not configure an onion backend. Neither verifies this intent.",
+                "covered_intents": [],
+                "gaps": [
+                    "No written procedure for entering an onion Electrum server, the TorModal prompt, a successful connection over Tor, or the onion-backend reset when disabling Tor"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite/e2e/tests/manual/settings/networks-settings.test.ts",
+                        "line": 8,
+                        "scenario": "Custom backend",
+                        "verification": "Generic custom backend URL with no onion address or Tor step. Not evidence for this intent.",
+                        "execution": "manual-procedure"
+                    },
+                    {
+                        "path": "suite/e2e/tests/manual/tor-discovery.test.ts",
+                        "line": 8,
+                        "scenario": "Check discovery with Tor ON",
+                        "verification": "Tor toggle and discovery with default backends only; no onion backend.",
+                        "execution": "manual-procedure"
+                    }
+                ]
+            },
+            "android_manual": {
+                "score": 0,
+                "confidence": "high",
+                "applicability": "conditional",
+                "basis": "none",
+                "rationale": "The manual 'Custom Electrum and RPC backends' procedure covers a clearnet-style Electrum URL (host:port:s|t). It does not mention onion addresses, Orbot or the Tor-specific error, so it gives no verification of this intent.",
+                "covered_intents": [],
+                "gaps": [
+                    "No procedure for an onion Electrum address with Orbot running, or for the Orbot error when Tor routing is unavailable"
+                ],
+                "evidence": [
+                    {
+                        "path": "suite-native-app/app/e2e/tests/manual/wallet/customBackend.test.ts",
+                        "line": 7,
+                        "scenario": "Custom Electrum and RPC backends",
+                        "verification": "Generic working Electrum URL plus an invalid-URL error check; no onion address or Orbot step. Not evidence for this intent.",
+                        "execution": "manual-procedure"
+                    }
+                ]
             }
         }
     ],

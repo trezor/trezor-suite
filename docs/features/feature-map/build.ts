@@ -299,6 +299,16 @@ export const readRuntime = (): Obj => {
         pyAssert(Array.isArray(get(value, key)), ['Runtime manifest needs an array', key]);
     }
     pyAssert(Array.isArray(get(value, 'errata', [])), 'Runtime errata must be an array');
+    // Later captures go to a supplement so the pinned manifest stays byte-identical.
+    const supplementPath = pyJoin(HERE, 'parts/runtime-supplement.json');
+    if (pyExists(supplementPath)) {
+        const supplement = readJson(supplementPath) as Obj;
+        for (const key of ['observations', 'screenshots']) {
+            const extra = get(supplement, key, []);
+            pyAssert(Array.isArray(extra), ['Runtime supplement needs an array', key]);
+            value[key] = [...atArr(value, key), ...(extra as Json[])];
+        }
+    }
 
     return value;
 };
@@ -379,6 +389,15 @@ export const applyTeamOwnership = (features: Obj[]): Obj[] => {
         'Team override for an unknown feature',
         new Set(overrideIds.filter(id => !byId.has(id))),
     ]);
+    const backendAssignments = new Map<Json, Obj>();
+    for (const assignment of atObjs(config, 'backend_team_assignments')) {
+        pyAssert(teams.has(at(assignment, 'team')), ['Unknown backend team', assignment.team]);
+        for (const featureId of atArr(assignment, 'feature_ids')) {
+            pyAssert(byId.has(featureId), ['Backend team for an unknown feature', featureId]);
+            pyAssert(!backendAssignments.has(featureId), ['Duplicate backend team', featureId]);
+            backendAssignments.set(featureId, assignment);
+        }
+    }
     for (const f of features) {
         const ownership = pyDeepCopy(atObj(f, 'ownership'));
         const raw = at(ownership, 'team');
@@ -396,6 +415,10 @@ export const applyTeamOwnership = (features: Obj[]): Obj[] => {
             ownership.team = get(aliases, raw, raw);
         }
         pyAssert(teams.has(ownership.team), ['Feature has no canonical team', id, raw]);
+        // The frontend team owns the backend too unless an assignment splits them.
+        const backend = backendAssignments.get(id);
+        ownership.backend_team = backend ? at(backend, 'team') : ownership.team;
+        ownership.backend_basis = backend ? at(backend, 'basis') : null;
         f.ownership = ownership;
         for (const v of get(f, 'variants', []) as Obj[]) pyPop(v, 'ownership', null);
     }
@@ -1079,6 +1102,8 @@ export const addRuntime = (
             'Runtime records describe only the observed or blocked UI states under their stated model, firmware, platform and fixture conditions. Static availability, historical screenshots and source audit fields remain preserved; absence of a runtime record is not verification.',
     };
     scope.observed_features = atArr(scope, 'observed_feature_ids').length;
+    // The lowest level is called "intent"; pinned inputs still spell it "option".
+    for (const f of output) if (at(f, 'level') === 'option') f.level = 'intent';
     scope.additive_baseline = checkAdditiveBaseline(output);
 
     return [
@@ -1433,6 +1458,7 @@ export const build = (): void => {
         'mobile_navigation',
         'navigation_alternatives',
         'team',
+        'backend_team',
         'ownership_confidence',
         'conditions',
         'root_components',
@@ -1470,6 +1496,7 @@ export const build = (): void => {
         row.navigation_alternatives = jsonText(at(f, 'navigation_alternatives'));
         const roots = atObjs(f, 'roots');
         row.team = at(atObj(f, 'ownership'), 'team');
+        row.backend_team = at(atObj(f, 'ownership'), 'backend_team');
         row.ownership_confidence = at(atObj(f, 'ownership'), 'confidence');
         row.conditions = pyStrJoin(' | ', atArr(f, 'conditions'));
         row.root_components = pyStrJoin(
@@ -1629,6 +1656,7 @@ export const build = (): void => {
         'web',
         'mobile',
         'team',
+        'backend_team',
         'component',
         ...coverageAxes.map(axis => axis + '_score'),
     ]) {
@@ -1652,6 +1680,7 @@ export const build = (): void => {
         ]);
         for (const [key, value] of pyEntries(atObj(f, 'platforms'))) values.set(key, value);
         values.set('team', truthy(team) ? team : 'Unknown');
+        values.set('backend_team', at(atObj(f, 'ownership'), 'backend_team'));
         values.set(
             'component',
             pyStrJoin(

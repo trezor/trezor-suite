@@ -155,7 +155,15 @@
         "earn.opportunities.expand",
         "earn.yield.retry",
         "earn.feedback",
-        "trade.swap.risk-review"
+        "trade.swap.risk-review",
+        "trade.history.rate",
+        "trade.form-resume",
+        "connect.walletconnect.transaction.insufficient-gas",
+        "trade.swap.simulation",
+        "earn.staking.trx.transactions",
+        "earn.staking.ada.voting.convert-drep",
+        "trade.preview-fiat-value",
+        "trade.swap.source-asset-filter"
     ],
     "features": [
         {

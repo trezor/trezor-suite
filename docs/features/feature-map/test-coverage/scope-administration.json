@@ -226,7 +226,10 @@
         "app-settings.application.service-messages.banner",
         "app-settings.application.service-messages.context",
         "app-settings.application.service-messages.debug",
-        "connection.legacy-bridge-deprecated"
+        "connection.legacy-bridge-deprecated",
+        "connection.firmware-required",
+        "wallet-access.hidden.caps-lock",
+        "network-settings.backends.electrum-onion"
     ],
     "features": [
         {
