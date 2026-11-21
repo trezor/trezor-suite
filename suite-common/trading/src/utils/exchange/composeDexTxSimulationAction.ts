@@ -52,7 +52,7 @@ export const composeDexTxSimulationAction = ({
     try {
         return {
             method: 'ethereumSignTransaction',
-            fromAddress: quote.dexTx.from,
+            fromAddress: account.descriptor,
             sourceOrigin,
             payload: {
                 path: account.path,

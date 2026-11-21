@@ -25,7 +25,7 @@ const parseFiatValue = (value: string | undefined | null): number | null => {
     if (!value) return null;
     const n = Number(value);
 
-    return Number.isFinite(n) && n > 0 ? n : null;
+    return Number.isFinite(n) && n >= 0 ? n : null;
 };
 
 export const useExchangeFiatDeviation = ({
@@ -50,7 +50,8 @@ export const useExchangeFiatDeviation = ({
     const sendFiatValue = parseFiatValue(sendFiat?.fiatValue);
     const receiveFiatValue = parseFiatValue(receiveFiat?.fiatValue);
 
-    if (sendFiatValue === null || receiveFiatValue === null) {
+    // The send value divides the deviation, while receiving nothing is a full 100% deviation.
+    if (sendFiatValue === null || sendFiatValue === 0 || receiveFiatValue === null) {
         return null;
     }
 

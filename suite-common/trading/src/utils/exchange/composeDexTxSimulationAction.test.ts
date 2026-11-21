@@ -18,6 +18,13 @@ const typedData = {
     message: { salt: '1' },
 };
 
+const dexTx: NonNullable<ExchangeTrade['dexTx']> = {
+    from: account.descriptor,
+    to: '0x111111125421ca6dc452d289314280a0f8842a65',
+    data: '',
+    value: '0',
+};
+
 const quote: ExchangeTrade = {
     send: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
     sendStringAmount: '10',
@@ -30,12 +37,7 @@ const quote: ExchangeTrade = {
     exchange: '1inchfusion',
     isDex: true,
     status: 'CONFIRM',
-    dexTx: {
-        from: account.descriptor,
-        to: '0x111111125421ca6dc452d289314280a0f8842a65',
-        data: '',
-        value: '0',
-    },
+    dexTx,
     signData: { type: 'eip712-typed-data', data: typedData },
 };
 
@@ -52,6 +54,25 @@ describe('composeDexTxSimulationAction', () => {
             fromAddress: account.descriptor,
             sourceOrigin: SOURCE_ORIGIN,
             payload: { path: account.path, metamask_v4_compat: true, data: typedData },
+        });
+    });
+
+    it('simulates the transaction from the signing account, not from the provider sender', () => {
+        const transactionQuote: ExchangeTrade = {
+            ...quote,
+            signData: undefined,
+            dexTx: { ...dexTx, from: '0x000000000000000000000000000000000000dead' },
+        };
+
+        const action = composeDexTxSimulationAction({
+            quote: transactionQuote,
+            account,
+            sourceOrigin: SOURCE_ORIGIN,
+        });
+
+        expect(action).toMatchObject({
+            method: 'ethereumSignTransaction',
+            fromAddress: account.descriptor,
         });
     });
 });

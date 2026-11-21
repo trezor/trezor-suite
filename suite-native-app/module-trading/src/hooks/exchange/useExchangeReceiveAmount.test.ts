@@ -1,3 +1,5 @@
+import type { CryptoId, ExchangeTrade } from 'invity-api';
+
 import type { NetworkTxSimulationResult } from '@suite-common/tx-simulation';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -68,5 +70,30 @@ describe('useExchangeReceiveAmount', () => {
         );
 
         expect(result.current.receiveAmount).toBe('1');
+    });
+
+    it('returns 0 when a same-chain swap simulation shows no incoming receive asset', async () => {
+        const sameChainQuote: ExchangeTrade = {
+            ...mercuryoFixedWorstQuote,
+            receive: 'ethereum' as CryptoId,
+        };
+        mockUseDexExchangeTxSimulation.mockReturnValue({
+            isEnabled: true,
+            isLoading: false,
+            error: null,
+            data: {
+                method: 'ethereumSignTransaction',
+                payload: {
+                    needsDisclaimer: false,
+                    simulation: { status: 'Success', account_summary: { assets_diffs: [] } },
+                },
+            } as unknown as NetworkTxSimulationResult,
+        });
+
+        const { result } = await renderHookWithBasicProvider(() =>
+            useExchangeReceiveAmount(sameChainQuote),
+        );
+
+        expect(result.current.receiveAmount).toBe('0');
     });
 });
