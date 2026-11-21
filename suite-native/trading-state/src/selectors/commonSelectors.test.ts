@@ -1,6 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { mockGeolocationStateInCountry } from '@suite-common/geolocation/mocks';
 import { type MessageSystemState } from '@suite-common/message-system';
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
@@ -28,7 +29,6 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
-import { localeInitialState } from '@suite-native/intl';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
     btcAsset,
@@ -179,7 +179,7 @@ const getPreloadedState = ({
 
     return {
         featureFlags: featureFlagsInitialState,
-        locale: localeInitialState,
+        geolocation: mockGeolocationStateInCountry('US'),
         messageSystem: {
             config: {
                 version: 1,

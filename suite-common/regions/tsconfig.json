@@ -4,6 +4,7 @@
     "references": [
         { "path": "../geolocation" },
         { "path": "../message-system" },
+        { "path": "../suite-types" },
         { "path": "../../packages/redux-utils" }
     ]
 }

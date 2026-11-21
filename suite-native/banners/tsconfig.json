@@ -13,6 +13,9 @@
             "path": "../../suite-common/earn-staking"
         },
         {
+            "path": "../../suite-common/geolocation"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {

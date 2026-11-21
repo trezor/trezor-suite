@@ -47,6 +47,17 @@ export const getTradingResidenceWhitelist = (feature: Feature | undefined): Coun
 export const getRegionRestrictedCountries = (feature: Feature | undefined): CountryCode[] =>
     getPayloadCountries(feature?.payload, 'countries');
 
+export const DEFAULT_REGION_RESTRICTION_THRESHOLD = 0.499;
+
+const isThreshold = (value: unknown): value is number =>
+    typeof value === 'number' && value > 0 && value < 1;
+
+export const getRegionRestrictionThreshold = (feature: Feature | undefined): number => {
+    const threshold = feature?.payload?.threshold;
+
+    return isThreshold(threshold) ? threshold : DEFAULT_REGION_RESTRICTION_THRESHOLD;
+};
+
 type IsYieldFeatureApplicableForVaultParams = {
     feature: Feature;
     vaultContractAddress?: string | null;

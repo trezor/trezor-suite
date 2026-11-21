@@ -16,10 +16,9 @@
     },
     "dependencies": {
         "@suite-common/geolocation": "workspace:*",
-        "@suite-common/message-system": "workspace:*",
         "@suite-common/regions": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
-        "@suite-native/intl": "workspace:*",
-        "@trezor/redux-utils": "workspace:*"
+        "@trezor/redux-utils": "workspace:*",
+        "expo-localization": "~58.0.5"
     }
 }
