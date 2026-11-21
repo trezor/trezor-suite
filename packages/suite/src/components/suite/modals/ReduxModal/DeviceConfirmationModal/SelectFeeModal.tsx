@@ -83,8 +83,8 @@ interface SelectAccountModalProps {
     data: UiRequestSelectFee['payload'];
 }
 
-const getSelectFeeData = ({ coinInfo, feeLevels }: UiRequestSelectFee['payload']) => {
-    const { shortcut, blockTime, minFeeSatoshiKb, maxFeeSatoshiKb } = coinInfo;
+const getSelectFeeData = ({ coinInfo, feeLevels, blockTime }: UiRequestSelectFee['payload']) => {
+    const { shortcut, minFeeSatoshiKb, maxFeeSatoshiKb } = coinInfo;
     const minFee = minFeeSatoshiKb / 1000;
     const maxFee = maxFeeSatoshiKb / 1000;
     const symbol = shortcut.toLowerCase() as NetworkSymbol;

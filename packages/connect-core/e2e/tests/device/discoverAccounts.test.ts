@@ -81,7 +81,10 @@ describe(`TrezorConnect.discoverAccounts`, () => {
 
             TrezorConnect.uiResponse({
                 type: UI_RESPONSE.RECEIVE_DISCOVERY_ACCOUNT_INFO,
-                payload: await TrezorConnect.getAccountInfo(message.payload),
+                payload: await TrezorConnect.getAccountInfo({
+                    ...message.payload,
+                    details: message.payload.details ?? 'txs',
+                }),
                 requestId: message.requestId,
             });
         };
