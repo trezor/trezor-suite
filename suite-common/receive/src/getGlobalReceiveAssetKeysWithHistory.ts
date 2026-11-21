@@ -1,4 +1,4 @@
-import { getCryptoId } from '@suite-common/trading';
+import { type AssetKey, getAssetKey, toTokenAddress } from '@suite-common/tokens';
 import { type Network } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -13,27 +13,27 @@ type GlobalReceiveTransactionHistory = Readonly<
     >
 >;
 
-type GetGlobalReceiveAssetIdsWithHistoryParams = {
+type GetGlobalReceiveAssetKeysWithHistoryParams = {
     accounts: readonly Account[];
     networks: readonly Network[];
     transactions: GlobalReceiveTransactionHistory;
 };
 
-export const getGlobalReceiveAssetIdsWithHistory = ({
+export const getGlobalReceiveAssetKeysWithHistory = ({
     accounts,
     networks,
     transactions,
-}: GetGlobalReceiveAssetIdsWithHistoryParams): ReadonlySet<string> => {
-    const assetIds = new Set<string>();
+}: GetGlobalReceiveAssetKeysWithHistoryParams): ReadonlySet<AssetKey> => {
+    const assetKeys = new Set<AssetKey>();
     const networksBySymbol = new Map(networks.map(network => [network.symbol, network]));
 
     accounts.forEach(account => {
         const network = networksBySymbol.get(account.symbol);
-        if (!network?.tradeCryptoId || network.testnet) {
+        if (!network || network.testnet) {
             return;
         }
 
-        const nativeAssetId = network.tradeCryptoId;
+        const nativeAssetKey = getAssetKey({ networkSymbol: network.symbol });
         const { history } = account;
         // XRP and Stellar report an unknown total; their empty flag distinguishes unfunded accounts.
         const hasAccountHistory =
@@ -42,7 +42,7 @@ export const getGlobalReceiveAssetIdsWithHistory = ({
             (history.tokens ?? 0) > 0 ||
             (history.total < 0 && !account.empty);
         if (hasAccountHistory) {
-            assetIds.add(nativeAssetId);
+            assetKeys.add(nativeAssetKey);
         }
 
         account.tokens?.forEach(token => {
@@ -54,7 +54,12 @@ export const getGlobalReceiveAssetIdsWithHistory = ({
                 new BigNumber(token.totalSent ?? '0').gt(0);
 
             if (token.contract && hasTokenHistory) {
-                assetIds.add(getCryptoId(account.symbol, token.contract));
+                assetKeys.add(
+                    getAssetKey({
+                        networkSymbol: account.symbol,
+                        contractAddress: toTokenAddress(token.contract),
+                    }),
+                );
             }
         });
 
@@ -64,14 +69,19 @@ export const getGlobalReceiveAssetIdsWithHistory = ({
                 return;
             }
 
-            assetIds.add(nativeAssetId);
+            assetKeys.add(nativeAssetKey);
             transaction.tokens.forEach(token => {
                 if (token.contract) {
-                    assetIds.add(getCryptoId(account.symbol, token.contract));
+                    assetKeys.add(
+                        getAssetKey({
+                            networkSymbol: account.symbol,
+                            contractAddress: toTokenAddress(token.contract),
+                        }),
+                    );
                 }
             });
         });
     });
 
-    return assetIds;
+    return assetKeys;
 };

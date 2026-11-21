@@ -12939,10 +12939,10 @@ __metadata:
     "@suite-common/token": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/tokens": "workspace:*"
-    "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -13354,6 +13354,7 @@ __metadata:
   resolution: "@suite-common/tokens@workspace:suite-common/tokens"
   dependencies:
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -14111,7 +14112,6 @@ __metadata:
     "@suite-common/earn-staking-common": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
-    "@suite-common/receive": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -14612,7 +14612,6 @@ __metadata:
     "@suite-common/receive": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/tokens": "workspace:*"
-    "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -17568,6 +17567,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/assets@workspace:suite/assets"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@storybook/react": "npm:^10.6.2"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/token": "workspace:*"
@@ -17575,12 +17577,26 @@ __metadata:
     "@suite-common/tokens": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/discreet-mode": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@suite/token": "workspace:*"
+    "@testing-library/react": "npm:^16.3.3"
+    "@testing-library/user-event": "npm:^14.6.7"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    jest-canvas-mock: "npm:^2.5.8"
     react: "npm:19.3.0"
+    react-intl: "npm:^12.1.4"
     react-redux: "npm:9.3.0"
+    storybook: "npm:^10.6.2"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 

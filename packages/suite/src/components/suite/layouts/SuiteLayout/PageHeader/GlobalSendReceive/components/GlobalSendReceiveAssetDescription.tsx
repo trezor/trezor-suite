@@ -1,26 +1,22 @@
 import { AssetName } from '@suite/assets';
 import { Translation } from '@suite/intl';
-import { getGlobalReceiveAssetDescriptionValues } from '@suite-common/receive';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 
 type GlobalSendReceiveAssetDescriptionProps = {
-    asset: TradingAssetOption | undefined;
+    assetId: AssetId | undefined;
 };
 
 export const GlobalSendReceiveAssetDescription = ({
-    asset,
+    assetId,
 }: GlobalSendReceiveAssetDescriptionProps) => {
-    if (!asset) {
+    if (!assetId) {
         return null;
     }
 
-    const { networkName } = getGlobalReceiveAssetDescriptionValues(asset);
-    const assetName = (
-        <AssetName
-            networkSymbol={asset.networkSymbol}
-            contractAddress={asset.isNativeToken ? undefined : asset.contractAddress}
-        />
-    );
+    const { networkSymbol, contractAddress } = assetId;
+    const networkName = contractAddress ? getNetwork(networkSymbol).name : undefined;
+    const assetName = <AssetName networkSymbol={networkSymbol} contractAddress={contractAddress} />;
 
     if (networkName === undefined) {
         return assetName;

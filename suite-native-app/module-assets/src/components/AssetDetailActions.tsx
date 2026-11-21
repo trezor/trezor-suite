@@ -8,7 +8,6 @@ import {
     selectWalletAssetKey,
 } from '@suite-common/assets';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { buildGlobalReceiveAssetOption } from '@suite-common/receive';
 import {
     type NativeAccountsWithNetworksRootState,
     selectFilteredDeviceAccountListRows,
@@ -75,10 +74,10 @@ export const AssetDetailActions = () => {
         navigation.navigate(RootStackRoutes.ReceiveStack, {
             screen: ReceiveStackRoutes.ReceiveAccounts,
             params: {
-                asset: buildGlobalReceiveAssetOption({
-                    symbol: networkSymbol,
+                assetId: {
+                    networkSymbol,
                     contractAddress: tokenContract,
-                }),
+                },
                 closeActionType: 'back',
             },
         });

@@ -6,6 +6,7 @@ import {
     selectIsNativeTokenNetworkNameRedundant,
 } from '@suite-common/networks';
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
+import { getNetwork } from '@suite-common/wallet-config';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { AssetIcon, AssetName, AssetSymbol } from '@suite-native/assets';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
@@ -52,15 +53,16 @@ const rowStyle = prepareNativeStyle<{
 }));
 
 export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
-    const { asset, balance, isFirst, isLast } = item;
+    const { assetId, balance, isFirst, isLast } = item;
+    const { networkSymbol, contractAddress } = assetId;
 
     const { applyStyle } = useNativeStyles();
 
     const isNetworkNameRedundant = useSelector((state: NetworksRootState) =>
-        selectIsNativeTokenNetworkNameRedundant(state, asset.networkSymbol),
+        selectIsNativeTokenNetworkNameRedundant(state, networkSymbol),
     );
-    const shouldShowNetworkBadge = !asset.isNativeToken || !isNetworkNameRedundant;
-    const tokenContract = asset.isNativeToken ? undefined : asset.contractAddress;
+    const shouldShowNetworkBadge = !!contractAddress || !isNetworkNameRedundant;
+    const tokenContract = contractAddress;
 
     return (
         <Box style={applyStyle(rowStyle, { isFirst, isLast })}>
@@ -68,29 +70,24 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                 onPress={() => onSelect(item)}
                 icon={
                     <AssetIcon
-                        networkSymbol={asset.networkSymbol}
+                        networkSymbol={networkSymbol}
                         contractAddress={tokenContract}
                         showNetworkIcon
                         size="medium"
                     />
                 }
-                title={
-                    <AssetName
-                        networkSymbol={asset.networkSymbol}
-                        contractAddress={tokenContract}
-                    />
-                }
+                title={<AssetName networkSymbol={networkSymbol} contractAddress={tokenContract} />}
                 badges={
                     <HStack alignItems="center">
                         <Text variant="body-sm" priority="secondary">
                             <AssetSymbol
-                                networkSymbol={asset.networkSymbol}
+                                networkSymbol={networkSymbol}
                                 contractAddress={tokenContract}
                                 variant="body-sm"
                                 priority="secondary"
                             />
                         </Text>
-                        {shouldShowNetworkBadge && <Badge label={asset.networkName} />}
+                        {shouldShowNetworkBadge && <Badge label={getNetwork(networkSymbol).name} />}
                     </HStack>
                 }
                 mainValue={
@@ -104,17 +101,17 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                 }
                 secondaryValue={
                     balance &&
-                    (asset.isNativeToken ? (
+                    (!contractAddress ? (
                         <CompactCryptoAmountFormatter
                             value={balance.cryptoAmount}
-                            symbol={asset.networkSymbol}
+                            symbol={networkSymbol}
                             numberOfLines={1}
                             adjustsFontSizeToFit
                         />
                     ) : (
                         <CompactTokenAmountFormatter
-                            networkSymbol={asset.networkSymbol}
-                            contractAddress={asset.contractAddress}
+                            networkSymbol={networkSymbol}
+                            contractAddress={contractAddress}
                             value={asDecimalTokenAmount(balance.cryptoAmount)}
                             numberOfLines={1}
                             adjustsFontSizeToFit

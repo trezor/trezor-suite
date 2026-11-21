@@ -29,7 +29,7 @@ const mockSecondAccount = mockWalletAccount({
     symbol: mockNetworkSymbol,
 });
 const mockAccountKey = mockAccount.key;
-const mockReceiveAsset = { networkSymbol: mockNetworkSymbol };
+
 const getAccountRow = (accountKey: AccountKey) => ({
     accountKey,
     isFirst: true,
@@ -67,10 +67,6 @@ jest.mock('@suite-native/device', () => ({
     selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice: jest.fn(),
 }));
 
-jest.mock('@suite-common/receive', () => ({
-    buildGlobalReceiveAssetOption: () => mockReceiveAsset,
-}));
-
 const mockAssetAccounts = jest.mocked(selectWalletAssetAccounts);
 const mockSendableAccountRows = jest.mocked(selectFilteredDeviceAccountListRows);
 const mockIsPortfolioTrackerDevice = jest.mocked(selectIsPortfolioTrackerDevice);
@@ -95,7 +91,10 @@ describe('AssetDetailActions', () => {
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.ReceiveStack, {
             screen: ReceiveStackRoutes.ReceiveAccounts,
             params: {
-                asset: mockReceiveAsset,
+                assetId: {
+                    networkSymbol: mockNetworkSymbol,
+                    contractAddress: mockTokenContract,
+                },
                 closeActionType: 'back',
             },
         });

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getNetwork } from '@suite-common/wallet-config';
 import { selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import { CenteredTitleHeader, Spinner, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -18,7 +19,7 @@ export const ReceiveDiscoveryScreen = ({
     navigation,
     route,
 }: StackProps<ReceiveStackParamList, ReceiveStackRoutes.ReceiveDiscovery>) => {
-    const { asset } = route.params;
+    const { assetId } = route.params;
 
     const { navigateToReceiveScreen } = useReceiveNavigation({ isReplaceRequired: true });
     const { status } = useSelector(selectDiscoveryForSelectedDevice) ?? {};
@@ -36,11 +37,11 @@ export const ReceiveDiscoveryScreen = ({
 
     const onComplete = useCallback(() => {
         if (loadingState === 'success') {
-            navigateToReceiveScreen(asset);
+            navigateToReceiveScreen(assetId);
         } else {
             navigation.goBack();
         }
-    }, [loadingState, asset, navigateToReceiveScreen, navigation]);
+    }, [loadingState, assetId, navigateToReceiveScreen, navigation]);
 
     useInterceptNativeNavigation();
 
@@ -53,7 +54,9 @@ export const ReceiveDiscoveryScreen = ({
                     subtitle={
                         <Translation
                             id="moduleReceive.discovery.subtitle"
-                            values={{ networkName: asset.networkName }}
+                            values={{
+                                networkName: getNetwork(assetId.networkSymbol).name,
+                            }}
                         />
                     }
                 />

@@ -5,8 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceStaticSessionId, selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { toTokenAddress } from '@suite-common/tokens';
-import type { TradingAssetOption } from '@suite-common/trading';
+import { type AssetId } from '@suite-common/tokens';
 import { changeCoinVisibilityThunk, selectAccounts } from '@suite-common/wallet-core';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import { type OnSelectAccount, useAccountAlerts } from '@suite-native/accounts';
@@ -51,25 +50,24 @@ export const useReceiveNavigation = ({
     );
 
     const navigateToReceiveScreen = useCallback(
-        (asset: TradingAssetOption) => {
+        (assetId: AssetId) => {
+            const { networkSymbol, contractAddress } = assetId;
             const receiveAccounts = filterReceiveAccounts({
                 accounts,
                 supportedNetworks,
                 deviceState: deviceStaticSessionId ?? undefined,
-                symbol: asset.networkSymbol,
+                symbol: networkSymbol,
                 isDebug: areDebugOnlyNetworksEnabled,
             });
             if (receiveAccounts.length > 1) {
                 navigationFn(ReceiveStackRoutes.ReceiveAccounts, {
-                    asset,
+                    assetId,
                     closeActionType,
                 });
             } else if (receiveAccounts.length === 1) {
                 navigationFn(ReceiveStackRoutes.ReceiveAddress, {
                     accountKey: receiveAccounts[0]?.key,
-                    tokenContract: asset.contractAddress
-                        ? toTokenAddress(asset.contractAddress)
-                        : undefined,
+                    tokenContract: contractAddress,
                     closeActionType,
                 });
             } else if (isDeviceInViewOnlyMode) {
@@ -77,12 +75,12 @@ export const useReceiveNavigation = ({
             } else {
                 dispatch(
                     changeCoinVisibilityThunk({
-                        symbol: asset.networkSymbol,
+                        symbol: networkSymbol,
                         shouldBeVisible: true,
                         discoveryTrigger: 'add-account',
                     }),
                 );
-                navigation.navigate(ReceiveStackRoutes.ReceiveDiscovery, { asset });
+                navigation.navigate(ReceiveStackRoutes.ReceiveDiscovery, { assetId });
             }
         },
         [

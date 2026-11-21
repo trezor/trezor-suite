@@ -1,18 +1,16 @@
 import { useFormatters } from '@suite-common/formatters';
 import { useTokenMetadata } from '@suite-common/token';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AssetId } from '@suite-common/tokens';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
 
 import { AssetSymbol } from './AssetSymbol';
 
-type AssetValueProps = Omit<TextProps, 'children'> & {
-    amount: AmountUnit;
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
-    isCompact?: boolean;
-};
+type AssetValueProps = Omit<TextProps, 'children'> &
+    AssetId & {
+        amount: AmountUnit;
+        isCompact?: boolean;
+    };
 
 /** An amount of a native token or a token; an unrecognized token's symbol has its URLs masked. */
 export const AssetValue = ({

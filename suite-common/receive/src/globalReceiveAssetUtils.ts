@@ -1,76 +1,76 @@
 import { normalizeForSearch } from '@suite-common/suite-utils';
 import { type RankedTokenStructure } from '@suite-common/token-definitions';
-import { type TokenAddress } from '@suite-common/tokens';
-import {
-    type TradeableAssetBalance,
-    type TradeableAssetBalances,
-    type TradeableAssetSearchFields,
-    type TradeableAssetSearchIndex,
-    type TradingAssetOption,
-    buildTradeableAssetSearchIndex,
-    createAssetNativeTokenOption,
-    createAssetTokenOption,
-} from '@suite-common/trading';
+import { type AssetId, type AssetKey, getAssetKey, toTokenAddress } from '@suite-common/tokens';
 import {
     type Network,
     type NetworkSymbol,
-    toNetworkSymbolNonTestnet,
+    getNetworkDisplaySymbol,
+    getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-type BuildGlobalReceiveAssetOptionsParams = {
+import { type ReceiveAssetBalance, type ReceiveAssetBalances } from './receiveAssetBalances';
+
+export type GlobalReceiveAssetCatalog = {
+    assetIds: readonly AssetId[];
+    searchIndex: ReadonlyMap<AssetKey, readonly string[]>;
+};
+
+type BuildGlobalReceiveAssetCatalogParams = {
     networks: readonly Network[];
     definitions: RankedTokenStructure;
 };
 
-export const buildGlobalReceiveAssetOptions = ({
+/** Identities and search data come from Receive's ranked catalogue, independently of trading. */
+export const buildGlobalReceiveAssetCatalog = ({
     networks,
     definitions,
-}: BuildGlobalReceiveAssetOptionsParams): TradingAssetOption[] => {
-    const assets: TradingAssetOption[] = networks.map(network =>
-        createAssetNativeTokenOption(toNetworkSymbolNonTestnet(network.symbol)),
-    );
-    const networksByPlatform = new Map(networks.map(network => [network.coingeckoId, network]));
-    const includedIds = new Set(assets.map(asset => asset.id));
-
-    // Filtering keeps the published market-cap order; normalized duplicate IDs keep their first entry.
-    definitions.forEach(token => {
-        const network = networksByPlatform.get(token.assetPlatformId);
-        if (!network) {
+}: BuildGlobalReceiveAssetCatalogParams): GlobalReceiveAssetCatalog => {
+    const assetIds: AssetId[] = [];
+    const searchIndex = new Map<AssetKey, readonly string[]>();
+    const addAsset = (assetId: AssetId, fields: string[]) => {
+        const assetKey = getAssetKey(assetId);
+        if (searchIndex.has(assetKey)) {
             return;
         }
 
-        const asset = createAssetTokenOption(network.symbol, {
-            contract: token.address,
-            symbol: token.symbol.toUpperCase(),
-            name: token.name,
-        });
-        if (!includedIds.has(asset.id)) {
-            assets.push(asset);
-            includedIds.add(asset.id);
+        assetIds.push(assetId);
+        searchIndex.set(assetKey, fields.map(normalizeForSearch));
+    };
+
+    for (const network of networks) {
+        addAsset({ networkSymbol: network.symbol }, [
+            getNetworkDisplaySymbolName(network.symbol),
+            getNetworkDisplaySymbol(network.symbol),
+            network.name,
+            network.symbol,
+        ]);
+    }
+
+    const networksByPlatform = new Map(networks.map(network => [network.coingeckoId, network]));
+    // Deduplication retains the first entry in the published market-cap order.
+    for (const token of definitions) {
+        const network = networksByPlatform.get(token.assetPlatformId);
+        if (!network) {
+            continue;
         }
-    });
 
-    return assets;
+        addAsset(
+            {
+                networkSymbol: network.symbol,
+                contractAddress: toTokenAddress(token.address),
+            },
+            [token.name, token.symbol, network.name, network.symbol, token.address],
+        );
+    }
+
+    return { assetIds, searchIndex };
 };
-
-type BuildGlobalReceiveAssetOptionParams = {
-    symbol: NetworkSymbol;
-    contractAddress: TokenAddress | undefined;
-};
-
-export const buildGlobalReceiveAssetOption = ({
-    symbol,
-    contractAddress,
-}: BuildGlobalReceiveAssetOptionParams): TradingAssetOption =>
-    contractAddress === undefined
-        ? createAssetNativeTokenOption(toNetworkSymbolNonTestnet(symbol))
-        : createAssetTokenOption(symbol, { contract: contractAddress, symbol: '', name: '' });
 
 export type GlobalReceiveAssetListItem = {
-    asset: TradingAssetOption;
-    balance: TradeableAssetBalance | undefined;
+    assetId: AssetId;
+    balance: ReceiveAssetBalance | undefined;
 };
 
 export type GlobalReceiveAssetSections = {
@@ -79,49 +79,28 @@ export type GlobalReceiveAssetSections = {
     hasMoreOtherAssets: boolean;
 };
 
-export const getGlobalReceiveAssetDescriptionValues = (
-    asset: TradingAssetOption,
-): { assetName: string; networkName?: string } => {
-    const assetName = asset.displaySymbolName ?? asset.name;
-
-    return asset.isNativeToken ? { assetName } : { assetName, networkName: asset.networkName };
-};
-
 type GetGlobalReceiveAssetSectionsParams = {
-    assets: readonly TradingAssetOption[];
-    balances: TradeableAssetBalances;
-    assetIdsWithHistory?: ReadonlySet<string>;
+    catalog: GlobalReceiveAssetCatalog;
+    balances: ReceiveAssetBalances;
+    assetKeysWithHistory?: ReadonlySet<AssetKey>;
     search: string;
-    searchIndex?: TradeableAssetSearchIndex<TradingAssetOption>;
     networkSymbols: NetworkSymbol[];
     otherAssetsLimit?: number;
 };
 
-const EMPTY_ASSET_IDS_WITH_HISTORY: ReadonlySet<string> = new Set();
-const ZERO_ASSET_BALANCE: TradeableAssetBalance = {
+const EMPTY_ASSET_KEYS_WITH_HISTORY: ReadonlySet<AssetKey> = new Set();
+const ZERO_ASSET_BALANCE: ReceiveAssetBalance = {
     cryptoAmount: '0',
     fiatAmount: asBaseCurrencyAmount(new BigNumber(0)),
 };
 
-const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFields => ({
-    name: asset.displaySymbolName ?? asset.name,
-    symbol: asset.displaySymbol,
-    networkName: asset.networkName,
-    networkSymbol: asset.networkSymbol,
-    contractAddress: asset.contractAddress ?? '',
-});
-
-export const buildGlobalReceiveAssetSearchIndex = (assets: readonly TradingAssetOption[]) =>
-    buildTradeableAssetSearchIndex({ assets, getSearchFields: getAssetSearchFields });
-
 const compareHeldAssets = (
-    balances: TradeableAssetBalances,
-    assetA: TradingAssetOption,
-    assetB: TradingAssetOption,
+    balances: ReceiveAssetBalances,
+    assetA: AssetId,
+    assetB: AssetId,
 ): number => {
-    const fiatAmountA = balances.get(assetA.id)?.fiatAmount ?? null;
-    const fiatAmountB = balances.get(assetB.id)?.fiatAmount ?? null;
-
+    const fiatAmountA = balances.get(getAssetKey(assetA))?.fiatAmount ?? null;
+    const fiatAmountB = balances.get(getAssetKey(assetB))?.fiatAmount ?? null;
     if (fiatAmountA === null && fiatAmountB === null) {
         return 0;
     }
@@ -138,63 +117,48 @@ const compareHeldAssets = (
 };
 
 export const getGlobalReceiveAssetSections = ({
-    assets,
+    catalog,
     balances,
-    assetIdsWithHistory = EMPTY_ASSET_IDS_WITH_HISTORY,
+    assetKeysWithHistory = EMPTY_ASSET_KEYS_WITH_HISTORY,
     search,
-    searchIndex = buildGlobalReceiveAssetSearchIndex(assets),
     networkSymbols,
     otherAssetsLimit = Infinity,
 }: GetGlobalReceiveAssetSectionsParams): GlobalReceiveAssetSections => {
     const query = normalizeForSearch(search);
-    const heldAssets: TradingAssetOption[] = [];
+    const heldAssets: AssetId[] = [];
     const assetsWithHistory: GlobalReceiveAssetListItem[] = [];
     const nativeAssets: GlobalReceiveAssetListItem[] = [];
     const tokenAssets: GlobalReceiveAssetListItem[] = [];
     let otherAssetsCount = 0;
     let hasMoreOtherAssets = false;
 
-    assets.forEach(asset => {
-        if (networkSymbols?.length && !networkSymbols.includes(asset.networkSymbol)) {
-            return;
+    for (const assetId of catalog.assetIds) {
+        const { networkSymbol, contractAddress } = assetId;
+        const assetKey = getAssetKey(assetId);
+        if (networkSymbols.length && !networkSymbols.includes(networkSymbol)) {
+            continue;
         }
 
-        if (query) {
-            const fields = searchIndex.get(asset);
-            if (
-                !fields ||
-                !(
-                    fields.name.includes(query) ||
-                    fields.symbol.includes(query) ||
-                    fields.networkName.includes(query) ||
-                    fields.networkSymbol.includes(query) ||
-                    fields.contractAddress.includes(query)
-                )
-            ) {
-                return;
-            }
+        if (query && !catalog.searchIndex.get(assetKey)?.some(field => field.includes(query))) {
+            continue;
         }
 
-        if (balances.has(asset.id)) {
-            heldAssets.push(asset);
-        } else if (assetIdsWithHistory.has(asset.id)) {
-            assetsWithHistory.push({ asset, balance: ZERO_ASSET_BALANCE });
+        if (balances.has(assetKey)) {
+            heldAssets.push(assetId);
+        } else if (assetKeysWithHistory.has(assetKey)) {
+            assetsWithHistory.push({ assetId, balance: ZERO_ASSET_BALANCE });
         } else if (otherAssetsCount < otherAssetsLimit) {
             otherAssetsCount++;
-
-            if (asset.isNativeToken) {
-                nativeAssets.push({ asset, balance: undefined });
-            } else {
-                tokenAssets.push({ asset, balance: undefined });
-            }
+            const items = contractAddress === undefined ? nativeAssets : tokenAssets;
+            items.push({ assetId, balance: undefined });
         } else {
             hasMoreOtherAssets = true;
         }
-    });
+    }
 
     const fundedAssets = heldAssets
         .toSorted((assetA, assetB) => compareHeldAssets(balances, assetA, assetB))
-        .map(asset => ({ asset, balance: balances.get(asset.id) }));
+        .map(assetId => ({ assetId, balance: balances.get(getAssetKey(assetId)) }));
 
     return {
         myAssets: [...fundedAssets, ...assetsWithHistory],

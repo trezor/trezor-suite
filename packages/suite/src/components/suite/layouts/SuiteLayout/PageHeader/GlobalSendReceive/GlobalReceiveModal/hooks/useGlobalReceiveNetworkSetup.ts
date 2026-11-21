@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { type CryptoId } from 'invity-api';
-
 import { useDevice } from '@suite/device';
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type TradingAssetOption } from '@suite-common/trading';
+import { type AssetId, type AssetKey, getAssetKey } from '@suite-common/tokens';
+import { getNetwork } from '@suite-common/wallet-config';
 import { activateNetworkWithDiscoveryThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
@@ -14,7 +13,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useDiscovery } from '#src/hooks/suite/useDiscovery';
 
 type UseGlobalReceiveNetworkSetupParams = {
-    selectedAsset: TradingAssetOption | undefined;
+    selectedAssetId: AssetId | undefined;
     selectedAssetAccounts: Account[];
     wasSelectedAssetNetworkInactive: boolean;
     onAccountSelectionRequired: () => void;
@@ -28,13 +27,13 @@ type UseGlobalReceiveNetworkSetupParams = {
  * - Only runs while the network-setup step is mounted.
  * - Aborts an ongoing setup request if its basis changes, so it won't advance the flow for a wrong
  *   target.
- * - Falls back to the search step if the asset or device disappears mid-setup.
+ * - Falls back to the search step if the assetId or device disappears mid-setup.
  * - Dispatches `activateNetworkWithDiscoveryThunk` to enable the network and discover accounts.
  * - Once discovery completes, routes to the next step based on how many accounts were found:
  *   submits the sole account, requests account selection, or reports an error.
  */
 export const useGlobalReceiveNetworkSetup = ({
-    selectedAsset,
+    selectedAssetId,
     selectedAssetAccounts,
     wasSelectedAssetNetworkInactive,
     onAccountSelectionRequired,
@@ -48,30 +47,30 @@ export const useGlobalReceiveNetworkSetup = ({
     const setupRequestRef = useRef<{ abort: () => void; requestId: string } | undefined>(undefined);
     const [completedSetup, setCompletedSetup] = useState<
         | {
-              assetCryptoId: CryptoId;
+              assetKey: AssetKey;
               discoveredAccountCount: number;
           }
         | undefined
     >();
 
-    const selectedAssetId = selectedAsset?.id;
-    const selectedAssetNetworkSymbol = selectedAsset?.networkSymbol;
+    const selectedAssetKey = selectedAssetId ? getAssetKey(selectedAssetId) : undefined;
+    const selectedAssetNetworkSymbol = selectedAssetId?.networkSymbol;
     const devicePath = device?.path;
     const staticSessionId = device?.state?.staticSessionId;
     const setupTarget = useMemo(() => {
-        if (!selectedAssetId || !selectedAssetNetworkSymbol || !devicePath || !staticSessionId) {
+        if (!selectedAssetKey || !selectedAssetNetworkSymbol || !devicePath || !staticSessionId) {
             return undefined;
         }
 
         return {
-            assetCryptoId: selectedAssetId,
+            assetKey: selectedAssetKey,
             devicePath,
             networkSymbol: selectedAssetNetworkSymbol,
             staticSessionId,
         };
-    }, [devicePath, selectedAssetId, selectedAssetNetworkSymbol, staticSessionId]);
+    }, [devicePath, selectedAssetKey, selectedAssetNetworkSymbol, staticSessionId]);
 
-    // Aborting whenever the target changes prevents a result for the previous asset or device
+    // Aborting whenever the target changes prevents a result for the previous assetId or device
     // from advancing the currently visible flow.
     useEffect(
         () => () => {
@@ -82,7 +81,7 @@ export const useGlobalReceiveNetworkSetup = ({
     );
 
     useEffect(() => {
-        // Do not leave the setup step spinning if its asset or device disappeared.
+        // Do not leave the setup step spinning if its assetId or device disappeared.
         if (!setupTarget) {
             onSetupFailure();
         }
@@ -121,7 +120,7 @@ export const useGlobalReceiveNetworkSetup = ({
                 action.payload.success
             ) {
                 setCompletedSetup({
-                    assetCryptoId: setupTarget.assetCryptoId,
+                    assetKey: setupTarget.assetKey,
                     discoveredAccountCount: action.payload.payload.discoveredAccountCount,
                 });
             } else {
@@ -137,7 +136,7 @@ export const useGlobalReceiveNetworkSetup = ({
             return;
         }
 
-        if (completedSetup.assetCryptoId !== selectedAsset?.id) {
+        if (!selectedAssetNetworkSymbol || completedSetup.assetKey !== selectedAssetKey) {
             setCompletedSetup(undefined);
 
             return;
@@ -151,7 +150,7 @@ export const useGlobalReceiveNetworkSetup = ({
                     notificationsActions.addToast({
                         type: 'accounts-discovered',
                         count: completedSetup.discoveredAccountCount,
-                        networkName: selectedAsset.networkName,
+                        networkName: getNetwork(selectedAssetNetworkSymbol).name,
                     }),
                 );
             }
@@ -181,7 +180,8 @@ export const useGlobalReceiveNetworkSetup = ({
         dispatch,
         onAccountSelectionRequired,
         onSetupFailure,
-        selectedAsset,
+        selectedAssetKey,
+        selectedAssetNetworkSymbol,
         selectedAssetAccounts,
         completedSetup,
         submitSelection,

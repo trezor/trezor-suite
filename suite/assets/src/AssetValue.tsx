@@ -1,16 +1,13 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { useTokenMetadata } from '@suite-common/token';
-import { type TokenAddress } from '@suite-common/tokens';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AssetId } from '@suite-common/tokens';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 
 import { AssetSymbol } from './AssetSymbol';
 
-type AssetValueProps = {
+type AssetValueProps = AssetId & {
     amount: AmountUnit;
-    networkSymbol: NetworkSymbol;
-    contractAddress?: TokenAddress;
     isCompact?: boolean;
 };
 

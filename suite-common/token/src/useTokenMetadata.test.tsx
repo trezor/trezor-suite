@@ -13,7 +13,7 @@ import { TokenMetadataProvider } from './TokenMetadataProvider';
 import { useTokenMetadata } from './useTokenMetadata';
 
 const networkSymbol = asNetworkSymbol('eth');
-const contract = toTokenAddress('0x0000000000000000000000000000000000000001');
+const contract = toTokenAddress('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
 const accountToken = mockAccountToken({ contract, name: 'Stored token', symbol: 'STORE' });
 const state: AccountsRootState = {
     wallet: {
@@ -28,6 +28,30 @@ const MetadataWrapper = ({ children }: PropsWithChildren) => (
 );
 
 describe('useTokenMetadata', () => {
+    it('resolves a normalized EVM identity to held account metadata', () => {
+        const { services } = createTestCompositionRoot<void, AccountsRootState>({
+            preloadedState: state,
+        });
+        const { result } = renderHookWithStoreProvider(
+            () => useTokenMetadata(networkSymbol, toTokenAddress(contract.toLowerCase())),
+            { services, wrapper: MetadataWrapper },
+        );
+
+        expect(result.current).toMatchObject({ name: 'Stored token', symbol: 'STORE' });
+    });
+
+    it('resolves a normalized EVM identity to catalogue metadata without holdings', () => {
+        const { services } = createTestCompositionRoot<void, AccountsRootState>({
+            preloadedState: { wallet: { accounts: [] } },
+        });
+        const { result } = renderHookWithStoreProvider(
+            () => useTokenMetadata(networkSymbol, toTokenAddress(contract.toLowerCase())),
+            { services, wrapper: MetadataWrapper },
+        );
+
+        expect(result.current?.symbol).toBe('SOURCE');
+    });
+
     it('falls back to the account store without a metadata provider', () => {
         const { services } = createTestCompositionRoot<void, AccountsRootState>({
             preloadedState: state,

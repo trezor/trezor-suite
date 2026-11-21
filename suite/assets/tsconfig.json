@@ -18,12 +18,31 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../discreet-mode" },
         { "path": "../token" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         {
             "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
+        { "path": "../intl" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
         }
     ]
 }
