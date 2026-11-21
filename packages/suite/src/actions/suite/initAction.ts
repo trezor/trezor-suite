@@ -17,7 +17,12 @@ import {
     selectLanguage,
     suiteSettingsActions,
 } from '@suite/settings';
-import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import {
+    SuiteLifecycleMark,
+    markSuiteLifecycle,
+    onSuiteInit,
+    onSuiteReady,
+} from '@suite/suite-lifecycle';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
 import { type DeviceRootState } from '@suite-common/device';
@@ -110,6 +115,7 @@ export const initThunk =
         if (status !== 'initial') return;
 
         dispatch(onSuiteInit());
+        markSuiteLifecycle(SuiteLifecycleMark.Init);
 
         // Apply the earn worker base URLs from debug settings (or the defaults for this build).
         earnYieldWorkerBaseUrl.set(selectEarnYieldWorkerBaseUrl(getState()));
@@ -202,4 +208,5 @@ export const initThunk =
         }
         // 16. backend connected, suite is ready to use
         dispatch(onSuiteReady());
+        markSuiteLifecycle(SuiteLifecycleMark.Ready);
     };
