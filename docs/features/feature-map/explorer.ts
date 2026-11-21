@@ -1,4 +1,4 @@
-// Builds the offline interactive feature explorer (index.html) from features.json.
+// Builds the offline interactive feature explorer (explorer.html) from features.json.
 
 import * as nodePath from 'node:path';
 
@@ -35,7 +35,7 @@ import {
 } from './pylib.ts';
 import type { Json, JsonObject } from './pylib.ts';
 
-const DOC = `Build the offline interactive feature explorer (index.html) from features.json.
+const DOC = `Build the offline interactive feature explorer (explorer.html) from features.json.
 
 The explorer embeds a compact projection of the canonical dataset plus derived
 cross-links between features (explicit relations, shared screens, shared root
@@ -597,7 +597,7 @@ export const buildExplorer = (): JsonObject => {
     if (!template.includes('__FEATURE_DATA__')) {
         pyExit('explorer.template.html is missing the __FEATURE_DATA__ placeholder');
     }
-    writeText(pyJoin(HERE, 'index.html'), template.split('__FEATURE_DATA__').join(packed));
+    writeText(pyJoin(HERE, 'explorer.html'), template.split('__FEATURE_DATA__').join(packed));
 
     return payload;
 };
@@ -606,6 +606,6 @@ if (isMain(import.meta.filename)) {
     pyParseNoArgs(nodePath.basename(process.argv[1]), DOC);
     const result = buildExplorer();
     process.stdout.write(
-        `index.html: ${(result.features as Json[]).length} features, ${pyKeys(result.screens as JsonObject).length} screens, ${(result.links as Json[]).length} links\n`,
+        `explorer.html: ${(result.features as Json[]).length} features, ${pyKeys(result.screens as JsonObject).length} screens, ${(result.links as Json[]).length} links\n`,
     );
 }

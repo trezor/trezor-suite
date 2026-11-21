@@ -1,6 +1,6 @@
 # Runtime audit outcome
 
-The current inventory contains **578 feature nodes**. All **569 original feature records** and their historical screenshot references remain preserved. Runtime/source inspection added **9 capabilities**. The [offline explorer](../index.html) combines the hierarchy, navigation, platforms, ownership, source roots, conditions, observations and images.
+The current inventory contains **578 feature nodes**. All **569 original feature records** and their historical screenshot references remain preserved. Runtime/source inspection added **9 capabilities**. The [offline explorer](../explorer.html) combines the hierarchy, navigation, platforms, ownership, source roots, conditions, observations and images.
 
 There are **238 current application screenshots**, with **306 feature nodes currently associated with captures**. Active observation records cover **271 feature nodes**. These are different measures: one image may show several controls; a visited entry does not verify its descendants or execution. Screenshot corrections remain visible and original evidence is retained.
 

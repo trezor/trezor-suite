@@ -3065,6 +3065,8 @@
                     s.levels = p
                         .get('l')
                         .split(',')
+                        // Bookmarks from before the rename still say option.
+                        .map(l => (l === 'option' ? 'intent' : l))
                         .filter(l => ['area', 'feature', 'intent'].includes(l));
                 if (['with', 'without'].includes(p.get('s'))) s.shots = p.get('s');
                 if (AXIS[p.get('ax')]) s.axis = p.get('ax');
@@ -3412,7 +3414,7 @@
                     `<div class="fgroup"><h2>Level</h2>${['area', 'feature', 'intent']
                         .map(
                             l =>
-                                `<label class="check"><input type="checkbox" data-level="${l}" ${state.levels.includes(l) ? 'checked' : ''}> ${{ area: 'Area', feature: 'Feature', option: 'Option / sub-feature' }[l]}<span class="n num">${counts.get('l:' + l) || 0}</span></label>`,
+                                `<label class="check"><input type="checkbox" data-level="${l}" ${state.levels.includes(l) ? 'checked' : ''}> ${{ area: 'Area', feature: 'Feature', intent: 'Intent' }[l]}<span class="n num">${counts.get('l:' + l) || 0}</span></label>`,
                         )
                         .join('')}</div>`,
                 );
@@ -3710,7 +3712,7 @@
                                         : isNA(c)
                                           ? 'na'
                                           : 'b' + bucket(c.score);
-                                return `<button class="tile ${cls} lvl-${f.level}${MATCH.has(f.id) ? '' : ' out'}${state.sel === f.id ? ' sel' : ''}" data-id="${esc(f.id)}" data-tip-feature="${esc(f.id)}" aria-label="${esc(f.name)}: ${AXIS[state.axis].label} ${scoreText(c)}${MATCH.has(f.id) ? '' : ' (outside filter)'}"></button>`;
+                                return `<button class="tile ${cls} lvl-${esc(f.level)}${MATCH.has(f.id) ? '' : ' out'}${state.sel === f.id ? ' sel' : ''}" data-id="${esc(f.id)}" data-tip-feature="${esc(f.id)}" aria-label="${esc(f.name)}: ${AXIS[state.axis].label} ${scoreText(c)}${MATCH.has(f.id) ? '' : ' (outside filter)'}"></button>`;
                             })
                             .join('');
                         return `<section><h3><button data-id="${esc(r.id)}">${esc(r.name)}</button><span class="muted num">${inMatch.length} · ${a ? 'mean ' + a.mean.toFixed(1) : 'n/a'}</span></h3><div class="tiles">${tiles}</div></section>`;
@@ -3849,7 +3851,7 @@
                                 if (c.k === 'tree')
                                     return `<td style="min-width:240px"><button class="thbtn" data-id="${esc(f.id)}" style="font-weight:500;text-align:left;white-space:normal">${hl(f.name)}</button><div class="bc">${esc(f.breadcrumb.slice(0, -1).join(' › '))}</div></td>`;
                                 if (c.k === 'level')
-                                    return `<td class="muted col-level">${f.level}</td>`;
+                                    return `<td class="muted col-level">${esc(f.level)}</td>`;
                                 if (c.k === 'team')
                                     return `<td class="col-team" style="white-space:nowrap">${esc(f.team)}</td>`;
                                 if (c.k === 'backend_team')

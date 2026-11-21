@@ -10,6 +10,7 @@
 // routes are always read from the repository checkout.
 
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as nodePath from 'node:path';
@@ -51,7 +52,12 @@ type LandingCheck = {
     found: string[];
     missing: string[];
     result: 'pass' | 'drift';
+    /** SHA-256 of the checked PNG, so a replaced capture cannot keep an old result. */
+    sha256: string;
 };
+
+const sha256Of = (path: string): string =>
+    createHash('sha256').update(fs.readFileSync(path)).digest('hex');
 
 const FLOWS_JSON = 'parts/capture-flows.json';
 const SCHEMA_JSON = 'capture-flows.schema.json';
@@ -603,6 +609,10 @@ export const checkFlowChecksReferences = (root: string, flows: Flow[]): string[]
         }
         if (seen.has(key)) errors.push(`${where}: duplicate check`);
         seen.add(key);
+        if (check.sha256 !== sha256Of(nodePath.join(root, image.image)))
+            errors.push(
+                `${where}: ${image.image} changed after its landing check (stale; rerun check)`,
+            );
         if (check.device !== image.device)
             errors.push(`${where}: device ${String(check.device)} != ${image.device}`);
         const found = Array.isArray(check.found) ? check.found : [];
@@ -735,6 +745,7 @@ const runCheck = (root: string): number => {
             found,
             missing,
             result,
+            sha256: sha256Of(nodePath.join(root, image.image)),
         });
         if (result === 'drift' && image.preferred)
             preferredDrift.push(`${image.image}: missing ${missing.join(', ')}`);
@@ -881,6 +892,7 @@ const runReplay = (root: string, args: string[]): number => {
     process.stdout.write(
         `${flows.length} flows replayed on ${device}, ${failures} drifted` +
             `${updateCaptures ? `, ${updated} captures updated` : ''}\n` +
+            `${updated ? 'replaced captures invalidate their landing checks; run `check` again\n' : ''}` +
             `arrival and step screenshots: ${workDir}\n`,
     );
 

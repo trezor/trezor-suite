@@ -84,6 +84,7 @@ export const PART_NAMES = ['administration', 'wallet', 'services', 'mobile'] as 
 export const PLATFORMS = ['desktop', 'web', 'mobile'] as const;
 export const STATUSES = new Set<Json>(['yes', 'conditional', 'no', 'unknown']);
 export const RUNTIME_STATUSES = new Set<Json>(['observed', 'blocked', 'not-reached']);
+const LEVELS: ReadonlySet<Json> = new Set(['area', 'feature', 'intent']);
 export const RUNTIME_FEATURE_FIELDS = new Set<string>([
     'runtime_observations',
     'screenshots',
@@ -774,6 +775,15 @@ export const enrich = (features: Obj[], snapshot: string): [Obj[], string] => {
                 ref.symbol = null;
             }
         }
+        // A reviewed line beats the symbol definition; keep it while it is inside the file.
+        const supplied = get(ref, 'line');
+        if (typeof supplied === 'number' && Number.isInteger(supplied) && supplied >= 1) {
+            if (supplied <= pyCount(text, '\n') + 1) {
+                lineNumber = supplied;
+            } else {
+                ref.line_note = `Supplied line ${supplied} is past the end of the file; using ${lineNumber}.`;
+            }
+        }
         ref.line = lineNumber;
         ref.local_link = path + ':' + String(lineNumber);
         ref.repository_link = '../../../' + path + '#L' + String(lineNumber);
@@ -1111,7 +1121,10 @@ export const addRuntime = (
     };
     scope.observed_features = atArr(scope, 'observed_feature_ids').length;
     // The lowest level is called "intent"; pinned inputs still spell it "option".
-    for (const f of output) if (at(f, 'level') === 'option') f.level = 'intent';
+    for (const f of output) {
+        if (at(f, 'level') === 'option') f.level = 'intent';
+        pyAssert(LEVELS.has(at(f, 'level')), ['Unknown feature level', f.id, f.level]);
+    }
     scope.additive_baseline = checkAdditiveBaseline(output);
 
     return [
@@ -1333,7 +1346,8 @@ export const build = (): void => {
             }
         }
     }
-    const snapshot = git('rev-parse', 'HEAD');
+    // The audited develop revision, not HEAD: committing regenerated output must not make the stamp stale.
+    const snapshot = git('merge-base', 'HEAD', 'origin/develop');
     const [enriched, publishedBase] = enrich(collectFeatures(parts, reconciliation), snapshot);
     const sourceAdditions = readSourceAdditions();
     const [withRuntime, runtime, runtimeScope] = addRuntime(

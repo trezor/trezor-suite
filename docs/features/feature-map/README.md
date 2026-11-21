@@ -2,7 +2,7 @@
 
 An English inventory of user capabilities across Suite desktop, web and native mobile, from device onboarding and wallet actions to individual form options and settings. The source snapshot was audited at commit `8d6be9edbf990465176d57b4abc007bac17ca5e6` on 15 November 2026 and moved to `develop` at `cc9f201eaa7d2e1212624d4f1e565dce3f727060` on 21 November 2026: renamed and deleted sources, changed tests and features added on `develop` since then were reviewed. Runtime captures keep the commits they were taken from.
 
-> Runtime supplement: the original counts and screenshot limitations below describe the first source-only audit. Current application captures and additive model findings are available in the [runtime audit](./runtime/README.md) and [offline explorer](./index.html). See `summary.json` for current totals.
+> Runtime supplement: the original counts and screenshot limitations below describe the first source-only audit. Current application captures and additive model findings are available in the [runtime audit](./runtime/README.md) and [offline explorer](./explorer.html). See `summary.json` for current totals.
 
 Each feature also includes four **0–10 test-quality scores**: desktop automated E2E, Android automated E2E, desktop manual and Android manual. The [scoring method](./test-coverage/README.md) defines the scale and evidence rules. See scores with rationale, gaps and test links in the explorer, or import the [complete score spreadsheet](./test-coverage.csv). These ratings assess written test verification; they are independent from the runtime walkthrough and do not claim test execution or pass rates.
 
@@ -14,7 +14,7 @@ The [screen-by-screen source audit](./screen-audit/README.md) adds 18 capabiliti
 
 | File                                        | Purpose                                                                                                                                                                                                  |
 | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Offline explorer](./index.html)            | Interactive map: expandable tree with screenshot thumbnails, coverage overview and landscape, screenshot gallery, sortable table, cross-links and filters. Open the file locally; no server is required. |
+| [Offline explorer](./explorer.html)         | Interactive map: expandable tree with screenshot thumbnails, coverage overview and landscape, screenshot gallery, sortable table, cross-links and filters. Open the file locally; no server is required. |
 | [Compact outline](./overview.html)          | Expand the user-facing tree with desktop/web/mobile status; suitable for an inline overview.                                                                                                             |
 | [Canonical JSON](./features.json)           | Authoritative structured dataset, including platform variants, source identities and containment/related edges.                                                                                          |
 | [Feature CSV](./features.csv)               | Spreadsheet or database import, one canonical node per row. Nested evidence and platform ownership are JSON cells.                                                                                       |
@@ -34,7 +34,7 @@ For a readable complete diagram, show areas first, expand a selected branch and 
 
 ## Using the explorer
 
-Open [index.html](./index.html) in a browser. It embeds the data, loads screenshots from `runtime/screenshots` and needs no network access.
+Open [explorer.html](./explorer.html) in a browser. It embeds the data, loads screenshots from `runtime/screenshots` and needs no network access.
 
 - **Tree** shows the hierarchy. Each row has platform availability, four coverage scores, a subtree score distribution, connection count and screenshot thumbnails. Filtering keeps non-matching ancestors as dimmed context and expands branches with matches.
 - **Overview** shows mean scores and score distributions per coverage axis, an area table, and a landscape with one tile per feature, colored by a selected axis.
@@ -144,7 +144,7 @@ node docs/features/feature-map/build.ts
 node docs/features/feature-map/verify.ts
 ```
 
-`build.ts` regenerates `index.html` through `explorer.ts`.
+`build.ts` regenerates `explorer.html` through `explorer.ts`. It is not called `index.html` because the documentation book renders this README as the chapter's `index.html`.
 
 [team-ownership.json](./parts/team-ownership.json) assigns every feature a frontend team (Connect, Earn, Growth, Network, Trade or Wallet) for all platforms. The backend team equals the frontend team unless `backend_team_assignments` lists the feature; currently features that talk directly to the Trezor device (connection, firmware, device setup and settings) keep their frontend team and have Connect as backend team. `build.ts` maps recorded inventory spellings through `team_aliases`, applies agreed reassignments (`agreed_team_changes`, e.g. Firmware → Growth, and per-feature `feature_teams`) with confidence `agreed`, and fails when a feature ends up without a canonical team. Where the desktop/web and mobile inventories disagreed, the primary desktop/web record wins unless `feature_teams` overrides it. The runtime and test-coverage baselines do not hash ownership, so team changes need no re-pinning.
 

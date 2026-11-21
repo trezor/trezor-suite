@@ -12,6 +12,7 @@ import {
     pyDigest,
     pyEntries,
     pyEquals,
+    pyExists,
     pyIsAbsolute,
     pyIsFile,
     pyJoin,
@@ -138,6 +139,18 @@ export const preserveBaseline = (features: readonly JsonObject[]): JsonObject =>
     const baseline = asObject(readJson(pyJoin(HERE, 'test-coverage/baseline.json')));
     const byId = new Map<Json, JsonObject>();
     for (const feature of features) byId.set(getItem(feature, 'id'), feature);
+    // Captures from the runtime supplement are additions; the pinned manifest is checked below.
+    const supplementPath = pyJoin(HERE, 'parts/runtime-supplement.json');
+    const supplement = pyExists(supplementPath) ? asObject(readJson(supplementPath)) : {};
+    const supplementIds = new Set<Json>(
+        ['observations', 'screenshots'].flatMap(key =>
+            hasKey(supplement, key)
+                ? pyIter(getItem(supplement, key)).map(x => getItem(x, 'id'))
+                : [],
+        ),
+    );
+    const withoutSupplement = (list: Json): Json[] =>
+        pyIter(list).filter(item => !supplementIds.has(getItem(item, 'id')));
     for (const [featureId, expected] of pyEntries(asObject(getItem(baseline, 'feature_hashes')))) {
         pyAssert(byId.has(featureId), ['Existing feature removed', featureId]);
         // runtime_order and current_is_leaf are derived from the tree; ownership is curated in parts/team-ownership.json.
@@ -151,6 +164,9 @@ export const preserveBaseline = (features: readonly JsonObject[]): JsonObject =>
         const original = pyDict(
             pyEntries(byId.get(featureId) as JsonObject).filter(([key]) => !excluded.includes(key)),
         );
+        for (const key of ['runtime_observations', 'screenshots']) {
+            if (hasKey(original, key)) original[key] = withoutSupplement(original[key]);
+        }
         if (hasKey(original, 'variants')) {
             original.variants = pyIter(original.variants).map(v =>
                 pyDict(pyEntries(asObject(v)).filter(([key]) => key !== 'ownership')),

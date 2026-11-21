@@ -13,7 +13,8 @@
                 "BNB Smart Chain"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "b0a2c3257041d282529db99a41a79888c493f7d30f6dc156ad0ef3f1b71379d9"
         },
         {
             "screenshot_id": "mobile-accounts-add-menu",
@@ -26,7 +27,8 @@
                 "BNB Smart Chain"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "b66ae03011c28555d0060d961e6cb1b05270964cf408e7c8ad655ec02bc9d988"
         },
         {
             "screenshot_id": "mobile-activity-release-notes",
@@ -34,7 +36,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Version", "New features", "Improvements"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "2118e6adda1db3fe5639dc10798b1c25b9c0e0b0aaed411fc7b00e4f21512e47"
         },
         {
             "screenshot_id": "mobile-activity-release-notes",
@@ -42,7 +45,8 @@
             "device": "iPhone Duo",
             "found": ["Version", "New features", "Improvements"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "bc5b852db95a58c2a09bbb58db039b487cbfa0072fef3f9e91791ce6cee51811"
         },
         {
             "screenshot_id": "mobile-connect-safe7-instructions",
@@ -50,7 +54,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Turn on & unlock", "your Trezor Safe 7"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "bf7b9bf53f0109c7a4d1e972c377016f147c3c6b7729d4b3e3ffeb235a6691f7"
         },
         {
             "screenshot_id": "mobile-connect-safe7-instructions",
@@ -58,7 +63,8 @@
             "device": "iPhone Duo",
             "found": ["Turn on & unlock", "your Trezor Safe 7"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "82c04d7c5bac710f167828596bd5afc56cc10b7842ac56a7ef73644b58e3ab4f"
         },
         {
             "screenshot_id": "mobile-earn-staking-gate",
@@ -70,7 +76,8 @@
                 "Tap to copy"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "f3578d6a1835b137a0651a048c65d6669e4430ed22285fed11c684ffc799e99e"
         },
         {
             "screenshot_id": "mobile-earn-staking-gate",
@@ -82,7 +89,8 @@
                 "Tap to copy"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "838d4cd93eca276b7cfa51a02f751bc00c9f695c22f111f381238607ed33a7a5"
         },
         {
             "screenshot_id": "mobile-earn-yield-gate",
@@ -94,7 +102,8 @@
                 "Tap to copy"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "be964b604f315064b49eb37b872245480d1c7291089a2dd0f0d6bdbd75d66aa2"
         },
         {
             "screenshot_id": "mobile-earn-yield-gate",
@@ -106,7 +115,8 @@
                 "Tap to copy"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "40ab59945695a28c5dda495019d7b0cc6278f0fc25ce98be23dd9d8f3c2cc008"
         },
         {
             "screenshot_id": "mobile-empty-accounts",
@@ -118,7 +128,8 @@
                 "track accounts"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "7ca697de1cdcc86a1f9de78ddba5b48173c0da95fb4a4c55f2f92eed16792687"
         },
         {
             "screenshot_id": "mobile-empty-accounts",
@@ -130,7 +141,8 @@
                 "track accounts"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "c161a6d88d988d3316e2a4782da8250934e23689ff91fb149b5037a0fb41df64"
         },
         {
             "screenshot_id": "mobile-empty-activity",
@@ -142,7 +154,8 @@
                 "Release notes"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "4d30997d76d2af9cfb612d0ba722e277cc69c62234a96d377fdb8c060191e10c"
         },
         {
             "screenshot_id": "mobile-empty-activity",
@@ -154,7 +167,8 @@
                 "Release notes"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "9f84d8eca7a0728142c8bded60f4e13a82ab153b045d6f8a5d262380be32223f"
         },
         {
             "screenshot_id": "mobile-empty-device-manager",
@@ -162,7 +176,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Connect Trezor", "Trezor"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "2e36a073f1639af84e70f7791702d71eed895896fa6b7952b6ffe2dd02738138"
         },
         {
             "screenshot_id": "mobile-empty-device-manager",
@@ -170,7 +185,8 @@
             "device": "iPhone Duo",
             "found": ["Connect Trezor", "Trezor"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "7ddb94f06db47b406607a833955a42a4a927c220b8715819afb1aadb39c5f514"
         },
         {
             "screenshot_id": "mobile-empty-earn",
@@ -178,7 +194,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Explore earn opportunities", "operated by independent providers", "Staking"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "08648ff392e54c4b27091f04c2a3bbc6fb4cf07a97eaf25d4a57554f7354aed3"
         },
         {
             "screenshot_id": "mobile-empty-earn",
@@ -186,7 +203,8 @@
             "device": "iPhone Duo",
             "found": ["Explore earn opportunities", "operated by independent providers", "Staking"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "c79adcca0e87a0679d347dd75aa2ec4c7ca68a63a6b702fa266b03927de70c52"
         },
         {
             "screenshot_id": "mobile-empty-home",
@@ -194,7 +212,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Connect your Trezor Safe 7", "Manage your assets with your Trezor"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "550e70a49e1e7ef3a94af194e3e429d09b4c1a32dc4c497a4044060e09c08736"
         },
         {
             "screenshot_id": "mobile-empty-home",
@@ -202,7 +221,8 @@
             "device": "iPhone Duo",
             "found": ["Connect your Trezor Safe 7", "Manage your assets with your Trezor"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "3160f3a24b96d93823c48def34e150790b0d6f0b8c2a791d54ef7e9831c7b60e"
         },
         {
             "screenshot_id": "mobile-empty-yield",
@@ -210,7 +230,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Trezor Steakhouse USDT", "Trezor Steakhouse ETH", "Powered by"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "2dee61f20eaa7a36bc7f79fe6dbb5880a518df6a361b2444bcca4ac000659981"
         },
         {
             "screenshot_id": "mobile-empty-yield",
@@ -218,7 +239,8 @@
             "device": "iPhone Duo",
             "found": ["Trezor Steakhouse USDT", "Trezor Steakhouse ETH", "Powered by"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "4ee1246063953e9b364464ea17d2830f171bff40cfc873ae19c65885f16539d7"
         },
         {
             "screenshot_id": "mobile-home-tracker-entry",
@@ -226,7 +248,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Track your assets", "with portfolio tracker", "Sync & Track"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "f8cca6d4b6b84767ca1e6b5d3799dea15b6d56dfd53c844c5b038c3fe87d93e2"
         },
         {
             "screenshot_id": "mobile-home-tracker-entry",
@@ -234,7 +257,8 @@
             "device": "iPhone Duo",
             "found": ["Track your assets", "with portfolio tracker", "Sync & Track"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "01d97eac1fb2e1f0ba35dcb902468cfa3139d4406ad81b8106ff12bb01ae1606"
         },
         {
             "screenshot_id": "mobile-onboarding-analytics",
@@ -247,7 +271,8 @@
                 "potential technical issues"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "70a67e367a2621d2fb3ec3889b8380eccd21a0e68e58010fe1b684a1b9d1147b"
         },
         {
             "screenshot_id": "mobile-onboarding-analytics",
@@ -260,7 +285,8 @@
                 "potential technical issues"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "866ddbefc6968aa5d6d7286da7434231f9d0fbf8aea7fce580a3a4d131e32587"
         },
         {
             "screenshot_id": "mobile-onboarding-analytics-disabled",
@@ -273,7 +299,8 @@
                 "potential technical issues"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "130418b171bb9a988b17ae1975b2e4d4b2e2ff4cd9e0eb268ebe651ba6723980"
         },
         {
             "screenshot_id": "mobile-onboarding-analytics-disabled",
@@ -286,7 +313,8 @@
                 "potential technical issues"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "b603f060dcb89bd4a2180fb42080705e4d7abe75a2e9a70f165687dd62fb07ae"
         },
         {
             "screenshot_id": "mobile-onboarding-biometrics",
@@ -294,7 +322,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Biometric authentication", "unauthorized access", "Not now"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "586dfa56b1063881210c5e2dcfdb771353de883238f7bb847abdbc8cd7591c4a"
         },
         {
             "screenshot_id": "mobile-onboarding-biometrics",
@@ -302,7 +331,8 @@
             "device": "iPhone Duo",
             "found": ["Biometric authentication", "unauthorized access", "Not now"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "5519356a8e9dd1ebc7b47ede8fcf89d186319f5c20503e8553798d345358db30"
         },
         {
             "screenshot_id": "mobile-onboarding-residence",
@@ -315,7 +345,8 @@
                 "Swap and buy crypto directly"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "fd48fc40e0a1f7f9175a05ab2fa0b9f6136a9b0fdbab96ec6cb23548f6ba80fd"
         },
         {
             "screenshot_id": "mobile-onboarding-residence",
@@ -328,7 +359,8 @@
                 "Swap and buy crypto directly"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "37bb5166a3ed2522cecb390ae60a00c51345dfc33f0b10b63ac86f6dd17426f0"
         },
         {
             "screenshot_id": "mobile-onboarding-welcome",
@@ -336,7 +368,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Take control", "Let's get started"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "1eca26539395b2ce0cf7f2fdfc8734ca231dcd4596cf0c2a8f435b606f54631c"
         },
         {
             "screenshot_id": "mobile-onboarding-welcome",
@@ -344,7 +377,8 @@
             "device": "iPhone Duo",
             "found": ["Take control", "Let's get started"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "16aeae0fe7406a3d738321b2e176caf867784a49a3ee74e9ba45202c37050d06"
         },
         {
             "screenshot_id": "mobile-settings-advanced",
@@ -357,7 +391,8 @@
                 "Verify that your Trezor device"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "7c7afb6fc0d9731c75405036aa4931de4e13ea0ff9c5a11a2cf547683ecd3db5"
         },
         {
             "screenshot_id": "mobile-settings-advanced",
@@ -370,7 +405,8 @@
                 "Verify that your Trezor device"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "c3010f25257de77454f31791a69c7cfb752aacc04bb6c5ea5f30af8f2610fc3e"
         },
         {
             "screenshot_id": "mobile-settings-advanced-lower",
@@ -383,7 +419,8 @@
                 "Spaced address formatting"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "58d971d3cc03064a0909a44247cd8d4df8e0c257fd09d90715cb7f29d47cd277"
         },
         {
             "screenshot_id": "mobile-settings-advanced-lower",
@@ -396,7 +433,8 @@
                 "Spaced address formatting"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "743fb32c473b3c28681034a41b09970cec2388013ca6d8d2cf0f343a0b2f8b08"
         },
         {
             "screenshot_id": "mobile-settings-auto-eject",
@@ -409,7 +447,8 @@
                 "Your balances remain visible when you"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "669108526da6b8daf1f4222ca6d9db4677bfc7bbd197321a9caed2435fbfd932"
         },
         {
             "screenshot_id": "mobile-settings-auto-eject",
@@ -422,7 +461,8 @@
                 "Your balances remain visible when you"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "d7afda201b843193c939fff05969749f48e0907d0e517f63c679befe5a91f7ca"
         },
         {
             "screenshot_id": "mobile-settings-backend-discard",
@@ -430,7 +470,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Discard changes?", "Any unsaved changes will be lost.", "Keep editing"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "05c7741da95f6667f3e52ab13f7cdeffe380649909199587f20690355f55baca"
         },
         {
             "screenshot_id": "mobile-settings-backend-discard",
@@ -438,7 +479,8 @@
             "device": "iPhone Duo",
             "found": ["Discard changes?", "Any unsaved changes will be lost.", "Keep editing"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "a2ca08b0021e8a8720618d38d9a4ba8159066d9800021e8650632b3fbd2ac2fd"
         },
         {
             "screenshot_id": "mobile-settings-backend-type",
@@ -446,7 +488,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Server type", "Blockbook", "Electrum", "Trezor (default)"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "76cfe02258d4856fe7c7a601d6c8037fa3d018194072fbc470d5c59d22252ac1"
         },
         {
             "screenshot_id": "mobile-settings-backend-type",
@@ -454,7 +497,8 @@
             "device": "iPhone Duo",
             "found": ["Server type", "Blockbook", "Electrum", "Trezor (default)"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "0018cad0a5e5270f99242d9ae87abb79981da20ff1bb9f24df21085f42e03ee3"
         },
         {
             "screenshot_id": "mobile-settings-bitcoin-backend",
@@ -468,7 +512,8 @@
                 "Transaction path"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "c3a7d96bec4719abc1f245a80ce39fd943a06b7997f267c9c8e2687c41532986"
         },
         {
             "screenshot_id": "mobile-settings-bitcoin-backend",
@@ -482,7 +527,8 @@
                 "Transaction path"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "9f9be883212965e57097bb04277e8ec133a1f5d26a31a28d96f3eaf57ed792c8"
         },
         {
             "screenshot_id": "mobile-settings-bitcoin-unit",
@@ -490,7 +536,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Bitcoin units", "Satoshis"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "712740da3fb7edd43db61c7f3c1c6e077fe38d20df10aef3886b2d7800667656"
         },
         {
             "screenshot_id": "mobile-settings-bitcoin-unit",
@@ -498,7 +545,8 @@
             "device": "iPhone Duo",
             "found": ["Bitcoin units", "Satoshis"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "46ef8a59ade917fdbcf207fa61770b79cfb1bd2bb9e6ae8ee8dbc56227004756"
         },
         {
             "screenshot_id": "mobile-settings-currency",
@@ -506,7 +554,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Pound Sterling", "Argentine Peso", "Australian Dollar"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "da86b072c910273a073bc436ea666daeb6c0e859e0bd6e697a4ffb5f6f692284"
         },
         {
             "screenshot_id": "mobile-settings-currency",
@@ -514,7 +563,8 @@
             "device": "iPhone Duo",
             "found": ["Pound Sterling", "Argentine Peso", "Australian Dollar"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "5ab5aab4d043b3c652f65bf070b02b1a74e06e8ed5eedc186e19b998e28d3874"
         },
         {
             "screenshot_id": "mobile-settings-dust",
@@ -527,7 +577,8 @@
                 "Transactions below this amount are marked as"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "e12d1900f9ecb4c36f7ed08e3b177d67d3cd41af45defb9b0592785695f2d996"
         },
         {
             "screenshot_id": "mobile-settings-dust",
@@ -540,7 +591,8 @@
                 "Transactions below this amount are marked as"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "042a8e7121c52a457dd17cfe3641fccf49628d3a70e4b9b52312d0209c79cdb3"
         },
         {
             "screenshot_id": "mobile-settings-electrum-form",
@@ -548,7 +600,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Server address", "Electrum", "Bitcoin backend", "Root URL"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "193b03c1c6041227a550a9d6e1869c180d81603ead964393a0a052fe5e460d89"
         },
         {
             "screenshot_id": "mobile-settings-electrum-form",
@@ -556,7 +609,8 @@
             "device": "iPhone Duo",
             "found": ["Server address", "Electrum", "Bitcoin backend", "Root URL"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "81bad687533b27ea933dc6e68d4962c77270a3b53538be38753c0ed76e39e96a"
         },
         {
             "screenshot_id": "mobile-settings-experimental",
@@ -568,7 +622,8 @@
                 "View transaction details on your"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "ac059db0ce6fb9d8e68a87138a88e56d2bf76715664fc5cf99ef4cd903bf8cec"
         },
         {
             "screenshot_id": "mobile-settings-experimental",
@@ -580,7 +635,8 @@
                 "View transaction details on your"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "30725a076def3d96120ec41e10d1bc5c07d9b5ffa6d6d0b419862f7997c57809"
         },
         {
             "screenshot_id": "mobile-settings-features-lower",
@@ -593,7 +649,8 @@
                 "Experimental"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "ff7e0f9149676c12d53cd96617b500bcee1398838238e5f93d695c64cf8da64e"
         },
         {
             "screenshot_id": "mobile-settings-features-lower",
@@ -606,7 +663,8 @@
                 "Experimental"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "652822a35b18a446bcd063847b373252b2c4904e210cfde50aaf7c78cff81c74"
         },
         {
             "screenshot_id": "mobile-settings-general",
@@ -614,7 +672,8 @@
             "device": "iPhone 18 Pro",
             "found": ["preferences and theme", "Enable biometric", "set data preferences"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "31e7094a34259fa2a2cb824155e64cee1bce2c56855ba60ef8212aa7d8003021"
         },
         {
             "screenshot_id": "mobile-settings-general",
@@ -622,7 +681,8 @@
             "device": "iPhone Duo",
             "found": ["preferences and theme", "Enable biometric", "set data preferences"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "eb70446128bda5a31af6811e5adffc61bfd0f4fc550c2ab4510a5785bf9245b0"
         },
         {
             "screenshot_id": "mobile-settings-home",
@@ -630,7 +690,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Secure your crypto offline", "Easy to set up", "simple to recover"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "40309e78e6c28b5ae85d41203bef161bcfe8bb729106c2a2d197323722f69704"
         },
         {
             "screenshot_id": "mobile-settings-home",
@@ -638,7 +699,8 @@
             "device": "iPhone Duo",
             "found": ["Secure your crypto offline", "Easy to set up", "simple to recover"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "5f9040f75f554a0b1e1a5d70a0794ab19a38c51db9e66d7efe6dc98e7d7287f8"
         },
         {
             "screenshot_id": "mobile-settings-language",
@@ -646,7 +708,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Bahasa Indonesia", "Deutsch", "English"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "587f09e43b29dd471439043482119adb9b385b881b6fef12be90898d66f002cf"
         },
         {
             "screenshot_id": "mobile-settings-language",
@@ -654,7 +717,8 @@
             "device": "iPhone Duo",
             "found": ["Bahasa Indonesia", "Deutsch", "English"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "49ad16b87b4e24e69f77e6e42cb2c529b0a8c9250fed91193d91bff0beb818e8"
         },
         {
             "screenshot_id": "mobile-settings-network-filtered",
@@ -662,7 +726,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Bitcoin", "Cash"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "7d666809f85a98dfa90f2a2d721bab1e7cc7530317cd3fbdeee887c40c72432b"
         },
         {
             "screenshot_id": "mobile-settings-network-filtered",
@@ -670,7 +735,8 @@
             "device": "iPhone Duo",
             "found": ["Bitcoin", "Cash"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "16cd1fcf664b4a3a8e223cee709d04f8268aa35e7698e61e7d2c0a4372ef1f5c"
         },
         {
             "screenshot_id": "mobile-settings-network-search",
@@ -678,7 +744,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Ethereum", "Polygon PoS"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "0ea0f404a9425222f2e68d1e7ff2ab9582302ebdc5a739ca20e871bc3faffd60"
         },
         {
             "screenshot_id": "mobile-settings-network-search",
@@ -686,7 +753,8 @@
             "device": "iPhone Duo",
             "found": ["Polygon PoS"],
             "missing": ["Ethereum"],
-            "result": "drift"
+            "result": "drift",
+            "sha256": "ddef38612505a750d79be89ce9ea74702607ac0659ba0fd06fbe27215dbfeb76"
         },
         {
             "screenshot_id": "mobile-settings-networks",
@@ -699,7 +767,8 @@
                 "BNB Smart Chain"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "07f71d8cf88de7bb6673d8c7969c0d2b67731b891e6a2fa8ebc09d3a7d22ebde"
         },
         {
             "screenshot_id": "mobile-settings-networks",
@@ -712,7 +781,8 @@
                 "BNB Smart Chain"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "bb5cf421f4e8e49e384c947b08e00804103860594861a7954afd40d59bae4b05"
         },
         {
             "screenshot_id": "mobile-settings-preferences",
@@ -720,7 +790,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Language", "United States Dollar", "Bitcoin units", "Theme"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "ad070843e1df4db34d8355d5e7053cc2302d93f5d4c4c2b55f119cae64c4c731"
         },
         {
             "screenshot_id": "mobile-settings-preferences",
@@ -728,7 +799,8 @@
             "device": "iPhone Duo",
             "found": ["Language", "United States Dollar", "Bitcoin units", "Theme"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "d024a387676f0d81484cdc6bdf2bace630e0aeb6f81b4d6d2d92da97b1780419"
         },
         {
             "screenshot_id": "mobile-settings-privacy",
@@ -741,7 +813,8 @@
                 "fingerprint verification"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "f595f33dcd9e0605508d4e863b90d48b9bf70e80e29b647fe8e25a49c1c694ac"
         },
         {
             "screenshot_id": "mobile-settings-privacy",
@@ -754,7 +827,8 @@
                 "fingerprint verification"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "47e98a2bbfe190fc8efe769f17837ffc9ae7731eca256d4e2a026c28698e1fed"
         },
         {
             "screenshot_id": "mobile-settings-security",
@@ -767,7 +841,8 @@
                 "Hide suspicious micro transactions from"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "bb158c103a6f9ca59a6c9d6d54847d1a6f9c4d2064508deb7f61a3cc75b0ae86"
         },
         {
             "screenshot_id": "mobile-settings-security",
@@ -780,7 +855,8 @@
                 "Hide suspicious micro transactions from"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "80edd4d8ef28553da3baa79540956a4444f8291c5763d970b0b9c37fb58796c8"
         },
         {
             "screenshot_id": "mobile-settings-suite-sync",
@@ -792,7 +868,8 @@
                 "Trezor (default)"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "3926f8341c83361aee93b811d66a74a4a91171d6d99aedb7c5e0a04ebd2df7c6"
         },
         {
             "screenshot_id": "mobile-settings-suite-sync",
@@ -804,7 +881,8 @@
                 "Trezor (default)"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "90ab0f5934a25cc14532a6b8fc4a8fcf60b89a5cc3463053483a498d2b63577b"
         },
         {
             "screenshot_id": "mobile-settings-suite-sync-server",
@@ -812,7 +890,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Custom", "Trezor (default)", "Server"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "efa149865251efae7db8bc762f6f4df2205053c3b8d181c0457da20ac2ef1e9b"
         },
         {
             "screenshot_id": "mobile-settings-suite-sync-server",
@@ -820,7 +899,8 @@
             "device": "iPhone Duo",
             "found": ["Custom", "Trezor (default)", "Server"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "5d02f1bb871682157134a2706b36c1c43fa366c63bcd43a590906d229af270fb"
         },
         {
             "screenshot_id": "mobile-settings-support",
@@ -833,7 +913,8 @@
                 "What does the graph display"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "25d732f66779097e5c89c3cf9f27e8330bb83e8efb9609b33d7bf7a3007525aa"
         },
         {
             "screenshot_id": "mobile-settings-support",
@@ -846,7 +927,8 @@
                 "What does the graph display"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "0f44dc64cc0079b96adb8e030fc322adaec68608ec5f498a998828154f5cbad1"
         },
         {
             "screenshot_id": "mobile-settings-theme",
@@ -854,7 +936,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Theme", "Standard", "Dark"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "18adf6332dd265ecc6b52a7591c209caeeaf37719a452987bb9ded1219033c69"
         },
         {
             "screenshot_id": "mobile-settings-theme",
@@ -862,7 +945,8 @@
             "device": "iPhone Duo",
             "found": ["Theme", "Standard", "Dark"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "7175249e5fa92f2d49227c58d2d46ec0c18c2881c8a7e44d4860eaaa565fd553"
         },
         {
             "screenshot_id": "mobile-settings-theme-dark",
@@ -870,7 +954,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Theme", "Standard", "Dark"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "781977a6929a08cea3c79fa48333d6dcd45c14a74c041404287704b45a92fc9b"
         },
         {
             "screenshot_id": "mobile-settings-theme-dark",
@@ -878,7 +963,8 @@
             "device": "iPhone Duo",
             "found": ["Theme", "Standard", "Dark"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "d253374c526b35f7ca529840535ecda47122648e27723a8f765d066cf0166373"
         },
         {
             "screenshot_id": "mobile-settings-trading-residence",
@@ -890,7 +976,8 @@
                 "Swap and buy crypto directly on your phone"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "b91562d2078cc241e4ca2b459c63dab7401c3bc8a8e91344283e5c96d640ab5c"
         },
         {
             "screenshot_id": "mobile-settings-trading-residence",
@@ -902,7 +989,8 @@
                 "Swap and buy crypto directly on your phone"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "402a68c6e571ecce42d7338ed0cfc3bcc384ece784e8d2ee16e84c5444fb7221"
         },
         {
             "screenshot_id": "mobile-storage-recovery",
@@ -910,7 +998,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Unable to load app data", "Clear app storage"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "dc7c7002bdbc23248cf9c5e04393f9ec659039de8bc8af189a5a02d783bdd666"
         },
         {
             "screenshot_id": "mobile-storage-recovery",
@@ -918,7 +1007,8 @@
             "device": "iPhone Duo",
             "found": ["Unable to load app data", "Clear app storage"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "b982edec9ff42e147f2259ce68410c138a73c22c9bb7ef756e4fc0349abff5d6"
         },
         {
             "screenshot_id": "mobile-support-about",
@@ -926,7 +1016,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Get more help", "Trezor Support", "Application log", "About Trezor Suite"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "e09e06a8439574835b798b47a7ef4028168e1dfa713e7b9a0387a44fedb10711"
         },
         {
             "screenshot_id": "mobile-support-about",
@@ -934,7 +1025,8 @@
             "device": "iPhone Duo",
             "found": ["Get more help", "Trezor Support", "Application log", "About Trezor Suite"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "b49bbf3049105758c7fb6a9d13602ca436a2e6beec883744fc6dc897e8007998"
         },
         {
             "screenshot_id": "mobile-support-about-legal",
@@ -942,7 +1034,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Legal", "Terms & conditions", "Privacy policy"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "90c09774323ef7113f8ebca834bbd0c040b88c3deaea3257e81d0f8d6774589f"
         },
         {
             "screenshot_id": "mobile-support-about-legal",
@@ -950,7 +1043,8 @@
             "device": "iPhone Duo",
             "found": ["Legal", "Terms & conditions", "Privacy policy"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "3704f968502659f8e3e72c4df878f80ea8b489a4d563dd8a91bb7e09f7d5a434"
         },
         {
             "screenshot_id": "mobile-support-model-faq",
@@ -962,7 +1056,8 @@
                 "standalone"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "fed3d3b3665b199630127ad4abb555fb15d731e2a5eb02b981d1719f1e583dbc"
         },
         {
             "screenshot_id": "mobile-support-model-faq",
@@ -974,7 +1069,8 @@
                 "standalone"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "4de6a4888a410b318f021169e249f0a9364619de13398c4e0e1ce5eb1dcd2ed5"
         },
         {
             "screenshot_id": "mobile-tracker-address-import",
@@ -982,7 +1078,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Ethereum", "ETH +Tokens", "Where is my receive address?"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "fc971c024fe84b7925579edd75c09611e331ae33eb4552c1980f59e308c65c97"
         },
         {
             "screenshot_id": "mobile-tracker-address-import",
@@ -990,7 +1087,8 @@
             "device": "iPhone Duo",
             "found": ["Ethereum", "ETH +Tokens", "Where is my receive address?"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "852633b29694262a8a47b778eff63855fe64e3770de2581bb986f11116b3dcf2"
         },
         {
             "screenshot_id": "mobile-tracker-bitcoin-import",
@@ -998,7 +1096,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Bitcoin", "BTC", "Where is my public key (XPUB)?"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "f85b068eda74842fbb938c736791a5c5365f8c197843b6a91fe1659d683e014b"
         },
         {
             "screenshot_id": "mobile-tracker-bitcoin-import",
@@ -1006,7 +1105,8 @@
             "device": "iPhone Duo",
             "found": ["Bitcoin", "BTC", "Where is my public key (XPUB)?"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "a311e57a2f059e89ba0f931307ecceac30485797025f89345ff8408758a158e1"
         },
         {
             "screenshot_id": "mobile-tracker-invalid-address",
@@ -1014,7 +1114,8 @@
             "device": "iPhone 18 Pro",
             "found": ["Enter address manually", "Address is not valid", "Sync my assets"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "0f86a8a1aed22ca9c9f7d892affc620370eca43a2b5598c9443d9ced5ab0f35f"
         },
         {
             "screenshot_id": "mobile-tracker-invalid-address",
@@ -1022,7 +1123,8 @@
             "device": "iPhone Duo",
             "found": ["Enter address manually", "Address is not valid", "Sync my assets"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "9096c92c1e13d05576597842fa2f21200a4f958c0a016d3a7d7060c88685f6fe"
         },
         {
             "screenshot_id": "mobile-tracker-manual-address",
@@ -1034,7 +1136,8 @@
                 "Where is my receive address?"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "8716d58b17129a58834584108890bae9e024869d6c949160ef2e7206bc0b5ede"
         },
         {
             "screenshot_id": "mobile-tracker-manual-address",
@@ -1046,7 +1149,8 @@
                 "Where is my receive address?"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "cd3aea7e5d28782163231bb1e4bde6b8f27a57ff4d07097bbea6d52971c6cb72"
         },
         {
             "screenshot_id": "mobile-tracker-manual-xpub",
@@ -1058,7 +1162,8 @@
                 "Where is my public key (XPUB)?"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "4b27b6771d02c0f5397c7b6f136d82d8102d10465dfa9b1ae004236f2cd133ed"
         },
         {
             "screenshot_id": "mobile-tracker-manual-xpub",
@@ -1070,7 +1175,8 @@
                 "Where is my public key (XPUB)?"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "1e026c93ed39ca3f06e3d1b03d12b6e9eddefa2f75166030a5883f1e76258a36"
         },
         {
             "screenshot_id": "mobile-tracker-network-selection",
@@ -1083,7 +1189,8 @@
                 "BNB Smart Chain"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "d1c0a07dc38bcc76cf13e77d6bbec8e2d176dc2ff0e44ac35fe14209a79e31af"
         },
         {
             "screenshot_id": "mobile-tracker-network-selection",
@@ -1096,7 +1203,8 @@
                 "BNB Smart Chain"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "aa7b89d50ea729d913af55b379868355c2e968d93b1ffe3058099c1ac5b4e463"
         },
         {
             "screenshot_id": "mobile-tracker-qr-permission-fallback",
@@ -1108,7 +1216,8 @@
                 "Upload from gallery"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "c04781084293fd346cda4b5a414cc8f6049813730a1d7b5e534c4f3d795367ca"
         },
         {
             "screenshot_id": "mobile-tracker-qr-permission-fallback",
@@ -1120,7 +1229,8 @@
                 "Upload from gallery"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "45600071708ee8f8692f65545132232034c71e168615a0cc891f27613022a5e2"
         },
         {
             "screenshot_id": "mobile-tracker-qr-scanner",
@@ -1128,7 +1238,8 @@
             "device": "iPhone 18 Pro",
             "found": ["access your camera", "camera for QR code scanning", "Upload from gallery"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "d695cba8316a217eebda3291f5b1f0aa7cfec72eec0a50c0519bf3fac1fa79b4"
         },
         {
             "screenshot_id": "mobile-tracker-qr-scanner",
@@ -1136,7 +1247,8 @@
             "device": "iPhone Duo",
             "found": ["access your camera", "camera for QR code scanning", "Upload from gallery"],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "1e0a6e669ee6c00666f855ec3443a1b1e40982be1675a5fc6e6e2bc1198683ee"
         },
         {
             "screenshot_id": "mobile-tracker-xpub-help",
@@ -1148,7 +1260,8 @@
                 "Got it"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "a72bb2943aaf336789ce4eba33a18e878a23788067d5343478e24ca5142e1f5a"
         },
         {
             "screenshot_id": "mobile-tracker-xpub-help",
@@ -1160,7 +1273,8 @@
                 "Got it"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "abb280e2bc81c2ec141e34c24829f6bfb1070423b16978dc411b542cd26ad140"
         },
         {
             "screenshot_id": "mobile-tracker-xpub-input",
@@ -1172,7 +1286,8 @@
                 "Where is my public key (XPUB)?"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "a9760ed9dabee7bc0fc20c8fa7bbc47b620d89fd271124e7ac7f026d39752a66"
         },
         {
             "screenshot_id": "mobile-tracker-xpub-input",
@@ -1184,7 +1299,8 @@
                 "Where is my public key (XPUB)?"
             ],
             "missing": [],
-            "result": "pass"
+            "result": "pass",
+            "sha256": "35dcf2e11e83acaed74a385db31c9c6d64edd72502c57a8a1aae6ec2ef8e9a16"
         }
     ]
 }

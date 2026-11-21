@@ -227,11 +227,38 @@ const compileScript = (path: string): void => {
     }
 };
 
+/** The published frontend and backend teams must match parts/team-ownership.json, so a config edit needs a rebuild. */
+const verifyOwnership = (features: readonly Json[]): void => {
+    const config = readJson(pyJoin(HERE, 'parts/team-ownership.json'));
+    const teams = new Set(arr(at(config, 'teams')));
+    const overrides = at(config, 'feature_teams') as Record<string, Json>;
+    const backend = new Map<Json, Json>();
+    for (const assignment of arr(at(config, 'backend_team_assignments'))) {
+        for (const featureId of arr(at(assignment, 'feature_ids'))) {
+            backend.set(featureId, at(assignment, 'team'));
+        }
+    }
+    for (const feature of features) {
+        const id = at(feature, 'id') as string;
+        const ownership = at(feature, 'ownership');
+        const team = at(ownership, 'team');
+        pyAssert(teams.has(team) && teams.has(at(ownership, 'backend_team')), ['Unknown team', id]);
+        if (hasKey(overrides, id)) {
+            pyAssert(pyEquals(team, at(overrides[id], 'team')), ['Stale frontend team', id]);
+        }
+        pyAssert(pyEquals(at(ownership, 'backend_team'), backend.get(id) ?? team), [
+            'Stale backend team',
+            id,
+        ]);
+    }
+};
+
 export const verify = (): void => {
     const data = readJson(pyJoin(HERE, 'features.json'));
     const features = arr(at(data, 'features'));
     const byId = indexBy(features, 'id');
     pyAssert(byId.size === features.length, 'Duplicate canonical IDs');
+    verifyOwnership(features);
     const rawIds: Json[] = [];
     for (const name of ['administration', 'wallet', 'services', 'mobile']) {
         rawIds.push(
@@ -687,7 +714,7 @@ export const verify = (): void => {
     ]) {
         compileScript(script);
     }
-    pyAssert(!readText(pyJoin(HERE, 'index.html')).includes('__FEATURE_DATA__'));
+    pyAssert(!readText(pyJoin(HERE, 'explorer.html')).includes('__FEATURE_DATA__'));
     const readme = pyJoin(HERE, 'README.md');
     if (pyExists(readme)) {
         for (const target of pyFindall(pyRe('\\]\\(([^)]+)\\)'), readText(readme)) as string[]) {

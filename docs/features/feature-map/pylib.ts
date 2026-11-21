@@ -1942,14 +1942,14 @@ const csvField = (value: unknown): string => {
     return text;
 };
 
-/** csv.writer(...).writerow(values) including the \r\n terminator. */
+/** csv.writer(..., lineterminator='\n').writerow(values): LF rows, so generated CSVs pass `git diff --check`. */
 export const pyCsvRow = (values: readonly unknown[]): string => {
     if (values.length === 1) {
         const only = values[0];
-        if (only === null || only === undefined || only === '') return '""\r\n';
+        if (only === null || only === undefined || only === '') return '""\n';
     }
 
-    return values.map(csvField).join(',') + '\r\n';
+    return values.map(csvField).join(',') + '\n';
 };
 
 /** csv.DictWriter(fieldnames=...): writeheader() + writerows(rows) as one string. */

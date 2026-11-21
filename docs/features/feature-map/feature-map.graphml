@@ -6895,7 +6895,7 @@
       <data key="mobile">yes</data>
       <data key="team">Earn</data>
       <data key="backend_team">Earn</data>
-      <data key="component">packages/suite/src/components/earn/dashboard/common/EarnDashboardHeader/EarnBalanceCard.tsx:50 | suite-native/module-earn/src/components/earn/EarnBalance.tsx:17</data>
+      <data key="component">packages/suite/src/components/earn/dashboard/common/EarnDashboardHeader/EarnBalanceCard.tsx:49 | suite-native/module-earn/src/components/earn/EarnBalance.tsx:17</data>
       <data key="desktop_automated_score">0</data>
       <data key="android_automated_score">0</data>
       <data key="desktop_manual_score">0</data>
@@ -6909,7 +6909,7 @@
       <data key="mobile">yes</data>
       <data key="team">Earn</data>
       <data key="backend_team">Earn</data>
-      <data key="component">packages/suite/src/components/earn/dashboard/common/EarnDashboardHeader/EarnBalanceBreakdown.tsx:22 | suite-native/module-earn/src/components/earn/EarnBalanceBreakdown.tsx:80</data>
+      <data key="component">packages/suite/src/components/earn/dashboard/common/EarnDashboardHeader/EarnBalanceBreakdown.tsx:23 | suite-native/module-earn/src/components/earn/EarnBalanceBreakdown.tsx:77</data>
       <data key="desktop_automated_score">0</data>
       <data key="android_automated_score">0</data>
       <data key="desktop_manual_score">0</data>
@@ -6923,7 +6923,7 @@
       <data key="mobile">no</data>
       <data key="team">Earn</data>
       <data key="backend_team">Earn</data>
-      <data key="component">packages/suite/src/components/earn/dashboard/yield/EarnYieldTable.tsx:50 | packages/suite/src/components/earn/dashboard/staking/EarnStakingTable.tsx:25</data>
+      <data key="component">packages/suite/src/components/earn/dashboard/yield/EarnYieldTable.tsx:48 | packages/suite/src/components/earn/dashboard/staking/EarnStakingTable.tsx:25</data>
       <data key="desktop_automated_score">0</data>
       <data key="android_automated_score">0</data>
       <data key="desktop_manual_score">0</data>
