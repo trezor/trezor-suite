@@ -1,5 +1,5 @@
 /**
- * Shared validation for analytics event names (domain/event format).
+ * Shared validation for analytics event names (domain/event, exactly one slash).
  * Used by ESLint rule `analytics-event-name` and by analytics-docs AddEventModal.
  */
 
@@ -11,6 +11,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'dashboard',
     'device',
     'earn',
+    'feedback',
     'firmware',
     'guide',
     'menu',
@@ -25,6 +26,7 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'yield',
     'trading',
     'transaction',
+    'wallet',
     'wallet-connect',
 ] as const;
 
@@ -38,25 +40,20 @@ export type ValidateEventNameError =
     | { messageId: 'notKebabCase'; data: { eventPart: string } };
 
 /**
- * Validates analytics event name: must be "domain/event" with allowed domain and kebab-case segments.
+ * Validates analytics event name: exactly "domain/event", with an allowed domain and a kebab-case event name.
  */
 export function validateAnalyticsEventName(value: string): ValidateEventNameError | null {
-    if (!value.includes('/')) {
+    const [domain, eventPart, ...extraParts] = value.split('/');
+    if (domain === undefined || eventPart === undefined || extraParts.length > 0) {
         return { messageId: 'invalidFormat' };
     }
-
-    const parts = value.split('/');
-    const domain = parts[0] ?? '';
-    const eventSegments = parts.slice(1);
 
     if (!ALLOWED_DOMAINS_SET.has(domain)) {
         return { messageId: 'invalidDomain', data: { domain } };
     }
 
-    for (const segment of eventSegments) {
-        if (!ANALYTICS_EVENT_NAME_KEBAB_SEGMENT.test(segment)) {
-            return { messageId: 'notKebabCase', data: { eventPart: value } };
-        }
+    if (!ANALYTICS_EVENT_NAME_KEBAB_SEGMENT.test(eventPart)) {
+        return { messageId: 'notKebabCase', data: { eventPart: value } };
     }
 
     return null;
