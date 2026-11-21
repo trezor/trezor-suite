@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
 import { selectLanguage } from '@suite/settings';
-import { selectTradingLoadingAndTimestamp } from '@suite-common/trading';
+import { useTradingCatalogStatus } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Spinner } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
@@ -24,7 +24,7 @@ export const TradingFormInputAmountPlaceholder = ({
     name,
 }: TradingFormInputAmountPlaceholderProps) => {
     const locale = useSelector(selectLanguage);
-    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const { isLoading } = useTradingCatalogStatus();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isBusy = isLoading || isDiscoveryRunning;
     const { control } = useFormContext<TradingAllFormProps>();

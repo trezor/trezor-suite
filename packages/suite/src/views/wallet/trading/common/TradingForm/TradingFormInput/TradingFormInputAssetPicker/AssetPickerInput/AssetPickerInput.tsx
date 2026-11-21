@@ -9,7 +9,7 @@ import {
     type TradingBuyFormProps,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
-    selectTradingLoadingAndTimestamp,
+    useTradingCatalogStatus,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
@@ -47,7 +47,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     const { watch } = useFormContext<TradingFormValues>();
     const value = watch(name);
     const { translationString } = useTranslation();
-    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
+    const { isLoading } = useTradingCatalogStatus();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isBusy = isLoading || isDiscoveryRunning;
 

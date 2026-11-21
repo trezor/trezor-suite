@@ -1,5 +1,5 @@
 import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/settings';
-import { type TradeServerEnvironment, tradeApi, tradingActions } from '@suite-common/trading';
+import { type TradeServerEnvironment, tradeApi } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -21,7 +21,6 @@ export const TradeApi = () => {
     const handleChange = (item: { value: TradeServerEnvironment; label: string }) => {
         dispatch(suiteSettingsActions.setDebugMode({ tradeServerEnvironment: item.value }));
         tradeApi.setServersEnvironment(item.value);
-        dispatch(tradingActions.invalidateCatalog());
     };
 
     return (
