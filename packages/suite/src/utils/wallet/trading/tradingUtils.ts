@@ -3,7 +3,12 @@ import { type CoinExtraField, type CryptoId, type ExchangeProviderInfo } from 'i
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TokenAddress } from '@suite-common/tokens';
-import { type TradingType, cryptoIdToNetwork, tradeApi } from '@suite-common/trading';
+import {
+    type TradingComposedTransactionInfo,
+    type TradingType,
+    cryptoIdToNetwork,
+    tradeApi,
+} from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -249,3 +254,18 @@ export const getTradingAllowanceProvider = ({
     logo: logo ? tradeApi.getProviderLogoUrl(logo) : undefined,
     label: 'TR_TRADING_PROVIDER',
 });
+
+export const getRedirectFeeHash = (
+    networkType: Account['networkType'],
+    { composed, selectedFee }: TradingComposedTransactionInfo,
+) => {
+    if (!composed) {
+        return '';
+    }
+
+    const isNormalFee =
+        networkType === 'solana' || (networkType === 'tron' && selectedFee !== 'custom');
+    const feeLimit = composed.feeLimit ? `/${composed.feeLimit}` : '';
+
+    return `/${isNormalFee ? 'normal' : 'custom'}/${composed.feePerByte}/${composed.maxFeePerGas}/${composed.maxPriorityFeePerGas}${feeLimit}`;
+};

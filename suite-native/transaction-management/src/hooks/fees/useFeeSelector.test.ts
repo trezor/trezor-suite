@@ -1,6 +1,7 @@
 import { toTokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useFeeSelector } from './useFeeSelector';
@@ -44,6 +45,79 @@ it('rejects an empty TRC20 limit without taking the generic Custom fee path', as
         await result.current.handleConfirm('custom', { customFeeLimit: '' });
     });
     expect(updateThunk).not.toHaveBeenCalled();
+});
+
+describe('TRC20 limit with a caller draft', () => {
+    const tokenContract = toTokenAddress('TRC20-token');
+    const formDraft: FormState = {
+        outputs: [],
+        selectedFee: 'custom',
+        feePerUnit: '100',
+        feeLimit: '20000000',
+        options: [],
+        isCoinControlEnabled: false,
+        hasCoinControlBeenOpened: false,
+        selectedUtxos: [],
+    };
+
+    const renderTrc20FeeSelector = () => {
+        const wallet = getWalletState();
+        const updateThunk = jest.fn(() => () => undefined);
+
+        return renderHookWithStoreProvider(useFeeSelector, {
+            initialProps: {
+                accountKey: ETH_ACCOUNT_KEY,
+                tokenContract,
+                selectedFee: 'custom',
+                updateThunk,
+                formDraft,
+                formDraftKey: 'trading-exchange',
+            },
+            services: { analytics: mockNativeAnalytics() },
+            preloadedState: {
+                wallet: {
+                    ...wallet,
+                    accounts: [
+                        { ...getEthAccount(), symbol: asNetworkSymbol('trx'), networkType: 'tron' },
+                    ],
+                },
+            },
+        }).then(rendered => ({ ...rendered, updateThunk }));
+    };
+
+    it('stores an edited limit as the custom level', async () => {
+        const { result, updateThunk } = await renderTrc20FeeSelector();
+
+        await act(() => result.current.handleConfirm('custom', { customFeeLimit: '20000000' }));
+
+        expect(updateThunk).toHaveBeenCalledWith({
+            accountKey: ETH_ACCOUNT_KEY,
+            tokenContract,
+            formDraftKey: 'trading-exchange',
+            feeLevelLabel: 'custom',
+            feePerUnit: '100',
+            feeLimit: '20000000',
+        });
+    });
+
+    it('displays the confirmed custom limit from the draft', async () => {
+        const { result } = await renderTrc20FeeSelector();
+
+        expect(result.current.feeLimitSunOverride).toBe('20000000');
+    });
+
+    it('returns to the normal level when the limit equals the estimate', async () => {
+        const { result, updateThunk } = await renderTrc20FeeSelector();
+
+        await act(() => result.current.handleConfirm('custom', { customFeeLimit: '11000' }));
+
+        expect(updateThunk).toHaveBeenCalledWith({
+            accountKey: ETH_ACCOUNT_KEY,
+            tokenContract,
+            formDraftKey: 'trading-exchange',
+            feeLevelLabel: 'normal',
+        });
+    });
 });
 
 it('displays the confirmed fee when an amount edit resets the draft while the picker still holds High', async () => {

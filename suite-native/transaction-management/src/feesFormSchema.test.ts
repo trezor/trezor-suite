@@ -115,6 +115,36 @@ describe('feesFormValidationSchema', () => {
         ).resolves.toBeDefined();
     });
 
+    it.each([
+        { customFeeLimit: '8000000', isValid: true },
+        { customFeeLimit: '8000001', isValid: false },
+    ])(
+        'checks the TRC20 cap $customFeeLimit SUN against the TRX balance',
+        async ({ customFeeLimit, isValid }) => {
+            const validation = feesFormValidationSchema.validate(
+                { feeLevel: 'custom', customFeePerUnit: '100', customFeeLimit },
+                {
+                    context: createContext({
+                        symbol: asNetworkSymbol('trx'),
+                        isTrc20: true,
+                        minimalFeeLimit: '6428500',
+                        availableBalance: '8000000',
+                        translate: () => 'Insufficient balance for this fee.',
+                    }),
+                },
+            );
+
+            if (isValid) {
+                await expect(validation).resolves.toBeDefined();
+            } else {
+                await expect(validation).rejects.toMatchObject({
+                    path: 'customFeeLimit',
+                    message: 'Insufficient balance for this fee.',
+                });
+            }
+        },
+    );
+
     it('does not require a fee limit for a non-adjustable native Tron transfer', async () => {
         await expect(
             feesFormValidationSchema.validate(

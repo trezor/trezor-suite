@@ -1,18 +1,85 @@
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
+import { localeReducer } from '@suite-native/intl';
+import {
+    act,
+    createLightStore,
+    createStaticReducer,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
 
 import { type UseFeesFormProps, useFeesForm } from './useFeesForm';
 import { createFeeLevel } from '../../__fixtures__/feeLevels';
 import {
     ETH_ACCOUNT_KEY as FIXTURE_ACCOUNT_KEY,
+    getEthAccount,
     getWalletState,
 } from '../../__fixtures__/walletState';
+import { sendFormInitialState, transactionManagementActions } from '../../sendFormSlice';
 
 const ethSymbol = asNetworkSymbol('eth');
 const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
 
 describe('useFeesForm', () => {
+    describe('Tron fee limit sync', () => {
+        const renderTronFeesForm = async () => {
+            const wallet = getWalletState();
+            const initialSendState: typeof sendFormInitialState = {
+                ...sendFormInitialState,
+                feeLevels: { normal: createFeeLevel({ estimatedFeeLimit: '13000000' }) },
+            };
+            const store = createLightStore({
+                reducer: {
+                    discreetMode: createStaticReducer({ isActive: false }),
+                    locale: localeReducer,
+                    wallet: combineReducers({
+                        settings: createStaticReducer(initialWalletSettingsState),
+                        accounts: createStaticReducer([
+                            {
+                                ...getEthAccount(),
+                                symbol: asNetworkSymbol('trx'),
+                                networkType: 'tron',
+                            },
+                        ]),
+                        fees: createStaticReducer(wallet.fees),
+                        send: (state = initialSendState, action: UnknownAction) =>
+                            transactionManagementActions.storeFeeLevels.match(action)
+                                ? { ...state, feeLevels: action.payload.feeLevels }
+                                : state,
+                    }),
+                },
+            });
+            const rendered = await renderHookWithStoreProvider(useFeesForm, {
+                initialProps: { accountKey: FIXTURE_ACCOUNT_KEY, defaultFeeLevel: 'normal' },
+                services: { store },
+            });
+            const recompose = () =>
+                act(() => {
+                    store.dispatch(
+                        transactionManagementActions.storeFeeLevels({
+                            feeLevels: {
+                                normal: createFeeLevel({ estimatedFeeLimit: '14000000' }),
+                            },
+                        }),
+                    );
+                });
+
+            return { ...rendered, recompose };
+        };
+
+        it('follows a new estimate', async () => {
+            const { result, recompose } = await renderTronFeesForm();
+
+            expect(result.current.getValues('customFeeLimit')).toBe('13000000');
+            await recompose();
+
+            expect(result.current.getValues('customFeeLimit')).toBe('14000000');
+        });
+    });
+
     it('allows Custom EIP-1559 inputs when every Standard level failed before a rate was saved', async () => {
         const wallet = getWalletState();
         const { result } = await renderHookWithStoreProvider(useFeesForm, {

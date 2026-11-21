@@ -58,6 +58,7 @@ export const useFeeSelector = ({
         account,
         handleFeeLevelChange,
         handleCustomFeeSet,
+        handleTrc20FeeLimitSet,
     } = useFeesManagement({
         accountKey,
         tokenContract,
@@ -143,13 +144,21 @@ export const useFeeSelector = ({
                 if (isTrc20) {
                     if (!customParams.customFeeLimit) return;
 
-                    await dispatch(
-                        updateFeeLimitThunk({
-                            accountKey,
-                            tokenContract,
+                    if (formDraftKey) {
+                        await handleTrc20FeeLimitSet({
                             feeLimit: customParams.customFeeLimit,
-                        }),
-                    );
+                            estimatedFeeLimit: referenceFeeLevel?.estimatedFeeLimit,
+                            feePerUnit: formDraft?.feePerUnit ?? '',
+                        });
+                    } else {
+                        await dispatch(
+                            updateFeeLimitThunk({
+                                accountKey,
+                                tokenContract,
+                                feeLimit: customParams.customFeeLimit,
+                            }),
+                        );
+                    }
                 } else {
                     await handleCustomFeeSet(customParams);
                 }
@@ -161,6 +170,10 @@ export const useFeeSelector = ({
         },
         [
             isTrc20,
+            formDraftKey,
+            referenceFeeLevel?.estimatedFeeLimit,
+            formDraft?.feePerUnit,
+            handleTrc20FeeLimitSet,
             accountKey,
             tokenContract,
             dispatch,
@@ -171,7 +184,9 @@ export const useFeeSelector = ({
     );
 
     const customFeeLimit = useWatch({ control: form.control, name: 'customFeeLimit' });
-    const feeLimitSunOverride = isTrc20 ? customFeeLimit || undefined : undefined;
+    const feeLimitSunOverride = isTrc20
+        ? (selectedFee === 'custom' ? formDraft?.feeLimit : customFeeLimit) || undefined
+        : undefined;
 
     return {
         form,
