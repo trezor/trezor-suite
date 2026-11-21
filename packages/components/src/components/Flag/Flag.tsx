@@ -25,6 +25,7 @@ const Wrapper = styled.div<{ $size: FlagSize }>`
 
 const FlagImage = styled.img<{ $size: FlagSize }>`
     width: 100%;
+    height: auto;
     display: block;
     background: ${({ theme }) => theme.elementFillOnDarkContrast};
 
@@ -36,8 +37,20 @@ const FlagImage = styled.img<{ $size: FlagSize }>`
     `}
 `;
 
+// The flag assets' viewBox, so the image box keeps its aspect ratio before the file loads.
+const FLAG_INTRINSIC_WIDTH = 30;
+const FLAG_INTRINSIC_HEIGHT = 24;
+
 export const Flag = ({ size = 24, country }: FlagProps) => (
     <Wrapper $size={size} data-component="Flag">
-        <FlagImage $size={size} src={getFlagSource(country)} alt={`flag-${country}`} />
+        <FlagImage
+            $size={size}
+            src={getFlagSource(country)}
+            alt={`flag-${country}`}
+            width={FLAG_INTRINSIC_WIDTH}
+            height={FLAG_INTRINSIC_HEIGHT}
+            loading="lazy"
+            decoding="async"
+        />
     </Wrapper>
 );
