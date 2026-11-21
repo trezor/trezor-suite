@@ -19,6 +19,7 @@ test.describe(
     () => {
         test.use({
             deviceSetup: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
+            bypassCSP: true,
         });
 
         test(
