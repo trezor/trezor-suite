@@ -43,6 +43,7 @@ import {
     type AccountKey,
     type ComposeActionContext,
     type PrecomposedTransactionFinal,
+    type SolanaTxMeta,
     type StakeFormState,
     type StakeType,
     type WalletAccountTransaction,
@@ -142,8 +143,16 @@ type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
     SyncAccountsWithBlockchainThunkDeps;
 
 // private, called from signTransaction only
+type PushTransactionSignResult = {
+    cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload;
+    solanaTxMeta?: SolanaTxMeta;
+};
+
 const pushTransactionThunk =
-    (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
+    (
+        stakeType: StakeType,
+        { cardanoPoolDelegation, solanaTxMeta }: PushTransactionSignResult = {},
+    ) =>
     async (
         dispatch: ThunkDispatch<PushTransactionThunkState, PushTransactionThunkDeps, UnknownAction>,
         getState: () => PushTransactionThunkState,
@@ -242,7 +251,9 @@ const pushTransactionThunk =
             if (account.networkType === 'solana') {
                 dispatch(
                     addFakePendingSolanaStakeTxThunk({
-                        precomposedTransaction: precomposedTx,
+                        precomposedTransaction: solanaTxMeta
+                            ? { ...precomposedTx, solanaTxMeta }
+                            : precomposedTx,
                         stakeType,
                         txid,
                         account,
@@ -338,14 +349,22 @@ export const signTransactionThunk =
             );
         }
 
+        let solanaTxMeta: SolanaTxMeta | undefined;
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
-            serializedTx = await dispatch(
+            const signResult = await dispatch(
                 stakeFormSolanaActions.signTransactionThunk({
                     account,
                     formValues,
                     transactionInfo: enhancedTxInfo,
                 }),
             );
+
+            if (signResult && 'serializedTx' in signResult) {
+                serializedTx = signResult.serializedTx;
+                solanaTxMeta = signResult.solanaTxMeta;
+            } else {
+                serializedTx = signResult;
+            }
         }
 
         let cardanoPoolDelegation: StakingCardanoPoolDelegationPayload | undefined;
@@ -402,14 +421,14 @@ export const signTransactionThunk =
                 }),
             });
 
-            return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));
+            return dispatch(pushTransactionThunk(formValues.stakeType, { cardanoPoolDelegation }));
         }
 
         // Open a deferred modal and get the decision
         const decision = await dispatch(openDeferredModal({ type: 'review-transaction' }));
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransactionThunk(formValues.stakeType));
+            return dispatch(pushTransactionThunk(formValues.stakeType, { solanaTxMeta }));
         }
 
         extra.services.analytics.report({
