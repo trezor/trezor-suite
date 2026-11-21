@@ -63,6 +63,7 @@ async function main(): Promise<void> {
         outputSchema: FixResultJsonSchema,
         maxBudgetUsd: MAX_BUDGET_USD,
         timeoutMs: TIMEOUT_MS,
+        allowedTools: ['Bash(gh pr list *)', 'Bash(gh pr diff *)'],
     });
 
     if (timedOut) {
