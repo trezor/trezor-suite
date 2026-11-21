@@ -5,6 +5,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
+    selectAccountByKey,
     selectBaseCurrency,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
@@ -29,7 +30,11 @@ type UseClaimFormsProps = {
     account: Account;
 };
 
-export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValues => {
+export const useClaimForm = ({
+    account: initialAccount,
+}: UseClaimFormsProps): ClaimContextValues => {
+    const account =
+        useSelector(state => selectAccountByKey(state, initialAccount.key)) ?? initialAccount;
     const { dispatch } = useServices(injectDispatch);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);

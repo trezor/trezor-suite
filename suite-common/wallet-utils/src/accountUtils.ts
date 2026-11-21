@@ -761,6 +761,32 @@ export const getDirectRpcHistoryState = (account: Account): DirectRpcHistoryStat
     return undefined;
 };
 
+type SolanaStakingAccounts = NonNullable<AccountInfo['misc']>['solStakingAccounts'];
+
+const haveSolanaStakingAccountsChanged = (
+    storedAccounts: SolanaStakingAccounts,
+    freshAccounts: SolanaStakingAccounts,
+) => {
+    if (!freshAccounts) return false;
+    if (storedAccounts?.length !== freshAccounts.length) return true;
+
+    // RPC responses can contain the same accounts in a different order.
+    const counts = new Map<string, number>();
+    for (const account of storedAccounts) {
+        const key = JSON.stringify(account);
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+
+    for (const account of freshAccounts) {
+        const key = JSON.stringify(account);
+        const count = counts.get(key) ?? 0;
+        if (count === 0) return true;
+        counts.set(key, count - 1);
+    }
+
+    return false;
+};
+
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
         // if backend/coin supports addrTxCount, compare it instead of total
@@ -836,6 +862,11 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 freshInfo.history.txids?.[0] !== account.history.txids?.[0] ||
                 // compare last epoch
                 freshInfo.misc?.solEpoch !== account.misc?.solEpoch ||
+                // Stake accounts can be withdrawn without changing the main account's history.
+                haveSolanaStakingAccountsChanged(
+                    account.misc?.solStakingAccounts,
+                    freshInfo.misc?.solStakingAccounts,
+                ) ||
                 // compare token count (detect added/removed tokens)
                 freshInfo.tokens?.length !== account.tokens?.length
             );

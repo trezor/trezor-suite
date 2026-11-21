@@ -153,4 +153,70 @@ describe('stake account layout', () => {
 
         expect(getSerializedMessage(response)).toBe(message);
     });
+
+    it.each(['100000.0', '1e5'])(
+        'prepares a claim with fee rate %s as the same transaction as the integer estimate',
+        async feePerUnit => {
+            const { rpcResults, message } = stakeTransactionFixtures.claim;
+
+            const response = await prepareClaimSolTx({
+                from: mockSender,
+                connection: mockConnection(rpcResults),
+                estimatedFee: { feePerUnit, feeLimit: '200000' },
+            });
+
+            expect(getSerializedMessage(response)).toBe(message);
+        },
+    );
+
+    it.each([
+        ['withdrawn accounts', []],
+        ['active accounts', stakeTransactionFixtures.unstake.rpcResults.getProgramAccounts],
+    ])('returns a recoverable result when fresh RPC data contains only %s', async (_, accounts) => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        try {
+            const response = await prepareClaimSolTx({
+                from: mockSender,
+                connection: mockConnection({
+                    getProgramAccounts: accounts,
+                    getEpochInfo: { epoch: 900 },
+                }),
+            });
+
+            expect(response).toEqual({
+                success: false,
+                errorCode: 'NO_CLAIMABLE_STAKE',
+                errorMessage: 'No stake is currently available to claim.',
+            });
+            expect(consoleErrorSpy).not.toHaveBeenCalled();
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
+    });
+
+    it('returns a recoverable invalid-fee result for every staking operation', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const estimatedFee = { feePerUnit: 'NaN', feeLimit: '200000' };
+        const params = { from: mockSender, connection: mockConnection({}), estimatedFee };
+
+        try {
+            const responses = await Promise.all([
+                prepareStakeSolTx({ ...params, amount: '1', validator }),
+                prepareUnstakeSolTx({ ...params, amount: '1', validator }),
+                prepareClaimSolTx(params),
+            ]);
+
+            for (const response of responses) {
+                expect(response).toEqual({
+                    success: false,
+                    errorCode: 'INVALID_FEE',
+                    errorMessage: 'Invalid Solana staking fee estimate.',
+                });
+            }
+            expect(consoleErrorSpy).not.toHaveBeenCalled();
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
+    });
 });

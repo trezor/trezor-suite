@@ -178,6 +178,7 @@ export const useComposeEarnFees = ({
                     !response.payload?.normal ||
                     (response.payload.normal.type === 'error' &&
                         (response.payload.normal.error === 'TR_STAKE_TX_PREPARATION_FAILED' ||
+                            response.payload.normal.error === 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID' ||
                             !isPrecomposedTransactionError(response.payload.normal.error)))
                 ) {
                     setHasFeeEstimationError(true);

@@ -201,38 +201,35 @@ export const prepareSolanaStakeTxData = async ({
     return undefined;
 };
 
-const PREPARATION_FAILED_LEVEL: PrecomposedTransactionError = {
-    type: 'error',
-    error: 'TR_STAKE_TX_PREPARATION_FAILED',
-    errorMessage: { id: 'TR_STAKE_TX_PREPARATION_FAILED' },
+const PREPARATION_ERROR_MESSAGES = {
+    INSUFFICIENT_ACTIVE_STAKE: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+    INVALID_FEE: 'TR_STAKE_SOL_FEE_ESTIMATE_INVALID',
+    NO_CLAIMABLE_STAKE: 'TR_STAKE_SOL_NOTHING_TO_CLAIM',
+    UNKNOWN: 'TR_STAKE_TX_PREPARATION_FAILED',
+} as const;
+
+const buildPreparationFailedLevels = (
+    predefinedLevels: FeeLevel[],
+    errorCode?: PrepareStakeSolTxErrorCode,
+): PrecomposedLevels => {
+    const messageId = PREPARATION_ERROR_MESSAGES[errorCode ?? 'UNKNOWN'];
+    const error: PrecomposedTransactionError = {
+        type: 'error',
+        error: messageId,
+        errorMessage: { id: messageId },
+    };
+
+    return Object.fromEntries(predefinedLevels.map(level => [level.label, error]));
 };
 
-const STAKED_BALANCE_CHANGED_LEVEL: PrecomposedTransactionError = {
-    type: 'error',
-    error: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
-    errorMessage: { id: 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED' },
-};
+export const hasStakedBalanceChangedError = (levels?: PrecomposedLevels) =>
+    Object.values(levels ?? {}).some(
+        level => level.type === 'error' && level.error === 'TR_STAKE_SOL_STAKED_BALANCE_CHANGED',
+    );
 
-type BuildPreparationFailedLevelsParams = {
-    predefinedLevels: FeeLevel[];
-    errorCode?: PrepareStakeSolTxErrorCode;
-};
-
-const buildPreparationFailedLevels = ({
-    predefinedLevels,
-    errorCode,
-}: BuildPreparationFailedLevelsParams): PrecomposedLevels => {
-    const failedLevel =
-        errorCode === 'INSUFFICIENT_ACTIVE_STAKE'
-            ? STAKED_BALANCE_CHANGED_LEVEL
-            : PREPARATION_FAILED_LEVEL;
-
-    return Object.fromEntries(predefinedLevels.map(level => [level.label, failedLevel]));
-};
-
-export const hasStakedBalanceChangedError = (composedLevels?: PrecomposedLevels) =>
-    Object.values(composedLevels ?? {}).some(
-        level => level.type === 'error' && level.error === STAKED_BALANCE_CHANGED_LEVEL.error,
+export const hasNoClaimableStakeError = (levels?: PrecomposedLevels) =>
+    Object.values(levels ?? {}).some(
+        level => level.type === 'error' && level.error === 'TR_STAKE_SOL_NOTHING_TO_CLAIM',
     );
 
 type ComposeSolanaStakingTransactionParams = {
@@ -274,7 +271,7 @@ export const composeSolanaStakingTransaction = async ({
     });
 
     if (!txData?.success) {
-        return buildPreparationFailedLevels({ predefinedLevels, errorCode: txData?.errorCode });
+        return buildPreparationFailedLevels(predefinedLevels, txData?.errorCode);
     }
 
     const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);
@@ -303,6 +300,13 @@ export const composeSolanaStakingTransaction = async ({
 
         if (txDataWithFee?.success) {
             return applySolanaTxMeta(composed, txDataWithFee.solanaTxMeta);
+        }
+
+        if (
+            txDataWithFee?.errorCode === 'INVALID_FEE' ||
+            txDataWithFee?.errorCode === 'NO_CLAIMABLE_STAKE'
+        ) {
+            return buildPreparationFailedLevels(predefinedLevels, txDataWithFee.errorCode);
         }
     }
 

@@ -68,6 +68,18 @@ class InsufficientActiveStakeError extends Error {
     }
 }
 
+const INVALID_FEE_RESULT: PrepareStakeSolTxResponse = {
+    success: false,
+    errorCode: 'INVALID_FEE',
+    errorMessage: 'Invalid Solana staking fee estimate.',
+};
+
+class NoClaimableStakeError extends Error {
+    constructor() {
+        super('No stake is currently available to claim.');
+    }
+}
+
 export const getSolanaStakingData = async (
     rpc: RpcMainnet<SolanaRpcApiMainnet> | Rpc<SolanaRpcApiMainnet>,
     descriptor: string,
@@ -375,8 +387,7 @@ export const claim = async ({
                 stakeAccountState(acc.data, epoch) === StakeState.Deactivated,
         );
 
-        if (deactivatedStakeAccounts.length === 0)
-            throw new Error('Nothing to claim while claiming');
+        if (deactivatedStakeAccounts.length === 0) throw new NoClaimableStakeError();
 
         let transactionMessage = await baseTx(connection, sender, params);
 
@@ -440,6 +451,8 @@ export const prepareStakeSolTx = async ({
     try {
         const lamports = toLamports(amount);
         const params = getStakingParams(estimatedFee);
+        if (!params) return INVALID_FEE_RESULT;
+
         const tx = await stake({
             connection,
             validator,
@@ -483,6 +496,8 @@ export const prepareUnstakeSolTx = async ({
     try {
         const lamports = toLamports(amount);
         const params = getStakingParams(estimatedFee);
+        if (!params) return INVALID_FEE_RESULT;
+
         const tx = await unstake({
             connection,
             sender: from,
@@ -525,6 +540,8 @@ export const prepareClaimSolTx = async ({
 }: PrepareClaimSolTxParams): Promise<PrepareStakeSolTxResponse> => {
     try {
         const params = getStakingParams(estimatedFee);
+        if (!params) return INVALID_FEE_RESULT;
+
         const tx = await claim({
             connection,
             sender: from,
@@ -538,6 +555,13 @@ export const prepareClaimSolTx = async ({
             solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
+        if (e instanceof Error && e.cause instanceof NoClaimableStakeError) {
+            return {
+                success: false,
+                errorCode: 'NO_CLAIMABLE_STAKE',
+                errorMessage: e.cause.message,
+            };
+        }
         console.error(e);
 
         return {
