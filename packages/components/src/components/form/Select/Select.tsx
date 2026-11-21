@@ -1,4 +1,4 @@
-import { type ComponentType, Suspense, lazy, useState } from 'react';
+import { type ComponentType, Suspense, lazy, startTransition, useState } from 'react';
 
 import { SelectFallback } from './SelectFallback';
 import { SelectLoadFailed } from './SelectLoadFailed';
@@ -32,7 +32,9 @@ export { SelectOption } from './SelectOption';
 
 export const Select = (props: SelectProps) => {
     const [MountedSelectInner] = useState(() => SelectInner);
-    const { size = 'large', isClean, isLoading } = props;
+    // A press on the empty control while react-select loads is replayed on the loaded one.
+    const [isPressedWhileLoading, setIsPressedWhileLoading] = useState(false);
+    const { size = 'large', isClean, isLoading, 'data-testid': dataTest } = props;
     const formCellProps = pickFormCellProps(props);
     const { hasError, isDisabled } = formCellProps;
 
@@ -45,11 +47,19 @@ export const Select = (props: SelectProps) => {
                         isClean={isClean}
                         hasError={hasError}
                         isDisabled={isDisabled || isLoading}
+                        /**
+                         * Not urgent: a sync render could commit the loaded control mid-click,
+                         * and the rest of that click would then close it.
+                         */
+                        onPress={() => startTransition(() => setIsPressedWhileLoading(true))}
+                        onPressCancel={() => setIsPressedWhileLoading(false)}
+                        data-testid={dataTest ? `${dataTest}/loading` : undefined}
                     />
                 }
             >
                 <MountedSelectInner
                     {...props}
+                    isPressedWhileLoading={isPressedWhileLoading}
                     onLoadFailed={() => reloadSelectInner(MountedSelectInner)}
                 />
             </Suspense>
