@@ -38,6 +38,10 @@ export const selectHasPassphraseIncorrectError = (state: DiscoveryRootState & De
     return discovery?.status === 'failed' && discovery?.error === 'Passphrase is incorrect';
 };
 
+// Accounts only load after the device state check, which is where a wrong passphrase fails.
+export const selectIsDiscoveryLoadingAccounts = (state: DiscoveryRootState & DeviceRootState) =>
+    selectDiscoveryForSelectedDevice(state)?.status === 'progress';
+
 export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryForSelectedDevice(state);
 
