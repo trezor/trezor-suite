@@ -7,7 +7,12 @@ import { type IconName } from '@suite-native/icons';
 import { type NativeSpacing } from '@trezor/theme';
 
 export type AlertType =
-    'autoEject' | 'bluetoothAdapter' | 'bluetoothPairing' | 'connectDevice' | 'deviceError';
+    | 'autoEject'
+    | 'bluetoothAdapter'
+    | 'bluetoothPairing'
+    | 'connectDevice'
+    | 'deviceError'
+    | 'stakingTransactionNotConfirmed';
 
 export type Alert = {
     title?: ReactNode;
@@ -34,12 +39,13 @@ export type Alert = {
 export const alertAtom = atom<Alert | null>(null);
 
 export const showAlertAtom = atom(null, (_, set, alert: Alert) => set(alertAtom, alert));
-export const hideAlertAtom = atom(null, (get, set, type?: AlertType) => {
+export const hideAlertAtom = atom(null, (get, set, target?: AlertType | Alert) => {
     const current = get(alertAtom);
 
     if (!current) return;
 
-    const shouldHide = !type || current?.type === type;
+    const shouldHide =
+        !target || (typeof target === 'string' ? current.type === target : current === target);
 
     if (shouldHide) {
         set(alertAtom, null);
