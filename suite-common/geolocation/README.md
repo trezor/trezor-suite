@@ -73,3 +73,7 @@ the flag. Builders are in `@suite-common/regions` (`deviceSignals.ts`).
 `regions.presenceRestriction` payload. With the flag off or no valid country it is not restricted and the estimator
 does not run. It restricts when `evidence` is not `none` and `score >= threshold` (default 0.499); a threshold
 outside (0, 1) uses the default.
+
+## Diagnostics
+
+`selectPresenceDiagnostics` is shown in Settings > Debug (desktop, web) and Dev utils (mobile). It is never logged.

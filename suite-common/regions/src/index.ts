@@ -9,3 +9,10 @@ export {
     buildNativeDeviceSignals,
     buildWebDeviceSignals,
 } from './deviceSignals';
+export {
+    type PresenceCandidate,
+    type PresenceDiagnostics,
+    type PresenceDiagnosticsRow,
+    getPresenceDiagnosticsRows,
+    selectPresenceDiagnostics,
+} from './presenceDiagnostics';
