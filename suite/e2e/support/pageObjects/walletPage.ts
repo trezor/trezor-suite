@@ -62,6 +62,9 @@ export class WalletPage {
     readonly selectedSendTokenContract: Locator;
     readonly transactionDetailTokenAmount = (contractAddress: string): Locator =>
         this.page.getByTestId(`@modal/tx-details/token-amount/${contractAddress}-with-symbol`);
+    readonly transactionDetailAmount: Locator;
+    readonly transactionDetailFee: Locator;
+    readonly backendDisconnectedBanner: Locator;
     readonly pendingTransactionHeading: Locator;
     readonly sendForm: Locator;
     readonly sendFormHeader: Locator;
@@ -80,6 +83,8 @@ export class WalletPage {
     readonly stakingCardano: Locator;
     readonly transactionSummaryTitle: Locator;
     readonly transactionItem: Locator;
+    readonly transactionItemHeading = (index: number): Locator =>
+        this.page.getByTestId(`@transaction-item/${index}/heading`);
     readonly transactionAddress: Locator;
     readonly fiatAmount: Locator;
     readonly walletFilter = (symbol: NetworkSymbol) =>
@@ -135,6 +140,11 @@ export class WalletPage {
         this.selectedSendToken = this.page.getByTestId('outputs.0.token-with-symbol');
         this.selectedSendTokenName = this.page.getByTestId('@wallet/send/token-name/0');
         this.selectedSendTokenContract = this.page.getByTestId('@wallet/send/token-contract/0');
+        this.transactionDetailAmount = this.page.getByTestId('@modal/tx-details/amount');
+        this.transactionDetailFee = this.page.getByTestId('@modal/tx-details/fee');
+        this.backendDisconnectedBanner = this.page.getByTestId(
+            '@wallet/account-banner/backend-disconnected',
+        );
         this.pendingTransactionHeading = this.page
             .getByTestId('@wallet/accounts/transaction-list/pending/group/0')
             .getByTestId('@transaction-item/0/heading');

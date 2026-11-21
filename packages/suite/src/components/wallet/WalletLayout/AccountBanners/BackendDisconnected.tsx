@@ -29,6 +29,7 @@ const DisconnectedNotification = ({
     return (
         <Banner
             intent="warning"
+            data-testid="@wallet/account-banner/backend-disconnected"
             rightContent={
                 <Banner.Button onClick={reconnect} isLoading={isReconnecting}>
                     <Translation id="TR_CONNECT" />
