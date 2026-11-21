@@ -15,7 +15,7 @@ import { typographyStylesBase } from '@trezor/theme';
 import { PriceTicker } from '#src/components/suite/Ticker/PriceTicker';
 import { TrendTicker } from '#src/components/suite/Ticker/TrendTicker';
 import { useSelector } from '#src/hooks/suite/useSelector';
-import { HomeAssetBalance } from '#src/views/home/HomeAssetsTable/HomeAssetBalance';
+import { HomeAssetBalanceContainer } from '#src/views/home/HomeAssetsTable/HomeAssetBalanceContainer';
 import { HomeAssetIdentity } from '#src/views/home/HomeAssetsTable/HomeAssetIdentity';
 import { HOME_ASSET_LINE_GAP } from '#src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
@@ -92,7 +92,7 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
                     <TrendTicker symbol={networkSymbol} contractAddress={contractAddress} />
                 </Column>
                 <Column width={HIDDEN_TOKEN_BALANCE_WIDTH} alignItems="flex-end">
-                    <HomeAssetBalance assetKey={assetKey} isHidden />
+                    <HomeAssetBalanceContainer assetKey={assetKey} isHidden />
                 </Column>
             </Row>
         </Box>

@@ -14,7 +14,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
-import { HomeAssetRow } from './HomeAssetRow';
+import { HomeAssetRowContainer } from './HomeAssetRowContainer';
 import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
 
 type HomeAssetNetworkSectionProps = {
@@ -55,7 +55,7 @@ export const HomeAssetNetworkSection = memo(
                     </Table.Cell>
                 </Table.Row>
                 {assetKeys.map(assetKey => (
-                    <HomeAssetRow
+                    <HomeAssetRowContainer
                         key={assetKey}
                         assetKey={assetKey}
                         hasBorderTop={false}

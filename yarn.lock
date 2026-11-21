@@ -11954,7 +11954,6 @@ __metadata:
   resolution: "@suite-app/module-transactions@workspace:suite-app/module-transactions"
   dependencies:
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite/account": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/requirements": "workspace:*"

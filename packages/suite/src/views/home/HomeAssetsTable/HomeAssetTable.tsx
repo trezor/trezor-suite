@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
 import {
     HOME_ASSET_ROW_LIMIT,
     getHomeAssetRowLimit,
@@ -11,6 +12,7 @@ import {
     selectHasShownWalletAssets,
     selectHomeAssetGrouping,
     selectIsHomeAssetTableFoldable,
+    selectSmallBalanceSummary,
 } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -29,7 +31,7 @@ import { AssetRowsSkeleton } from './AssetRowsSkeleton';
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';
 import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
 import { HomeAssetNewBanner } from './HomeAssetNewBanner';
-import { HomeAssetRow } from './HomeAssetRow';
+import { HomeAssetRowContainer } from './HomeAssetRowContainer';
 import { HomeAssetSmallBalancesHiddenRow } from './HomeAssetSmallBalancesHiddenRow';
 import { HomeAssetTableEmptyState } from './HomeAssetTableEmptyState';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
@@ -42,6 +44,7 @@ export const HomeAssetTable = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const grouping = useSelector(selectHomeAssetGrouping);
     const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
+    const smallBalances = useSelector(selectSmallBalanceSummary);
     const hasAssets = useSelector(selectHasShownWalletAssets);
     const { isDiscoveryRunning } = useDiscovery();
     const isFoldable = useSelector(state =>
@@ -57,21 +60,42 @@ export const HomeAssetTable = () => {
 
     const changeGrouping = useCallback(
         (chosen: HomeAssetsTableGrouping) => {
+            if (chosen !== grouping) {
+                analytics.report({
+                    type: events.dashboardAssetListMenuEvent.name,
+                    payload: {
+                        type: 'grouping',
+                        value: chosen === 'networks' ? 'by-networks' : 'default',
+                    },
+                });
+            }
             dispatch(setHomeAssetsTableGrouping(chosen));
         },
-        [dispatch],
+        [analytics, dispatch, grouping],
     );
 
     const changeSmallBalances = useCallback(
         (areShown: boolean) => {
+            analytics.report({
+                type: events.dashboardAssetListMenuEvent.name,
+                payload: { type: 'show-small-balances', value: areShown },
+            });
             // Turning them on while the table is folded would otherwise change nothing on screen.
             if (areShown) {
                 setIsExpanded(true);
             }
             dispatch(setAreHomeAssetSmallBalancesShown(areShown));
         },
-        [dispatch],
+        [analytics, dispatch],
     );
+
+    const openHiddenTokens = () => {
+        analytics.report({
+            type: events.navigateFlowEvent.name,
+            payload: { action: 'navigate', type: 'hidden-tokens', from: 'dashboard' },
+        });
+        dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' }));
+    };
 
     if (!hasAssets && isDiscoveryRunning) {
         return <AssetRowsSkeleton data-testid="@dashboard/home-asset-table/loading" />;
@@ -87,8 +111,10 @@ export const HomeAssetTable = () => {
                             <HomeAssetTableFilterHeader
                                 grouping={grouping}
                                 areSmallBalancesShown={areSmallBalancesShown}
+                                smallBalances={smallBalances}
                                 onGroupingChange={changeGrouping}
                                 onSmallBalancesChange={changeSmallBalances}
+                                onOpenHiddenTokens={openHiddenTokens}
                             />
                         </Table.Cell>
                         <Table.Cell align="end">
@@ -115,7 +141,7 @@ export const HomeAssetTable = () => {
                               />
                           ))
                         : assetKeys.map(assetKey => (
-                              <HomeAssetRow key={assetKey} assetKey={assetKey} />
+                              <HomeAssetRowContainer key={assetKey} assetKey={assetKey} />
                           ))}
                     {isFoldable && (
                         <HomeAssetExpandRow
