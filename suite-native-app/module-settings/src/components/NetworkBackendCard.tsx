@@ -35,17 +35,22 @@ export const NetworkBackendCard = ({ form }: NetworkBackendCardProps) => {
         selectedServerType,
         setServerType,
         serverAddressExample,
+        isNetworkEnabled,
         isConnected,
         isConnecting,
         submit,
     } = form;
     const { translate } = useTranslate();
 
+    // A disabled network never connects, so its status would always read as disconnected.
+    const isStatusShown = isNetworkEnabled && !isDirty;
+    const isConnectButtonShown = isDirty || (isNetworkEnabled && !isConnected);
+
     return (
         <SettingsFormCard
             icon="database"
             title={<Translation id="moduleSettings.networkBackends.server.title" />}
-            badge={!isDirty && <StatusBadge isConnected={isConnected} />}
+            badge={isStatusShown && <StatusBadge isConnected={isConnected} />}
         >
             <Form form={hookForm}>
                 <Select<ServerType>
@@ -71,7 +76,7 @@ export const NetworkBackendCard = ({ form }: NetworkBackendCardProps) => {
                         keyboardType="url"
                     />
                 )}
-                {(isDirty || !isConnected) && (
+                {isConnectButtonShown && (
                     <Button onPress={() => submit()} isLoading={isConnecting}>
                         <Translation id="moduleSettings.networkBackends.server.connectButton" />
                     </Button>
