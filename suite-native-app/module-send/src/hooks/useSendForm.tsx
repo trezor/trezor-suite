@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
@@ -74,7 +73,12 @@ import {
     type SendOutputsFormValues,
     sendOutputsFormValidationSchema,
 } from '../sendOutputsFormSchema';
-import { constructFormDraft, getSendFeeStatus, getSendMaxAmount } from '../utils';
+import {
+    constructFormDraft,
+    getAmountComposeError,
+    getSendFeeStatus,
+    getSendMaxAmount,
+} from '../utils';
 import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
@@ -133,6 +137,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
     const [maxSendAmountByFeeLevel, setMaxSendAmountByFeeLevel] = useState<FeeLevelsMaxAmount>();
+    const [amountComposeErrorMessage, setAmountComposeErrorMessage] = useState<string>();
+    const latestComposeIdRef = useRef(0);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -202,6 +208,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             networkReserve,
             rippleReserve,
             namedAddress,
+            amountComposeErrorMessage,
         },
         defaultValues: getDefaultValues({
             tokenContract,
@@ -211,7 +218,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     });
 
     const amountConversion = createSendAmountConversion({ form, getState }, accountKey);
-    const { handleSubmit, control, getValues, trigger, setError } = form;
+    const { handleSubmit, control, getValues, trigger } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
 
@@ -239,6 +246,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             networkFeeInfo?.levels.length &&
             (!isIncompleteCardanoOutput || tokenContract)
         ) {
+            const composeId = ++latestComposeIdRef.current;
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -255,43 +263,27 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                 }),
             );
 
+            // Debounce does not cancel an in-flight compose, so a slower older one may land last.
+            if (composeId !== latestComposeIdRef.current) return;
+
+            const amountComposeError =
+                isFulfilled(response) && !isIncompleteCardanoOutput
+                    ? getAmountComposeError(response.payload)
+                    : undefined;
+            setAmountComposeErrorMessage(
+                amountComposeError &&
+                    (amountComposeError.id === 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE'
+                        ? translate('moduleSend.outputs.recipients.stellar.missingTrustline', {
+                              symbol: amountComposeError.symbol,
+                          })
+                        : `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`),
+            );
+
             if (isFulfilled(response) && isIncompleteCardanoOutput) {
                 dispatch(
                     transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }),
                 );
             } else if (isFulfilled(response)) {
-                const isReserveError = pipe(
-                    response.payload,
-                    D.filter(
-                        feeLevel =>
-                            feeLevel.type === 'error' &&
-                            feeLevel.error === 'AMOUNT_IS_LESS_THAN_RESERVE',
-                    ),
-                    D.isNotEmpty,
-                );
-
-                if (isReserveError) {
-                    setError('outputs.0.amount', {
-                        message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
-                    });
-                }
-
-                const missingTrustline = Object.values(response.payload).find(
-                    feeLevel =>
-                        feeLevel.type === 'error' &&
-                        feeLevel.error === 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
-                );
-                if (missingTrustline?.type === 'error') {
-                    setError('outputs.0.amount', {
-                        message: translate(
-                            'moduleSend.outputs.recipients.stellar.missingTrustline',
-                            {
-                                symbol: missingTrustline.errorMessage?.values?.symbol ?? '',
-                            },
-                        ),
-                    });
-                }
-
                 const normalFeeLevel = networkFeeInfo?.levels.find(
                     level => level.label === 'normal',
                 );
@@ -327,7 +319,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         account,
         network,
         networkFeeInfo,
-        setError,
         excludedUtxos,
         selectedUtxos,
         trigger,
@@ -335,6 +326,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useEffect(() => {
         dispatch(transactionManagementActions.clearFeeLevels());
+        setAmountComposeErrorMessage(undefined);
     }, [accountKey, dispatch, tokenContract]);
 
     useEffect(() => {
@@ -411,7 +403,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useEffect(() => {
         if (getValues('outputs.0.amount')) trigger('outputs.0.amount');
-    }, [maxSendAmountByFeeLevel, getValues, trigger]);
+    }, [maxSendAmountByFeeLevel, amountComposeErrorMessage, getValues, trigger]);
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {

@@ -1,6 +1,10 @@
 import { type TokenAddress } from '@suite-common/tokens';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedLevels,
+    type PrecomposedTransactionError,
+} from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import {
     AccountDetailStackRoutes,
@@ -12,7 +16,9 @@ import {
 
 import { type SendOutputsFormValues } from './sendOutputsFormSchema';
 import {
+    type AmountComposeError,
     constructFormDraft,
+    getAmountComposeError,
     getSendFeeStatus,
     getSendFlowExitDestination,
     getSendMaxAmount,
@@ -140,6 +146,66 @@ describe(getSendMaxAmount.name, () => {
         },
     ])('$description', ({ input, expected }) => {
         expect(getSendMaxAmount(input)).toBe(expected);
+    });
+});
+
+describe(getAmountComposeError.name, () => {
+    const missingTrustline: PrecomposedTransactionError = {
+        type: 'error',
+        error: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+        errorMessage: { id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE', values: { symbol: 'USDC' } },
+    };
+    const belowReserve: PrecomposedTransactionError = {
+        type: 'error',
+        error: 'AMOUNT_IS_LESS_THAN_RESERVE',
+    };
+    const notEnoughFunds: PrecomposedTransactionError = {
+        type: 'error',
+        error: 'AMOUNT_IS_NOT_ENOUGH',
+    };
+    const finalLevel: GeneralPrecomposedTransactionFinal = {
+        type: 'final',
+        fee: '100',
+        feePerByte: '100',
+        totalSpent: '1100',
+        bytes: 0,
+        inputs: [],
+        outputs: [],
+        outputsPermutation: [],
+    };
+
+    test.each<{
+        description: string;
+        feeLevels: PrecomposedLevels;
+        expected: AmountComposeError | undefined;
+    }>([
+        {
+            description: 'reports the missing trustline with its token symbol',
+            feeLevels: { normal: missingTrustline, high: missingTrustline },
+            expected: { id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE', symbol: 'USDC' },
+        },
+        {
+            description: 'reports a below-reserve amount',
+            feeLevels: { normal: belowReserve },
+            expected: { id: 'AMOUNT_IS_LESS_THAN_RESERVE' },
+        },
+        {
+            description: 'prefers the missing trustline over the reserve',
+            feeLevels: { normal: belowReserve, high: missingTrustline },
+            expected: { id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE', symbol: 'USDC' },
+        },
+        {
+            description: 'ignores errors the form validates on its own',
+            feeLevels: { normal: notEnoughFunds },
+            expected: undefined,
+        },
+        {
+            description: 'reports nothing for composed levels',
+            feeLevels: { normal: finalLevel },
+            expected: undefined,
+        },
+    ])('$description', ({ feeLevels, expected }) => {
+        expect(getAmountComposeError(feeLevels)).toEqual(expected);
     });
 });
 

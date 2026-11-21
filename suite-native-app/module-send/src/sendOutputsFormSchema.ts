@@ -29,6 +29,8 @@ export type SendFormFormContext = {
     rippleReserve?: string;
     /** What the recipient network can do with names, owned by its network module. */
     namedAddress?: NamedAddressSupport;
+    /** Error the last compose reported for the amount or its recipient. */
+    amountComposeErrorMessage?: string;
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -286,6 +288,17 @@ const outputSchema = yup.object({
                 const { decimals = 8 } = context!;
 
                 return isDecimalsValid(value, decimals);
+            },
+        )
+        // A manual setError would be wiped by the next revalidation, which re-mounts the fee
+        // section and re-fetches fees in a loop.
+        .test(
+            'compose-error',
+            '',
+            (_, { options: { context }, createError }: yup.TestContext<SendFormFormContext>) => {
+                const message = context?.amountComposeErrorMessage;
+
+                return message ? createError({ message }) : true;
             },
         ),
     fiat: yup.string(),
