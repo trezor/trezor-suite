@@ -19,20 +19,12 @@ const networksPackagePattern = {
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 
-// Network packages are a reusable layer: the apps are built on top of them, never the other way
-// round. Of the workspace scopes only `@trezor/*` is below them, so it is the only one they may
-// depend on. Anything an app owns reaches a network module through dependency injection instead.
+// Network packages build their features from lego (ADR-003), but the apps are built on top of
+// them, never the other way round. Matches networks/forbiddenDeps.config.ts.
 const networksAppScopePattern = {
-    group: [
-        '@suite/**',
-        '@suite-app/**',
-        '@suite-cli/**',
-        '@suite-common/**',
-        '@suite-native/**',
-        '@suite-native-app/**',
-    ],
+    group: ['@suite-app/**', '@suite-cli/**', '@suite-native-app/**'],
     message:
-        'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
+        'Network packages may use lego (@suite/*, @suite-common/*, @suite-native/*), but not app code. Take anything an app owns as an injected dependency instead.',
 };
 
 // Deep-path imports that bypass the public barrels of the connect-tier packages.
