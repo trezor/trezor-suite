@@ -1,9 +1,9 @@
 import type { SubscriptionAccountInfo, TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
 import {
     RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
     tokenProgramsInfo,
+    transformSolanaTransaction,
 } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type { AccountInfoWithJsonData, Base58EncodedBytes } from '@trezor/network-solana/types';
@@ -68,7 +68,7 @@ const handleNotifications = async <T>(
 
             // Transformed from the perspective of the address that changed: for a token transfer
             // that is the token account appearing as the instruction's source or destination.
-            const tx = solanaUtils.transformTransaction(lastTx, changedAddress, [], tokenMetadata);
+            const tx = transformSolanaTransaction(lastTx, changedAddress, [], tokenMetadata);
 
             post({
                 id: -1,

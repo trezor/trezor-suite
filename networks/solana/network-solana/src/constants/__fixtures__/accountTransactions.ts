@@ -1,9 +1,10 @@
+import { BigNumber } from '@trezor/utils';
+
 import {
     STAKE_PROGRAM_PUBLIC_KEY,
     TOKEN_2022_PROGRAM_PUBLIC_KEY,
     TOKEN_PROGRAM_PUBLIC_KEY,
-} from '@trezor/network-solana/constants';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+} from '../common';
 
 const instructions = {
     transfer: {

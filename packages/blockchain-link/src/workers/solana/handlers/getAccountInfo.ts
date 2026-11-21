@@ -5,8 +5,11 @@ import type {
     Transaction,
 } from '@trezor/blockchain-link-types';
 import { RESPONSES } from '@trezor/blockchain-link-types';
-import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { tokenProgramsInfo } from '@trezor/network-solana/constants';
+import {
+    tokenProgramsInfo,
+    transformSolanaTokenInfo,
+    transformSolanaTransaction,
+} from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type { Address, Signature, SolanaTokenAccountInfo } from '@trezor/network-solana/types';
 import { createDeferred, isNotNullOrUndefined } from '@trezor/utils';
@@ -133,7 +136,7 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.length > 0) {
-        tokens = solanaUtils.transformTokenInfo(tokenAccounts, tokenMetadata);
+        tokens = transformSolanaTokenInfo(tokenAccounts, tokenMetadata);
     }
 
     if (details === 'txids') {
@@ -194,7 +197,7 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
         const page = transactionsPage
             .filter(isValidTransaction)
             .map(tx =>
-                solanaUtils.transformTransaction(
+                transformSolanaTransaction(
                     tx,
                     payload.descriptor,
                     tokenAccountsInfos,
