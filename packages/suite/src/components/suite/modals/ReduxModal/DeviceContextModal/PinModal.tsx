@@ -44,6 +44,18 @@ export const PinModal = ({ device }: PinModalProps) => {
         }
     };
 
+    const getExplanation = () => {
+        if (hasInvalidAttempts) {
+            return 'TR_PIN_MISMATCH_HEADING';
+        }
+
+        if (isSettingNewPin || isSettingNewWipeCode) {
+            return 'TR_MAXIMUM_PIN_LENGTH';
+        }
+
+        return undefined;
+    };
+
     return (
         <Modal.Backdrop>
             <ConfirmOnDevicePill
@@ -54,7 +66,6 @@ export const PinModal = ({ device }: PinModalProps) => {
             />
             <Modal.ModalBase
                 heading={<Translation id={getHeading()} />}
-                onCancel={onCancel}
                 data-testid="@modal/pin"
                 width={400}
                 bottomContent={
@@ -83,7 +94,7 @@ export const PinModal = ({ device }: PinModalProps) => {
                     setPin={setPin}
                     onSubmit={handlePinSubmit}
                     // show explanation when either setting a new pin or wipe code or entering existing pin but has at least one invalid attempt
-                    showExplanation={isSettingNewPin || isSettingNewWipeCode || hasInvalidAttempts}
+                    explanation={getExplanation()}
                     isDisabled={submitted}
                 />
             </Modal.ModalBase>

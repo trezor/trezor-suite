@@ -1,5 +1,6 @@
+import { selectDeviceButtonRequests } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import TrezorConnect, { UI_EVENT, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
+import TrezorConnect, { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 
@@ -25,7 +26,7 @@ type RunPassphraseWalletAddingDiscoveryThunkParams = {
 
 type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
 
-type RunPassphraseWalletAddingDiscoveryThunkDeps = RunDiscoveryThunkDeps &
+export type RunPassphraseWalletAddingDiscoveryThunkDeps = RunDiscoveryThunkDeps &
     DefaultTrezorUIEventHandlerThunkDeps;
 
 // The "run" step. Exported because for a *new* hidden wallet the run is deferred from
@@ -40,13 +41,23 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
     }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
-    async ({ device }, { dispatch }) => {
+    async ({ device }, { dispatch, getState }) => {
         const callId = crypto.randomUUID();
         const onUiEvent = (message: UiEventMessage | PopupEventMessage | UiRequestMessage) => {
             const { event: _, ...action } = message;
             if (!('callId' in action) || !action.callId) return;
             if (action.callId !== callId) return;
-            if (action.type === UI_REQUESTS.REQUEST_PASSPHRASE) return;
+
+            if (action.type === UI_REQUESTS.REQUEST_PASSPHRASE) {
+                // Closing the global UI window allows the PassphraseModal to be visible.
+                const buttonRequests = selectDeviceButtonRequests(getState());
+                if (buttonRequests.length > 0) {
+                    dispatch({ type: UI_EVENTS.CLOSE_UI_WINDOW });
+                }
+
+                return;
+            }
+
             dispatch(defaultTrezorUIEventHandlerThunk(action));
         };
 
