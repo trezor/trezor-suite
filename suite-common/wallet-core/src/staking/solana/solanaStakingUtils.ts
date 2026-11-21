@@ -76,7 +76,7 @@ export type SolanaUnstakeAmountBounds = {
 };
 
 // Mirrors the stake account selection of `unstake` in @trezor/network-solana/runtime/staking.ts:
-// accounts are consumed whole in ASC order and the requested remainder is split off the next one,
+// Accounts are consumed whole in runtime order and the requested remainder is split off the next one,
 // which is only possible when both split legs stay above MIN_STAKE_DELEGATION.
 export const getSolanaUnstakeAmountBounds = (
     account: Account,
@@ -88,16 +88,19 @@ export const getSolanaUnstakeAmountBounds = (
     if (!requested.isFinite() || requested.lte(0)) return null;
 
     const activeAccounts = getSolanaStakingAccountsByStatus(account, StakeState.Active);
-    // With this many accounts the runtime consumes them DESC and caps the transaction size;
-    // SolanaStakingLimitBanner covers that case.
-    if (!activeAccounts.length || activeAccounts.length >= MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT) {
+    if (!activeAccounts.length) {
         return null;
     }
 
     const stakes = activeAccounts
         .map(({ stake }) => new BigNumber(stake ?? '0'))
         .filter(stake => stake.gt(0))
-        .sort((a, b) => a.comparedTo(b) ?? 0);
+        .toSorted((a, b) =>
+            activeAccounts.length < MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT
+                ? (a.comparedTo(b) ?? 0)
+                : (b.comparedTo(a) ?? 0),
+        )
+        .slice(0, MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT);
 
     const totalStake = stakes.reduce((acc, stake) => acc.plus(stake), new BigNumber(0));
     if (requested.gte(totalStake)) return null;

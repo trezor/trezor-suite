@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
 import {
     type TronStakeStepId,
@@ -14,6 +15,7 @@ import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from '#src/hooks/suite/useSelector';
 
@@ -23,6 +25,8 @@ import { parseVoteAllocations } from '../utils/voteUtils';
 interface TronStakeFees {
     feeInfo: FeeInfo;
     composedLevels: PrecomposedLevels | undefined;
+    hasError: boolean;
+    retry: () => void;
 }
 
 interface UseTronStakeFeesProps {
@@ -32,16 +36,15 @@ interface UseTronStakeFeesProps {
 }
 
 export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps): TronStakeFees => {
-    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
-    // render-time read of it freezes on the first render. Remove once these reads move to
-    // `useWatch` or out of render.
-    'use no memo';
-
     const { dispatch } = useServices(injectDispatch);
-
-    const amount = form.methods.watch('amount');
-    const resourceType = form.methods.watch('resourceType');
-    const voteAllocations = form.methods.watch('voteAllocations');
+    const [amount, resourceType, voteAllocations] = useWatch({
+        control: form.methods.control,
+        name: ['amount', 'resourceType', 'voteAllocations'],
+    });
+    const isAmountStep = step === 'freeze' || step === 'unstake';
+    const composeAmount = isAmountStep ? amount : '';
+    const composeResourceType = isAmountStep ? resourceType : 'bandwidth';
+    const composeVoteAllocations = step === 'vote' ? voteAllocations : undefined;
 
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const feeInfo = useMemo(
@@ -51,14 +54,25 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
     );
 
     const composeLevels = useMemo(() => {
+        const amountValue = new BigNumber(composeAmount);
+        if (isAmountStep && (!amountValue.isFinite() || amountValue.lte(0))) {
+            return undefined;
+        }
+
         switch (step) {
             case 'freeze':
                 return () =>
-                    dispatch(composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }))
+                    dispatch(
+                        composeTronFreezeFeeLevelsThunk({
+                            account,
+                            amount: composeAmount,
+                            resourceType: composeResourceType,
+                        }),
+                    )
                         .unwrap()
                         .catch(() => undefined);
             case 'vote': {
-                const allocations = parseVoteAllocations(voteAllocations);
+                const allocations = parseVoteAllocations(composeVoteAllocations ?? []);
 
                 if (allocations.length === 0) {
                     return undefined;
@@ -71,7 +85,13 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
             }
             case 'unstake':
                 return () =>
-                    dispatch(composeTronUnstakeFeeLevelsThunk({ account, amount, resourceType }))
+                    dispatch(
+                        composeTronUnstakeFeeLevelsThunk({
+                            account,
+                            amount: composeAmount,
+                            resourceType: composeResourceType,
+                        }),
+                    )
                         .unwrap()
                         .catch(() => undefined);
             case 'withdraw':
@@ -89,14 +109,25 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
             default:
                 return exhaustive(step);
         }
-    }, [step, account, amount, resourceType, voteAllocations, dispatch]);
+    }, [
+        step,
+        account,
+        composeAmount,
+        composeResourceType,
+        composeVoteAllocations,
+        dispatch,
+        isAmountStep,
+    ]);
 
-    const [composedLevels, setComposedLevels] = useState<PrecomposedLevels | undefined>(undefined);
+    const [attempt, retry] = useReducer((previous: number) => previous + 1, 0);
+    const [composition, setComposition] = useState<{
+        request: typeof composeLevels;
+        attempt: number;
+        levels: PrecomposedLevels | undefined;
+    }>();
 
     useEffect(() => {
         if (!composeLevels) {
-            setComposedLevels(undefined);
-
             return;
         }
 
@@ -104,14 +135,18 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
 
         void composeLevels().then(levels => {
             if (active) {
-                setComposedLevels(levels);
+                setComposition({ request: composeLevels, attempt, levels });
             }
         });
 
         return () => {
             active = false;
         };
-    }, [composeLevels]);
+    }, [composeLevels, attempt]);
 
-    return { feeInfo, composedLevels };
+    const isCurrent = composition?.request === composeLevels && composition?.attempt === attempt;
+    const composedLevels = isCurrent ? composition?.levels : undefined;
+    const hasError = !!composeLevels && isCurrent && composedLevels === undefined;
+
+    return { feeInfo, composedLevels, hasError, retry };
 };

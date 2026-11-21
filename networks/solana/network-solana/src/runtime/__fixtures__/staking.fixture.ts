@@ -30,7 +30,7 @@ type MockStakeAccountParams = {
     voterPubkey?: string;
 };
 
-const mockStakeAccount = ({
+export const mockStakeAccount = ({
     pubkey,
     stake,
     deactivationEpoch,

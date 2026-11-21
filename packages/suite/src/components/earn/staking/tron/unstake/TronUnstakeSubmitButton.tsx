@@ -18,7 +18,7 @@ export const TronUnstakeSubmitButton = () => {
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { account, form, actions, amountInput } = useTronStakeContext();
+    const { account, form, actions, amountInput, fees } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { isValid } = useFormState({ control: form.methods.control });
 
@@ -60,6 +60,7 @@ export const TronUnstakeSubmitButton = () => {
                     !isValid ||
                     isSubmitting ||
                     isDeviceLocked ||
+                    fees.composedLevels?.normal?.type !== 'final' ||
                     !!pendingTxid
                 }
                 isLoading={isSubmitting || isDiscoveryRunning}

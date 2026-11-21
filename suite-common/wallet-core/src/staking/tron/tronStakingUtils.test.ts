@@ -118,6 +118,23 @@ describe('isTronStakingActive', () => {
 });
 
 describe('getTronCryptoBalanceWithStaking', () => {
+    it('keeps pending and withdrawable principal in the owned balance', () => {
+        const account = buildTronAccount({
+            formattedBalance: '10',
+            stakingInfo: buildStakingInfo({
+                stakedBalance: String(60 * TRX),
+                unstakingBatches: [
+                    buildBatch(String(15 * TRX), NOW_SECONDS - 1),
+                    buildBatch(String(25 * TRX), NOW_SECONDS + 1),
+                ],
+                unclaimedReward: String(2 * TRX),
+            }),
+        });
+
+        expect(getTronCryptoBalanceWithStaking(account)).toBe('110');
+        expect(getTronUnstakingBalance(account)).toBe('40');
+    });
+
     it('returns the spendable balance when there is no stakingInfo', () => {
         const account = buildTronAccount({ formattedBalance: '10' });
         expect(getTronCryptoBalanceWithStaking(account)).toBe('10');

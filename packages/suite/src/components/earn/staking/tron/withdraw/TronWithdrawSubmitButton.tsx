@@ -17,7 +17,7 @@ export const TronWithdrawSubmitButton = () => {
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { account, actions } = useTronStakeContext();
+    const { account, actions, fees } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
 
     const { isWithdrawingDisabled, withdrawingMessageContent } = useMessageSystemStaking(
@@ -57,6 +57,7 @@ export const TronWithdrawSubmitButton = () => {
                     !hasWithdrawableAmount ||
                     isSubmitting ||
                     isDeviceUnavailable ||
+                    fees.composedLevels?.normal?.type !== 'final' ||
                     !!pendingTxid
                 }
                 isLoading={isSubmitting || isDiscoveryRunning}

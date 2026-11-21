@@ -383,8 +383,7 @@ const SCENARIOS: {
             ...TRON_STAKED_READING,
             staked: '500',
             unstakable: '500',
-            // The legacy readings are 0 and 1000: the generic unstaking reading is the unfreeze
-            // queue, and the balance with staking counts it (decisions 1 and 9).
+            // The generic unstaking selector reports withdrawable funds; this product reports the queue.
             unstaking: '200',
             cryptoBalanceWithStaking: '1200',
         },
@@ -401,9 +400,7 @@ const SCENARIOS: {
             ...TRON_STAKED_READING,
             staked: '500',
             unstakable: '500',
-            // The legacy readings are 300, 0, false and 1000: legacy reports the withdrawable
-            // amount as unstaking, never as claimable, and leaves the queue out of the balance
-            // with staking (decisions 1 and 9).
+            // The generic selector reports withdrawable funds as unstaking, never as claimable.
             unstaking: '200',
             claimable: '300',
             canClaim: true,

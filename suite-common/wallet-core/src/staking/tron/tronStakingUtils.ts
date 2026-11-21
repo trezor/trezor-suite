@@ -8,7 +8,8 @@ import {
     supportedTronNetworkSymbols,
 } from '@suite-common/wallet-types';
 import {
-    getTronAccountTotalStakingBalance,
+    getTronAccountStakingBalanceWithUnstaking,
+    getTronAccountUnstakingBalance,
     getTronStakingInfo,
     sunToTrx,
 } from '@suite-common/wallet-utils';
@@ -49,7 +50,7 @@ export const isTronStakingActive = (account: Account | null): boolean => {
 };
 
 export const getTronCryptoBalanceWithStaking = (account: Account): string => {
-    const stakingBalance = getTronAccountTotalStakingBalance(account) ?? '0';
+    const stakingBalance = getTronAccountStakingBalanceWithUnstaking(account) ?? '0';
 
     return new BigNumber(account.formattedBalance).plus(stakingBalance).toString();
 };
@@ -86,7 +87,7 @@ const sumUnstakingBatchesSun = (
 };
 
 export const getTronUnstakingBalance = (account: Account): string =>
-    sumUnstakingBatchesSun(account, () => true);
+    getTronAccountUnstakingBalance(account) ?? '0';
 
 export const getTronUnstakingBatches = (account: Account): TronUnstakingBatch[] =>
     getTronStakingInfo(account)?.unstakingBatches.toSorted((a, b) => a.expireTime - b.expireTime) ??

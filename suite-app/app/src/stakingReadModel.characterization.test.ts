@@ -319,8 +319,7 @@ describe('staking read model on the P0.1 scenarios', () => {
         expect(read(state, `ada_${scenario}`)).toEqual(expected);
     });
 
-    // Differs: the balance with staking counts the unfreeze queue (decision 19), and the generic
-    // unstaking and withdrawable take their generic meaning instead of the ETH names.
+    // Unstaking and withdrawable take their generic meaning instead of the ETH names.
     it.each<{ scenario: TronStakingScenario; expected: Reading }>([
         { scenario: 'none', expected: empty('500') },
         { scenario: 'frozenNotVoted', expected: staked('1500', { staked: '1000' }) },

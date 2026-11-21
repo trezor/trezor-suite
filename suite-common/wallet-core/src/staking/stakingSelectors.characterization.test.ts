@@ -419,7 +419,7 @@ describe('staking selectors characterization', () => {
                     ...TRON_STAKED_READING,
                     staked: '500',
                     unstakable: '500',
-                    cryptoBalanceWithStaking: '1000',
+                    cryptoBalanceWithStaking: '1200',
                 },
             },
             {
@@ -429,7 +429,7 @@ describe('staking selectors characterization', () => {
                     staked: '500',
                     unstakable: '500',
                     unstaking: '300',
-                    cryptoBalanceWithStaking: '1000',
+                    cryptoBalanceWithStaking: '1500',
                 },
             },
             { scenario: 'rewardsOnCooldown', expected: { ...TRON_STAKED_READING, rewards: '2' } },
